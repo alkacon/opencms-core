@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:46 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/05/12 13:15:29 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,13 @@
 
 package org.opencms.db;
 
-import org.opencms.util.*;
-import org.opencms.workflow.CmsTask;
-import org.opencms.workflow.CmsTaskLog;
-
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
-import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
+import org.opencms.workflow.CmsTask;
+import org.opencms.workflow.CmsTaskLog;
 
 import java.util.List;
 
@@ -49,7 +47,7 @@ import java.util.List;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.22 $ $Date: 2005/02/17 12:43:46 $
+ * @version $Revision: 1.23 $ $Date: 2005/05/12 13:15:29 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {
@@ -74,7 +72,7 @@ public interface I_CmsWorkflowDriver {
      *
      * @return the Task object of the generated task
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     CmsTask createTask(
         CmsDbContext dbc,
@@ -87,15 +85,14 @@ public interface I_CmsWorkflowDriver {
         String taskname,
         java.sql.Timestamp wakeuptime,
         java.sql.Timestamp timeout,
-        int priority) throws CmsException;
+        int priority) throws CmsDataAccessException;
 
     /**
      * Destroys this driver.<p>
      * 
      * @throws Throwable if something goes wrong
-     * @throws CmsException if something else goes wrong
      */
-    void destroy() throws Throwable, CmsException;
+    void destroy() throws Throwable;
 
     /**
      * Ends a task.<p>
@@ -103,9 +100,9 @@ public interface I_CmsWorkflowDriver {
      * @param dbc the current database context
      * @param taskId Id of the task to end
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void endTask(CmsDbContext dbc, int taskId) throws CmsException;
+    void endTask(CmsDbContext dbc, int taskId) throws CmsDataAccessException;
 
     /**
      * Forwards a task to a new user.<p>
@@ -115,9 +112,9 @@ public interface I_CmsWorkflowDriver {
      * @param newRoleId the new group name for the task
      * @param newUserId the new user who gets the task
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void forwardTask(CmsDbContext dbc, int taskId, CmsUUID newRoleId, CmsUUID newUserId) throws CmsException;
+    void forwardTask(CmsDbContext dbc, int taskId, CmsUUID newRoleId, CmsUUID newUserId) throws CmsDataAccessException;
 
     /**
      * Returns the SqlManager of this driver.<p>
@@ -146,9 +143,9 @@ public interface I_CmsWorkflowDriver {
      *
      * @return A vector with the tasks
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsUUID readAgent(CmsDbContext dbc, CmsUUID roleId) throws CmsException;
+    CmsUUID readAgent(CmsDbContext dbc, CmsUUID roleId) throws CmsDataAccessException;
 
     /**
      * Reads a project of a given task.<p>
@@ -158,9 +155,9 @@ public interface I_CmsWorkflowDriver {
      * 
      * @return the project of the task
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsProject readProject(CmsDbContext dbc, CmsTask task) throws CmsException;
+    CmsProject readProject(CmsDbContext dbc, CmsTask task) throws CmsDataAccessException;
 
     /**
      * Reads all task log entries for a project.
@@ -170,9 +167,9 @@ public interface I_CmsWorkflowDriver {
      * 
      * @return a list of <code>{@link CmsTaskLog}</code> objects
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectLogs(CmsDbContext dbc, int projectId) throws CmsException;
+    List readProjectLogs(CmsDbContext dbc, int projectId) throws CmsDataAccessException;
 
     /**
      * Reads the task with the given id.<p>
@@ -182,9 +179,9 @@ public interface I_CmsWorkflowDriver {
      * 
      * @return the task with the given id
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsTask readTask(CmsDbContext dbc, int id) throws CmsException;
+    CmsTask readTask(CmsDbContext dbc, int id) throws CmsDataAccessException;
 
     /**
      * Reads a log for a task.<p>
@@ -193,9 +190,9 @@ public interface I_CmsWorkflowDriver {
      * @param id The id for the tasklog
      * 
      * @return a new TaskLog object
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsTaskLog readTaskLog(CmsDbContext dbc, int id) throws CmsException;
+    CmsTaskLog readTaskLog(CmsDbContext dbc, int id) throws CmsDataAccessException;
 
     /**
      * Reads log entries for a task.<p>
@@ -205,9 +202,9 @@ public interface I_CmsWorkflowDriver {
      * 
      * @return a list of <code>{@link CmsTaskLog}</code> objects
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readTaskLogs(CmsDbContext dbc, int taskId) throws CmsException;
+    List readTaskLogs(CmsDbContext dbc, int taskId) throws CmsDataAccessException;
 
     /**
      * Returns the value of the given parameter for the given task.<p>
@@ -218,9 +215,9 @@ public interface I_CmsWorkflowDriver {
      * 
      * @return task parameter value
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    String readTaskParameter(CmsDbContext dbc, int taskId, String parName) throws CmsException;
+    String readTaskParameter(CmsDbContext dbc, int taskId, String parName) throws CmsDataAccessException;
 
     /**
      * Reads all given tasks from a user for a project.<p>
@@ -248,7 +245,7 @@ public interface I_CmsWorkflowDriver {
      * 
      * @return a list of given <code>{@link CmsTask}</code> objects for a user for a project
      * 
-     * @throws CmsException if operation was not successful
+     * @throws CmsDataAccessException if operation was not successful
      */
     List readTasks(
         CmsDbContext dbc,
@@ -258,7 +255,7 @@ public interface I_CmsWorkflowDriver {
         CmsGroup role,
         int taskType,
         String orderBy,
-        String sort) throws CmsException;
+        String sort) throws CmsDataAccessException;
 
     /**
      * Get the template task id fo a given taskname.<p>
@@ -268,9 +265,9 @@ public interface I_CmsWorkflowDriver {
      *
      * @return id from the task template
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    int readTaskType(CmsDbContext dbc, String taskName) throws CmsException;
+    int readTaskType(CmsDbContext dbc, String taskName) throws CmsDataAccessException;
 
     /**
      * Writes a system task log entry.<p>
@@ -279,9 +276,9 @@ public interface I_CmsWorkflowDriver {
      * @param taskid the id of the task
      * @param comment the log entry
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void writeSystemTaskLog(CmsDbContext dbc, int taskid, String comment) throws CmsException;
+    void writeSystemTaskLog(CmsDbContext dbc, int taskid, String comment) throws CmsDataAccessException;
 
     /**
      * Writes a task.<p>
@@ -290,9 +287,9 @@ public interface I_CmsWorkflowDriver {
      * @param task the task to write
      * 
      * @return written task object
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsTask writeTask(CmsDbContext dbc, CmsTask task) throws CmsException;
+    CmsTask writeTask(CmsDbContext dbc, CmsTask task) throws CmsDataAccessException;
 
     /**
      * Writes new log for a task.<p>
@@ -304,7 +301,7 @@ public interface I_CmsWorkflowDriver {
      * @param comment Description for the log
      * @param type Type of the log. 0 = Sytem log, 1 = User Log
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void writeTaskLog(
         CmsDbContext dbc,
@@ -312,7 +309,7 @@ public interface I_CmsWorkflowDriver {
         CmsUUID userId,
         java.sql.Timestamp starttime,
         String comment,
-        int type) throws CmsException;
+        int type) throws CmsDataAccessException;
 
     /**
      * Set a Parameter for a task.<p>
@@ -322,9 +319,9 @@ public interface I_CmsWorkflowDriver {
      * @param parname the name of the parameter
      * @param parvalue the value of the parameter
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void writeTaskParameter(CmsDbContext dbc, int taskId, String parname, String parvalue) throws CmsException;
+    void writeTaskParameter(CmsDbContext dbc, int taskId, String parname, String parvalue) throws CmsDataAccessException;
 
     /**
      * Creates a new tasktype set in the database.<p>
@@ -338,7 +335,7 @@ public interface I_CmsWorkflowDriver {
      * @param priorityref tbd
      * @param roleref tbd
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void writeTaskType(
         CmsDbContext dbc,
@@ -348,6 +345,6 @@ public interface I_CmsWorkflowDriver {
         String name,
         String permission,
         int priorityref,
-        int roleref) throws CmsException;
+        int roleref) throws CmsDataAccessException;
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/05/12 12:20:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/12 13:15:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,17 +79,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INVALID_RESOURCE_LENGTH_2 = "ERR_INVALID_RESOURCE_LENGTH_2";
     
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_PUBLISH_FOLDER_1 = "ERR_PUBLISH_FOLDER_1";
+    public static final String ERR_WRITING_BACKUP_OF_PROJECT_1 = "ERR_WRITING_BACKUP_OF_PROJECT_1";
     
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_WRITE_BACKUP_1 = "ERR_WRITE_BACKUP_1";
+    public static final String ERR_ERROR_PUBLISHING_FILE_1 = "ERR_ERROR_PUBLISHING_FILE_1";
     
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_PUBLISH_FILE_1 = "ERR_PUBLISH_FILE_1";
+    public static final String ERR_ERROR_PUBLISHING_FOLDER_1 = "ERR_ERROR_PUBLISHING_FOLDER_1";
     
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ERROR_PUBLISHING_DELETED_FOLDER_1 = "ERR_ERROR_PUBLISHING_DELETED_FOLDER_1";
     
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.db.generic";
+    private static final String BUNDLE_NAME = "org.opencms.db.generic.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

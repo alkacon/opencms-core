@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2005/05/09 15:47:06 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2005/05/12 13:15:29 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.64 $ $Date: 2005/05/09 15:47:06 $
+ * @version $Revision: 1.65 $ $Date: 2005/05/12 13:15:29 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -76,7 +76,7 @@ public interface I_CmsProjectDriver {
      * 
      * @return the created <code>{@link CmsProject}</code> instance
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     CmsProject createProject(
         CmsDbContext dbc,
@@ -88,7 +88,7 @@ public interface I_CmsProjectDriver {
         String description,
         int flags,
         int type,
-        Object reservedParam) throws CmsException;
+        Object reservedParam) throws CmsDataAccessException;
 
     /**
      * Creates a new projectResource from a given CmsResource object.<p>
@@ -98,10 +98,10 @@ public interface I_CmsProjectDriver {
      * @param resourceName The resource to be written to the Cms
      * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void createProjectResource(CmsDbContext dbc, int projectId, String resourceName, Object reservedParam)
-    throws CmsException;
+    throws CmsDataAccessException;
 
     /**
      * Deletes all entries in the published resource table.<p>
@@ -110,10 +110,10 @@ public interface I_CmsProjectDriver {
      * @param currentProject the current project
      * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void deleteAllStaticExportPublishedResources(CmsDbContext dbc, CmsProject currentProject, int linkType)
-    throws CmsException;
+    throws CmsDataAccessException;
 
     /**
      * Deletes a project from the cms.<p>
@@ -122,9 +122,9 @@ public interface I_CmsProjectDriver {
      * 
      * @param dbc the current database context
      * @param project the project to delete
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteProject(CmsDbContext dbc, CmsProject project) throws CmsException;
+    void deleteProject(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
 
     /**
      * Delete a projectResource from an given CmsResource object.<p>
@@ -133,9 +133,9 @@ public interface I_CmsProjectDriver {
      * @param projectId id of the project in which the resource is used
      * @param resourceName name of the resource to be deleted from the Cms
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteProjectResource(CmsDbContext dbc, int projectId, String resourceName) throws CmsException;
+    void deleteProjectResource(CmsDbContext dbc, int projectId, String resourceName) throws CmsDataAccessException;
 
     /**
      * Deletes a specified project.<p>
@@ -143,9 +143,9 @@ public interface I_CmsProjectDriver {
      * @param dbc the current database context
      * @param project the project to be deleted
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsDataAccessException if operation was not succesful
      */
-    void deleteProjectResources(CmsDbContext dbc, CmsProject project) throws CmsException;
+    void deleteProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
 
     /**
      * Deletes all publish history entries with backup tag IDs >=0 and < the specified max. backup tag ID.<p>
@@ -154,9 +154,9 @@ public interface I_CmsProjectDriver {
      * @param projectId the ID of the current project
      * @param maxBackupTagId entries with backup tag IDs >=0 and < this max. backup tag ID get deleted
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void deletePublishHistory(CmsDbContext dbc, int projectId, int maxBackupTagId) throws CmsException;
+    void deletePublishHistory(CmsDbContext dbc, int projectId, int maxBackupTagId) throws CmsDataAccessException;
 
     /**
      * Deletes an entry in the published resource table.<p>
@@ -167,14 +167,14 @@ public interface I_CmsProjectDriver {
      * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
      * @param linkParameter the parameters of the resource
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void deleteStaticExportPublishedResource(
         CmsDbContext dbc,
         CmsProject currentProject,
         String resourceName,
         int linkType,
-        String linkParameter) throws CmsException;
+        String linkParameter) throws CmsDataAccessException;
 
     /**
      * Destroys this driver.<p>
@@ -188,9 +188,9 @@ public interface I_CmsProjectDriver {
      * 
      * @param dbc the current database context
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void fillDefaults(CmsDbContext dbc) throws CmsException;
+    void fillDefaults(CmsDbContext dbc) throws CmsDataAccessException;
 
     /**
      * Returns the SqlManager of this driver.<p>
@@ -226,7 +226,7 @@ public interface I_CmsProjectDriver {
      * @param backupTagId the backup tag id
      * @param maxVersions the maxmum number of backup versions for each resource
      * 
-     * @throws Exception if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void publishDeletedFolder(
         CmsDbContext dbc,
@@ -239,7 +239,7 @@ public interface I_CmsProjectDriver {
         long publishDate,
         CmsUUID publishHistoryId,
         int backupTagId,
-        int maxVersions) throws Exception;
+        int maxVersions) throws CmsDataAccessException;
 
     /**
      * Publishes a new, changed or deleted file.<p>
@@ -257,7 +257,7 @@ public interface I_CmsProjectDriver {
      * @param backupTagId the backup tag id
      * @param maxVersions the maxmum number of backup versions for each resource
      * 
-     * @throws Exception if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void publishFile(
         CmsDbContext dbc,
@@ -271,7 +271,7 @@ public interface I_CmsProjectDriver {
         long publishDate,
         CmsUUID publishHistoryId,
         int backupTagId,
-        int maxVersions) throws Exception;
+        int maxVersions) throws CmsDataAccessException;
 
     /**
      * Publishes the content record of a file.<p>
@@ -291,14 +291,14 @@ public interface I_CmsProjectDriver {
      * @param publishedResourceIds a Set with the UUIDs of the already published content records
      * 
      * @return the published file (online)
-     * @throws Exception if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     CmsFile publishFileContent(
         CmsDbContext dbc,
         CmsProject offlineProject,
         CmsProject onlineProject,
         CmsResource offlineFileHeader,
-        Set publishedResourceIds) throws Exception;
+        Set publishedResourceIds) throws CmsDataAccessException;
 
     /**
      * Publishes a new or changed folder.<p>
@@ -315,7 +315,7 @@ public interface I_CmsProjectDriver {
      * @param backupTagId the backup tag id
      * @param maxVersions the maxmum number of backup versions for each resource
      * 
-     * @throws Exception if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void publishFolder(
         CmsDbContext dbc,
@@ -328,7 +328,7 @@ public interface I_CmsProjectDriver {
         long publishDate,
         CmsUUID publishHistoryId,
         int backupTagId,
-        int maxVersions) throws Exception;
+        int maxVersions) throws CmsDataAccessException;
 
     /**
      * Publishes a specified project to the online project.<p>
@@ -361,9 +361,9 @@ public interface I_CmsProjectDriver {
      * 
      * @return the project read
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsProject readProject(CmsDbContext dbc, int id) throws CmsException;
+    CmsProject readProject(CmsDbContext dbc, int id) throws CmsDataAccessException;
 
     /**
      * Reads a project.<p>
@@ -372,9 +372,9 @@ public interface I_CmsProjectDriver {
      * @param name the name of the project
      * 
      * @return the project with the given name
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    CmsProject readProject(CmsDbContext dbc, String name) throws CmsException;
+    CmsProject readProject(CmsDbContext dbc, String name) throws CmsDataAccessException;
 
     /**
      * Reads the project resource path for a given project and resource path,
@@ -386,10 +386,10 @@ public interface I_CmsProjectDriver {
      * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * 
      * @return String the project's resource path
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     String readProjectResource(CmsDbContext dbc, int projectId, String resourcename, Object reservedParam)
-    throws CmsException;
+    throws CmsDataAccessException;
 
     /**
      * Reads the project resources for a specified project.<p>
@@ -411,9 +411,9 @@ public interface I_CmsProjectDriver {
      * 
      * @return a list of objects of type <code>{@link CmsProject}</code>
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjects(CmsDbContext dbc, int state) throws CmsException;
+    List readProjects(CmsDbContext dbc, int state) throws CmsDataAccessException;
 
     /**
      * Returns all projects, which are accessible by a group.<p>
@@ -422,9 +422,9 @@ public interface I_CmsProjectDriver {
      * @param group the requesting group
      * 
      * @return a Vector of projects
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsException;
+    List readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException;
 
     /**
      * Returns all projects, which are manageable by a group.<p>
@@ -433,9 +433,9 @@ public interface I_CmsProjectDriver {
      * @param group The requesting group
      * @return a Vector of projects
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsException;
+    List readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException;
 
     /**
      * Reads all projects which are owned by a specified user.<p>
@@ -445,9 +445,9 @@ public interface I_CmsProjectDriver {
      * 
      * @return a list of objects of type <code>{@link CmsProject}</code>
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectsForUser(CmsDbContext dbc, CmsUser user) throws CmsException;
+    List readProjectsForUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException;
 
     /**
      * Reads all resources that build the "view" of a project.<p>
@@ -458,9 +458,9 @@ public interface I_CmsProjectDriver {
      * 
      * @return a List of resources
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectView(CmsDbContext dbc, int project, String filter) throws CmsException;
+    List readProjectView(CmsDbContext dbc, int project, String filter) throws CmsDataAccessException;
 
     /**
      * Reads the resources that were published during a publish process for a given publish history ID.<p>
@@ -471,9 +471,9 @@ public interface I_CmsProjectDriver {
      * 
      * @return a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    List readPublishedResources(CmsDbContext dbc, int projectId, CmsUUID publishHistoryId) throws CmsException;
+    List readPublishedResources(CmsDbContext dbc, int projectId, CmsUUID publishHistoryId) throws CmsDataAccessException;
 
     /**
      * Returns the parameters of a resource in the table of all published template resources.<p>
@@ -484,10 +484,10 @@ public interface I_CmsProjectDriver {
      * 
      * @return the paramter string of the requested resource
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     String readStaticExportPublishedResourceParameters(CmsDbContext dbc, CmsProject currentProject, String rfsName)
-    throws CmsException;
+    throws CmsDataAccessException;
 
     /**
      * Returns a list of all template resources which must be processed during a static export.<p>
@@ -499,13 +499,13 @@ public interface I_CmsProjectDriver {
      * 
      * @return a list of template resources as <code>{@link String}</code> objects
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     List readStaticExportResources(
         CmsDbContext dbc,
         CmsProject currentProject,
         int parameterResources,
-        long timestamp) throws CmsException;
+        long timestamp) throws CmsDataAccessException;
 
     /**
      * Removes the project id from all resources within a project.<p>
@@ -514,9 +514,9 @@ public interface I_CmsProjectDriver {
      * 
      * @param dbc the current database context
      * @param project the project to delete
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsException;
+    void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
 
     /**
      * Inserts an entry in the publish history for a published VFS resource.<p>
@@ -527,14 +527,14 @@ public interface I_CmsProjectDriver {
      * @param backupTagId the current backup ID
      * @param resource the state of the resource *before* it was published
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void writePublishHistory(
         CmsDbContext dbc,
         CmsProject currentProject,
         CmsUUID publishId,
         int backupTagId,
-        CmsResource resource) throws CmsException;
+        CmsResource resource) throws CmsDataAccessException;
 
     /**
      * Inserts an entry in the published resource table.<p>
@@ -548,7 +548,7 @@ public interface I_CmsProjectDriver {
      * @param linkParameter the parameters added to the resource
      * @param timestamp a timestamp for writing the data into the db
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     void writeStaticExportPublishedResource(
         CmsDbContext dbc,
@@ -556,6 +556,6 @@ public interface I_CmsProjectDriver {
         String resourceName,
         int linkType,
         String linkParameter,
-        long timestamp) throws CmsException;
+        long timestamp) throws CmsDataAccessException;
 
 }

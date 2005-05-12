@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/11 15:32:46 $
- * Version: $Revision: 1.491 $
+ * Date   : $Date: 2005/05/12 13:15:29 $
+ * Version: $Revision: 1.492 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.491 $ $Date: 2005/05/11 15:32:46 $
+ * @version $Revision: 1.492 $ $Date: 2005/05/12 13:15:29 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2106,9 +2106,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @param dbc the current database context
      * @param res the resource to delete all backups from
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsDataAccessException if operation was not succesful
      */
-    public void deleteBackup(CmsDbContext dbc, CmsResource res) throws CmsException {
+    public void deleteBackup(CmsDbContext dbc, CmsResource res) throws CmsDataAccessException {
 
         // we need a valid CmsBackupResource, so get all backup file headers of the
         // requested resource
@@ -3793,10 +3793,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @param newResource absolute path for a resource sibling which will be created
      * @param action the action which has to be performed (1 = create VFS link, 2 all other actions)
      * @return true if the flag should be set for the resource, otherwise false
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     public boolean labelResource(CmsDbContext dbc, CmsResource resource, String newResource, int action)
-    throws CmsException {
+    throws CmsDataAccessException {
 
         // get the list of labeled site folders from the runtime property
         List labeledSites = OpenCms.getWorkplaceManager().getLabelSiteFolders();
@@ -4703,7 +4703,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      *
      * @return the folder that was read
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      *
      * @see #readResource(CmsDbContext, String, CmsResourceFilter)
      * @see CmsObject#readFolder(String)
@@ -4712,7 +4712,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public CmsFolder readFolder(
         CmsDbContext dbc,
         String resourcename,
-        CmsResourceFilter filter) throws CmsException {
+        CmsResourceFilter filter) throws CmsDataAccessException {
 
         CmsResource resource = readResource(dbc, resourcename, filter);
 
@@ -5065,9 +5065,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @return the project read
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
-    public CmsProject readProject(CmsDbContext dbc, int id) throws CmsException {
+    public CmsProject readProject(CmsDbContext dbc, int id) throws CmsDataAccessException {
 
         CmsProject project = null;
         project = (CmsProject)m_projectCache.get(new Integer(id));
@@ -5443,7 +5443,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      *
      * @return the resource that was read
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      * 
      * @see CmsObject#readResource(String, CmsResourceFilter)
      * @see CmsObject#readResource(String)
@@ -5452,7 +5452,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public CmsResource readResource(
         CmsDbContext dbc,
         String resourcePath,
-        CmsResourceFilter filter) throws CmsException {
+        CmsResourceFilter filter) throws CmsDataAccessException {
 
         CmsResource resource = m_vfsDriver.readResource(
             dbc,
@@ -7347,9 +7347,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @param resource the resource to convert
      * @return the converted resource 
      * 
-     * @throws CmsException if the resource is not a folder
+     * @throws CmsVfsResourceNotFoundException if the resource is not a folder
      */
-    protected CmsFolder convertResourceToFolder(CmsResource resource) throws CmsException {
+    protected CmsFolder convertResourceToFolder(CmsResource resource) throws CmsVfsResourceNotFoundException {
 
         if (resource.isFolder()) {
             return new CmsFolder(resource);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/05/10 09:14:52 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/05/12 13:15:29 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.db.I_CmsWorkflowDriver;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -66,7 +65,7 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.43 $ $Date: 2005/05/10 09:14:52 $
+ * @version $Revision: 1.44 $ $Date: 2005/05/12 13:15:29 $
  * @since 5.1
  */
 public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -558,7 +557,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#writeSystemTaskLog(org.opencms.db.CmsDbContext, int, java.lang.String)
      */
-    public void writeSystemTaskLog(CmsDbContext dbc, int taskid, String comment) throws CmsException {
+    public void writeSystemTaskLog(CmsDbContext dbc, int taskid, String comment) throws CmsDataAccessException {
 
         this.writeTaskLog(dbc, taskid, CmsUUID.getNullUUID(), new java.sql.Timestamp(System.currentTimeMillis()), comment, I_CmsConstants.C_TASKLOG_USER);
     }
@@ -608,7 +607,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#writeTaskLog(org.opencms.db.CmsDbContext, int, org.opencms.util.CmsUUID, java.sql.Timestamp, java.lang.String, int)
      */
-    public void writeTaskLog(CmsDbContext dbc, int taskId, CmsUUID userId, java.sql.Timestamp starttime, String comment, int type) throws CmsException {
+    public void writeTaskLog(CmsDbContext dbc, int taskId, CmsUUID userId, java.sql.Timestamp starttime, String comment, int type) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -622,7 +621,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 stmt.setString(3, userId.toString());
             } else {
                 // no user is specified so set to system user is only valid for system task log
-                stmt.setString(3, m_driverManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
+                stmt.setString(3, m_driverManager.readUser(dbc, OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
             }
             stmt.setTimestamp(4, starttime);
             stmt.setString(5, m_sqlManager.validateEmpty(comment));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/05/11 15:32:46 $
- * Version: $Revision: 1.236 $
+ * Date   : $Date: 2005/05/12 13:15:29 $
+ * Version: $Revision: 1.237 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.236 $ $Date: 2005/05/11 15:32:46 $
+ * @version $Revision: 1.237 $ $Date: 2005/05/12 13:15:29 $
  * @since 5.1
  */
 public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
@@ -938,7 +938,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
-        boolean found = false;
         
         try {
             conn = m_sqlManager.getConnection(dbc, projectId);
@@ -948,20 +947,17 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             res = stmt.executeQuery();
             
             if (res.next()) {
-                found = true;
                 file = createFile(res, projectId);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
+            } else {
+                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFile] " + structureId.toString());
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        
-        if (file == null && !found) {
-            throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFile] " + structureId.toString());
         }
         
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
@@ -1038,7 +1034,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        boolean found = false;
 
         try {
             conn = m_sqlManager.getConnection(dbc, projectId);
@@ -1047,20 +1042,17 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             res = stmt.executeQuery();
 
             if (res.next()) {
-                found = true;
                 folder = createFolder(res, projectId, true);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
+            } else {
+                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFolder/1] " + folderId);
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        
-        if (folder == null && !found) {
-            throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFolder/1] " + folderId);
         }
 
         return folder;
@@ -1075,7 +1067,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        boolean found = false;
 
         folderPath = removeTrailingSeparator(folderPath);
         
@@ -1087,20 +1078,17 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             res = stmt.executeQuery();
 
             if (res.next()) {
-                found = true;
                 folder = createFolder(res, projectId, true);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
+            } else {
+                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFolder/2] " + folderPath);
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        
-        if (folder == null && !found) {
-            throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFolder/2] " + folderPath);
         }
 
         return folder;
@@ -1317,7 +1305,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        boolean found = false;
         
         try {
             conn = m_sqlManager.getConnection(dbc, projectId);
@@ -1327,20 +1314,17 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             res = stmt.executeQuery();
             
             if (res.next()) {
-                found = true;
                 resource = createResource(res, projectId);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
+            } else {
+                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readResource/2] " + structureId);
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        
-        if (resource == null && !found) {
-            throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readResource/2] " + structureId);
         }
         
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
@@ -1360,7 +1344,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        boolean found = false;
         
         // must remove trailing slash
         path = removeTrailingSeparator(path);
@@ -1373,20 +1356,17 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             res = stmt.executeQuery();
             
             if (res.next()) {
-                found = false;
                 resource = createResource(res, projectId);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
+            } else {
+                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readResource/3] " + path);
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        
-        if (resource == null && !found) {
-            throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readResource/3] " + path);
         }
         
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
@@ -2308,7 +2288,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
         String parentId = null;
-        boolean found = false;
 
         try {
             conn = m_sqlManager.getConnection(dbc, projectId);
@@ -2317,17 +2296,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             res = stmt.executeQuery();
 
             if (res.next()) {
-                found = true;
                 parentId = res.getString(1);
-            }            
+            } else {
+                throw new CmsVfsResourceNotFoundException("Unable to read parent id of resource " + resourcename);
+            }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        
-        if (parentId == null && !found) {
-            throw new CmsVfsResourceNotFoundException("Unable to read parent id of resource " + resourcename);
         }
         
         return parentId;
