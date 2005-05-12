@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2005/05/12 10:53:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/12 13:31:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -773,7 +773,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
         checkFrozen();
         if (CmsStringUtil.isEmpty(jobName) || !jobName.trim().equals(jobName)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_JOB_NAME_1));
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_JOB_NAME_1, jobName));
 
         }
         m_jobName = jobName;

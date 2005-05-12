@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo5.java,v $
- * Date   : $Date: 2005/05/11 10:22:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/12 13:31:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo5 extends CmsWidgetDialog {
@@ -69,7 +69,7 @@ public class CmsAdminWidgetDemo5 extends CmsWidgetDialog {
     public static final String DIALOG_SAVE = "save";
 
     /** The dialog type. */
-    public static final String DIALOG_TYPE = "widgetdemo4";
+    public static final String DIALOG_TYPE = "widgetdemo5";
 
     /** The OpenCms context info object used for the job info. */
     CmsContextInfo m_contextInfo;
