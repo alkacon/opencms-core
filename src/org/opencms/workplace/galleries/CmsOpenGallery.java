@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsOpenGallery.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/12 09:21:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,11 @@
 package org.opencms.workplace.galleries;
 
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -41,6 +44,8 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides methods for open gallery dialog.<p> 
@@ -51,12 +56,15 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
 public class CmsOpenGallery extends CmsDialog {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsOpenGallery.class);  
+    
     /** The dialog type. */
     public static final String DIALOG_TYPE = "opengallery";
 
@@ -120,9 +128,9 @@ public class CmsOpenGallery extends CmsDialog {
             }
         } catch (CmsException e) {
             // requested type is not configured
-            String message = "Unable to open gallery for gallery type '" + galleryType + "'";
-            OpenCms.getLog(CmsOpenGallery.class).error(message);
-            throw new RuntimeException(message, e);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_OPEN_GALLERY_1, galleryType); 
+            LOG.error(message, e);
+            throw new CmsRuntimeException(message, e);
         }
 
         return jsOpener.toString();

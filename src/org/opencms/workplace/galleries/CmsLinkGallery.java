@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/04/13 12:53:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/12 09:21:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -46,6 +47,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Generates the links gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
@@ -55,12 +58,15 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.5.2
  */
 public class CmsLinkGallery extends A_CmsGallery {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLinkGallery.class);  
+    
     /** URI of the image gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "link_fs.jsp";
 
@@ -115,9 +121,7 @@ public class CmsLinkGallery extends A_CmsGallery {
                     uri = new String(file.getContents());
                 } catch (CmsException e) {
                     // this should never happen
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());
-                    }
+                    LOG.error(e);
                 }
             }
 
@@ -182,11 +186,7 @@ public class CmsLinkGallery extends A_CmsGallery {
             }
         } catch (CmsException e) {
             // reading the resource or property value failed
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn(e);
-            } else if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());
-            }
+            LOG.error(e);
         }
         return html.toString();
     }

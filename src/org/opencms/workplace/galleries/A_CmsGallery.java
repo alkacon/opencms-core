@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/05/02 14:39:59 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/12 09:21:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,12 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -57,6 +60,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides constants, members and methods to generate a gallery popup window usable in editors or as widget.<p>
  * 
@@ -64,12 +69,15 @@ import javax.servlet.http.HttpSession;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.5.2
  */
 public abstract class A_CmsGallery extends CmsDialog {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsGallery.class);  
+    
     /** Value for the action: delete the gallery item. */
     public static final int ACTION_DELETE = 101;
     /** Value for the action: list gallery items. */
@@ -209,12 +217,15 @@ public abstract class A_CmsGallery extends CmsDialog {
 
         if (className == null) {
             // requested type is not configured
-            String message = "Unknown gallery type '"
-                + galleryTypeName
-                + "' requested"
-                + (jsp != null ? " on JSP " + jsp.info("opencms.request.element.uri") : "");
-            OpenCms.getLog(A_CmsGallery.class).error(message);
-            throw new RuntimeException(message);
+            CmsMessageContainer message;
+            if (jsp == null) {
+                message = Messages.get().container(Messages.LOG_UNKNOWN_GALLERY_TYPE_REQ_1, galleryTypeName);
+            } else {
+                message = Messages.get().container(Messages.LOG_UNKNOWN_GALLERY_TYPE_REQ_JSP_2, 
+                    galleryTypeName, jsp.info("opencms.request.element.uri"));
+            }    
+            LOG.error(message.key());
+            throw new CmsRuntimeException(message);
         }
 
         try {
@@ -230,15 +241,17 @@ public abstract class A_CmsGallery extends CmsDialog {
             // return the result
             return galleryInstance;
         } catch (Exception e) {
-            // requested type is not configured
-            String message = "Unable to create class instance '"
-                + className
-                + "' for gallery type '"
-                + galleryTypeName
-                + "'"
-                + (jsp != null ? " on JSP " + jsp.info("opencms.request.element.uri") : "");
-            OpenCms.getLog(A_CmsGallery.class).error(message);
-            throw new RuntimeException(message, e);
+            // requested type is not configured          
+            CmsMessageContainer message;
+            if (jsp == null) {
+                message = Messages.get().container(Messages.LOG_CREATE_GALLERY_INSTANCE_FAILED_2, 
+                    className, galleryTypeName);
+            } else {
+                message = Messages.get().container(Messages.LOG_CREATE_GALLERY_INSTANCE_FAILED_JSP_3, 
+                    className, galleryTypeName, jsp.info("opencms.request.element.uri"));
+            }    
+            LOG.error(message.key());
+            throw new CmsRuntimeException(message);
         }
     }
 
@@ -447,9 +460,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                     result.append("</tr>\n");
                 } catch (CmsException e) {
                     // error getting resource type name or reading resource, log error
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error(e);    
-                    }
+                    LOG.error(e);
                 }
             }
         }
@@ -476,9 +487,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 title = getCms().readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue("");
             } catch (CmsException e) {
                 // error reading title property 
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error(e);    
-                }
+                LOG.error(e);
             }
             result.append(title);
             result.append(" (");
@@ -508,8 +517,8 @@ public abstract class A_CmsGallery extends CmsDialog {
                     title = getCms().readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue("");
                 } catch (CmsException e) {
                     // error reading title property
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error(e);    
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e);    
                     }
                 }
                 options.add(title + " (" + path + ")");
@@ -609,8 +618,8 @@ public abstract class A_CmsGallery extends CmsDialog {
             }
         } catch (CmsException e) {
             // error checking permissions
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);    
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e);    
             }
         }
         return button(null, null, "deletecontent_in", "", 0);
@@ -638,9 +647,7 @@ public abstract class A_CmsGallery extends CmsDialog {
             }
         } catch (CmsException e) {
             // error checking permissions
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);    
-            }
+            LOG.error(e);
         }
         return button(null, null, "edit_property_in", "", 0);
     }
@@ -712,9 +719,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
         } catch (CmsException e) {
             // error reading resources with filter
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);
-            }
+            LOG.error(e);
         }
         
         // if the current site is NOT the root site - add all other galleries from the system path
@@ -727,9 +732,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                     CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
             } catch (CmsException e) {
                 // error reading resources with filter
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error(e);
-                }
+                LOG.error(e);
             }
 
             if (systemGalleries != null && systemGalleries.size() > 0) {
@@ -767,9 +770,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                     m_galleryItems = getCms().readResources(getParamGalleryPath(), filter, false); 
                 } catch (CmsException e) {
                     // error reading reaources
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error(e);
-                    }
+                    LOG.error(e);
                 } catch (NullPointerException e) {
                     // ignore this exception    
                 }
@@ -1204,9 +1205,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 value = property.getValue("[" + resName + "]");
             } catch (CmsException e) {
                 // error reading property object
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error(e);    
-                }
+                LOG.error(e); 
             }
         }
         return value;
@@ -1367,9 +1366,7 @@ public abstract class A_CmsGallery extends CmsDialog {
             getCms().unlockResource(resPath);
         } catch (CmsException e) {
             // writing the property failed, log error
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);
-            }
+            LOG.error(e);
         }
     }
 }
