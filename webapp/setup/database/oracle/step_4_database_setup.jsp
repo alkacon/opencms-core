@@ -7,60 +7,7 @@
 	// previous page
 	String prevPage = "../../step_2_check_components.jsp";
 	
-	String conStr = request.getParameter("dbCreateConStr");
-	boolean isFormSubmitted =( (request.getParameter("submit") != null) && (conStr != null));
-
-	if (Bean.isInitialized()) {
-		String createDb = request.getParameter("createDb");
-		if(createDb == null) {
-			createDb = "";
-		}
-
-		String createTables = request.getParameter("createTables");
-		if(createTables == null) {
-			createTables = "";
-		}
-
-		if (isFormSubmitted) {
-			Bean.setDbWorkConStr(conStr);
-
-			String dbCreateUser = request.getParameter("dbCreateUser");
-			String dbCreatePwd = request.getParameter("dbCreatePwd");
-			String dbWorkUser = request.getParameter("dbWorkUser");
-			String dbWorkPwd = request.getParameter("dbWorkPwd");
-			
-			Bean.setDbCreateUser(dbCreateUser);
-			Bean.setDbCreatePwd(dbCreatePwd);
-			Bean.setDbWorkUser(dbWorkUser);
-			Bean.setDbWorkPwd(dbWorkPwd);			
-			
-			String dbDefaultTablespace = request.getParameter("dbDefaultTablespace");
-			String dbTemporaryTablespace = request.getParameter("dbTemporaryTablespace");
-			String dbIndexTablespace = request.getParameter("dbIndexTablespace");
-			
-			Bean.setDbProperty(Bean.getDatabase() + ".defaultTablespace", dbDefaultTablespace);
-			Bean.setDbProperty(Bean.getDatabase() + ".temporaryTablespace", dbTemporaryTablespace);
-			Bean.setDbProperty(Bean.getDatabase() + ".indexTablespace", dbIndexTablespace);
-
-			Map replacer = (Map) new HashMap();
-			replacer.put("${user}", dbWorkUser);
-			replacer.put("${password}", dbWorkPwd);
-			replacer.put("${defaultTablespace}", dbDefaultTablespace);
-			replacer.put("${indexTablespace}", dbIndexTablespace);
-			replacer.put("${temporaryTablespace}", dbTemporaryTablespace);
-			Bean.setReplacer(replacer);
-
-			session.setAttribute("createTables",createTables);
-			session.setAttribute("createDb",createDb);
-		} else {
-			// initialize the database name with the app name
-			if (org.opencms.util.CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getContextPath())) {
-				Bean.setDbWorkUser(request.getContextPath().substring(1));
-			} else {
-				Bean.setDbWorkUser("opencms");
-			}
-		}
-	}
+    boolean isFormSubmitted = Bean.setDbParamaters(request, Bean.C_ORACLE_PROVIDER);
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Setup Wizard

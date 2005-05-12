@@ -7,46 +7,8 @@
 	// previous page
 	String prevPage = "../../step_2_check_components.jsp";
 	
-	String conStr = request.getParameter("dbCreateConStr");
-	String database = request.getParameter("db");
-	boolean isFormSubmitted = ((request.getParameter("submit") != null) && (conStr != null) && (database != null));
+    boolean isFormSubmitted = Bean.setDbParamaters(request, Bean.C_MYSQL_PROVIDER);
 
-	if (Bean.isInitialized()) {
-		String createDb = request.getParameter("createDb");
-		if(createDb == null) {
-			createDb = "";
-		}
-
-		if(isFormSubmitted)	{
-			if(!conStr.endsWith("/"))conStr += "/";
-
-			String dbCreateUser = request.getParameter("dbCreateUser");
-			String dbWorkUser = request.getParameter("dbWorkUser");
-
-			String dbCreatePwd = request.getParameter("dbCreatePwd");
-			String dbWorkPwd = request.getParameter("dbWorkPwd");
-
-			Bean.setDbWorkConStr(conStr + database);
-
-			Bean.setDbCreateUser(dbCreateUser);
-			Bean.setDbWorkUser(dbWorkUser);
-
-			Bean.setDbCreatePwd(dbCreatePwd);
-			Bean.setDbWorkPwd(dbWorkPwd);
-
-			Map replacer = (Map) new HashMap();
-			replacer.put("${database}", database);
-			Bean.setReplacer(replacer);
-			
-			session.setAttribute("createDb", createDb);
-		} else {
-			if (org.opencms.util.CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getContextPath())) {
-				Bean.setDb(request.getContextPath().substring(1));
-			} else {
-				Bean.setDb("opencms");
-			}
-		}
-	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Setup Wizard
