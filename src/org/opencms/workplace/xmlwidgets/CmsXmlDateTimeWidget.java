@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlDateTimeWidget.java,v $
- * Date   : $Date: 2005/05/10 09:24:02 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/12 10:57:11 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.CmsXmlDateTimeValue;
@@ -40,15 +40,20 @@ import org.opencms.xml.types.CmsXmlDateTimeValue;
 import java.text.ParseException;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlDateTimeValue}.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlDateTimeWidget.class);
 
     /**
      * Creates a new editor widget.<p>
@@ -69,7 +74,8 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
     /**
      * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
-    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) throws CmsXmlException {
+    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
+    throws CmsXmlException {
 
         StringBuffer result = new StringBuffer(16);
         result.append("<td class=\"xmlTd\">");
@@ -80,10 +86,10 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
             try {
                 dateTimeValue = widgetDialog.getCalendarLocalizedTime(Long.parseLong(dateTimeValue));
             } catch (NumberFormatException e) {
-                dateTimeValue = "";    
+                dateTimeValue = "";
             }
         } else {
-            dateTimeValue = "";    
+            dateTimeValue = "";
         }
 
         String id = param.getId();
@@ -99,12 +105,8 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
         result.append("<table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" id=\"");
         result.append(id);
         result.append(".calendar\"><tr>");
-        result.append(widgetDialog.button(
-            "#",
-            null,
-            "calendar",
-            "calendar.input.choosedate",
-            widgetDialog.getButtonStyle()));
+        result.append(widgetDialog.button("#", null, "calendar", "calendar.input.choosedate", widgetDialog
+            .getButtonStyle()));
         result.append("</tr></table>");
         result.append("</td></tr></table>");
 
@@ -134,8 +136,8 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
                     dateTime = widgetDialog.getCalendarDate(dateTimeValue, true);
                 } catch (ParseException e) {
                     // TODO: Better exception handling
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Error parsing calendar DateTime String", e);
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().container(Messages.ERR_PARSE_DATETIME_1, dateTimeValue), e);
                     }
                 }
             } else {

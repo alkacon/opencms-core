@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlWidgetCollector.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/12 10:57:11 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.4
  */
 public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
@@ -156,12 +156,12 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
                     m_widgets.put(value.getPath(), widget);
                     m_values.put(value.getPath(), value);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug("Added " + value.getPath() + " to widgets.");
+                        LOG.debug(Messages.get().container(Messages.LOG_DEBUG_WIDGETCOLLECTOR_ADD_1, value.getPath()));
                     }
                 } catch (CmsXmlException e) {
                     // should usually not happen
                     if (LOG.isErrorEnabled()) {
-                        LOG.error("Could not access widget for content value " + value, e);
+                        LOG.error(Messages.get().container(Messages.ERR_WIDGETCOLLECTOR_ADD_1, value), e);
                     }
                 }
             }

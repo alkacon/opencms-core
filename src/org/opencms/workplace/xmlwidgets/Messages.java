@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/Messages.java,v $
- * Date   : $Date: 2005/05/11 10:22:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/12 10:57:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,13 +44,22 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_PROPERTY_2 = "ERR_NO_PROPERTY_2";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PARSE_DATETIME_1 = "ERR_PARSE_DATETIME_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROPERTY_READ_2 = "ERR_PROPERTY_READ_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROPERTY_WRITE_3 = "ERR_PROPERTY_WRITE_3";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_WIDGETCOLLECTOR_ADD_1 = "ERR_WIDGETCOLLECTOR_ADD_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_WIDGETCOLLECTOR_ADD_1 = "LOG_DEBUG_WIDGETCOLLECTOR_ADD_1";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.xmlwidgets.messages";
 
