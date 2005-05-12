@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2005/05/11 10:22:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/12 10:53:36 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,10 @@ package org.opencms.scheduler;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.main.CmsContextInfo;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
 import java.util.Date;
@@ -44,6 +46,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
+import org.quartz.CronTrigger;
 import org.quartz.Trigger;
 
 /**
@@ -411,15 +414,18 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         boolean active,
         Map parameters) {
 
-        m_id = id;
-        m_jobName = jobName;
-        m_className = className;
-        m_context = context;
-        m_cronExpression = cronExpression;
-        m_reuseInstance = reuseInstance;
-        m_active = active;
-        m_parameters = new TreeMap(parameters);
         m_frozen = false;
+        setId(id);
+        if (CmsStringUtil.isNotEmpty(jobName)) {
+            // job name is optional, if not present class name will be used
+            setJobName(jobName);
+        }
+        setClassName(className);
+        setContextInfo(context);
+        setCronExpression(cronExpression);
+        setReuseInstance(reuseInstance);
+        setActive(active);
+        setParameters(parameters);
     }
 
     /**
@@ -706,9 +712,13 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public void setClassName(String className) {
 
         checkFrozen();
-        m_className = className;
+        if (!CmsStringUtil.isValidJavaClassName(className)) {
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_BAD_JOB_CLASS_NAME_1, className));
+        }
 
-        if (m_jobName == null) {
+        m_className = className;
+        if (getJobName() == null) {
             // initialize job name with class name as default
             setJobName(className);
         }
@@ -726,7 +736,9 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public void setContextInfo(CmsContextInfo contextInfo) {
 
         checkFrozen();
-        contextInfo.freeze();
+        if (contextInfo == null) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_CONTEXT_INFO_0));
+        }
         m_context = contextInfo;
     }
 
@@ -738,6 +750,17 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public void setCronExpression(String cronExpression) {
 
         checkFrozen();
+
+        try {
+            // check if the cron expression is valid
+            new CronTrigger().setCronExpression(cronExpression);
+        } catch (Exception e) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_BAD_CRON_EXPRESSION_2,
+                getJobName(),
+                cronExpression));
+        }
+
         m_cronExpression = cronExpression;
     }
 
@@ -749,6 +772,10 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public void setJobName(String jobName) {
 
         checkFrozen();
+        if (CmsStringUtil.isEmpty(jobName) || !jobName.trim().equals(jobName)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_JOB_NAME_1));
+
+        }
         m_jobName = jobName;
     }
 
@@ -757,10 +784,14 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      *
      * @param parameters the parameters to set
      */
-    public void setParameters(SortedMap parameters) {
+    public void setParameters(Map parameters) {
 
         checkFrozen();
-        m_parameters = parameters;
+        if (parameters == null) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_JOB_PARAMS_0));
+        }
+        // make sure the parameters are a sorted map
+        m_parameters = new TreeMap(parameters);
     }
 
     /**
@@ -799,6 +830,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         if (frozen && !m_frozen) {
             // "freeze" the job configuration
             m_parameters = Collections.unmodifiableSortedMap(m_parameters);
+            m_context.freeze();
             m_frozen = true;
         } else if (!frozen && m_frozen) {
             // "unfreeze" the job configuration
