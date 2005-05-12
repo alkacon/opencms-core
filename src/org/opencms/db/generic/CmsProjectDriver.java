@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/05/11 15:32:46 $
- * Version: $Revision: 1.211 $
+ * Date   : $Date: 2005/05/12 12:20:01 $
+ * Version: $Revision: 1.212 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.Set;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.211 $ $Date: 2005/05/11 15:32:46 $
+ * @version $Revision: 1.212 $ $Date: 2005/05/12 12:20:01 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1258,7 +1258,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         dbc.currentUser());
                     dbc.pop();
                 } catch (Throwable t) {
-                    dbc.report(report, "Error writing backup of project " + dbc.currentProject().getName(), t);
+                    dbc.report(report, Messages.get().container(Messages.ERR_WRITE_BACKUP_1, dbc.currentProject().getName()), t);
                 }
             }
 
@@ -1327,7 +1327,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     
                     dbc.pop();
                 } catch (Throwable t) {
-                    dbc.report(report, "Error publishing folder " + currentFolder.getRootPath(), t);
+                    dbc.report(report, Messages.get().container(Messages.ERR_PUBLISH_FOLDER_1, currentFolder.getRootPath()), t);
                 }
             }
 
@@ -1374,7 +1374,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     
                     dbc.pop();
                 } catch (Throwable t) {
-                    dbc.report(report, "Error publishing file " + currentFileHeader.getRootPath(), t);
+                    dbc.report(report, Messages.get().container(Messages.ERR_PUBLISH_FILE_1, currentFileHeader.getRootPath()), t);
                 }
 
                 // set back all vars. inside the while loop!
@@ -1422,7 +1422,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     
                     dbc.pop();
                 } catch (Throwable t) {
-                    dbc.report(report, "Error publishing deleted folder " + currentFolder.getRootPath(), t);
+                    dbc.report(report, Messages.get().container(Messages.ERR_PUBLISH_FOLDER_1, currentFolder.getRootPath()), t);
                 }
             }
 

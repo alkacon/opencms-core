@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2005/05/10 15:47:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/12 12:20:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,14 +41,13 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.report.I_CmsReport;
-import org.opencms.util.CmsStringUtil;
 
 /**
  * Warps context information to access the OpenCms database.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.4
  */
 public class CmsDbContext {
@@ -171,38 +170,6 @@ public class CmsDbContext {
         }
 
         return resourcename;
-    }
-
-    /**
-     * Reports an error to the given report (if available) and to the OpenCms log file.<p>
-     *  
-     * @param report the report to write the error to
-     * @param message the message to write to the report / log
-     * @param throwable the exception to write to the report / log
-     * 
-     * @throws CmsException the throwable parameters masked as a CmsException 
-     */
-    public void report(I_CmsReport report, String message, Throwable throwable) throws CmsException {
-
-        if (report != null) {
-            if (message != null) {
-                report.println(message, I_CmsReport.C_FORMAT_ERROR);
-            }
-            if (throwable != null) {
-                report.println(throwable);
-            }
-        }
-
-        if (throwable != null) {
-            if (throwable instanceof CmsException) {
-                throw (CmsException)throwable;
-            }
-            if (CmsStringUtil.isEmpty(message)) {
-                throw new CmsException("Exception during database operation", throwable);
-            } else {
-                throw new CmsException("Exception during database operation: " + message, throwable);
-            }
-        }
     }
     
     /**
