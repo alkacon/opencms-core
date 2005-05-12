@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsErrorpage.java,v $
- * Date   : $Date: 2005/05/12 09:02:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/12 11:09:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.commons;
 
 import org.opencms.main.CmsException;
@@ -44,12 +45,12 @@ import org.opencms.workplace.CmsDialog;
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.9.1
  */
 public final class CmsErrorpage {
-    
+
     /** 
      * Default constructor (empty), private because this class has only 
      * static methods.<p>
@@ -58,7 +59,7 @@ public final class CmsErrorpage {
 
         // empty
     }
-    
+
     /**
      * Returns the error message to be displayed.<p>
      * 
@@ -67,6 +68,7 @@ public final class CmsErrorpage {
      * @return the error message to be displayed
      */
     public static String getErrorMessage(CmsDialog wp) {
+
         StringBuffer result = new StringBuffer(512);
         Throwable t = (Throwable)wp.getJsp().getRequest().getAttribute("throwable");
         result.append(getMessage(wp, t));
@@ -74,41 +76,10 @@ public final class CmsErrorpage {
         for (Throwable cause = t.getCause(); cause != null; cause = cause.getCause()) {
             result.append("<br><br>").append(wp.key("label.reason")).append(": ");
             result.append(getMessage(wp, cause));
-        }    
+        }
         return result.toString().replaceAll("\n", "<br>");
     }
-    
-    
-    /** 
-     * returns the localized Message, if the argument is a CmsException, or
-     * the message otherwise.<p>
-     * 
-     * @param t the Throwable to get the message from
-     * @param wp the workplace object
-     * 
-     * @return returns the localized Message, if the argument is a CmsException, or
-     * the message otherwise
-     */
-    static String getMessage(CmsDialog wp, Throwable t) {
-        if (t instanceof I_CmsThrowable && ((I_CmsThrowable)t).getMessageContainer()!=null) {
-            I_CmsThrowable cmsThrowable = (I_CmsThrowable)t;
-            return cmsThrowable.getLocalizedMessage(wp.getLocale());
-        } else {
-            return t.getMessage();
-        }
-    }
-    
-    /**
-     * returns the StackTrace of the Exception that was thrown as a String.<p>
-     * 
-     * @param wp the workplace object
-     * 
-     * @return the StackTrace of the Exception that was thrown as a String
-     */
-    public static String getStackTraceAsString(CmsDialog wp) {
-        return CmsException.getStackTraceAsString(((Throwable)wp.getJsp().getRequest().getAttribute("throwable")));
-    }    
-    
+
     /**
      * Returns the formatted value of the exception.<p>
      * 
@@ -121,7 +92,8 @@ public final class CmsErrorpage {
      */
     public static String getFormattedErrorstack(CmsDialog wp) {
 
-        String exception = CmsException.getStackTraceAsString(((Throwable)wp.getJsp().getRequest().getAttribute("throwable")));
+        String exception = CmsException.getStackTraceAsString(((Throwable)wp.getJsp().getRequest().getAttribute(
+            "throwable")));
         if (CmsStringUtil.isEmpty(exception)) {
             return "";
         } else {
@@ -132,5 +104,37 @@ public final class CmsErrorpage {
                 + exception
                 + "</pre></body></html>";
         }
-    }    
+    }
+
+    /** 
+     * returns the localized Message, if the argument is a CmsException, or
+     * the message otherwise.<p>
+     * 
+     * @param t the Throwable to get the message from
+     * @param wp the workplace object
+     * 
+     * @return returns the localized Message, if the argument is a CmsException, or
+     * the message otherwise
+     */
+    public static String getMessage(CmsDialog wp, Throwable t) {
+
+        if (t instanceof I_CmsThrowable && ((I_CmsThrowable)t).getMessageContainer() != null) {
+            I_CmsThrowable cmsThrowable = (I_CmsThrowable)t;
+            return cmsThrowable.getLocalizedMessage(wp.getLocale());
+        } else {
+            return t.getMessage();
+        }
+    }
+
+    /**
+     * returns the StackTrace of the Exception that was thrown as a String.<p>
+     * 
+     * @param wp the workplace object
+     * 
+     * @return the StackTrace of the Exception that was thrown as a String
+     */
+    public static String getStackTraceAsString(CmsDialog wp) {
+
+        return CmsException.getStackTraceAsString(((Throwable)wp.getJsp().getRequest().getAttribute("throwable")));
+    }
 }
