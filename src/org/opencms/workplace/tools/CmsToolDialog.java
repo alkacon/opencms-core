@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/12 08:58:23 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -389,6 +389,9 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("\t\t<script language='javascript' type='text/javascript' src='");
         html.append(getSkinUri());
         html.append("admin/javascript/general.js'></script>\n");
+        html.append("\t\t<script language='javascript' type='text/javascript' src='");
+        html.append(getResourceUri());
+        html.append("editors/xmlcontent/help.js'></script>\n");
         html.append("\t</head>\n");
         html.append("\t<script language='javascript' type='text/javascript'><!--\n");
         html.append("\t\tfunction bodyLoad() {\n");

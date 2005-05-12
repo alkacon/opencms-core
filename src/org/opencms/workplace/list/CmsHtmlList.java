@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/11 15:10:18 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/12 08:58:23 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -852,7 +852,7 @@ public class CmsHtmlList {
         html.append("\t<tr>\n");
         html.append("\t\t<td class='main'>\n");
         // prev button
-        String id = m_id + "PrevHelp";
+        String id = m_id + "Prev";
         String name = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_NAME_0, null);
         String iconPath = "list/1leftarrow.png";
         boolean enabled = getCurrentPage() > 1;
@@ -864,7 +864,7 @@ public class CmsHtmlList {
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(id, name, helpText, enabled, iconPath, onClic));
         html.append("\n");
         // next button
-        id = m_id + "NextHelp";
+        id = m_id + "Next";
         name = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_NAME_0, null);
         iconPath = "list/1rightarrow.png";
         enabled = getCurrentPage() < getNumberOfPages();

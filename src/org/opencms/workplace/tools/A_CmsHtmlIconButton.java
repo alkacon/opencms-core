@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/12 08:58:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Default skeleton for an html icon button.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
@@ -120,7 +120,9 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String onClic) {
 
         StringBuffer html = new StringBuffer(1024);
-        html.append("<div class='bigLink'>\n");
+        html.append("<div class='bigLink' id='img");
+        html.append(id);
+        html.append("'>\n");
         html.append("\t<span class='link");
         if (enabled) {
             html.append("'");
@@ -128,11 +130,11 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
             html.append(" linkdisabled'");
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
-            html.append(" onMouseOver=\"mouseHelpEvent('");
+            html.append(" onMouseOver=\"showMenuHelp('");
             html.append(id);
-            html.append("', true);\" onMouseOut=\"mouseHelpEvent('");
+            html.append("');\" onMouseOut=\"hideMenuHelp('");
             html.append(id);
-            html.append("', false);\"");
+            html.append("');\"");
         }
         if (enabled && CmsStringUtil.isNotEmptyOrWhitespaceOnly(onClic)) {
             html.append(" onClick=\"");
@@ -167,9 +169,15 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         html.append("</span>\n");
         html.append("</div>\n");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
-            html.append("<div class='tip' id='");
+            html.append("<div class='help' id='help");
             html.append(id);
-            html.append("'>");
+            html.append("' name='help");
+            html.append(id);
+            html.append("' onmouseout=\"hideMenuHelp('");
+            html.append(id);
+            html.append("');\" onmouseover=\"showMenuHelp('");
+            html.append(id);
+            html.append("');\">");
             html.append(helpText);
             html.append("</div>\n");
         }
@@ -204,18 +212,20 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String onClic) {
 
         StringBuffer html = new StringBuffer(1024);
-        html.append("<span class='link");
+        html.append("<span id='img");
+        html.append(id);
+        html.append("' class='link");
         if (enabled) {
             html.append("'");
         } else {
             html.append(" linkdisabled'");
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
-            html.append(" onMouseOver=\"mouseHelpEvent('");
+            html.append(" onMouseOver=\"showMenuHelp('");
             html.append(id);
-            html.append("', true);\" onMouseOut=\"mouseHelpEvent('");
+            html.append("');\" onMouseOut=\"hideMenuHelp('");
             html.append(id);
-            html.append("', false);\"");
+            html.append("');\"");
         }
         if (enabled && CmsStringUtil.isNotEmptyOrWhitespaceOnly(onClic)) {
             html.append(" onClick=\"");
@@ -249,9 +259,15 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         }
         html.append("</span>\n");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
-            html.append("<div class='tip' id='");
+            html.append("<div class='help' id='help");
             html.append(id);
-            html.append("'>");
+            html.append("' name='help");
+            html.append(id);
+            html.append("' onmouseout=\"hideMenuHelp('");
+            html.append(id);
+            html.append("');\" onmouseover=\"showMenuHelp('");
+            html.append(id);
+            html.append("');\">");
             html.append(helpText);
             html.append("</div>\n");
         }

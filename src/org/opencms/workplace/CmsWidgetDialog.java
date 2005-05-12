@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/11 13:21:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/12 08:58:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,12 @@ package org.opencms.workplace;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.xmlwidgets.A_CmsXmlWidget;
 import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
 import org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog;
+import org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlException;
 
@@ -61,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -282,25 +284,16 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * tags containing the help texts.<p>
      * 
      * @return the HTML for the end of the widget dialog
-     * 
-     * @throws JspException if an error occurs during HTML generation
      */
-    public String getWidgetHtmlEnd() throws JspException {
+    public String getWidgetHtmlEnd() {
 
         StringBuffer result = new StringBuffer(32);
-        try {
-            // iterate over unique widgets from collector
-            Iterator i = getWidgets().iterator();
-            while (i.hasNext()) {
-                CmsWidgetParameter param = (CmsWidgetParameter)i.next();
-                I_CmsXmlWidget widget = param.getWidget();
-                result.append(widget.getDialogHtmlEnd(getCms(), this, param));
-            }
-        } catch (CmsXmlException e) {
-
-            LOG.error(e.getLocalizedMessage());
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+        // iterate over unique widgets from collector
+        Iterator i = getWidgets().iterator();
+        while (i.hasNext()) {
+            CmsWidgetParameter param = (CmsWidgetParameter)i.next();
+            //result.append(widget.getDialogHtmlEnd(getCms(), this, param));
+            result.append(widgetHelpText(param));
         }
         return result.toString();
     }
@@ -392,7 +385,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             result.append(": </td>");
             if (p.getIndex() == 0) {
                 // show help bubble only on first element of each content definition 
-                result.append(widget.getHelpBubble(getCms(), this, p));
+                //result.append(widget.getHelpBubble(getCms(), this, p));
+                result.append(widgetHelpBubble(p));
             } else {
                 // create empty cell for all following elements 
                 result.append(dialogHorizontalSpacer(16));
@@ -424,6 +418,74 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         }
 
         return result.toString();
+    }
+
+    /**
+     * Implementation for the Administration framework.<p>  
+     * 
+     * @param param the widget parameter
+     * 
+     * @return html code
+     * 
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpBubble(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
+     */
+    protected String widgetHelpBubble(CmsWidgetParameter param) {
+        String locKey = A_CmsXmlWidget.getHelpKey(param);
+        String locValue = ((I_CmsWidgetDialog)this).key(locKey, null);
+        if (locValue == null) {
+            // there was no help message found for this key, so return a spacer cell
+            return this.dialogHorizontalSpacer(16);
+        } else {
+            StringBuffer result = new StringBuffer(256);
+            result.append("<td>");
+            result.append("<img name=\"img");
+            result.append(locKey);
+            result.append("\" id=\"img");
+            result.append(locKey);
+            result.append("\" src=\"");
+            result.append(OpenCms.getLinkManager().substituteLink(getCms(), "/system/workplace/resources/commons/help.gif"));
+            result.append("\" border=\"0\" onmouseout=\"hideMenuHelp('");
+            result.append(locKey);
+            result.append("');\" onmouseover=\"showMenuHelp('");
+            result.append(locKey);
+            result.append("');\">");
+            result.append("</td>");
+            return result.toString();
+        }
+    }
+
+    /**
+     * Implementation for the Administration framework.<p>  
+     * 
+     * @param param the widget parameter
+     * 
+     * @return html code
+     * 
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpText(I_CmsWidgetDialog, I_CmsWidgetParameter)
+     */
+    protected String widgetHelpText(CmsWidgetParameter param) {
+        
+        StringBuffer result = new StringBuffer(128);
+        // calculate the key
+        String locKey = A_CmsXmlWidget.getHelpKey(param);
+        String locValue = ((I_CmsWidgetDialog)this).key(locKey, null);
+        if (locValue == null) {
+            // there was no help message found for this key, so return an empty string
+            return "";
+        } else {
+            result.append("<div class=\"help\" name=\"help");
+            result.append(locKey);
+            result.append("\" id=\"help");
+            result.append(locKey);
+            result.append("\" onmouseout=\"hideMenuHelp('");
+            result.append(locKey);
+            result.append("');\" onmouseover=\"showMenuHelp('");
+            result.append(locKey);
+            result.append("');\">");
+            result.append(locValue);
+            result.append("</div>");
+            return result.toString();
+        }
     }
     
     /**

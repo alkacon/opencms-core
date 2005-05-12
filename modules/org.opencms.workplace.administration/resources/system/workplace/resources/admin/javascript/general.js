@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/general.js,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/12 08:58:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -107,33 +107,39 @@ function setActiveItemByName(name) {
 }
 
 /*
- * Shows/hides the context help.
+ * Shows the context help.
  * If framed, it will be shown in the menu frame;
  * if not, as a help ballon.
  * The obj_id argument should be the id of a div tag,
  * which contains the help text.
- * The open argument should be a boolean  and controls 
- * if to show or to hide the context help.
  */
-function mouseHelpEvent(obj_id, open) {
-     var writezone = document.getElementById(obj_id);
-     try {
-         if (!isFramed() && !parent.parent.admin_content) {
-             if (open) {
-                 writezone.style.display = "inline";
-             } else {
-                 writezone.style.display = "none";
-             }
-             return;
-         }
+function showMenuHelp(obj_id) {
+   if (!isFramed() && !parent.parent.admin_content) {
+      showHelp(obj_id);
+   } else {
+      try {
+         var writezone = document.getElementById('help' + obj_id);
          context = writezone.firstChild.nodeValue;
-     } catch (e) {
+      } catch(e) {
          context = obj_id;
-     }
-     if (!open) {
-         context = '';
-     }
-    setContextHelp(context);
+      }
+      setContextHelp(context);
+   }
+}
+
+/*
+ * Hides the context help.
+ * If framed, it will be shown in the menu frame;
+ * if not, as a help ballon.
+ * The obj_id argument should be the id of a div tag,
+ * which contains the help text.
+ */
+function hideMenuHelp(obj_id) {
+   if (!isFramed() && !parent.parent.admin_content) {
+      hideHelp(obj_id);
+   } else {
+      setContextHelp('');
+   }
 }
 
 /*
