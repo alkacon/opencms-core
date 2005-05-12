@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormLetter.java,v $
- * Date   : $Date: 2005/03/04 17:12:56 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/12 15:01:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,10 +28,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.frontend.templateone;
 
 import org.opencms.mail.CmsHtmlMail;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -41,15 +43,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
 
 /**
  * Provides methods to build the page "letter to the editor" form.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsTemplateFormLetter extends CmsTemplateForm {
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTemplateFormLetter.class);
+
     /** Stores the type of concern.<p> */
     private String m_concern;
     /** Stores the details of the concern.<p> */
@@ -80,11 +86,12 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
     private String m_copy;
     /** Stores the message for the recipient.<p> */
     private String m_message;
-    
+
     /**
      * Empty constructor, required for every JavaBean.<p>
      */
     public CmsTemplateFormLetter() {
+
         super();
         // set the members to empty Strings
         m_concern = "";
@@ -104,7 +111,7 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
         m_message = "";
 
     }
-    
+
     /**
      * Constructor, with parameters.<p>
      * 
@@ -115,48 +122,51 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
      * @param res the JSP response 
      */
     public CmsTemplateFormLetter(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         super();
         super.init(context, req, res);
     }
-    
-    
-    
+
     /**
      * Returns the concern of contact.<p>
      *
      * @return the concern of contact
      */
     public String getConcern() {
+
         return m_concern;
     }
-    
+
     /**
      * Returns the concern details if specified.<p>
      *
      * @return the concern details if specified
      */
     public String getConcernDetail() {
+
         return m_concernDetail;
     }
-    
+
     /**
      * Returns the contact city.<p>
      *
      * @return the contact city
      */
     public String getContactCity() {
+
         return m_contactCity;
     }
-    
+
     /**
      * Returns the contact country.<p>
      *
      * @return the contact country
      */
     public String getContactCountry() {
+
         return m_contactCountry;
     }
-    
+
     /**
      * Returns the contact email address.<p>
      *
@@ -166,79 +176,87 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
 
         return m_contactEmail;
     }
-    
+
     /**
      * Returns the contact first name.<p>
      *
      * @return the contact first name
      */
     public String getContactFirstName() {
+
         return m_contactFirstName;
     }
-    
+
     /**
      * Returns the contact last name.<p>
      *
      * @return the contact last name
      */
     public String getContactLastName() {
+
         return m_contactLastName;
     }
-    
+
     /**
      * Returns the contact street number.<p>
      *
      * @return the contact street number
      */
     public String getContactNumber() {
+
         return m_contactNumber;
     }
-    
+
     /**
      * Returns the contact phone number.<p>
      *
      * @return the contact phone number
      */
     public String getContactPhone() {
+
         return m_contactPhone;
     }
-    
+
     /**
      * Returns the contact salutation.<p>
      *
      * @return the contact salutation
      */
     public String getContactSalutation() {
+
         return m_contactSalutation;
     }
-    
+
     /**
      * Returns the contact street.<p>
      *
      * @return the contact street
      */
     public String getContactStreet() {
+
         return m_contactStreet;
     }
-    
+
     /**
      * Returns the contact title.<p>
      *
      * @return the contact title
      */
     public String getContactTitle() {
+
         return m_contactTitle;
     }
-    
+
     /**
      * Returns the contact zip code.<p>
      *
      * @return the contact zip code
      */
     public String getContactZip() {
+
         return m_contactZip;
     }
-    
+
     /**
      * Returns the send copy to sender flag.<p>
      *
@@ -248,7 +266,7 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
 
         return m_copy;
     }
-    
+
     /**
      * Returns the message for the recipient.<p>
      *
@@ -258,7 +276,7 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
 
         return m_message;
     }
-    
+
     /**
      * Returns the "checked" attribute if the current "concern" radio button is checked.<p>
      * 
@@ -266,21 +284,23 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
      * @return the "checked" attribute if the current "concern" radio button is checked
      */
     public String isConcernChecked(String currentValue) {
+
         if (isSelected(currentValue, getConcern())) {
-            return " checked=\"checked\"";    
+            return " checked=\"checked\"";
         }
         return "";
     }
-    
+
     /**
      * Examines the value of the send copy checkbox and returns the "checked" attribute.<p>
      * 
      * @return the "checked" attribute or an empty String
      */
     public String isCopyChecked() {
-        return isChecked(getCopy());    
+
+        return isChecked(getCopy());
     }
-    
+
     /**
      * Returns the "selected" attribute if the current "contact option" is selected.<p>
      * 
@@ -288,19 +308,20 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
      * @return the "selected" attribute if the current "contact option" is selected
      */
     public String isSalutationSelected(String currentValue) {
+
         if (isSelected(currentValue, getContactSalutation())) {
-            return " selected=\"selected\"";    
+            return " selected=\"selected\"";
         }
         return "";
     }
-    
+
     /**
      * Sends the recommendation email(s) to the recipient and/or the sender.<p>
      * 
      * @return true if the emails were successfully sent, otherwise false;
      */
     public boolean sendMail() {
-        
+
         // create the new mail message
         CmsHtmlMail theMail = new CmsHtmlMail();
         theMail.setSubject(key("letter.mail.subject.prefix") + getPageTitle());
@@ -324,7 +345,7 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
             String sender = OpenCms.getSystemInfo().getMailSettings().getMailFromDefault();
             String contactMail = getContactEmail();
             if (contactMail == null || "".equals(contactMail.trim())) {
-                contactMail = sender;    
+                contactMail = sender;
             }
             theMail.setFrom(sender);
             theMail.addReplyTo(contactMail);
@@ -335,52 +356,56 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
             // send the mail
             theMail.send();
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn(e);
-            } else if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Could not send contact form data from page " + getRequestContext().getUri());
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(e);
+            } else if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_SEND_MAIL_CONTACT_1));
             }
             return false;
         }
         return true;
-    }    
-    
+    }
+
     /**
      * Sets the concern of contact.<p>
      *
      * @param concern the concern of contact
      */
     public void setConcern(String concern) {
+
         m_concern = concern;
     }
-    
+
     /**
      * Sets the concern details if specified.<p>
      *
      * @param concernDetail the concern details if specified
      */
     public void setConcernDetail(String concernDetail) {
+
         m_concernDetail = concernDetail;
     }
-    
+
     /**
      * Sets the contact city.<p>
      *
      * @param contactCity the contact city
      */
     public void setContactCity(String contactCity) {
+
         m_contactCity = contactCity;
     }
-    
+
     /**
      * Sets the contact country.<p>
      *
      * @param contactCountry the contact country
      */
     public void setContactCountry(String contactCountry) {
+
         m_contactCountry = contactCountry;
     }
-    
+
     /**
      * Sets the contact email address.<p>
      *
@@ -390,79 +415,87 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
 
         m_contactEmail = email;
     }
-    
+
     /**
      * Sets the contact first name.<p>
      *
      * @param contactFirstName the contact first name
      */
     public void setContactFirstName(String contactFirstName) {
+
         m_contactFirstName = contactFirstName;
     }
-    
+
     /**
      * Sets the contact last name.<p>
      *
      * @param contactLastName the contact last name
      */
     public void setContactLastName(String contactLastName) {
+
         m_contactLastName = contactLastName;
     }
-    
+
     /**
      * Sets the contact street number.<p>
      *
      * @param contactNumber the contact street number
      */
     public void setContactNumber(String contactNumber) {
+
         m_contactNumber = contactNumber;
     }
-    
+
     /**
      * Sets the contact phone number.<p>
      *
      * @param contactPhone the contact phone number
      */
     public void setContactPhone(String contactPhone) {
+
         m_contactPhone = contactPhone;
     }
-    
+
     /**
      * Sets the contact salutation.<p>
      *
      * @param contactSalutation the contact salutation
      */
     public void setContactSalutation(String contactSalutation) {
+
         m_contactSalutation = contactSalutation;
     }
-    
+
     /**
      * Sets the contact street.<p>
      *
      * @param contactStreet the contact street
      */
     public void setContactStreet(String contactStreet) {
+
         m_contactStreet = contactStreet;
     }
-    
+
     /**
      * Sets the contact title.<p>
      *
      * @param contactTitle the contact title
      */
     public void setContactTitle(String contactTitle) {
+
         m_contactTitle = contactTitle;
     }
-    
+
     /**
      * Sets the contact zip code.<p>
      *
      * @param contactZip the contact zip code
      */
     public void setContactZip(String contactZip) {
+
         m_contactZip = contactZip;
     }
-    
+
     /**
      * Sets the send copy to sender flag.<p>
      *
@@ -472,7 +505,7 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
 
         m_copy = copy;
     }
-    
+
     /**
      * Sets the message for the recipient.<p>
      *
@@ -482,27 +515,28 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
 
         m_message = message;
     }
-    
+
     /**
      * Validates the values of the input fields and creates error messages, if necessary.<p>
      * 
      * @return true if all checked input values are valid, otherwise false
      */
     public boolean validate() {
+
         boolean allOk = true;
         setErrors(new HashMap());
         // check concern
         if (getConcern() == null || "".equals(getConcern())) {
             getErrors().put("concern", key("letter.error.concern.empty"));
-            allOk = false;   
+            allOk = false;
         } else {
             // concern given, check if "other" is selected
             if ("other".equals(getConcern())) {
                 if (getConcernDetail() == null || "".equals(getConcernDetail())) {
                     // details not given  
                     getErrors().put("concern", key("letter.error.concerndetails.empty"));
-                    allOk = false;  
-                }    
+                    allOk = false;
+                }
             }
         }
         // check message
@@ -523,13 +557,14 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
             getErrors().put("email", key("letter.error.email.wrong"));
             allOk = false;
         }
-        return allOk;    
+        return allOk;
     }
-    
+
     /**
      * @see org.opencms.frontend.templateone.CmsTemplateForm#checkTextsUri()
      */
     protected String checkTextsUri() {
+
         String fileUri = getConfigurationValue("page.form.letter", null);
         if (fileUri != null) {
             fileUri = getRequestContext().removeSiteRoot(fileUri);

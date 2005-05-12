@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/04/28 09:40:14 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/05/12 15:01:51 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.layout.CmsTemplateContentListItem;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -64,11 +65,13 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -113,7 +116,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
     /** Request parameter name to show the print version of a page. */
     public static final String C_PARAM_PRINT = "print";
-    
+
     /** Request parameter name for the current site. */
     public static final String C_PARAM_SITE = "site";
 
@@ -137,10 +140,10 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
     /** Name of the property key to set the head image uri. */
     public static final String C_PROPERTY_HEAD_IMGURI = "style_head_img_uri";
-    
+
     /** Name of the property key to set the path to the layout file for the center layout. */
     public static final String C_PROPERTY_LAYOUT_CENTER = "layout.center";
-    
+
     /** Name of the property key to set the path to the layout file for the right layout. */
     public static final String C_PROPERTY_LAYOUT_RIGHT = "layout.right";
 
@@ -170,43 +173,45 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
     /** Property value "none" for overriding certain properties. */
     public static final String C_PROPERTY_VALUE_NONE = CmsTemplateContentListItem.PROPERTY_VALUE_NONE;
-    
+
     /** Resource type name for the microsite folders specifying a configurable subsite. */
     public static final String C_RESOURCE_TYPE_MICROSITE_NAME = "microsite";
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTemplateBean.class);
 
     /** Stores the global website area configuration. */
     private CmsXmlContent m_globalConfiguration;
-    
+
     /** The current layout to parse. */
     private String m_layout;
-    
+
     /** The default values for building lists of XMLContents. */
     private Map m_listDefaults;
-    
+
     /** Stores the localized resource Strings. */
     private CmsMessages m_messages;
-    
+
     /** Stores all properties for the requested resource. */
     private Map m_properties;
-    
+
     /** Stores the substituted path to the modules resources. */
     private String m_resPath;
-    
+
     /** Flag determining if the accessible version of the page should be shown. */
     private boolean m_showAccessibleVersion;
-    
+
     /** Flag determining if the head dhtml navigation should be shown. */
     private boolean m_showHeadNavigation;
-    
+
     /** Flag determining if the print version should be shown. */
     private boolean m_showPrintVersion;
-    
+
     /** Stores the path to the start folder for navigation and search. */
     private String m_startFolder;
-    
+
     /** Stores the URI to the CSS style sheet to use on the page. */
     private String m_styleUri;
-    
+
     /** Holds the template parts. */
     private CmsTemplateParts m_templateParts;
 
@@ -248,9 +253,11 @@ public class CmsTemplateBean extends CmsJspActionElement {
             configuration = CmsXmlContentFactory.unmarshal(cms, configFile);
         } catch (Exception e) {
             // problem getting properties, log error
-            if (OpenCms.getLog(CmsTemplateBean.class).isInfoEnabled()) {
-                String message = "Configuration file " + fileName + " not found for requested resource " + cms.getRequestContext().getUri();
-                OpenCms.getLog(CmsTemplateBean.class).info(message);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().key(
+                    Messages.LOG_XMLCONTEN_CONFIG_NOT_FOUND_2,
+                    fileName,
+                    cms.getRequestContext().getUri()));
             }
         }
         return configuration;
@@ -289,12 +296,12 @@ public class CmsTemplateBean extends CmsJspActionElement {
                     getProperties().put(C_PARAM_SITE, getRequestContext().getSiteRoot());
                     getProperties().put(CmsTemplateNavigation.C_PARAM_STARTFOLDER, getStartFolder());
                     getProperties().put(CmsTemplateNavigation.C_PARAM_HEADNAV_FOLDER, getNavigationStartFolder());
-                    getProperties().put(CmsTemplateNavigation.C_PARAM_HEADNAV_MENUDEPTH, getConfigurationValue(
-                        "headnav.menudepth",
-                        "1"));
-                    getProperties().put(CmsTemplateNavigation.C_PARAM_SHOWMENUS, getConfigurationValue(
-                        "headnav.menus",
-                        "true"));
+                    getProperties().put(
+                        CmsTemplateNavigation.C_PARAM_HEADNAV_MENUDEPTH,
+                        getConfigurationValue("headnav.menudepth", "1"));
+                    getProperties().put(
+                        CmsTemplateNavigation.C_PARAM_SHOWMENUS,
+                        getConfigurationValue("headnav.menus", "true"));
                 }
                 include(C_FOLDER_ELEMENTS + "nav_head_menus.jsp", null, m_properties);
             }
@@ -378,8 +385,8 @@ public class CmsTemplateBean extends CmsJspActionElement {
             value = getConfiguration().getStringValue(null, key, getRequestContext().getLocale());
         } catch (Exception e) {
             // log error in debug mode
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug(e);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e);
             }
         }
         if (CmsStringUtil.isEmpty(value)) {
@@ -430,7 +437,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Property value for extension module: " + configModule);
         }
-        if (! C_PROPERTY_VALUE_NONE.equals(configModule)) {
+        if (!C_PROPERTY_VALUE_NONE.equals(configModule)) {
             // extension module name found, check presence of file
             String fileName = I_CmsWpConstants.C_VFS_PATH_MODULES + configModule + "/" + relFilePath;
             try {
@@ -438,8 +445,8 @@ public class CmsTemplateBean extends CmsJspActionElement {
                 return fileName;
             } catch (CmsException e) {
                 // file not found in extension module, use default file from template one module
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("File " + fileName + " not found in extension module");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_EXT_MODULE_FILE_NOT_FOUND_1, fileName));
                 }
             }
         }
@@ -481,8 +488,8 @@ public class CmsTemplateBean extends CmsJspActionElement {
                     links.add(link);
                 } catch (CmsXmlException e) {
                     // log error in debug mode
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug(e);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(e);
                     }
                 }
                 if (i == 10) {
@@ -642,8 +649,8 @@ public class CmsTemplateBean extends CmsJspActionElement {
                 folderTypeId = OpenCms.getResourceManager().getResourceType(C_RESOURCE_TYPE_MICROSITE_NAME).getTypeId();
             } catch (CmsLoaderException e) {
                 // resource type could not be determined
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Resource type id for microsite folder could not be determined in template one bean");
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().key(Messages.LOG_MICROSITE_FOLDER_NOT_FOUND_0));
                 }
             }
             m_startFolder = "/";
@@ -654,27 +661,27 @@ public class CmsTemplateBean extends CmsJspActionElement {
                 }
             } catch (CmsException e) {
                 // no matching start folder found    
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error reading microsite start folder");
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().key(Messages.LOG_MICROSITE_READ_START_FOLDER_0));
                 }
             }
         }
         return m_startFolder;
     }
-    
+
     /**
      * Returns the URI of the CSS style sheet configuration file.<p>
      * 
      * @return the URI of the CSS style sheet configuration file
      */
     public String getStyleSheetConfigUri() {
-        
+
         String confUri = property(CmsTemplateStyleSheet.C_PROPERTY_CONFIGFILE, "search", "");
         if ("".equals(confUri)) {
             // property not set, try to get default configuration file
             confUri = getConfigPath() + CmsTemplateStyleSheet.C_FILENAME_CONFIGFILE;
         }
-        return confUri;   
+        return confUri;
     }
 
     /**
@@ -739,7 +746,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
         // check if elements to show are present 
         boolean elementsPresent = template("text1,text2,text3,text4,text5,text6,text7,text8", false);
-        
+
         // get the list(s) of content items to display between elements
         String configFile = (String)getProperties().get(C_PROPERTY_LAYOUT_CENTER);
         List contents = new ArrayList();
@@ -753,19 +760,19 @@ public class CmsTemplateBean extends CmsJspActionElement {
         if (size > 1) {
             // more than one list is displayed, do not show page links on lists
             showPageLinks = false;
-        }      
-             
+        }
+
         if (elementsPresent || size > 0) {
             // at least one element or list is present, create writer        
             JspWriter out = getJspContext().getOut();
             String elementName = C_FOLDER_ELEMENTS + "elements.jsp";
             // create start part (common layout only)
             out.print(getTemplateParts().includePart(elementName, "start", getLayout()));
-            
+
             // calculate start point for content lists
             int startPoint = 3 - size;
             int listIndex = 0;
-            for (int i=0; i<4; i++) {              
+            for (int i = 0; i < 4; i++) {
                 int elementIndex = (i * 2) + 1;
                 // include the element row
                 includeContentRow("text" + (elementIndex), "text" + (elementIndex + 1), out);
@@ -805,7 +812,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         // include the element
         include(I_CmsWpConstants.C_VFS_PATH_MODULES + C_MODULE_NAME + "/pages/popup_includes.jsp", element, properties);
     }
-    
+
     /**
      * Includes center list elements if defined.<p>
      * 
@@ -816,8 +823,8 @@ public class CmsTemplateBean extends CmsJspActionElement {
         String configFile = (String)getProperties().get(C_PROPERTY_LAYOUT_RIGHT);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configFile) && !C_PROPERTY_VALUE_NONE.equals(configFile)) {
             List contents = getContentListItems(configFile, CmsTemplateContentListItem.DISPLAYAREA_RIGHT);
-            int size = contents.size();          
-            for (int i=0; i<size; i++) {
+            int size = contents.size();
+            for (int i = 0; i < size; i++) {
                 CmsTemplateContentListItem item = (CmsTemplateContentListItem)contents.get(i);
                 item.includeListItem(this, false);
             }
@@ -863,7 +870,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
         return messages().key(keyName);
     }
-    
+
     /**
      * Returns the localized resource string for a given message key.<p>
      * 
@@ -877,7 +884,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
      * @see CmsMessages#key(String, String) 
      */
     public String key(String keyName, String defaultValue) {
-        
+
         return messages().key(keyName, defaultValue);
     }
 
@@ -1008,7 +1015,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
         return m_showPrintVersion;
     }
-    
+
     /**
      * Returns a list of content list item objects which are needed to display lists on the side and in the center of the page.<p>
      * 
@@ -1025,7 +1032,12 @@ public class CmsTemplateBean extends CmsJspActionElement {
         boolean cont = true;
         do {
             // create a list item
-            CmsTemplateContentListItem item = CmsTemplateContentListItem.newInstance(getListDefaults(), properties, getStartFolder(), displayArea, i);
+            CmsTemplateContentListItem item = CmsTemplateContentListItem.newInstance(
+                getListDefaults(),
+                properties,
+                getStartFolder(),
+                displayArea,
+                i);
             if (item == null) {
                 // no item created, stop loop
                 cont = false;
@@ -1037,7 +1049,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         } while (cont);
         return result;
     }
-    
+
     /**
      * Gets the default list configuration values from the workplace messages.<p>
      * 
@@ -1112,13 +1124,14 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
         // check if the print version should be shown
         m_showPrintVersion = Boolean.valueOf(getRequest().getParameter(C_PARAM_PRINT)).booleanValue();
-        if (! showPrintVersion()) {
+        if (!showPrintVersion()) {
             // check if the accessible page layout should be used
             String param = getRequest().getParameter(C_PARAM_ACCESSIBLE);
             if (CmsStringUtil.isNotEmpty(param)) {
                 m_showAccessibleVersion = Boolean.valueOf(param).booleanValue();
             } else {
-                m_showAccessibleVersion = getConfigurationValue("layout.version", C_PARAM_COMMON).equals(C_PARAM_ACCESSIBLE);
+                m_showAccessibleVersion = getConfigurationValue("layout.version", C_PARAM_COMMON).equals(
+                    C_PARAM_ACCESSIBLE);
             }
             if (showAccessibleVersion()) {
                 setLayout(C_PARAM_ACCESSIBLE);
