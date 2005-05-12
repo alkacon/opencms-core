@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/12 09:22:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/12 09:50:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,27 +50,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_WEB_1 = "ERR_ADD_USER_WEB_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BACKUP_PROJECT_4 = "ERR_BACKUP_PROJECT_4";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_BAD_FILENAME_1 = "ERR_BAD_FILENAME_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_BAD_GROUPNAME_1 = "ERR_BAD_GROUPNAME_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_BAD_USER_1 = "ERR_BAD_USER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHANGE_LAST_MODIFIED_RESOURCE_IN_PROJECT_1 = "ERR_CHANGE_LAST_MODIFIED_RESOURCE_IN_PROJECT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHANGE_LOCK_OF_RESOURCE_1 = "ERR_CHANGE_LOCK_OF_RESOURCE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CHANGE_LOCK_UNLOCKED_RESOURCE_1 = "ERR_CHANGE_LOCK_UNLOCKED_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHANGE_RESOURCE_FLAGS_1 = "ERR_CHANGE_RESOURCE_FLAGS_1";
@@ -95,6 +83,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_RESOURCE_2 = "ERR_COPY_RESOURCE_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DRIVER_MANAGER_NEW_INSTANCE_DB_0 = "INIT_DRIVER_MANAGER_NEW_INSTANCE_DB_0";
+    
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_RESOURCE_TO_PROJECT_2 = "ERR_COPY_RESOURCE_TO_PROJECT_2";
@@ -110,10 +102,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_PROJECT_1 = "ERR_CREATE_PROJECT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CREATE_PROJECT_ONLINE_PROJECT_NAME_1 = "ERR_CREATE_PROJECT_ONLINE_PROJECT_NAME_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_PROPDEF_1 = "ERR_CREATE_PROPDEF_1";
 
@@ -152,7 +141,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_STATEXP_PUBLISHES_RESOURCE_1 = "ERR_DELETE_STATEXP_PUBLISHES_RESOURCE_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_USER_1 = "ERR_DELETE_USER_1";
 
@@ -164,9 +153,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_END_TASK_1 = "ERR_END_TASK_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_ERROR_INITIALIZING_DRIVER_1 = "ERR_ERROR_INITIALIZING_DRIVER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FORWARD_TASK_3 = "ERR_FORWARD_TASK_3";
@@ -245,10 +231,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_TO_LOST_AND_FOUND_1 = "ERR_MOVE_TO_LOST_AND_FOUND_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PERM_DENIED_2 = "ERR_PERM_DENIED_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PERM_FILTERED_1 = "ERR_PERM_FILTERED_1";
 
@@ -377,151 +363,109 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_USER_FOR_ID_1 = "ERR_READ_USER_FOR_ID_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_USER_FOR_NAME_1 = "ERR_READ_USER_FOR_NAME_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_USER_WEB_1 = "ERR_READ_USER_WEB_1";
+    public static final String ERR_READ_USER_WEB_1 = "ERR_READ_USER_WEB_1";    
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_REMOVE_ACL_ENTRY_2 = "ERR_REMOVE_ACL_ENTRY_2";
+    public static final String ERR_REMOVE_ACL_ENTRY_2 = "ERR_REMOVE_ACL_ENTRY_2";    
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REMOVE_USER_FROM_GROUP_2 = "ERR_REMOVE_USER_FROM_GROUP_2";    
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REPLACE_RESOURCE_1 = "ERR_REPLACE_RESOURCE_1";    
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_REMOVE_USER_FROM_GROUP_2 = "ERR_REMOVE_USER_FROM_GROUP_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_REPLACE_RESOURCE_1 = "ERR_REPLACE_RESOURCE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_RESET_PASSWORD_1 = "ERR_RESET_PASSWORD_1";
+    public static final String ERR_RESET_PASSWORD_1 = "ERR_RESET_PASSWORD_1";    
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESTORE_RESOURCE_2 = "ERR_RESTORE_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_PARENT_GROUP_2 = "ERR_SET_PARENT_GROUP_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_PASSWORD_1 = "ERR_SET_PASSWORD_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_TASK_NAME_2 = "ERR_SET_TASK_NAME_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_TASK_PARAM_3 = "ERR_SET_TASK_PARAM_3";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_TASK_PRIORITY_2 = "ERR_SET_TASK_PRIORITY_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_TASK_TIMEOUT_2 = "ERR_SET_TASK_TIMEOUT_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TOUCH_RESOURCE_4 = "ERR_TOUCH_RESOURCE_4";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNDO_CHANGES_FOR_RESOURCE_1 = "ERR_UNDO_CHANGES_FOR_RESOURCE_1";
-
+    
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_UNDO_CHANGES_FOR_RESOURCE_NEW_0 = "ERR_UNDO_CHANGES_FOR_RESOURCE_NEW_0";
-
+    public static final String ERR_UNLOCK_PROJECT_2 = "ERR_UNLOCK_PROJECT_2";    
+    
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_UNKNOWN_GROUP_1 = "ERR_UNKNOWN_GROUP_1";
-
+    public static final String ERR_UNLOCK_RESOURCE_2 = "ERR_UNLOCK_RESOURCE_2";    
+        
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_UNKNOWN_USER_1 = "ERR_UNKNOWN_USER_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_UNLOCK_PROJECT_2 = "ERR_UNLOCK_PROJECT_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_UNLOCK_RESOURCE_2 = "ERR_UNLOCK_RESOURCE_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_USER_IN_GROUP_2 = "ERR_USER_IN_GROUP_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_USER_NOT_IN_GROUP_2 = "ERR_USER_NOT_IN_GROUP_2";
-
+    public static final String ERR_USER_IN_GROUP_2 = "ERR_USER_IN_GROUP_2";    
+        
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_ACL_ENTRY_1 = "ERR_WRITE_ACL_ENTRY_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_FILE_1 = "ERR_WRITE_FILE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_GROUP_1 = "ERR_WRITE_GROUP_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_PROP_2 = "ERR_WRITE_PROP_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_PROPS_1 = "ERR_WRITE_PROPS_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_RESOURCE_1 = "ERR_WRITE_RESOURCE_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_STATEXP_PUBLISHED_RESOURCES_3 = "ERR_WRITE_STATEXP_PUBLISHED_RESOURCES_3";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_TASK_LOG_1 = "ERR_WRITE_TASK_LOG_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_USER_1 = "ERR_WRITE_USER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_WEB_USER_1 = "ERR_WRITE_WEB_USER_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_WEB_USER_CONSTRAINT_0 = "ERR_WRITE_WEB_USER_CONSTRAINT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_DRIVER_MANAGER_DESTROY_1 = "INIT_DRIVER_MANAGER_DESTROY_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_DRIVER_MANAGER_START_PHASE1_0 = "INIT_DRIVER_MANAGER_START_PHASE1_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_DRIVER_MANAGER_START_PHASE2_0 = "INIT_DRIVER_MANAGER_START_PHASE2_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_DRIVER_MANAGER_START_PHASE3_0 = "INIT_DRIVER_MANAGER_START_PHASE3_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_DRIVER_MANAGER_START_PHASE4_0 = "INIT_DRIVER_MANAGER_START_PHASE4_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_DRIVER_MANAGER_START_PHASE4_OK_0 = "INIT_DRIVER_MANAGER_START_PHASE4_OK_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_DRIVER_MANAGER_START_POOLS_1 = "INIT_DRIVER_MANAGER_START_POOLS_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_DRIVER_MANAGER_START_RT_0 = "INIT_DRIVER_MANAGER_START_RT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SECURITY_MANAGER_INIT_0 = "INIT_SECURITY_MANAGER_INIT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SECURITY_MANAGER_SHUTDOWN_1 = "INIT_SECURITY_MANAGER_SHUTDOWN_1";
-
+    
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_CMS_EVENT_1 = "LOG_CMS_EVENT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_DRIVER_MANAGER_CLOSE_0 = "LOG_ERR_DRIVER_MANAGER_CLOSE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_DRIVER_MANAGER_START_0 = "LOG_ERR_DRIVER_MANAGER_START_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_READ_PROJECT_RESOURCES_1 = "LOG_ERR_READ_PROJECT_RESOURCES_1";
-
+    public static final String LOG_ERR_CLOSE_DRIVERMANAGER_0 = "LOG_ERR_CLOSE_DRIVERMANAGER_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_PERMISSION_RESOURCE_USER_4 = "LOG_NO_PERMISSION_RESOURCE_USER_4";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ERROR_INITIALIZING_DRIVER_1 = "ERR_ERROR_INITIALIZING_DRIVER_1";
+    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.messages";
 
