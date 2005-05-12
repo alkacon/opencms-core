@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/05/11 10:22:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/12 09:20:25 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ALREADY_INITIALIZED_0 = "ERR_ALREADY_INITIALIZED_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_CONTEXT_INFO_FROZEN_0 = "ERR_CONTEXT_INFO_FROZEN_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_CRITICAL_CLASS_CREATION_1 = "ERR_CRITICAL_CLASS_CREATION_1";
 
     /** Message contant for key in the resource bundle. */
@@ -96,6 +99,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CRITICAL_NO_DB_CONTEXT_0 = "ERR_CRITICAL_NO_DB_CONTEXT_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_ILLEGAL_ARG_2 = "ERR_ILLEGAL_ARG_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_ILLEGAL_ARG_3 = "ERR_ILLEGAL_ARG_3";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_ILLEGAL_ARG_4 = "ERR_ILLEGAL_ARG_4";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_ILLEGAL_ARG_5 = "ERR_ILLEGAL_ARG_5";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_INVALID_INIT_USER_2 = "ERR_INVALID_INIT_USER_2";
 
     /** Message contant for key in the resource bundle. */
@@ -104,9 +119,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message contant for key in the resource bundle. */
     public static final String INIT_CURRENT_RUNLEVEL_1 = "INIT_CURRENT_RUNLEVEL_1";
 
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_CONTEXT_INFO_FROZEN_0 = "ERR_CONTEXT_INFO_FROZEN_0";
-    
     /** Message contant for key in the resource bundle. */
     public static final String INIT_DOT_0 = "INIT_DOT_0";
 
@@ -195,6 +207,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERROR_EXPORT_SHUTDOWN_1 = "LOG_ERROR_EXPORT_SHUTDOWN_1";
 
     /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_GENERIC_0 = "LOG_ERROR_GENERIC_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_MODULE_SHUTDOWN_1 = "LOG_ERROR_MODULE_SHUTDOWN_1";
 
     /** Message contant for key in the resource bundle. */
@@ -205,9 +220,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_SECURITY_SHUTDOWN_1 = "LOG_ERROR_SECURITY_SHUTDOWN_1";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String LOG_ERROR_GENERIC_0 = "LOG_ERROR_GENERIC_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_THREAD_SHUTDOWN_1 = "LOG_ERROR_THREAD_SHUTDOWN_1";

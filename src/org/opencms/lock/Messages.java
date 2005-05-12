@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Messages.java,v $
- * Date   : $Date: 2005/05/12 09:06:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/12 09:20:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_UNLOCK_1 = "ERR_RESOURCE_UNLOCK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SIBLING_LOCKED_2 = "ERR_SIBLING_LOCKED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNLOCK_LOCK_INHERITED_1 = "ERR_UNLOCK_LOCK_INHERITED_1";
