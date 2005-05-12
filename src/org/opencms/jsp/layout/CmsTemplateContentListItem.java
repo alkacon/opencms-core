@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/layout/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2005/05/12 10:24:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/12 10:27:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.jsp.layout;
 
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
@@ -51,7 +50,7 @@ import javax.servlet.jsp.JspException;
  * Use the newInstance() method with correct arguments to create a fully configured item object for list generation.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsTemplateContentListItem {
     
@@ -118,7 +117,7 @@ public class CmsTemplateContentListItem {
      * 
      * @return the default values for the list creation from given workplace messages
      */
-    public static Map getDefaultValuesFromMessages(CmsMultiMessages messages) {
+    public static Map getDefaultValuesFromMessages(CmsMessages messages) {
 
         HashMap result = new HashMap();
         List resTypes = OpenCms.getResourceManager().getResourceTypes();
