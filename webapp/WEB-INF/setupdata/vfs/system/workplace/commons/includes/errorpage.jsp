@@ -3,7 +3,7 @@
                  org.opencms.util.CmsStringUtil" buffer="none" %><%
 	
 	// get workplace class from request attribute
-	CmsErrorpage wp = new CmsErrorpage(pageContext, request, response);
+	CmsDialog wp = CmsDialog.initCmsDialog(pageContext, request, response);
         wp.setParamAction(wp.DIALOG_CONFIRMED);
 %>
 
@@ -28,7 +28,7 @@ function toggleElement(id) {
 
 function initTrace() {
 	trace.document.open();
-	trace.document.write("<%= wp.getFormattedErrorstack() %>");
+	trace.document.write("<%= CmsErrorpage.getFormattedErrorstack(wp) %>");
 	trace.document.close();
 }
 
@@ -48,7 +48,7 @@ function closeErrorDialog(actionValue, theForm) {
 	<td style="vertical-align: middle;">
 <%= wp.dialogBlockStart(wp.key("title.error")) %>
 
-<%= wp.getErrorMessage() %>
+<%= CmsErrorpage.getErrorMessage(wp) %>
 
 <%= wp.dialogBlockEnd() %></td>
 </tr>
@@ -65,12 +65,12 @@ function closeErrorDialog(actionValue, theForm) {
 <% wp.setParamAction(CmsDialog.DIALOG_CANCEL); %>
 <%= wp.paramsAsHidden() %>
 <%
-        String stackTrace = wp.getFormattedErrorstack();
+        String stackTrace = CmsErrorpage.getFormattedErrorstack(wp);
 	if (CmsStringUtil.isEmpty(stackTrace)) {
 %>
-<%= wp.dialogButtonsClose("onclick=\"closeErrorDialog('" + CmsDialog.DIALOG_CANCEL + "', form);\"") %>
+<%= wp.dialogButtonsClose("onclick=\"closeErrorDialog('" + wp.getCancelAction() + "', form);\"") %>
 <%	} else { %>
-<%= wp.dialogButtonsCloseDetails("onclick=\"closeErrorDialog('" + CmsDialog.DIALOG_CANCEL + "', form);\"", "onclick=\"toggleElement('errordetails');\"") %>
+<%= wp.dialogButtonsCloseDetails("onclick=\"closeErrorDialog('" + wp.getCancelAction() + "', form);\"", "onclick=\"toggleElement('errordetails');\"") %>
 <%	} %>
 </form>
 

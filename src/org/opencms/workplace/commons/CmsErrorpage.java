@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsErrorpage.java,v $
- * Date   : $Date: 2005/05/10 07:50:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/12 09:02:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,16 +30,10 @@
  */
 package org.opencms.workplace.commons;
 
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsThrowable;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsWorkplaceSettings;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
 
 /**
  * Provides methods for the error dialog.<p> 
@@ -50,71 +44,36 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.9.1
  */
-public class CmsErrorpage extends CmsDialog {
+public final class CmsErrorpage {
     
-    /** The dialog type. */
-    public static final String DIALOG_TYPE = "error";
+    /** 
+     * Default constructor (empty), private because this class has only 
+     * static methods.<p>
+     */
+    private CmsErrorpage() {
 
-    /** The dialog type. */
-    public static final String DIALOG_DETAILS = "details";
-    
-    
-    /**
-     * Public constructor with JSP action element.<p>
-     * 
-     * @param jsp an initialized JSP action element
-     */
-    public CmsErrorpage(CmsJspActionElement jsp) {
-        super(jsp);
-    }
-    
-    /**
-     * Public constructor with JSP variables.<p>
-     * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public CmsErrorpage(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-        this(new CmsJspActionElement(context, req, res));
-    }        
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_DETAILS.equals(getParamAction())) {
-            setAction(ACTION_WAIT);
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
-            setAction(ACTION_CANCEL);
-        } else {                        
-            setAction(ACTION_DEFAULT);
-            // build title for copy dialog     
-            
-        }      
+        // empty
     }
     
     /**
      * Returns the error message to be displayed.<p>
      * 
+     * @param wp the workplace object
+     * 
      * @return the error message to be displayed
      */
-    public String getErrorMessage() {
+    public static String getErrorMessage(CmsDialog wp) {
         StringBuffer result = new StringBuffer(512);
-        Throwable t = (Throwable)getJsp().getRequest().getAttribute("throwable");
-        result.append(getMessage(t));
+        Throwable t = (Throwable)wp.getJsp().getRequest().getAttribute("throwable");
+        result.append(getMessage(wp, t));
+        // recursively append all error reasons to the message
         for (Throwable cause = t.getCause(); cause != null; cause = cause.getCause()) {
-            result.append("<br><br>").append(key("label.reason")).append(": ");
-            result.append(getMessage(cause));
+            result.append("<br><br>").append(wp.key("label.reason")).append(": ");
+            result.append(getMessage(wp, cause));
         }    
         return result.toString().replaceAll("\n", "<br>");
     }
@@ -125,13 +84,15 @@ public class CmsErrorpage extends CmsDialog {
      * the message otherwise.<p>
      * 
      * @param t the Throwable to get the message from
+     * @param wp the workplace object
+     * 
      * @return returns the localized Message, if the argument is a CmsException, or
      * the message otherwise
      */
-    String getMessage(Throwable t) {
+    static String getMessage(CmsDialog wp, Throwable t) {
         if (t instanceof I_CmsThrowable && ((I_CmsThrowable)t).getMessageContainer()!=null) {
             I_CmsThrowable cmsThrowable = (I_CmsThrowable)t;
-            return cmsThrowable.getLocalizedMessage(getLocale());
+            return cmsThrowable.getLocalizedMessage(wp.getLocale());
         } else {
             return t.getMessage();
         }
@@ -140,10 +101,12 @@ public class CmsErrorpage extends CmsDialog {
     /**
      * returns the StackTrace of the Exception that was thrown as a String.<p>
      * 
+     * @param wp the workplace object
+     * 
      * @return the StackTrace of the Exception that was thrown as a String
      */
-    public String getStackTraceAsString() {
-        return CmsException.getStackTraceAsString(((Throwable)getJsp().getRequest().getAttribute("throwable")));
+    public static String getStackTraceAsString(CmsDialog wp) {
+        return CmsException.getStackTraceAsString(((Throwable)wp.getJsp().getRequest().getAttribute("throwable")));
     }    
     
     /**
@@ -152,11 +115,13 @@ public class CmsErrorpage extends CmsDialog {
      * The error stack is used by the common error screen 
      * that is displayed if an error occurs.<p>
      * 
+     * @param wp the workplace object
+     * 
      * @return the formatted value of the errorstack parameter
      */
-    public String getFormattedErrorstack() {
+    public static String getFormattedErrorstack(CmsDialog wp) {
 
-        String exception = CmsException.getStackTraceAsString(((Throwable)getJsp().getRequest().getAttribute("throwable")));
+        String exception = CmsException.getStackTraceAsString(((Throwable)wp.getJsp().getRequest().getAttribute("throwable")));
         if (CmsStringUtil.isEmpty(exception)) {
             return "";
         } else {
