@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/05/12 09:02:52 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2005/05/12 10:20:40 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  * 
  * @since 5.1
  */
@@ -107,6 +107,8 @@ public class CmsDialog extends CmsToolDialog {
     public static final int BUTTON_SET = 4;
     /** Constant for the "Back" button in the build button methods. */
     public static final int BUTTON_BACK = 9;
+    /** Constant for the "Continue" button in the build button methods. */
+    public static final int BUTTON_CONTINUE = 10;    
     
     /** Request parameter value for the action: cancel. */
     public static final String DIALOG_CANCEL = "cancel";
@@ -118,6 +120,8 @@ public class CmsDialog extends CmsToolDialog {
     public static final String DIALOG_SET = "set";
     /** Request parameter value for the action: back. */
     public static final String DIALOG_BACK = "back";
+    /** Request parameter value for the action: continue. */
+    public static final String DIALOG_CONTINUE = "continue";
     /** Request parameter value for the action: show please wait screen. */
     public static final String DIALOG_WAIT = "wait";
 
@@ -674,7 +678,7 @@ public class CmsDialog extends CmsToolDialog {
         result.append("\t}\n");
         
         int todo = 0;
-        // TODO: Check back logic change here...
+        // TODO: Check logic change here...
         
         result.append("\ttheForm." + PARAM_ACTION + ".value = actionValue;\n");
         result.append("\ttheForm.submit();\n");
@@ -1359,7 +1363,17 @@ public class CmsDialog extends CmsToolDialog {
                 result.append(" class=\"dialogbutton\"");
                 result.append(attribute);
                 result.append(">\n");
-                break;                
+                break;          
+            case BUTTON_CONTINUE:
+                result.append("<input name=\"set\" type=\"button\" value=\"");
+                result.append(key("button.continue") + "\"");
+                if (attribute.toLowerCase().indexOf("onclick") == -1) {
+                    result.append(" onclick=\"submitAction('" + DIALOG_CONTINUE + "', form);\"");
+                }
+                result.append(" class=\"dialogbutton\"");
+                result.append(attribute);
+                result.append(">\n");
+                break;                 
             case BUTTON_DETAILS:
                 result.append("<input name=\"details\" type=\"button\" value=\"");
                 result.append(key("button.detail") + "\"");
