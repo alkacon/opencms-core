@@ -57,6 +57,17 @@ img {
   border: none;
 }
 
+.tip {
+    background: InfoBackground;
+    position: absolute;
+    z-index:3;
+    border: 1px solid ActiveBorder;
+    padding: 2px;
+    display: none;
+    text-align: left;
+    width: 300px;
+}
+
 /* --- loader ---*/
 
 #loader {
@@ -869,19 +880,6 @@ span.tabactive {
 	padding: 4px;
 }
 
-.help { 
-	color: InfoText; 
-    position: absolute; 
-    top: 0px; 
-    left: 0px; 
-    padding: 5px; 
-    width: 200px; 
-    border: 1px solid WindowFrame; 
-    background-color: InfoBackground; 
-    visibility: hidden; 
-    font-size: 8pt; 
-} 
-
 <% if(!(style == NEW_ADMIN)) { %>
 body.report {
 	background-color: Window;
@@ -1028,15 +1026,11 @@ body.dialogadmin {
 	if (style != NEW_ADMIN) { %>
 	width: 100%;
 	<% } else { %>
-	width: 99.9%;<% } %>
+	width: 99.9%;
+        <% } %>
 }
-  <% if (style != NEW_ADMIN) { %>
 
-/* special definition for IE bug displaying horizontal scroll bar in STRICT mode,
-   this must ALWAYS stay at the end of the css! */
-body.dialog { voice-family: "\"}\""; voice-family: inherit; width: expression(document.documentElement.clientWidth - 20); }
-
-  <% } else { %>
+  <% if (style == NEW_ADMIN) { %>
 
 .list th { 
 	white-space: nowrap; 
@@ -1063,3 +1057,24 @@ th a:link, th a:visited, th a:active {
   <% } %>
 
 <% } %>
+
+  <% if ((style == NEW_ADMIN) || (style == MENU)) { %>
+
+.help { 
+	color: InfoText; 
+    position: absolute; 
+    top: 0px; 
+    left: 0px; 
+    padding: 5px; 
+    width: 200px; 
+    border: 1px solid WindowFrame; 
+    background-color: InfoBackground; 
+    visibility: hidden; 
+    font-size: 8pt; 
+} 
+<% } %>
+
+/* special definition for IE bug displaying horizontal scroll bar in STRICT mode,
+   this must ALWAYS stay at the end of the css! */
+body.dialog { voice-family: "\"}\""; voice-family: inherit; width: expression(document.documentElement.clientWidth - 20); }
+
