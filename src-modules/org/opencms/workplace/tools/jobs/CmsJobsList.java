@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsList.java,v $
- * Date   : $Date: 2005/05/12 08:12:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/12 08:55:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsJobsList extends A_CmsListDialog {
@@ -302,7 +302,7 @@ public class CmsJobsList extends A_CmsListDialog {
         // add column for activate/deactivate action
         CmsListColumnDefinition activateCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIVATE);
         activateCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_ACTIVE_0));
-        activateCol.setWidth(null);
+        activateCol.setWidth("20");
         activateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         activateCol.setSorteable(false);
         // create direct action to activate/deactivate job
@@ -334,7 +334,7 @@ public class CmsJobsList extends A_CmsListDialog {
         // add column for copy action
         CmsListColumnDefinition copyCol = new CmsListColumnDefinition(LIST_COLUMN_COPY);
         copyCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_COPY_0));
-        copyCol.setWidth(null);
+        copyCol.setWidth("20");
         copyCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         copyCol.setSorteable(false);
         // direct action: copy job
@@ -351,7 +351,7 @@ public class CmsJobsList extends A_CmsListDialog {
         // add column for delete action
         CmsListColumnDefinition delCol = new CmsListColumnDefinition(LIST_COLUMN_DELETE);
         delCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_DELETE_0));
-        delCol.setWidth(null);
+        delCol.setWidth("20");
         delCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         delCol.setSorteable(false);
         // direct action: delete job
@@ -368,7 +368,7 @@ public class CmsJobsList extends A_CmsListDialog {
         // add column for name
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
         nameCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_NAME_0));
-        nameCol.setWidth("20%");
+        nameCol.setWidth("30%");
         nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         // create default edit action for name column: edit job
         CmsListDefaultAction nameColAction = new CmsListDefaultAction (LIST_ID, LIST_ACTION_EDIT);
@@ -384,14 +384,14 @@ public class CmsJobsList extends A_CmsListDialog {
         // add column for class
         CmsListColumnDefinition classCol = new CmsListColumnDefinition(LIST_COLUMN_CLASS);
         classCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_CLASS_0));
-        classCol.setWidth("15%");
+        classCol.setWidth("20%");
         classCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         metadata.addColumn(classCol);
         
         // add column for last execution time
         CmsListColumnDefinition lastExecCol = new CmsListColumnDefinition(LIST_COLUMN_LASTEXE);
         lastExecCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_LASTEXE_0));
-        lastExecCol.setWidth("22.5%");
+        lastExecCol.setWidth("25%");
         lastExecCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         // create date formatter for last execution time
         CmsListDateMacroFormatter listDateFormatter =  new CmsListDateMacroFormatter(Messages.get().container(
@@ -403,7 +403,7 @@ public class CmsJobsList extends A_CmsListDialog {
         // add column for next execution time
         CmsListColumnDefinition nextExecCol = new CmsListColumnDefinition(LIST_COLUMN_NEXTEXE);
         nextExecCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_NEXTEXE_0));
-        nextExecCol.setWidth("22.5%");
+        nextExecCol.setWidth("25%");
         nextExecCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         // create date formatter for next execution time
         listDateFormatter = new CmsListDateMacroFormatter(Messages.get().container(
