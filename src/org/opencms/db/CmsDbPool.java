@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/05/13 09:25:48 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,10 +59,10 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * {@link org.opencms.db.CmsSqlManager}.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.30 $ $Date: 2005/04/30 11:15:38 $
+ * @version $Revision: 1.31 $ $Date: 2005/05/13 09:25:48 $
  * @since 5.1
  */
-public final class CmsDbPool extends Object {
+public final class CmsDbPool {
 
     /** This prefix is required to make the JDBC DriverManager return pooled DBCP connections. */
     public static final String C_DBCP_JDBC_URL_PREFIX = "jdbc:apache:commons:dbcp:";

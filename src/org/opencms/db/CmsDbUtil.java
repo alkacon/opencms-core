@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/13 09:25:48 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Hashtable;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
  */
-public final class CmsDbUtil extends Object {
+public final class CmsDbUtil {
 
     /** Hashtable with border id's. */
     private static Hashtable c_borderId;

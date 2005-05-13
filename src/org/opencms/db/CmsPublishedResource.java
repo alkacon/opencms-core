@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/05/13 09:25:48 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,11 +47,11 @@ import java.io.Serializable;
  * that is written during each publishing process.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.21 $ $Date: 2005/05/13 09:25:48 $
  * @since 5.1.11
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(CmsDbContext, int, CmsUUID)
  */
-public class CmsPublishedResource extends Object implements Serializable, Cloneable {
+public class CmsPublishedResource implements Serializable, Cloneable {
 
     /** The backup tag ID of the published resource. */
     private int m_backupTagId;

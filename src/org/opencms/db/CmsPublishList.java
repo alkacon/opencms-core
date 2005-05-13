@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2005/02/17 12:43:46 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/05/13 09:25:48 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,11 +52,11 @@ import java.util.List;
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $ $Date: 2005/02/17 12:43:46 $
+ * @version $Revision: 1.19 $ $Date: 2005/05/13 09:25:48 $
  * @since 5.3.0
  * @see org.opencms.db.CmsDriverManager#getPublishList(CmsDbContext, CmsResource, boolean)
  */
-public class CmsPublishList extends Object {
+public class CmsPublishList {
 
     /** The resource to publish in case of direct publishing. */
     private CmsResource m_publishResource;

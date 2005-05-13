@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2005/05/13 09:07:23 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/05/13 09:25:48 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,14 +57,14 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1.4
  * 
  * @see org.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
  */
-public final class CmsLockManager extends Object {
+public final class CmsLockManager {
 
     /** The shared lock manager instance. */
     private static CmsLockManager sharedInstance;

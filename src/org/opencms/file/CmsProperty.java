@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2005/03/19 13:58:20 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/05/13 09:25:48 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,10 +81,10 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2005/03/19 13:58:20 $
+ * @version $Revision: 1.22 $ $Date: 2005/05/13 09:25:48 $
  * @since build_5_1_14
  */
-public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
+public class CmsProperty implements Serializable, Cloneable, Comparable {
 
     /**
      * Signals that the resource property values of a resource
