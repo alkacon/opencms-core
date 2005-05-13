@@ -157,9 +157,10 @@
 		    		 </not>
 		    		 <then>
 		            	<echo message="Module dependency @{dependency} is missing, building it" />
-		        		<ant antfile="${@{dependency}.input}/build.xml" target="dist" inheritAll="false" >
+                        <!-- TODO: find a solution for recursive calls -->
+		        		<!--ant antfile="${basedir}/build-single.xml" target="dist" inheritAll="false" >
 		            		<property name="module.name" value="@{dependency}" />
-		            	</ant>
+		            	</ant-->
 		    		 </then>
 	    		</if>
     		</sequential>

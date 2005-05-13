@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/05/12 09:03:34 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/13 09:07:22 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,10 +40,10 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsTabDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.12
  */
@@ -660,10 +660,10 @@ public class CmsPreferences extends CmsTabDialog {
         List options = new ArrayList(2);      
         options.add(key("preferences.report.simple"));
         options.add(key("preferences.report.extended"));
-        String [] vals = new String[] {CmsReport.REPORT_TYPE_SIMPLE, CmsReport.REPORT_TYPE_EXTENDED};
+        String [] vals = new String[] {I_CmsReport.REPORT_TYPE_SIMPLE, I_CmsReport.REPORT_TYPE_EXTENDED};
         List values = new ArrayList(java.util.Arrays.asList(vals));
         int selectedIndex = 0;
-        if (CmsReport.REPORT_TYPE_EXTENDED.equals(getParamTabWpReportType())) {
+        if (I_CmsReport.REPORT_TYPE_EXTENDED.equals(getParamTabWpReportType())) {
             selectedIndex = 1;
         }
         return buildSelect(htmlAttributes, options, values, selectedIndex);
@@ -1578,7 +1578,7 @@ public class CmsPreferences extends CmsTabDialog {
      * @param value the "workplace report type" setting
      */
     public void setParamTabWpReportType(String value) {
-        if (CmsReport.REPORT_TYPE_SIMPLE.equals(value) || CmsReport.REPORT_TYPE_EXTENDED.equals(value)) {
+        if (I_CmsReport.REPORT_TYPE_SIMPLE.equals(value) || I_CmsReport.REPORT_TYPE_EXTENDED.equals(value)) {
             // set only if valid parameter value is found
             m_userSettings.setWorkplaceReportType(value);
         }

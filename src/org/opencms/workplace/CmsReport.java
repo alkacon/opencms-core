@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2005/05/10 15:45:19 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/05/13 09:07:23 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +48,7 @@ import org.apache.commons.logging.Log;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1.10
  */
@@ -58,12 +59,6 @@ public class CmsReport extends CmsDialog {
     
     /** Request parameter key for the type of the report. */
     public static final String PARAM_REPORT_TYPE = "reporttype";
-
-    /** Request parameter value that this report should create a "simple" output. */
-    public static final String REPORT_TYPE_SIMPLE = "simple";
-
-    /** Request parameter value that this report should create an "extended" output. */
-    public static final String REPORT_TYPE_EXTENDED = "extended";
 
     /** Request parameter key for the type of the report. */
     public static final String PARAM_REPORT_CONTINUEKEY = "reportcontinuekey";
@@ -327,7 +322,7 @@ public class CmsReport extends CmsDialog {
      */
     public boolean isSimpleReport() {
 
-        return getParamReportType().equalsIgnoreCase(REPORT_TYPE_SIMPLE);
+        return getParamReportType().equalsIgnoreCase(I_CmsReport.REPORT_TYPE_SIMPLE);
     }
 
     /**

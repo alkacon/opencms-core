@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2005/05/02 13:41:48 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/05/13 09:07:23 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
 
@@ -211,7 +211,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     throws IOException, CmsException {
 
         // check if the current request was done by a workplace user
-        boolean isWorkplaceUser = CmsWorkplace.isWorkplaceUser(req);
+        boolean isWorkplaceUser = CmsWorkplaceManager.isWorkplaceUser(req);
 
         if (!isWorkplaceUser) {
             // check if the request contains a last modified header

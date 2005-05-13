@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/05/10 15:45:19 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2005/05/13 09:07:23 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace;
 import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsUserSettings;
+import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -87,7 +88,7 @@ import org.apache.commons.logging.Log;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 5.3.1
  */
@@ -99,12 +100,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** The default encoding for the workplace (UTF-8). */
     // TODO: Encoding feature of the workplace is not active 
     public static final String C_DEFAULT_WORKPLACE_ENCODING = "UTF-8";
-
-    /** The description of the temp file project. */
-    public static final String C_TEMP_FILE_PROJECT_DESCRIPTION = "The project for temporary Workplace files";
-
-    /** The name of the temp file project. */
-    public static final String C_TEMP_FILE_PROJECT_NAME = "tempFileProject";
 
     /** Indicates if auto-locking of resources is enabled or disabled. */
     private boolean m_autoLockResources;
@@ -180,6 +175,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
     /** The configured workplace views. */
     private List m_views;
+
+    /** Key name for the session workplace settings. */
+    public static final String C_SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
 
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -513,7 +511,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             HttpSession session = req.getSession(false);
             if (session != null) {
                 CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session
-                    .getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+                    .getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
                 if (settings != null) {
                     locale = settings.getUserSettings().getLocale();
                 }
@@ -712,7 +710,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         }
         try {
             // read the temporary file project
-            m_tempFileProject = cms.readProject(C_TEMP_FILE_PROJECT_NAME);
+            m_tempFileProject = cms.readProject(I_CmsProjectDriver.C_TEMP_FILE_PROJECT_NAME);
         } catch (CmsException e) {
             // during initial setup of OpenCms the temp file project does not yet exist...
             LOG.error(Messages.get().key(Messages.LOG_NO_TEMP_FILE_PROJECT_0));
@@ -1080,5 +1078,22 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         // sort the views by their order number
         Collections.sort(m_views);
         return m_views;
+    }
+
+    /**
+     * Returns true if the provided request was done by a Workplace user.<p>
+     * 
+     * @param req the request to check
+     * @return true if the provided request was done by a Workplace user
+     */
+    public static boolean isWorkplaceUser(HttpServletRequest req) {
+    
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            // if a session is available, check for a workplace configuration
+            return null != session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+        }
+        // no session means no workplace use
+        return false;
     }
 }

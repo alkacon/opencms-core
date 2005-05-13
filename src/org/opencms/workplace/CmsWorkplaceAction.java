@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/13 09:07:23 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1
  */
@@ -88,7 +88,7 @@ public final class CmsWorkplaceAction {
         if (session == null) {
             return;
         }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
         if (settings == null) {
             return;
         }
@@ -106,7 +106,7 @@ public final class CmsWorkplaceAction {
         if (session == null) {
             return C_XML_WORKPLACE_URI;
         }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
         if (settings == null) {
             return C_XML_WORKPLACE_URI;
         }
@@ -124,7 +124,7 @@ public final class CmsWorkplaceAction {
         if (session == null) {
             return null;
         }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
         if (settings != null) {
             return settings.getExplorerResource();
         } else {
@@ -143,7 +143,7 @@ public final class CmsWorkplaceAction {
         if (session == null) {
             return;
         }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
         if (settings != null) {
             settings.setExplorerResource(currentFolder);
         }       
@@ -161,7 +161,7 @@ public final class CmsWorkplaceAction {
         if (session == null) {
             return I_CmsWpConstants.C_WP_EXPLORER_FILELIST;
         }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
         if (settings == null) {
             return I_CmsWpConstants.C_WP_EXPLORER_FILELIST;
         }
@@ -181,7 +181,7 @@ public final class CmsWorkplaceAction {
         if (session == null) {
             return OpenCms.getLinkManager().substituteLink(cms, link);
         }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
         if (settings == null) {
             return OpenCms.getLinkManager().substituteLink(cms, link);
         }

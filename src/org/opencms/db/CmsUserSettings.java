@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2005/03/29 17:52:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/05/13 09:07:22 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -49,7 +50,7 @@ import java.util.Map;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1.12
  */
@@ -105,7 +106,7 @@ public class CmsUserSettings {
      */
     public CmsUserSettings() {   
         m_workplaceButtonStyle = C_BUTTONSTYLE_DEFAULT;
-        m_workplaceReportType = CmsReport.REPORT_TYPE_SIMPLE;        
+        m_workplaceReportType = I_CmsReport.REPORT_TYPE_SIMPLE;        
         m_explorerButtonStyle = C_BUTTONSTYLE_DEFAULT;
         m_explorerFileEntries = C_ENTRYS_PER_PAGE_DEFAULT;
 

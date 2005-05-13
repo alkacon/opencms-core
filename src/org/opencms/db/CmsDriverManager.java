@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/13 08:16:04 $
- * Version: $Revision: 1.494 $
+ * Date   : $Date: 2005/05/13 09:07:22 $
+ * Version: $Revision: 1.495 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.validation.CmsHtmlLinkValidator;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
-import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,7 +105,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.494 $ $Date: 2005/05/13 08:16:04 $
+ * @version $Revision: 1.495 $ $Date: 2005/05/13 09:07:22 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1891,7 +1890,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // create a new task for the project
         CmsTask task = createProject(
             dbc,
-            CmsWorkplaceManager.C_TEMP_FILE_PROJECT_NAME,
+            I_CmsProjectDriver.C_TEMP_FILE_PROJECT_NAME,
             projectUserGroup.getName(),
             System.currentTimeMillis(),
             I_CmsConstants.C_TASK_PRIORITY_NORMAL);
@@ -1902,8 +1901,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             projectUserGroup,
             projectManagerGroup,
             task,
-            CmsWorkplaceManager.C_TEMP_FILE_PROJECT_NAME,
-            CmsWorkplaceManager.C_TEMP_FILE_PROJECT_DESCRIPTION,
+            I_CmsProjectDriver.C_TEMP_FILE_PROJECT_NAME,
+            I_CmsProjectDriver.C_TEMP_FILE_PROJECT_DESCRIPTION,
             I_CmsConstants.C_PROJECT_STATE_INVISIBLE,
             I_CmsConstants.C_PROJECT_STATE_INVISIBLE,
             null);

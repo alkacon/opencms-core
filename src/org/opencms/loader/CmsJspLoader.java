@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/05/02 13:41:48 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2005/05/13 09:07:23 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.78 $
+ * @version $Revision: 1.79 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -466,7 +466,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 if (!res.isCommitted() || m_errorPagesAreNotCommited) {
 
                     // check if the current request was done by a workplace user
-                    boolean isWorkplaceUser = CmsWorkplace.isWorkplaceUser(f_req);
+                    boolean isWorkplaceUser = CmsWorkplaceManager.isWorkplaceUser(f_req);
                     
                     // check if the content was modified since the last request
                     if (controller.isTop()

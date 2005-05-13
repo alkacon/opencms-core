@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/05/10 15:45:19 $
- * Version: $Revision: 1.113 $
+ * Date   : $Date: 2005/05/13 09:07:23 $
+ * Version: $Revision: 1.114 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.113 $
+ * @version $Revision: 1.114 $
  * 
  * @since 5.1
  */
@@ -105,9 +105,6 @@ public abstract class CmsWorkplace {
 
     /** Constant for the JSP workplace path. */
     public static final String C_PATH_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE;
-
-    /** Key name for the session workplace settings. */
-    public static final String C_SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
 
     /** The debug flag. */
     public static final boolean DEBUG = false;
@@ -354,23 +351,6 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns true if the provided request was done by a Workplace user.<p>
-     * 
-     * @param req the request to check
-     * @return true if the provided request was done by a Workplace user
-     */
-    public static boolean isWorkplaceUser(HttpServletRequest req) {
-
-        HttpSession session = req.getSession(false);
-        if (session != null) {
-            // if a session is available, check for a workplace configuration
-            return null != session.getAttribute(C_SESSION_WORKPLACE_SETTINGS);
-        }
-        // no session means no workplace use
-        return false;
-    }
-
-    /**
      * Initializes the current users workplace settings by reading the values 
      * from the users preferences.<p>
      * 
@@ -472,7 +452,7 @@ public abstract class CmsWorkplace {
     static synchronized void storeSettings(HttpSession session, CmsWorkplaceSettings settings) {
 
         // save the workplace settings in the session
-        session.setAttribute(C_SESSION_WORKPLACE_SETTINGS, settings);
+        session.setAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS, settings);
     }
 
     /**
@@ -1776,7 +1756,7 @@ public abstract class CmsWorkplace {
             m_session = m_jsp.getRequest().getSession();
 
             // get / create the workplace settings 
-            m_settings = (CmsWorkplaceSettings)m_session.getAttribute(C_SESSION_WORKPLACE_SETTINGS);
+            m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
             if (m_settings == null || m_settings.getMessages()!=OpenCms.getWorkplaceManager().getMessages(getLocale())) {
                 // create the settings object
                 m_settings = new CmsWorkplaceSettings();

@@ -1,5 +1,5 @@
 <%@ page buffer="none" import="
-	org.opencms.workplace.*"%>
+	org.opencms.workplace.*, org.opencms.report.I_CmsReport"%>
 <%	
     // get workplace class from request attribute
     CmsReport wp = CmsReport.initCmsReport(pageContext, request, response);
@@ -223,7 +223,7 @@ report_error.src = "<%= wp.getSkinUri() %>commons/error.gif";
 
 // toggles between the simple and extended output format
 function switchOutputFormat() {
-	reportType = (reportType == "<%= CmsReport.REPORT_TYPE_EXTENDED %>") ? "<%= CmsReport.REPORT_TYPE_SIMPLE %>" : "<%= CmsReport.REPORT_TYPE_EXTENDED %>";
+	reportType = (reportType == "<%= I_CmsReport.REPORT_TYPE_EXTENDED %>") ? "<%= I_CmsReport.REPORT_TYPE_SIMPLE %>" : "<%= I_CmsReport.REPORT_TYPE_EXTENDED %>";
 
 	updateReport();	
 	updateReportImage();
@@ -343,7 +343,7 @@ function update() {
 // writes the HTML output to the iframe
 // this function gets also invoked when the report output format is toggled
 function updateReport() {
-    if (reportType == "<%= CmsReport.REPORT_TYPE_SIMPLE %>") {
+    if (reportType == "<%= I_CmsReport.REPORT_TYPE_SIMPLE %>") {
     	if (!isRunning && hasError) {
     		pageBody = 
     			pageStartSimple + 

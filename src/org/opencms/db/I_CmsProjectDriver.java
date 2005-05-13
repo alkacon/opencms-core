@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2005/05/12 13:15:29 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2005/05/13 09:07:22 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,13 +52,17 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.65 $ $Date: 2005/05/12 13:15:29 $
+ * @version $Revision: 1.66 $ $Date: 2005/05/13 09:07:22 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
 
     /** The type ID to identify project driver implementations. */
     int C_DRIVER_TYPE_ID = 1;
+    /** The description of the temp file project. */
+    public static final String C_TEMP_FILE_PROJECT_DESCRIPTION = "The project for temporary Workplace files";
+    /** The name of the temp file project. */
+    public static final String C_TEMP_FILE_PROJECT_NAME = "tempFileProject";
 
     /**
      * Creates a new project.<p>

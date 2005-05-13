@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/04/28 08:28:48 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/13 09:07:23 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.lucene.search.SortField;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.28 $ $Date: 2005/04/28 08:28:48 $
+ * @version $Revision: 1.29 $ $Date: 2005/05/13 09:07:23 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -74,8 +74,8 @@ import org.apache.lucene.search.SortField;
 public class CmsSearch implements Serializable, Cloneable {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSearch.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsSearch.class);
+
     /** Sort result documents by date of last modification, then score. */
     public static final Sort SORT_DATE_CREATED = new Sort(new SortField[] {
         new SortField(I_CmsDocumentFactory.DOC_DATE_CREATED, true),
@@ -399,65 +399,65 @@ public class CmsSearch implements Serializable, Cloneable {
     public String getSearchParameters() {
 
         // if (m_searchParameters == null) {
-            StringBuffer params = new StringBuffer(128);
-            params.append("?action=search&query=");
-            String query = CmsStringUtil.substitute(m_query, "+", "%2B");
-            query = CmsStringUtil.substitute(query, "-", "%2D");
-            params.append(CmsEncoder.encode(query, OpenCms.getSystemInfo().getDefaultEncoding()));
-            params.append("&matchesPerPage=");
-            params.append(this.getMatchesPerPage());
-            params.append("&displayPages=");
-            params.append(this.getDisplayPages());
-            params.append("&index=");
-            params.append(CmsEncoder.encode(m_indexName));
+        StringBuffer params = new StringBuffer(128);
+        params.append("?action=search&query=");
+        String query = CmsStringUtil.substitute(m_query, "+", "%2B");
+        query = CmsStringUtil.substitute(query, "-", "%2D");
+        params.append(CmsEncoder.encode(query, OpenCms.getSystemInfo().getDefaultEncoding()));
+        params.append("&matchesPerPage=");
+        params.append(this.getMatchesPerPage());
+        params.append("&displayPages=");
+        params.append(this.getDisplayPages());
+        params.append("&index=");
+        params.append(CmsEncoder.encode(m_indexName));
 
-            if (m_sortOrder != SORT_DEFAULT) {
-                params.append("&sort=");
-                // TODO: find a better way to name sort
-                if (m_sortOrder == CmsSearch.SORT_TITLE) {
-                    params.append("title");
-                } else if (m_sortOrder == CmsSearch.SORT_DATE_CREATED) {
-                    params.append("date-created");
-                } else if (m_sortOrder == CmsSearch.SORT_DATE_LASTMODIFIED) {
-                    params.append("date-lastmodified");
-                }
+        if (m_sortOrder != SORT_DEFAULT) {
+            params.append("&sort=");
+            // TODO: find a better way to name sort
+            if (m_sortOrder == CmsSearch.SORT_TITLE) {
+                params.append("title");
+            } else if (m_sortOrder == CmsSearch.SORT_DATE_CREATED) {
+                params.append("date-created");
+            } else if (m_sortOrder == CmsSearch.SORT_DATE_LASTMODIFIED) {
+                params.append("date-lastmodified");
             }
-            
-            if (m_categories != null) {
-                params.append("&category=");
-                for (int c = 0; c < m_categories.length; c++) {
-                    if (c > 0) {
-                        params.append(",");
-                    }
-                    params.append(m_categories[c]);
+        }
+
+        if (m_categories != null) {
+            params.append("&category=");
+            for (int c = 0; c < m_categories.length; c++) {
+                if (c > 0) {
+                    params.append(",");
                 }
+                params.append(m_categories[c]);
             }
-            
-            if (m_searchRoots != null) {
-                params.append("&searchRoot=");
-                for (int c = 0; c < m_searchRoots.length; c++) {
-                    if (c > 0) {
-                        params.append(",");
-                    }
-                    params.append(CmsEncoder.encode(m_searchRoots[c]));
+        }
+
+        if (m_searchRoots != null) {
+            params.append("&searchRoot=");
+            for (int c = 0; c < m_searchRoots.length; c++) {
+                if (c > 0) {
+                    params.append(",");
                 }
+                params.append(CmsEncoder.encode(m_searchRoots[c]));
             }
-            
-            // TODO: Better move this whole method into class "CmsSearchParameters"
-            int todo = 0;
-            // TODO: handle the multiple search roots (could be easy, just use multiple parameters?)
-            // TODO: handle the categories
-            // TODO: handle the search fields
-            // params.append("&searchRoot=");
-            // params.append(CmsEncoder.encode(m_searchRoots[0]));
-            
-            return params.toString();
-            // cw: cannot store searchParameters any longer since resultRestrictions changes query
-            // m_searchParameters = params.toString();
-            // return m_searchParameters;
+        }
+
+        // TODO: Better move this whole method into class "CmsSearchParameters"
+        int todo = 0;
+        // TODO: handle the multiple search roots (could be easy, just use multiple parameters?)
+        // TODO: handle the categories
+        // TODO: handle the search fields
+        // params.append("&searchRoot=");
+        // params.append(CmsEncoder.encode(m_searchRoots[0]));
+
+        return params.toString();
+        // cw: cannot store searchParameters any longer since resultRestrictions changes query
+        // m_searchParameters = params.toString();
+        // return m_searchParameters;
         /* } else {
-            return m_searchParameters;
-        } */
+         return m_searchParameters;
+         } */
     }
 
     /**
@@ -471,7 +471,8 @@ public class CmsSearch implements Serializable, Cloneable {
 
             if ((this.getQueryLength() > 0) && (m_query.trim().length() < this.getQueryLength())) {
 
-                m_lastException = new CmsSearchException(Messages.get().container(Messages.LOG_QUERY_TOO_SHORT_1, 
+                m_lastException = new CmsSearchException(Messages.get().container(
+                    Messages.LOG_QUERY_TOO_SHORT_1,
                     new Integer(this.getQueryLength())));
 
                 return m_result;
@@ -513,7 +514,7 @@ public class CmsSearch implements Serializable, Cloneable {
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_SEARCHING_FAILED_1, this.getClass().getName()), exc);
-                }                                    
+                }
 
                 m_result = null;
                 m_searchResultCount = 0;
@@ -699,8 +700,11 @@ public class CmsSearch implements Serializable, Cloneable {
                 }
             } catch (Exception exc) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_INDEX_ACCESS_FAILED_2, this.getClass().getName(), indexName), exc);
-                }  
+                    LOG.debug(Messages.get().key(
+                        Messages.LOG_INDEX_ACCESS_FAILED_2,
+                        this.getClass().getName(),
+                        indexName), exc);
+                }
                 m_lastException = exc;
             }
         }
@@ -741,7 +745,7 @@ public class CmsSearch implements Serializable, Cloneable {
         // do not replace +/- 
         query = CmsStringUtil.substitute(query, "+", "%2B");
         query = CmsStringUtil.substitute(query, "-", "%2D");
-        
+
         m_query = CmsEncoder.decode(query, OpenCms.getSystemInfo().getDefaultEncoding());
         resetLastResult();
     }
@@ -781,7 +785,7 @@ public class CmsSearch implements Serializable, Cloneable {
      */
     public void setSearchRoot(String searchRoot) {
 
-        setSearchRoots(CmsStringUtil.splitAsArray(searchRoot,","));
+        setSearchRoots(CmsStringUtil.splitAsArray(searchRoot, ","));
     }
 
     /**

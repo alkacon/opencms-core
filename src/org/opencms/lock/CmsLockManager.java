@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2005/05/12 09:06:59 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/05/13 09:07:23 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1.4
  * 
@@ -348,7 +348,7 @@ public final class CmsLockManager extends Object {
      * @param forceUnlock true, if a resource is forced to get unlocked, no matter by which user and in which project the resource is currently locked
      * 
      * @return the previous CmsLock object of the resource, or null if the resource was unlocked
-     * @throws CmsLockException if the resource is locked by another user or if the lock is inherided from a parent folder
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsLock removeResource(

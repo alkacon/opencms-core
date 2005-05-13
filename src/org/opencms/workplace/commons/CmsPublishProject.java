@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/05/12 09:03:34 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/13 09:07:23 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.threads.CmsPublishThread;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsReport;
+import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.text.DateFormat;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.12
  */
@@ -448,7 +449,7 @@ public class CmsPublishProject extends CmsReport {
     private void startPublishThread() {
         // create a publish thread from the current publish list
         CmsPublishList publishList = getSettings().getPublishList();
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)getJsp().getRequest().getSession().getAttribute(C_SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)getJsp().getRequest().getSession().getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
         CmsPublishThread thread = new CmsPublishThread(getCms(), publishList, settings);
         
         // set the new thread id and flag that no thread is following

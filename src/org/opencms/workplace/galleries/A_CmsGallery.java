@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/05/12 09:21:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/13 09:07:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.explorer.CmsNewResource;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.5.2
  */
@@ -203,7 +204,7 @@ public abstract class A_CmsGallery extends CmsDialog {
             // must have a valid JSP in order to read from the user session
             HttpSession session = jsp.getRequest().getSession();
             // lookup the workplace settings 
-            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(C_SESSION_WORKPLACE_SETTINGS);
+            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
             if (CmsStringUtil.isEmpty(galleryTypeName)) {
                 // look up the gallery type from the settings
                 galleryTypeName = settings.getGalleryType();

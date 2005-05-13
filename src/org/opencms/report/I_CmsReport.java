@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/13 09:07:23 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Locale;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public interface I_CmsReport {
         
@@ -64,6 +64,12 @@ public interface I_CmsReport {
     
     /** Indicates warning formatting. */
     int C_FORMAT_WARNING = 1;
+
+    /** Request parameter value that this report should create a "simple" output. */
+    String REPORT_TYPE_SIMPLE = "simple";
+
+    /** Request parameter value that this report should create an "extended" output. */
+    String REPORT_TYPE_EXTENDED = "extended";
     
     /**
      * Adds a bundle specified by it's name to the List of resource bundles.<p>
