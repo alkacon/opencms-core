@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/05/10 07:50:57 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/13 08:10:04 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,17 +43,15 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Michael Moossen (m.moossen@alkacon.com)
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsException extends Exception implements I_CmsThrowable {
 
     /** Error code for bad name exception. */
     public static final int C_BAD_NAME = 3;
-
-    /** Error code for ClassLoader errors. */
-    public static final int C_CLASSLOADER_ERROR = 29;
-
+    
     /**
      * This array provides descriptions for the error codes stored as
      * constants in the CmsExeption class.
@@ -105,39 +103,8 @@ public class CmsException extends Exception implements I_CmsThrowable {
     /* 43 */"Import error",
     /* 44 */"Export error"};
 
-    /** Error code for export issues. */
-    public static final int C_EXPORT_ERROR = 42;
-
-    /** 
-     * Error code for file exists exception.<p>
-     * 
-     * @deprecated use a <code>{@link org.opencms.file.CmsVfsException}</code> instead
-     */
-    public static final int C_FILE_EXISTS = 12;
-
     /** Error code for file not found exception. */
     public static final int C_FILE_NOT_FOUND = 13;
-
-    /** Error code filesystem error. */
-    public static final int C_FILESYSTEM_ERROR = 14;
-
-    /** Error code for Flex loader. */
-    public static final int C_FLEX_LOADER = 40;
-
-    /** Error code that a group to be created already exists. */
-    public static final int C_GROUP_ALREADY_EXISTS = 41;
-
-    /** Error code for group not empty exception. */
-    public static final int C_GROUP_NOT_EMPTY = 9;
-
-    /** Error code for HTTP streaming error. */
-    public static final int C_HTTPS_PAGE_ERROR = 37;
-
-    /** Error code for HTTPS streaming error. */
-    public static final int C_HTTPS_REQUEST_ERROR = 38;
-
-    /** Error code for import issues. */
-    public static final int C_IMPORT_ERROR = 41;
 
     /** Error code internal file. */
     public static final int C_INTERNAL_FILE = 15;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsException.java,v $
- * Date   : $Date: 2005/05/10 15:46:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/13 08:10:04 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,19 +40,10 @@ import org.opencms.main.CmsException;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1.4
  */
 public class CmsVfsException extends CmsDataAccessException {
-
-    /** Folders don't suport siblings. */
-    public static final int C_VFS_FOLDERS_DONT_SUPPORT_SIBLINGS = 300;
-
-    /** List of property must not contain equal properties. */
-    public static final int C_VFS_INVALID_PROPERTY_LIST = 301;
-    
-    /** Undo changes on a new resource is impossible. */
-    public static final int C_VFS_UNDO_CHANGES_NOT_POSSIBLE_ON_NEW_RESOURCE = 302;
     
     // TODO: to change the constants in a more consistent way
     /** Resource not found. */
@@ -153,14 +144,8 @@ public class CmsVfsException extends CmsDataAccessException {
         switch (type) {
             case C_VFS_RESOURCE_NOT_FOUND:                
                 return "Resource not found!";            
-            case C_VFS_FOLDERS_DONT_SUPPORT_SIBLINGS:
-                return "Folders in the VFS don't support siblings!";
-            case C_VFS_INVALID_PROPERTY_LIST:                
-                return "Invalid multiple occurence of equal properties in property list!";
             case C_VFS_RESOURCE_ALREADY_EXISTS:
                 return "Resource already exists!";
-            case C_VFS_UNDO_CHANGES_NOT_POSSIBLE_ON_NEW_RESOURCE:
-                return "Undo changes is not possible on a new resource!";
             case C_VFS_RESOURCE_DELETED:
                 return "Resource has been deleted!";
             case C_VFS_FOLDER_NOT_EMPTY:

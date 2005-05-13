@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockException.java,v $
- * Date   : $Date: 2005/05/11 08:32:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/13 08:10:04 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,50 +39,10 @@ import org.opencms.main.CmsException;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2005/05/11 08:32:42 $
+ * @version $Revision: 1.15 $ $Date: 2005/05/13 08:10:04 $
  * @since 5.1.4
  */
 public class CmsLockException extends CmsException {
-    
-    // the allowed type range for this exception is >=200 and <300
-    
-    /** A resource is locked, but a particular action requires the resource to be unlocked. */
-    public static final int C_RESOURCE_LOCKED = 200;
-    
-    /** A resource is locked by the current user, but a particular action requires that the resource is unlocked. */
-    public static final int C_RESOURCE_LOCKED_BY_CURRENT_USER = 202;
-    
-    /** A resource is not locked by the current user, but a particular action requires that the resource is locked. */
-    public static final int C_RESOURCE_NOT_LOCKED_BY_CURRENT_USER = 206;
-    
-    /** A resource is locked by a user different from the current user, but a particular action requires that the resource is locked by the current user. */
-    public static final int C_RESOURCE_LOCKED_BY_OTHER_USER = 203;
-    
-    /** A resource has an inherited lock of a parent folder, but a particular action requires a non-inherited lock. */
-    public static final int C_RESOURCE_LOCKED_INHERITED = 204;
-    
-    /** A resource has a non-exclusive lock, but a particular action requires an exclusive lock. */
-    public static final int C_RESOURCE_LOCKED_NON_EXCLUSIVE = 205;
-    
-    /** A resource is unlocked, but a particular action requires the resource to be locked. */
-    public static final int C_RESOURCE_UNLOCKED = 201;
-    
-    /**
-     * Default constructor for a CmsLockException.<p>
-     */
-    public CmsLockException() {
-        super();
-    }
-    
-    /**
-     * Constructs a CmsLockException with the specified detail message and type.<p>
-     * 
-     * @param message the detail message
-     * @param type the type of the exception
-     */
-    public CmsLockException(String message, int type) {
-        super(message, type, null);
-    }
 
     /**
      * Creates a new localized Exception.<p>
@@ -113,19 +73,4 @@ public class CmsLockException extends CmsException {
         
         return new CmsLockException(container, cause);
     } 
-    
-    /**
-     * Returns the description String for the provided CmsException type.<p>
-     * 
-     * @param type exception error code 
-     * @return the description String for the provided CmsException type
-     */    
-    protected String getErrorDescription(int type) {
-        switch (type) {
-            case C_RESOURCE_NOT_LOCKED_BY_CURRENT_USER:                
-                return "Resource not locked for the current user!";
-            default:
-                return super.getErrorDescription(type);
-        }
-    }
 }
