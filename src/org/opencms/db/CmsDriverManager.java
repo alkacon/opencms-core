@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/13 14:04:33 $
- * Version: $Revision: 1.496 $
+ * Date   : $Date: 2005/05/13 15:10:55 $
+ * Version: $Revision: 1.497 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.496 $ $Date: 2005/05/13 14:04:33 $
+ * @version $Revision: 1.497 $ $Date: 2005/05/13 15:10:55 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1927,9 +1927,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @see CmsObject#createUser(String, String, String, Map)
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the name for the user is not valid
      */
     public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, Map additionalInfos)
-    throws CmsException {
+    throws CmsException, CmsIllegalArgumentException {
 
         // no space before or after the name
         name = name.trim();
@@ -1938,27 +1939,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // check the password
         validatePassword(password);
 
-        if (name.length() > 0) {
 
-            CmsUser newUser = m_userDriver.createUser(
-                dbc,
-                name,
-                password,
-                description,
-                " ",
-                " ",
-                " ",
-                0,
-                I_CmsConstants.C_FLAG_ENABLED,
-                additionalInfos,
-                " ",
-                I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser newUser = m_userDriver.createUser(dbc, name, password, description, " ", " ",
+                " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
 
-            return newUser;
+         return newUser;
             
-        } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
-        }
     }
     
     /**
@@ -3856,13 +3842,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             newUser = m_userDriver.readUser(dbc, username, password, remoteAddress, userType);
         } catch (Throwable t) {
             // any error here: throw a security exception
-            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED, t);
+            throw new CmsSecurityException(Messages.get().container(
+                org.opencms.security.Messages.ERR_SECURITY_LOGIN_FAILED_1, username), t);
         }
 
         // check if the "enabled" flag is set for the user
         if (newUser.getFlags() != I_CmsConstants.C_FLAG_ENABLED) {
             // user is disabled, throw a securiy exception
-            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED);
+            throw new CmsSecurityException(Messages.get().container(
+                Messages.ERR_LOGIN_USER_DISABLED_1, username));
         }
 
         // set the last login time to the current time
@@ -4067,20 +4055,20 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         try {
             // try to get the class
             driverClass = Class.forName(driverName);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver init          : starting " + driverName);
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_START_1, driverName));
             }
 
             // try to create a instance
             driver = (I_CmsDriver)driverClass.newInstance();
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver init          : initializing " + driverName);
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
             }
            
             // invoke the init-method of this access class
             driver.init(dbc, configurationManager, successiveDrivers, this);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver init          : ok, finished");
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_INIT_FINISHED_0));
             }
 
         } catch (Throwable t) {
@@ -4117,28 +4105,27 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         try {
             // try to get the class
             driverClass = Class.forName(driverName);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver init          : starting " + driverName);
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_START_1, driverName));
             }
 
             // try to create a instance
             driver = driverClass.newInstance();
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver init          : initializing " + driverName);
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
             }
 
             // invoke the init-method of this access class
             driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                    ". Driver init          : finished, assigned pool " + driverPoolUrl);
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_INIT_FINISHED_1, driverPoolUrl));
             }
 
         } catch (Exception exc) {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_INIT_DRIVER_MANAGER_1);
-            if (OpenCms.getLog(this).isFatalEnabled()) {
-                OpenCms.getLog(this).fatal(message.key(), exc);
+            if (LOG.isFatalEnabled()) {
+                LOG.fatal(message.key(), exc);
             }
             throw new CmsException(message, exc);
             
@@ -4243,7 +4230,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 try {
                     m_projectDriver.deleteProject(dbc, dbc.currentProject());
                 } catch (CmsException e) {
-                    OpenCms.getLog(this).error("Could not delete temporary project " + publishProjectId);
+                    LOG.error("Could not delete temporary project " + publishProjectId);
                 }
                 // if project was temporary set context to online project
                 cms.getRequestContext().setCurrentProject(readProject(dbc, I_CmsConstants.C_PROJECT_ONLINE_ID));
@@ -4560,10 +4547,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public CmsFile readFile(CmsDbContext dbc, CmsResource resource, CmsResourceFilter filter) throws CmsException {
 
         if (resource.isFolder()) {
-            throw new CmsVfsResourceNotFoundException("Trying to access a folder as file "
-                + "("
-                + resource.getRootPath()
-                + ")");
+            throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                Messages.ERR_ACCESS_FOLDER_AS_FILE_1, dbc.removeSiteRoot(resource.getRootPath())));
         }
 
         CmsFile file = m_vfsDriver.readFile(dbc, dbc.currentProject().getId(), filter.includeDeleted(), resource
@@ -4659,16 +4644,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if (group == null) {
             try {
                 group = m_userDriver.readGroup(dbc, project.getGroupId());
-            } catch (CmsException exc) {
-                if (exc.getType() == CmsException.C_NO_GROUP) {
-                    // the group does not exist any more - return a dummy-group
-                    return new CmsGroup(
-                        CmsUUID.getNullUUID(),
-                        CmsUUID.getNullUUID(),
-                        project.getGroupId() + "",
-                        "deleted group",
-                        0);
-                }
+            } catch (CmsDataAccessException exc) {
+                return new CmsGroup(
+                    CmsUUID.getNullUUID(),
+                    CmsUUID.getNullUUID(),
+                    project.getGroupId() + "",
+                    "deleted group",
+                    0);
             }
             m_groupCache.put(new CacheId(group), group);
         }
@@ -4744,16 +4726,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if (group == null) {
             try {
                 group = m_userDriver.readGroup(dbc, project.getManagerGroupId());
-            } catch (CmsException exc) {
-                if (exc.getType() == CmsException.C_NO_GROUP) {
-                    // the group does not exist any more - return a dummy-group
-                    return new CmsGroup(
-                        CmsUUID.getNullUUID(),
-                        CmsUUID.getNullUUID(),
-                        project.getManagerGroupId() + "",
-                        "deleted group",
-                        0);
-                }
+            } catch (CmsDataAccessException exc) {
+                // the group does not exist any more - return a dummy-group
+                return new CmsGroup(
+                    CmsUUID.getNullUUID(),
+                    CmsUUID.getNullUUID(),
+                    project.getManagerGroupId() + "",
+                    "deleted group",
+                    0);
             }
             m_groupCache.put(new CacheId(group), group);
         }
@@ -5967,14 +5947,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             // read the user as a system user to verify that the specified old password is correct
             try {
                 user = m_userDriver.readUser(dbc, username, oldPassword, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-            } catch (CmsException e) {
-                if (e.getType() != CmsException.C_NO_USER) {
-                    throw new CmsDataAccessException("["
-                        + getClass().getName()
-                        + "] Error resetting password for user '"
-                        + username
-                        + "'", e);
-                }
+            } catch (CmsObjectNotFoundException e) {
+                throw new CmsDataAccessException("["
+                    + getClass().getName()
+                    + "] Error resetting password for user '"
+                    + username
+                    + "'", e);
             }
 
             // dito as a web user
@@ -5984,19 +5962,20 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     username,
                     oldPassword,
                     I_CmsConstants.C_USER_TYPE_WEBUSER);
-            } catch (CmsException e) {
-                if (e.getType() != CmsException.C_NO_USER) {
-                    throw new CmsDataAccessException("["
-                        + getClass().getName()
-                        + "] Error resetting password for user '"
-                        + username
-                        + "'", e);
-                }
+            } catch (CmsObjectNotFoundException e) {
+                throw new CmsDataAccessException("["
+                    + getClass().getName()
+                    + "] Error resetting password for user '"
+                    + username
+                    + "'", e);
             }
 
             if (user == null) {
-                // the specified username + old password don't match
-                throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED);
+                throw new CmsDataAccessException("["
+                    + getClass().getName()
+                    + "] Error resetting password for user '"
+                    + username
+                    + "'");
             }
 
             m_userDriver.writePassword(dbc, username, user.getType(), oldPassword, newPassword);
@@ -6503,8 +6482,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             exportPoints.addAll(OpenCms.getExportPoints());
             exportPoints.addAll(OpenCms.getModuleManager().getExportPoints());
             if (exportPoints.size() == 0) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("No export points configured at all.");
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(Messages.LOG_NO_EXPORT_POINTS_CONFIGURED_0));
                 }
                 return;
             }
@@ -6523,8 +6502,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 String currentExportPoint = (String)i.next();
 
                 // print some report messages
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info("Writing export point " + currentExportPoint);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().key(Messages.LOG_WRITE_EXPORT_POINT_1, currentExportPoint));
                 }
 
                 try {
@@ -6563,16 +6542,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 } catch (CmsException e) {
                     // there might exist export points without corresponding resources in the VFS
                     // -> ignore exceptions which are not "resource not found" exception quiet here
-                    if (e.getType() != CmsVfsException.C_VFS_RESOURCE_NOT_FOUND) {
-                        if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error("Error updating export points", e);
+                    if (e instanceof CmsVfsResourceNotFoundException) {
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(Messages.get().key(Messages.LOG_UPDATE_EXORT_POINTS_ERROR_0), e);
                         }
                     }
                 }
             }
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error updating export points", e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_UPDATE_EXORT_POINTS_ERROR_0), e);
             }
         }
     }
@@ -6675,20 +6654,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * valid characters.<p>
      *
      * @param username the name to check
-     * @throws CmsException C_BAD_NAME if the check fails
+     * @throws CmsIllegalArgumentException if the check fails
      */
-    public void validUsername(String username) throws CmsException {
+    public void validUsername(String username) throws CmsIllegalArgumentException {
 
-        if (username == null) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_BAD_NAME);
+        if (username == null || username.trim().length() == 0) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_USERNAME_0));
         }
 
         int l = username.length();
-
-        if (l == 0) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_BAD_NAME);
-        }
-
+        
         for (int i = 0; i < l; i++) {
             char c = username.charAt(i);
             if (((c < 'a') || (c > 'z'))
@@ -6700,7 +6675,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 && (c != '~')
                 && (c != '$')
                 && (c != '@')) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_BAD_NAME);
+                throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_USERNAME_ILLEGAL_CHARACTERS_1, username));
             }
         }
     }
@@ -6754,11 +6729,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             // read the "published resources" for the specified publish history ID
             List publishedResources = m_projectDriver.readPublishedResources(dbc, projectId, publishHistoryId);
             if (publishedResources.size() == 0) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn(
-                        "No published resources in the publish history for the specified ID "
-                            + publishHistoryId
-                            + " found.");
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(Messages.LOG_EMPTY_PUBLISH_HISTORY_1, publishHistoryId));
                 }
                 return;
             }
@@ -6768,8 +6740,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             exportPoints.addAll(OpenCms.getExportPoints());
             exportPoints.addAll(OpenCms.getModuleManager().getExportPoints());
             if (exportPoints.size() == 0) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("No export points configured at all.");
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(Messages.LOG_NO_EXPORT_POINTS_CONFIGURED_0));
                 }
                 return;
             }
@@ -6833,8 +6805,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 }
             }
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error writing export points", e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_WRITE_EXPORT_POINTS_ERROR_0), e);
             }
         } finally {
             if (printReportHeaders) {
@@ -7147,8 +7119,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             return new CmsFolder(resource);
         }
 
-        throw new CmsVfsResourceNotFoundException(
-            "Trying to access a file as a folder " + "(" + resource.getRootPath() + ")");
+        throw new CmsVfsResourceNotFoundException(Messages.get().container(Messages.ERR_ACCESS_FILE_AS_FOLDER_1, resource.getRootPath()));
     }
 
     /**
@@ -7164,27 +7135,27 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             try {
                 m_projectDriver.destroy();
             } catch (Throwable t) {
-                OpenCms.getLog(this).error("Error closing project driver", t);
+                LOG.error("Error closing project driver", t);
             }
             try {
                 m_userDriver.destroy();
             } catch (Throwable t) {
-                OpenCms.getLog(this).error("Error closing user driver", t);
+                LOG.error("Error closing user driver", t);
             }
             try {
                 m_vfsDriver.destroy();
             } catch (Throwable t) {
-                OpenCms.getLog(this).error("Error closing VFS driver", t);
+                LOG.error("Error closing VFS driver", t);
             }
             try {
                 m_workflowDriver.destroy();
             } catch (Throwable t) {
-                OpenCms.getLog(this).error("Error closing workflow driver", t);
+                LOG.error("Error closing workflow driver", t);
             }
             try {
                 m_backupDriver.destroy();
             } catch (Throwable t) {
-                OpenCms.getLog(this).error("Error closing backup driver", t);
+                LOG.error("Error closing backup driver", t);
             }
 
             for (int i = 0; i < m_connectionPools.size(); i++) {
@@ -7193,11 +7164,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 for (int j = 0; j < pools.length; j++) {
                     try {
                         driver.closePool(pools[j]);
-                        if (OpenCms.getLog(this).isDebugEnabled()) {
-                            OpenCms.getLog(this).debug(". Shutting down        : closed connection pool '" + pools[j] + "'");
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(". Shutting down        : closed connection pool '" + pools[j] + "'");
                         }
                     } catch (Throwable t) {
-                        OpenCms.getLog(this).error("Error closing connection pool '" + pools[j] + "'", t);
+                        LOG.error("Error closing connection pool '" + pools[j] + "'", t);
                     }
                 }
             }

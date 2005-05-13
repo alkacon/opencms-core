@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/03/04 15:11:32 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2005/05/13 15:10:55 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Properties;
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.51 $ $Date: 2005/03/04 15:11:32 $
+ * @version $Revision: 1.52 $ $Date: 2005/05/13 15:10:55 $
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
@@ -286,12 +286,6 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             } else {
                 OpenCms.getLog(this).error(message);
             }
-        }
-
-        switch (exceptionType) {
-            case CmsException.C_NOT_FOUND:
-                return new CmsVfsResourceNotFoundException(message);
-            default:
         }
 
         return new CmsException(message, exceptionType, rootCause);

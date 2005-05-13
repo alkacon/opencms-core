@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsResourceNotFoundException.java,v $
- * Date   : $Date: 2005/05/10 15:46:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/13 15:10:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.main.CmsException;
  * pathname has failed.<p> 
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2005/05/10 15:46:21 $
+ * @version $Revision: 1.5 $ $Date: 2005/05/13 15:10:56 $
  * @since 5.1.2
  */
 public class CmsVfsResourceNotFoundException extends CmsVfsException {
@@ -51,17 +51,6 @@ public class CmsVfsResourceNotFoundException extends CmsVfsException {
      */
     public CmsVfsResourceNotFoundException(String message) {
         super(message, C_VFS_RESOURCE_NOT_FOUND);
-    }
-
-    /**
-     * Constructs a CmsVfsResourceNotFoundException with the specified detail message
-     * and adds the original exception as a delegated root cause.<p>
-     * 
-     * @param message the detail message
-     * @param rootCause the delegated exception
-     */
-    public CmsVfsResourceNotFoundException(String message, Throwable rootCause) {
-        super(message, C_VFS_RESOURCE_NOT_FOUND, rootCause);
     }
     
     /**
