@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <export>
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0 beta 3 Corrin</opencms_version>
-		<createdate>5/11/05 12:16 PM</createdate>
+		<createdate>5/13/05 3:05 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -13,11 +13,12 @@
 		<nicename><![CDATA[OpenCms 6.0 Demos for the new Administration]]></nicename>
 		<class/>
 		<description><![CDATA[This module several demos for using widgets in the new OpenCms Administration.
-(c) 2005 by Alkacon Software (http://www.alkacon.com).]]></description>
-		<version>0.9.2</version>
+(c) 2005 by Alkacon Software (http://www.alkacon.com).
+]]></description>
+		<version>0.9.4</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
-		<datecreated>Wed, 04 May 2005 09:45:14 GMT</datecreated>
+		<datecreated>Fri, 13 May 2005 14:05:46 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
@@ -38,7 +39,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 May 2005 10:01:32 GMT</datecreated>
+			<datecreated>Thu, 12 May 2005 14:21:04 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
