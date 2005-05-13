@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsWidgetParameter.java,v $
- * Date   : $Date: 2005/05/13 12:44:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,13 @@
 package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.xml.CmsXmlException;
 
 /**
  * Parameter value wrapper used by the OpenCms workplace widgets.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public interface I_CmsWidgetParameter {
@@ -107,10 +106,8 @@ public interface I_CmsWidgetParameter {
      * @param cms an initialized instance of an OpenCms user context
      * 
      * @return the value of this parameter
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    String getStringValue(CmsObject cms) throws CmsXmlException;
+    String getStringValue(CmsObject cms);
 
     /**
      * Returns <code>true</code> if this widgets value contains an error.<p>
@@ -128,8 +125,6 @@ public interface I_CmsWidgetParameter {
      * 
      * @param cms an initialized instance of an OpenCms user context
      * @param value the value to set
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    void setStringValue(CmsObject cms, String value) throws CmsXmlException;
+    void setStringValue(CmsObject cms, String value);
 }

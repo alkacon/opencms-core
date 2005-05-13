@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
@@ -44,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
@@ -99,10 +98,8 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * @param cms an initialized instance of a CmsObject
      * 
      * @return the value of this XML content node as a plain text String
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    String getPlainText(CmsObject cms) throws CmsXmlException;
+    String getPlainText(CmsObject cms);
 
     /**
      * Returns the value of this XML content node as a String.<p>
@@ -110,10 +107,8 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * @param cms an initialized instance of a CmsObject
      * 
      * @return the value of this XML content node as a String
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    String getStringValue(CmsObject cms) throws CmsXmlException;
+    String getStringValue(CmsObject cms);
 
     /**
      * Sets the provided String as value of this XML content node.<p>  
@@ -124,8 +119,6 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * 
      * @param cms an initialized instance of a CmsObject
      * @param value the value to set
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    void setStringValue(CmsObject cms, String value) throws CmsXmlException;
+    void setStringValue(CmsObject cms, String value);
 }

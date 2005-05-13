@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlBooleanValue.java,v $
- * Date   : $Date: 2005/05/11 10:22:41 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/13 13:35:37 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
@@ -46,7 +46,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
@@ -98,15 +98,14 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
     }
 
     /**
-     * Returns the boolean value of the given XML content value.<p>
+     * Returns the boolean value of the given widget parameter.<p>
      * 
      * @param cms an initialized instance of a CmsObject
      * @param value the XML content value to get the boolean value of
      * 
-     * @return the boolean value of the given XML content value
-     * @throws CmsXmlException if something goes wrong
+     * @return the boolean value of the given widget parameter
      */
-    public static boolean getBooleanValue(CmsObject cms, I_CmsWidgetParameter value) throws CmsXmlException {
+    public static boolean getBooleanValue(CmsObject cms, I_CmsWidgetParameter value) {
 
         boolean result;
         if (value instanceof CmsXmlBooleanValue) {
@@ -200,7 +199,7 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
     /**
      * @see org.opencms.xml.types.A_CmsXmlValueTextBase#setStringValue(org.opencms.file.CmsObject, java.lang.String)
      */
-    public void setStringValue(CmsObject cms, String value) {
+    public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
         super.setStringValue(cms, value);
         m_boolean = getBooleanValue(m_stringValue);

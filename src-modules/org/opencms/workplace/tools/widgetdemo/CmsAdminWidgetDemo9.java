@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo9.java,v $
- * Date   : $Date: 2005/05/13 12:44:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
 import org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget;
 import org.opencms.workplace.xmlwidgets.CmsXmlStringWidget;
 import org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget;
-import org.opencms.xml.CmsXmlException;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -57,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
@@ -83,9 +82,6 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
     /** The job info object that is edited on this dialog. */
     CmsScheduledJobInfo m_jobInfo;
 
-    /** Controls which page is currently displayed in the dialog. */
-    protected String m_paramPage;
-    
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGE_ARRAY = {"page1", "page2"};
     
@@ -100,28 +96,7 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
     public CmsAdminWidgetDemo9(CmsJspActionElement jsp) {
 
         super(jsp);
-    }
-        
-    /**
-     * Returns the page parameter.<p>
-     *
-     * @return the page parameter
-     */
-    public String getParamPage() {
-
-        return m_paramPage;
-    }
-    
-    
-    /**
-     * Sets the page parameter.<p>
-     *
-     * @param paramPage the page parameter to set
-     */
-    public void setParamPage(String paramPage) {
-
-        m_paramPage = paramPage;
-    }    
+    }       
 
     /**
      * Public constructor with JSP variables.<p>
@@ -160,10 +135,8 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
      * 
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
-     * 
-     * @throws CmsXmlException in case the HTML for the dialog can't be generated
      */
-    protected String createDialogHtml(String dialog) throws CmsXmlException {
+    protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
 
@@ -329,6 +302,5 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
         setParamPage(PAGE_ARRAY[0]);
         
         return DIALOG_SET;
-    }
-    
+    }    
 }

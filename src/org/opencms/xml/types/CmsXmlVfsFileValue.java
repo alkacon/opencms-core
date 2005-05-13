@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsLinkTable;
@@ -47,14 +49,14 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
-    
+
     /** Value to mark that no link is defined, "none". */
     public static final String C_NO_LINK = "none";
-    
+
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsVfsFile";
 
@@ -111,7 +113,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     public CmsLinkTable getLinkTable() {
 
         CmsLinkTable linkTable = new CmsLinkTable();
-        if (! C_NO_LINK.equals(m_element.getText())) {
+        if (!C_NO_LINK.equals(m_element.getText())) {
             CmsLink link = new CmsLink("link0", "vfs", m_element.getText(), true);
             linkTable.addLink(link);
         }
@@ -129,9 +131,9 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject)
      */
-    public String getStringValue(CmsObject cms) {
+    public String getStringValue(CmsObject cms) throws CmsRuntimeException {
 
-        if (cms != null && CmsStringUtil.isNotEmpty(m_stringValue) && ! C_NO_LINK.equals(m_stringValue)) {
+        if (cms != null && CmsStringUtil.isNotEmpty(m_stringValue) && !C_NO_LINK.equals(m_stringValue)) {
             return cms.getRequestContext().removeSiteRoot(m_stringValue);
         } else {
             return m_stringValue;
@@ -157,9 +159,9 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, java.lang.String)
      */
-    public void setStringValue(CmsObject cms, String value) {
+    public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
-        if (cms != null && ! C_NO_LINK.equals(value)) {
+        if (cms != null && !C_NO_LINK.equals(value)) {
             // add site path if required
             value = CmsLinkManager.getSitePath(cms, null, value);
         }

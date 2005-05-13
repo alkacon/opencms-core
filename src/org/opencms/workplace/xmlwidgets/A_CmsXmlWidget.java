@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2005/05/10 13:58:55 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
-import org.opencms.xml.CmsXmlException;
 
 import java.util.Map;
 
@@ -42,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
@@ -125,13 +124,9 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, I_CmsWidgetDialog)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog)
      */
-    public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) throws CmsXmlException {
-
-        if (widgetDialog == null) {
-            throw new CmsXmlException();
-        }
+    public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return "";
     }
@@ -202,13 +197,13 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, I_CmsWidgetDialog, I_CmsWidgetParameter)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter)
      */
     public void setEditorValue(
         CmsObject cms,
         Map formParameters,
         I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param) throws CmsXmlException {
+        I_CmsWidgetParameter param) {
 
         String[] values = (String[])formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {

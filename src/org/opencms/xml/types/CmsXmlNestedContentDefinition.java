@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlNestedContentDefinition.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/13 13:35:37 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.4
  */
 public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implements I_CmsXmlSchemaType {
@@ -129,15 +129,15 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
      */
     public String getSchemaDefinition() {
 
-        throw new RuntimeException("Unable to get the schema definition of a nested XML content definition");
+        throw new CmsRuntimeException(Messages.get().container(Messages.ERR_NESTED_SCHEMA_0));
     }
 
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(org.opencms.file.CmsObject)
      */
-    public String getStringValue(CmsObject cms) {
+    public String getStringValue(CmsObject cms) throws CmsRuntimeException {
 
-        throw new RuntimeException("Unable to get the string value of a nested XML content definition");
+        throw new CmsRuntimeException(Messages.get().container(Messages.ERR_NESTED_GETVALUE_0));
     }
 
     /**
@@ -163,14 +163,14 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
      */
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
-        throw new RuntimeException("Unable to create a new instance of a nested XML content definition");
+        throw new CmsRuntimeException(Messages.get().container(Messages.ERR_NESTED_NEWINSTANCE_0));
     }
 
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, java.lang.String)
      */
-    public void setStringValue(CmsObject cms, String value) throws CmsXmlException {
+    public void setStringValue(CmsObject cms, String value) {
 
-        throw new CmsXmlException("Unable to set the String value of a nested XML content definition");
+        throw new CmsRuntimeException(Messages.get().container(Messages.ERR_NESTED_SETVALUE_0));
     }
 }

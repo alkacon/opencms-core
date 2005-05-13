@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/13 12:44:55 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.workplace.xmlwidgets.CmsWidgetException;
 import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
 import org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
-import org.opencms.xml.CmsXmlException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -372,7 +371,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                     set.add(widget);
                 }
             }
-        } catch (CmsXmlException e) {
+        } catch (Exception e) {
 
             LOG.error(e.getLocalizedMessage());
             getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
@@ -402,7 +401,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                     set.add(widget);
                 }
             }
-        } catch (CmsXmlException e) {
+        } catch (Exception e) {
 
             LOG.error(e.getLocalizedMessage());
             getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
@@ -432,7 +431,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                     set.add(widget);
                 }
             }
-        } catch (CmsXmlException e) {
+        } catch (Exception e) {
 
             LOG.error(e.getLocalizedMessage());
             getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
@@ -601,10 +600,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * Creates the dialog HTML for all defined widgets of this dialog.<p>  
      * 
      * @return the dialog HTML for all defined widgets of this dialog
-     * 
-     * @throws CmsXmlException in case the HTML for the dialog can't be generated
      */
-    protected String createDialogHtml() throws CmsXmlException {
+    protected String createDialogHtml() {
 
         return createDialogHtml(null);
     }
@@ -614,10 +611,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * 
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
-     * 
-     * @throws CmsXmlException in case the HTML for the dialog can't be generated
      */
-    protected String createDialogHtml(String dialog) throws CmsXmlException {
+    protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
 
@@ -657,10 +652,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * 
      * @param base the widget parameter base
      * @return the dialog HTML for one widget parameter
-     * 
-     * @throws CmsXmlException in case the HTML for the dialog widget can't be generated
      */
-    protected String createDialogRowHtml(CmsWidgetParameter base) throws CmsXmlException {
+    protected String createDialogRowHtml(CmsWidgetParameter base) {
 
         StringBuffer result = new StringBuffer(256);
 
@@ -786,10 +779,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * @param startIndex the widget index to start with
      * @param endIndex the widget index to stop at
      * @return the dialog widget rows HTML for the specified widget indices
-     * 
-     * @throws CmsXmlException in case the HTML for the dialog widget can't be generated
      */
-    protected String createDialogRowsHtml(int startIndex, int endIndex) throws CmsXmlException {
+    protected String createDialogRowsHtml(int startIndex, int endIndex) {
 
         StringBuffer result = new StringBuffer((endIndex - startIndex) * 8);
         for (int i=startIndex; i<=endIndex; i++) {
@@ -888,12 +879,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                     || base.hasValue(j);
                 if (required) {
                     CmsWidgetParameter param = new CmsWidgetParameter(base, params.size(), j);
-                    try {
-                        base.getWidget().setEditorValue(getCms(), processedParamters, this, param);
-                    } catch (CmsXmlException e) {
-                        int todo = 0;
-                        // TODO: error handling
-                    }
+                    base.getWidget().setEditorValue(getCms(), processedParamters, this, param);
                     params.add(param);
                 }
             }
@@ -974,10 +960,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * @param param the name (id) of the parameter to get the widget HTML for
      * 
      * @return the widget HTML code for the given parameter
-     * 
-     * @throws CmsXmlException if the widget HTML could not be generated
      */
-    protected String getWidget(CmsWidgetParameter param) throws CmsXmlException {
+    protected String getWidget(CmsWidgetParameter param) {
 
         if (param != null) {
             return param.getWidget().getDialogWidget(getCms(), this, param);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsXmlWidget.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.xml.CmsXmlException;
 
 import java.util.Map;
 
@@ -41,7 +40,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public interface I_CmsXmlWidget {
@@ -56,11 +55,8 @@ public interface I_CmsXmlWidget {
      * @param param the widget parameter to generate the widget for
      * 
      * @return the html to include at the end of the dialog for this widget
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    String getDialogHtmlEnd(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
-    throws CmsXmlException;
+    String getDialogHtmlEnd(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param);
 
     /**
      * Generates the necessary JavaScript inclusion code for this widget.<p>
@@ -69,10 +65,8 @@ public interface I_CmsXmlWidget {
      * @param widgetDialog the dialog where the widget is used on
      * 
      * @return the JavaScript inclusion code
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) throws CmsXmlException;
+    String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog);
 
     /**
      * Generates the initialisation method JavaScript code for this widget.<p>
@@ -81,10 +75,8 @@ public interface I_CmsXmlWidget {
      * @param widgetDialog the dialog where the widget is used on
      * 
      * @return the initialisation method JavaScript code
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) throws CmsXmlException;
+    String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog);
 
     /**
      * Generates the initialization method JavaScript code for this widget.<p>
@@ -93,10 +85,8 @@ public interface I_CmsXmlWidget {
      * @param widgetDialog the dialog where the widget is used on
      * 
      * @return the initialization method JavaScript code
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) throws CmsXmlException;
+    String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog);
 
     /**
      * Generates the widget HTML for the provided widget parameter.<p>
@@ -106,11 +96,8 @@ public interface I_CmsXmlWidget {
      * @param param the widget parameter to generate the widget for
      * 
      * @return the widget HTML for the provided widget parameter
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
-    throws CmsXmlException;
+    String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param);
 
     /**
      * Creates the HTML code for the help bubble for this widget.<p>
@@ -141,9 +128,6 @@ public interface I_CmsXmlWidget {
      * @param formParameters the map of parameters to get the value from
      * @param widgetDialog the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    void setEditorValue(CmsObject cms, Map formParameters, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
-    throws CmsXmlException;
+    void setEditorValue(CmsObject cms, Map formParameters, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param);
 }

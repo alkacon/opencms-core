@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/05/07 16:08:28 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -586,7 +586,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 
             }
             return result.toString();
-        } catch (CmsXmlException e) {
+        } catch (Exception e) {
             showErrorPage(e, "xml");
             return "";
         }       
@@ -609,7 +609,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 result.append(widget.getDialogIncludes(getCms(), this));
                 result.append("\n");
             }
-        } catch (CmsXmlException e) {
+        } catch (Exception e) {
             showErrorPage(e, "xml");
         }
         return result.toString();
@@ -631,7 +631,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 I_CmsXmlWidget widget = (I_CmsXmlWidget)i.next();
                 result.append(widget.getDialogInitCall(getCms(), this));
             }
-        } catch (CmsXmlException e) {
+        } catch (Exception e) {
             showErrorPage(e, "xml");
         }
         return result.toString();
@@ -655,7 +655,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 result.append(widget.getDialogInitMethod(getCms(), this));
                 result.append("\n");
             }
-        } catch (CmsXmlException e) {
+        } catch (Exception e) {
             showErrorPage(e, "xml");
         }
         return result.toString();

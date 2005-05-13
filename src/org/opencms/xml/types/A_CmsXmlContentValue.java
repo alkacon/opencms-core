@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/05/13 12:44:55 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,12 @@ package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 
@@ -51,7 +51,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_CmsWidgetParameter {
@@ -205,7 +205,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
             try {
                 I_CmsXmlContentValue value = createValue(document, element, locale);
                 value.setStringValue(cms, defaultValue);
-            } catch (CmsXmlException e) {
+            } catch (CmsRuntimeException e) {
                 // should not happen if default value is correct
                 OpenCms.getLog(this).error("Invalid default value '" + defaultValue + "' for XML content", e);
                 element.clearContent();

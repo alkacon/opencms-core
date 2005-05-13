@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlColorpickerWidget.java,v $
- * Date   : $Date: 2005/05/10 09:24:02 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.CmsXmlColorValue;
 
 import java.util.Map;
@@ -45,7 +44,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.2
  */
 public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
@@ -92,10 +91,9 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter)
      */
-    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) throws CmsXmlException {
-
+    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         StringBuffer result = new StringBuffer(16);
         result.append("<td class=\"xmlTd\">");
@@ -126,7 +124,7 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
             "button.color",
             widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
-        
+
         result.append("</td></tr></table>");
 
         result.append("</td>");
@@ -134,13 +132,13 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, I_CmsWidgetDialog, I_CmsWidgetParameter)
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter)
      */
     public void setEditorValue(
         CmsObject cms,
         Map formParameters,
         I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param) throws CmsXmlException {
+        I_CmsWidgetParameter param) {
 
         String[] values = (String[])formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
@@ -203,5 +201,4 @@ public class CmsXmlColorpickerWidget extends A_CmsXmlWidget {
         }
         return "#000000";
     }
-
 }

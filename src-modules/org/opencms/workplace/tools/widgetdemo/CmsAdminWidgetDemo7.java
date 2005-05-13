@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo7.java,v $
- * Date   : $Date: 2005/05/13 09:04:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.xmlwidgets.*;
-import org.opencms.xml.CmsXmlException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
@@ -119,11 +118,9 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
      * Creates the dialog HTML for all occurences of one widget parameter.<p>  
      * 
      * @param base the widget parameter base
-     * @return the dialog HTML for one widget parameter
-     * 
-     * @throws CmsXmlException in case the HTML for the dialog widget can't be generated
+     * @return the dialog HTML for one widget parameter6
      */
-    protected String createDialogRowHtml(CmsWidgetParameter base) throws CmsXmlException {
+    protected String createDialogRowHtml(CmsWidgetParameter base) {
 
         StringBuffer result = new StringBuffer(256);
 

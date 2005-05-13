@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/05/07 16:08:28 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.12
  */
@@ -773,7 +773,7 @@ public abstract class CmsEditor extends CmsDialog {
      * @param key the suffix for the localized error messages, e.g. "save" for key "error.message.editorsave"
      * @throws JspException if inclusion of the error page fails
      */
-    protected void showErrorPage(CmsException exception, String key) throws JspException {
+    protected void showErrorPage(Exception exception, String key) throws JspException {
         // reset the action parameter            
         setParamAction("");                               
         showErrorPage(this, exception, key, C_FILE_DIALOG_EDITOR_CONFIRM);
@@ -790,7 +790,7 @@ public abstract class CmsEditor extends CmsDialog {
      * @param key the suffix key for the localized error messages, e.g. "save" for key "error.message.editorsave"
      * @throws JspException if inclusion of the error page fails
      */
-    protected void showErrorPage(Object editor, CmsException exception, String key) throws JspException {
+    protected void showErrorPage(Object editor, Exception exception, String key) throws JspException {
         showErrorPage(editor, exception, key, C_FILE_DIALOG_SCREEN_ERROR);
     }
     
@@ -803,7 +803,7 @@ public abstract class CmsEditor extends CmsDialog {
      * @param dialogUri the URI of the error dialog to use in the VFS
      * @throws JspException if inclusion of the error page fails
      */    
-    protected void showErrorPage(Object editor, CmsException exception, String key, String dialogUri) throws JspException {
+    protected void showErrorPage(Object editor, Exception exception, String key, String dialogUri) throws JspException {
         // save initialized instance of the editor class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, editor);
         // reading of file contents failed, show error dialog

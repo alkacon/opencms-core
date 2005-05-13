@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsWidgetParameter.java,v $
- * Date   : $Date: 2005/05/13 12:44:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.9.1
  */
 public class CmsWidgetParameter implements I_CmsWidgetParameter {
@@ -448,7 +448,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     /**
      * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getStringValue(org.opencms.file.CmsObject)
      */
-    public String getStringValue(CmsObject cms) {
+    public String getStringValue(CmsObject cms) throws CmsRuntimeException {
 
         return m_value;
     }
@@ -512,7 +512,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     /**
      * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#setStringValue(org.opencms.file.CmsObject, java.lang.String)
      */
-    public void setStringValue(CmsObject cms, String value) {
+    public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
         m_value = value;
     }

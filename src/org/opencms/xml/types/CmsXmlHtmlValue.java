@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/05/13 13:35:38 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
@@ -40,7 +41,6 @@ import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsHtmlExtractor;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
 
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -143,7 +143,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
             try {
                 I_CmsXmlContentValue value = createValue(document, element, locale);
                 value.setStringValue(cms, defaultValue);
-            } catch (CmsXmlException e) {
+            } catch (CmsRuntimeException e) {
                 // should not happen if default value is correct
                 OpenCms.getLog(this).error("Invalid default value '" + defaultValue + "' for XML content", e);
                 element.clearContent();
@@ -217,7 +217,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(org.opencms.file.CmsObject)
      */
-    public String getStringValue(CmsObject cms) {
+    public String getStringValue(CmsObject cms) throws CmsRuntimeException {
 
         if (m_stringValue == null) {
             m_stringValue = createStringValue(cms, m_document);
@@ -245,7 +245,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, java.lang.String)
      */
-    public void setStringValue(CmsObject cms, String value) throws CmsXmlException {
+    public void setStringValue(CmsObject cms, String value) {
 
         Element content = m_element.element(CmsXmlPage.NODE_CONTENT);
         Element links = m_element.element(CmsXmlPage.NODE_LINKS);
@@ -271,7 +271,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                 // replace links in HTML by macros and fill link table      
                 value = linkProcessor.replaceLinks(value);
             } catch (Exception exc) {
-                throw new CmsXmlException("HTML data processing failed", exc);
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_HTML_DATA_PROCESSING_0));
             }
         }
 
