@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/13 14:04:33 $
- * Version: $Revision: 1.127 $
+ * Date   : $Date: 2005/05/13 14:05:17 $
+ * Version: $Revision: 1.128 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.127 $ $Date: 2005/05/13 14:04:33 $
+ * @version $Revision: 1.128 $ $Date: 2005/05/13 14:05:17 $
  * @since 5.1
  */
 public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
@@ -943,7 +943,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         CmsPropertyDefinition propDef = null;
         
         try {
-	        conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection(dbc);
             
             Iterator dummy = properties.iterator();
             while (dummy.hasNext()) {
