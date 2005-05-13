@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/12 15:22:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/13 09:04:18 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.xmlwidgets.A_CmsXmlWidget;
+import org.opencms.workplace.xmlwidgets.CmsWidgetException;
 import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
 import org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
@@ -62,19 +63,19 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsWidgetDialog.class);
 
     /** Action for optional element creation. */
     public static final int ACTION_ELEMENT_ADD = 152;
 
     /** Action for optional element removal. */
     public static final int ACTION_ELEMENT_REMOVE = 153;
+
+    /** Value for the action: error in the form validation. */
+    public static final int ACTION_ERROR = 303;
 
     /** Indicates an optional element should be created. */
     public static final String EDITOR_ACTION_ELEMENT_ADD = "addelement";
@@ -84,6 +85,15 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** Prefix for "hidden" parameters, required since these must be unescaped later. */
     public static final String HIDDEN_PARAM_PREFIX = "hidden.";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWidgetDialog.class);
+    
+    /** The validation errors for the input form. */
+    protected List m_validationErrorList;
+    
+    /** The validation errors for the input form with the widget parameter IDs as keys. */
+    protected Map m_validationErrors;
 
     /** Contains all parameter value of this dialog. */
     protected Map m_widgetParamValues;
@@ -152,8 +162,11 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 // remove the value
                 params.remove(index);
             } else {
-                // add the new value after the clicked element
-                index = index + 1;
+                List sequence = (List)getParameters().get(base.getName());
+                if (sequence.size() > 0) {
+                    // add the new value after the clicked element
+                    index = index + 1;
+                }
                 CmsWidgetParameter newParam = new CmsWidgetParameter(base, index);
                 params.add(index, newParam);
             }
@@ -287,13 +300,13 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     public String getWidgetHtmlEnd() {
 
         StringBuffer result = new StringBuffer(32);
-        // iterate over unique widgets from collector
-        Iterator i = getWidgets().iterator();
-        while (i.hasNext()) {
-            CmsWidgetParameter param = (CmsWidgetParameter)i.next();
+            // iterate over unique widgets from collector
+            Iterator i = getWidgets().iterator();
+            while (i.hasNext()) {
+                CmsWidgetParameter param = (CmsWidgetParameter)i.next();
             //result.append(widget.getDialogHtmlEnd(getCms(), this, param));
             result.append(widgetHelpText(param));
-        }
+            }
         return result.toString();
     }
 
@@ -326,218 +339,6 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
         return result.toString();
-    }
-
-    /**
-     * Creates the dialog HTML for all occurences of one widget parameter.<p>  
-     * 
-     * @param base the widget parameter base
-     * @return the dialog HTML for one widget parameter
-     * 
-     * @throws CmsXmlException in case the HTML for the dialog widget can't be generated
-     */
-    protected String createDialogRowHtml(CmsWidgetParameter base) throws CmsXmlException {
-
-        StringBuffer result = new StringBuffer(256);
-
-        List sequence = (List)getParameters().get(base.getName());
-        int count = sequence.size();
-
-        if ((count < 1) && (base.getMinOccurs() > 0)) {
-            // no parameter with the value present, but also not optional: use base as parameter
-            sequence = new ArrayList();
-            sequence.add(base);
-            count = 1;
-        }
-
-        // check if value is optional or multiple
-        boolean addValue = false;
-        if (count < base.getMaxOccurs()) {
-            addValue = true;
-        }
-        boolean removeValue = false;
-        if (count > base.getMinOccurs()) {
-            removeValue = true;
-        }
-
-        boolean disabledElement = false;
-
-        // loop through multiple elements
-        for (int j = 0; j < count; j++) {
-
-            // get the parameter and the widget
-            CmsWidgetParameter p = (CmsWidgetParameter)sequence.get(j);
-            I_CmsXmlWidget widget = p.getWidget();
-
-            // create label and help bubble cells
-            result.append("<tr>");
-            result.append("<td class=\"xmlLabel");
-            if (disabledElement) {
-                // element is disabled, mark it with css
-                result.append("Disabled");
-            }
-            result.append("\">");
-            result.append(key(A_CmsXmlWidget.getLabelKey(p), p.getName()));
-            if (count > 1) {
-                result.append(" [").append(p.getIndex() + 1).append("]");
-            }
-            result.append(": </td>");
-            if (p.getIndex() == 0) {
-                // show help bubble only on first element of each content definition 
-                //result.append(widget.getHelpBubble(getCms(), this, p));
-                result.append(widgetHelpBubble(p));
-            } else {
-                // create empty cell for all following elements 
-                result.append(dialogHorizontalSpacer(16));
-            }
-
-            // append individual widget html cell if element is enabled
-            if (!disabledElement) {
-                // this is a simple type, display widget
-                result.append(widget.getDialogWidget(getCms(), this, p));
-            } else {
-                // disabled element, show message for optional element
-                result.append("<td class=\"xmlTdDisabled maxwidth\">");
-                result.append(key("editor.xmlcontent.optionalelement"));
-                result.append("</td>");
-            }
-
-            // append add and remove element buttons if required
-            result.append(dialogHorizontalSpacer(5));
-            result.append("<td>");
-            if (addValue || removeValue) {
-                result.append("<table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-                result.append(buildAddElement(base.getName(), p.getIndex(), addValue));
-                result.append(buildRemoveElement(base.getName(), p.getIndex(), removeValue));
-                result.append("</tr></table>");
-            }
-            result.append("</td>");
-            // close row
-            result.append("</tr>\n");
-        }
-
-        return result.toString();
-    }
-
-    /**
-     * Implementation for the Administration framework.<p>  
-     * 
-     * @param param the widget parameter
-     * 
-     * @return html code
-     * 
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpBubble(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
-     */
-    protected String widgetHelpBubble(CmsWidgetParameter param) {
-
-        if (!useNewStyle()) {
-            return param.getWidget().getHelpBubble(getCms(), this, param);
-        }
-        String locKey = A_CmsXmlWidget.getHelpKey(param);
-        String locValue = ((I_CmsWidgetDialog)this).key(locKey, null);
-        if (locValue == null) {
-            // there was no help message found for this key, so return a spacer cell
-            return this.dialogHorizontalSpacer(16);
-        } else {
-            StringBuffer result = new StringBuffer(256);
-            result.append("<td>");
-            result.append("<img name=\"img");
-            result.append(locKey);
-            result.append("\" id=\"img");
-            result.append(locKey);
-            result.append("\" src=\"");
-            result.append(OpenCms.getLinkManager().substituteLink(
-                getCms(),
-                "/system/workplace/resources/commons/help.gif"));
-            result.append("\" border=\"0\" onmouseout=\"hideMenuHelp('");
-            result.append(locKey);
-            result.append("');\" onmouseover=\"showMenuHelp('");
-            result.append(locKey);
-            result.append("');\">");
-            result.append("</td>");
-            return result.toString();
-        }
-    }
-
-    /**
-     * Implementation for the Administration framework.<p>  
-     * 
-     * @param param the widget parameter
-     * 
-     * @return html code
-     * 
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpText(I_CmsWidgetDialog, I_CmsWidgetParameter)
-     */
-    protected String widgetHelpText(CmsWidgetParameter param) {
-
-        if (!useNewStyle()) {
-            return param.getWidget().getHelpText(this, param);
-        }
-        StringBuffer result = new StringBuffer(128);
-        // calculate the key
-        String locKey = A_CmsXmlWidget.getHelpKey(param);
-        String locValue = ((I_CmsWidgetDialog)this).key(locKey, null);
-        if (locValue == null) {
-            // there was no help message found for this key, so return an empty string
-            return "";
-        } else {
-            result.append("<div class=\"help\" name=\"help");
-            result.append(locKey);
-            result.append("\" id=\"help");
-            result.append(locKey);
-            result.append("\" onmouseout=\"hideMenuHelp('");
-            result.append(locKey);
-            result.append("');\" onmouseover=\"showMenuHelp('");
-            result.append(locKey);
-            result.append("');\">");
-            result.append(locValue);
-            result.append("</div>");
-            return result.toString();
-        }
-    }
-
-    /**
-     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
-     * 
-     * @param dialog the dialog (page) to get the HTML for
-     * @return the dialog HTML for all defined widgets of the named dialog (page)
-     * 
-     * @throws CmsXmlException in case the HTML for the dialog can't be generated
-     */
-    protected String createDialogHtml(String dialog) throws CmsXmlException {
-
-        StringBuffer result = new StringBuffer(1024);
-
-        // create table
-        result.append("<table class=\"xmlTable\">\n");
-
-        Iterator i = getWidgets().iterator();
-        // iterate the type sequence                    
-        while (i.hasNext()) {
-            // get the current widget base definition
-            CmsWidgetParameter base = (CmsWidgetParameter)i.next();
-            // check if the element is on the requested dialog page
-            if ((dialog == null) || dialog.equals(base.getDialog())) {
-                // add the HTML for the dialog element
-                result.append(createDialogRowHtml(base));
-            }
-        }
-        // close table
-        result.append("</table>\n");
-
-        return result.toString();
-    }
-
-    /**
-     * Creates the dialog HTML for all defined widgets of this dialog.<p>  
-     * 
-     * @return the dialog HTML for all defined widgets of this dialog
-     * 
-     * @throws CmsXmlException in case the HTML for the dialog can't be generated
-     */
-    protected String createDialogHtml() throws CmsXmlException {
-
-        return createDialogHtml(null);
     }
 
     /**
@@ -597,6 +398,22 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
+        return result.toString();
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
+     */
+    public String paramsAsHidden() {
+
+        if (getAction() != ACTION_ERROR) {
+            return super.paramsAsHidden();
+        }
+        // on an error page, also output the widget parameters
+        StringBuffer result = new StringBuffer();
+        result.append(super.paramsAsHidden());
+        result.append('\n');
+        result.append(widgetParamsAsHidden());
         return result.toString();
     }
 
@@ -726,7 +543,190 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 }
             }
         }
+        setValidationErrorList(result);
         return result;
+    }
+
+    /**
+     * Creates the dialog HTML for all defined widgets of this dialog.<p>  
+     * 
+     * @return the dialog HTML for all defined widgets of this dialog
+     * 
+     * @throws CmsXmlException in case the HTML for the dialog can't be generated
+     */
+    protected String createDialogHtml() throws CmsXmlException {
+
+        return createDialogHtml(null);
+    }
+
+    /**
+     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
+     * 
+     * @param dialog the dialog (page) to get the HTML for
+     * @return the dialog HTML for all defined widgets of the named dialog (page)
+     * 
+     * @throws CmsXmlException in case the HTML for the dialog can't be generated
+     */
+    protected String createDialogHtml(String dialog) throws CmsXmlException {
+
+        StringBuffer result = new StringBuffer(1024);
+
+        // create table
+        result.append("<table class=\"xmlTable\">\n");
+        
+        // show error header once if there were validation errors
+        if (getValidationErrors().size() > 0) {
+            result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
+            result.append("<tr><td colspan=\"2\">&nbsp;</td>");
+            result.append("<td class=\"xmlTdErrorHeader\">");
+            result.append(key("editor.xmlcontent.validation.error.title"));
+            result.append("</td><td colspan=\"2\">&nbsp;");
+            result.append("</td></tr>\n");
+            result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
+        }
+
+        Iterator i = getWidgets().iterator();
+        // iterate the type sequence                    
+        while (i.hasNext()) {
+            // get the current widget base definition
+            CmsWidgetParameter base = (CmsWidgetParameter)i.next();
+            // check if the element is on the requested dialog page
+            if ((dialog == null) || dialog.equals(base.getDialog())) {
+                // add the HTML for the dialog element
+                result.append(createDialogRowHtml(base));
+            }
+        }
+        // close table
+        result.append("</table>\n");
+
+        return result.toString();
+    }
+
+    /**
+     * Creates the dialog HTML for all occurences of one widget parameter.<p>  
+     * 
+     * @param base the widget parameter base
+     * @return the dialog HTML for one widget parameter
+     * 
+     * @throws CmsXmlException in case the HTML for the dialog widget can't be generated
+     */
+    protected String createDialogRowHtml(CmsWidgetParameter base) throws CmsXmlException {
+
+        StringBuffer result = new StringBuffer(256);
+
+        List sequence = (List)getParameters().get(base.getName());
+        int count = sequence.size();
+        Map errors = getValidationErrors();
+
+        // check if value is optional or multiple
+        boolean addValue = false;
+        if (count < base.getMaxOccurs()) {
+            addValue = true;
+        }
+        boolean removeValue = false;
+        if (count > base.getMinOccurs()) {
+            removeValue = true;
+        }
+
+        // check if value is present
+        boolean disabledElement = false;
+        if (count < 1) {
+            // no parameter with the value present, but also not optional: use base as parameter
+            sequence = new ArrayList();
+            sequence.add(base);
+            count = 1;
+            if (base.getMinOccurs() == 0) {
+                disabledElement = true;    
+            }
+        }
+
+        // loop through multiple elements
+        for (int j = 0; j < count; j++) {
+
+            // get the parameter and the widget
+            CmsWidgetParameter p = (CmsWidgetParameter)sequence.get(j);
+            I_CmsXmlWidget widget = p.getWidget();
+            
+            // check for an error in this row
+            if (errors.containsKey(p.getId())) {
+                // show error message
+                result.append("<tr><td></td><td><img src=\"");
+                result.append(getSkinUri()).append("editors/xmlcontent/");
+                result.append("error.gif");
+                result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError\">");
+                Throwable t = (CmsWidgetException)errors.get(p.getId());
+                while (t != null) {
+                    result.append(t.getLocalizedMessage());
+                    t = t.getCause();
+                    if (t != null) {
+                        result.append("<br>");
+                    }
+                }                
+                result.append("</td><td colspan=\"2\"></td></tr>\n");
+            }
+
+            // create label and help bubble cells
+            result.append("<tr>");
+            result.append("<td class=\"xmlLabel");
+            if (disabledElement) {
+                // element is disabled, mark it with css
+                result.append("Disabled");
+            }
+            result.append("\">");
+            result.append(key(A_CmsXmlWidget.getLabelKey(p), p.getName()));
+            if (count > 1) {
+                result.append(" [").append(p.getIndex() + 1).append("]");
+            }
+            result.append(": </td>");
+            if (p.getIndex() == 0) {
+                // show help bubble only on first element of each content definition 
+                //result.append(widget.getHelpBubble(getCms(), this, p));
+                result.append(widgetHelpBubble(p));
+            } else {
+                // create empty cell for all following elements 
+                result.append(dialogHorizontalSpacer(16));
+            }
+
+            // append individual widget html cell if element is enabled
+            if (!disabledElement) {
+                // this is a simple type, display widget
+                result.append(widget.getDialogWidget(getCms(), this, p));
+            } else {
+                // disabled element, show message for optional element
+                result.append("<td class=\"xmlTdDisabled maxwidth\">");
+                result.append(key("editor.xmlcontent.optionalelement"));
+                result.append("</td>");
+            }
+
+            // append add and remove element buttons if required
+            result.append(dialogHorizontalSpacer(5));
+            result.append("<td>");
+            if (addValue || removeValue) {
+                result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+                 
+                if (!addValue) {
+                    result.append(dialogHorizontalSpacer(24));
+                } else {
+                    result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+                    result.append(buildAddElement(base.getName(), p.getIndex(), addValue));
+                }
+                
+                if (removeValue) {
+                    if (!addValue) {
+                        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+                    }
+                    result.append(buildRemoveElement(base.getName(), p.getIndex(), removeValue));
+                }
+                
+                result.append("</tr></table></td>");               
+                result.append("</tr></table>");
+            }
+            result.append("</td>");
+            // close row
+            result.append("</tr>\n");
+        }
+
+        return result.toString();
     }
 
     /**
@@ -820,21 +820,42 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         return m_widgetParamValues;
     }
+    
+    /**
+     * Returns the validation errors for the dialog.<p>
+     * 
+     * The method (@link CmsWidgetDialog#commitWidgetValues(String)) has to set this list.<p>
+     * 
+     * @return the validation errors for the dialog
+     */
+    protected List getValidationErrorList() {
+
+        return m_validationErrorList;
+    }
 
     /**
-     * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
+     * Returns the validation errors with the widget parameter id as key.<p>
+     * 
+     * Be sure that the values have been validated before using the method
+     * (@link CmsWidgetDialog#commitWidgetValues(String)).<p>
+     * 
+     * @return the validation errors with the widget parameter id as key
      */
-    public String paramsAsHidden() {
-
-        if (getAction() != ACTION_ERROR) {
-            return super.paramsAsHidden();
+    protected Map getValidationErrors() {
+        
+        if (m_validationErrors == null) {
+            List exceptions = getValidationErrorList();
+            if (exceptions != null) {
+                m_validationErrors = new HashMap(exceptions.size());
+                for (int i=exceptions.size() - 1; i>=0; i--) {
+                    CmsWidgetException e = (CmsWidgetException)exceptions.get(i);
+                    m_validationErrors.put(e.getWidget().getId(), e);
+                }
+            } else {
+                m_validationErrors = new HashMap(0);    
+            }
         }
-        // on an error page, also output the widget parameters
-        StringBuffer result = new StringBuffer();
-        result.append(super.paramsAsHidden());
-        result.append('\n');
-        result.append(widgetParamsAsHidden());
-        return result.toString();
+        return m_validationErrors;
     }
 
     /**
@@ -864,7 +885,93 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         return m_widgets;
     }
+    
+    /**
+     * Sets the validation errors for the dialog.<p>
+     * 
+     * Use this in the method (@link CmsWidgetDialog#commitWidgetValues(String)) to set the list.<p>
+     * 
+     * @param errors the validation errors
+     */
+    protected void setValidationErrorList(List errors) {
 
-    /** Value for the action: error in the form validation. */
-    public static final int ACTION_ERROR = 303;
+        m_validationErrorList = errors;
+    }
+    
+    /**
+     * Implementation for the Administration framework.<p>  
+     * 
+     * @param param the widget parameter
+     * 
+     * @return html code
+     * 
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpBubble(org.opencms.file.CmsObject, I_CmsWidgetDialog, CmsWidgetParameter)
+     */
+    protected String widgetHelpBubble(CmsWidgetParameter param) {
+
+        if (!useNewStyle()) {
+            return param.getWidget().getHelpBubble(getCms(), this, param);
+        }
+        String locKey = A_CmsXmlWidget.getHelpKey(param);
+        String locValue = ((I_CmsWidgetDialog)this).key(locKey, null);
+        if (locValue == null) {
+            // there was no help message found for this key, so return a spacer cell
+            return this.dialogHorizontalSpacer(16);
+        } else {
+            StringBuffer result = new StringBuffer(256);
+            result.append("<td>");
+            result.append("<img name=\"img");
+            result.append(locKey);
+            result.append("\" id=\"img");
+            result.append(locKey);
+            result.append("\" src=\"");
+            result.append(OpenCms.getLinkManager().substituteLink(
+                getCms(),
+                "/system/workplace/resources/commons/help.gif"));
+            result.append("\" border=\"0\" onmouseout=\"hideMenuHelp('");
+            result.append(locKey);
+            result.append("');\" onmouseover=\"showMenuHelp('");
+            result.append(locKey);
+            result.append("');\">");
+            result.append("</td>");
+            return result.toString();
+        }
+    }
+
+    /**
+     * Implementation for the Administration framework.<p>  
+     * 
+     * @param param the widget parameter
+     * 
+     * @return html code
+     * 
+     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpText(I_CmsWidgetDialog, CmsWidgetParameter)
+     */
+    protected String widgetHelpText(CmsWidgetParameter param) {
+
+        if (!useNewStyle()) {
+            return param.getWidget().getHelpText(this, param);
+        }
+        StringBuffer result = new StringBuffer(128);
+        // calculate the key
+        String locKey = A_CmsXmlWidget.getHelpKey(param);
+        String locValue = ((I_CmsWidgetDialog)this).key(locKey, null);
+        if (locValue == null) {
+            // there was no help message found for this key, so return an empty string
+            return "";
+        } else {
+            result.append("<div class=\"help\" name=\"help");
+            result.append(locKey);
+            result.append("\" id=\"help");
+            result.append(locKey);
+            result.append("\" onmouseout=\"hideMenuHelp('");
+            result.append(locKey);
+            result.append("');\" onmouseover=\"showMenuHelp('");
+            result.append(locKey);
+            result.append("');\">");
+            result.append(locValue);
+            result.append("</div>");
+            return result.toString();
+        }
+    }
 }
