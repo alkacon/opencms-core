@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/10 09:24:02 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidgetDialog.java,v $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.xmlwidgets;
+package org.opencms.widgets;
 
 import java.text.ParseException;
 import java.util.Locale;
@@ -40,7 +40,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  * @since 5.5.2
  */
 public interface I_CmsWidgetDialog {

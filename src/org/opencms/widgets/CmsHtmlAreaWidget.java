@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlHtmlWidget.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.16 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsHtmlAreaWidget.java,v $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.xmlwidgets;
+package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
@@ -42,21 +42,21 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.1 $
  * @since 5.5.0
  */
-public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
+public class CmsHtmlAreaWidget extends A_CmsWidget {
 
     /**
      * Creates a new editor widget.<p>
      */
-    public CmsXmlHtmlWidget() {
+    public CmsHtmlAreaWidget() {
 
         // empty constructor is required for class registration
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog)
+     * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
@@ -76,7 +76,7 @@ public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog)
+     * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
@@ -85,7 +85,7 @@ public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog)
+     * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
     public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
@@ -97,7 +97,7 @@ public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter)
+     * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
@@ -118,7 +118,7 @@ public class CmsXmlHtmlWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter)
+     * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public void setEditorValue(
         CmsObject cms,

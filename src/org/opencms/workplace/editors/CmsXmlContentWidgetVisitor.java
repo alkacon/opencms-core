@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlWidgetCollector.java,v $
- * Date   : $Date: 2005/05/12 10:57:11 $
- * Version: $Revision: 1.7 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentWidgetVisitor.java,v $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,9 +29,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.xmlwidgets;
+package org.opencms.workplace.editors;
 
 import org.opencms.main.CmsLog;
+import org.opencms.widgets.I_CmsWidget;
+import org.opencms.widgets.Messages;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.I_CmsXmlContentValueVisitor;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -52,13 +54,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.1 $
  * @since 5.5.4
  */
-public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
+public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
 
     /** Static reference to the log. */
-    private static final Log LOG = CmsLog.getLog(CmsXmlWidgetCollector.class);
+    private static final Log LOG = CmsLog.getLog(CmsXmlContentWidgetVisitor.class);
 
     /** The locale to get the values from. */
     private Locale m_locale;
@@ -75,7 +77,7 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
     /**
      * Creates a new widget collector node visitor.<p> 
      */
-    public CmsXmlWidgetCollector() {
+    public CmsXmlContentWidgetVisitor() {
 
         initialize(null);
     }
@@ -85,7 +87,7 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
      * 
      * @param locale the Locale to get the widgets from
      */
-    public CmsXmlWidgetCollector(Locale locale) {
+    public CmsXmlContentWidgetVisitor(Locale locale) {
 
         initialize(locale);
     }
@@ -149,7 +151,7 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
             if ((useLocale && value.getLocale() == getLocale()) || (!useLocale)) {
                 try {
                     // get widget for value
-                    I_CmsXmlWidget widget = value.getContentDefinition().getContentHandler().getWidget(value);
+                    I_CmsWidget widget = value.getContentDefinition().getContentHandler().getWidget(value);
                     if (!m_uniqueWidgets.contains(widget)) {
                         m_uniqueWidgets.add(widget);
                     }

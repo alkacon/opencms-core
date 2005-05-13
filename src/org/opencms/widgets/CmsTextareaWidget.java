@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlStringWidget.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.21 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsTextareaWidget.java,v $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,51 +29,52 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.xmlwidgets;
+package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 
 /**
  * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlStringValue}.<p>
- *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
- * @since 5.5.0
+ * Displays a textarea with 4 rows to enter String values conveniently.<p>
+ *
+ * @author Andreas Zahner (a.zahner@alkacon.com)
+ * 
+ * @version $Revision: 1.1 $
+ * @since 5.7.2
  */
-public class CmsXmlStringWidget extends A_CmsXmlWidget {
+public class CmsTextareaWidget extends A_CmsWidget {
 
     /**
      * Creates a new editor widget.<p>
      */
-    public CmsXmlStringWidget() {
+    public CmsTextareaWidget() {
 
         // empty constructor is required for class registration
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter)
+     * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String id = param.getId();
-
         StringBuffer result = new StringBuffer(16);
 
-        result.append("<td class=\"xmlTd\"><input class=\"xmlInput textInput");
+        result.append("<td class=\"xmlTd\">");
+        result.append("<textarea class=\"xmlInput maxwidth");
         if (param.hasError()) {
             result.append(" xmlInputError");
         }
         result.append("\" name=\"");
         result.append(id);
-        result.append("\" id=\"");
-        result.append(id);
-        result.append("\" value=\"");
+        result.append("\" rows=\"4\" wrap=\"virtual\" style=\"overflow:auto;\">");
         result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
-        result.append("\">");
+        result.append("</textarea>");
         result.append("</td>");
 
         return result.toString();
     }
+
 }

@@ -23,7 +23,7 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<layouts>
-				<layout element="link.url" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
+				<layout element="link.url" widget="org.opencms.widgets.CmsVfsFileWidget" />
 			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>

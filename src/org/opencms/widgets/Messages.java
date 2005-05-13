@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/Messages.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Messages.java,v $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.xmlwidgets;
+package org.opencms.widgets;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
@@ -64,7 +64,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_DEBUG_WIDGETCOLLECTOR_ADD_1 = "LOG_DEBUG_WIDGETCOLLECTOR_ADD_1";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workplace.xmlwidgets.messages";
+    private static final String BUNDLE_NAME = "org.opencms.widgets.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

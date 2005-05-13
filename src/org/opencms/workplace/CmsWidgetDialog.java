@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,10 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.xmlwidgets.A_CmsXmlWidget;
-import org.opencms.workplace.xmlwidgets.CmsWidgetException;
-import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
-import org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog;
-import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
+import org.opencms.widgets.A_CmsWidget;
+import org.opencms.widgets.CmsWidgetException;
+import org.opencms.widgets.I_CmsWidgetDialog;
+import org.opencms.widgets.I_CmsWidget;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -156,7 +155,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         }
         String name = getParamElementName();
         // get the base parameter definition
-        CmsWidgetParameter base = getParameterDefinition(name);
+        CmsWidgetDialogParameter base = getParameterDefinition(name);
         if (base != null) {
             // the requested parameter is valid for this dialog
             List params = (List)getParameters().get(name);
@@ -169,12 +168,12 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                     // add the new value after the clicked element
                     index = index + 1;
                 }
-                CmsWidgetParameter newParam = new CmsWidgetParameter(base, index);
+                CmsWidgetDialogParameter newParam = new CmsWidgetDialogParameter(base, index);
                 params.add(index, newParam);
             }
             // reset all index value in the parameter list
             for (int i = 0; i < params.size(); i++) {
-                CmsWidgetParameter param = (CmsWidgetParameter)params.get(i);
+                CmsWidgetDialogParameter param = (CmsWidgetDialogParameter)params.get(i);
                 param.setindex(i);
             }
         }
@@ -235,6 +234,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         
         StringBuffer result = new StringBuffer(8);
         result.append(super.dialogBlockEnd());
+        result.append(dialogSpacer());
         result.append("</td></tr>\n");
         return result.toString();
     }
@@ -254,7 +254,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog#getButtonStyle()
+     * @see org.opencms.widgets.I_CmsWidgetDialog#getButtonStyle()
      */
     public int getButtonStyle() {
 
@@ -318,8 +318,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         List params = (List)m_widgetParamValues.get(name);
         if (params != null) {
             if ((index >= 0) && (index < params.size())) {
-                CmsWidgetParameter param = (CmsWidgetParameter)params.get(index);
-                if (param.getId().equals(CmsWidgetParameter.createId(name, index))) {
+                CmsWidgetDialogParameter param = (CmsWidgetDialogParameter)params.get(index);
+                if (param.getId().equals(CmsWidgetDialogParameter.createId(name, index))) {
                     return param.getStringValue(getCms());
                 }
             }
@@ -342,7 +342,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             // iterate over unique widgets from collector
             Iterator i = getWidgets().iterator();
             while (i.hasNext()) {
-                CmsWidgetParameter param = (CmsWidgetParameter)i.next();
+                CmsWidgetDialogParameter param = (CmsWidgetDialogParameter)i.next();
             //result.append(widget.getDialogHtmlEnd(getCms(), this, param));
             result.append(widgetHelpText(param));
             }
@@ -364,7 +364,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             Iterator i = getWidgets().iterator();
             Set set = new HashSet();
             while (i.hasNext()) {
-                I_CmsXmlWidget widget = ((CmsWidgetParameter)i.next()).getWidget();
+                I_CmsWidget widget = ((CmsWidgetDialogParameter)i.next()).getWidget();
                 if (!set.contains(widget)) {
                     result.append(widget.getDialogIncludes(getCms(), this));
                     result.append('\n');
@@ -395,7 +395,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             Iterator i = getWidgets().iterator();
             Set set = new HashSet();
             while (i.hasNext()) {
-                I_CmsXmlWidget widget = ((CmsWidgetParameter)i.next()).getWidget();
+                I_CmsWidget widget = ((CmsWidgetDialogParameter)i.next()).getWidget();
                 if (!set.contains(widget)) {
                     result.append(widget.getDialogInitCall(getCms(), this));
                     set.add(widget);
@@ -425,7 +425,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             Iterator i = getWidgets().iterator();
             Set set = new HashSet();
             while (i.hasNext()) {
-                I_CmsXmlWidget widget = ((CmsWidgetParameter)i.next()).getWidget();
+                I_CmsWidget widget = ((CmsWidgetDialogParameter)i.next()).getWidget();
                 if (!set.contains(widget)) {
                     result.append(widget.getDialogInitMethod(getCms(), this));
                     set.add(widget);
@@ -523,7 +523,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             List params = (List)m_widgetParamValues.get(i.next());
             Iterator j = params.iterator();
             while (j.hasNext()) {
-                CmsWidgetParameter param = (CmsWidgetParameter)j.next();
+                CmsWidgetDialogParameter param = (CmsWidgetDialogParameter)j.next();
                 String value = param.getStringValue(getCms());
                 if (CmsStringUtil.isNotEmpty(value)
                     && ((excludeDialogPage == null) || (!param.getDialog().equals(excludeDialogPage)))) {
@@ -545,7 +545,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * 
      * @param param the widget parameter definition to add
      */
-    protected void addWidget(CmsWidgetParameter param) {
+    protected void addWidget(CmsWidgetDialogParameter param) {
 
         if (m_widgets == null) {
             m_widgets = new ArrayList();
@@ -577,13 +577,13 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         Iterator i = getWidgets().iterator();
         while (i.hasNext()) {
             // check for all widget parameters            
-            CmsWidgetParameter base = (CmsWidgetParameter)i.next();
+            CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)i.next();
             if ((dialogPage == null) || (base.getDialog() == null) || dialogPage.equals(base.getDialog())) {
                 // the parameter is located on the requested dialog
                 List params = (List)m_widgetParamValues.get(base.getName());
                 Iterator j = params.iterator();
                 while (j.hasNext()) {
-                    CmsWidgetParameter param = (CmsWidgetParameter)j.next();
+                    CmsWidgetDialogParameter param = (CmsWidgetDialogParameter)j.next();
                     try {
                         param.commitValue(this);
                     } catch (Exception e) {
@@ -634,7 +634,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         // iterate the type sequence                    
         while (i.hasNext()) {
             // get the current widget base definition
-            CmsWidgetParameter base = (CmsWidgetParameter)i.next();
+            CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)i.next();
             // check if the element is on the requested dialog page
             if ((dialog == null) || dialog.equals(base.getDialog())) {
                 // add the HTML for the dialog element
@@ -653,7 +653,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * @param base the widget parameter base
      * @return the dialog HTML for one widget parameter
      */
-    protected String createDialogRowHtml(CmsWidgetParameter base) {
+    protected String createDialogRowHtml(CmsWidgetDialogParameter base) {
 
         StringBuffer result = new StringBuffer(256);
 
@@ -687,8 +687,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         for (int j = 0; j < count; j++) {
 
             // get the parameter and the widget
-            CmsWidgetParameter p = (CmsWidgetParameter)sequence.get(j);
-            I_CmsXmlWidget widget = p.getWidget();
+            CmsWidgetDialogParameter p = (CmsWidgetDialogParameter)sequence.get(j);
+            I_CmsWidget widget = p.getWidget();
             
             // check for an error in this row
             if (p.hasError()) {
@@ -717,7 +717,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
             
             result.append("\">");
-            result.append(key(A_CmsXmlWidget.getLabelKey(p), p.getName()));
+            result.append(key(A_CmsWidget.getLabelKey(p), p.getName()));
             if (count > 1) {
                 result.append(" [").append(p.getIndex() + 1).append("]");
             }
@@ -784,7 +784,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         StringBuffer result = new StringBuffer((endIndex - startIndex) * 8);
         for (int i=startIndex; i<=endIndex; i++) {
-            CmsWidgetParameter base = (CmsWidgetParameter)getWidgets().get(i);
+            CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)getWidgets().get(i);
             result.append(createDialogRowHtml(base));
         }
         return result.toString();
@@ -866,20 +866,20 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         Iterator i = getWidgets().iterator();
         while (i.hasNext()) {
             // check for all widget parameters            
-            CmsWidgetParameter base = (CmsWidgetParameter)i.next();
+            CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)i.next();
             List params = new ArrayList();
             // "unbounded" dialog lists are not required
-            int maxOccurs = base.getMaxOccurs() < CmsWidgetParameter.MAX_OCCURENCES ? base.getMaxOccurs()
-            : CmsWidgetParameter.MAX_OCCURENCES;
+            int maxOccurs = base.getMaxOccurs() < CmsWidgetDialogParameter.MAX_OCCURENCES ? base.getMaxOccurs()
+            : CmsWidgetDialogParameter.MAX_OCCURENCES;
             for (int j = 0; j < maxOccurs; j++) {
                 // check for all possible values in the request parameters
-                String id = CmsWidgetParameter.createId(base.getName(), j);
+                String id = CmsWidgetDialogParameter.createId(base.getName(), j);
                 boolean required = (params.size() < base.getMinOccurs())
                     || (processedParamters.get(id) != null)
                     || base.hasValue(j);
                 if (required) {
-                    CmsWidgetParameter param = new CmsWidgetParameter(base, params.size(), j);
-                    base.getWidget().setEditorValue(getCms(), processedParamters, this, param);
+                    CmsWidgetDialogParameter param = new CmsWidgetDialogParameter(base, params.size(), j);
+                        base.getWidget().setEditorValue(getCms(), processedParamters, this, param);
                     params.add(param);
                 }
             }
@@ -894,12 +894,12 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * 
      * @return the parameter widget definition for the given parameter name
      */
-    protected CmsWidgetParameter getParameterDefinition(String name) {
+    protected CmsWidgetDialogParameter getParameterDefinition(String name) {
 
         Iterator i = getWidgets().iterator();
         while (i.hasNext()) {
             // check for all widget parameters            
-            CmsWidgetParameter base = (CmsWidgetParameter)i.next();
+            CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)i.next();
             if (base.getName().equals(name)) {
                 return base;
             }
@@ -961,7 +961,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * 
      * @return the widget HTML code for the given parameter
      */
-    protected String getWidget(CmsWidgetParameter param) {
+    protected String getWidget(CmsWidgetDialogParameter param) {
 
         if (param != null) {
             return param.getWidget().getDialogWidget(getCms(), this, param);
@@ -971,7 +971,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns the list of all widgets used on this widget dialog, the 
-     * List must contain Objects of type <code>{@link CmsWidgetParameter}</code>.<p>
+     * List must contain Objects of type <code>{@link CmsWidgetDialogParameter}</code>.<p>
      * 
      * @return the list of all widgets used on this widget dialog
      */
@@ -999,14 +999,14 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * 
      * @return html code
      * 
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpBubble(org.opencms.file.CmsObject, I_CmsWidgetDialog, CmsWidgetParameter)
+     * @see org.opencms.widgets.I_CmsWidget#getHelpBubble(org.opencms.file.CmsObject, I_CmsWidgetDialog, CmsWidgetDialogParameter)
      */
-    protected String widgetHelpBubble(CmsWidgetParameter param) {
+    protected String widgetHelpBubble(CmsWidgetDialogParameter param) {
 
         if (!useNewStyle()) {
             return param.getWidget().getHelpBubble(getCms(), this, param);
         }
-        String locKey = A_CmsXmlWidget.getHelpKey(param);
+        String locKey = A_CmsWidget.getHelpKey(param);
         String locValue = ((I_CmsWidgetDialog)this).key(locKey, null);
         if (locValue == null) {
             // there was no help message found for this key, so return a spacer cell
@@ -1039,16 +1039,16 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * 
      * @return html code
      * 
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpText(I_CmsWidgetDialog, CmsWidgetParameter)
+     * @see org.opencms.widgets.I_CmsWidget#getHelpText(I_CmsWidgetDialog, CmsWidgetDialogParameter)
      */
-    protected String widgetHelpText(CmsWidgetParameter param) {
+    protected String widgetHelpText(CmsWidgetDialogParameter param) {
 
         if (!useNewStyle()) {
             return param.getWidget().getHelpText(this, param);
         }
         StringBuffer result = new StringBuffer(128);
         // calculate the key
-        String locKey = A_CmsXmlWidget.getHelpKey(param);
+        String locKey = A_CmsWidget.getHelpKey(param);
         String locValue = ((I_CmsWidgetDialog)this).key(locKey, null);
         if (locValue == null) {
             // there was no help message found for this key, so return an empty string

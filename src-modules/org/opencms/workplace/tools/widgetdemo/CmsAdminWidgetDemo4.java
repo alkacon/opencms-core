@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo4.java,v $
- * Date   : $Date: 2005/05/12 08:58:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,16 +33,10 @@ package org.opencms.workplace.tools.widgetdemo;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
+import org.opencms.widgets.*;
 import org.opencms.workplace.CmsWidgetDialog;
+import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.xmlwidgets.A_CmsXmlWidget;
-import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
-import org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlImageGalleryWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlStringWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlTextareaWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget;
-import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 
 
 import java.util.ArrayList;
@@ -59,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
@@ -114,16 +108,9 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
             while (i.hasNext()) {
 
                 // get the current widget base definition
-                CmsWidgetParameter base = (CmsWidgetParameter)i.next();
+                CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)i.next();
                 List sequence = (List)getParameters().get(base.getName());
                 int count = sequence.size();
-
-                if ((count < 1) && (base.getMinOccurs() > 0)) {
-                    // no parameter with the value present, but also not optional: use base as parameter
-                    sequence = new ArrayList();
-                    sequence.add(base);
-                    count = 1;
-                }
 
                 // check if value is optional or multiple
                 boolean addValue = false;
@@ -134,15 +121,25 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
                 if (count > base.getMinOccurs()) {
                     removeValue = true;
                 }
-
+                
+                // check if value is present
                 boolean disabledElement = false;
+                if (count < 1) {
+                    // no parameter with the value present, but also not optional: use base as parameter
+                    sequence = new ArrayList();
+                    sequence.add(base);
+                    count = 1;
+                    if (base.getMinOccurs() == 0) {
+                        disabledElement = true;    
+                    }
+                }
 
                 // loop through multiple elements
                 for (int j = 0; j < count; j++) {
 
                     // get the parameter and the widget
-                    CmsWidgetParameter p = (CmsWidgetParameter)sequence.get(j);
-                    I_CmsXmlWidget widget = p.getWidget();
+                    CmsWidgetDialogParameter p = (CmsWidgetDialogParameter)sequence.get(j);
+                    I_CmsWidget widget = p.getWidget();
 
                     // create label and help bubble cells
                     result.append("<tr>");
@@ -152,7 +149,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
                         result.append("Disabled");
                     }
                     result.append("\">");
-                    result.append(key(A_CmsXmlWidget.getLabelKey(p), p.getName()));
+                    result.append(key(A_CmsWidget.getLabelKey(p), p.getName()));
                     if (count > 1) {
                         result.append(" [").append(p.getIndex() + 1).append("]");
                     }
@@ -204,12 +201,16 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
      */
     protected void defineWidgets() {
 
-        addWidget(new CmsWidgetParameter("stringwidget", new CmsXmlStringWidget(), 1, 5));
-        addWidget(new CmsWidgetParameter("textwidget", new CmsXmlTextareaWidget(), 1, 5));
+        addWidget(new CmsWidgetDialogParameter("stringwidget", new CmsInputWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("textwidget", new CmsTextareaWidget(), 0, 5));
         // Please note: Boolean widget sequences are currently not supported 
-        addWidget(new CmsWidgetParameter("boolwidget", new CmsXmlBooleanWidget()));
-        addWidget(new CmsWidgetParameter("vfsfilewidget", new CmsXmlVfsFileWidget(), 1, 5));
-        addWidget(new CmsWidgetParameter("imagegalwidget", new CmsXmlImageGalleryWidget(), 1, 5));
+        addWidget(new CmsWidgetDialogParameter("boolwidget", new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter("vfsfilewidget", new CmsVfsFileWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("imagegalwidget", new CmsImageGalleryWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("downgalwidget", new CmsDownloadGalleryWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("htmlgalwidget", new CmsHtmlGalleryWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("tablegalwidget", new CmsTableGalleryWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("extgalwidget", new CmsLinkGalleryWidget(), 0, 5));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,9 +44,9 @@ import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget;
-import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
+import org.opencms.widgets.CmsCheckboxWidget;
+import org.opencms.widgets.CmsHtmlAreaWidget;
+import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlUtils;
@@ -68,7 +68,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -642,17 +642,17 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
         
-        I_CmsXmlWidget widget;        
+        I_CmsWidget widget;        
 
         // make sure the selected widgets are of the configured "non-standard" type
         widget = definition.getContentHandler().getWidget(xmlcontent.getValue("Title", Locale.ENGLISH));
         assertNotNull(widget);
-        assertEquals(CmsXmlBooleanWidget.class.getName(), widget.getClass().getName());
+        assertEquals(CmsCheckboxWidget.class.getName(), widget.getClass().getName());
         
         // make sure the alias name works
         widget = definition.getContentHandler().getWidget(xmlcontent.getValue("Test", Locale.ENGLISH));
         assertNotNull(widget);
-        assertEquals(CmsXmlHtmlWidget.class.getName(), widget.getClass().getName());
+        assertEquals(CmsHtmlAreaWidget.class.getName(), widget.getClass().getName());
     }
 
     /**

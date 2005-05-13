@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/05/01 11:44:07 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
+import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -62,7 +62,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
@@ -112,22 +112,22 @@ public class CmsXmlContentTypeManager {
 
         CmsXmlContentTypeManager typeManager = new CmsXmlContentTypeManager();
         
-        typeManager.addWidget("org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget", null);
-        typeManager.addWidget("org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget", null);
-        typeManager.addWidget("org.opencms.workplace.xmlwidgets.CmsXmlStringWidget", null);
+        typeManager.addWidget("org.opencms.widgets.CmsCalendarWidget", null);
+        typeManager.addWidget("org.opencms.widgets.CmsHtmlAreaWidget", null);
+        typeManager.addWidget("org.opencms.widgets.CmsInputWidget", null);
         
         typeManager.addSchemaType(
             "org.opencms.xml.types.CmsXmlDateTimeValue",
-            "org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget");
+            "org.opencms.widgets.CmsCalendarWidget");
         typeManager.addSchemaType(
             "org.opencms.xml.types.CmsXmlHtmlValue",
-            "org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget");
+            "org.opencms.widgets.CmsHtmlAreaWidget");
         typeManager.addSchemaType(
             "org.opencms.xml.types.CmsXmlLocaleValue",
-            "org.opencms.workplace.xmlwidgets.CmsXmlStringWidget");
+            "org.opencms.widgets.CmsInputWidget");
         typeManager.addSchemaType(
             "org.opencms.xml.types.CmsXmlStringValue",
-            "org.opencms.workplace.xmlwidgets.CmsXmlStringWidget");
+            "org.opencms.widgets.CmsInputWidget");
 
         try {
             typeManager.initialize(null);
@@ -190,7 +190,7 @@ public class CmsXmlContentTypeManager {
         }
 
         // add the editor widget for the schema type        
-        I_CmsXmlWidget widget = getWidget(defaultWidget);
+        I_CmsWidget widget = getWidget(defaultWidget);
         if (widget == null) {
             OpenCms.getLog(this).error(
                 "Error initializing default widget '" + defaultWidget + "' for content type: " + type.getTypeName());
@@ -219,10 +219,10 @@ public class CmsXmlContentTypeManager {
     public void addWidget(String className, String aliasName) {
 
         Class widgetClazz;
-        I_CmsXmlWidget widget;
+        I_CmsWidget widget;
         try {
             widgetClazz = Class.forName(className);
-            widget = (I_CmsXmlWidget)widgetClazz.newInstance();
+            widget = (I_CmsWidget)widgetClazz.newInstance();
         } catch (Exception e) {
             OpenCms.getLog(this).error("Error initializing XML widget for class: " + className, e);
             return;
@@ -376,9 +376,9 @@ public class CmsXmlContentTypeManager {
      * @param typeName the name of the XML content type to get the widget for
      * @return the editor widget for the specified XML content type
      */
-    public I_CmsXmlWidget getDefaultWidget(String typeName) {
+    public I_CmsWidget getDefaultWidget(String typeName) {
 
-        return (I_CmsXmlWidget)m_defaultWidgets.get(typeName);
+        return (I_CmsWidget)m_defaultWidgets.get(typeName);
     }
 
     /** 
@@ -435,15 +435,15 @@ public class CmsXmlContentTypeManager {
      * @param name the class name or alias name to get the widget for
      * @return the widget instance for the class name
      */
-    public I_CmsXmlWidget getWidget(String name) {
+    public I_CmsWidget getWidget(String name) {
 
         // first look up by class name
-        I_CmsXmlWidget result = (I_CmsXmlWidget)m_registeredWidgets.get(name);
+        I_CmsWidget result = (I_CmsWidget)m_registeredWidgets.get(name);
         if (result == null) {
             // not found by class name, look up an alias
             String className = (String)m_widgetAliases.get(name);
             if (className != null) {
-                return (I_CmsXmlWidget)m_registeredWidgets.get(className);
+                return (I_CmsWidget)m_registeredWidgets.get(className);
             }
         }    
         return result;

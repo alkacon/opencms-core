@@ -24,7 +24,7 @@
 		<xsd:appinfo>
 			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
 			<layouts>
-				<layout element="Title" widget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
+				<layout element="Title" widget="org.opencms.widgets.CmsCheckboxWidget" />
 				<layout element="Test" widget="HtmlWidget" />				
 			</layouts>
 		</xsd:appinfo>

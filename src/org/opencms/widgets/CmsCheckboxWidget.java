@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlBooleanWidget.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.13 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCheckboxWidget.java,v $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.xmlwidgets;
+package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
@@ -42,21 +42,21 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.1 $
  * @since 5.5.2
  */
-public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
+public class CmsCheckboxWidget extends A_CmsWidget {
 
     /**
      * Creates a new editor widget.<p>
      */
-    public CmsXmlBooleanWidget() {
+    public CmsCheckboxWidget() {
 
         // empty constructor is required for class registration
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter)
+     * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
@@ -76,7 +76,7 @@ public class CmsXmlBooleanWidget extends A_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter)
+     * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public void setEditorValue(
         CmsObject cms,

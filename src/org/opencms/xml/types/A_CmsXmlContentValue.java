@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter;
+import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -51,7 +51,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_CmsWidgetParameter {
@@ -223,7 +223,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getDefault(org.opencms.file.CmsObject)
+     * @see org.opencms.widgets.I_CmsWidgetParameter#getDefault(org.opencms.file.CmsObject)
      */
     public String getDefault(CmsObject cms) {
 
@@ -255,7 +255,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getId()
+     * @see org.opencms.widgets.I_CmsWidgetParameter#getId()
      */
     public String getId() {
 
@@ -277,7 +277,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getKey()
+     * @see org.opencms.widgets.I_CmsWidgetParameter#getKey()
      */
     public String getKey() {
 
@@ -349,7 +349,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     }
     
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#hasError()
+     * @see org.opencms.widgets.I_CmsWidgetParameter#hasError()
      */
     public boolean hasError() {
 

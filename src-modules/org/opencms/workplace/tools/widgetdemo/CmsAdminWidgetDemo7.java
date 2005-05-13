@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo7.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,10 @@ package org.opencms.workplace.tools.widgetdemo;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.widgets.*;
 import org.opencms.workplace.CmsWidgetDialog;
+import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.xmlwidgets.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
@@ -120,7 +121,7 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
      * @param base the widget parameter base
      * @return the dialog HTML for one widget parameter6
      */
-    protected String createDialogRowHtml(CmsWidgetParameter base) {
+    protected String createDialogRowHtml(CmsWidgetDialogParameter base) {
 
         StringBuffer result = new StringBuffer(256);
 
@@ -153,8 +154,8 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
         for (int j = 0; j < count; j++) {
 
             // get the parameter and the widget
-            CmsWidgetParameter p = (CmsWidgetParameter)sequence.get(j);
-            I_CmsXmlWidget widget = p.getWidget();
+            CmsWidgetDialogParameter p = (CmsWidgetDialogParameter)sequence.get(j);
+            I_CmsWidget widget = p.getWidget();
 
             // create label and help bubble cells
             result.append("<tr>");
@@ -164,7 +165,7 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
                 result.append("Disabled");
             }
             result.append("\">");
-            result.append(key(A_CmsXmlWidget.getLabelKey(p), p.getName()));
+            result.append(key(A_CmsWidget.getLabelKey(p), p.getName()));
             if (count > 1) {
                 result.append(" [").append(p.getIndex() + 1).append("]");
             }
@@ -228,16 +229,16 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
         m_jobInfo = new CmsScheduledJobInfo();
         m_contextInfo = new CmsContextInfo();        
 
-        addWidget(new CmsWidgetParameter("stringwidget", new CmsXmlStringWidget(), 0, 5));
-        addWidget(new CmsWidgetParameter("textwidget", new CmsXmlTextareaWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("stringwidget", new CmsInputWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("textwidget", new CmsTextareaWidget(), 0, 5));
         // Please note: Boolean widget sequences are currently not supported 
-        addWidget(new CmsWidgetParameter("boolwidget", new CmsXmlBooleanWidget()));
-        addWidget(new CmsWidgetParameter("vfsfilewidget", new CmsXmlVfsFileWidget(), 0, 5));
-        addWidget(new CmsWidgetParameter("imagegalwidget", new CmsXmlImageGalleryWidget(), 0, 5));
-        addWidget(new CmsWidgetParameter("downgalwidget", new CmsXmlDownloadGalleryWidget(), 0, 5));
-        addWidget(new CmsWidgetParameter("htmlgalwidget", new CmsXmlHtmlGalleryWidget(), 0, 5));
-        addWidget(new CmsWidgetParameter("tablegalwidget", new CmsXmlTableGalleryWidget(), 0, 5));
-        addWidget(new CmsWidgetParameter("extgalwidget", new CmsXmlLinkGalleryWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("boolwidget", new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter("vfsfilewidget", new CmsVfsFileWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("imagegalwidget", new CmsImageGalleryWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("downgalwidget", new CmsDownloadGalleryWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("htmlgalwidget", new CmsHtmlGalleryWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("tablegalwidget", new CmsTableGalleryWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("extgalwidget", new CmsLinkGalleryWidget(), 0, 5));
     }
 
     /**

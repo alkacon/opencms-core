@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo5.java,v $
- * Date   : $Date: 2005/05/12 13:31:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,12 +34,12 @@ package org.opencms.workplace.tools.widgetdemo;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.widgets.CmsCheckboxWidget;
+import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWidgetDialog;
+import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
-import org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlStringWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo5 extends CmsWidgetDialog {
@@ -129,31 +129,31 @@ public class CmsAdminWidgetDemo5 extends CmsWidgetDialog {
         m_jobInfo = new CmsScheduledJobInfo();
         m_contextInfo = new CmsContextInfo();        
 
-        addWidget(new CmsWidgetParameter(m_jobInfo, "jobName", new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_jobInfo, "className", new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_jobInfo, "cronExpression", new CmsXmlStringWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "jobName", new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "className", new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "cronExpression", new CmsInputWidget()));
 
-        addWidget(new CmsWidgetParameter(m_contextInfo, "userName", new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "projectName", new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "siteRoot", new CmsXmlVfsFileWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "requestedUri", new CmsXmlVfsFileWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "localeName", new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "encoding", new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "remoteAddr", new CmsXmlStringWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "userName", new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "projectName", new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "siteRoot", new CmsVfsFileWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "requestedUri", new CmsVfsFileWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "localeName", new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "encoding", new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "remoteAddr", new CmsInputWidget()));
 
-        addWidget(new CmsWidgetParameter(m_jobInfo, "reuseInstance", new CmsXmlBooleanWidget()));
-        addWidget(new CmsWidgetParameter(m_jobInfo, "active", new CmsXmlBooleanWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", new CmsCheckboxWidget()));
         
 
         List testList = new ArrayList();
         testList.add("value1");
         testList.add("another value");
-        addWidget(new CmsWidgetParameter(testList, "theList", new CmsXmlStringWidget()));        
+        addWidget(new CmsWidgetDialogParameter(testList, "theList", new CmsInputWidget()));        
         
         Map testMap = new TreeMap();
         testMap.put("key1", "value1");
         testMap.put("key2", "another value");
-        addWidget(new CmsWidgetParameter(testMap, "theMap", new CmsXmlStringWidget()));        
+        addWidget(new CmsWidgetDialogParameter(testMap, "theMap", new CmsInputWidget()));        
     }
 
     /**

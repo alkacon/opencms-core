@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsWidgetParameter.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialogParameter.java,v $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,13 +29,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.xmlwidgets;
+package org.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.workplace.CmsWidgetDialog;
+import org.opencms.widgets.A_CmsWidget;
+import org.opencms.widgets.CmsWidgetException;
+import org.opencms.widgets.I_CmsWidget;
+import org.opencms.widgets.I_CmsWidgetParameter;
+import org.opencms.widgets.Messages;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -51,10 +55,10 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  * @since 5.9.1
  */
-public class CmsWidgetParameter implements I_CmsWidgetParameter {
+public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
 
     /** The name of the default dialog page. */
     public static final String DEFAULT_DIALOG_PAGE = "default";
@@ -99,7 +103,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     protected String m_value;
 
     /** The widget used for the parameter. */
-    protected I_CmsXmlWidget m_widget;
+    protected I_CmsWidget m_widget;
     
     /**
      * Create a new Widget parameter.<p>
@@ -107,7 +111,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
      * @param base the base of the parameter
      * @param index the index of this parameter in the list 
      */
-    public CmsWidgetParameter(CmsWidgetParameter base, int index) {
+    public CmsWidgetDialogParameter(CmsWidgetDialogParameter base, int index) {
 
         this(
             null,
@@ -131,7 +135,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
      * @param index the index of this parameter in the list
      * @param originalIndex the original index in the previous version of the list
      */
-    public CmsWidgetParameter(CmsWidgetParameter base, int index, int originalIndex) {
+    public CmsWidgetDialogParameter(CmsWidgetDialogParameter base, int index, int originalIndex) {
 
         this(
             null,
@@ -179,7 +183,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
      * @param property the base object property to map the parameter to / from
      * @param widget the widget used for this parameter
      */
-    public CmsWidgetParameter(Object base, String property, I_CmsXmlWidget widget) {
+    public CmsWidgetDialogParameter(Object base, String property, I_CmsWidget widget) {
 
         this(base, property, DEFAULT_DIALOG_PAGE, widget);
     }
@@ -192,7 +196,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
      * @param dialogPage the dialog page to use the widget on
      * @param widget the widget used for this parameter
      */
-    public CmsWidgetParameter(Object base, String property, String dialogPage, I_CmsXmlWidget widget) {
+    public CmsWidgetDialogParameter(Object base, String property, String dialogPage, I_CmsWidget widget) {
 
         this(base, property, dialogPage, widget, 1, 1);
     }
@@ -207,11 +211,11 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
      * @param minOccurs the required minimum numer of occurences of this parameter
      * @param maxOccurs the maximum allowed numer of occurences of this parameter
      */
-    public CmsWidgetParameter(
+    public CmsWidgetDialogParameter(
         Object base,
         String property,
         String dialogPage,
-        I_CmsXmlWidget widget,
+        I_CmsWidget widget,
         int minOccurs,
         int maxOccurs) {
 
@@ -273,7 +277,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
      * @param name the name of the parameter
      * @param widget the widget used for this parameter
      */
-    public CmsWidgetParameter(String name, I_CmsXmlWidget widget) {
+    public CmsWidgetDialogParameter(String name, I_CmsWidget widget) {
 
         this(null, null, name, widget, DEFAULT_DIALOG_PAGE, 1, 1, 0);
     }
@@ -286,7 +290,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
      * @param minOccurs the required minimum numer of occurences of this parameter
      * @param maxOccurs the maximum allowed numer of occurences of this parameter
      */
-    public CmsWidgetParameter(String name, I_CmsXmlWidget widget, int minOccurs, int maxOccurs) {
+    public CmsWidgetDialogParameter(String name, I_CmsWidget widget, int minOccurs, int maxOccurs) {
 
         this(null, null, name, widget, DEFAULT_DIALOG_PAGE, minOccurs, maxOccurs, 0);
     }
@@ -303,11 +307,11 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
      * @param maxOccurs the maximum allowed numer of occurences of this parameter
      * @param index the index of this parameter in the list 
      */
-    public CmsWidgetParameter(
+    public CmsWidgetDialogParameter(
         String value,
         String defaultValue,
         String name,
-        I_CmsXmlWidget widget,
+        I_CmsWidget widget,
         String dialog,
         int minOccurs,
         int maxOccurs,
@@ -363,21 +367,21 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
                 throw new CmsWidgetException(Messages.get().container(
                     Messages.ERR_PROPERTY_WRITE_3,
                     value,
-                    dialog.key(A_CmsXmlWidget.getLabelKey(this), getKey()),
+                    dialog.key(A_CmsWidget.getLabelKey(this), getKey()),
                     m_baseObject.getClass().getName()), e.getTargetException(), this);
             } catch (Exception e) {
                 setError(true);
                 throw new CmsWidgetException(Messages.get().container(
                     Messages.ERR_PROPERTY_WRITE_3,
                     value,
-                    dialog.key(A_CmsXmlWidget.getLabelKey(this), getKey()),
+                    dialog.key(A_CmsWidget.getLabelKey(this), getKey()),
                     m_baseObject.getClass().getName()), e, this);
             }
         }
     }
     
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getDefault(org.opencms.file.CmsObject)
+     * @see org.opencms.widgets.I_CmsWidgetParameter#getDefault(org.opencms.file.CmsObject)
      */
     public String getDefault(CmsObject cms) {
 
@@ -398,7 +402,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getId()
+     * @see org.opencms.widgets.I_CmsWidgetParameter#getId()
      */
     public String getId() {
 
@@ -406,7 +410,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getIndex()
+     * @see org.opencms.widgets.I_CmsWidgetParameter#getIndex()
      */
     public int getIndex() {
 
@@ -414,7 +418,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getKey()
+     * @see org.opencms.widgets.I_CmsWidgetParameter#getKey()
      */
     public String getKey() {
 
@@ -422,7 +426,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getMaxOccurs()
+     * @see org.opencms.widgets.I_CmsWidgetParameter#getMaxOccurs()
      */
     public int getMaxOccurs() {
 
@@ -430,7 +434,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getMinOccurs()
+     * @see org.opencms.widgets.I_CmsWidgetParameter#getMinOccurs()
      */
     public int getMinOccurs() {
 
@@ -438,7 +442,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getName()
+     * @see org.opencms.widgets.I_CmsWidgetParameter#getName()
      */
     public String getName() {
 
@@ -446,7 +450,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#getStringValue(org.opencms.file.CmsObject)
+     * @see org.opencms.widgets.I_CmsWidgetParameter#getStringValue(org.opencms.file.CmsObject)
      */
     public String getStringValue(CmsObject cms) throws CmsRuntimeException {
 
@@ -458,13 +462,13 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
      * 
      * @return the widget for this parameter
      */
-    public I_CmsXmlWidget getWidget() {
+    public I_CmsWidget getWidget() {
 
         return m_widget;
     }
     
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#hasError()
+     * @see org.opencms.widgets.I_CmsWidgetParameter#hasError()
      */
     public boolean hasError() {
 
@@ -510,7 +514,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#setStringValue(org.opencms.file.CmsObject, java.lang.String)
+     * @see org.opencms.widgets.I_CmsWidgetParameter#setStringValue(org.opencms.file.CmsObject, java.lang.String)
      */
     public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
@@ -533,7 +537,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
         String value,
         String defaultValue,
         String name,
-        I_CmsXmlWidget widget,
+        I_CmsWidget widget,
         String dialog,
         int minOccurs,
         int maxOccurs,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/05/07 16:08:28 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
+import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
@@ -62,7 +62,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -227,10 +227,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getWidget(org.opencms.xml.types.I_CmsXmlContentValue)
      */
-    public I_CmsXmlWidget getWidget(I_CmsXmlContentValue value) {
+    public I_CmsWidget getWidget(I_CmsXmlContentValue value) {
 
         // try the specific widget settings first
-        I_CmsXmlWidget result = (I_CmsXmlWidget)m_elementWidgets.get(value.getName());
+        I_CmsWidget result = (I_CmsWidget)m_elementWidgets.get(value.getName());
         if (result != null) {
             return result;
         }
@@ -483,7 +483,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             throw new CmsXmlException("Unregistered XML content type " + elementName + " used for layout widget");
         }
 
-        I_CmsXmlWidget widget = OpenCms.getXmlContentTypeManager().getWidget(className);
+        I_CmsWidget widget = OpenCms.getXmlContentTypeManager().getWidget(className);
 
         if (widget == null) {
             throw new CmsXmlException("Unregistered XML widget '"
@@ -591,9 +591,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * 
      * Unless otherwise instructed, the editor uses one specific GUI widget for each 
      * XML value schema type. For example, for a {@link org.opencms.xml.types.CmsXmlStringValue} 
-     * the default widget is the {@link org.opencms.workplace.xmlwidgets.CmsXmlStringWidget}.
+     * the default widget is the {@link org.opencms.widgets.CmsInputWidget}.
      * However, certain values can also use more then one widget, for example you may 
-     * also use a {@link org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget} for a String value,
+     * also use a {@link org.opencms.widgets.CmsCheckboxWidget} for a String value,
      * and as a result the Strings possible values would be eithe "false" or "true",
      * bit nevertheless be a String.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo6.java,v $
- * Date   : $Date: 2005/05/13 11:41:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,12 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsCheckboxWidget;
+import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWidgetDialog;
+import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
-import org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlStringWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
@@ -165,20 +165,20 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
             m_contextInfo = m_jobInfo.getContextInfo();
         }        
 
-        addWidget(new CmsWidgetParameter(m_jobInfo, "jobName", PAGE_ARRAY[0], new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_jobInfo, "className", PAGE_ARRAY[0], new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_jobInfo, "cronExpression", PAGE_ARRAY[0], new CmsXmlStringWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "jobName", PAGE_ARRAY[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "className", PAGE_ARRAY[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "cronExpression", PAGE_ARRAY[0], new CmsInputWidget()));
 
-        addWidget(new CmsWidgetParameter(m_contextInfo, "userName", PAGE_ARRAY[0], new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "projectName", PAGE_ARRAY[0], new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "siteRoot", PAGE_ARRAY[0], new CmsXmlVfsFileWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "requestedUri", PAGE_ARRAY[0], new CmsXmlVfsFileWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "localeName", PAGE_ARRAY[1], new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "encoding", PAGE_ARRAY[1], new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "remoteAddr", PAGE_ARRAY[1], new CmsXmlStringWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "userName", PAGE_ARRAY[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "projectName", PAGE_ARRAY[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "siteRoot", PAGE_ARRAY[0], new CmsVfsFileWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "requestedUri", PAGE_ARRAY[0], new CmsVfsFileWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "localeName", PAGE_ARRAY[1], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "encoding", PAGE_ARRAY[1], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_contextInfo, "remoteAddr", PAGE_ARRAY[1], new CmsInputWidget()));
 
-        addWidget(new CmsWidgetParameter(m_jobInfo, "reuseInstance", PAGE_ARRAY[1], new CmsXmlBooleanWidget()));
-        addWidget(new CmsWidgetParameter(m_jobInfo, "active", PAGE_ARRAY[1], new CmsXmlBooleanWidget()));       
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", PAGE_ARRAY[1], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGE_ARRAY[1], new CmsCheckboxWidget()));       
     }
 
     /**

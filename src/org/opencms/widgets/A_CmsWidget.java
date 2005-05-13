@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/A_CmsXmlWidget.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.22 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.xmlwidgets;
+package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
@@ -41,10 +41,10 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.1 $
  * @since 5.5.0
  */
-public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
+public abstract class A_CmsWidget implements I_CmsWidget {
 
     /** Postfix for melp message locale. */
     static final String HELP_POSTFIX = "help";
@@ -91,7 +91,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
      */
     public boolean equals(Object obj) {
 
-        if (!(obj instanceof A_CmsXmlWidget)) {
+        if (!(obj instanceof A_CmsWidget)) {
             return false;
         }
 
@@ -100,7 +100,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogHtmlEnd(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
+     * @see org.opencms.widgets.I_CmsWidget#getDialogHtmlEnd(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
     public String getDialogHtmlEnd(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter value) {
 
@@ -108,7 +108,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogIncludes(org.opencms.file.CmsObject, I_CmsWidgetDialog)
+     * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, I_CmsWidgetDialog)
      */
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
@@ -116,7 +116,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitCall(org.opencms.file.CmsObject, I_CmsWidgetDialog)
+     * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, I_CmsWidgetDialog)
      */
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
@@ -124,7 +124,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog)
+     * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
     public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
@@ -132,7 +132,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpBubble(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
+     * @see org.opencms.widgets.I_CmsWidget#getHelpBubble(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
     public String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
@@ -161,7 +161,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#getHelpText(I_CmsWidgetDialog, I_CmsWidgetParameter)
+     * @see org.opencms.widgets.I_CmsWidget#getHelpText(I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
     public String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
@@ -197,7 +197,7 @@ public abstract class A_CmsXmlWidget implements I_CmsXmlWidget {
     }
 
     /**
-     * @see org.opencms.workplace.xmlwidgets.I_CmsXmlWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.workplace.xmlwidgets.I_CmsWidgetDialog, org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter)
+     * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public void setEditorValue(
         CmsObject cms,

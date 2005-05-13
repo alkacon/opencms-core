@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo1.java,v $
- * Date   : $Date: 2005/05/11 10:22:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,14 @@
 package org.opencms.workplace.tools.widgetdemo;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.widgets.CmsCheckboxWidget;
+import org.opencms.widgets.CmsImageGalleryWidget;
+import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.CmsTextareaWidget;
+import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWidgetDialog;
+import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.xmlwidgets.CmsWidgetParameter;
-import org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlImageGalleryWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlStringWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlTextareaWidget;
-import org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget;
 
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
@@ -109,7 +109,7 @@ public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
             while (i.hasNext()) {
 
                 // get the current widget base definition
-                CmsWidgetParameter base = (CmsWidgetParameter)i.next();
+                CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)i.next();
                 List sequence = (List)getParameters().get(base.getName());
                 int count = sequence.size();
 
@@ -121,7 +121,7 @@ public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
 
                 Iterator j = sequence.iterator();
                 while (j.hasNext()) {
-                    CmsWidgetParameter param = (CmsWidgetParameter)j.next();
+                    CmsWidgetDialogParameter param = (CmsWidgetDialogParameter)j.next();
                     retValue.append("<tr>\n");
                     retValue.append(getWidget(param));
                     retValue.append("</tr>\n");
@@ -142,11 +142,11 @@ public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
      */
     protected void defineWidgets() {
 
-        addWidget(new CmsWidgetParameter("stringwidget", new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter("textwidget", new CmsXmlTextareaWidget()));
-        addWidget(new CmsWidgetParameter("boolwidget", new CmsXmlBooleanWidget()));
-        addWidget(new CmsWidgetParameter("vfsfilewidget", new CmsXmlVfsFileWidget()));
-        addWidget(new CmsWidgetParameter("imagegalwidget", new CmsXmlImageGalleryWidget()));
+        addWidget(new CmsWidgetDialogParameter("stringwidget", new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter("textwidget", new CmsTextareaWidget()));
+        addWidget(new CmsWidgetDialogParameter("boolwidget", new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter("vfsfilewidget", new CmsVfsFileWidget()));
+        addWidget(new CmsWidgetDialogParameter("imagegalwidget", new CmsImageGalleryWidget()));
     }
 
     /**

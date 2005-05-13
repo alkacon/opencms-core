@@ -140,27 +140,27 @@
 		</translations>
 		<xmlcontent>
 			<widgets>
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" alias="BooleanWidget"/>
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlColorpickerWidget" alias="ColorpickerWidget"/>
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" alias="DateTimeWidget"/>
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDownloadGalleryWidget" alias="DownloadGalleryWidget"/>
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" alias="HtmlWidget"/>
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlImageGalleryWidget" alias="ImageGalleryWidget"/>
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlLinkGalleryWidget" alias="LinkGalleryWidget"/>
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlSelectorWidget" alias="SelectorWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" alias="StringWidget"/>
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlTableGalleryWidget" alias="TableGalleryWidget" />				
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlTextareaWidget" alias="TextareaWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" alias="VfsFileWidget"/>
+				<widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget"/>
+				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget"/>
+				<widget class="org.opencms.widgets.CmsCalendarWidget" alias="DateTimeWidget"/>
+				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget"/>
+				<widget class="org.opencms.widgets.CmsHtmlAreaWidget" alias="HtmlWidget"/>
+				<widget class="org.opencms.widgets.CmsImageGalleryWidget" alias="ImageGalleryWidget"/>
+				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget"/>
+				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />
+				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget"/>
+				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />				
+				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
+				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>
 			</widgets>
 			<schematypes>
-				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
-				<schematype class="org.opencms.xml.types.CmsXmlColorValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlColorpickerWidget" />
-				<schematype class="org.opencms.xml.types.CmsXmlDateTimeValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
-				<schematype class="org.opencms.xml.types.CmsXmlHtmlValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
-				<schematype class="org.opencms.xml.types.CmsXmlLocaleValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
-				<schematype class="org.opencms.xml.types.CmsXmlStringValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
-				<schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlColorValue" defaultwidget="org.opencms.widgets.CmsColorpickerWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlDateTimeValue" defaultwidget="org.opencms.widgets.CmsCalendarWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlHtmlValue" defaultwidget="org.opencms.widgets.CmsHtmlAreaWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlLocaleValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlStringValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
 			</schematypes>
 		</xmlcontent>		
 	</vfs>

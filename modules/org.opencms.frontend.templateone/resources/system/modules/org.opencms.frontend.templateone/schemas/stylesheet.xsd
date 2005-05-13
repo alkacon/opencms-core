@@ -57,7 +57,7 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<layouts>
-				<layout element="navleft.img.bg.uri" widget="org.opencms.workplace.xmlwidgets.CmsXmlImageGalleryWidget" />
+				<layout element="navleft.img.bg.uri" widget="org.opencms.widgets.CmsImageGalleryWidget" />
 			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  

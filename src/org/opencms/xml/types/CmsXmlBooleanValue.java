@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlBooleanValue.java,v $
- * Date   : $Date: 2005/05/13 13:35:37 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter;
+import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
@@ -46,7 +46,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {

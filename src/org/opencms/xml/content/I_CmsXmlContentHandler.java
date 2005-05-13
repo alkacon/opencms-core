@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/13 15:16:31 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
-import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
+import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentHandler {
@@ -124,7 +124,7 @@ public interface I_CmsXmlContentHandler {
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    I_CmsXmlWidget getWidget(I_CmsXmlContentValue value) throws CmsXmlException;
+    I_CmsWidget getWidget(I_CmsXmlContentValue value) throws CmsXmlException;
 
     /**
      * Initializes this content handler for the given XML content definition by

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsWidgetException.java,v $
- * Date   : $Date: 2005/05/12 13:31:16 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsWidgetException.java,v $
+ * Date   : $Date: 2005/05/13 15:16:31 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,10 +29,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.xmlwidgets;
+package org.opencms.widgets;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
+import org.opencms.workplace.CmsWidgetDialogParameter;
 
 /**
  * Describes errors that occur in the context of the OpenCms widgets.<p>
@@ -43,7 +44,7 @@ import org.opencms.main.CmsException;
 public class CmsWidgetException extends CmsException {
 
     /** The widget that caused the error. */
-    CmsWidgetParameter m_widget;
+    CmsWidgetDialogParameter m_widget;
 
     /**
      * Creates a new localized Exception.<p>
@@ -52,7 +53,7 @@ public class CmsWidgetException extends CmsException {
      */
     public CmsWidgetException(CmsMessageContainer container) {
 
-        this(container, (CmsWidgetParameter)null);
+        this(container, (CmsWidgetDialogParameter)null);
     }
 
     /**
@@ -61,7 +62,7 @@ public class CmsWidgetException extends CmsException {
      * @param container the localized message container to use
      * @param widget the widget that caused the error
      */
-    public CmsWidgetException(CmsMessageContainer container, CmsWidgetParameter widget) {
+    public CmsWidgetException(CmsMessageContainer container, CmsWidgetDialogParameter widget) {
 
         super(container);
         m_widget = widget;
@@ -85,7 +86,7 @@ public class CmsWidgetException extends CmsException {
      * @param cause the Exception root cause
      * @param widget the widget that caused the error
      */
-    public CmsWidgetException(CmsMessageContainer container, Throwable cause, CmsWidgetParameter widget) {
+    public CmsWidgetException(CmsMessageContainer container, Throwable cause, CmsWidgetDialogParameter widget) {
 
         super(container, cause);
         m_widget = widget;
@@ -109,7 +110,7 @@ public class CmsWidgetException extends CmsException {
      *
      * @return the widget that caused the error
      */
-    public CmsWidgetParameter getWidget() {
+    public CmsWidgetDialogParameter getWidget() {
 
         return m_widget;
     }
