@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/I_CmsWidgetParameter.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/13 12:44:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.xml.CmsXmlException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public interface I_CmsWidgetParameter {
@@ -111,6 +111,13 @@ public interface I_CmsWidgetParameter {
      * @throws CmsXmlException if something goes wrong
      */
     String getStringValue(CmsObject cms) throws CmsXmlException;
+
+    /**
+     * Returns <code>true</code> if this widgets value contains an error.<p>
+     *
+     * @return <code>true</code> if this widgets value contains an error
+     */
+    boolean hasError();
 
     /**
      * Sets the value of this parameter.<p>  

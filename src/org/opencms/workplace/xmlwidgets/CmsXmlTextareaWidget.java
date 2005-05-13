@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlTextareaWidget.java,v $
- * Date   : $Date: 2005/05/10 09:57:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/13 12:44:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.xml.CmsXmlException;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.2
  */
 public class CmsXmlTextareaWidget extends A_CmsXmlWidget {
@@ -65,7 +65,11 @@ public class CmsXmlTextareaWidget extends A_CmsXmlWidget {
         StringBuffer result = new StringBuffer(16);
 
         result.append("<td class=\"xmlTd\">");
-        result.append("<textarea class=\"xmlInput maxwidth\" name=\"");
+        result.append("<textarea class=\"xmlInput maxwidth");
+        if (param.hasError()) {
+            result.append(" xmlInputError");
+        }
+        result.append("\" name=\"");
         result.append(id);
         result.append("\" rows=\"4\" wrap=\"virtual\" style=\"overflow:auto;\">");
         result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));

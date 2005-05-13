@@ -977,13 +977,13 @@ body.dialogadmin {
 }
 
 .xmlTdError {
-	font-style: italic;
+	font-style: normal;
 	font-weight: bold;
 	color: #B40000;
 }
 
 .xmlTdWarning {
-	font-style: italic;
+	font-style: normal;
 	font-weight: bold;
 	color: #EE7700;
 }
@@ -1002,6 +1002,10 @@ body.dialogadmin {
 	if (style == NEW_ADMIN) { %>
 	margin: 0;
 	padding: 0;<% } %>
+}
+
+.xmlInputError {
+	background-color: #FFCCCC;
 }
 
 .xmlInputSmall { 

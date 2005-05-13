@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlDownloadGalleryWidget.java,v $
- * Date   : $Date: 2005/05/11 14:01:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/13 12:44:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.xml.CmsXmlException;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.3
  */
 public class CmsXmlDownloadGalleryWidget extends A_CmsXmlWidget {
@@ -99,7 +99,11 @@ public class CmsXmlDownloadGalleryWidget extends A_CmsXmlWidget {
         StringBuffer result = new StringBuffer(128);
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
-        result.append("<input class=\"xmlInputMedium\" value=\"");
+        result.append("<input class=\"xmlInputMedium");
+        if (param.hasError()) {
+            result.append(" xmlInputError");
+        }
+        result.append("\" value=\"");
         String fieldValue = param.getStringValue(cms);
         result.append(fieldValue);
         result.append("\" name=\"");

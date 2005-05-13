@@ -502,5 +502,51 @@
 			</properties>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/admin/widgetdemo/demo9.html</source>
+			<destination>system/workplace/admin/widgetdemo/demo9.html</destination>
+			<type>jsp</type>
+			<uuidresource>e33c6e18-c392-11d9-bec1-0bba6f0b9755</uuidresource>
+			<datelastmodified>Fri, 13 May 2005 10:05:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 13 May 2005 09:39:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[9]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_WIDGETDEMO_ADVANCED_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WIDGETDEMO_9_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WIDGETDEMO_9_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Widget demo 9]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
 	</files>
 </export>

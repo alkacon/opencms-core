@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlVfsFileWidget.java,v $
- * Date   : $Date: 2005/05/10 09:24:02 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/13 12:44:55 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.xml.CmsXmlException;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
@@ -107,7 +107,11 @@ public class CmsXmlVfsFileWidget extends A_CmsXmlWidget {
 
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
-        result.append("<input class=\"xmlInputMedium\" value=\"");
+        result.append("<input class=\"xmlInputMedium");
+        if (param.hasError()) {
+            result.append(" xmlInputError");
+        }
+        result.append("\" value=\"");
         result.append(param.getStringValue(cms));
         result.append("\" name=\"");
         result.append(id);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlSelectorWidget.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/13 12:44:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.3
  */
 public class CmsXmlSelectorWidget extends A_CmsXmlWidget {
@@ -79,7 +79,11 @@ public class CmsXmlSelectorWidget extends A_CmsXmlWidget {
         String id = param.getId();
         StringBuffer result = new StringBuffer(16);
 
-        result.append("<td class=\"xmlTd\"><select class=\"xmlInput\" name=\"");
+        result.append("<td class=\"xmlTd\"><select class=\"xmlInput");
+        if (param.hasError()) {
+            result.append(" xmlInputError");
+        }
+        result.append("\" name=\"");
         result.append(id);
         result.append("\" id=\"");
         result.append(id);

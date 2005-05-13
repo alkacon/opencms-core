@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlDateTimeWidget.java,v $
- * Date   : $Date: 2005/05/12 10:57:11 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/13 12:44:55 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.5.0
  */
 public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
@@ -80,7 +80,11 @@ public class CmsXmlDateTimeWidget extends A_CmsXmlWidget {
         StringBuffer result = new StringBuffer(16);
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
-        result.append("<input class=\"xmlInputSmall\" value=\"");
+        result.append("<input class=\"xmlInputSmall");
+        if (param.hasError()) {
+            result.append(" xmlInputError");
+        }
+        result.append("\" value=\"");
         String dateTimeValue = param.getStringValue(cms);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(dateTimeValue) && !"0".equals(dateTimeValue)) {
             try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/05/07 16:08:27 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/05/13 12:44:55 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_CmsWidgetParameter {
@@ -89,7 +89,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         m_minOccurs = 0;
         m_maxOccurs = Integer.MAX_VALUE;
     }
-
+    
     /**
      * Initializes the required members for this XML content value.<p>
      * 
@@ -346,6 +346,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     public String getPlainText(CmsObject cms) {
 
         return null;
+    }
+    
+    /**
+     * @see org.opencms.workplace.xmlwidgets.I_CmsWidgetParameter#hasError()
+     */
+    public boolean hasError() {
+
+        return false;
     }
 
     /**
