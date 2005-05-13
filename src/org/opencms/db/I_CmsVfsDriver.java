@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2005/05/11 15:32:46 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2005/05/13 08:16:04 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsUser;
 import org.opencms.util.CmsUUID;
 
 import java.sql.ResultSet;
@@ -51,7 +50,7 @@ import java.util.List;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.105 $ $Date: 2005/05/11 15:32:46 $
+ * @version $Revision: 1.106 $ $Date: 2005/05/13 08:16:04 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -558,23 +557,18 @@ public interface I_CmsVfsDriver {
 
     /**
      * Replaces the content and properties of an existing resource.<p>
-     * 
      * @param dbc the current database context
-     * @param currentUser the current user
-     * @param currentProject the current project
-     * @param res the new resource
-     * @param newResContent the new content
-     * @param newResType the resource type
+     * @param newResource the new resource
+     * @param newResourceContent the new content
+     * @param newResourceType the resource type
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
     void replaceResource(
         CmsDbContext dbc,
-        CmsUser currentUser,
-        CmsProject currentProject,
-        CmsResource res,
-        byte[] newResContent,
-        int newResType) throws CmsDataAccessException;
+        CmsResource newResource,
+        byte[] newResourceContent,
+        int newResourceType) throws CmsDataAccessException;
 
     /**
      * Validates if the specified content ID in the tables of the specified project {offline|online} exists.<p>

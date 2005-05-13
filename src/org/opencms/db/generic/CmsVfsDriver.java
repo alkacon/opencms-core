@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/05/12 13:15:29 $
- * Version: $Revision: 1.237 $
+ * Date   : $Date: 2005/05/13 08:16:04 $
+ * Version: $Revision: 1.238 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.237 $ $Date: 2005/05/12 13:15:29 $
+ * @version $Revision: 1.238 $ $Date: 2005/05/13 08:16:04 $
  * @since 5.1
  */
 public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
@@ -1709,24 +1709,24 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#replaceResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser, org.opencms.file.CmsProject, org.opencms.file.CmsResource, byte[], int)
+     * @see org.opencms.db.I_CmsVfsDriver#replaceResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, byte[], int)
      */
-    public void replaceResource(CmsDbContext dbc, CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] resContent, int newResType) throws CmsDataAccessException {
+    public void replaceResource(CmsDbContext dbc, CmsResource newResource, byte[] resContent, int newResourceType) throws CmsDataAccessException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
             // write the file content
             if (resContent != null) {
-                writeContent(dbc, currentProject, res.getResourceId(), resContent);
+                writeContent(dbc, dbc.currentProject(), newResource.getResourceId(), resContent);
             }
 
             // update the resource record
-            conn = m_sqlManager.getConnection(dbc, currentProject.getId());
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCE_REPLACE");
-            stmt.setInt(1, newResType);
+            conn = m_sqlManager.getConnection(dbc, dbc.currentProject().getId());
+            stmt = m_sqlManager.getPreparedStatement(conn, dbc.currentProject(), "C_RESOURCE_REPLACE");
+            stmt.setInt(1, newResourceType);
             stmt.setInt(2, resContent.length);
-            stmt.setString(3, res.getResourceId().toString());
+            stmt.setString(3, newResource.getResourceId().toString());
             stmt.executeUpdate();
 
         } catch (SQLException e) {

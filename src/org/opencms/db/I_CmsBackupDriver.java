@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/09 15:47:07 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/05/13 08:16:04 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,8 @@ package org.opencms.db;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsUser;
 import org.opencms.util.CmsUUID;
 
 import java.sql.ResultSet;
@@ -54,7 +52,7 @@ import java.util.List;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.43 $ $Date: 2005/05/09 15:47:07 $
+ * @version $Revision: 1.44 $ $Date: 2005/05/13 08:16:04 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -297,27 +295,20 @@ public interface I_CmsBackupDriver {
 
     /**
      * Writes a project to the backup.<p>
-     * 
      * @param dbc the current database context
-     * @param currentProject the current project
      * @param tagId the version ID of the backup
      * @param publishDate long timestamp when the current project was published. 
-     * @param currentUser the current user
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
     void writeBackupProject(
         CmsDbContext dbc,
-        CmsProject currentProject,
         int tagId,
-        long publishDate,
-        CmsUser currentUser) throws CmsDataAccessException;
+        long publishDate) throws CmsDataAccessException;
 
     /**
      * Writes the properties of a resource to the backup.<p>
-     * 
      * @param dbc the current database context
-     * @param publishProject the current project
      * @param resource the resource of the properties
      * @param properties the properties to write
      * @param backupId the id backup
@@ -328,7 +319,6 @@ public interface I_CmsBackupDriver {
      */
     void writeBackupProperties(
         CmsDbContext dbc,
-        CmsProject publishProject,
         CmsResource resource,
         List properties,
         CmsUUID backupId,
@@ -337,10 +327,7 @@ public interface I_CmsBackupDriver {
 
     /**
      * Writes a resource to the backup.<p>
-     * 
      * @param dbc the current database context
-     * @param currentUser the current user
-     * @param publishProject the current project
      * @param resource the resource that is written to the backup
      * @param properties the properties of the resource
      * @param tagId the version ID of the backup
@@ -351,8 +338,6 @@ public interface I_CmsBackupDriver {
      */
     void writeBackupResource(
         CmsDbContext dbc,
-        CmsUser currentUser,
-        CmsProject publishProject,
         CmsResource resource,
         List properties,
         int tagId,

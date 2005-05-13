@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/05/12 13:15:29 $
- * Version: $Revision: 1.213 $
+ * Date   : $Date: 2005/05/13 08:16:04 $
+ * Version: $Revision: 1.214 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.Set;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.213 $ $Date: 2005/05/12 13:15:29 $
+ * @version $Revision: 1.214 $ $Date: 2005/05/13 08:16:04 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -566,7 +566,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 // write the folder to the backup and publishing history                
                 if (backupEnabled) {
                     offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(dbc, dbc.currentProject(), currentFolder);
-                    m_driverManager.getBackupDriver().writeBackupResource(dbc, dbc.currentUser(), dbc.currentProject(), currentFolder, offlineProperties, backupTagId, publishDate, maxVersions);
+                    m_driverManager.getBackupDriver().writeBackupResource(dbc, currentFolder, offlineProperties, backupTagId, publishDate, maxVersions);
                 }               
                 
                 m_driverManager.getProjectDriver().writePublishHistory(dbc, dbc.currentProject(), publishHistoryId, backupTagId, currentFolder);
@@ -876,7 +876,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         if (offlineProperties == null) {
                             offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(dbc, dbc.currentProject(), offlineFileHeader);
                         }                        
-                        m_driverManager.getBackupDriver().writeBackupResource(dbc, dbc.currentUser(), dbc.currentProject(), newFile, offlineProperties, backupTagId, publishDate, maxVersions);                                  
+                        m_driverManager.getBackupDriver().writeBackupResource(dbc, newFile, offlineProperties, backupTagId, publishDate, maxVersions);                                  
                     }
                     
                     m_driverManager.getProjectDriver().writePublishHistory(dbc, dbc.currentProject(), publishHistoryId, backupTagId, offlineFileHeader);
@@ -962,7 +962,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         if (offlineProperties == null) {
                             offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(dbc, dbc.currentProject(), offlineFileHeader);
                         } 
-                        m_driverManager.getBackupDriver().writeBackupResource(dbc, dbc.currentUser(), dbc.currentProject(), newFile, offlineProperties, backupTagId, publishDate, maxVersions);
+                        m_driverManager.getBackupDriver().writeBackupResource(dbc, newFile, offlineProperties, backupTagId, publishDate, maxVersions);
                     }
                     
                     m_driverManager.getProjectDriver().writePublishHistory(dbc, dbc.currentProject(), publishHistoryId, backupTagId, offlineFileHeader);
@@ -1149,12 +1149,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                     m_driverManager.getBackupDriver().writeBackupResource(
                         dbc,
-                        dbc.currentUser(),
-                        dbc.currentProject(),
                         offlineFolder,
                         offlineProperties,
                         backupTagId,
-                        publishDate, maxVersions);
+                        publishDate,
+                        maxVersions);
                 }
 
                 m_driverManager.getProjectDriver().writePublishHistory(
@@ -1217,10 +1216,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     // write an entry in the publish project log
                     m_driverManager.getBackupDriver().writeBackupProject(
                         dbc,
-                        dbc.currentProject(),
                         backupTagId,
-                        publishDate,
-                        dbc.currentUser());
+                        publishDate);
                     dbc.pop();
                 } catch (Throwable t) {
                     dbc.report(report, Messages.get().container(Messages.ERR_WRITING_BACKUP_OF_PROJECT_1, dbc.currentProject().getName()), t);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/10 09:14:52 $
- * Version: $Revision: 1.125 $
+ * Date   : $Date: 2005/05/13 08:16:04 $
+ * Version: $Revision: 1.126 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.125 $ $Date: 2005/05/10 09:14:52 $
+ * @version $Revision: 1.126 $ $Date: 2005/05/13 08:16:04 $
  * @since 5.1
  */
 public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
@@ -861,17 +861,20 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#writeBackupProject(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, int, long, org.opencms.file.CmsUser)
+     * @see org.opencms.db.I_CmsBackupDriver#writeBackupProject(org.opencms.db.CmsDbContext, int, long)
      */
-    public void writeBackupProject(CmsDbContext dbc, CmsProject currentProject, int tagId, long publishDate, CmsUser currentUser) throws CmsDataAccessException {
+    public void writeBackupProject(CmsDbContext dbc, int tagId, long publishDate) throws CmsDataAccessException {
+        
         Connection conn = null;
         PreparedStatement stmt = null;
-        String ownerName = new String();
-        String group = new String();
-        String managerGroup = new String();
+        String group = null;
+        String managerGroup = null;
+        
+        CmsProject currentProject = dbc.currentProject();
+        CmsUser currentUser = dbc.currentUser();
         
         CmsUser owner = m_driverManager.getUserDriver().readUser(dbc, currentProject.getOwnerId());
-        ownerName = owner.getName() + " " + owner.getFirstname() + " " + owner.getLastname();
+        String ownerName = owner.getName() + " " + owner.getFirstname() + " " + owner.getLastname();
 
         try {
             group = m_driverManager.getUserDriver().readGroup(dbc, currentProject.getGroupId()).getName();
@@ -933,9 +936,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#writeBackupProperties(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.List, org.opencms.util.CmsUUID, int, int)
+     * @see org.opencms.db.I_CmsBackupDriver#writeBackupProperties(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, java.util.List, org.opencms.util.CmsUUID, int, int)
      */
-    public void writeBackupProperties(CmsDbContext dbc, CmsProject publishProject, CmsResource resource, List properties, CmsUUID backupId, int tagId, int versionId) throws CmsDataAccessException {
+    public void writeBackupProperties(CmsDbContext dbc, CmsResource resource, List properties, CmsUUID backupId, int tagId, int versionId) throws CmsDataAccessException {
         Connection conn = null;
         PreparedStatement stmt = null;
         String key = null;
@@ -1008,13 +1011,14 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#writeBackupResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.List, int, long, int)
+     * @see org.opencms.db.I_CmsBackupDriver#writeBackupResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, java.util.List, int, long, int)
      */
-    public void writeBackupResource(CmsDbContext dbc, CmsUser currentUser, CmsProject publishProject, CmsResource resource, List properties, int tagId, long publishDate, int maxVersions) throws CmsDataAccessException {
+    public void writeBackupResource(CmsDbContext dbc, CmsResource resource, List properties, int tagId, long publishDate, int maxVersions) throws CmsDataAccessException {
+        
         Connection conn = null;
         PreparedStatement stmt = null;
         CmsUUID backupPkId = new CmsUUID();
-        int versionId;
+        int versionId = -1;
 
         String lastModifiedName = "";
         String createdName = "";
@@ -1052,7 +1056,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     stmt.setString(7, resource.getUserLastModified().toString());
                     stmt.setInt(8, resource.getState());
                     stmt.setInt(9, resource.getLength());
-                    stmt.setInt(10, publishProject.getId());
+                    stmt.setInt(10, dbc.currentProject().getId());
                     stmt.setInt(11, 1);
                     stmt.setInt(12, tagId);
                     stmt.setInt(13, versionId);
@@ -1078,7 +1082,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.setString(9, backupPkId.toString());
             stmt.executeUpdate();
 
-            writeBackupProperties(dbc, publishProject, resource, properties, backupPkId, tagId, versionId);
+            writeBackupProperties(dbc, resource, properties, backupPkId, tagId, versionId);
 
             // now check if there are old backup versions to delete
             List existingBackups = readBackupFileHeaders(dbc, resource.getRootPath());
