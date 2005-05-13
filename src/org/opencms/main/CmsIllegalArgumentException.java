@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsIllegalArgumentException.java,v $
- * Date   : $Date: 2005/05/11 10:22:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/13 08:09:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,4 +65,12 @@ public class CmsIllegalArgumentException extends CmsRuntimeException {
 
         super(container, cause);
     }
+    
+    /**
+     * @see org.opencms.main.CmsRuntimeException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsRuntimeException createException(CmsMessageContainer container, Throwable cause) {
+        
+        return new CmsIllegalArgumentException(container, cause);
+    } 
 }
