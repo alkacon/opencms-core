@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/CmsTemplateModules.java,v $
- * Date   : $Date: 2005/04/06 11:36:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/13 10:54:30 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,11 +34,12 @@ package org.opencms.frontend.templateone.modules;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.frontend.templateone.CmsPropertyTemplateOne;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Date;
@@ -47,6 +48,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * A helper bean for the template one modules.<p>
@@ -57,11 +60,11 @@ import javax.servlet.jsp.PageContext;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 6.0 alpha 2
  */
 public class CmsTemplateModules extends CmsJspActionElement {
-    
+
     /** Request parameter name for the category folder. */
     public static final String C_PARAM_CATEGORYFOLDER = "categoryfolder";
     /** Request parameter name for the collector. */
@@ -72,10 +75,13 @@ public class CmsTemplateModules extends CmsJspActionElement {
     public static final String C_PARAM_ELEMENTCOUNT = "elementcount";
     /** Request parameter name for the xmlcontent folder. */
     public static final String C_PARAM_FOLDER = "folder";
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPropertyTemplateOne.class);
+
     private String m_categoryFolder;
     private boolean m_hasCategoryFolders;
-    
+
     /**
      * @see CmsJspActionElement#CmsJspActionElement(PageContext, HttpServletRequest, HttpServletResponse)
      */
@@ -83,7 +89,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
 
         super(context, req, res);
     }
-    
+
     /**
      * Creates a html breadcrumb navigation.<p>
      * 
@@ -109,8 +115,11 @@ public class CmsTemplateModules extends CmsJspActionElement {
             // get the title of the current navigation element
             String title = navElement.getTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn(navElement.getResourceName() + " has no " + I_CmsConstants.C_PROPERTY_TITLE + " set!");
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(
+                        Messages.LOG_ERR_MISSING_PROP_2,
+                        navElement.getResourceName(),
+                        I_CmsConstants.C_PROPERTY_TITLE));
                 }
                 title = CmsResource.getName(navElement.getResourceName());
             }
@@ -132,7 +141,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
 
         return result.toString();
     }
-    
+
     /**
      * Creates a html &lt;li&gt; list of all folders inside the current folder.<p>
      * 
@@ -147,9 +156,12 @@ public class CmsTemplateModules extends CmsJspActionElement {
 
         // get the start folder from request
         String startfolder = getCategoryFolder();
-        
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Category start folder is: " + startfolder + ", FAQ resource type is: " + faqResourceTypeId);
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(
+                Messages.LOG_DEBUG_BUILD_HTML_NAVLIST_2,
+                startfolder,
+                String.valueOf(faqResourceTypeId)));
         }
 
         // read the resource tree
@@ -167,7 +179,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
                 // append additional attributes
                 result.append(" ").append(attrs);
             }
-            
+
             result.append(">\n");
 
             int indentCount = 0;
@@ -182,13 +194,12 @@ public class CmsTemplateModules extends CmsJspActionElement {
                 String resourceName = getCmsObject().getSitePath(resource);
 
                 // skip files
-                if (! resource.isFolder()) {
+                if (!resource.isFolder()) {
                     continue;
                 }
 
                 // count resources of the specified type inside folder
                 int faqCount = getResourceCount(resourceName, faqResourceTypeId);
-                
 
                 int level = CmsResource.getPathLevel(resourceName);
 
@@ -223,12 +234,15 @@ public class CmsTemplateModules extends CmsJspActionElement {
 
                 String faqUri = link(getRequestContext().getUri() + "?" + C_PARAM_CATEGORYFOLDER + "=" + resourceName);
 
-                String title = getCmsObject().readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_TITLE, false).getValue(null);
+                String title = getCmsObject().readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_TITLE, false)
+                    .getValue(null);
 
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this)
-                            .warn(resourceName + " has no " + I_CmsConstants.C_PROPERTY_TITLE + " set!");
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().key(
+                            Messages.LOG_ERR_MISSING_PROP_2,
+                            resourceName,
+                            I_CmsConstants.C_PROPERTY_TITLE));
                     }
                     title = resource.getName();
                 }
@@ -296,11 +310,11 @@ public class CmsTemplateModules extends CmsJspActionElement {
 
         StringBuffer anchor = new StringBuffer();
         anchor.append("<a href=\"").append(href).append("\"");
-        
+
         if (CmsStringUtil.isNotEmpty(description)) {
             anchor.append(" title=\"").append(description).append("\"");
         }
-        
+
         if (CmsStringUtil.isNotEmpty(target)) {
             anchor.append(" target=\"").append(target).append("\"");
         }
@@ -309,7 +323,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
 
         return anchor.toString();
     }
-    
+
     /**
      * Returns the URI of the currently displayed category folder.<p>
      * 
@@ -327,7 +341,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
         }
         return m_categoryFolder;
     }
-    
+
     /**
      * Returns the number of resources with a given resource type inside a folder.<p>
      * 
@@ -347,17 +361,18 @@ public class CmsTemplateModules extends CmsJspActionElement {
             result = resources.size();
         } catch (CmsException e) {
             // error reading the resources
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(
-                    "Error reading resources with resource type " + resourceTypeId + " in folder " + foldername,
-                    e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(org.opencms.db.Messages.get().key(
+                    org.opencms.db.Messages.ERR_READ_RESOURCES_WITH_TYPE_2,
+                    String.valueOf(resourceTypeId),
+                    foldername), e);
             }
             result = -1;
         }
 
         return result;
     }
-    
+
     /**
      * Returns true if the currently displayed folder contains subfolders which are used as category folders.<p>
      * 
@@ -369,7 +384,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
 
         return m_hasCategoryFolders;
     }
-    
+
     /**
      * Saves a {@link Date} object in the page context that was created from the value of
      * a specified page context attribute.<p>
@@ -377,13 +392,13 @@ public class CmsTemplateModules extends CmsJspActionElement {
      * @param dateAttrib the name of the page context attribute containing the date string
      */
     public void setDate(String dateAttrib) {
-        
+
         String timeString = (String)getJspContext().getAttribute(dateAttrib);
         long timestamp = (new Long(timeString)).longValue();
         Date date = new Date(timestamp);
         getJspContext().setAttribute("date", date);
     }
-    
+
     /**
      * Returns true if the bread crumb navigation should be shown.<p>
      * 
