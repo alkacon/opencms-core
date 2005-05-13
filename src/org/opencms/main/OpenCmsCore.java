@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/05/13 08:11:09 $
- * Version: $Revision: 1.182 $
+ * Date   : $Date: 2005/05/13 15:12:20 $
+ * Version: $Revision: 1.183 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.db.CmsDefaultUsers;
+import org.opencms.db.CmsObjectNotFoundException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsSqlManager;
 import org.opencms.file.CmsObject;
@@ -125,7 +126,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.182 $
+ * @version $Revision: 1.183 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1672,6 +1673,10 @@ public final class OpenCmsCore {
                 }
                 return;
             }
+        } else if (t instanceof CmsObjectNotFoundException) {
+            // user or group does not exist
+            status = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
+            isNotGuest = true;            
         } else if (t instanceof CmsException) {
             CmsException e = (CmsException)t;
 
@@ -1685,12 +1690,6 @@ public final class OpenCmsCore {
 
                 case CmsException.C_SERVICE_UNAVAILABLE:
                     status = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
-                    break;
-
-                case CmsException.C_NO_USER:
-                case CmsException.C_NO_GROUP:
-                    status = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
-                    isNotGuest = true;
                     break;
 
                 default:
