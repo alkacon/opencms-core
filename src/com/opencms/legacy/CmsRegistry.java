@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2005/02/18 15:18:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/13 15:10:05 $
+ * Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @deprecated The registry has been replaced by the new XML configuration.
  */
@@ -117,7 +117,7 @@ public class CmsRegistry extends A_CmsXmlContent {
             InputStream content = new FileInputStream(xmlFile);
             m_xmlReg = parse(content);
         } catch (Exception exc) {
-            throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
+            throw new CmsLegacyException("couldn't init registry", CmsLegacyException.C_REGISTRY_ERROR, exc);
         }
     }    
 

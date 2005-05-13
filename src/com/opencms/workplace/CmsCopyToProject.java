@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopyToProject.java,v $
-* Date   : $Date: 2005/04/24 11:20:31 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.20 $ $Date: 2005/04/24 11:20:31 $
+ * @version $Revision: 1.21 $ $Date: 2005/05/13 15:10:05 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -110,7 +110,7 @@ public class CmsCopyToProject extends CmsWorkplaceDefault {
                         session.removeValue(C_PARA_RESOURCE);
                         template = "done";
                     } else {
-                        throw new CmsSecurityException("[" + this.getClass().getName() + "] getContent()", CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
+                        throw new CmsSecurityException(Messages.get().container(Messages.ERR_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED_0));
                     }
                 } catch (CmsException e) {
                     session.removeValue(C_PARA_RESOURCE);

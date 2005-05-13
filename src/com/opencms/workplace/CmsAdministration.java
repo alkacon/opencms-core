@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2005/03/24 09:43:56 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsTemplateClassManager;
 import com.opencms.template.CmsXmlTemplateFile;
@@ -57,7 +58,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.58 $ $Date: 2005/03/24 09:43:56 $
+ * @version $Name:  $ $Revision: 1.59 $ $Date: 2005/05/13 15:10:05 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -114,7 +115,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
 
                 // The requested method was not found.
                 throwException("Could not find icon activation method " + iconActiveMethod
-                        + " in calling class " + className + " for generating icon.", CmsException.C_NOT_FOUND);
+                        + " in calling class " + className + " for generating icon.", CmsLegacyException.C_NOT_FOUND);
             }
             catch(InvocationTargetException targetEx) {
 
@@ -124,7 +125,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
                 if(!(e instanceof CmsException)) {
 
                     throwException("Icon activation method " + iconActiveMethod + " in calling class "
-                            + className + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                            + className + " throwed an exception. " + e, CmsLegacyException.C_UNKNOWN_EXCEPTION);
                 }
                 else {
 
@@ -135,7 +136,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
             }
             catch(Exception exc2) {
                 throwException("Icon activation method " + iconActiveMethod + " in calling class "
-                        + className + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
+                        + className + " was found but could not be invoked. " + exc2, CmsLegacyException.C_UNKNOWN_EXCEPTION);
             }
         }
 

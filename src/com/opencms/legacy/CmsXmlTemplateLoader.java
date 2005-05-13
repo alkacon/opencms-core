@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/13 15:10:05 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -482,7 +482,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error(errorMessage);
                     } 
-                    throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
+                    throw new CmsLegacyException(errorMessage, CmsLegacyException.C_XML_WRONG_TEMPLATE_CLASS);
                 }
                 // TODO: Make cache more efficient
                 clearLoaderCache(true, true);
@@ -541,7 +541,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error(errorMessage);
             }
-            throw new CmsException(errorMessage, CmsException.C_XML_NO_TEMPLATE_CLASS);
+            throw new CmsLegacyException(errorMessage, CmsLegacyException.C_XML_NO_TEMPLATE_CLASS);
         }
         I_CmsTemplate cmsTemplate = (I_CmsTemplate)o;
         if (!cmsTemplate.isTemplateCacheSet()) {
@@ -580,8 +580,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         // otherwise we try to throw an exception.
         CmsRequestContext reqContext = cms.getRequestContext();
         if ((DEBUG == 0) && reqContext.currentUser().isGuestUser()
-            && (!(e instanceof CmsException && ((CmsException)e).getType() == CmsException.C_NO_USER))) {
-            throw new CmsException(errorText, CmsException.C_SERVICE_UNAVAILABLE, e);
+            && (!(e instanceof CmsLegacyException && ((CmsLegacyException)e).getType() == CmsLegacyException.C_NO_USER))) {
+            throw new CmsLegacyException(errorText, CmsLegacyException.C_SERVICE_UNAVAILABLE, e);
         } else {
             if (e instanceof CmsException) {
                 throw (CmsException)e;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChpwd.java,v $
- * Date   : $Date: 2005/02/18 15:18:50 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/05/13 15:10:05 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
@@ -39,7 +40,7 @@ import java.util.Hashtable;
  * Template class for displaying the chpwd screen of the OpenCms workplace.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2005/02/18 15:18:50 $
+ * @version $Revision: 1.20 $ $Date: 2005/05/13 15:10:05 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -92,7 +93,7 @@ public class CmsChpwd extends CmsWorkplaceDefault {
 					}
 					catch(CmsException exp) {
 						// check if the old password was not correct
-						if(exp.getType() == CmsException.C_NO_USER) {
+						if(exp.getType() == CmsLegacyException.C_NO_USER) {
 							xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(exp));
 							template = "error2";
 						}

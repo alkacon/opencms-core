@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.92 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.93 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
@@ -66,7 +67,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.92 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.93 $ $Date: 2005/05/13 15:10:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -878,7 +879,7 @@ public class CmsFileList extends A_CmsWpElement {
         // Check if the callingObject implements our interface
         if(!(callingObject instanceof I_CmsFileListUsers)) {
             throwException("Class " + callingObject.getClass().getName() + " is using a \"FILELIST\" tag in its "
-                    + "template file " + doc.getAbsoluteFilename() + ", but does not implement I_CmsFileListUsers. ", CmsException.C_XML_WRONG_TEMPLATE_CLASS);
+                    + "template file " + doc.getAbsoluteFilename() + ", but does not implement I_CmsFileListUsers. ", CmsLegacyException.C_XML_WRONG_TEMPLATE_CLASS);
         }
         CmsXmlWpConfigFile configFile = this.getConfigFile(cms);
         I_CmsFileListUsers filelistUser = (I_CmsFileListUsers)callingObject;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2005/02/18 15:18:52 $
-* Version: $Revision: 1.147 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.148 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.147 $ $Date: 2005/02/18 15:18:52 $
+ * @version $Revision: 1.148 $ $Date: 2005/05/13 15:10:05 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -1385,7 +1385,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             if(OpenCms.getLog(this).isErrorEnabled() ) {
                 OpenCms.getLog(this).error(errorMessage);
             }
-            throw new CmsException(errorMessage, CmsException.C_XML_NO_TEMPLATE_CLASS);
+            throw new CmsLegacyException(errorMessage, CmsLegacyException.C_XML_NO_TEMPLATE_CLASS);
         }
         subTemplate = (I_CmsTemplate)loadedObject;
 

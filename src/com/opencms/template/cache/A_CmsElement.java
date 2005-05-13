@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2005/02/18 15:18:52 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,14 @@
 
 package com.opencms.template.cache;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsCacheDirectives;
 import com.opencms.template.CmsCacheDirectives;
@@ -329,7 +329,7 @@ public abstract class A_CmsElement {
         if(o instanceof I_CmsTemplate) {
             return (I_CmsTemplate)o;
         } else {
-            throw new CmsException(classname + " is no OpenCms template class.", CmsException.C_XML_NO_TEMPLATE_CLASS);
+            throw new CmsLegacyException(classname + " is no OpenCms template class.", CmsLegacyException.C_XML_NO_TEMPLATE_CLASS);
         }
     }
 

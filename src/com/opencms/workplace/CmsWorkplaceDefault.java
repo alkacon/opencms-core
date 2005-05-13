@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2005/04/24 11:20:31 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.explorer.CmsTree;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
@@ -61,7 +62,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.80 $ $Date: 2005/04/24 11:20:31 $
+ * @version $Revision: 1.81 $ $Date: 2005/05/13 15:10:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -560,7 +561,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
             ((CmsXmlWpTemplateFile)xmlTemplateDocument).setData("lasturl", lasturl);
             return super.startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
         } else {
-            throw new CmsException("No access to the workplace with this port", CmsException.C_NOT_FOUND);
+            throw new CmsException("No access to the workplace with this port", CmsLegacyException.C_NOT_FOUND);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.*;
+import org.opencms.workplace.I_CmsWpConstants;
 
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsLegacyException;
 
 /**
  * Abstract class for all workplace elements.
@@ -47,7 +48,7 @@ import org.opencms.file.CmsObject;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.49 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.50 $ $Date: 2005/05/13 15:10:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -373,11 +374,11 @@ public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants
      * @throws CmsException
      */
 
-    protected void throwException(String errorMessage, int type) throws CmsException {
+    protected void throwException(String errorMessage, int type) throws CmsLegacyException {
         if(OpenCms.getLog(this).isWarnEnabled() ) {
             OpenCms.getLog(this).warn(errorMessage);
         }
-        throw new CmsException(errorMessage, type);
+        throw new CmsLegacyException(errorMessage, type);
     }
 
     /**

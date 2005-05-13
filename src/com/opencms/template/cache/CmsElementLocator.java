@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2005/02/18 15:18:52 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,11 @@
 
 package com.opencms.template.cache;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsObject;
-
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsMethodCacheDirectives;
 import com.opencms.template.I_CmsTemplate;
@@ -170,8 +170,8 @@ public class CmsElementLocator {
                 } catch(Throwable e) {
                     if(OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Could not initialize (sub-)element for class \"" + desc.getClassName() + "\"", e);
-                        throw new CmsException("Could not initialize (sub-)element for class \"" +
-                                             desc.getClassName() + "\". " +e.toString() , CmsException.C_XML_WRONG_TEMPLATE_CLASS);
+                        throw new CmsLegacyException("Could not initialize (sub-)element for class \"" +
+                                             desc.getClassName() + "\". " +e.toString() , CmsLegacyException.C_XML_WRONG_TEMPLATE_CLASS);
                     }
                 }
             }

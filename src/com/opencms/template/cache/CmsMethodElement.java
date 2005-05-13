@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2005/02/18 15:18:52 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,12 @@
 
 package com.opencms.template.cache;
 
+import org.opencms.file.CmsObject;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.template.A_CmsCacheDirectives;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
@@ -144,7 +145,7 @@ public class CmsMethodElement extends A_CmsElement {
                                      Object.class}).invoke(templateClass,
                                      new Object[] {cms, methodParameter, null, parameters});
             }catch(NoSuchMethodException exc) {
-                throwException("[CmsMethodElemtent] User method " + m_methodName + " was not found in class " + templateClass.getClass().getName() + ".", CmsException.C_XML_NO_USER_METHOD);
+                throwException("[CmsMethodElemtent] User method " + m_methodName + " was not found in class " + templateClass.getClass().getName() + ".", CmsLegacyException.C_XML_NO_USER_METHOD);
             }catch(InvocationTargetException targetEx) {
                 // the method could be invoked, but throwed a exception
                 // itself. Get this exception and throw it again.
@@ -158,7 +159,7 @@ public class CmsMethodElement extends A_CmsElement {
                     throw (CmsException)e;
                 }
             }catch(Exception exc2) {
-                throwException("User method " + m_methodName + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+                throwException("User method " + m_methodName + " was found but could not be invoked. " + exc2, CmsLegacyException.C_XML_NO_USER_METHOD);
             }
             if(methodResult != null){
                 if(methodResult instanceof String){
@@ -177,7 +178,7 @@ public class CmsMethodElement extends A_CmsElement {
                     variant.add(((CmsProcessedString)methodResult).toString());
                     addVariant(cacheKey, variant);
                 }else {
-                    throwException("User method " + m_methodName + " in class " + templateClass.getClass().getName() + " returned an unsupported Object: " + methodResult.getClass().getName(), CmsException.C_XML_PROCESS_ERROR);
+                    throwException("User method " + m_methodName + " in class " + templateClass.getClass().getName() + " returned an unsupported Object: " + methodResult.getClass().getName(), CmsLegacyException.C_XML_PROCESS_ERROR);
                 }
             }
             if((result != null)&&(cacheKey != null)&&(cd.isInternalCacheable())){

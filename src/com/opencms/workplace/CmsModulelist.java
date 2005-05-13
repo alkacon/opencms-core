@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModulelist.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.util.CmsDateUtil;
 
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -50,7 +51,7 @@ import org.w3c.dom.Element;
  * 
  * Creation date: (31.08.00 15:16:10)
  * @author Hanjo Riege
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -100,7 +101,7 @@ public class CmsModulelist extends A_CmsWpElement {
             // The requested method was not found.
             throwException("Could not find method " + listMethod + " in calling class " 
                     + callingObject.getClass().getName() 
-                    + " for generating projectlist content.", CmsException.C_NOT_FOUND);
+                    + " for generating projectlist content.", CmsLegacyException.C_NOT_FOUND);
         }
         catch(InvocationTargetException targetEx) {
             
@@ -124,7 +125,7 @@ public class CmsModulelist extends A_CmsWpElement {
         catch(Exception exc2) {
             throwException("User method " + listMethod + " in calling class " 
                     + callingObject.getClass().getName() 
-                    + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+                    + " was found but could not be invoked. " + exc2, CmsLegacyException.C_XML_NO_USER_METHOD);
         }
         
         // check if we are in the onlineProject

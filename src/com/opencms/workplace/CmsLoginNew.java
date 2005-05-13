@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/05/13 15:10:05 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.workplace.CmsWorkplaceView;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
@@ -57,7 +58,7 @@ import java.util.Iterator;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -160,7 +161,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
                 if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info("Failed login attempt for user '" + name + "'");
                 }                
-                throw new CmsException("[OpenCms login failed]", CmsException.C_NO_USER);
+                throw new CmsLegacyException("[OpenCms login failed]", CmsLegacyException.C_NO_USER);
             }
             if (DEBUG > 0) System.err.println("CmsLoginNew: user " + username + " logged in");
 

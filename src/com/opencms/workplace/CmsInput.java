@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsInput.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.workplace;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +46,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;INPUT&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.22 $ $Date: 2005/05/13 15:10:05 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -97,7 +98,7 @@ public class CmsInput extends A_CmsWpElement {
                 // The requested method was not found.
                 throwException("Could not find method " + method + " in calling class " 
                         + callingObject.getClass().getName() 
-                        + " for generating input value content.", CmsException.C_NOT_FOUND);
+                        + " for generating input value content.", CmsLegacyException.C_NOT_FOUND);
             }
             catch(InvocationTargetException targetEx) {
                 
@@ -121,7 +122,7 @@ public class CmsInput extends A_CmsWpElement {
                 throwException("User method " + method + " in calling class " 
                         + callingObject.getClass().getName() 
                         + " was found but could not be invoked. " 
-                        + exc2, CmsException.C_XML_NO_USER_METHOD);
+                        + exc2, CmsLegacyException.C_XML_NO_USER_METHOD);
             }
         }
         if(value == null) {

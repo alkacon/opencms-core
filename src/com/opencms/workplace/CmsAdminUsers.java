@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2005/04/26 14:24:31 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Enumeration;
@@ -50,7 +51,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.54 $ $Date: 2005/04/26 14:24:31 $
+ * @version $Revision: 1.55 $ $Date: 2005/05/13 15:10:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -286,12 +287,12 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                             try {
                                 if(email.equals("") || userLastname.equals("")
                                         || user.equals("")) {
-                                    throw new CmsException("user data missing",
-                                            CmsException.C_NO_USER);
+                                    throw new CmsLegacyException("user data missing",
+                                        CmsLegacyException.C_NO_USER);
                                 }
                                 if(!pwd.equals(pwd2)) {
-                                    throw new CmsException("unequal passwords",
-                                            CmsSecurityException.C_SECURITY_INVALID_PASSWORD);
+                                    throw new CmsLegacyException("unequal passwords",
+                                        CmsLegacyException.C_SECURITY_INVALID_PASSWORD);
                                 }
                                 // check the password
                                 cms.validatePassword(pwd);
@@ -345,10 +346,10 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                         }
                                     }
                                 }else {
-                                    if(e.getType() == CmsException.C_NO_GROUP) {
+                                    if(e.getType() == CmsLegacyException.C_NO_GROUP) {
                                         templateSelector = "errornogroup1";
                                     }else {
-                                        if(e.getType() == CmsException.C_NO_USER
+                                        if(e.getType() == CmsLegacyException.C_NO_USER
                                                 && e.getMessage().equals("user data missing")) {
                                             templateSelector = "errordatamissing1";
                                         }else {
@@ -391,7 +392,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                             selectedGroups.addElement(((CmsGroup)groups.get(z)).getName());
                         }
                     }else {
-                        throw new CmsException(CmsException.C_NO_GROUP);
+                        throw new CmsLegacyException(CmsLegacyException.C_NO_GROUP);
                     }
                     groups = cms.getGroups();
                     if(groups != null) {
@@ -441,8 +442,8 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                 try {
                                     if(email.equals("") || userLastname.equals("")
                                             || user.equals("")) {
-                                        throw new CmsException("user data missing",
-                                                CmsException.C_NO_USER);
+                                        throw new CmsLegacyException("user data missing",
+                                            CmsLegacyException.C_NO_USER);
                                     }
                                     if(!pwd.equals(pwd2)) {
                                         throw new CmsException("unequal passwords",
@@ -462,12 +463,12 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                     theUser.setAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                                     if((OpenCms.getDefaultUsers().getUserAdmin().equals(theUser.getName()))
                                             && (!selectedGroups.contains(OpenCms.getDefaultUsers().getGroupAdministrators()))) {
-                                        throw new CmsException("cant remove Admin from "
-                                                + OpenCms.getDefaultUsers().getGroupAdministrators(), CmsException.C_NOT_ADMIN);
+                                        throw new CmsLegacyException("cant remove Admin from "
+                                                + OpenCms.getDefaultUsers().getGroupAdministrators(), CmsLegacyException.C_NOT_ADMIN);
                                     }
                                     if(disabled && selectedGroups.contains(OpenCms.getDefaultUsers().getGroupAdministrators())) {
-                                        throw new CmsException("disabled admin",
-                                                 CmsException.C_NOT_ADMIN);
+                                        throw new CmsLegacyException("disabled admin",
+                                            CmsLegacyException.C_NOT_ADMIN);
                                     }
                                     if(disabled == true) {
                                         theUser.setDisabled();
@@ -506,14 +507,14 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                             }
                                         }
                                     }else {
-                                        if(e.getType() == CmsException.C_NO_GROUP) {
+                                        if(e.getType() == CmsLegacyException.C_NO_GROUP) {
                                             templateSelector = "errornogroup2";
                                         }else {
-                                            if(e.getType() == CmsException.C_NO_USER
+                                            if(e.getType() == CmsLegacyException.C_NO_USER
                                                     && e.getMessage().equals("user data missing")) {
                                                 templateSelector = "errordatamissing2";
                                             }else {
-                                                if(e.getType() == CmsException.C_NOT_ADMIN
+                                                if(e.getType() == CmsLegacyException.C_NOT_ADMIN
                                                         && e.getMessage().equals("disabled admin")) {
                                                     templateSelector = "errordisabledadmin";
                                                 }else {

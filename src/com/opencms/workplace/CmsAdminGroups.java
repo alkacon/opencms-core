@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
@@ -48,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.41 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.42 $ $Date: 2005/05/13 15:10:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -211,7 +212,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault {
                             // form submitted, try to establish new group
                             try {
                                 if(groupname == null || groupname.equals("")) {
-                                    throw new CmsException("no groupname", CmsException.C_NO_GROUP);
+                                    throw new CmsLegacyException("no groupname", CmsLegacyException.C_NO_GROUP);
                                 }
                                 if(C_NO_SUPERGROUP_SELECTED.equals(supergroup)) {
                                     supergroup = ""; // no supergroup
@@ -258,7 +259,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault {
                                 else {
                                     session.removeValue("ROLE");
                                 }
-                                if(e.getType() == CmsException.C_NO_GROUP && e.getMessage().equals("no groupname")) {
+                                if(e.getType() == CmsLegacyException.C_NO_GROUP && e.getMessage().equals("no groupname")) {
                                     templateSelector = "errordatamissing1";
                                 }
                                 else {
@@ -387,11 +388,11 @@ public class CmsAdminGroups extends CmsWorkplaceDefault {
                                     session.putValue("ERROR", new String("yes"));
                                     session.putValue("GROUPDESC", description);
                                     session.putValue("SUPERGROUP", supergroup);
-                                    if(e.getType() == CmsException.C_NO_GROUP) {
+                                    if(e.getType() == CmsLegacyException.C_NO_GROUP) {
                                         templateSelector = "errornogroup2";
                                     }
                                     else {
-                                        if(e.getType() == CmsException.C_NO_USER && e.getMessage().equals("user data missing")) {
+                                        if(e.getType() == CmsLegacyException.C_NO_USER && e.getMessage().equals("user data missing")) {
                                             templateSelector = "errordatamissing2";
                                         }
                                         else {

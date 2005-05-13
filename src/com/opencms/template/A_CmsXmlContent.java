@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2005/02/18 15:18:52 $
-* Version: $Revision: 1.109 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.110 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,15 +28,15 @@
 
 package com.opencms.template;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.I_CmsWpConstants;
 
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-
-import com.opencms.legacy.*;
+import com.opencms.legacy.CmsLegacyException;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,7 +47,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -88,7 +87,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.109 $ $Date: 2005/02/18 15:18:52 $
+ * @version $Revision: 1.110 $ $Date: 2005/05/13 15:10:05 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -185,7 +184,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
         // Check if the user selected a object where to look for the user method.
         if (callingObject == null) {
-            throwException("You are trying to call the user method \"" + methodName + "\" without giving an object containing this method. " + "Please select a callingObject in your getProcessedData or getProcessedDataValue call.", CmsException.C_XML_NO_USER_METHOD);
+            throwException("You are trying to call the user method \"" + methodName + "\" without giving an object containing this method. " + "Please select a callingObject in your getProcessedData or getProcessedDataValue call.", CmsLegacyException.C_XML_NO_USER_METHOD);
         }
 
         // check if the method has cachedirectives, if so we just return null
@@ -197,7 +196,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                     return null;
                 }
             } catch (NoSuchMethodException e) {
-                throwException("Method getMethodeCacheDirectives was not found in class " + callingObject.getClass().getName() + ".", CmsException.C_XML_NO_USER_METHOD);
+                throwException("Method getMethodeCacheDirectives was not found in class " + callingObject.getClass().getName() + ".", CmsLegacyException.C_XML_NO_USER_METHOD);
             } catch (InvocationTargetException targetEx) {
 
                 // the method could be invoked, but throwed a exception
@@ -205,13 +204,13 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                 Throwable e = targetEx.getTargetException();
                 if (!(e instanceof CmsException)) {
                     // Only print an error if this is NO CmsException
-                    throwException("Method getMethodeCacheDirectives throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                    throwException("Method getMethodeCacheDirectives throwed an exception. " + e, CmsLegacyException.C_UNKNOWN_EXCEPTION);
                 } else {
                     // This is a CmsException Error printing should be done previously.
                     throw (CmsException) e;
                 }
             } catch (Exception exc2) {
-                throwException("Method getMethodeCacheDirectives was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+                throwException("Method getMethodeCacheDirectives was found but could not be invoked. " + exc2, CmsLegacyException.C_XML_NO_USER_METHOD);
             }
         }
 
@@ -220,7 +219,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             // try to invoke the method 'methodName'
             result = getUserMethod(methodName, callingObject).invoke(callingObject, params);
         } catch (NoSuchMethodException exc) {
-            throwException("User method " + methodName + " was not found in class " + callingObject.getClass().getName() + ".", CmsException.C_XML_NO_USER_METHOD);
+            throwException("User method " + methodName + " was not found in class " + callingObject.getClass().getName() + ".", CmsLegacyException.C_XML_NO_USER_METHOD);
         } catch (InvocationTargetException targetEx) {
 
             // the method could be invoked, but throwed a exception
@@ -235,10 +234,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                 throw (CmsException) e;
             }
         } catch (Exception exc2) {
-            throwException("User method " + methodName + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+            throwException("User method " + methodName + " was found but could not be invoked. " + exc2, CmsLegacyException.C_XML_NO_USER_METHOD);
         }
         if ((result != null) && (!(result instanceof String || result instanceof CmsProcessedString || result instanceof Integer || result instanceof NodeList || result instanceof byte[]))) {
-            throwException("User method " + methodName + " in class " + callingObject.getClass().getName() + " returned an unsupported Object: " + result.getClass().getName(), CmsException.C_XML_PROCESS_ERROR);
+            throwException("User method " + methodName + " in class " + callingObject.getClass().getName() + " returned an unsupported Object: " + result.getClass().getName(), CmsLegacyException.C_XML_PROCESS_ERROR);
         }
         return (result);
     }
@@ -339,7 +338,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         try {
             m_content = m_parser.createEmptyDocument(getXmlDocumentTagName());
         } catch (Exception e) {
-            throwException("Cannot create empty XML document for file " + m_filename + ". ", CmsException.C_XML_PARSING_ERROR);
+            throwException("Cannot create empty XML document for file " + m_filename + ". ", CmsLegacyException.C_XML_PARSING_ERROR);
         }
         write();
     }
@@ -407,11 +406,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         Object result = m_blocks.get(tag.toLowerCase());
         if (result == null) {
             String errorMessage = "Unknown Datablock " + tag + " requested.";
-            throwException(errorMessage, CmsException.C_XML_UNKNOWN_DATA);
+            throwException(errorMessage, CmsLegacyException.C_XML_UNKNOWN_DATA);
         } else {
             if (!(result instanceof Element)) {
                 String errorMessage = "Unexpected object returned as datablock. Requested Tagname: " + tag + ". Returned object: " + result.getClass().getName() + ".";
-                throwException(errorMessage, CmsException.C_XML_CORRUPT_INTERNAL_STRUCTURE);
+                throwException(errorMessage, CmsLegacyException.C_XML_CORRUPT_INTERNAL_STRUCTURE);
             }
         }
         return (Element) m_blocks.get(tag.toLowerCase());
@@ -966,7 +965,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                 try {
                     parsedContent = getXmlParser().createEmptyDocument(getXmlDocumentTagName());
                 } catch (Exception e) {
-                    throwException("Could not initialize now XML document " + filename + ". " + e, CmsException.C_XML_PARSING_ERROR);
+                    throwException("Could not initialize now XML document " + filename + ". " + e, CmsLegacyException.C_XML_PARSING_ERROR);
                 }
             } else {
                 parsedContent = parse(fileContent);
@@ -1167,7 +1166,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             removeFromFileCache();
             m_content = null;
             String errorMessage = "XML document " + getAbsoluteFilename() + " is not of the expected type. This document is \"" + docRootElementName + "\", but it should be \"" + getXmlDocumentTagName() + "\" (" + getContentDescription() + ").";
-            throwException(errorMessage, CmsException.C_XML_WRONG_CONTENT_TYPE);
+            throwException(errorMessage, CmsLegacyException.C_XML_WRONG_CONTENT_TYPE);
         }
 
         // OK. Document tag is fine. Now get the DATA tags and collect them
@@ -1182,7 +1181,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             throw e;
         } catch (NoSuchMethodException e2) {
             String errorMessage = "XML tag process method \"handleDataTag\" could not be found";
-            throwException(errorMessage, CmsException.C_XML_NO_PROCESS_METHOD);
+            throwException(errorMessage, CmsLegacyException.C_XML_NO_PROCESS_METHOD);
         }
     }
 
@@ -1363,11 +1362,11 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             // Error while parsing the document.
             // there ist nothing to do, we cannot go on.
             String errorMessage = "Cannot parse XML file \"" + getAbsoluteFilename() + "\". " + e;
-            throwException(errorMessage, CmsException.C_XML_PARSING_ERROR);
+            throwException(errorMessage, CmsLegacyException.C_XML_PARSING_ERROR);
         }
         if (parsedDoc == null) {
             String errorMessage = "Unknown error. Parsed DOM document is null.";
-            throwException(errorMessage, CmsException.C_XML_PARSING_ERROR);
+            throwException(errorMessage, CmsLegacyException.C_XML_PARSING_ERROR);
         }
 
         // Try to normalize the XML document.
@@ -1384,7 +1383,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         } catch (Exception e) {
             // The workaround using reflection API failed.
             // We have to throw an exception.
-            throwException("Normalizing the XML document failed. Possibly you are using concurrent versions of " + "the XML parser with different DOM levels. ", e, CmsException.C_XML_PARSING_ERROR);
+            throwException("Normalizing the XML document failed. Possibly you are using concurrent versions of " + "the XML parser with different DOM levels. ", e, CmsLegacyException.C_XML_PARSING_ERROR);
         }
         // Delete all unnecessary text nodes from the tree.
         // These nodes could cause errors when serializing this document otherwise
@@ -1547,10 +1546,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                                 if (thrown instanceof CmsException) {
                                     throw (CmsException) thrown;
                                 } else {
-                                    throwException("processNode received an exception while handling XML tag \"" + childName + "\" by \"" + callMethod.getName() + "\" for file " + getFilename() + ": " + e, CmsException.C_XML_PROCESS_ERROR);
+                                    throwException("processNode received an exception while handling XML tag \"" + childName + "\" by \"" + callMethod.getName() + "\" for file " + getFilename() + ": " + e, CmsLegacyException.C_XML_PROCESS_ERROR);
                                 }
                             } else {
-                                throwException("processNode could not invoke the XML tag handling method " + callMethod.getName() + "\" for file " + getFilename() + ": " + e, CmsException.C_XML_PROCESS_ERROR);
+                                throwException("processNode could not invoke the XML tag handling method " + callMethod.getName() + "\" for file " + getFilename() + ": " + e, CmsLegacyException.C_XML_PROCESS_ERROR);
                             }
                         }
 
@@ -1906,7 +1905,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         try {
             tempDoc = m_parser.parse(parserReader);
         } catch (Exception e) {
-            throwException("PARSING ERROR! " + e.toString(), CmsException.C_XML_PARSING_ERROR);
+            throwException("PARSING ERROR! " + e.toString(), CmsLegacyException.C_XML_PARSING_ERROR);
         }
         Element templateNode = (Element) tempDoc.getDocumentElement().getFirstChild();
         setData(tag, templateNode);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2005/02/18 15:18:52 $
-* Version: $Revision: 1.94 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.95 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,15 +29,15 @@
 
 package com.opencms.template;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import com.opencms.core.I_CmsRequest;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-
-import com.opencms.legacy.*;
+import com.opencms.legacy.CmsLegacyException;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.cache.CmsElementLink;
 import com.opencms.template.cache.CmsElementVariant;
 import com.opencms.template.cache.CmsMethodLink;
@@ -57,7 +57,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.94 $ $Date: 2005/02/18 15:18:52 $
+ * @version $Revision: 1.95 $ $Date: 2005/05/13 15:10:05 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -357,7 +357,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                         if(OpenCms.getLog(this).isErrorEnabled() ) {
                             OpenCms.getLog(this).error("Unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename());
                         }
-                        throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename(), CmsException.C_XML_TAG_MISSING);
+                        throw new CmsLegacyException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename(), CmsLegacyException.C_XML_TAG_MISSING);
                     }
                 }
                 collectNames.addElement(name);
@@ -727,7 +727,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                     if(OpenCms.getLog(this).isErrorEnabled() ) {
                         OpenCms.getLog(this).error("Template definition file " + getAbsoluteFilename() + " is corrupt, cannot find default section");
                     }
-                    throw new CmsException("Corrupt template file " + getAbsoluteFilename() + ", cannot find default section", CmsException.C_XML_TAG_MISSING);
+                    throw new CmsLegacyException("Corrupt template file " + getAbsoluteFilename() + ", cannot find default section", CmsLegacyException.C_XML_TAG_MISSING);
                 }
             }
         }
@@ -1032,7 +1032,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         try {
             tempDoc = parser.parse(parserReader);
         }catch(Exception e) {
-            throwException("PARSING ERROR!", CmsException.C_XML_PARSING_ERROR);
+            throwException("PARSING ERROR!", CmsLegacyException.C_XML_PARSING_ERROR);
         }
         Element templateNode = (Element)tempDoc.getDocumentElement().getFirstChild();
         setData(editDatablockName, templateNode);
@@ -1073,7 +1073,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             tempDoc2 = parser2.parse(parserReader2);
         }
         catch(Exception e) {
-            throwException("PARSING ERROR!", CmsException.C_XML_PARSING_ERROR);
+            throwException("PARSING ERROR!", CmsLegacyException.C_XML_PARSING_ERROR);
         }
         Element templateNode2 = (Element)tempDoc2.getDocumentElement().getFirstChild();
         setData(datablockName, templateNode2);

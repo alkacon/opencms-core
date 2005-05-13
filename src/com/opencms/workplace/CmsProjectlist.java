@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,13 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsDateUtil;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -50,7 +50,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.35 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.36 $ $Date: 2005/05/13 15:10:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -113,7 +113,7 @@ public class CmsProjectlist extends A_CmsWpElement {
             // The requested method was not found.
             throwException("Could not find method " + listMethod + " in calling class " 
                     + callingObject.getClass().getName() + " for generating projectlist content.", 
-                    CmsException.C_NOT_FOUND);
+                    CmsLegacyException.C_NOT_FOUND);
         }
         catch(InvocationTargetException targetEx) {
             
@@ -137,7 +137,7 @@ public class CmsProjectlist extends A_CmsWpElement {
         catch(Exception exc2) {
             throwException("User method " + listMethod + " in calling class " 
                     + callingObject.getClass().getName() + " was found but could not be invoked. " 
-                    + exc2, CmsException.C_XML_NO_USER_METHOD);
+                    + exc2, CmsLegacyException.C_XML_NO_USER_METHOD);
         }
         
         /** StringBuffer for the generated output */

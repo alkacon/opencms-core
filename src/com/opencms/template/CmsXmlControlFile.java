@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2005/02/18 15:18:52 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.I_CmsWpConstants;
 
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.template.cache.CmsElementDefinition;
 import com.opencms.template.cache.CmsElementDefinitionCollection;
 
@@ -55,7 +56,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.53 $ $Date: 2005/02/18 15:18:52 $
+ * @version $Revision: 1.54 $ $Date: 2005/05/13 15:10:05 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -237,7 +238,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
                 OpenCms.getLog(this).error("<MASTERTEMPLATE> tag not found in file " + getAbsoluteFilename());
             }
             removeFromFileCache();
-            throw new CmsException("\"MASTERTEMPLATE\" definition tag not found in file " + getAbsoluteFilename() + ".", CmsException.C_XML_TAG_MISSING);
+            throw new CmsLegacyException("\"MASTERTEMPLATE\" definition tag not found in file " + getAbsoluteFilename() + ".", CmsLegacyException.C_XML_TAG_MISSING);
         }
         return result;
     }
@@ -268,7 +269,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
                         if (OpenCms.getLog(this).isErrorEnabled()) {
                             OpenCms.getLog(this).error("Unnamed <" + n.getNodeName() + "> found in OpenCms control file " + getAbsoluteFilename());
                         }
-                        throw new CmsException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename(), CmsException.C_XML_TAG_MISSING);
+                        throw new CmsLegacyException("Unnamed \"" + n.getNodeName() + "\" found in OpenCms control file " + getAbsoluteFilename(), CmsLegacyException.C_XML_TAG_MISSING);
                     }
                 }
                 collectNames.addElement(name);
@@ -488,7 +489,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
             cms.readResource(bodyPath, CmsResourceFilter.ALL);
             validatedBodyPath = bodyPath;
         } catch (CmsException e) {
-            if (e.getType()==CmsException.C_NOT_FOUND) {
+            if (e.getType()==CmsLegacyException.C_NOT_FOUND) {
                 String defaultBodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + CmsResource.getParentFolder(cms.getSitePath(page)).substring(1) + page.getName();
                 try {
                     cms.readResource(defaultBodyPath, CmsResourceFilter.ALL);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsLegacyException.java,v $
- * Date   : $Date: 2005/05/13 08:07:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/13 15:10:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsLegacyException extends CmsException implements I_CmsThrowable {
 
@@ -111,18 +111,19 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     /* 44 */"Export error",
     /* 45 */"Resource is not locked",
     /* 46 */"Insufficient lock to edit content of resource",
-    /* 47 */"Resource locked by another user"};
-    
+    /* 47 */"Resource locked by another user",
+    /* 47 */"Administrator priviledges are required to perform this operation",
+    /* 47 */"Project manager priviledges are required to perform this operation",
+    /* 47 */"Modify operation not allowed in 'Online' project",
+    /* 47 */"No permissions to perform this operation",
+    /* 47 */"Invalid password",           
+    /* 47 */"OpenCms login validation failed"};
     
 
     /** Error code for export issues. */
     public static final int C_EXPORT_ERROR = 42;
 
-    /** 
-     * Error code for file exists exception.<p>
-     * 
-     * @deprecated use a <code>{@link org.opencms.file.CmsVfsException}</code> instead
-     */
+    /** Error code for file exists exception.*/
     public static final int C_FILE_EXISTS = 12;
 
     /** Error code for file not found exception. */
@@ -146,10 +147,7 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     /** Error code internal file. */
     public static final int C_INTERNAL_FILE = 15;
 
-    /** 
-     * Error code for access denied exception for vfs resources.
-     * @deprecated use a <code>{@link org.opencms.security.CmsSecurityException}</code> instead
-     */
+    /** Error code for access denied exception for vfs resources. */
     public static final int C_NO_ACCESS = 1;
 
     /** Error code for no default group exception. */
@@ -164,19 +162,10 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     /** Error code for no admin exception. */
     public static final int C_NOT_ADMIN = 6;
 
-    /** 
-     * Error code for not empty exception.<p>
-     * 
-     * @deprecated use a <code>{@link org.opencms.file.CmsVfsException}</code> instead
-     */
+    /** Error code for not empty exception.*/
     public static final int C_NOT_EMPTY = 5;
 
-    /** 
-     * Error code for not found exception.<p>
-     * 
-     * @deprecated use a <code>{@link org.opencms.db.CmsObjectNotFoundException}</code> 
-     *    or <code>{@link org.opencms.file.CmsVfsResourceNotFoundException}</code> instead
-     */
+    /** Error code for not found exception.*/
     public static final int C_NOT_FOUND = 2;
 
     /** Error code for driver manager initialization errors. */
@@ -185,18 +174,10 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     /** Error code for Registry exception. */
     public static final int C_REGISTRY_ERROR = 34;
 
-    /** 
-     * Error code for accessing a deleted resource.<p>
-     * 
-     * @deprecated use a <code>{@link org.opencms.file.CmsVfsException}</code> instead
-     */
+    /** Error code for accessing a deleted resource.*/
     public static final int C_RESOURCE_DELETED = 32;
 
-    /** 
-     * Error code for serialization exception. 
-     * 
-     * @deprecated use a <code>{@link org.opencms.db.CmsSerializationException}</code> instead
-     */
+    /** Error code for serialization exception. */
     public static final int C_SERIALIZATION = 7;
 
     /** Error code service unavailable. */
@@ -205,20 +186,10 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     /** Error code for security manager initialization error. */
     public static final int C_SM_INIT_ERROR = 35;
 
-    /** 
-     * Error code for sql exception.<p>
-     * 
-     * @deprecated use a <code>{@link org.opencms.db.CmsDataAccessException}</code> 
-     *      or one of their subclasses instead
-     */
+    /** Error code for sql exception.*/
     public static final int C_SQL_ERROR = 4;
 
-    /** 
-     * Error code for unknown exception.
-     *  
-     * @deprecated use a <code>{@link org.opencms.db.CmsDataAccessException}</code> 
-     *      or one of their subclasses instead
-     */
+    /** Error code for unknown exception.*/
     public static final int C_UNKNOWN_EXCEPTION = 0;
 
     /** Error code that a user to be created already exists. */
@@ -261,8 +232,26 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     public static final int C_RESOURCE_LOCKED_NON_EXCLUSIVE = 46;
     
     /** A resource is locked by a user different from the current user, but a particular action requires that the resource is locked by the current user. */
-    public static final int C_RESOURCE_LOCKED_BY_OTHER_USER = 47;
-
+    public static final int C_RESOURCE_LOCKED_BY_OTHER_USER = 47;  
+    
+    /** Administrator privileges required. */
+    public static final int C_SECURITY_ADMIN_PRIVILEGES_REQUIRED = 48;
+    
+    /** Project manager (or Administrator) privileges required. */
+    public static final int C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED = 49;
+    
+    /** No read / write access allowed in online project. */
+    public static final int C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT = 50;
+    
+    /** No permissions to perform operation. */
+    public static final int C_SECURITY_NO_PERMISSIONS = 51;
+       
+    /** Invalid password (only for password change and validation of password). */    
+    public static final int C_SECURITY_INVALID_PASSWORD = 52;
+    
+    /** Login failed. */
+    public static final int C_SECURITY_LOGIN_FAILED = 53;
+    
     /** The container for the localized message.  */
     protected CmsMessageContainer m_message;
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2005/02/18 15:18:52 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.workplace.I_CmsWpConstants;
 
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.lang.reflect.InvocationTargetException;
@@ -49,7 +50,7 @@ import org.w3c.dom.Element;
  * See the handleXxxTag Methods for more details.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2005/02/18 15:18:52 $
+ * @version $Revision: 1.25 $ $Date: 2005/05/13 15:10:05 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -162,7 +163,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsW
 
             // The requested method was not found.
             throwException("Could not find radio button method " + radioMethod + " in calling class " + callingObject.getClass().getName()
-                    + " for generating select box content.", CmsException.C_NOT_FOUND);
+                    + " for generating select box content.", CmsLegacyException.C_NOT_FOUND);
         } catch (InvocationTargetException targetEx) {
 
             // the method could be invoked, but throwed a exception
@@ -181,7 +182,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsW
             }
         } catch (Exception exc2) {
             throwException("Radio button method " + radioMethod + " in calling class " + callingObject.getClass().getName()
-                    + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+                    + " was found but could not be invoked. " + exc2, CmsLegacyException.C_XML_NO_USER_METHOD);
         }
 
         // If the radio button method returned a value, use it for preselecting an option
@@ -314,7 +315,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsW
 
             // The requested method was not found.
             throwException("Could not find method " + selectMethod + " in calling class " + callingObject.getClass().getName()
-                    + " for generating select box content.", CmsException.C_NOT_FOUND);
+                    + " for generating select box content.", CmsLegacyException.C_NOT_FOUND);
         } catch (InvocationTargetException targetEx) {
 
             // the method could be invoked, but throwed a exception
@@ -333,7 +334,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsW
             }
         } catch (Exception exc2) {
             throwException("User method " + selectMethod + " in calling class " + callingObject.getClass().getName()
-                    + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+                    + " was found but could not be invoked. " + exc2, CmsLegacyException.C_XML_NO_USER_METHOD);
         }
 
         // check the returned elements and put them into option tags.

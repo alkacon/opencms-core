@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2005/05/13 15:10:05 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -49,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.40 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.41 $ $Date: 2005/05/13 15:10:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -148,7 +149,7 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault {
                         h = new HashMap();
                     }
                     if(h.containsKey(formattedName)) {
-                        throw new CmsException(CmsException.C_NOT_EMPTY);
+                        throw new CmsLegacyException(CmsLegacyException.C_NOT_EMPTY);
                     }
                     h.put(formattedName, resTypeName);
                     // not possible anymore right now
@@ -157,7 +158,7 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault {
                     templateSelector = "";
                 }
                 catch(CmsException e) {
-                    if(e.getType() == CmsException.C_NOT_EMPTY) {
+                    if(e.getType() == CmsLegacyException.C_NOT_EMPTY) {
                         templateSelector = "errorinuse";
                     }
                     else {
