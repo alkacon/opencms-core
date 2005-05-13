@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/13 08:11:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/13 12:11:29 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -352,6 +352,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_RESOURCES_FOR_PROP_VALUE_3 = "ERR_READ_RESOURCES_FOR_PROP_VALUE_3";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_RESOURCES_WITH_TYPE_2 = "ERR_READ_RESOURCES_WITH_TYPE_2";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_SIBLINGS_1 = "ERR_READ_SIBLINGS_1";
 
