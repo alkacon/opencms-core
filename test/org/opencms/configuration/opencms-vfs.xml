@@ -140,15 +140,15 @@
 		</translations>
 		<xmlcontent>
 			<widgets>
-				<widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget"/>
-				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget"/>
 				<widget class="org.opencms.widgets.CmsCalendarWidget" alias="DateTimeWidget"/>
+				<widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget"/>
+				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget"/>				
 				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget"/>
 				<widget class="org.opencms.widgets.CmsHtmlAreaWidget" alias="HtmlWidget"/>
 				<widget class="org.opencms.widgets.CmsImageGalleryWidget" alias="ImageGalleryWidget"/>
-				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget"/>
-				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />
 				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget"/>
+				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget"/>
+				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />				
 				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />				
 				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
 				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>
