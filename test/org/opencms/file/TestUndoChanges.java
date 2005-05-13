@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2005/05/11 11:00:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/13 08:11:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -50,30 +50,32 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
-  
+
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestUndoChanges(String arg0) {
-        super(arg0);       
+
+        super(arg0);
     }
-    
+
     /**
      * Test suite for this test class.<p>
      * 
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestUndoChanges.class.getName());
-        
+
         suite.addTest(new TestUndoChanges("testUndoChangesResource"));
         suite.addTest(new TestUndoChanges("testUndoChangesOnNewResource"));
         suite.addTest(new TestUndoChanges("testUndoChangesFolder"));
@@ -81,37 +83,39 @@ public class TestUndoChanges extends OpenCmsTestCase {
         suite.addTest(new TestUndoChanges("testUndoChangesAfterCopyNewOverDeleted"));
         suite.addTest(new TestUndoChanges("testUndoChangesAfterCopySiblingOverDeleted"));
         suite.addTest(new TestUndoChanges("testUndoChangesWithAce"));
-        
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
-                setupOpenCms("simpletest", "/sites/default/");                
+
+                setupOpenCms("simpletest", "/sites/default/");
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
+
         return wrapper;
-    }       
-    
+    }
+
     /**
      * Tests undo changes on a new resource, this must lead to an exception!<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesOnNewResource() throws Throwable {
-       
-        CmsObject cms = getCmsObject();     
+
+        CmsObject cms = getCmsObject();
         echo("Testing for exception when trying undo changes on a new resource");
-        
+
         String source = "/types/new.html";
-        
+
         // create a new, plain resource
         cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
         assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
-        
+
         try {
             cms.undoChanges(source, false);
         } catch (CmsVfsException e) {
@@ -120,10 +124,9 @@ public class TestUndoChanges extends OpenCmsTestCase {
                 return;
             }
         }
-        
         fail("Did not catch expected exception trying undo changes on a new resource!");
     }
-    
+
     /**
      * Tests undo changes after a resource was deleted and another 
      * resource was copied over the deleted file "as new".<p>
@@ -131,73 +134,71 @@ public class TestUndoChanges extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesAfterCopyNewOverDeleted() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
+
+        CmsObject cms = getCmsObject();
         echo("Testing undo changes after overwriting a deleted file with a new file");
-        
+
         String source = "/folder1/page2.html";
         String destination = "/folder1/page1.html";
-           
-        storeResources(cms, source);     
-        storeResources(cms, destination);   
-        
+
+        storeResources(cms, source);
+        storeResources(cms, destination);
+
         cms.lockResource(destination);
-        
+
         // delete and owerwrite
-        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);   
+        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
         assertState(cms, destination, I_CmsConstants.C_STATE_DELETED);
-        
-        cms.copyResource(source, destination, I_CmsConstants.C_COPY_AS_NEW); 
-        
+
+        cms.copyResource(source, destination, I_CmsConstants.C_COPY_AS_NEW);
+
         // now undo all changes on the resource
         cms.undoChanges(destination, false);
-     
+
         // now ensure source and destionation are in the original state
-        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);        
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);
-        
+
         // publishing may reveal problems with the id's
         cms.publishProject();
     }
-    
+
     /**
      * Tests undo changes after a resource was deleted and another 
      * resource was copied over the deleted file "as sibling".<p>
      * 
      * @throws Throwable if something goes wrong
-     */    
+     */
     public void testUndoChangesAfterCopySiblingOverDeleted() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
+
+        CmsObject cms = getCmsObject();
         echo("Testing undo changes after overwriting a deleted file with a sibling");
-        
+
         String source = "/folder1/page2.html";
         String destination = "/folder1/page1.html";
-           
-        storeResources(cms, source);     
-        storeResources(cms, destination);   
-        
+
+        storeResources(cms, source);
+        storeResources(cms, destination);
+
         cms.lockResource(destination);
-        
+
         // delete and owerwrite with a sibling
-        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);   
+        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
         assertState(cms, destination, I_CmsConstants.C_STATE_DELETED);
-        
-        cms.copyResource(source, destination, I_CmsConstants.C_COPY_AS_SIBLING); 
-        
+
+        cms.copyResource(source, destination, I_CmsConstants.C_COPY_AS_SIBLING);
+
         // now undo all changes on the resource
         cms.undoChanges(destination, false);
-     
+
         // now ensure source and destionation are in the original state
-        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);        
-        assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);    
-        
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);
+        assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);
+
         // publishing may reveal problems with the id's
         cms.publishProject();
-    }    
-                                                        
-                                                      
-    
+    }
+
     /**
      * Test the touch method to touch a single resource.<p>
      * @param tc the OpenCmsTestCase
@@ -205,8 +206,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void undoChanges(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {            
-              
+    public static void undoChanges(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
+
         // create a global storage and store the resource
         tc.createStorage("undoChanges");
         tc.switchStorage("undoChanges");
@@ -215,25 +216,24 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
         // now do a touch on the resource
         TestTouch.touchResource(tc, cms, resource1);
-        
+
         // change a property
-        CmsProperty property1 = new CmsProperty("Title", "undoChanges", null);  
+        CmsProperty property1 = new CmsProperty("Title", "undoChanges", null);
         TestProperty.writeProperty(tc, cms, resource1, property1);
-                      
+
         // now undo everything
-        cms.lockResource(resource1);        
+        cms.lockResource(resource1);
         cms.undoChanges(resource1, false);
-        cms.unlockResource(resource1);        
-        
+        cms.unlockResource(resource1);
+
         tc.switchStorage("undoChanges");
-        
+
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);
         // project must be current project
         tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
     }
-  
-    
+
     /**
      *  Test undoChanges method to a single folder.<p>
      * @param tc the OpenCmsTestCase
@@ -241,8 +241,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void undoChangesFolder(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {            
-              
+    public static void undoChangesFolder(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
+
         // create a global storage and store the resource
         tc.createStorage("undoChanges");
         tc.switchStorage("undoChanges");
@@ -250,9 +250,9 @@ public class TestUndoChanges extends OpenCmsTestCase {
         tc.switchStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
 
         long timestamp = System.currentTimeMillis();
-        
+
         // change a property
-        CmsProperty property1 = new CmsProperty("Title", "undoChanges", null);  
+        CmsProperty property1 = new CmsProperty("Title", "undoChanges", null);
         TestProperty.writeProperty(tc, cms, resource1, property1);
 
         // change the property on all subresources
@@ -263,19 +263,19 @@ public class TestUndoChanges extends OpenCmsTestCase {
             String resName = cms.getSitePath(res);
             TestProperty.writeProperty(tc, cms, resName, property1);
         }
-        
+
         // now undo everything
-        cms.lockResource(resource1);        
+        cms.lockResource(resource1);
         cms.undoChanges(resource1, false);
         cms.unlockResource(resource1);
-        
+
         tc.switchStorage("undoChanges");
-        
+
         // now evaluate the result, the folder must be unchanged now
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);
         // project must be current project
         tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
-                
+
         // all resources within the folder must keep their changes
         Iterator j = subresources.iterator();
         while (j.hasNext()) {
@@ -291,10 +291,10 @@ public class TestUndoChanges extends OpenCmsTestCase {
             // the user last modified must be the current user
             tc.assertUserLastModified(cms, resName, cms.getRequestContext().currentUser());
             // the property must have the new value
-            tc.assertPropertyChanged(cms, resName, property1);  
-        }       
+            tc.assertPropertyChanged(cms, resName, property1);
+        }
     }
-    
+
     /**
      * Test undoChanges method to a single folder and all resources within the folder.<p>
      * @param tc the OpenCmsTestCase
@@ -302,16 +302,16 @@ public class TestUndoChanges extends OpenCmsTestCase {
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void undoChangesFolderRecursive(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {                        
-         
+    public static void undoChangesFolderRecursive(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
+
         // create a global storage and store the resource
         tc.createStorage("undoChanges");
         tc.switchStorage("undoChanges");
         tc.storeResources(cms, resource1);
         tc.switchStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
-        
+
         // change a property
-        CmsProperty property1 = new CmsProperty("Title", "undoChanges", null);  
+        CmsProperty property1 = new CmsProperty("Title", "undoChanges", null);
         TestProperty.writeProperty(tc, cms, resource1, property1);
 
         // change the property on all subresources
@@ -322,88 +322,86 @@ public class TestUndoChanges extends OpenCmsTestCase {
             String resName = cms.getSitePath(res);
             TestProperty.writeProperty(tc, cms, resName, property1);
         }
-        
+
         // now undo everything
-        cms.lockResource(resource1);        
+        cms.lockResource(resource1);
         cms.undoChanges(resource1, true);
         cms.unlockResource(resource1);
-        
+
         tc.switchStorage(OpenCmsTestResourceStorage.GLOBAL_STORAGE);
-        
+
         // now evaluate the result, the folder must be unchanged now
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);
         // project must be current project
         tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
-                
+
         // all resources within the folder must  be unchanged now
         Iterator j = subresources.iterator();
         while (j.hasNext()) {
             CmsResource res = (CmsResource)j.next();
             String resName = cms.getSitePath(res);
-                        
+
             // now evaluate the result
             tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);
             // project must be current project
             tc.assertProject(cms, resName, cms.getRequestContext().currentProject());
-        }       
-    }    
-    
-    
+        }
+    }
+
     /**
      * Test undoChanges method to a single file.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesResource() throws Throwable {
-        
+
         CmsObject cms = getCmsObject();
-        
+
         // this is the first test, so set up the global storage used for all other
         // tests        
-        createStorage(OpenCmsTestResourceStorage.GLOBAL_STORAGE);    
+        createStorage(OpenCmsTestResourceStorage.GLOBAL_STORAGE);
         switchStorage(OpenCmsTestResourceStorage.GLOBAL_STORAGE);
         storeResources(cms, "/");
         switchStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
-        
+
         echo("Testing undoChanges on a file");
         undoChanges(this, cms, "/index.html");
     }
-    
+
     /**
      * Test undoChanges method to a single folder.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesFolder() throws Throwable {
-        
-        CmsObject cms = getCmsObject();        
+
+        CmsObject cms = getCmsObject();
         echo("Testing undoChanges on a folder without recursion");
         undoChangesFolder(this, cms, "/folder2/");
     }
-    
+
     /**
      * Test undoChanges method to a single folder.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesFolderRecursive() throws Throwable {
-        
-        CmsObject cms = getCmsObject();        
+
+        CmsObject cms = getCmsObject();
         echo("Testing undoChanges on a folder _with_ recursion");
         undoChangesFolderRecursive(this, cms, "/folder1/");
     }
-    
-    
+
     /**
      * Test undoChanges method to a resource with an ace.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testUndoChangesWithAce() throws Throwable {
-        
-        CmsObject cms = getCmsObject();        
+
+        CmsObject cms = getCmsObject();
         echo("Testing undoChanges on a resource with an ACE");
         undoChanges(this, cms, "/folder2/index.html");
     }
-    
+
 }

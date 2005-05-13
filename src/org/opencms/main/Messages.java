@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/05/12 09:20:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/13 08:11:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -113,6 +113,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message contant for key in the resource bundle. */
     public static final String ERR_INVALID_INIT_USER_2 = "ERR_INVALID_INIT_USER_2";
 
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_READ_INTERNAL_RESOURCE_1 = "ERR_READ_INTERNAL_RESOURCE_1";
+    
     /** Message contant for key in the resource bundle. */
     public static final String INIT_ADDED_REQUEST_HANDLER_2 = "INIT_ADDED_REQUEST_HANDLER_2";
 

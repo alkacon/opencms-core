@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/10 14:36:03 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2005/05/13 08:11:09 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,13 +93,10 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSecurityManager.class);
 
     /** Indicates allowed permissions. */
     public static final int PERM_ALLOWED = 0;
@@ -112,6 +109,9 @@ public final class CmsSecurityManager {
 
     /** Indicates a resource was not locked for a write / control operation. */
     public static final int PERM_NOTLOCKED = 3;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSecurityManager.class);
 
     /** Indicates allowed permissions. */
     private static final Integer PERM_ALLOWED_INTEGER = new Integer(PERM_ALLOWED);
@@ -853,7 +853,7 @@ public final class CmsSecurityManager {
         try {
             project = m_driverManager.readProject(dbc, id);
             checkManagerOfProjectRole(dbc, project);
-            result = m_driverManager.countLockedResources(dbc, project);
+            result = m_driverManager.countLockedResources(project);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_COUNT_LOCKED_RESOURCES_PROJECT_2,
@@ -5131,7 +5131,7 @@ public final class CmsSecurityManager {
             }
         } catch (Throwable t) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_ERR_CLOSE_DRIVERMANAGER_0), t);
+                LOG.error(Messages.get().key(Messages.LOG_ERR_DRIVER_MANAGER_CLOSE_0), t);
             }
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/05/03 15:44:14 $
- * Version: $Revision: 1.181 $
+ * Date   : $Date: 2005/05/13 08:11:09 $
+ * Version: $Revision: 1.182 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -125,7 +125,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.181 $
+ * @version $Revision: 1.182 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1167,8 +1167,7 @@ public final class OpenCmsCore {
         if (resource != null) {
             // test if this file is only available for internal access operations
             if ((resource.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
-                throw new CmsException(CmsException.C_ERROR_DESCRIPTION[CmsException.C_INTERNAL_FILE]
-                    + cms.getRequestContext().getUri(), CmsException.C_INTERNAL_FILE);
+                throw new CmsException(Messages.get().container(Messages.ERR_READ_INTERNAL_RESOURCE_1, cms.getRequestContext().getUri()));
             }
         }
 

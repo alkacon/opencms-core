@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestResourceOperations.java,v $
- * Date   : $Date: 2005/05/11 11:00:52 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/13 08:11:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,10 @@ package org.opencms.file;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.List;
 
@@ -48,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestResourceOperations extends OpenCmsTestCase {
   
@@ -191,47 +193,47 @@ public class TestResourceOperations extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing invalid resource names");
         
-        CmsException exc;
+        CmsRuntimeException exc;
         
         // resource name must not contain blanks
         exc = null;
         try {
             cms.createResource("/Resource Name", CmsResourceTypePlain.getStaticTypeId(), null, null);
-        } catch (CmsException e) {
+        } catch (CmsIllegalArgumentException e) {
             exc = e;
         }
 
-        this.assertEquals(exc, new CmsException(CmsException.C_BAD_NAME));
+        assertTrue(exc instanceof CmsIllegalArgumentException);
         
         // resource name must not contain leading blanks
         exc = null;
         try {
             cms.createResource("/ ResourceName", CmsResourceTypePlain.getStaticTypeId(), null, null);
-        } catch (CmsException e) {
+        } catch (CmsIllegalArgumentException e) {
             exc = e;
         }
 
-        this.assertEquals(exc, new CmsException(CmsException.C_BAD_NAME));
+        assertTrue(exc instanceof CmsIllegalArgumentException);
         
         // resource name must not contain trailing blanks
         exc = null;
         try {
             cms.createResource("/ResourceName ", CmsResourceTypePlain.getStaticTypeId(), null, null);
-        } catch (CmsException e) {
+        } catch (CmsIllegalArgumentException e) {
             exc = e;
         }
 
-        this.assertEquals(exc, new CmsException(CmsException.C_BAD_NAME));
+        assertTrue(exc instanceof CmsIllegalArgumentException);
         
         // resource name must not contain other characters 
         exc = null;
         try {
             cms.createResource("/Resource#Name", CmsResourceTypePlain.getStaticTypeId(), null, null);
-        } catch (CmsException e) {
+        } catch (CmsIllegalArgumentException e) {
             exc = e;
         }
 
-        this.assertEquals(exc, new CmsException(CmsException.C_BAD_NAME)); 
+        assertTrue(exc instanceof CmsIllegalArgumentException);
     }
     
     /**
