@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2005/02/18 15:18:50 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2005/05/13 08:08:24 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.workplace;
 
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -166,7 +167,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                     try {
                         cms.createResource(C_VFS_PATH_MODULES + modulename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     }catch(CmsException e) {
-                        if(e.getType() != CmsException.C_FILE_EXISTS) {
+                        if(!(e instanceof CmsVfsResourceAlreadyExistsException)) {
                             // couldn't create Module
                             templateDocument.setData("details", CmsException.getStackTraceAsString(e));
                             return startProcessing(cms, templateDocument, elementName, parameters, "errorProject");

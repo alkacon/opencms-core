@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2005/04/17 18:07:16 $
-* Version: $Revision: 1.146 $
+* Date   : $Date: 2005/05/13 08:08:24 $
+* Version: $Revision: 1.147 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,12 +34,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -67,7 +67,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.146 $ $Date: 2005/04/17 18:07:16 $
+ * @version $Revision: 1.147 $ $Date: 2005/05/13 08:08:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -106,7 +106,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             cms.copyResource(cms.getSitePath(file), temporaryFilename, I_CmsConstants.C_COPY_AS_NEW);
             // cms.chmod(temporaryFilename, 91);
         } catch (CmsException e) {
-            if ((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
+            if ((e instanceof CmsVfsResourceAlreadyExistsException) || (e.getType() != CmsException.C_SQL_ERROR)) {
                 try {
                     // try to re-use the old temporary file
                     cms.changeLastModifiedProjectId(temporaryFilename);
@@ -131,7 +131,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                 cms.copyResource(cms.getSitePath(file), extendedTempFile);
                 // cms.chmod(extendedTempFile, 91);
             } catch (CmsException e) {
-                if ((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {
+                if ((!(e instanceof CmsVfsResourceAlreadyExistsException)) && (e.getType() != CmsException.C_SQL_ERROR)) {
                     cms.getRequestContext().setCurrentProject(cms.readProject(curProject));
                     // This was not a file-exists-exception.
                     // Very bad. We should not continue here since we may run

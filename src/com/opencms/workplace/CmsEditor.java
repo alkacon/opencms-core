@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2005/04/17 18:07:16 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2005/05/13 08:08:24 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
@@ -57,7 +58,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.72 $ $Date: 2005/04/17 18:07:16 $
+ * @version $Revision: 1.73 $ $Date: 2005/05/13 08:08:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -181,7 +182,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
                     cms.lockResource(file);  
                     lock = cms.getLock(file);
                 } else {
-                    throw new CmsLockException("Resource is not locked", CmsLockException.C_RESOURCE_UNLOCKED);
+                    throw new CmsLegacyException("Resource is not locked", CmsLegacyException.C_RESOURCE_UNLOCKED);
                 }
             }
             if (lock.getType() == CmsLock.C_TYPE_INHERITED) {
@@ -189,10 +190,10 @@ public class CmsEditor extends CmsWorkplaceDefault {
                 lock = cms.getLock(file);
             }
             if (lock.getType() != CmsLock.C_TYPE_EXCLUSIVE) {
-                throw new CmsLockException("Insufficient lock to edit content of resource", CmsLockException.C_RESOURCE_LOCKED_NON_EXCLUSIVE);
+                throw new CmsLegacyException("Insufficient lock to edit content of resource", CmsLegacyException.C_RESOURCE_LOCKED_NON_EXCLUSIVE);
             }
             if (!lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
-                throw new CmsLockException("Resource locked by another user", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
+                throw new CmsLegacyException("Resource locked by another user", CmsLegacyException.C_RESOURCE_LOCKED_BY_OTHER_USER);
             }
             
             checkit = true;

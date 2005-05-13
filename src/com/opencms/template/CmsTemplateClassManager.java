@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
- * Date   : $Date: 2005/02/18 15:18:52 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/05/13 08:08:24 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package com.opencms.template;
 
 import org.opencms.main.CmsException;
 
+import com.opencms.legacy.CmsLegacyException;
+
 /**
  * Class for loading class instances, required by the legagy XmlTemplate mechanism.<p>
  * 
@@ -58,7 +60,7 @@ public final class CmsTemplateClassManager {
         try {
             return Class.forName(classname).newInstance();
         } catch (Throwable t) {
-            throw new CmsException("Could not create new instance of " + classname, CmsException.C_CLASSLOADER_ERROR, t);
+            throw new CmsLegacyException("Could not create new instance of " + classname, CmsLegacyException.C_CLASSLOADER_ERROR, t);
         }
     }
 }
