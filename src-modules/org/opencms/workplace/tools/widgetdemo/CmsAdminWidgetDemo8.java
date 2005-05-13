@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo8.java,v $
- * Date   : $Date: 2005/05/13 09:04:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/13 11:41:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
@@ -76,15 +76,9 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
     /** The dialog type. */
     public static final String DIALOG_TYPE = "widgetdemo8";
 
-    /** The OpenCms context info object used for the job info. */
-    CmsContextInfo m_contextInfo;
-
     /** The job info object that is edited on this dialog. */
     CmsScheduledJobInfo m_jobInfo;
 
-    /** Controls which page is currently displayed in the dialog. */
-    protected String m_paramPage;
-    
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGE_ARRAY = {"page1", "page2"};
     
@@ -101,27 +95,6 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
         super(jsp);
     }
         
-    /**
-     * Returns the page parameter.<p>
-     *
-     * @return the page parameter
-     */
-    public String getParamPage() {
-
-        return m_paramPage;
-    }
-    
-    
-    /**
-     * Sets the page parameter.<p>
-     *
-     * @param paramPage the page parameter to set
-     */
-    public void setParamPage(String paramPage) {
-
-        m_paramPage = paramPage;
-    }    
-
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -175,31 +148,31 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         Object o = getSettings().getDialogObject();
-        if (! (o instanceof CmsScheduledJobInfo)) {
+        if (!(o instanceof CmsScheduledJobInfo)) {
             // create a new job info
             m_jobInfo = new CmsScheduledJobInfo();
-            m_contextInfo = new CmsContextInfo();
-            m_jobInfo.setContextInfo(m_contextInfo);
+            m_jobInfo.setContextInfo(new CmsContextInfo());
         } else {
             // reuse job info object stored in session
             m_jobInfo = (CmsScheduledJobInfo)o;
-            m_contextInfo = m_jobInfo.getContextInfo();
         }        
 
         addWidget(new CmsWidgetParameter(m_jobInfo, "jobName", PAGE_ARRAY[0], new CmsXmlStringWidget()));
         addWidget(new CmsWidgetParameter(m_jobInfo, "className", PAGE_ARRAY[0], new CmsXmlStringWidget()));
         addWidget(new CmsWidgetParameter(m_jobInfo, "cronExpression", PAGE_ARRAY[0], new CmsXmlStringWidget()));
 
-        addWidget(new CmsWidgetParameter(m_contextInfo, "userName", PAGE_ARRAY[0], new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "projectName", PAGE_ARRAY[0], new CmsXmlStringWidget()));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "siteRoot", PAGE_ARRAY[0], new CmsXmlVfsFileWidget(), 0, 1));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "requestedUri", PAGE_ARRAY[0], new CmsXmlVfsFileWidget(), 0, 1));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "localeName", PAGE_ARRAY[0], new CmsXmlStringWidget(), 0, 1));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "encoding", PAGE_ARRAY[0], new CmsXmlStringWidget(), 0, 1));
-        addWidget(new CmsWidgetParameter(m_contextInfo, "remoteAddr", PAGE_ARRAY[0], new CmsXmlStringWidget(), 0, 1));
+        addWidget(new CmsWidgetParameter(m_jobInfo, "contextInfo.userName", PAGE_ARRAY[0], new CmsXmlStringWidget()));
+        addWidget(new CmsWidgetParameter(m_jobInfo, "contextInfo.projectName", PAGE_ARRAY[0], new CmsXmlStringWidget()));
+        addWidget(new CmsWidgetParameter(m_jobInfo, "contextInfo.siteRoot", PAGE_ARRAY[0], new CmsXmlVfsFileWidget(), 0, 1));
+        addWidget(new CmsWidgetParameter(m_jobInfo, "contextInfo.requestedUri", PAGE_ARRAY[0], new CmsXmlVfsFileWidget(), 0, 1));
+        addWidget(new CmsWidgetParameter(m_jobInfo, "contextInfo.localeName", PAGE_ARRAY[0], new CmsXmlStringWidget(), 0, 1));
+        addWidget(new CmsWidgetParameter(m_jobInfo, "contextInfo.encoding", PAGE_ARRAY[0], new CmsXmlStringWidget(), 0, 1));
+        addWidget(new CmsWidgetParameter(m_jobInfo, "contextInfo.remoteAddr", PAGE_ARRAY[0], new CmsXmlStringWidget(), 0, 1));
 
-        addWidget(new CmsWidgetParameter(m_jobInfo, "reuseInstance", PAGE_ARRAY[1], new CmsXmlBooleanWidget()));
-        addWidget(new CmsWidgetParameter(m_jobInfo, "active", PAGE_ARRAY[1], new CmsXmlBooleanWidget()));       
+        addWidget(new CmsWidgetParameter(m_jobInfo, "reuseInstance", PAGE_ARRAY[0], new CmsXmlBooleanWidget()));
+        addWidget(new CmsWidgetParameter(m_jobInfo, "active", PAGE_ARRAY[0], new CmsXmlBooleanWidget()));
+        
+        addWidget(new CmsWidgetParameter(m_jobInfo, "parameters", PAGE_ARRAY[1], new CmsXmlBooleanWidget())); 
     }
 
     /**

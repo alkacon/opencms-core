@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo6.java,v $
- * Date   : $Date: 2005/05/12 13:31:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/13 11:41:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
@@ -83,9 +83,6 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
     /** The job info object that is edited on this dialog. */
     CmsScheduledJobInfo m_jobInfo;
 
-    /** Controls which page is currently displayed in the dialog. */
-    protected String m_paramPage;
-    
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGE_ARRAY = {"page1", "page2"};
     
@@ -102,27 +99,6 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
         super(jsp);
     }
         
-    /**
-     * Returns the page parameter.<p>
-     *
-     * @return the page parameter
-     */
-    public String getParamPage() {
-
-        return m_paramPage;
-    }
-    
-    
-    /**
-     * Sets the page parameter.<p>
-     *
-     * @param paramPage the page parameter to set
-     */
-    public void setParamPage(String paramPage) {
-
-        m_paramPage = paramPage;
-    }    
-
     /**
      * Public constructor with JSP variables.<p>
      * 

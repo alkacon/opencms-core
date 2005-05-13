@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsWidgetParameter.java,v $
- * Date   : $Date: 2005/05/13 09:04:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/13 11:41:22 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,15 +45,13 @@ import java.util.SortedMap;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 
-import sun.security.action.GetLongAction;
-
 /**
  * Implements the widget parameter interface for the use of OpenCms widgets on dialogs that
  * are not based on XML contents.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.9.1
  */
 public class CmsWidgetParameter implements I_CmsWidgetParameter {
@@ -63,12 +61,15 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
 
     /** The maximum number of occurences of a widget dialog element in a list of elements. */
     public static final int MAX_OCCURENCES = 50;
-    
+
     /** The (optional) base object for read / writing the parameter value to. */
     protected Object m_baseObject;
 
     /** The (optinal) object property to read / write this parameter value to. */
     protected String m_baseObjectProperty;
+
+    /** The (optional) collection object in case the parameter value is mapped to a collection. */
+    protected Object m_collectionObject;
 
     /** The default value of the parameter. */
     protected String m_defaultValue;
@@ -96,7 +97,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
 
     /** The widget used for the parameter. */
     protected I_CmsXmlWidget m_widget;
-    
+
     /**
      * Create a new Widget parameter.<p>
      * 
@@ -117,8 +118,9 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
 
         m_baseObject = base.m_baseObject;
         m_baseObjectProperty = base.m_baseObjectProperty;
+        m_collectionObject = base.m_collectionObject;
     }
-    
+
     /**
      * Create a new Widget parameter.<p>
      * 
@@ -140,19 +142,20 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
 
         m_baseObject = base.m_baseObject;
         m_baseObjectProperty = base.m_baseObjectProperty;
-        
-        if (m_baseObject instanceof List) {
+        m_collectionObject = base.m_collectionObject;
+
+        if (m_collectionObject instanceof List) {
             // base object is a list - make sure to set possible old value 
-            List baseList = (List)m_baseObject;
+            List baseList = (List)m_collectionObject;
             if (originalIndex < baseList.size()) {
                 Object o = baseList.get(originalIndex);
                 if (o != null) {
                     m_value = o.toString();
                 }
             }
-        } else if (m_baseObject instanceof SortedMap) {
+        } else if (m_collectionObject instanceof SortedMap) {
             // base object is a sorted map - make sure to set possible old value 
-            SortedMap baseMap = (SortedMap)m_baseObject;
+            SortedMap baseMap = (SortedMap)m_collectionObject;
             List keyList = new ArrayList(baseMap.keySet());
             if (originalIndex < keyList.size()) {
                 Object key = keyList.get(originalIndex);
@@ -165,24 +168,19 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
             }
         }
     }
-    
-    /**
-     * Checks if a value for this widget base type with the given id is available.<p> 
-     * 
-     * @param index the index to check
-     * 
-     * @return <code>true</code> if a value for this widget base type with the given id is available
-     */
-    public boolean hasValue(int index) {
 
-        if (m_baseObject instanceof List) {
-            return index < ((List)m_baseObject).size();
-        } else if (m_baseObject instanceof SortedMap) {
-            return index < ((SortedMap)m_baseObject).size();
-        }
-        return false;
+    /**
+     * Create a new Widget parameter based on a given object's property.<p>
+     * 
+     * @param base the base object to map the parameter to / from
+     * @param property the base object property to map the parameter to / from
+     * @param widget the widget used for this parameter
+     */
+    public CmsWidgetParameter(Object base, String property, I_CmsXmlWidget widget) {
+
+        this(base, property, DEFAULT_DIALOG_PAGE, widget);
     }
-    
+
     /**
      * Create a new Widget parameter based on a given object's property.<p>
      * 
@@ -195,7 +193,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
 
         this(base, property, dialogPage, widget, 1, 1);
     }
-    
+
     /**
      * Create a new Widget parameter based on a given object's property.<p>
      * 
@@ -206,24 +204,32 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
      * @param minOccurs the required minimum numer of occurences of this parameter
      * @param maxOccurs the maximum allowed numer of occurences of this parameter
      */
-    public CmsWidgetParameter(Object base, String property, String dialogPage, I_CmsXmlWidget widget, int minOccurs, int maxOccurs) {
+    public CmsWidgetParameter(
+        Object base,
+        String property,
+        String dialogPage,
+        I_CmsXmlWidget widget,
+        int minOccurs,
+        int maxOccurs) {
 
         if ((base instanceof List) || (base instanceof SortedMap)) {
-            
+
             // this is a list, use custom list mappings
             init(null, null, property, widget, dialogPage, 0, MAX_OCCURENCES, 0);
 
-            m_baseObject = base;
+            m_baseObject = null;
+            m_collectionObject = base;
             m_baseObjectProperty = null;
-            
+
         } else {
-             
+
             // generic object:use reflection to map object properties
             init(null, null, property, widget, dialogPage, 1, 1, 0);
-    
+
             m_baseObject = base;
             m_baseObjectProperty = property;
-    
+            m_collectionObject = null;
+
             PropertyUtilsBean bean = new PropertyUtilsBean();
             // make sure the base object has the requested property
             if (!bean.isReadable(m_baseObject, m_baseObjectProperty)
@@ -233,7 +239,7 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
                     base.getClass().getName(),
                     property));
             }
-    
+
             Object value;
             try {
                 value = bean.getNestedProperty(m_baseObject, m_baseObjectProperty);
@@ -243,26 +249,19 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
                     property,
                     base.getClass().getName()), e);
             }
-    
+
             if (value != null) {
-                m_defaultValue = String.valueOf(value);
-                setStringValue(null, m_defaultValue);
+                if ((value instanceof List) || (value instanceof SortedMap)) {
+                    m_collectionObject = value;
+                    m_defaultValue = null;
+                } else {
+                    m_defaultValue = String.valueOf(value);
+                    setStringValue(null, m_defaultValue);
+                }
             }
         }
         m_minOccurs = minOccurs;
         m_maxOccurs = maxOccurs;
-    }
-
-    /**
-     * Create a new Widget parameter based on a given object's property.<p>
-     * 
-     * @param base the base object to map the parameter to / from
-     * @param property the base object property to map the parameter to / from
-     * @param widget the widget used for this parameter
-     */
-    public CmsWidgetParameter(Object base, String property, I_CmsXmlWidget widget) {
-
-        this(base, property, DEFAULT_DIALOG_PAGE, widget);
     }
 
     /**
@@ -314,49 +313,6 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
         super();
         init(value, defaultValue, name, widget, dialog, minOccurs, maxOccurs, index);
     }
-    
-    /**
-     * Initializes a widget parameter with the given values.<p>
-     * 
-     * @param value the initial value of the parameter
-     * @param defaultValue the default value of the parameter
-     * @param name the id of the parameter
-     * @param widget the widget used for this parameter
-     * @param dialog the dialog this parameter is used on
-     * @param minOccurs the required minimum numer of occurences of this parameter
-     * @param maxOccurs the maximum allowed numer of occurences of this parameter
-     * @param index the index of this parameter in the list 
-     */
-    protected void init(
-        String value,
-        String defaultValue,
-        String name,
-        I_CmsXmlWidget widget,
-        String dialog,
-        int minOccurs,
-        int maxOccurs,
-        int index) {
-        
-        if (defaultValue == null) {
-            m_defaultValue = "";
-        } else {
-            m_defaultValue = defaultValue;
-        }
-        if (value == null) {
-            m_value = m_defaultValue;
-        } else {
-            m_value = value;
-        }
-        m_name = name;
-        m_widget = widget;
-        m_minOccurs = minOccurs;
-        m_maxOccurs = maxOccurs;
-        m_index = index;
-        m_dialog = dialog;
-
-        // create the id
-        m_id = createId(m_name, m_index);
-    }
 
     /**
      * Returns a from id representation for the given widget name and id.<p> 
@@ -391,8 +347,12 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
             ConvertUtilsBean conveter = new ConvertUtilsBean();
             Object value = null;
             try {
-                Class type = bean.getPropertyType(m_baseObject, m_baseObjectProperty);
-                value = conveter.convert(m_value, type);
+                if (m_collectionObject == null) {
+                    Class type = bean.getPropertyType(m_baseObject, m_baseObjectProperty);
+                    value = conveter.convert(m_value, type);
+                } else {
+                    value = m_collectionObject;
+                }
                 bean.setNestedProperty(m_baseObject, m_baseObjectProperty, value);
             } catch (InvocationTargetException e) {
                 throw new CmsWidgetException(Messages.get().container(
@@ -498,6 +458,23 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     }
 
     /**
+     * Checks if a value for this widget base type with the given id is available.<p> 
+     * 
+     * @param index the index to check
+     * 
+     * @return <code>true</code> if a value for this widget base type with the given id is available
+     */
+    public boolean hasValue(int index) {
+
+        if (m_collectionObject instanceof List) {
+            return index < ((List)m_collectionObject).size();
+        } else if (m_collectionObject instanceof SortedMap) {
+            return index < ((SortedMap)m_collectionObject).size();
+        }
+        return false;
+    }
+
+    /**
      * Sets the index to the provided value.<p>
      * 
      * @param index the new index value to set
@@ -514,5 +491,48 @@ public class CmsWidgetParameter implements I_CmsWidgetParameter {
     public void setStringValue(CmsObject cms, String value) {
 
         m_value = value;
+    }
+
+    /**
+     * Initializes a widget parameter with the given values.<p>
+     * 
+     * @param value the initial value of the parameter
+     * @param defaultValue the default value of the parameter
+     * @param name the id of the parameter
+     * @param widget the widget used for this parameter
+     * @param dialog the dialog this parameter is used on
+     * @param minOccurs the required minimum numer of occurences of this parameter
+     * @param maxOccurs the maximum allowed numer of occurences of this parameter
+     * @param index the index of this parameter in the list 
+     */
+    protected void init(
+        String value,
+        String defaultValue,
+        String name,
+        I_CmsXmlWidget widget,
+        String dialog,
+        int minOccurs,
+        int maxOccurs,
+        int index) {
+
+        if (defaultValue == null) {
+            m_defaultValue = "";
+        } else {
+            m_defaultValue = defaultValue;
+        }
+        if (value == null) {
+            m_value = m_defaultValue;
+        } else {
+            m_value = value;
+        }
+        m_name = name;
+        m_widget = widget;
+        m_minOccurs = minOccurs;
+        m_maxOccurs = maxOccurs;
+        m_index = index;
+        m_dialog = dialog;
+
+        // create the id
+        m_id = createId(m_name, m_index);
     }
 }
