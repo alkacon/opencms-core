@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/05/13 08:10:04 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/05/13 15:11:28 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsException extends Exception implements I_CmsThrowable {
 
@@ -103,37 +103,6 @@ public class CmsException extends Exception implements I_CmsThrowable {
     /* 43 */"Import error",
     /* 44 */"Export error"};
 
-    /** Error code for file not found exception. */
-    public static final int C_FILE_NOT_FOUND = 13;
-
-    /** Error code internal file. */
-    public static final int C_INTERNAL_FILE = 15;
-
-    /** 
-     * Error code for access denied exception for vfs resources.
-     * @deprecated use a <code>{@link org.opencms.security.CmsSecurityException}</code> instead
-     */
-    public static final int C_NO_ACCESS = 1;
-
-    /** Error code for no default group exception. */
-    public static final int C_NO_DEFAULT_GROUP = 11;
-
-    /** Error code for no group exception. */
-    public static final int C_NO_GROUP = 8;
-
-    /** Error code for no user exception. */
-    public static final int C_NO_USER = 10;
-
-    /** Error code for no admin exception. */
-    public static final int C_NOT_ADMIN = 6;
-
-    /** 
-     * Error code for not empty exception.<p>
-     * 
-     * @deprecated use a <code>{@link org.opencms.file.CmsVfsException}</code> instead
-     */
-    public static final int C_NOT_EMPTY = 5;
-
     /** 
      * Error code for not found exception.<p>
      * 
@@ -142,31 +111,8 @@ public class CmsException extends Exception implements I_CmsThrowable {
      */
     public static final int C_NOT_FOUND = 2;
 
-    /** Error code for driver manager initialization errors. */
-    public static final int C_RB_INIT_ERROR = 33;
-
-    /** Error code for Registry exception. */
-    public static final int C_REGISTRY_ERROR = 34;
-
-    /** 
-     * Error code for accessing a deleted resource.<p>
-     * 
-     * @deprecated use a <code>{@link org.opencms.file.CmsVfsException}</code> instead
-     */
-    public static final int C_RESOURCE_DELETED = 32;
-
-    /** 
-     * Error code for serialization exception. 
-     * 
-     * @deprecated use a <code>{@link org.opencms.db.CmsSerializationException}</code> instead
-     */
-    public static final int C_SERIALIZATION = 7;
-
     /** Error code service unavailable. */
     public static final int C_SERVICE_UNAVAILABLE = 17;
-
-    /** Error code for security manager initialization error. */
-    public static final int C_SM_INIT_ERROR = 35;
 
     /** 
      * Error code for sql exception.<p>
@@ -183,39 +129,6 @@ public class CmsException extends Exception implements I_CmsThrowable {
      *      or one of their subclasses instead
      */
     public static final int C_UNKNOWN_EXCEPTION = 0;
-
-    /** Error code that a user to be created already exists. */
-    public static final int C_USER_ALREADY_EXISTS = 42;
-
-    /** Error code for corrupt internal structure. */
-    public static final int C_XML_CORRUPT_INTERNAL_STRUCTURE = 19;
-
-    /** Error code for XML process method not found. */
-    public static final int C_XML_NO_PROCESS_METHOD = 24;
-
-    /** Error code for no XML template class. */
-    public static final int C_XML_NO_TEMPLATE_CLASS = 27;
-
-    /** Error code for XML user method not found. */
-    public static final int C_XML_NO_USER_METHOD = 23;
-
-    /** Error code for XML parsing error. */
-    public static final int C_XML_PARSING_ERROR = 21;
-
-    /** Error code for XML processing error. */
-    public static final int C_XML_PROCESS_ERROR = 22;
-
-    /** Error code for missing XML tag. */
-    public static final int C_XML_TAG_MISSING = 25;
-
-    /** Error code for unknown XML datablocks. */
-    public static final int C_XML_UNKNOWN_DATA = 18;
-
-    /** Error code for wrong XML content type. */
-    public static final int C_XML_WRONG_CONTENT_TYPE = 20;
-
-    /** Error code for wrong XML template class. */
-    public static final int C_XML_WRONG_TEMPLATE_CLASS = 26;
 
     /** The container for the localized message.  */
     protected CmsMessageContainer m_message;
