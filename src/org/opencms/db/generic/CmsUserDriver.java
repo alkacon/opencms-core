@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/13 15:07:08 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2005/05/13 15:41:17 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.90 $ $Date: 2005/05/13 15:07:08 $
+ * @version $Revision: 1.91 $ $Date: 2005/05/13 15:41:17 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -221,7 +221,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
         } catch (IOException e) {
-            throw new CmsSerializationException("creating user", e);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, name);
+            throw new CmsSerializationException(message, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -490,7 +491,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
         } catch (IOException e) {
-            throw new CmsSerializationException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", e);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, name);
+            throw new CmsSerializationException(message, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -526,13 +528,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         m_digestAlgorithm = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Digest configured    : " + m_digestAlgorithm);
+        if (LOG.isInfoEnabled()) {
+            CmsMessageContainer message = Messages.get().container(Messages.INIT_DIGEST_ALGORITHM_1, m_digestAlgorithm);
+            LOG.info(message);
         }
 
         m_digestFileEncoding = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", CmsEncoder.C_UTF8_ENCODING);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Digest file encoding : " + m_digestFileEncoding);
+        if (LOG.isInfoEnabled()) {
+            CmsMessageContainer message = Messages.get().container(Messages.INIT_DIGEST_ENCODING_1, m_digestFileEncoding);
+            LOG.info(message);
         }
 
         // create the digest

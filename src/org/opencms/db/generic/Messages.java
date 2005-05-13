@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/05/13 15:07:08 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/13 15:41:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -161,6 +161,15 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_PROJECTRESOURCE_1 = "ERR_NO_PROJECTRESOURCE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SERIALIZING_USER_DATA_1 = "ERR_SERIALIZING_USER_DATA_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DIGEST_ALGORITHM_1 = "INIT_DIGEST_ALGORITHM_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DIGEST_ENCODING_1 = "INIT_DIGEST_ENCODING_1";
     
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.generic.messages";
