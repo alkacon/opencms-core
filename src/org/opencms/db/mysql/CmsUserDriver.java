@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/11 07:59:51 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/05/13 15:07:08 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.25 $ $Date: 2005/05/11 07:59:51 $
+ * @version $Revision: 1.26 $ $Date: 2005/05/13 15:07:08 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsUserDriver.class); 
+    private static final Log LOG = CmsLog.getLog(org.opencms.db.mysql.CmsUserDriver.class); 
     
     /**
      * @see org.opencms.db.I_CmsUserDriver#createUser(org.opencms.db.CmsDbContext, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)

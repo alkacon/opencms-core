@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/05/13 14:04:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/13 15:07:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ERROR_DELETING_PROPERTYDEF_1 = "ERR_ERROR_DELETING_PROPERTYDEF_1";
     
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_SHUTDOWN_BACKUP_DRIVER_1 = "INIT_SHUTDOWN_BACKUP_DRIVER_1";
+    public static final String INIT_SHUTDOWN_DRIVER_1 = "INIT_SHUTDOWN_DRIVER_1";
    
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SUCCESSIVE_DRIVERS_UNSUPPORTED_1 = "INIT_SUCCESSIVE_DRIVERS_UNSUPPORTED_1";
@@ -113,6 +113,54 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_PROPERTIES_FOR_PROPERTYDEF_1 = "ERR_NO_PROPERTIES_FOR_PROPERTYDEF_1"; 
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_FILL_DEFAULTS_0 = "INIT_FILL_DEFAULTS_0"; 
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ERROR_RESETING_RESOURCE_STATE_1 = "ERR_ERROR_RESETING_RESOURCE_STATE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_WRITING_PUBLISHING_HISTORY_1 = "ERR_WRITING_PUBLISHING_HISTORY_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READING_RESOURCE_1 = "ERR_READING_RESOURCE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETING_PROPERTIES_1 = "ERR_DELETING_PROPERTIES_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REMOVING_RESOURCE_1 = "ERR_REMOVING_RESOURCE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REMOVING_ACL_1 = "ERR_REMOVING_ACL_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISHING_RESOURCE_1 = "ERR_PUBLISHING_RESOURCE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISHING_PROPERTIES_1 = "ERR_PUBLISHING_PROPERTIES_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISHING_ACL_1 = "ERR_PUBLISHING_ACL_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISHING_FILE_CONTENT_1 = "ERR_PUBLISHING_FILE_CONTENT_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_START_PUBLISHING_PROJECT_2 = "LOG_START_PUBLISHING_PROJECT_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_OUT_OF_MEMORY_0 = "ERR_OUT_OF_MEMORY_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_PROJECT_WITH_ID_1 = "ERR_NO_PROJECT_WITH_ID_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_PROJECT_WITH_NAME_1 = "ERR_NO_PROJECT_WITH_NAME_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_PROJECTRESOURCE_1 = "ERR_NO_PROJECTRESOURCE_1";
     
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.generic.messages";

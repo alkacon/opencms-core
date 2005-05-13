@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/05/12 13:15:29 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/05/13 15:07:07 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.db.I_CmsWorkflowDriver;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -59,16 +60,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 
 /**
  * Generic (ANSI-SQL) database server implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.44 $ $Date: 2005/05/12 13:15:29 $
+ * @version $Revision: 1.45 $ $Date: 2005/05/13 15:07:07 $
  * @since 5.1
  */
 public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsWorkflowDriver.class);
 
     /** Table key for tasks. */
     protected static final String C_TABLE_TASK = "CMS_TASKS";
@@ -123,8 +129,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
     public void destroy() throws Throwable {
         finalize();
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Shutting down        : " + this.getClass().getName() + " ... ok!");
+        if (LOG.isInfoEnabled()) {
+            CmsMessageContainer message = Messages.get().container(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName());
+            LOG.info(message);
         }
     }
     
@@ -190,13 +197,15 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
 
         m_driverManager = driverManager;
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assigned pool        : " + poolUrl);
+        if (LOG.isInfoEnabled()) {
+            CmsMessageContainer message = Messages.get().container(Messages.INIT_ASSIGNED_POOL_1, poolUrl);
+            LOG.info(message);
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(this.getClass().toString() + " does not support successive drivers");
+            if (LOG.isWarnEnabled()) {
+                CmsMessageContainer message1 = Messages.get().container(Messages.INIT_SUCCESSIVE_DRIVERS_UNSUPPORTED_1, getClass().toString());
+                LOG.warn(message1);
             }
         }
     }

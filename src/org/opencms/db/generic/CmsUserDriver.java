@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/13 14:04:33 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2005/05/13 15:07:08 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.89 $ $Date: 2005/05/13 14:04:33 $
+ * @version $Revision: 1.90 $ $Date: 2005/05/13 15:07:08 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -145,7 +145,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_GROUP_WITH_NAME_ALREADY_EXISTS_1, groupName);
             if (LOG.isErrorEnabled()) {
                 LOG.error(message);
-            }
+            }            
             throw new CmsObjectAlreadyExistsException(message);
         }
         
@@ -197,7 +197,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
             if (LOG.isErrorEnabled()) {
                 LOG.error(message);
-            }
+            }            
             throw new CmsObjectAlreadyExistsException(message);
         }
 
@@ -357,8 +357,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     public void destroy() throws Throwable {
         finalize();
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Shutting down        : " + this.getClass().getName() + " ... ok!");
+        if (LOG.isInfoEnabled()) {
+            CmsMessageContainer message = Messages.get().container(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName());
+            LOG.info(message);
         }
     }
     
@@ -519,8 +520,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         m_driverManager = driverManager;
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assigned pool        : " + poolUrl);
+        if (LOG.isInfoEnabled()) {
+            CmsMessageContainer message = Messages.get().container(Messages.INIT_ASSIGNED_POOL_1, poolUrl);
+            LOG.info(message);
         }
 
         m_digestAlgorithm = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
@@ -555,10 +557,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
             throw new RuntimeException(e);
         }
-        
+
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(this.getClass().toString() + " does not support successive drivers");
+            if (LOG.isWarnEnabled()) {
+                CmsMessageContainer message1 = Messages.get().container(Messages.INIT_SUCCESSIVE_DRIVERS_UNSUPPORTED_1, getClass().toString());
+                LOG.warn(message1);
             }
         }
     }
