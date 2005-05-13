@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/05/12 13:15:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/13 14:04:33 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,6 +89,30 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ERROR_PUBLISHING_DELETED_FOLDER_1 = "ERR_ERROR_PUBLISHING_DELETED_FOLDER_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ERROR_DELETING_PROPERTYDEF_1 = "ERR_ERROR_DELETING_PROPERTYDEF_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_SHUTDOWN_BACKUP_DRIVER_1 = "INIT_SHUTDOWN_BACKUP_DRIVER_1";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_SUCCESSIVE_DRIVERS_UNSUPPORTED_1 = "INIT_SUCCESSIVE_DRIVERS_UNSUPPORTED_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_BACKUP_PROJECT_WITH_TAG_ID_1 = "ERR_NO_BACKUP_PROJECT_WITH_TAG_ID_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_ASSIGNED_POOL_1 = "INIT_ASSIGNED_POOL_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_1 = "ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_1";    
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_PROPERTYDEF_WITH_NAME_1 = "ERR_NO_PROPERTYDEF_WITH_NAME_1"; 
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_PROPERTIES_FOR_PROPERTYDEF_1 = "ERR_NO_PROPERTIES_FOR_PROPERTYDEF_1"; 
     
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.generic.messages";

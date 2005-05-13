@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/11 15:32:46 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2005/05/13 14:04:33 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.88 $ $Date: 2005/05/11 15:32:46 $
+ * @version $Revision: 1.89 $ $Date: 2005/05/13 14:04:33 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
 public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsUserDriver.class); 
+    private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsUserDriver.class); 
 
     /** A digest to encrypt the passwords. */
     protected MessageDigest m_digest;

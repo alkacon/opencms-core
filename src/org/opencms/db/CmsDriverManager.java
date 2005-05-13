@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/13 09:07:22 $
- * Version: $Revision: 1.495 $
+ * Date   : $Date: 2005/05/13 14:04:33 $
+ * Version: $Revision: 1.496 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.495 $ $Date: 2005/05/13 09:07:22 $
+ * @version $Revision: 1.496 $ $Date: 2005/05/13 14:04:33 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -740,17 +740,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Creates a backup of the published project.<p>
-     *
+     * Creates a backup of the current project.<p>
+     * 
      * @param dbc the current database context
-     * @param backupProject the project to be backuped
      * @param tagId the version of the backup
      * @param publishDate the date of publishing
-     * 
+     *
      * @throws CmsDataAccessException if operation was not succesful
      */
-    public void backupProject(CmsDbContext dbc, CmsProject backupProject, int tagId, long publishDate)
-    throws CmsDataAccessException {
+    public void backupProject(CmsDbContext dbc, int tagId, long publishDate) throws CmsDataAccessException {
 
         m_backupDriver.writeBackupProject(dbc, tagId, publishDate);
     }

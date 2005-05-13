@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2005/02/18 15:18:57 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2005/05/13 14:04:33 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,8 +60,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.71 $
- * $Date: 2005/02/18 15:18:57 $
+ * $Revision: 1.72 $
+ * $Date: 2005/05/13 14:04:33 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -654,7 +654,7 @@ public abstract class CmsMasterContent
                 // Get the next version id
                 versionId = cms.getBackupTagId();
                 // backup the current project
-                cms.backupProject(cms.getRequestContext().currentProject().getId(), versionId, publishDate);
+                cms.backupProject(versionId, publishDate);
             }
             
             // now publish the content definition

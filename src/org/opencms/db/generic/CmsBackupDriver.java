@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/13 08:16:04 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2005/05/13 14:04:33 $
+ * Version: $Revision: 1.127 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,9 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
@@ -69,6 +69,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 
 /**
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
@@ -76,10 +78,13 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.126 $ $Date: 2005/05/13 08:16:04 $
+ * @version $Revision: 1.127 $ $Date: 2005/05/13 14:04:33 $
  * @since 5.1
  */
 public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsBackupDriver.class);
 
     /** The driver manager instance. */
     protected CmsDriverManager m_driverManager;
@@ -222,14 +227,12 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                                          
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception ex) {
-            throw new CmsSqlException(this, stmt, ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
-            m_sqlManager.closeAll(dbc, conn, stmt1, null);
-            m_sqlManager.closeAll(dbc, conn, stmt2, null);
-            m_sqlManager.closeAll(dbc, conn, stmt3, null);
-            m_sqlManager.closeAll(dbc, conn, stmt4, null);
+            m_sqlManager.closeAll(dbc, null, stmt1, null);
+            m_sqlManager.closeAll(dbc, null, stmt2, null);
+            m_sqlManager.closeAll(dbc, null, stmt3, null);
+            m_sqlManager.closeAll(dbc, null, stmt4, null);
         }  
     }
     
@@ -243,9 +246,10 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         try {
             if (internalCountProperties(dbc, metadef, I_CmsConstants.C_PROJECT_ONLINE_ID) != 0
-            || internalCountProperties(dbc, metadef, Integer.MAX_VALUE) != 0) {
+                || internalCountProperties(dbc, metadef, Integer.MAX_VALUE) != 0) {
 
-                throw new CmsConsistencyException(metadef.getName()+ "could not be deleted because property is attached to resources");
+                CmsMessageContainer message = Messages.get().container(Messages.ERR_ERROR_DELETING_PROPERTYDEF_1, metadef.getName());
+                throw new CmsConsistencyException(message);
             }
 
             // delete the backup propertydef
@@ -308,8 +312,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         } catch (SQLException e) {
             throw new CmsSqlException(this, null, e);
-        } catch (Exception ex) {
-            throw new CmsDataAccessException(ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt1, null);
             m_sqlManager.closeAll(dbc, null, stmt2, null);
@@ -324,8 +326,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     public void destroy() throws Throwable {
         finalize();
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Shutting down        : " + this.getClass().getName() + " ... ok!");
+        CmsMessageContainer message = Messages.get().container(Messages.INIT_SHUTDOWN_BACKUP_DRIVER_1, getClass().getName());
+        if (LOG.isInfoEnabled()) {
+            LOG.info(message);
         }
     }
     
@@ -349,13 +352,15 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         m_driverManager = driverManager;
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assigned pool        : " + poolUrl);
+        CmsMessageContainer message = Messages.get().container(Messages.INIT_ASSIGNED_POOL_1, poolUrl);
+        if (LOG.isInfoEnabled()) {
+            LOG.info(message);
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(this.getClass().toString() + " does not support successive drivers");
+            CmsMessageContainer message1 = Messages.get().container(Messages.INIT_SUCCESSIVE_DRIVERS_UNSUPPORTED_1, getClass().toString());
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(message1);
             }
         }
     }
@@ -393,10 +398,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (CmsDataAccessException ex) {
-            throw ex;            
-        } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -429,10 +430,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-         } catch (CmsDataAccessException ex) {
-            throw ex;
-        } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -467,8 +464,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
             storage = null;
@@ -498,8 +493,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -529,8 +522,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception ex) {
-            throw new CmsDataAccessException(ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -576,15 +567,11 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                         res.getString("MANAGERGROUP_NAME"),
                         projectresources);
             } else {
-                // project not found!
-                throw new CmsObjectNotFoundException("Backup Project with id='" + tagId + "' not found. ");
+                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_BACKUP_PROJECT_WITH_TAG_ID_1, Integer.toString(tagId));
+                throw new CmsObjectNotFoundException(message);
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (CmsDataAccessException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new CmsDataAccessException(e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -610,8 +597,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception ex) {
-            throw new CmsDataAccessException(ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -661,8 +646,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             }
         } catch (SQLException exc) {
             throw new CmsSqlException(this, stmt, exc);
-        } catch (Exception ex) {
-            throw new CmsDataAccessException(ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -688,8 +671,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception ex) {
-            throw new CmsDataAccessException(ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -726,30 +707,38 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                 if ((property = (CmsProperty)propertyMap.get(propertyKey)) != null) {
                     // there exists already a property for this key in the result
 
-                    if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
-                        // this property value is mapped to a structure record
-                        property.setStructureValue(propertyValue);
-                    } else if (mappingType == CmsProperty.C_RESOURCE_RECORD_MAPPING) {
-                        // this property value is mapped to a resource record
-                        property.setResourceValue(propertyValue);
-                    } else {
-                        throw new CmsConsistencyException("Unknown property value mapping type found: " + mappingType);
+                    switch (mappingType) {
+                        case CmsProperty.C_STRUCTURE_RECORD_MAPPING :
+                            // this property value is mapped to a structure record
+                            property.setStructureValue(propertyValue);
+                            break;
+                        case CmsProperty.C_RESOURCE_RECORD_MAPPING :
+                            // this property value is mapped to a resource record
+                            property.setResourceValue(propertyValue);
+                            break;
+                        default :
+                            CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_1, Integer.toString(mappingType));
+                            throw new CmsConsistencyException(message);
                     }
                 } else {
                     // there doesn't exist a property for this key yet
                     property = new CmsProperty();
                     property.setName(propertyKey);
 
-                    if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
-                        // this property value is mapped to a structure record
-                        property.setStructureValue(propertyValue);
-                        property.setResourceValue(null);
-                    } else if (mappingType == CmsProperty.C_RESOURCE_RECORD_MAPPING) {
-                        // this property value is mapped to a resource record
-                        property.setStructureValue(null);
-                        property.setResourceValue(propertyValue);
-                    } else {
-                        throw new CmsConsistencyException("Unknown property value mapping type found: " + mappingType);
+                    switch (mappingType) {
+                        case CmsProperty.C_STRUCTURE_RECORD_MAPPING :
+                            // this property value is mapped to a structure record
+                            property.setStructureValue(propertyValue);
+                            property.setResourceValue(null);
+                            break;
+                        case CmsProperty.C_RESOURCE_RECORD_MAPPING : 
+                            // this property value is mapped to a resource record
+                            property.setStructureValue(null);
+                            property.setResourceValue(propertyValue);
+                            break;
+                        default :
+                            CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_1, Integer.toString(mappingType));
+                            throw new CmsConsistencyException(message);
                     }
 
                     propertyMap.put(propertyKey, property);
@@ -782,7 +771,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             if (res.next()) {
                 propDef = new CmsPropertyDefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")));
             } else {
-                throw new CmsObjectNotFoundException("Property Definition with name='" + name + "' not found. ");
+                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1, name);
+                throw new CmsObjectNotFoundException(message);
             }
         } catch (SQLException exc) {
             throw new CmsSqlException(this, stmt, exc);
@@ -813,8 +803,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception ex) {
-            throw new CmsDataAccessException(ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -837,6 +825,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_BACKUP_MAXTAG");
             res = stmt.executeQuery();
+            
             if (res.next()) {
                 projectBackupTagId = res.getInt(1) + 1;
             }
@@ -845,9 +834,11 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_BACKUP_MAXTAG_RESOURCE");
             res = stmt.executeQuery();
+            
             if (res.next()) {
                 resourceBackupTagId = res.getInt(1) + 1;
             }
+            
             if (resourceBackupTagId > projectBackupTagId) {
                 projectBackupTagId = resourceBackupTagId;
             }
@@ -874,7 +865,10 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         CmsUser currentUser = dbc.currentUser();
         
         CmsUser owner = m_driverManager.getUserDriver().readUser(dbc, currentProject.getOwnerId());
-        String ownerName = owner.getName() + " " + owner.getFirstname() + " " + owner.getLastname();
+        
+        StringBuffer buf = new StringBuffer();
+        buf.append(owner.getName()).append(" ").append(owner.getFirstname()).append(" ").append(owner.getLastname());
+        String ownerName = buf.toString();
 
         try {
             group = m_driverManager.getUserDriver().readGroup(dbc, currentProject.getGroupId()).getName();
@@ -882,12 +876,14 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             // the group could not be read
             group = "";
         }
+        
         try {
             managerGroup = m_driverManager.getUserDriver().readGroup(dbc, currentProject.getManagerGroupId()).getName();
         } catch (CmsObjectNotFoundException e) {
             // the group could not be read
             managerGroup = "";
         }
+        
         List projectresources = m_driverManager.getProjectDriver().readProjectResources(dbc, currentProject);
         
         // write backup project to the database
@@ -928,8 +924,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception ex) {
-            throw new CmsDataAccessException(ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -941,70 +935,64 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     public void writeBackupProperties(CmsDbContext dbc, CmsResource resource, List properties, CmsUUID backupId, int tagId, int versionId) throws CmsDataAccessException {
         Connection conn = null;
         PreparedStatement stmt = null;
-        String key = null;
+        String propDefName = null;
         CmsProperty property = null;
         int mappingType = -1;
         String value = null;
         CmsUUID id = null;
-        CmsPropertyDefinition propdef = null;
+        CmsPropertyDefinition propDef = null;
         
         try {
-            conn = m_sqlManager.getConnection(dbc);
+	        conn = m_sqlManager.getConnection(dbc);
             
             Iterator dummy = properties.iterator();
             while (dummy.hasNext()) {
                 property = (CmsProperty) dummy.next();
-                key = property.getName();
-                propdef = readBackupPropertyDefinition(dbc, key);
-
-                if (propdef == null) {
-                    throw new CmsObjectNotFoundException("Property definition with name='" + key + "' not found. ");
-                } else {                    
-                    for (int i = 0; i < 2; i++) {
-                        mappingType = -1;
-                        value = null;
-                        id = null;
+                propDefName = property.getName();
+                propDef = readBackupPropertyDefinition(dbc, propDefName);
+                    
+                for (int i = 0; i < 2; i++) {
+                    mappingType = -1;
+                    value = null;
+                    id = null;
+                    
+                    if (i == 0) {
+                        // write the structure value on the first cycle
+                        value = property.getStructureValue();
+                        mappingType = CmsProperty.C_STRUCTURE_RECORD_MAPPING;
+                        id = resource.getStructureId();   
                         
-                        if (i == 0) {
-                            // write the structure value on the first cycle
-                            value = property.getStructureValue();
-                            mappingType = CmsProperty.C_STRUCTURE_RECORD_MAPPING;
-                            id = resource.getStructureId();   
-                            
-                            if (value == null || "".equals(value)) {
-                                continue;
-                            }
-                        } else {
-                            // write the resource value on the second cycle
-                            value = property.getResourceValue();
-                            mappingType = CmsProperty.C_RESOURCE_RECORD_MAPPING;
-                            id = resource.getResourceId();
-
-                            if (value == null || "".equals(value)) {
-                                break;
-                            }
+                        if (value == null || "".equals(value)) {
+                            continue;
                         }
+                    } else {
+                        // write the resource value on the second cycle
+                        value = property.getResourceValue();
+                        mappingType = CmsProperty.C_RESOURCE_RECORD_MAPPING;
+                        id = resource.getResourceId();
 
-                        stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_CREATE_BACKUP");
-                        
-                        stmt.setString(1, backupId.toString());
-                        stmt.setString(2, new CmsUUID().toString());
-                        stmt.setString(3, propdef.getId().toString());
-                        stmt.setString(4, id.toString());
-                        stmt.setInt(5, mappingType);
-                        stmt.setString(6, m_sqlManager.validateEmpty(value));
-                        stmt.setInt(7, tagId);
-                        stmt.setInt(8, versionId);
-                        
-                        stmt.executeUpdate();
-                        m_sqlManager.closeAll(dbc, null, stmt, null);
-                    }                    
-                }
+                        if (value == null || "".equals(value)) {
+                            break;
+                        }
+                    }
+
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_CREATE_BACKUP");
+                    
+                    stmt.setString(1, backupId.toString());
+                    stmt.setString(2, new CmsUUID().toString());
+                    stmt.setString(3, propDef.getId().toString());
+                    stmt.setString(4, id.toString());
+                    stmt.setInt(5, mappingType);
+                    stmt.setString(6, m_sqlManager.validateEmpty(value));
+                    stmt.setInt(7, tagId);
+                    stmt.setInt(8, versionId);
+                    
+                    stmt.executeUpdate();
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                }                    
             }
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception ex) {
-            throw new CmsDataAccessException(ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1034,7 +1022,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-
+   
             // now get the new version id for this resource
             versionId = internalReadNextVersionId(dbc, resource);
 
@@ -1093,8 +1081,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         } catch (SQLException e) {
             throw new CmsSqlException(this, stmt, e);
-        } catch (Exception ex) {
-            throw new CmsDataAccessException(ex);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1107,7 +1093,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     public void writeBackupResourceContent(CmsDbContext dbc, int projectId, CmsResource resource, CmsBackupResource backupResource) throws CmsDataAccessException {
             
         if (!this.internalValidateBackupResource(dbc, resource, backupResource.getTagId())) {
-            // internalWriteBackupFileContent(backupResource.getBackupId(), resource.getFileId(), offlineFile.getContents(), backupResource.getTagId(), backupResource.getVersionId());
             internalWriteBackupFileContent(dbc, backupResource.getBackupId(), resource, backupResource.getTagId(), backupResource.getVersionId());
         }
     }
@@ -1153,7 +1138,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             if (res.next()) {
                 returnValue = res.getInt(1);
             } else {
-                throw new CmsConsistencyException(CmsSqlException.createMessage(this, null, stmt));
+                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_PROPERTIES_FOR_PROPERTYDEF_1, metadef.getName());
+                throw new CmsConsistencyException(message);
             }
         } catch (SQLException exc) {
             throw new CmsSqlException(this, stmt, exc);
@@ -1279,5 +1265,4 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         return exists;
     }
     
-
 }

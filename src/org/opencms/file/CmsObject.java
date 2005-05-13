@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/05/09 15:47:07 $
- * Version: $Revision: 1.119 $
+ * Date   : $Date: 2005/05/13 14:04:33 $
+ * Version: $Revision: 1.120 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.119 $
+ * @version $Revision: 1.120 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -136,18 +136,16 @@ public class CmsObject {
     }
 
     /**
-     * Creates a backup of the published project.<p>
-     *
-     * @param projectId the id of the project in which the resource was published
+     * Creates a backup of the current project.<p>
+     * 
      * @param versionId the version of the backup
      * @param publishDate the date of publishing
      *
      * @throws CmsException if operation was not succesful
      */
-    public void backupProject(int projectId, int versionId, long publishDate) throws CmsException {
+    public void backupProject(int versionId, long publishDate) throws CmsException {
 
-        CmsProject backupProject = m_securityManager.readProject(projectId);
-        m_securityManager.backupProject(m_context, backupProject, versionId, publishDate);
+        m_securityManager.backupProject(m_context, versionId, publishDate);
     }
 
     /**

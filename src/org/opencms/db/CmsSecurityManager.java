@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/13 08:11:09 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2005/05/13 14:04:33 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -293,28 +293,27 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Creates a backup of the published project.<p>
-     *
+     * Creates a backup of the current project.<p>
+     * 
      * @param context the current request context
-     * @param backupProject the project to be backuped
      * @param tagId the version of the backup
      * @param publishDate the date of publishing
-     * 
+     *
      * @throws CmsException if operation was not succesful
      */
-    public void backupProject(CmsRequestContext context, CmsProject backupProject, int tagId, long publishDate)
+    public void backupProject(CmsRequestContext context, int tagId, long publishDate)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            m_driverManager.backupProject(dbc, backupProject, tagId, publishDate);
+            m_driverManager.backupProject(dbc, tagId, publishDate);
         } catch (Exception e) {
             CmsMessageContainer errMsg = Messages.get().container(
                 Messages.ERR_BACKUP_PROJECT_4,
                 new Object[] {
                     String.valueOf(tagId),
-                    backupProject.getName(),
-                    String.valueOf(backupProject.getId()),
+                    dbc.currentProject().getName(),
+                    String.valueOf(dbc.currentProject().getId()),
                     new Long(publishDate)});
             dbc.report(null, errMsg, e);
         } finally {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/13 08:16:04 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/05/13 14:04:33 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,13 +46,13 @@ import java.util.List;
  * Definitions of all required backup driver methods.<p>
  * 
  * A backup driver is a driver to write projects, resources and properties of
- * resources optionally to a second set of database tables while resources or
- * projects are published. A unique backup version ID is used to identify a set
- * of resource that were saved during one backup process.<p>
+ * resources optionally to a second set of backup database tables while resources
+ * get published. A unique backup tag ID is used to identify a set of resource that 
+ * were saved during one backup process.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.44 $ $Date: 2005/05/13 08:16:04 $
+ * @version $Revision: 1.45 $ $Date: 2005/05/13 14:04:33 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -294,7 +294,8 @@ public interface I_CmsBackupDriver {
     int readNextBackupTagId(CmsDbContext dbc);
 
     /**
-     * Writes a project to the backup.<p>
+     * Creates a backup of the current project.<p>
+     * 
      * @param dbc the current database context
      * @param tagId the version ID of the backup
      * @param publishDate long timestamp when the current project was published. 

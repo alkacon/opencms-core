@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/05/13 09:07:23 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/05/13 14:04:33 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsCore;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.security.CmsRole;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @since 5.3.1
  */
@@ -1023,7 +1024,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             // get the subfolders of the "views" folder
             viewFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_VIEWS);
         } catch (CmsException e) {
-            LOG.error(Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, I_CmsWpConstants.C_VFS_PATH_VIEWS), e);
+            if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING && LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, I_CmsWpConstants.C_VFS_PATH_VIEWS), e);
+            }
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             viewFolders = new ArrayList();
         }
