@@ -44,8 +44,7 @@
     	  	<echo message="all: ${modules.common.all}"/>
     	  </else>
     	</if>
-        <sortlist property="modules.common.all" value="${modules.common.all}" override="true" />
-    	
+        <sortlist property="modules.all.sort" value="${modules.common.all}" override="true" />
     	<if>
 			<equals arg1="${modules.selection.mode}" arg2="interactive" />
 			<then>
@@ -56,7 +55,7 @@
 					  	<selectionprompt 
 					  	  	property="modules.common.interactive"
 					  	    defaultvalue="${modules.common.selection}"
-					  		allvalues="${modules.common.all}"
+					  		allvalues="${modules.all.sort}"
 					  		prompt="Please select the modules to process:"
 					  		title="Module Selection"
 					  	/>
@@ -65,7 +64,7 @@
 					  	<selectionprompt 
 					  	  	property="modules.common.interactive"
 					  	    defaultvalue=""
-					  		allvalues="${modules.common.all}"
+					  		allvalues="${modules.all.sort}"
 					  		prompt="Please select the modules to process:"
 					  		title="Module Selection"
 					  	/>
@@ -91,8 +90,19 @@
 				<property name="modules.var" value="${modules.common.all}" />
 			</else>
     	</if>
+        <sortlist property="modules.var" value="${modules.var}" override="true" />
     </target>
-    	
+
+	<target name="dependencies" description="Build all jars" depends="init">
+    	<for list="${modules.common.all}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${basedir}/build-single.xml" target="jar" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+	</target>
+	
     <target name="clean" 
     	depends="init" description="Cleans the given module generation directories">
     	
@@ -106,7 +116,7 @@
     </target>        
 	
     <target name="compile" 
-    	depends="init" description="Compile the given modules">
+    	depends="dependencies" description="Compile the given modules">
     	
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
@@ -118,7 +128,7 @@
     </target>        
 	
     <target name="jar" 
-    	depends="init" description="Generates the given .jar files">
+    	depends="dependencies" description="Generates the given .jar files">
 	
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
@@ -130,7 +140,7 @@
     </target>
     			
     <target name="dist" 
-    	depends="init" description="Generates the given independent distros">
+    	depends="dependencies" description="Generates the given independent distros">
 	
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
@@ -142,7 +152,7 @@
     </target>
     			
     <target name="tomcat.copy" 
-    	depends="init" description="Copies the given updated modules to Tomcat directory">
+    	depends="dependencies" description="Copies the given updated modules to Tomcat directory">
 	
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
@@ -154,7 +164,7 @@
     </target>
     			
     <target name="tomcat.update" 
-    	depends="init" description="Recompiles changes and installs them in Tomcat webapps directory">
+    	depends="dependencies" description="Recompiles changes and installs them in Tomcat webapps directory">
 	
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
@@ -166,7 +176,7 @@
     </target>
     			
     <target name="tomcat.all" 
-    	depends="init" description="Does a complete recompile of the module and installs it in Tomcat webapps directory">
+    	depends="dependencies" description="Does a complete recompile of the module and installs it in Tomcat webapps directory">
 	
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
@@ -178,7 +188,7 @@
     </target>
 
 	<target name="war"
-		depends="init, dist" description="Updates the war file">
+		depends="dependencies, dist" description="Updates the war file">
 		
 		<!-- be sure that the war file is uptodate -->
 		<ant antfile="${opencms.input}/build.xml" target="war"/>

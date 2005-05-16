@@ -1,0 +1,114 @@
+<%@ page import= "org.opencms.workplace.tools.content.*, 
+						java.util.List, 
+						java.util.Iterator, 
+						org.opencms.file.CmsResource,
+						org.opencms.file.CmsObject"	buffer="none" %>
+<%	
+
+	// initialize the workplace class
+	CmsPropertyDelete wp = new CmsPropertyDelete(pageContext, request, response);
+	
+//////////////////// start of switch statement 
+	
+switch (wp.getAction()) {
+
+case CmsPropertyDelete.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+case CmsPropertyDelete.ACTION_OK:		
+
+//////////////////// ACTION: main delete property definition action
+
+	List resourcesWithProperty = wp.getCms().readResourcesWithProperty(wp.getParamPropertyName());
+   if (resourcesWithProperty.isEmpty()) {  
+		// property is not linked with any resource
+		wp.actionDelete();
+	} else {
+		wp.setParamAction(CmsPropertyDelete.DIALOG_DELETE_CASCADE);
+
+%><%= wp.htmlStart(null) %>
+<%= wp.bodyStart("dialog", null) %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<%= wp.dialogBlockStart(null) %>
+<%= wp.key("message.deleteproperty") %>
+<%= wp.dialogBlockEnd() %>
+<%= wp.dialogSpacer() %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+
+<%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<%= wp.dialogWhiteBoxStart() %>
+<%= wp.buildResourceList() %>
+<%= wp.dialogWhiteBoxEnd() %>
+<%= wp.dialogContentEnd() %>
+<%= wp.dialogButtonsOkCancel() %>
+
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%	   
+	}
+	
+break;
+
+case CmsPropertyDelete.ACTION_DELETE_CASCADE:		
+
+//////////////////// ACTION: cascade delete properties on resources the delete property definitions
+
+		wp.actionDeleteCascade();
+		// wp.actionDelete();
+	
+break;
+
+case CmsPropertyDelete.ACTION_DEFAULT:
+default:
+
+//////////////////// ACTION: show property definition delete dialog (default)
+
+	wp.setParamAction(CmsPropertyDelete.DIALOG_OK);
+
+%><%= wp.htmlStart(null) %>
+<%= wp.bodyStart("dialog", null) %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<%= wp.dialogBlockStart(null) %>
+<%= wp.key("input.propertydelete.info") %>
+<%= wp.dialogBlockEnd() %>
+<%= wp.dialogSpacer() %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+
+<%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+
+<table border="0" width="100%">
+<tr>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.property") %></td>
+	<td colspan="2" class="maxwidth"><%= wp.buildSelectProperty("name=\"" + wp.PARAM_PROPERTYNAME + "\" size=\"1\"") %></td>
+</tr>
+</table>
+
+<%= wp.dialogContentEnd() %>
+<%= wp.dialogButtonsOkCancel() %>
+
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+} 
+//////////////////// end of switch statement 
+%>

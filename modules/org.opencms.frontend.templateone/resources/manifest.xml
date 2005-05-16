@@ -239,6 +239,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone/classes/templateone.properties</source>
 			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>50aeb442-d57b-11d8-b127-6dec57178f5b</uuidresource>
@@ -277,6 +278,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
+            <source>system/modules/org.opencms.frontend.templateone/classes/templateone_form.properties</source>
 			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone_form_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>17bdf1a3-e21e-11d8-bdbe-83d5f21447d1</uuidresource>
@@ -364,6 +366,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace.properties</source>
 			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>7c8c76d8-1ebe-11d9-88bb-efd43b41b93a</uuidresource>
@@ -1471,6 +1474,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/menu_click.js</source>
 			<destination>system/modules/org.opencms.frontend.templateone/resources/menu_over.js</destination>
 			<type>jsp</type>
 			<uuidresource>ff6602fa-80bd-11d9-ba74-eb1fdbd690a5</uuidresource>
@@ -1652,6 +1656,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone/resources/icons/ic_app_htm.gif</source>
 			<destination>system/modules/org.opencms.frontend.templateone/resources/icons/ic_app_html.gif</destination>
 			<type>image</type>
 			<uuidresource>19524a1c-b7e4-11d9-867a-ddc62aad31dd</uuidresource>

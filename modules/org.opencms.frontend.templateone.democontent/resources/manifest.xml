@@ -508,6 +508,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>demopages/languagedemo/de_page.html</source>
 			<destination>demopages/languagedemo/en_page.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>2b4f4ff7-1164-11d9-831f-b70b5b3477aa</uuidresource>
@@ -783,6 +784,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>demopages/colordemo/_configuration/configuration_links</source>
 			<destination>demopages/_configuration/configuration_links</destination>
 			<type>xmlcontent</type>
 			<uuidresource>2dfec389-1dbf-11d9-828b-95b5e57c814c</uuidresource>

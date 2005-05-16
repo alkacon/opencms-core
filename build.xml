@@ -330,34 +330,18 @@ ${opencms.inputlib.textextraction}
 	</target>
     		    
 
-    <target name="jar-legacy" 
-    	depends="compile" description="Generate the legacy OpenCms .jar files">
-    	
-        <mkdir dir="${opencms.output.jars}" />
-            	
-        <jar
-            jarfile="${opencms.output.jars}/opencms-legacy.jar"
-            basedir="${opencms.output.classes}"
-            includes="com/opencms/**"
-            excludes="com/opencms/build/**,org/opencms/**" >      
-        </jar>        	            
-    </target>
-    
-        		    
     <target name="jar" 
-    	depends="jar-legacy, compile" description="Generate the OpenCms .jar files">
+    	depends="compile" description="Generate the OpenCms .jar files">
     	
         <mkdir dir="${opencms.output.jars}" />
             	
         <jar
             jarfile="${opencms.output.jars}/opencms.jar"
             basedir="${opencms.output.classes}"
-            includes="org/opencms/**"
-            excludes="com/opencms/build/**,com/opencms/**" >      
+            includes="org/opencms/**" >      
             <metainf dir="${opencms.input.warfiles}/WEB-INF" includes="opencms.tld"/>
         </jar>        	            
     </target>
-    
 
     <target name="war" 
     	depends="jar" description="Builds the opencms.war">
@@ -498,7 +482,6 @@ ${opencms.inputlib.textextraction}
             destdir="${opencms.output.tests}"
             excludes="${build.excludes},**/data/**"
             classpath="${opencms.output.jars}/opencms.jar:
-                       ${opencms.output.jars}/opencms-legacy.jar:       
                        ${opencms.inputlib.junit}:
 		               ${opencms.inputlib.servlet}:
                        ${opencms.inputlib.activation}:
@@ -557,7 +540,6 @@ ${opencms.inputlib.textextraction}
 			<classpath>
 				<pathelement path="${opencms.output.tests}"/>
 				<pathelement location="${opencms.output.jars}/opencms.jar"/>
-				<pathelement location="${opencms.output.jars}/opencms-legacy.jar"/>
 				<pathelement location="${opencms.inputlib.fileupload}"/>
 				<pathelement location="${opencms.inputlib.servlet}"/>				
 				<pathelement location="${opencms.inputlib.mail}"/>

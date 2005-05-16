@@ -26,10 +26,7 @@
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/workplace/admin/staticexport/"/>
-			<resource uri="/system/workplace/administration/staticexport/"/>
-			<resource uri="/system/workplace/resources/admin/ic_admin_staticexport_in.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_admin_staticexport.gif"/>
-			<resource uri="/system/workplace/resources/admin/ic_admin_staticexport_sm.gif"/>
+			<resource uri="/system/workplace/resources/tools/staticexport/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -78,7 +75,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.staticexport.CmsStaticExportToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -97,12 +94,8 @@
 					<value><![CDATA[${key.admin.staticexport.description}]]></value>
 				</property>
 				<property>
-					<name>visiblemethod</name>
-					<value><![CDATA[com.opencms.workplace.CmsAdminStaticExport.isExportActiveAdmin]]></value>
-				</property>
-				<property>
 					<name>NavImage</name>
-					<value><![CDATA[admin/ic_admin_staticexport.gif:admin/ic_admin_staticexport_sm.gif]]></value>
+					<value><![CDATA[tools/staticexport/icons/big/staticexport.gif:tools/staticexport/icons/small/staticexport.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -119,58 +112,7 @@
 			<source>system/workplace/admin/staticexport/index.html</source>
 			<destination>system/workplace/admin/staticexport/index.html</destination>
 			<type>jsp</type>
-			<uuidresource>2068d5a4-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Thu, 10 Feb 2005 08:29:16 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/staticexport</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[-150]]></value>
-				</property>
-				<property>
-					<name>visiblemethod</name>
-					<value><![CDATA[com.opencms.workplace.CmsAdminStaticExport.isExportActiveAdmin]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[icon.staticexport]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[admin/ic_admin_staticexport]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/staticexport/index.html</destination>
-			<type>jsp</type>
-			<uuidresource>2068d5a4-c0f9-11d7-8d80-80884c2772a5</uuidresource>
+
 			<datelastmodified>Thu, 10 Feb 2005 08:29:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
@@ -191,7 +133,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/admin</destination>
+			<destination>system/workplace/resources/tools</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -202,10 +144,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_admin_staticexport.gif</source>
-			<destination>system/workplace/resources/admin/ic_admin_staticexport.gif</destination>
-			<type>image</type>
-			<uuidresource>2713883a-c0f9-11d7-8d80-80884c2772a5</uuidresource>
+			<destination>system/workplace/resources/tools/staticexport</destination>
+			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
@@ -215,10 +155,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_admin_staticexport_in.gif</source>
-			<destination>system/workplace/resources/admin/ic_admin_staticexport_in.gif</destination>
-			<type>image</type>
-			<uuidresource>271ab430-c0f9-11d7-8d80-80884c2772a5</uuidresource>
+			<destination>system/workplace/resources/tools/staticexport/icons</destination>
+			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
@@ -228,8 +166,43 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_admin_staticexport_sm.gif</source>
-			<destination>system/workplace/resources/admin/ic_admin_staticexport_sm.gif</destination>
+			<destination>system/workplace/resources/tools/staticexport/icons/big</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/staticexport/icons/big/staticexport.gif</source>
+			<destination>system/workplace/resources/tools/staticexport/icons/big/staticexport.gif</destination>
+			<type>image</type>
+
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/staticexport/icons/small</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/staticexport/icons/small/staticexport.gif</source>
+			<destination>system/workplace/resources/tools/staticexport/icons/small/staticexport.gif</destination>
 			<type>image</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>

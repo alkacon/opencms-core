@@ -9,7 +9,8 @@
 	
     <property name="module.input" 						location="${basedir}/${module.name}" />
     <property name="module.input.res" 					location="${module.input}/resources" />
-    <property name="src.root"                           location="${opencms.input}/src-modules" />
+    <property name="module.input.src.single"            location="${module.input}/src" />
+    <property name="module.input.src.shared"            location="${opencms.input}/src-modules" />
 	
 	<property file="${module.input}/module.properties" />
 	<property name="module.output.classes"				location="${opencms.output}/build/classes-${module.name}" />
@@ -20,7 +21,8 @@
 	
     <property name="jar.excludes"                  		value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
     <property name="zip.excludes"                  		value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
-    <property name="jar.includes"                  		value="*.properties,*.txt,*.dtd,*.xml" />
+    <property name="jar.includes.single"           		value="**/*.properties,**/*.txt,**/*.dtd,**/*.xml" />
+    <property name="jar.includes.shared"           		value="*.properties,*.txt,*.dtd,*.xml" />
 	
     <property environment="env" />
 	
@@ -76,30 +78,36 @@
       	    </sequential>
       	</for>
 
-        <var name="module.input.src" value="${src.root}" />
-        <var name="module.package" value="" />
-    	<for list="${module.name}" param="package" delimiter="." >
-    		<sequential>
-                <var name="module.input.src" value="${module.input.src}/@{package}" />
-                <var name="module.package" value="${module.package}@{package}/" />
-      	    </sequential>
-        </for>
-        <var name="module.package.includes" value="${module.package}*.java" />
         <if>
-            <isset property="module.includes" />
+            <available file="${module.input.src.single}" />
             <then>
-                <for list="${module.includes}" param="package" >
+                <property name="src.mode" value="single" />                    
+                <property name="module.input.src" value="${module.input.src.single}" />
+            </then>
+            <else>
+                <var name="module.input.src" value="${module.input.src.shared}" />
+                <var name="module.package" value="" />
+                <for list="${module.name}" param="package" delimiter="." >
                     <sequential>
-                        <var name="module.package.includes" value="${module.package.includes},@{package}/*.java" />
+                        <var name="module.input.src" value="${module.input.src}/@{package}" />
+                        <var name="module.package" value="${module.package}@{package}/" />
                     </sequential>
                 </for>
-            </then>
+                <if>
+                   <available file="${module.input.src}" />
+                    <then>
+                        <property name="src.mode" value="shared" />                    
+                    </then>
+                    <else>
+                        <property name="src.mode" value="none" />                    
+                    </else>
+                </if>
+            </else>
         </if>
         
         <condition property="opencms.available">
         	<and>
 	            <available file="${opencms.core.lib}/opencms.jar"/>
-    	        <available file="${opencms.core.lib}/opencms-legacy.jar"/>
     		</and>
         </condition>
         
@@ -134,7 +142,15 @@
         <echo message="Detected Java version: ${ant.java.version}"/>
         <echo message="Tomcat home is: ${tomcat.home}" />        
         <echo message="Excluded files in Jar: ${jar.excludes}" />
-        <echo message="Included files in Jar: ${jar.includes}" />
+        <if>
+            <equals arg1="${src.mode}" arg2="shared" />
+            <then>
+                <echo message="Included files in Jar: ${jar.includes.shared}" />
+            </then>
+            <else>
+                <echo message="Included files in Jar: ${jar.includes.single}" />
+            </else>
+        </if>
         <echo message=" " />
         <echo message="Module dependencies: ${module.dependencies}" />
         <echo message="Module libraries: ${module.libs}" />
@@ -148,27 +164,8 @@
 		<antcall target="clean" />
     </target>
         
-    <target name="builddeps" description="Generates all the modules dependencies">
-    	<for list="${module.dependencies}" param="dependency">
-    		<sequential>
-	    		<if>
-		    		 <not>
-		    		 	<istrue value="${@{dependency}.available}"/>
-		    		 </not>
-		    		 <then>
-		            	<echo message="Module dependency @{dependency} is missing, building it" />
-                        <!-- TODO: find a solution for recursive calls -->
-		        		<!--ant antfile="${basedir}/build-single.xml" target="dist" inheritAll="false" >
-		            		<property name="module.name" value="@{dependency}" />
-		            	</ant-->
-		    		 </then>
-	    		</if>
-    		</sequential>
-   		</for>
-	</target>
-	
     <target name="checklibs" 
-    	depends="init, buildcore, builddeps" description="Stop target if libraries required for compilation are missing">
+    	depends="init, buildcore" description="Stop target if libraries required for compilation are missing">
     	
     	<var name="module.libs.missing" value="" />
     	<for list="${module.libs}" param="library">
@@ -203,7 +200,9 @@
     	depends="checklibs" description="Compiles ${module.name} module classes">
 		
 		<if>
-			<available file="${module.input.src}" />
+			<not>
+	    		<equals arg1="${src.mode}" arg2="none" />
+			</not>
 			<then>
                 <mkdir dir="${module.output.classes}" /> 
         
@@ -223,47 +222,57 @@
                 </for>
                 <!--echo message="${module.libs.path}" /-->
                 
-                <javac 
-                    srcdir="${src.root}"
-                    destdir="${module.output.classes}"
-                    debug="on" 
-                    optimize="on" 
-                    deprecation="on"                        
-                    includes="${module.package.includes}" >
-                    <exclude name="**/test/**/*.java" />
-                    <classpath>
-                        <fileset dir="${opencms.input.libs}">
-                            <include name="**/*.jar"/>
-                        </fileset>
-                        <fileset dir="${opencms.core.lib}">
-                            <include name="**/*.jar"/>
-                        </fileset>
-                        <pathelement path="${module.dependencies.path}"/>
-                        <pathelement path="${module.libs.path}"/>
-                    </classpath>
-                </javac>
-               
-                <copy todir="${module.output.classes}/${module.package}">
-                    <fileset dir="${module.input.src}" includes="${jar.includes}" excludes="${jar.excludes}" >
-                        <exclude name="**/test/**" />
-                    </fileset>
-                </copy>       
-
                 <if>
-                    <isset property="module.includes" />
+                    <equals arg1="${src.mode}" arg2="shared" />
                     <then>
-                        <for list="${module.includes}" param="package" >
-                            <sequential>
-                                <copy todir="${module.output.classes}/@{package}">
-                                    <fileset dir="${module.input.src}" includes="${jar.includes}" excludes="${jar.excludes}" >
-                                        <exclude name="**/test/**" />
-                                    </fileset>
-                                </copy>       
-                            </sequential>
-                        </for>
-                    </then>
-                </if>
-                
+                        <javac 
+                            srcdir="${module.input.src.shared}"
+                            destdir="${module.output.classes}"
+                            debug="on" 
+                            optimize="on" 
+                            deprecation="on"                        
+                            includes="${module.package}/*.java" >
+                            <classpath>
+                                <fileset dir="${opencms.input.libs}">
+                                    <include name="**/*.jar"/>
+                                </fileset>
+                                <fileset dir="${opencms.core.lib}">
+                                    <include name="**/*.jar"/>
+                                </fileset>
+                                <pathelement path="${module.dependencies.path}"/>
+                                <pathelement path="${module.libs.path}"/>
+                            </classpath>
+                        </javac>
+                        <copy todir="${module.output.classes}/${module.package}">
+                            <fileset dir="${module.input.src}" includes="${jar.includes.shared}" excludes="${jar.excludes.shared}" />
+                        </copy>       
+                     </then>
+                     <else>
+                        <javac 
+                            srcdir="${module.input.src.single}"
+                            destdir="${module.output.classes}"
+                            debug="on" 
+                            optimize="on" 
+                            deprecation="on" >
+                            <exclude name="**/test/**/*.java" />
+                            <classpath>
+                                <fileset dir="${opencms.input.libs}">
+                                    <include name="**/*.jar"/>
+                                </fileset>
+                                <fileset dir="${opencms.core.lib}">
+                                    <include name="**/*.jar"/>
+                                </fileset>
+                                <pathelement path="${module.dependencies.path}"/>
+                                <pathelement path="${module.libs.path}"/>
+                            </classpath>
+                        </javac>
+                       <copy todir="${module.output.classes}">
+                            <fileset dir="${module.input.src.single}" includes="${jar.includes.single}" excludes="${jar.excludes.single}" >
+                                <exclude name="**/test/**" />
+                            </fileset>
+                        </copy>       
+                     </else>
+                </if>                
 			</then>		
 		</if>
     </target>
@@ -272,7 +281,9 @@
    		depends="compile" description="Generates the .jar file for module ${module.name}">
 
 		<if>
-			<available file="${module.input.src}" />
+			<not>
+	    		<equals arg1="${src.mode}" arg2="none" />
+			</not>
 			<then>
                 <mkdir dir="${module.output.jar}" /> 
                <jar

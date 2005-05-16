@@ -225,6 +225,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone/xmlcontentdemo/workplace.properties</source>
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone/xmlcontentdemo/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>99d7678b-275e-11d9-b242-1fd2a335da0f</uuidresource>
@@ -1047,6 +1048,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>xmlcontent/list.jsp</source>
 			<destination>xmlcontent/subfolder/list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>340d9711-1128-11d9-831f-b70b5b3477aa</uuidresource>
@@ -1080,6 +1082,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>xmlcontent/list_content.html</source>
 			<destination>xmlcontent/subfolder/list_content.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>a4b2122f-1141-11d9-831f-b70b5b3477aa</uuidresource>

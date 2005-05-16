@@ -858,6 +858,7 @@ It will also remove the "default" template.</p>
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>release/welcome.html</source>
 			<destination>index.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>

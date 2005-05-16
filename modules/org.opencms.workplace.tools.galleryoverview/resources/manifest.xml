@@ -26,16 +26,7 @@
 		<exportpoints/>
             <resources>
                 <resource uri="/system/workplace/admin/galleryoverview/"/>
-                <resource uri="/system/workplace/administration/galleryoverview/"/>
-                <resource uri="/system/workplace/resources/admin/ic_downloadgallery.gif"/>
-                <resource uri="/system/workplace/resources/admin/ic_downloadgallery_in.gif"/>
-                <resource uri="/system/workplace/resources/admin/ic_downloadgallery_sm.gif"/>
-                <resource uri="/system/workplace/resources/admin/ic_galleryoverview.gif"/>
-                <resource uri="/system/workplace/resources/admin/ic_htmlgallery.gif"/>
-                <resource uri="/system/workplace/resources/admin/ic_htmlgallery_in.gif"/>
-                <resource uri="/system/workplace/resources/admin/ic_imagegallery.gif"/>
-                <resource uri="/system/workplace/resources/admin/ic_linkgallery.gif"/>
-                <resource uri="/system/workplace/resources/admin/ic_tablegallery.gif"/>
+                <resource uri="/system/workplace/resources/tools/galleryoverview/"/>
             </resources>
 		<parameters/>
 	</module>
@@ -100,7 +91,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[admin/ic_galleryoverview.gif:admin/ic_galleryoverview_sm.gif]]></value>
+					<value><![CDATA[tools/galleryoverview/icons/big/galleryoverview.gif:tools/galleryoverview/icons/small/galleryoverview.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -144,7 +135,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[admin/ic_downloadgallery.gif]]></value>
+					<value><![CDATA[tools/galleryoverview/icons/big/downloadgallery.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -165,7 +156,7 @@
 			<source>system/workplace/admin/galleryoverview/downloadgallery/index.html</source>
 			<destination>system/workplace/admin/galleryoverview/downloadgallery/index.html</destination>
 			<type>jsp</type>
-			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
+            <uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
 			<datelastmodified>Fri, 11 Feb 2005 13:44:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 09 Dec 2004 16:37:51 GMT</datecreated>
@@ -218,7 +209,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[admin/ic_htmlgallery.gif]]></value>
+					<value><![CDATA[tools/galleryoverview/icons/big/htmlgallery.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -236,9 +227,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/galleryoverview/downloadgallery/index.html</source>
 			<destination>system/workplace/admin/galleryoverview/htmlgallery/index.html</destination>
 			<type>jsp</type>
-			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
+            <uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
 			<datelastmodified>Fri, 11 Feb 2005 13:44:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 09 Dec 2004 16:37:51 GMT</datecreated>
@@ -291,7 +283,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[admin/ic_tablegallery.gif]]></value>
+					<value><![CDATA[tools/galleryoverview/icons/big/tablegallery.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -309,9 +301,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/galleryoverview/downloadgallery/index.html</source>
 			<destination>system/workplace/admin/galleryoverview/tablegallery/index.html</destination>
 			<type>jsp</type>
-			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
+            <uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
 			<datelastmodified>Thu, 14 Apr 2005 12:03:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 09 Dec 2004 16:37:51 GMT</datecreated>
@@ -364,7 +357,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[admin/ic_imagegallery.gif]]></value>
+					<value><![CDATA[tools/galleryoverview/icons/big/imagegallery.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -382,9 +375,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/galleryoverview/downloadgallery/index.html</source>
 			<destination>system/workplace/admin/galleryoverview/imagegallery/index.html</destination>
 			<type>jsp</type>
-			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
+            <uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
 			<datelastmodified>Fri, 11 Feb 2005 13:44:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 09 Dec 2004 16:37:51 GMT</datecreated>
@@ -437,7 +431,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[admin/ic_linkgallery.gif]]></value>
+					<value><![CDATA[tools/galleryoverview/icons/big/linkgallery.gif]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -455,9 +449,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/galleryoverview/downloadgallery/index.html</source>
 			<destination>system/workplace/admin/galleryoverview/linkgallery/index.html</destination>
 			<type>jsp</type>
-			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
+            <uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
 			<datelastmodified>Fri, 11 Feb 2005 13:44:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 09 Dec 2004 16:37:51 GMT</datecreated>
@@ -479,286 +474,6 @@
 			</properties>
 			<accesscontrol/>
 		</file>
-		<file>
-			<destination>system/workplace/administration</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/galleryoverview</destination>
-			<type>folder</type>
-			<datelastmodified>Fri, 10 Dec 2004 08:34:03 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Dec 2004 16:36:19 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[-125.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[icon.galleryoverview]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[admin/ic_galleryoverview]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/galleryoverview/downloadgallery</destination>
-			<type>folder</type>
-			<datelastmodified>Thu, 09 Dec 2004 16:58:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Dec 2004 16:57:04 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[20]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[icon.downloadgallery]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[admin/ic_downloadgallery]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/galleryoverview/downloadgallery/index.html</destination>
-			<type>jsp</type>
-			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
-			<datelastmodified>Fri, 11 Feb 2005 13:44:29 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Dec 2004 16:37:51 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Download Gallery Overview]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/galleryoverview/htmlgallery</destination>
-			<type>folder</type>
-			<datelastmodified>Thu, 09 Dec 2004 16:59:44 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Dec 2004 16:57:12 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[40]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[icon.htmlgallery]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[admin/ic_htmlgallery]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/galleryoverview/htmlgallery/index.html</destination>
-			<type>jsp</type>
-			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
-			<datelastmodified>Fri, 11 Feb 2005 13:44:29 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Dec 2004 16:37:51 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Html Gallery Overview]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/galleryoverview/imagegallery</destination>
-			<type>folder</type>
-			<datelastmodified>Thu, 09 Dec 2004 16:58:42 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Dec 2004 16:57:19 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[10]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[icon.imagegallery]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[admin/ic_imagegallery]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/galleryoverview/imagegallery/index.html</destination>
-			<type>jsp</type>
-			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
-			<datelastmodified>Fri, 11 Feb 2005 13:44:29 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Dec 2004 16:37:51 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Image Gallery Overview]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/galleryoverview/linkgallery</destination>
-			<type>folder</type>
-			<datelastmodified>Thu, 09 Dec 2004 16:59:29 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Dec 2004 16:57:26 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[30]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[icon.linkgallery]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[admin/ic_linkgallery]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/galleryoverview/linkgallery/index.html</destination>
-			<type>jsp</type>
-			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
-			<datelastmodified>Fri, 11 Feb 2005 13:44:29 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Dec 2004 16:37:51 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Link Gallery Overview]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/galleryoverview/tablegallery</destination>
-			<type>folder</type>
-			<datelastmodified>Fri, 15 Apr 2005 08:37:40 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 15 Apr 2005 08:37:21 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[50]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[icon.tablegallery]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[admin/ic_tablegallery]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/galleryoverview/tablegallery/index.html</destination>
-			<type>jsp</type>
-			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
-			<datelastmodified>Fri, 15 Apr 2005 08:34:53 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Dec 2004 16:37:51 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Table Gallery Overview]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>		
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
@@ -771,7 +486,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/admin</destination>
+			<destination>system/workplace/resources/tools</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -782,10 +497,43 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_galleryoverview.gif</source>
-			<destination>system/workplace/resources/admin/ic_galleryoverview.gif</destination>
+			<destination>system/workplace/resources/tools/galleryoverview</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/galleryoverview/icons</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/galleryoverview/icons/big/galleryoverview.gif</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big/galleryoverview.gif</destination>
 			<type>image</type>
-			<uuidresource>f98cad3c-4a9c-11d9-af9b-dbc8387ed1a1</uuidresource>
+
 			<datelastmodified>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datecreated>
@@ -795,9 +543,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_galleryoverview_sm.gif</source>
-			<destination>system/workplace/resources/admin/ic_galleryoverview_sm.gif</destination>
+			<source>system/workplace/resources/tools/galleryoverview/icons/big/downloadgallery.gif</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big/downloadgallery.gif</destination>
 			<type>image</type>
+
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
@@ -807,10 +556,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_downloadgallery.gif</source>
-			<destination>system/workplace/resources/admin/ic_downloadgallery.gif</destination>
+			<source>system/workplace/resources/tools/galleryoverview/icons/big/htmlgallery.gif</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big/htmlgallery.gif</destination>
 			<type>image</type>
-			<uuidresource>274805f0-c0f9-11d7-8d80-80884c2772a5</uuidresource>
+
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
@@ -820,36 +569,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_downloadgallery_in.gif</source>
-			<destination>system/workplace/resources/admin/ic_downloadgallery_in.gif</destination>
+			<source>system/workplace/resources/tools/galleryoverview/icons/big/tablegallery.gif</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big/tablegallery.gif</destination>
 			<type>image</type>
-			<uuidresource>274cc0e6-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/ic_htmlgallery.gif</source>
-			<destination>system/workplace/resources/admin/ic_htmlgallery.gif</destination>
-			<type>image</type>
-			<uuidresource>27dbe11c-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/ic_tablegallery.gif</source>
-			<destination>system/workplace/resources/admin/ic_tablegallery.gif</destination>
-			<type>image</type>
-			<uuidresource>c8c15b64-acea-11d9-b6ff-c958787aaa00</uuidresource>
+
 			<datelastmodified>Thu, 14 Apr 2005 13:40:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 14 Apr 2005 13:40:37 GMT</datecreated>
@@ -859,10 +582,34 @@
 			<accesscontrol/>
 		</file>		
 		<file>
-			<source>system/workplace/resources/admin/ic_htmlgallery_in.gif</source>
-			<destination>system/workplace/resources/admin/ic_htmlgallery_in.gif</destination>
+			<source>system/workplace/resources/tools/galleryoverview/icons/big/imagegallery.gif</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big/imagegallery.gif</destination>
 			<type>image</type>
-			<uuidresource>27e30d12-c0f9-11d7-8d80-80884c2772a5</uuidresource>
+
+			<datelastmodified>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/galleryoverview/icons/big/linkgallery.gif</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big/linkgallery.gif</destination>
+			<type>image</type>
+
+			<datelastmodified>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/small</destination>
+			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
@@ -872,26 +619,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_imagegallery.gif</source>
-			<destination>system/workplace/resources/admin/ic_imagegallery.gif</destination>
+			<source>system/workplace/resources/tools/galleryoverview/icons/small/galleryoverview.gif</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/small/galleryoverview.gif</destination>
 			<type>image</type>
-			<uuidresource>f9975b9f-4a9c-11d9-af9b-dbc8387ed1a1</uuidresource>
-			<datelastmodified>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datelastmodified>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/ic_linkgallery.gif</source>
-			<destination>system/workplace/resources/admin/ic_linkgallery.gif</destination>
-			<type>image</type>
-			<uuidresource>f99bef82-4a9c-11d9-af9b-dbc8387ed1a1</uuidresource>
-			<datelastmodified>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datecreated>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
