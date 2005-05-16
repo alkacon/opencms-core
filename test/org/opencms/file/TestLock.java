@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestLock extends OpenCmsTestCase {
   
@@ -452,7 +452,7 @@ public class TestLock extends OpenCmsTestCase {
         assertLock(cms, sibling1, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
         assertLock(cms, sibling2, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
  
-        //login as user "admin"
+        // login as user "admin"
         cms.loginUser("Admin" , "admin");
         cms.getRequestContext().setCurrentProject(offlineProject);
         

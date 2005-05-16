@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDataAccessException.java,v $
- * Date   : $Date: 2005/05/11 12:58:29 $
- * Version: $Revision: 1.9 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsDataAccessException.java,v $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.db;
+package org.opencms.file;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
@@ -38,10 +38,13 @@ import org.opencms.main.CmsException;
  * Signals data access related issues, i.e. database access.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
 public class CmsDataAccessException extends CmsException {
+
+    /** Consistency check exception. */
+    public static final int C_DA_CONSISTENCY_EXCEPTION = 303;
 
     // the allowed type range for this exception is >=300 and <400    
 
@@ -50,9 +53,6 @@ public class CmsDataAccessException extends CmsException {
 
     /** Ldap exception. */
     public static final int C_DA_LDAP_EXCEPTION = 302;
-
-    /** Consistency check exception. */
-    public static final int C_DA_CONSISTENCY_EXCEPTION = 303;
 
     /** Object not found exception. */
     public static final int C_DA_OBJECT_NOT_FOUND_EXCEPTION = 304;
@@ -73,32 +73,24 @@ public class CmsDataAccessException extends CmsException {
     /* 305 */"Serialization Exception"};
 
     /**
-     * Default Constructor.<p>
+     * Creates a new localized Exception.<p>
+     * 
+     * @param container the localized message container to use
      */
-    public CmsDataAccessException() {
+    public CmsDataAccessException(CmsMessageContainer container) {
 
-        super(C_DA_EXCEPTION);
+        super(container);
     }
 
     /**
-     * Constructs a exception with the specified type.<p>
+     * Creates a new localized Exception that also containes a root cause.<p>
      * 
-     * @param type the type of the exception
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
      */
-    public CmsDataAccessException(int type) {
+    public CmsDataAccessException(CmsMessageContainer container, Throwable cause) {
 
-        super(type);
-    }
-
-    /**
-     * Constructs a exception with the specified type and root exception.<p>
-     * 
-     * @param type the type of the exception
-     * @param rootCause root cause exception
-     */
-    public CmsDataAccessException(int type, Throwable rootCause) {
-
-        super(type, rootCause);
+        super(container, cause);
     }
 
     /**
@@ -154,38 +146,16 @@ public class CmsDataAccessException extends CmsException {
     public CmsDataAccessException(Throwable rootCause) {
 
         super(C_DA_EXCEPTION, rootCause);
-    }   
-    
-    /**
-     * Creates a new localized Exception.<p>
-     * 
-     * @param container the localized message container to use
-     */
-    public CmsDataAccessException(CmsMessageContainer container) {
-
-        super(container);
     }
 
-    /**
-     * Creates a new localized Exception that also containes a root cause.<p>
-     * 
-     * @param container the localized message container to use
-     * @param cause the Exception root cause
-     */
-    public CmsDataAccessException(CmsMessageContainer container, Throwable cause) {
-
-        super(container, cause);
-    }      
-    
-    
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsDataAccessException(container, cause);
     }
-    
+
     /**
      * Returns the description String for the provided CmsException type.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/13 15:07:08 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
 
 package org.opencms.db.mysql;
 
-import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
-import org.opencms.db.CmsObjectAlreadyExistsException;
-import org.opencms.db.CmsSerializationException;
-import org.opencms.db.CmsSqlException;
+import org.opencms.db.CmsDbEntryAlreadyExistsException;
+import org.opencms.db.CmsDbIoException;
+import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.26 $ $Date: 2005/05/13 15:07:08 $
+ * @version $Revision: 1.27 $ $Date: 2005/05/16 13:46:56 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -83,7 +83,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             if (LOG.isErrorEnabled()) {
                 LOG.error(message);
             }
-            throw new CmsObjectAlreadyExistsException(message);
+            throw new CmsDbEntryAlreadyExistsException(message);
         }
         
         try {           
@@ -107,9 +107,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } catch (IOException e) {
-            throw new CmsSerializationException("creating user:", e);
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, name), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -149,12 +149,11 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(10, user.getId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } catch (IOException e) {
-            throw new CmsSerializationException("writing user:", e);
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, user.getName()), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
     }
-
 }

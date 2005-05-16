@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsNotImplementedException.java,v $
- * Date   : $Date: 2005/05/11 12:58:29 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsDataNotImplementedException.java,v $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,8 +28,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-package org.opencms.db;
+
+package org.opencms.file;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
@@ -39,55 +39,21 @@ import org.opencms.main.CmsException;
  * This exception may be thrown by various driver implementation classes. 
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2005/05/11 12:58:29 $
+ * 
+ * @version $Revision: 1.1 $ 
  * @since 5.1.2
  */
-public class CmsNotImplementedException extends CmsDataAccessException {
+public class CmsDataNotImplementedException extends CmsDataAccessException {
 
     // the allowed type range for this exception is >=400 and <500    
-    
-    /** Administrator privileges required. */
-    public static final int C_NOT_IMPLEMENTED_EXCEPTION = 400;   
-        
-    /**
-     * Default constructor for a CmsNotImplementedException.<p>
-     */
-    public CmsNotImplementedException() {
-        super();
-    }
-    
-    /**
-     * Constructs a CmsNotImplementedException with the specified type.<p>
-     * 
-     * @param type the type of the exception
-     */
-    public CmsNotImplementedException(int type) {
-        super(type);
-    }
 
-    /**
-     * Constructs a default CmsNotImplementedException with the specified description message.<p>
-     * 
-     * @param message the description message
-     */
-    public CmsNotImplementedException(String message) {
-        super(message, C_NOT_IMPLEMENTED_EXCEPTION);
-    }
-            
-    /**
-     * Constructs a CmsNotImplementedException with the specified description message and type.<p>
-     * 
-     * @param message the description message
-     * @param type the type of the exception
-     */
-    public CmsNotImplementedException(String message, int type) {
-        super(message, type);
-    }
-    
+    /** Administrator privileges required. */
+    public static final int C_NOT_IMPLEMENTED_EXCEPTION = 400;
+
     /**
      * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer)
      */
-    public CmsNotImplementedException(CmsMessageContainer container) {
+    public CmsDataNotImplementedException(CmsMessageContainer container) {
 
         super(container);
     }
@@ -95,26 +61,37 @@ public class CmsNotImplementedException extends CmsDataAccessException {
     /**
      * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer, Throwable)
      */
-    public CmsNotImplementedException(CmsMessageContainer container, Throwable cause) {
+    public CmsDataNotImplementedException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }    
-    
+    }
+
+    /**
+     * Constructs a default CmsNotImplementedException with the specified description message.<p>
+     * 
+     * @param message the description message
+     */
+    public CmsDataNotImplementedException(String message) {
+
+        super(message, C_NOT_IMPLEMENTED_EXCEPTION);
+    }
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
-        return new CmsNotImplementedException(container, cause);
+
+        return new CmsDataNotImplementedException(container, cause);
     }
-    
+
     /**
      * Returns the description String for the provided CmsException type.<p>
      * 
      * @param type exception error code 
      * @return the description String for the provided CmsException type
-     */    
+     */
     protected String getErrorDescription(int type) {
+
         switch (type) {
             case C_NOT_IMPLEMENTED_EXCEPTION:
                 return "Method is not implemented";

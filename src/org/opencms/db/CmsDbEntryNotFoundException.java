@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsSerializationException.java,v $
- * Date   : $Date: 2005/05/11 08:32:42 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbEntryNotFoundException.java,v $
+ * Date   : $Date: 2005/05/16 13:46:55 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,64 +35,38 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
- * Signals that an attempt to (un)marshall an object was not successfull.<p> 
+ * Signals that an attempt to read an object from a data source, that
+ * is supposed to exist, was not successfull.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2005/05/11 08:32:42 $
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * 
+ * @version $Revision: 1.1 $ 
  * @since 5.7.3
  */
-public class CmsSerializationException extends CmsDataAccessException {
+public class CmsDbEntryNotFoundException extends CmsDbException {
 
     /**
-     * Constructs an exception with the specified message.<p>
-     * 
-     * @param message the description message
+     * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer)
      */
-    public CmsSerializationException(String message) {
-
-        this(message, null);
-    }
-
-    /**
-     * Constructs a exception with the specified detail message
-     * and the original exception.<p>
-     * 
-     * @param message the detail message
-     * @param rootCause the exception
-     */
-    public CmsSerializationException(String message, Throwable rootCause) {
-
-        super(message, C_DA_SERIALIZATION_EXCEPTION, rootCause);
-    }
-    
-    
-    /**
-     * Creates a new localized Exception.<p>
-     * 
-     * @param container the localized message container to use
-     */
-    public CmsSerializationException(CmsMessageContainer container) {
+    public CmsDbEntryNotFoundException(CmsMessageContainer container) {
 
         super(container);
     }
 
     /**
-     * Creates a new localized Exception that also containes a root cause.<p>
-     * 
-     * @param container the localized message container to use
-     * @param cause the Exception root cause
+     * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer, Throwable)
      */
-    public CmsSerializationException(CmsMessageContainer container, Throwable cause) {
+    public CmsDbEntryNotFoundException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }   
-    
-    
+    }
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
-        return new CmsSerializationException(container, cause);
+
+        return new CmsDbEntryNotFoundException(container, cause);
     }
 }

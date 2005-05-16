@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/05/13 15:07:07 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,18 +32,17 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsObjectNotFoundException;
-import org.opencms.db.CmsSqlException;
+import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsWorkflowDriver;
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -62,19 +61,15 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
-
 /**
  * Generic (ANSI-SQL) database server implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.45 $ $Date: 2005/05/13 15:07:07 $
+ * @version $Revision: 1.46 $ $Date: 2005/05/16 13:46:56 $
  * @since 5.1
  */
 public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsWorkflowDriver.class);
 
     /** Table key for tasks. */
     protected static final String C_TABLE_TASK = "CMS_TASKS";
@@ -87,17 +82,31 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
 
     /** Table key for task type. */
     protected static final String C_TABLE_TASKTYPE = "CMS_TASKTYPE";
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsWorkflowDriver.class);
+
     /** The driver manager. */
     protected CmsDriverManager m_driverManager;
 
     /** The SQL manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
-    
+
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#createTask(org.opencms.db.CmsDbContext, int, int, int, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.String, java.sql.Timestamp, java.sql.Timestamp, int)
      */
-    public CmsTask createTask(CmsDbContext dbc, int rootId, int parentId, int tasktype, CmsUUID ownerId, CmsUUID agentId, CmsUUID roleId, String taskname, java.sql.Timestamp wakeuptime, java.sql.Timestamp timeout, int priority) throws CmsDataAccessException {
+    public CmsTask createTask(
+        CmsDbContext dbc,
+        int rootId,
+        int parentId,
+        int tasktype,
+        CmsUUID ownerId,
+        CmsUUID agentId,
+        CmsUUID roleId,
+        String taskname,
+        java.sql.Timestamp wakeuptime,
+        java.sql.Timestamp timeout,
+        int priority) throws CmsDataAccessException {
 
         // fetch new task id
         int newId = m_sqlManager.nextId(C_TABLE_TASK);
@@ -111,13 +120,34 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.executeUpdate();
 
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
         // create the task object, note that this does not user the "task type" table
         // because the generic SQL does not work with MySQL 4 
-        CmsTask task = new CmsTask(newId, taskname, I_CmsConstants.C_TASK_STATE_STARTED, tasktype, rootId, parentId, ownerId, roleId, agentId, agentId, new java.sql.Timestamp(System.currentTimeMillis()), wakeuptime, timeout, null, 0, "30308", priority, 0, "../taskforms/adhoc.asp", 0, 1);
+        CmsTask task = new CmsTask(
+            newId,
+            taskname,
+            I_CmsConstants.C_TASK_STATE_STARTED,
+            tasktype,
+            rootId,
+            parentId,
+            ownerId,
+            roleId,
+            agentId,
+            agentId,
+            new java.sql.Timestamp(System.currentTimeMillis()),
+            wakeuptime,
+            timeout,
+            null,
+            0,
+            "30308",
+            priority,
+            0,
+            "../taskforms/adhoc.asp",
+            0,
+            1);
         // write task
         task = writeTask(dbc, task);
         return task;
@@ -127,18 +157,18 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      * @see org.opencms.db.I_CmsWorkflowDriver#destroy()
      */
     public void destroy() throws Throwable {
-        finalize();
 
+        finalize();
         if (LOG.isInfoEnabled()) {
-            CmsMessageContainer message = Messages.get().container(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName());
-            LOG.info(message);
+            LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#endTask(org.opencms.db.CmsDbContext, int)
      */
     public void endTask(CmsDbContext dbc, int taskId) throws CmsDataAccessException {
+
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -150,7 +180,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.executeUpdate();
 
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -159,7 +189,8 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#forwardTask(org.opencms.db.CmsDbContext, int, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
-    public void forwardTask(CmsDbContext dbc, int taskId, CmsUUID newRoleId, CmsUUID newUserId) throws CmsDataAccessException {
+    public void forwardTask(CmsDbContext dbc, int taskId, CmsUUID newRoleId, CmsUUID newUserId)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -171,41 +202,44 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setInt(3, taskId);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#getSqlManager()
-     */    
+     */
     public CmsSqlManager getSqlManager() {
+
         return m_sqlManager;
     }
 
     /**
      * @see org.opencms.db.I_CmsDriver#init(org.opencms.db.CmsDbContext, org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager)
      */
-    public void init(CmsDbContext dbc, CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager) {
-        
+    public void init(
+        CmsDbContext dbc,
+        CmsConfigurationManager configurationManager,
+        List successiveDrivers,
+        CmsDriverManager driverManager) {
+
         Map configuration = configurationManager.getConfiguration();
         String poolUrl = (String)configuration.get("db.workflow.pool");
         String classname = (String)configuration.get("db.workflow.sqlmanager");
         m_sqlManager = this.initSqlManager(classname);
-        m_sqlManager.init(I_CmsWorkflowDriver.C_DRIVER_TYPE_ID, poolUrl);        
+        m_sqlManager.init(I_CmsWorkflowDriver.C_DRIVER_TYPE_ID, poolUrl);
 
         m_driverManager = driverManager;
 
-        if (LOG.isInfoEnabled()) {
-            CmsMessageContainer message = Messages.get().container(Messages.INIT_ASSIGNED_POOL_1, poolUrl);
-            LOG.info(message);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
             if (LOG.isWarnEnabled()) {
-                CmsMessageContainer message1 = Messages.get().container(Messages.INIT_SUCCESSIVE_DRIVERS_UNSUPPORTED_1, getClass().toString());
-                LOG.warn(message1);
+                LOG.warn(Messages.get().key(Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1, getClass().getName()));
             }
         }
     }
@@ -222,6 +256,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      * @see org.opencms.db.I_CmsWorkflowDriver#readAgent(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
      */
     public CmsUUID readAgent(CmsDbContext dbc, CmsUUID roleId) throws CmsDataAccessException {
+
         CmsUUID result = CmsUUID.getNullUUID();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -237,7 +272,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 result = new CmsUUID(res.getString(1));
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } catch (Exception exc) {
             throw new CmsDataAccessException(exc);
         } finally {
@@ -250,6 +285,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      * @see org.opencms.db.I_CmsWorkflowDriver#readProject(org.opencms.db.CmsDbContext, org.opencms.workflow.CmsTask)
      */
     public CmsProject readProject(CmsDbContext dbc, CmsTask task) throws CmsDataAccessException {
+
         PreparedStatement stmt = null;
         CmsProject project = null;
         ResultSet res = null;
@@ -266,21 +302,24 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 project = new CmsProject(res, m_sqlManager);
             } else {
                 // project not found!
-                throw new CmsObjectNotFoundException("Project not found for task: " + task);
+                throw new CmsDbEntryNotFoundException(Messages.get().container(
+                    Messages.ERR_TASK_PROJECT_NOT_FOUND_1,
+                    task));
             }
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return project;
-    }    
-    
+    }
+
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#readProjectLogs(org.opencms.db.CmsDbContext, int)
      */
     public List readProjectLogs(CmsDbContext dbc, int projectid) throws CmsDataAccessException {
+
         ResultSet res = null;
         Connection conn = null;
 
@@ -309,7 +348,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 logs.add(tasklog);
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } catch (Exception exc) {
             throw new CmsDataAccessException(exc);
         } finally {
@@ -317,12 +356,13 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return logs;
-    }    
+    }
 
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#readTask(org.opencms.db.CmsDbContext, int)
      */
     public CmsTask readTask(CmsDbContext dbc, int id) throws CmsDataAccessException {
+
         ResultSet res = null;
         CmsTask task = null;
         PreparedStatement stmt = null;
@@ -337,7 +377,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 task = internalCreateTask(res);
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } catch (Exception exc) {
             throw new CmsDataAccessException(exc);
         } finally {
@@ -351,6 +391,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      * @see org.opencms.db.I_CmsWorkflowDriver#readTaskLog(org.opencms.db.CmsDbContext, int)
      */
     public CmsTaskLog readTaskLog(CmsDbContext dbc, int id) throws CmsDataAccessException {
+
         ResultSet res = null;
         CmsTaskLog tasklog = null;
         PreparedStatement stmt = null;
@@ -370,7 +411,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 tasklog = new CmsTaskLog(id, comment, user, starttime, type);
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } catch (Exception exc) {
             throw new CmsDataAccessException(exc);
         } finally {
@@ -385,6 +426,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      * @see org.opencms.db.I_CmsWorkflowDriver#readTaskLogs(org.opencms.db.CmsDbContext, int)
      */
     public List readTaskLogs(CmsDbContext dbc, int taskId) throws CmsDataAccessException {
+
         Connection conn = null;
         ResultSet res = null;
         CmsTaskLog tasklog = null;
@@ -411,7 +453,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 logs.add(tasklog);
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } catch (Exception exc) {
             throw new CmsDataAccessException(exc);
         } finally {
@@ -441,7 +483,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 result = res.getString(m_sqlManager.readQuery("C_PAR_VALUE"));
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -452,7 +494,16 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#readTasks(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsUser, org.opencms.file.CmsUser, org.opencms.file.CmsGroup, int, java.lang.String, java.lang.String)
      */
-    public List readTasks(CmsDbContext dbc, CmsProject project, CmsUser agent, CmsUser owner, CmsGroup role, int tasktype, String orderBy, String sort) throws CmsDataAccessException {
+    public List readTasks(
+        CmsDbContext dbc,
+        CmsProject project,
+        CmsUser agent,
+        CmsUser owner,
+        CmsGroup role,
+        int tasktype,
+        String orderBy,
+        String sort) throws CmsDataAccessException {
+
         boolean first = true;
         List tasks = new ArrayList(); // vector for the return result
         CmsTask task = null; // tmp task for adding to vector
@@ -466,7 +517,11 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             sqlstr = sqlstr + m_sqlManager.readQuery("C_TASK_ROOT") + "=" + project.getTaskId();
             first = false;
         } else {
-            sqlstr = sqlstr + m_sqlManager.readQuery("C_TASK_ROOT") + "<> 0 AND " + m_sqlManager.readQuery("C_TASK_PARENT") + "<> 0";
+            sqlstr = sqlstr
+                + m_sqlManager.readQuery("C_TASK_ROOT")
+                + "<> 0 AND "
+                + m_sqlManager.readQuery("C_TASK_PARENT")
+                + "<> 0";
             first = false;
         }
 
@@ -525,7 +580,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             }
 
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } catch (Exception exc) {
             throw new CmsDataAccessException(exc);
         } finally {
@@ -540,6 +595,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      * @see org.opencms.db.I_CmsWorkflowDriver#readTaskType(org.opencms.db.CmsDbContext, java.lang.String)
      */
     public int readTaskType(CmsDbContext dbc, String taskName) throws CmsDataAccessException {
+
         int result = 1;
 
         PreparedStatement stmt = null;
@@ -555,7 +611,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 result = res.getInt("id");
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -568,7 +624,13 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      */
     public void writeSystemTaskLog(CmsDbContext dbc, int taskid, String comment) throws CmsDataAccessException {
 
-        this.writeTaskLog(dbc, taskid, CmsUUID.getNullUUID(), new java.sql.Timestamp(System.currentTimeMillis()), comment, I_CmsConstants.C_TASKLOG_USER);
+        this.writeTaskLog(
+            dbc,
+            taskid,
+            CmsUUID.getNullUUID(),
+            new java.sql.Timestamp(System.currentTimeMillis()),
+            comment,
+            I_CmsConstants.C_TASKLOG_USER);
     }
 
     /**
@@ -606,7 +668,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.executeUpdate();
 
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -616,7 +678,13 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#writeTaskLog(org.opencms.db.CmsDbContext, int, org.opencms.util.CmsUUID, java.sql.Timestamp, java.lang.String, int)
      */
-    public void writeTaskLog(CmsDbContext dbc, int taskId, CmsUUID userId, java.sql.Timestamp starttime, String comment, int type) throws CmsDataAccessException {
+    public void writeTaskLog(
+        CmsDbContext dbc,
+        int taskId,
+        CmsUUID userId,
+        java.sql.Timestamp starttime,
+        String comment,
+        int type) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -630,7 +698,10 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 stmt.setString(3, userId.toString());
             } else {
                 // no user is specified so set to system user is only valid for system task log
-                stmt.setString(3, m_driverManager.readUser(dbc, OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
+                stmt.setString(3, m_driverManager.readUser(
+                    dbc,
+                    OpenCms.getDefaultUsers().getUserGuest(),
+                    I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
             }
             stmt.setTimestamp(4, starttime);
             stmt.setString(5, m_sqlManager.validateEmpty(comment));
@@ -638,7 +709,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
 
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -647,7 +718,8 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#writeTaskParameter(org.opencms.db.CmsDbContext, int, java.lang.String, java.lang.String)
      */
-    public void writeTaskParameter(CmsDbContext dbc, int taskId, String parname, String parvalue) throws CmsDataAccessException {
+    public void writeTaskParameter(CmsDbContext dbc, int taskId, String parname, String parvalue)
+    throws CmsDataAccessException {
 
         ResultSet res = null;
         Connection conn = null;
@@ -670,7 +742,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
 
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -680,7 +752,16 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#writeTaskType(org.opencms.db.CmsDbContext, int, int, java.lang.String, java.lang.String, java.lang.String, int, int)
      */
-    public void writeTaskType(CmsDbContext dbc, int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsDataAccessException {
+    public void writeTaskType(
+        CmsDbContext dbc,
+        int autofinish,
+        int escalationtyperef,
+        String htmllink,
+        String name,
+        String permission,
+        int priorityref,
+        int roleref) throws CmsDataAccessException {
+
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -694,15 +775,32 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
 
             if (res.next()) {
                 //Parameter exists, so make an update
-                internalWriteTaskType(dbc, res.getInt(m_sqlManager.readQuery("C_PAR_ID")), autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);
+                internalWriteTaskType(
+                    dbc,
+                    res.getInt(m_sqlManager.readQuery("C_PAR_ID")),
+                    autofinish,
+                    escalationtyperef,
+                    htmllink,
+                    name,
+                    permission,
+                    priorityref,
+                    roleref);
 
             } else {
                 //Parameter is not existing, so make an insert
-                internalWriteTaskType(dbc, autofinish, escalationtyperef, htmllink, name, permission, priorityref, roleref);
+                internalWriteTaskType(
+                    dbc,
+                    autofinish,
+                    escalationtyperef,
+                    htmllink,
+                    name,
+                    permission,
+                    priorityref,
+                    roleref);
 
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -713,6 +811,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
+
         try {
             m_sqlManager = null;
             m_driverManager = null;
@@ -730,6 +829,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      * @throws SQLException if something goes wrong
      */
     protected CmsTask internalCreateTask(ResultSet res) throws SQLException {
+
         int autofinish = res.getInt(m_sqlManager.readQuery("C_TASK_AUTOFINISH"));
         java.sql.Timestamp endtime = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_TASK_ENDTIME"));
         int escalationtype = res.getInt(m_sqlManager.readQuery("C_TASK_ESCALATIONTYPE"));
@@ -752,7 +852,28 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
         java.sql.Timestamp wakeuptime = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_TASK_WAKEUPTIME"));
         String htmllink = res.getString(m_sqlManager.readQuery("C_TASK_HTMLLINK"));
 
-        return new CmsTask(id, name, state, tasktype, root, parent, initiatoruser, role, agentuser, originaluser, starttime, wakeuptime, timeout, endtime, percentage, permission, priority, escalationtype, htmllink, milestone, autofinish);
+        return new CmsTask(
+            id,
+            name,
+            state,
+            tasktype,
+            root,
+            parent,
+            initiatoruser,
+            role,
+            agentuser,
+            originaluser,
+            starttime,
+            wakeuptime,
+            timeout,
+            endtime,
+            percentage,
+            permission,
+            priority,
+            escalationtype,
+            htmllink,
+            milestone,
+            autofinish);
     }
 
     /**
@@ -771,28 +892,33 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
         }
 
         switch (tasktype) {
-            case I_CmsConstants.C_TASKS_ALL :
+            case I_CmsConstants.C_TASKS_ALL:
                 result = result + m_sqlManager.readQuery("C_TASK_ROOT") + "<>0";
                 break;
 
-            case I_CmsConstants.C_TASKS_OPEN :
+            case I_CmsConstants.C_TASKS_OPEN:
                 result = result + m_sqlManager.readQuery("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
                 break;
 
-            case I_CmsConstants.C_TASKS_ACTIVE :
+            case I_CmsConstants.C_TASKS_ACTIVE:
                 result = result + m_sqlManager.readQuery("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
                 break;
 
-            case I_CmsConstants.C_TASKS_DONE :
+            case I_CmsConstants.C_TASKS_DONE:
                 result = result + m_sqlManager.readQuery("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_ENDED;
                 break;
 
-            case I_CmsConstants.C_TASKS_NEW :
-                result = result + m_sqlManager.readQuery("C_TASK_PERCENTAGE") + "='0' AND " + m_sqlManager.readQuery("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
+            case I_CmsConstants.C_TASKS_NEW:
+                result = result
+                    + m_sqlManager.readQuery("C_TASK_PERCENTAGE")
+                    + "='0' AND "
+                    + m_sqlManager.readQuery("C_TASK_STATE")
+                    + "="
+                    + I_CmsConstants.C_TASK_STATE_STARTED;
                 break;
 
-            default :
-                }
+            default:
+        }
 
         return result;
     }
@@ -806,7 +932,8 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      *  
      * @throws CmsDataAccessException if something goes wrong
      */
-    protected void internalWriteTaskParameter(CmsDbContext dbc, int parid, String parvalue) throws CmsDataAccessException {
+    protected void internalWriteTaskParameter(CmsDbContext dbc, int parid, String parvalue)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -817,7 +944,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setInt(2, parid);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -834,7 +961,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      * @return the id of the new parameter
      * @throws CmsDataAccessException if something goes wrong
      */
-    protected int internalWriteTaskParameter(CmsDbContext dbc, int taskId, String parname, String parvalue) throws CmsDataAccessException {
+    protected int internalWriteTaskParameter(CmsDbContext dbc, int taskId, String parname, String parvalue)
+    throws CmsDataAccessException {
+
         PreparedStatement stmt = null;
         Connection conn = null;
         int newId = I_CmsConstants.C_UNKNOWN_ID;
@@ -848,7 +977,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setString(4, m_sqlManager.validateEmpty(parvalue));
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, null);
@@ -871,7 +1000,16 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    protected void internalWriteTaskType(CmsDbContext dbc, int taskId, int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsDataAccessException {
+    protected void internalWriteTaskType(
+        CmsDbContext dbc,
+        int taskId,
+        int autofinish,
+        int escalationtyperef,
+        String htmllink,
+        String name,
+        String permission,
+        int priorityref,
+        int roleref) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -888,7 +1026,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setInt(8, taskId);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -909,7 +1047,16 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
      * @return tbd
      * @throws CmsDataAccessException tbd
      */
-    protected int internalWriteTaskType(CmsDbContext dbc, int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsDataAccessException {
+    protected int internalWriteTaskType(
+        CmsDbContext dbc,
+        int autofinish,
+        int escalationtyperef,
+        String htmllink,
+        String name,
+        String permission,
+        int priorityref,
+        int roleref) throws CmsDataAccessException {
+
         PreparedStatement stmt = null;
         Connection conn = null;
 
@@ -929,12 +1076,12 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setInt(8, roleref);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
         return newId;
     }
-    
+
 }

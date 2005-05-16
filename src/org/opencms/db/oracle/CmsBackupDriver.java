@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/09 15:47:07 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,16 @@
 
 package org.opencms.db.oracle;
 
-import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbUtil;
-import org.opencms.db.CmsObjectNotFoundException;
-import org.opencms.db.CmsSerializationException;
-import org.opencms.db.CmsSqlException;
+import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsDbIoException;
+import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.generic.CmsSqlManager;
+import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -62,7 +63,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.48 $ $Date: 2005/05/09 15:47:07 $
+ * @version $Revision: 1.49 $ $Date: 2005/05/16 13:46:56 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -116,7 +117,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             }
 
         } catch (SQLException e) {
-            throw new CmsSqlException(this, null, e);
+            throw new CmsDbSqlException(this, null, e);
         } catch (Exception ex) {
             throw new CmsDataAccessException(ex);
         } finally {
@@ -170,7 +171,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             stmt.executeUpdate();
             
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -195,7 +196,8 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
-                throw new CmsObjectNotFoundException("internalWriteBackupFileContent backupId=" + backupId.toString() + " contentId=" + contentId.toString() + " content not found");
+                throw new CmsDbEntryNotFoundException(
+                    Messages.get().container(Messages.ERR_NO_BACKUP_CONTENT_ID_2, contentId, backupId));
             }
         
             // write file content
@@ -220,9 +222,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 conn.setAutoCommit(true);    
             }
         } catch (IOException e) {
-            throw new CmsSerializationException("internalWriteBackupFileContent backupId=" + backupId.toString() + " contentId=" + contentId.toString(), e);
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_WRITING_TO_OUTPUT_STREAM_1, resource), e);
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             
             if (res != null) {
@@ -312,7 +314,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                         resources));
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }

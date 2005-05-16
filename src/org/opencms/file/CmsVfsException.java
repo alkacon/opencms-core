@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsException.java,v $
- * Date   : $Date: 2005/05/13 08:10:04 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,10 +28,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.file;
 
-import org.opencms.db.CmsDataAccessException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
@@ -40,71 +39,24 @@ import org.opencms.main.CmsException;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1.4
  */
 public class CmsVfsException extends CmsDataAccessException {
-    
+
+    /** Error code for not empty exception. */
+    public static final int C_VFS_FOLDER_NOT_EMPTY = 5; //C_NOT_EMPTY;    
+
+    /** Resource already exists. */
+    public static final int C_VFS_RESOURCE_ALREADY_EXISTS = 12; //C_FILE_EXISTS;
+
+    /** Resource deleted. */
+    public static final int C_VFS_RESOURCE_DELETED = 32; //C_RESOURCE_DELETED;
+
     // TODO: to change the constants in a more consistent way
     /** Resource not found. */
     public static final int C_VFS_RESOURCE_NOT_FOUND = 2; //C_NOT_FOUND;
 
-    /** Resource already exists. */
-    public static final int C_VFS_RESOURCE_ALREADY_EXISTS = 12; //C_FILE_EXISTS;
-    
-    /** Resource deleted. */
-    public static final int C_VFS_RESOURCE_DELETED = 32; //C_RESOURCE_DELETED;
-
-    /** Error code for not empty exception. */
-    public static final int C_VFS_FOLDER_NOT_EMPTY = 5; //C_NOT_EMPTY;
-    
-    /**
-     * Default constructor for a CmsSecurityException.<p>
-     */
-    public CmsVfsException() {
-        super();
-    }
-    
-    /**
-     * Constructs a exception with the specified description message and type.<p>
-     * 
-     * @param type the type of the exception
-     */
-    public CmsVfsException(int type) {
-        super(type);
-    }
-        
-    /**
-     * Constructs a exception with the specified description message and type.<p>
-     * 
-     * @param message the description message
-     * @param type the type of the exception
-     */
-    public CmsVfsException(String message, int type) {
-        super(message, type);
-    }
-    
-    /**
-     * Constructs a exception with the specified description message and root exception.<p>
-     * 
-     * @param type the type of the exception
-     * @param rootCause root cause exception
-     */
-    public CmsVfsException(int type, Throwable rootCause) {
-        super(type, rootCause);
-    }        
-    
-    /**
-     * Constructs a exception with the specified description message and root exception.<p>
-     * 
-     * @param message the description message
-     * @param type the type of the exception
-     * @param rootCause root cause exception
-     */
-    public CmsVfsException(String message, int type, Throwable rootCause) {
-        super(message, type, rootCause);
-    }
-    
     /**
      * Creates a new localized Exception.<p>
      * 
@@ -124,26 +76,38 @@ public class CmsVfsException extends CmsDataAccessException {
     public CmsVfsException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }     
-   
+    }
+
+    /**
+     * Constructs a exception with the specified description message and type.<p>
+     * 
+     * @param message the description message
+     * @param type the type of the exception
+     */
+    public CmsVfsException(String message, int type) {
+
+        super(message, type);
+    }
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsVfsException(container, cause);
     }
-    
+
     /**
      * Returns the description String for the provided CmsException type.<p>
      * 
      * @param type exception error code 
      * @return the description String for the provided CmsException type
-     */    
+     */
     protected String getErrorDescription(int type) {
+
         switch (type) {
-            case C_VFS_RESOURCE_NOT_FOUND:                
-                return "Resource not found!";            
+            case C_VFS_RESOURCE_NOT_FOUND:
+                return "Resource not found!";
             case C_VFS_RESOURCE_ALREADY_EXISTS:
                 return "Resource already exists!";
             case C_VFS_RESOURCE_DELETED:

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsSecurityException.java,v $
- * Date   : $Date: 2005/05/13 15:12:49 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/16 13:46:55 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,11 @@ import org.opencms.main.CmsException;
 /**
  * Used to signal security related issues, for example example during file access and login.<p> 
  * 
+ * A security released issue impies that the operation attempted can be executed in general,
+ * but that the current user who attemted it does not have the required permissions at the current time.<p>
+ * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.1.4
  */
 public class CmsSecurityException extends CmsException {
@@ -86,24 +89,6 @@ public class CmsSecurityException extends CmsException {
      */
     public CmsSecurityException() {
         super();
-    }
-    
-    /**
-     * Constructs a CmsSecurityException with the specified description message and type.<p>
-     * 
-     * @param type the type of the exception
-     */
-    public CmsSecurityException(int type) {
-        super(type);
-    }
-        
-    /**
-     * Constructs a CmsSecurityException with the specified description message.<p>
-     * 
-     * @param message the description message
-     */
-    public CmsSecurityException(String message) {
-        super(message);
     }
     
     /**

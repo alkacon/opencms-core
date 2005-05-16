@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2005/05/09 12:26:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.file.types;
 
-import org.opencms.db.CmsNotImplementedException;
 import org.opencms.db.CmsSecurityManager;
+import org.opencms.file.CmsDataNotImplementedException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -53,7 +53,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
@@ -107,7 +107,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         
         if (! OpenCms.getResourceManager().getResourceType(newType).isFolder()) {
             // it is not possible to change the type of a folder to a file type
-            throw new CmsNotImplementedException("Folder resource type can only be changed to another folder!");
+            throw new CmsDataNotImplementedException("Folder resource type can only be changed to another folder!");
         }
         super.chtype(cms, securityManager, filename, newType);         
     }
@@ -287,8 +287,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     ) throws CmsException {
 
         if (type != getTypeId()) {
-            // it is not possible to change the type of a folder
-            throw new CmsNotImplementedException("Folder resource type can not be replaced!");
+            // it is not possible to replace a folder with a different type
+            throw new CmsDataNotImplementedException("Folder resource type can not be replaced!");
         }
         // properties of a folder can be replaced, content is ignored
         super.replaceResource(cms, securityManager, resource, getTypeId(), null, properties);
@@ -304,7 +304,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         int tag
     ) throws CmsException {
 
-        throw new CmsNotImplementedException("[" + this.getClass().getName() + "] Cannot restore folders.");
+        // it is not possible to restore a folder from the backup
+        throw new CmsDataNotImplementedException("[" + this.getClass().getName() + "] Cannot restore folders.");
     }
 
     /**

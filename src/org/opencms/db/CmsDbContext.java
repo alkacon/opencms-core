@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2005/05/12 12:20:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/16 13:46:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.report.I_CmsReport;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.4
  */
 public class CmsDbContext {
@@ -76,8 +76,7 @@ public class CmsDbContext {
         m_requestContext = context;
 
         if (m_requestContext != null) {
-            m_flexRequestContextInfo = (CmsFlexRequestContextInfo)m_requestContext
-                .getAttribute(I_CmsConstants.C_HEADER_LAST_MODIFIED);
+            m_flexRequestContextInfo = (CmsFlexRequestContextInfo)m_requestContext.getAttribute(I_CmsConstants.C_HEADER_LAST_MODIFIED);
         }
     }
 
@@ -85,7 +84,7 @@ public class CmsDbContext {
      * Clears this database context.<p>
      */
     public void clear() {
-        
+
         m_requestContext = null;
         m_flexRequestContextInfo = null;
     }
@@ -147,7 +146,7 @@ public class CmsDbContext {
      */
     public void pop() throws CmsException {
 
-        if (! isDefaultDbContext()) {
+        if (!isDefaultDbContext()) {
             throw new CmsException("Unable to process non-default database context implementation");
         }
     }
@@ -171,7 +170,7 @@ public class CmsDbContext {
 
         return resourcename;
     }
-    
+
     /**
      * Reports an error to the given report (if available) and to the OpenCms log file.<p>
      *  
@@ -182,7 +181,8 @@ public class CmsDbContext {
      * @throws CmsException if the throwable parameter is not null and a CmsException
      * @throws CmsVfsException if the throwable parameter is not null and no CmsException
      */
-    public void report(I_CmsReport report, CmsMessageContainer message, Throwable throwable) throws CmsVfsException, CmsException {
+    public void report(I_CmsReport report, CmsMessageContainer message, Throwable throwable)
+    throws CmsVfsException, CmsException {
 
         if (report != null) {
             if (message != null) {
@@ -192,10 +192,10 @@ public class CmsDbContext {
                 report.println(throwable);
             }
         }
-   
+
         throwException(message, throwable);
-    }  
-    
+    }
+
     /**
      * Returns an Exception of the same type as throwable if throwable is an OpenCms Exception
      * with the message as a MessageContainer and the throwable as a cause.<p>
@@ -207,6 +207,7 @@ public class CmsDbContext {
      * @throws CmsException of the same type as throwable if throwable is an OpenCms Exception
      */
     void throwException(CmsMessageContainer message, Throwable throwable) throws CmsVfsException, CmsException {
+
         if (throwable instanceof CmsException) {
             throw ((CmsException)throwable).createException(message, throwable);
         } else if (throwable instanceof CmsRuntimeException) {
@@ -214,5 +215,5 @@ public class CmsDbContext {
         } else {
             throw new CmsVfsException(message, throwable);
         }
-    }    
+    }
 }

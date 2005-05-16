@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsConsistencyException.java,v $
- * Date   : $Date: 2005/05/11 08:32:42 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbConsistencyException.java,v $
+ * Date   : $Date: 2005/05/16 13:46:55 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,38 +38,15 @@ import org.opencms.main.CmsException;
  * Signals that a data source consistency problem has been detected.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2005/05/11 08:32:42 $
+ * @version $Revision: 1.1 $ $Date: 2005/05/16 13:46:55 $
  * @since 5.1.2
  */
-public class CmsConsistencyException extends CmsDataAccessException {
+public class CmsDbConsistencyException extends CmsDbException {
 
-    /**
-     * Constructs a exception with the specified detail message.<p>
-     * 
-     * @param message the detail message
-     */
-    public CmsConsistencyException(String message) {
-
-        this(message, null);
-    }
-
-    /**
-     * Constructs a exception with the specified detail message
-     * and adds the original exception as a delegated root cause.<p>
-     * 
-     * @param message the detail message
-     * @param rootCause the delegated exception
-     */
-    public CmsConsistencyException(String message, Throwable rootCause) {
-
-        super(message, C_DA_CONSISTENCY_EXCEPTION, rootCause);
-    }
-    
-    
     /**
      * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer)
      */
-    public CmsConsistencyException(CmsMessageContainer container) {
+    public CmsDbConsistencyException(CmsMessageContainer container) {
 
         super(container);
     }
@@ -77,16 +54,16 @@ public class CmsConsistencyException extends CmsDataAccessException {
     /**
      * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer, Throwable)
      */
-    public CmsConsistencyException(CmsMessageContainer container, Throwable cause) {
+    public CmsDbConsistencyException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }    
-    
+    }
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
-        return new CmsConsistencyException(container, cause);
-    } 
+
+        return new CmsDbConsistencyException(container, cause);
+    }
 }

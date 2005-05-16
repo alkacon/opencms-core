@@ -16,10 +16,10 @@ Properties displayOptions = options.getDisplayOptions(cms);
 
 int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 
-%><html>
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
-<title>Button bar</title>
 <link rel=stylesheet type="text/css" href="<%= wp.getStyleUri(wp.getJsp(),"workplace.css") %>">
 
 <script type="text/javascript">
@@ -49,13 +49,12 @@ function confirmExit() {
 
 </head>
 <body class="buttons-head" unselectable="on">
-<form name="buttons" action="" method="post">
-<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">	
-<tr>
-	<td>
 
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
+
+<form name="buttons" action="" method="post">
+
 <%
 if (options.showElement("button.customized", displayOptions)) {%>
 	<td><%= wp.buttonActionDirectEdit("buttonAction(8);", buttonStyle) %></td><%
@@ -84,14 +83,15 @@ if (wp.isPreviewEnabled()) {
 }
 
 %>
+
+<td width="100%">&nbsp;</td>
 		
 <%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
+
+</form>
+
 <%= wp.buttonBarSpacer(5) %>
 <%= wp.buttonBar(wp.HTML_END) %>
 
-	</td>
-</tr>
-</table>
-</form>
 </body>
 </html>

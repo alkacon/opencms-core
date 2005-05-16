@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsProject implements Cloneable {
 
@@ -71,7 +71,7 @@ public class CmsProject implements Cloneable {
 
     /** The id of this projects owner. */
     private CmsUUID m_ownerId;
-    
+
     /** The task id of this project. */
     private int m_taskId;
 
@@ -93,24 +93,24 @@ public class CmsProject implements Cloneable {
      * @param type the type of this project
      */
     public CmsProject(
-        int projectId, 
-        String name, 
-        String description, 
+        int projectId,
+        String name,
+        String description,
         int taskId,
-        CmsUUID ownerId, 
-        CmsUUID groupId, 
-        CmsUUID managerGroupId, 
+        CmsUUID ownerId,
+        CmsUUID groupId,
+        CmsUUID managerGroupId,
         int flags,
-        long dateCreated, 
-        int type
-    ) {
+        long dateCreated,
+        int type) {
+
         m_id = projectId;
         m_name = name;
         m_description = description;
         m_taskId = taskId;
         m_ownerId = ownerId;
         m_groupUsersId = groupId;
-        m_groupUsersId=groupId;
+        m_groupUsersId = groupId;
         m_groupManagersId = managerGroupId;
         m_flags = flags;
         m_type = type;
@@ -124,7 +124,9 @@ public class CmsProject implements Cloneable {
      * @param sqlManager the SQL manager to use
      * @throws SQLException in case something goes wrong
      */
-    public CmsProject(ResultSet res, org.opencms.db.generic.CmsSqlManager sqlManager) throws SQLException {
+    public CmsProject(ResultSet res, org.opencms.db.generic.CmsSqlManager sqlManager)
+    throws SQLException {
+
         this(
             res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
             res.getString(sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
@@ -135,8 +137,7 @@ public class CmsProject implements Cloneable {
             new CmsUUID(res.getString(sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
             res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_FLAGS")),
             res.getLong(sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
-            res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE"))
-        );
+            res.getInt(sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")));
     }
 
     /**
@@ -148,10 +149,11 @@ public class CmsProject implements Cloneable {
      * @return true, if the resource is "inside" the project resources
      */
     public static boolean isInsideProject(List projectResources, CmsResource resource) {
-        String resourcename = resource.getRootPath();        
+
+        String resourcename = resource.getRootPath();
         return isInsideProject(projectResources, resourcename);
     }
-    
+
     /**
      * Checks if the full resource name (including the site root) of a resource matches
      * any of the project resources of a project.<p>
@@ -159,10 +161,10 @@ public class CmsProject implements Cloneable {
      * @param projectResources a List of project resources as Strings
      * @param resourcename the resource to check
      * @return true, if the resource is "inside" the project resources
-     */    
+     */
     public static boolean isInsideProject(List projectResources, String resourcename) {
-        
-        for (int i=(projectResources.size()-1); i >= 0; i--) {
+
+        for (int i = (projectResources.size() - 1); i >= 0; i--) {
             String projectResource = (String)projectResources.get(i);
             if (CmsResource.isFolder(projectResource)) {
                 if (resourcename.startsWith(projectResource)) {
@@ -174,11 +176,11 @@ public class CmsProject implements Cloneable {
                     // file - check the full path
                     return true;
                 }
-            }            
-        }    
+            }
+        }
         return false;
     }
-    
+
     /**
      * Returns true if the given project id is the online project id.<p>
      *  
@@ -186,15 +188,17 @@ public class CmsProject implements Cloneable {
      * @return true if the given project id is the online project id
      */
     public static boolean isOnlineProject(int projectId) {
+
         return projectId == I_CmsConstants.C_PROJECT_ONLINE_ID;
     }
-    
+
     /**
      * Returns a clone of this Objects instance.<p>
      * 
      * @return a clone of this instance
      */
     public Object clone() {
+
         return new CmsProject(
             m_id,
             m_name,
@@ -205,14 +209,14 @@ public class CmsProject implements Cloneable {
             m_groupManagersId,
             m_flags,
             m_dateCreated,
-            m_type
-        );
+            m_type);
     }
-        
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
+
         // check if the object is a CmsProject object
         if (obj instanceof CmsProject) {
             // same ID than the current project?
@@ -220,80 +224,88 @@ public class CmsProject implements Cloneable {
         }
         return false;
     }
-    
+
     /**
      * Returns the creation date of this project.<p>
      *
      * @return the creation date of this project
      */
     public long getCreateDate() {
+
         return m_dateCreated;
     }
-    
+
     /**
      * Returns the description of this project.
      *
      * @return the description of this project
      */
     public String getDescription() {
+
         if ((m_description == null) || (m_description.length() < 1)) {
             return "(No project description entered)";
         } else {
             return m_description;
         }
     }
-    
+
     /**
      * Returns the state of this project.<p>
      *
      * @return the state of this project
      */
     public int getFlags() {
+
         return m_flags;
     }
-    
+
     /**
      * Returns the user group id of this project.<p>
      *
      * @return the user group id of this project
      */
     public CmsUUID getGroupId() {
+
         return m_groupUsersId;
     }
-    
+
     /**
      * Returns the id of this project.<p>
      *
      * @return the id of this project
      */
     public int getId() {
+
         return m_id;
     }
-    
+
     /**
      * Returns the manager group id of this project.<p>
      *
      * @return the manager group id of this project
      */
     public CmsUUID getManagerGroupId() {
+
         return m_groupManagersId;
     }
-    
+
     /**
      * Returns the name of this project.<p>
      *
      * @return the name of this project
      */
     public String getName() {
+
         return m_name;
     }
-    
+
     /**
      * Returns the user id of the project owner.<p>
      *
      * @return the user id of the project owner
      */
     public CmsUUID getOwnerId() {
+
         return m_ownerId;
     }
 
@@ -302,37 +314,41 @@ public class CmsProject implements Cloneable {
      *
      * @return the task id of this project
      */
-    public  int getTaskId() {
+    public int getTaskId() {
+
         return m_taskId;
     }
-    
+
     /**
      * Returns the type of this project.<p>
      *
      * @return the type of this project
      */
     public int getType() {
+
         return m_type;
     }
-    
+
     /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
+
         if (m_name != null) {
             return m_name.hashCode();
         }
         return 0;
     }
-    
+
     /**
      * Returns <code>true</code> if this project is the Online project.<p>
      * 
      * @return <code>true</code> if this project is the Online project
      */
     public boolean isOnlineProject() {
-        return isOnlineProject(m_id); 
-    }    
+
+        return isOnlineProject(m_id);
+    }
 
     /**
      * Sets the description of this project.<p>
@@ -340,6 +356,7 @@ public class CmsProject implements Cloneable {
      * @param description the description to set
      */
     public void setDescription(String description) {
+
         m_description = description;
     }
 
@@ -349,23 +366,16 @@ public class CmsProject implements Cloneable {
      * @param flags the flag to set
      */
     public void setFlags(int flags) {
+
         m_flags = flags;
     }
 
     /**
-     * Sets the type of this project.<p>
-     *
-     * @param id the type to set
-     */
-    void setType(int id) {
-        m_type = id;
-    }
-    
-    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        StringBuffer result=new StringBuffer();
+
+        StringBuffer result = new StringBuffer();
         result.append("[Project]:");
         result.append(m_name);
         result.append(" , Id=");
@@ -374,5 +384,15 @@ public class CmsProject implements Cloneable {
         result.append(m_description);
         return result.toString();
     }
-        
+
+    /**
+     * Sets the type of this project.<p>
+     *
+     * @param id the type to set
+     */
+    void setType(int id) {
+
+        m_type = id;
+    }
+
 }

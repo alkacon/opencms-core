@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/13 15:10:55 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/16 13:46:55 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,13 +42,13 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.9.1
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCEPT_TASK_1 = "ERR_ACCEPT_TASK_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCESS_FILE_AS_FOLDER_1 = "ERR_ACCESS_FILE_AS_FOLDER_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCESS_FOLDER_AS_FILE_1 = "ERR_ACCESS_FOLDER_AS_FILE_1";
 
@@ -249,19 +249,19 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORT_USER_9 = "ERR_IMPORT_USER_9";
-     
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INIT_CONN_POOL_1 = "ERR_INIT_CONN_POOL_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INIT_DRIVER_MANAGER_1 = "ERR_INIT_DRIVER_MANAGER_1";
-        
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_USERNAME_0 = "ERR_INVALID_USERNAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCK_RESOURCE_2 = "ERR_LOCK_RESOURCE_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_USER_DISABLED_1 = "ERR_LOGIN_USER_DISABLED_1";
 
@@ -369,7 +369,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_RESOURCES_WITH_TYPE_2 = "ERR_READ_RESOURCES_WITH_TYPE_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_SIBLINGS_1 = "ERR_READ_SIBLINGS_1";
 
@@ -456,7 +456,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_USER_1 = "ERR_UNKNOWN_USER_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNLOCK_ALL_PROJECT_LOCKED_1 = "ERR_UNLOCK_ALL_PROJECT_LOCKED_1";
 
@@ -471,10 +471,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_USER_NOT_IN_GROUP_2 = "ERR_USER_NOT_IN_GROUP_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_USERNAME_ILLEGAL_CHARACTERS_1 = "ERR_USERNAME_ILLEGAL_CHARACTERS_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_USERNAME_PASSWORD_MISMATCH_1 = "ERR_USERNAME_PASSWORD_MISMATCH_1";
 
@@ -516,13 +516,13 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_WEB_USER_CONSTRAINT_0 = "ERR_WRITE_WEB_USER_CONSTRAINT_0";
-      
+
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DRIVER_INIT_FINISHED_0 = "INIT_DRIVER_INIT_FINISHED_0";
-         
+
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DRIVER_INIT_FINISHED_1 = "INIT_DRIVER_INIT_FINISHED_1";
-   
+
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DRIVER_INITIALIZING_1 = "INIT_DRIVER_INITIALIZING_1";
 
@@ -549,10 +549,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DRIVER_MANAGER_START_RT_0 = "INIT_DRIVER_MANAGER_START_RT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DRIVER_START_1 = "INIT_DRIVER_START_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SECURITY_MANAGER_INIT_0 = "INIT_SECURITY_MANAGER_INIT_0";
 
@@ -561,7 +561,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CMS_EVENT_1 = "LOG_CMS_EVENT_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_EMPTY_PUBLISH_HISTORY_1 = "LOG_EMPTY_PUBLISH_HISTORY_1";
 
@@ -573,23 +573,22 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_READ_PROJECT_RESOURCES_1 = "LOG_ERR_READ_PROJECT_RESOURCES_1";
-        
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_EXPORT_POINTS_CONFIGURED_0 = "LOG_NO_EXPORT_POINTS_CONFIGURED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_PERMISSION_RESOURCE_USER_4 = "LOG_NO_PERMISSION_RESOURCE_USER_4";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_UPDATE_EXORT_POINTS_ERROR_0 = "LOG_UPDATE_EXORT_POINTS_ERROR_0";
-          
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_EXPORT_POINT_1 = "LOG_WRITE_EXPORT_POINT_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_EXPORT_POINTS_ERROR_0 = "LOG_WRITE_EXPORT_POINTS_ERROR_0";
-    
-    
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.messages";
 

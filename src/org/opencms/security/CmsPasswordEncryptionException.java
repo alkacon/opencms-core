@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPasswordEncryptionException.java,v $
- * Date   : $Date: 2005/05/11 07:59:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/16 13:46:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.security;
 
 import org.opencms.i18n.CmsMessageContainer;
@@ -38,7 +38,8 @@ import org.opencms.main.CmsException;
  * Signals that an attempt to encrypt a password was not successful.<p>
  *  
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * 
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsPasswordEncryptionException extends CmsException {
@@ -58,5 +59,12 @@ public class CmsPasswordEncryptionException extends CmsException {
 
         super(container, cause);
     }
-    
+
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+
+        return new CmsPasswordEncryptionException(container, cause);
+    }
 }

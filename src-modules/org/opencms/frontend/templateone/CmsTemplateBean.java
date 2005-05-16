@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/05/12 15:01:51 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.I_CmsWpConstants;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
@@ -71,7 +70,7 @@ import org.apache.commons.logging.Log;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -486,7 +485,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
                     }
                     CmsTemplateLink link = new CmsTemplateLink(url, text, target, i);
                     links.add(link);
-                } catch (CmsXmlException e) {
+                } catch (Exception e) {
                     // log error in debug mode
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(e);

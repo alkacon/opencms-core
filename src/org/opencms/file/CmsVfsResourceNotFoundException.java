@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsResourceNotFoundException.java,v $
- * Date   : $Date: 2005/05/13 15:10:56 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.file;
 
 import org.opencms.i18n.CmsMessageContainer;
@@ -39,20 +39,11 @@ import org.opencms.main.CmsException;
  * pathname has failed.<p> 
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2005/05/13 15:10:56 $
+ * @version $Revision: 1.6 $ $Date: 2005/05/16 13:46:56 $
  * @since 5.1.2
  */
 public class CmsVfsResourceNotFoundException extends CmsVfsException {
 
-    /**
-     * Constructs a CmsVfsResourceNotFoundException with the specified detail message.<p>
-     * 
-     * @param message the detail message
-     */
-    public CmsVfsResourceNotFoundException(String message) {
-        super(message, C_VFS_RESOURCE_NOT_FOUND);
-    }
-    
     /**
      * Creates a new localized Exception.<p>
      * 
@@ -72,14 +63,23 @@ public class CmsVfsResourceNotFoundException extends CmsVfsException {
     public CmsVfsResourceNotFoundException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }   
-    
-    
+    }
+
+    /**
+     * Constructs a CmsVfsResourceNotFoundException with the specified detail message.<p>
+     * 
+     * @param message the detail message
+     */
+    public CmsVfsResourceNotFoundException(String message) {
+
+        super(message, C_VFS_RESOURCE_NOT_FOUND);
+    }
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsVfsResourceNotFoundException(container, cause);
     }
 }

@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsInstantiationException.java,v $
- * Date   : $Date: 2005/05/12 13:15:29 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbKeyException.java,v $
+ * Date   : $Date: 2005/05/16 13:46:55 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,43 +28,38 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.db;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
 
 /**
- * Signals that an attempt to create an instance of a class was not successful.<p> 
+ * Signals that a foreign key in the VFS STRUCTURE, RESOURCES or FILES database tables is either
+ * invalid or empty.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
- * @since 5.7.3
+ * @version $Revision: 1.1 $ $Date: 2005/05/16 13:46:55 $
+ * @since 5.1.4
  */
-public class CmsInstantiationException extends CmsDataAccessException {
+public class CmsDbKeyException extends CmsDbException {
 
     /**
-     * @see org.opencms.db.CmsDataAccessException#CmsDataAccessException(String, Throwable)
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
      */
-    public CmsInstantiationException(String message, Throwable rootCause) {
-
-        // TODO remove this constructor as soon as the code that throws this exception is correct localized
-        super(message, C_DA_EXCEPTION, rootCause);
-    }
-    
-    /**
-     * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer)
-     */
-    public CmsInstantiationException(CmsMessageContainer container) {
-
-        super(container);
-    }
-
-    /**
-     * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer, Throwable)
-     */
-    public CmsInstantiationException(CmsMessageContainer container, Throwable cause) {
+    public CmsDbKeyException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
     }
-    
+
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+
+        return new CmsDbKeyException(container, cause);
+    }
 }

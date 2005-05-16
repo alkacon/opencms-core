@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsObjectNotFoundException.java,v $
- * Date   : $Date: 2005/05/11 12:58:29 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionViolationException.java,v $
+ * Date   : $Date: 2005/05/16 13:46:55 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,64 +28,47 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-package org.opencms.db;
+
+package org.opencms.security;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
- * Signals that an attempt to read an object from a data source, that
- * is supposed to exist, was not successfull.<p> 
+ * A permission violation occurs if a user without tries to access or maipulate a VFS resource
+ * without the required permissions.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2005/05/11 12:58:29 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.7.3
  */
-public class CmsObjectNotFoundException extends CmsDataAccessException {
+public class CmsPermissionViolationException extends CmsSecurityException {
 
     /**
-     * Constructs an exception with the specified message.<p>
+     * Creates a new localized Exception.<p>
      * 
-     * @param message the description message
+     * @param container the localized message container to use
      */
-    public CmsObjectNotFoundException(String message) {
-        this(message, null);
-    }
-
-    /**
-     * Constructs a exception with the specified detail message
-     * and the original exception.<p>
-     * 
-     * @param message the detail message
-     * @param rootCause the exception
-     */
-    public CmsObjectNotFoundException(String message, Throwable rootCause) {
-        super(message, C_DA_OBJECT_NOT_FOUND_EXCEPTION, rootCause);
-    }
-    
-    /**
-     * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer)
-     */
-    public CmsObjectNotFoundException(CmsMessageContainer container) {
+    public CmsPermissionViolationException(CmsMessageContainer container) {
 
         super(container);
     }
 
     /**
-     * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer, Throwable)
+     * Creates a new localized Exception that also containes a root cause.<p>
+     * 
+     * @param container the localized message container to use
+     * @param cause the Exception root cause
      */
-    public CmsObjectNotFoundException(CmsMessageContainer container, Throwable cause) {
+    public CmsPermissionViolationException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }    
-    
+    }
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
-        return new CmsObjectNotFoundException(container, cause);
+
+        return new CmsPermissionViolationException(container, cause);
     }
 }

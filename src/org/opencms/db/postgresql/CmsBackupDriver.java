@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/09 15:47:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
 
 package org.opencms.db.postgresql;
 
-import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbUtil;
-import org.opencms.db.CmsSqlException;
+import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsProperty;
 import org.opencms.util.CmsUUID;
 
@@ -53,7 +53,7 @@ import java.util.List;
  * PostgreSql implementation of the backup driver methods.<p>
  * 
  * @author Antonio Core (antonio@starsolutions.it)
- * @version $Revision: 1.7 $ $Date: 2005/05/09 15:47:07 $
+ * @version $Revision: 1.8 $ $Date: 2005/05/16 13:46:56 $
  * @since 6.0
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -116,7 +116,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             }
 
         } catch (SQLException e) {
-            throw new CmsSqlException(this, null, e);
+            throw new CmsDbSqlException(this, null, e);
         } catch (Exception ex) {
             throw new CmsDataAccessException(ex);
         } finally {
@@ -167,7 +167,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                         resources));
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/05/13 14:04:33 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.main.OpenCmsCore;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.security.CmsRole;
@@ -89,7 +88,7 @@ import org.apache.commons.logging.Log;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 5.3.1
  */
@@ -984,7 +983,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         try {
             localeFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
         } catch (CmsException e) {
-            LOG.error(Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_LOCALES_1, I_CmsWpConstants.C_VFS_PATH_LOCALES), e);
+            LOG.error(Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_LOCALES_1, I_CmsWpConstants.C_VFS_PATH_LOCALES));
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             localeFolders = new ArrayList();
         }

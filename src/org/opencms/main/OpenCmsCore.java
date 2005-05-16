@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/05/13 15:12:20 $
- * Version: $Revision: 1.183 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.184 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.db.CmsDefaultUsers;
-import org.opencms.db.CmsObjectNotFoundException;
+import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsSqlManager;
 import org.opencms.file.CmsObject;
@@ -126,7 +126,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.183 $
+ * @version $Revision: 1.184 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1673,7 +1673,7 @@ public final class OpenCmsCore {
                 }
                 return;
             }
-        } else if (t instanceof CmsObjectNotFoundException) {
+        } else if (t instanceof CmsDbEntryNotFoundException) {
             // user or group does not exist
             status = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
             isNotGuest = true;            

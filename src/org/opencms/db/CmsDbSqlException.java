@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsSqlException.java,v $
- * Date   : $Date: 2005/05/11 08:32:42 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbSqlException.java,v $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -43,10 +44,10 @@ import org.apache.commons.dbcp.DelegatingPreparedStatement;
  * Used to signal sql related issues.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsSqlException extends CmsDataAccessException {
+public class CmsDbSqlException extends CmsDataAccessException {
 
     /**
      * Constructor given the originator, the statement and the exception.<p>
@@ -57,8 +58,8 @@ public class CmsSqlException extends CmsDataAccessException {
      * @param stmt the statement that generated the <code>{@link java.sql.SQLException}</code>, may be <code>null</code>
      * @param rootCause the originating exception, may be <code>null</code> 
      */
-    public CmsSqlException(Object originator, Statement stmt, Exception rootCause) {
-
+    public CmsDbSqlException(Object originator, Statement stmt, Exception rootCause) {
+        
         super(createMessage(originator, rootCause, stmt), C_DA_SQL_EXCEPTION, rootCause);
 
         if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -71,22 +72,12 @@ public class CmsSqlException extends CmsDataAccessException {
     }
 
     /**
-     * Creates a new localized Exception.<p>
-     * 
-     * @param container the localized message container to use
-     */
-    public CmsSqlException(CmsMessageContainer container) {
-
-        super(container);
-    }
-
-    /**
      * Creates a new localized Exception that also containes a root cause.<p>
      * 
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */
-    public CmsSqlException(CmsMessageContainer container, Throwable cause) {
+    public CmsDbSqlException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
     }   
@@ -97,7 +88,7 @@ public class CmsSqlException extends CmsDataAccessException {
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
         
-        return new CmsSqlException(container, cause);
+        return new CmsDbSqlException(container, cause);
     }   
     
     /**
@@ -111,6 +102,9 @@ public class CmsSqlException extends CmsDataAccessException {
      */
     public static String createMessage(Object originator, Throwable rootCause, Statement stmt) {
 
+        int todo = 0;
+        // TODO: localize this, also check / compare to org.opencms.db.generic.CmsSqlManager (redundancy?)
+        
         String message = "";
         if (originator != null) {
             if (originator instanceof String) {

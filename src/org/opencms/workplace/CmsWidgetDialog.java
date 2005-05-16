@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
-import org.opencms.widgets.CmsWidgetException;
-import org.opencms.widgets.I_CmsWidgetDialog;
 import org.opencms.widgets.I_CmsWidget;
+import org.opencms.widgets.I_CmsWidgetDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -86,15 +85,12 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWidgetDialog.class);
-    
+
     /** Controls which page is currently displayed in the dialog. */
     protected String m_paramPage;
 
     /** The validation errors for the input form. */
     protected List m_validationErrorList;
-    
-    /** The validation errors for the input form with the widget parameter IDs as keys. */
-    protected Map m_validationErrors;
 
     /** Contains all parameter value of this dialog. */
     protected Map m_widgetParamValues;
@@ -140,9 +136,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Adds an optional element to the xml content or removes an optional element from the xml content.<p>
+     * Adds or removes an optional element.<p>
      * 
-     * Depends on the given action value.<p>
+     * Depends on the value stored in the <code>{@link CmsDialog#getAction()}</code> method.<p>
      */
     public void actionToggleElement() {
 
@@ -224,21 +220,21 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             return "";
         }
     }
-    
+
     /**
      * Builds the end HTML for a block with 3D border in the dialog content area.<p>
      * 
      * @return 3D block start / end segment
      */
     public String dialogBlockEnd() {
-        
+
         StringBuffer result = new StringBuffer(8);
         result.append(super.dialogBlockEnd());
         result.append(dialogSpacer());
         result.append("</td></tr>\n");
         return result.toString();
     }
-    
+
     /**
      * Builds the start HTML for a block with 3D border and optional subheadline in the dialog content area.<p>
      * 
@@ -246,7 +242,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * @return 3D block start / end segment
      */
     public String dialogBlockStart(String headline) {
-        
+
         StringBuffer result = new StringBuffer(8);
         result.append("<tr><td colspan=\"5\">\n");
         result.append(super.dialogBlockStart(headline));
@@ -339,13 +335,13 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     public String getWidgetHtmlEnd() {
 
         StringBuffer result = new StringBuffer(32);
-            // iterate over unique widgets from collector
-            Iterator i = getWidgets().iterator();
-            while (i.hasNext()) {
-                CmsWidgetDialogParameter param = (CmsWidgetDialogParameter)i.next();
+        // iterate over unique widgets from collector
+        Iterator i = getWidgets().iterator();
+        while (i.hasNext()) {
+            CmsWidgetDialogParameter param = (CmsWidgetDialogParameter)i.next();
             //result.append(widget.getDialogHtmlEnd(getCms(), this, param));
             result.append(widgetHelpText(param));
-            }
+        }
         return result.toString();
     }
 
@@ -526,7 +522,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 CmsWidgetDialogParameter param = (CmsWidgetDialogParameter)j.next();
                 String value = param.getStringValue(getCms());
                 if (CmsStringUtil.isNotEmpty(value)
-                    && ((excludeDialogPage == null) || (!param.getDialog().equals(excludeDialogPage)))) {
+                    && ((excludeDialogPage == null) || (!param.getDialogPage().equals(excludeDialogPage)))) {
                     result.append("<input type=\"hidden\" name=\"");
                     result.append(HIDDEN_PARAM_PREFIX);
                     result.append(param.getId());
@@ -578,8 +574,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         while (i.hasNext()) {
             // check for all widget parameters            
             CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)i.next();
-            if ((dialogPage == null) || (base.getDialog() == null) || dialogPage.equals(base.getDialog())) {
+            if ((dialogPage == null) || (base.getDialogPage() == null) || dialogPage.equals(base.getDialogPage())) {
                 // the parameter is located on the requested dialog
+                base.prepareCommit();
                 List params = (List)m_widgetParamValues.get(base.getName());
                 Iterator j = params.iterator();
                 while (j.hasNext()) {
@@ -618,9 +615,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         // create table
         result.append("<table class=\"xmlTable\">\n");
-        
+
         // show error header once if there were validation errors
-        if (getValidationErrors().size() > 0) {
+        if (getValidationErrorList().size() > 0) {
             result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
             result.append("<tr><td colspan=\"2\">&nbsp;</td>");
             result.append("<td class=\"xmlTdErrorHeader\">");
@@ -636,7 +633,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             // get the current widget base definition
             CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)i.next();
             // check if the element is on the requested dialog page
-            if ((dialog == null) || dialog.equals(base.getDialog())) {
+            if ((dialog == null) || dialog.equals(base.getDialogPage())) {
                 // add the HTML for the dialog element
                 result.append(createDialogRowHtml(base));
             }
@@ -659,7 +656,6 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         List sequence = (List)getParameters().get(base.getName());
         int count = sequence.size();
-        Map errors = getValidationErrors();
 
         // check if value is optional or multiple
         boolean addValue = false;
@@ -679,7 +675,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             sequence.add(base);
             count = 1;
             if (base.getMinOccurs() == 0) {
-                disabledElement = true;    
+                disabledElement = true;
             }
         }
 
@@ -689,7 +685,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             // get the parameter and the widget
             CmsWidgetDialogParameter p = (CmsWidgetDialogParameter)sequence.get(j);
             I_CmsWidget widget = p.getWidget();
-            
+
             // check for an error in this row
             if (p.hasError()) {
                 // show error message
@@ -697,14 +693,14 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 result.append(getSkinUri()).append("editors/xmlcontent/");
                 result.append("error.gif");
                 result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError\">");
-                Throwable t = (CmsWidgetException)errors.get(p.getId());
+                Throwable t = p.getError();
                 while (t != null) {
                     result.append(t.getLocalizedMessage());
                     t = t.getCause();
                     if (t != null) {
                         result.append("<br>");
                     }
-                }                
+                }
                 result.append("</td><td colspan=\"2\"></td></tr>\n");
             }
 
@@ -715,7 +711,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 // element is disabled, mark it with css
                 result.append("Disabled");
             }
-            
+
             result.append("\">");
             result.append(key(A_CmsWidget.getLabelKey(p), p.getName()));
             if (count > 1) {
@@ -747,22 +743,22 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             result.append("<td>");
             if (addValue || removeValue) {
                 result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-                 
+
                 if (!addValue) {
                     result.append(dialogHorizontalSpacer(24));
                 } else {
                     result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
                     result.append(buildAddElement(base.getName(), p.getIndex(), addValue));
                 }
-                
+
                 if (removeValue) {
                     if (!addValue) {
                         result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
                     }
                     result.append(buildRemoveElement(base.getName(), p.getIndex(), removeValue));
                 }
-                
-                result.append("</tr></table></td>");               
+
+                result.append("</tr></table></td>");
                 result.append("</tr></table>");
             }
             result.append("</td>");
@@ -772,7 +768,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         return result.toString();
     }
-    
+
     /**
      * Creates the dialog widget rows HTML for the specified widget indices.<p>
      * 
@@ -783,13 +779,13 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected String createDialogRowsHtml(int startIndex, int endIndex) {
 
         StringBuffer result = new StringBuffer((endIndex - startIndex) * 8);
-        for (int i=startIndex; i<=endIndex; i++) {
+        for (int i = startIndex; i <= endIndex; i++) {
             CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)getWidgets().get(i);
             result.append(createDialogRowHtml(base));
         }
         return result.toString();
     }
-    
+
     /**
      * Creates the HTML for the error message if validation errors were found.<p>
      * 
@@ -798,7 +794,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected String createWidgetErrorHeader() {
 
         StringBuffer result = new StringBuffer(8);
-        if (getValidationErrors().size() > 0) {
+        if (getValidationErrorList().size() > 0) {
             result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
             result.append("<tr><td colspan=\"2\">&nbsp;</td>");
             result.append("<td class=\"xmlTdErrorHeader\">");
@@ -809,7 +805,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         }
         return result.toString();
     }
-    
+
     /**
      * Creates the HTML for the table around the dialog widgets.<p>
      * 
@@ -819,7 +815,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         return "</table>\n";
     }
-    
+
     /**
      * Creates the HTML to close the table around the dialog widgets.<p>
      * 
@@ -864,22 +860,37 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         // now process the parameters
         m_widgetParamValues = new HashMap();
         Iterator i = getWidgets().iterator();
+
         while (i.hasNext()) {
-            // check for all widget parameters            
+            // check for all widget base parameters            
             CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)i.next();
+
             List params = new ArrayList();
-            // "unbounded" dialog lists are not required
-            int maxOccurs = base.getMaxOccurs() < CmsWidgetDialogParameter.MAX_OCCURENCES ? base.getMaxOccurs()
-            : CmsWidgetDialogParameter.MAX_OCCURENCES;
+            int maxOccurs = base.getMaxOccurs();
+
+            boolean onPage = false;
+            if (base.isCollectionBase()) {
+                // for a collection base, check if we are on the page where the collection base is shown
+                if (CmsStringUtil.isNotEmpty(getParamAction())) {
+                    // if no action set (usually for first display of dialog) make sure all values are shown 
+                    String page = getParamPage();
+                    onPage = CmsStringUtil.isEmpty(page)
+                        || CmsStringUtil.isEmpty(base.getDialogPage())
+                        || base.getDialogPage().equals(page);
+                }
+            }
+
             for (int j = 0; j < maxOccurs; j++) {
                 // check for all possible values in the request parameters
                 String id = CmsWidgetDialogParameter.createId(base.getName(), j);
+
                 boolean required = (params.size() < base.getMinOccurs())
                     || (processedParamters.get(id) != null)
-                    || base.hasValue(j);
+                    || (!onPage && base.hasValue(j));
+
                 if (required) {
                     CmsWidgetDialogParameter param = new CmsWidgetDialogParameter(base, params.size(), j);
-                        base.getWidget().setEditorValue(getCms(), processedParamters, this, param);
+                    base.getWidget().setEditorValue(getCms(), processedParamters, this, param);
                     params.add(param);
                 }
             }
@@ -916,7 +927,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         return m_widgetParamValues;
     }
-    
+
     /**
      * Returns the validation errors for the dialog.<p>
      * 
@@ -927,31 +938,6 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected List getValidationErrorList() {
 
         return m_validationErrorList;
-    }
-
-    /**
-     * Returns the validation errors with the widget parameter id as key.<p>
-     * 
-     * Be sure that the values have been validated before using the method
-     * (@link CmsWidgetDialog#commitWidgetValues(String)).<p>
-     * 
-     * @return the validation errors with the widget parameter id as key
-     */
-    protected Map getValidationErrors() {
-        
-        if (m_validationErrors == null) {
-            List exceptions = getValidationErrorList();
-            if (exceptions != null) {
-                m_validationErrors = new HashMap(exceptions.size());
-                for (int i=exceptions.size() - 1; i>=0; i--) {
-                    CmsWidgetException e = (CmsWidgetException)exceptions.get(i);
-                    m_validationErrors.put(e.getWidget().getId(), e);
-                }
-            } else {
-                m_validationErrors = new HashMap(0);    
-            }
-        }
-        return m_validationErrors;
     }
 
     /**
@@ -979,7 +965,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         return m_widgets;
     }
-    
+
     /**
      * Sets the validation errors for the dialog.<p>
      * 
@@ -991,7 +977,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         m_validationErrorList = errors;
     }
-    
+
     /**
      * Implementation for the Administration framework.<p>  
      * 

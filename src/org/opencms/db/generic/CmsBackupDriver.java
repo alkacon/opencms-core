@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/13 15:07:08 $
- * Version: $Revision: 1.129 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.130 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,17 +32,17 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.db.CmsConsistencyException;
-import org.opencms.db.CmsDataAccessException;
+import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsObjectNotFoundException;
-import org.opencms.db.CmsSqlException;
+import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.I_CmsBackupDriver;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -50,7 +50,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
@@ -71,18 +70,18 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-
 /**
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.129 $ $Date: 2005/05/13 15:07:08 $
+ * 
+ * @version $Revision: 1.130 $
  * @since 5.1
  */
 public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsBackupDriver.class);
 
@@ -95,7 +94,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#createBackupPropertyDefinition(org.opencms.db.CmsDbContext, java.lang.String)
      */
-    public CmsPropertyDefinition createBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsDataAccessException {
+    public CmsPropertyDefinition createBackupPropertyDefinition(CmsDbContext dbc, String name)
+    throws CmsDataAccessException {
+
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -106,7 +107,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.setString(2, name);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -118,6 +119,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#createBackupResource(java.sql.ResultSet, boolean)
      */
     public CmsBackupResource createBackupResource(ResultSet res, boolean hasContent) throws SQLException {
+
         byte[] content = null;
 
         CmsUUID backupId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_BACKUP_ID")));
@@ -128,12 +130,12 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         String resourcePath = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_PATH"));
         int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
         int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
-        int projectLastModified = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PROJECT_LASTMODIFIED")); 
+        int projectLastModified = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PROJECT_LASTMODIFIED"));
         int state = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
         long dateCreated = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED"));
         long dateLastModified = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED"));
         long dateReleased = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_RELEASED"));
-        long dateExpired = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_EXPIRED"));           
+        long dateExpired = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_EXPIRED"));
         int resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
         String userLastModifiedName = res.getString(m_sqlManager.readQuery("C_RESOURCES_LASTMODIFIED_BY_NAME"));
@@ -149,24 +151,24 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             contentId = CmsUUID.getNullUUID();
         }
         return new CmsBackupResource(
-            backupId, 
-            tagId, 
-            versionId, 
-            structureId, 
-            resourceId, 
-            contentId, 
-            resourcePath, 
-            resourceType, 
+            backupId,
+            tagId,
+            versionId,
+            structureId,
+            resourceId,
+            contentId,
+            resourcePath,
+            resourceType,
             resourceFlags,
-            projectLastModified, 
-            state, 
+            projectLastModified,
+            state,
             dateCreated,
-            userCreated, 
-            userCreatedName, 
-            dateLastModified, 
-            userLastModified, 
-            userLastModifiedName, 
-            dateReleased, 
+            userCreated,
+            userCreatedName,
+            dateLastModified,
+            userLastModified,
+            userLastModifiedName,
+            dateReleased,
             dateExpired,
             resourceSize,
             content);
@@ -175,7 +177,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#deleteBackup(org.opencms.db.CmsDbContext, org.opencms.file.CmsBackupResource, int, int)
      */
-    public void deleteBackup(CmsDbContext dbc, CmsBackupResource resource, int tag, int versions) throws CmsDataAccessException {
+    public void deleteBackup(CmsDbContext dbc, CmsBackupResource resource, int tag, int versions)
+    throws CmsDataAccessException {
+
         ResultSet res = null;
         PreparedStatement stmt = null;
         PreparedStatement stmt1 = null;
@@ -183,8 +187,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         PreparedStatement stmt3 = null;
         PreparedStatement stmt4 = null;
         Connection conn = null;
-        List backupIds= new ArrayList();
-        
+        List backupIds = new ArrayList();
+
         // first get all backup ids of the entries which should be deleted
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -192,8 +196,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.setString(1, resource.getStructureId().toString());
             stmt.setString(2, resource.getResourceId().toString());
             stmt.setInt(3, versions);
-            stmt.setInt(4, tag);           
-            res = stmt.executeQuery();            
+            stmt.setInt(4, tag);
+            res = stmt.executeQuery();
             // now collect all backupId's for deletion
             while (res.next()) {
                 backupIds.add(res.getString(1));
@@ -203,9 +207,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCES_BYBACKUPID");
             stmt3 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_CONTENTS_BYBACKUPID");
             stmt4 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_PROPERTIES_BYBACKUPID");
-            Iterator i=backupIds.iterator();
+            Iterator i = backupIds.iterator();
             while (i.hasNext()) {
-                String backupId=(String)i.next();
+                String backupId = (String)i.next();
                 //delete the structure              
                 stmt1.setString(1, backupId);
                 stmt1.addBatch();
@@ -217,29 +221,30 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                 stmt3.addBatch();
                 //delete the properties
                 stmt4.setString(1, backupId);
-                stmt4.addBatch(); 
+                stmt4.addBatch();
             }
             // excecute them
             stmt1.executeBatch();
             stmt2.executeBatch();
             stmt3.executeBatch();
             stmt4.executeBatch();
-                                         
+
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
             m_sqlManager.closeAll(dbc, null, stmt1, null);
             m_sqlManager.closeAll(dbc, null, stmt2, null);
             m_sqlManager.closeAll(dbc, null, stmt3, null);
             m_sqlManager.closeAll(dbc, null, stmt4, null);
-        }  
+        }
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsBackupDriver#deleteBackupPropertyDefinition(org.opencms.db.CmsDbContext, org.opencms.file.CmsPropertyDefinition)
      */
-    public void deleteBackupPropertyDefinition(CmsDbContext dbc, CmsPropertyDefinition metadef) throws CmsDataAccessException {
+    public void deleteBackupPropertyDefinition(CmsDbContext dbc, CmsPropertyDefinition metadef)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -248,8 +253,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             if (internalCountProperties(dbc, metadef, I_CmsConstants.C_PROJECT_ONLINE_ID) != 0
                 || internalCountProperties(dbc, metadef, Integer.MAX_VALUE) != 0) {
 
-                CmsMessageContainer message = Messages.get().container(Messages.ERR_ERROR_DELETING_PROPERTYDEF_1, metadef.getName());
-                throw new CmsConsistencyException(message);
+                throw new CmsDbConsistencyException(Messages.get().container(
+                    Messages.ERR_ERROR_DELETING_PROPERTYDEF_1,
+                    metadef.getName()));
             }
 
             // delete the backup propertydef
@@ -258,16 +264,17 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.setString(1, metadef.getId().toString());
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
-    }   
+    }
 
     /**
      * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(org.opencms.db.CmsDbContext, java.util.List, int)
      */
     public void deleteBackups(CmsDbContext dbc, List existingBackups, int maxVersions) throws CmsDataAccessException {
+
         PreparedStatement stmt1 = null;
         PreparedStatement stmt2 = null;
         PreparedStatement stmt3 = null;
@@ -277,7 +284,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         int count = existingBackups.size() - maxVersions;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);  
+            conn = m_sqlManager.getConnection(dbc);
             stmt1 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_CONTENTS_BYBACKUPID");
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_STRUCTURE_BYBACKUPID");
             stmt3 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCES_BYBACKUPID");
@@ -311,7 +318,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             }
 
         } catch (SQLException e) {
-            throw new CmsSqlException(this, null, e);
+            throw new CmsDbSqlException(this, null, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt1, null);
             m_sqlManager.closeAll(dbc, null, stmt2, null);
@@ -324,26 +331,30 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#destroy()
      */
     public void destroy() throws Throwable {
-        finalize();
 
-        if (LOG.isInfoEnabled()) {
-            CmsMessageContainer message = Messages.get().container(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName());
-            LOG.info(message);
+        finalize();
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsBackupDriver#getSqlManager()
-     */    
+     */
     public CmsSqlManager getSqlManager() {
+
         return m_sqlManager;
     }
 
     /**
      * @see org.opencms.db.I_CmsDriver#init(org.opencms.db.CmsDbContext, org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager)
      */
-    public void init(CmsDbContext dbc, CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager) {
-        
+    public void init(
+        CmsDbContext dbc,
+        CmsConfigurationManager configurationManager,
+        List successiveDrivers,
+        CmsDriverManager driverManager) {
+
         Map configuration = configurationManager.getConfiguration();
         String poolUrl = configuration.get("db.backup.pool").toString();
         String classname = configuration.get("db.backup.sqlmanager").toString();
@@ -352,15 +363,13 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         m_driverManager = driverManager;
 
-        if (LOG.isInfoEnabled()) {
-            CmsMessageContainer message = Messages.get().container(Messages.INIT_ASSIGNED_POOL_1, poolUrl);
-            LOG.info(message);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
             if (LOG.isWarnEnabled()) {
-                CmsMessageContainer message1 = Messages.get().container(Messages.INIT_SUCCESSIVE_DRIVERS_UNSUPPORTED_1, getClass().toString());
-                LOG.warn(message1);
+                LOG.warn(Messages.get().key(Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1, getClass().getName()));
             }
         }
     }
@@ -369,14 +378,16 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#initSqlManager(String)
      */
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
-        
+
         return CmsSqlManager.getInstance(classname);
     }
 
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupFile(CmsDbContext, int, String)
      */
-    public CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, String resourcePath) throws CmsDataAccessException {
+    public CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, String resourcePath)
+    throws CmsDataAccessException {
+
         CmsBackupResource file = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -394,10 +405,13 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + "] " + resourcePath.toString());
+                throw new CmsVfsResourceNotFoundException("["
+                    + this.getClass().getName()
+                    + "] "
+                    + resourcePath.toString());
             }
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -408,7 +422,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupFileHeader(org.opencms.db.CmsDbContext, int, java.lang.String)
      */
-    public CmsBackupResource readBackupFileHeader(CmsDbContext dbc, int tagId, String resourcePath) throws CmsDataAccessException {
+    public CmsBackupResource readBackupFileHeader(CmsDbContext dbc, int tagId, String resourcePath)
+    throws CmsDataAccessException {
+
         CmsBackupResource file = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -426,10 +442,13 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + "] " + resourcePath.toString());
+                throw new CmsVfsResourceNotFoundException("["
+                    + this.getClass().getName()
+                    + "] "
+                    + resourcePath.toString());
             }
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -441,6 +460,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#readBackupFileHeaders(org.opencms.db.CmsDbContext)
      */
     public List readBackupFileHeaders(CmsDbContext dbc) throws CmsDataAccessException {
+
         CmsBackupResource currentBackupResource = null;
         ResultSet res = null;
         List allHeaders = new ArrayList();
@@ -455,7 +475,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             while (res.next()) {
                 currentBackupResource = createBackupResource(res, false);
                 // only add each structureId x resourceId combination once
-                String key = currentBackupResource.getStructureId().toString() + currentBackupResource.getResourceId().toString();                      
+                String key = currentBackupResource.getStructureId().toString()
+                    + currentBackupResource.getResourceId().toString();
                 if (!storage.contains(key)) {
                     // no entry found, so add it
                     allHeaders.add(currentBackupResource);
@@ -463,7 +484,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                 }
             }
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
             storage = null;
@@ -476,6 +497,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#readBackupFileHeaders(org.opencms.db.CmsDbContext, java.lang.String)
      */
     public List readBackupFileHeaders(CmsDbContext dbc, String resourcePath) throws CmsDataAccessException {
+
         CmsBackupResource currentBackupResource = null;
         ResultSet res = null;
         List allHeaders = new ArrayList();
@@ -483,7 +505,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);           
+            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_ALL_VERSIONS_BACKUP");
             stmt.setString(1, resourcePath);
             res = stmt.executeQuery();
@@ -492,7 +514,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                 allHeaders.add(currentBackupResource);
             }
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -504,6 +526,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#readBackupMaxVersion(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID)
      */
     public int readBackupMaxVersion(CmsDbContext dbc, CmsUUID resourceId) throws CmsDataAccessException {
+
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -521,7 +544,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                 maxBackupVersion = 0;
             }
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -547,31 +570,31 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
             if (res.next()) {
                 List projectresources = readBackupProjectResources(dbc, tagId);
-                project =
-                    new CmsBackupProject(
-                        res.getInt("PUBLISH_TAG"),
-                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
-                        res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
-                        res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
-                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_TASK_ID")),
-                        new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID"))),
-                        new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
-                        new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
-                        res.getLong(m_sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
-                        res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")),
-                        CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
-                        new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
-                        res.getString("PROJECT_PUBLISHED_BY_NAME"),
-                        res.getString("USER_NAME"),
-                        res.getString("GROUP_NAME"),
-                        res.getString("MANAGERGROUP_NAME"),
-                        projectresources);
+                project = new CmsBackupProject(
+                    res.getInt("PUBLISH_TAG"),
+                    res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
+                    res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
+                    res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_DESCRIPTION")),
+                    res.getInt(m_sqlManager.readQuery("C_PROJECTS_TASK_ID")),
+                    new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_USER_ID"))),
+                    new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_GROUP_ID"))),
+                    new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROJECTS_MANAGERGROUP_ID"))),
+                    res.getLong(m_sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
+                    res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE")),
+                    CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
+                    new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
+                    res.getString("PROJECT_PUBLISHED_BY_NAME"),
+                    res.getString("USER_NAME"),
+                    res.getString("GROUP_NAME"),
+                    res.getString("MANAGERGROUP_NAME"),
+                    projectresources);
             } else {
-                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_BACKUP_PROJECT_WITH_TAG_ID_1, Integer.toString(tagId));
-                throw new CmsObjectNotFoundException(message);
+                throw new CmsDbEntryNotFoundException(Messages.get().container(
+                    Messages.ERR_NO_BACKUP_PROJECT_WITH_TAG_ID_1,
+                    new Integer(tagId)));
             }
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -582,6 +605,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProjectResources(org.opencms.db.CmsDbContext, int)
      */
     public List readBackupProjectResources(CmsDbContext dbc, int tagId) throws CmsDataAccessException {
+
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -596,7 +620,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                 projectResources.add(res.getString("RESOURCE_PATH"));
             }
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -608,6 +632,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects(org.opencms.db.CmsDbContext)
      */
     public List readBackupProjects(CmsDbContext dbc) throws CmsDataAccessException {
+
         List projects = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -623,29 +648,28 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
             while (res.next() && (i < max)) {
                 List resources = readBackupProjectResources(dbc, res.getInt("PUBLISH_TAG"));
-                projects.add(
-                    new CmsBackupProject(
-                        res.getInt("PUBLISH_TAG"),
-                        res.getInt("PROJECT_ID"),
-                        res.getString("PROJECT_NAME"),
-                        res.getString("PROJECT_DESCRIPTION"),
-                        res.getInt("TASK_ID"),
-                        new CmsUUID(res.getString("USER_ID")),
-                        new CmsUUID(res.getString("GROUP_ID")),
-                        new CmsUUID(res.getString("MANAGERGROUP_ID")),
-                        res.getLong("DATE_CREATED"),
-                        res.getInt("PROJECT_TYPE"),
-                        CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
-                        new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
-                        res.getString("PROJECT_PUBLISHED_BY_NAME"),
-                        res.getString("USER_NAME"),
-                        res.getString("GROUP_NAME"),
-                        res.getString("MANAGERGROUP_NAME"),
-                        resources));
+                projects.add(new CmsBackupProject(
+                    res.getInt("PUBLISH_TAG"),
+                    res.getInt("PROJECT_ID"),
+                    res.getString("PROJECT_NAME"),
+                    res.getString("PROJECT_DESCRIPTION"),
+                    res.getInt("TASK_ID"),
+                    new CmsUUID(res.getString("USER_ID")),
+                    new CmsUUID(res.getString("GROUP_ID")),
+                    new CmsUUID(res.getString("MANAGERGROUP_ID")),
+                    res.getLong("DATE_CREATED"),
+                    res.getInt("PROJECT_TYPE"),
+                    CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
+                    new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
+                    res.getString("PROJECT_PUBLISHED_BY_NAME"),
+                    res.getString("USER_NAME"),
+                    res.getString("GROUP_NAME"),
+                    res.getString("MANAGERGROUP_NAME"),
+                    resources));
                 i++;
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -656,6 +680,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProjectTag(org.opencms.db.CmsDbContext, long)
      */
     public int readBackupProjectTag(CmsDbContext dbc, long maxdate) throws CmsDataAccessException {
+
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -670,7 +695,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                 maxVersion = res.getInt(1);
             }
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -698,7 +723,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.setString(2, resource.getResourceId().toString());
             stmt.setInt(3, resource.getTagId());
             res = stmt.executeQuery();
-            
+
             while (res.next()) {
                 propertyKey = res.getString(1);
                 propertyValue = res.getString(2);
@@ -708,17 +733,20 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     // there exists already a property for this key in the result
 
                     switch (mappingType) {
-                        case CmsProperty.C_STRUCTURE_RECORD_MAPPING :
+                        case CmsProperty.C_STRUCTURE_RECORD_MAPPING:
                             // this property value is mapped to a structure record
                             property.setStructureValue(propertyValue);
                             break;
-                        case CmsProperty.C_RESOURCE_RECORD_MAPPING :
+                        case CmsProperty.C_RESOURCE_RECORD_MAPPING:
                             // this property value is mapped to a resource record
                             property.setResourceValue(propertyValue);
                             break;
-                        default :
-                            CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_1, Integer.toString(mappingType));
-                            throw new CmsConsistencyException(message);
+                        default:
+                            throw new CmsDbConsistencyException(Messages.get().container(
+                                Messages.ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_3,
+                                resource.getRootPath(),
+                                new Integer(mappingType),
+                                propertyKey));
                     }
                 } else {
                     // there doesn't exist a property for this key yet
@@ -726,37 +754,42 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     property.setName(propertyKey);
 
                     switch (mappingType) {
-                        case CmsProperty.C_STRUCTURE_RECORD_MAPPING :
+                        case CmsProperty.C_STRUCTURE_RECORD_MAPPING:
                             // this property value is mapped to a structure record
                             property.setStructureValue(propertyValue);
                             property.setResourceValue(null);
                             break;
-                        case CmsProperty.C_RESOURCE_RECORD_MAPPING : 
+                        case CmsProperty.C_RESOURCE_RECORD_MAPPING:
                             // this property value is mapped to a resource record
                             property.setStructureValue(null);
                             property.setResourceValue(propertyValue);
                             break;
-                        default :
-                            CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_1, Integer.toString(mappingType));
-                            throw new CmsConsistencyException(message);
+                        default:
+                            throw new CmsDbConsistencyException(Messages.get().container(
+                                Messages.ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_3,
+                                resource.getRootPath(),
+                                new Integer(mappingType),
+                                propertyKey));
                     }
 
                     propertyMap.put(propertyKey, property);
                 }
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
         return new ArrayList(propertyMap.values());
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupPropertyDefinition(org.opencms.db.CmsDbContext, java.lang.String)
      */
-    public CmsPropertyDefinition readBackupPropertyDefinition(CmsDbContext dbc, String name) throws CmsDataAccessException {
+    public CmsPropertyDefinition readBackupPropertyDefinition(CmsDbContext dbc, String name)
+    throws CmsDataAccessException {
+
         CmsPropertyDefinition propDef = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -769,24 +802,28 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             res = stmt.executeQuery();
 
             if (res.next()) {
-                propDef = new CmsPropertyDefinition(new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))), res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")));
+                propDef = new CmsPropertyDefinition(
+                    new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))),
+                    res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")));
             } else {
-                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1, name);
-                throw new CmsObjectNotFoundException(message);
+                throw new CmsDbEntryNotFoundException(Messages.get().container(
+                    Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1,
+                    name));
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
         return propDef;
-    }    
+    }
 
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readMaxTagId(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource)
      */
     public int readMaxTagId(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
+
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -797,23 +834,24 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_MAX_PUBLISH_TAG");
             stmt.setString(1, resource.getResourceId().toString());
             res = stmt.executeQuery();
-            
+
             if (res.next()) {
                 result = res.getInt(1);
             }
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
-        return result;        
+        return result;
     }
 
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readNextBackupTagId(org.opencms.db.CmsDbContext)
      */
     public int readNextBackupTagId(CmsDbContext dbc) {
+
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -825,7 +863,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_BACKUP_MAXTAG");
             res = stmt.executeQuery();
-            
+
             if (res.next()) {
                 projectBackupTagId = res.getInt(1) + 1;
             }
@@ -834,11 +872,11 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_BACKUP_MAXTAG_RESOURCE");
             res = stmt.executeQuery();
-            
+
             if (res.next()) {
                 resourceBackupTagId = res.getInt(1) + 1;
             }
-            
+
             if (resourceBackupTagId > projectBackupTagId) {
                 projectBackupTagId = resourceBackupTagId;
             }
@@ -847,7 +885,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
-        
+
         return projectBackupTagId;
     }
 
@@ -855,41 +893,41 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#writeBackupProject(org.opencms.db.CmsDbContext, int, long)
      */
     public void writeBackupProject(CmsDbContext dbc, int tagId, long publishDate) throws CmsDataAccessException {
-        
+
         Connection conn = null;
         PreparedStatement stmt = null;
         String group = null;
         String managerGroup = null;
-        
+
         CmsProject currentProject = dbc.currentProject();
         CmsUser currentUser = dbc.currentUser();
-        
+
         CmsUser owner = m_driverManager.getUserDriver().readUser(dbc, currentProject.getOwnerId());
-        
+
         StringBuffer buf = new StringBuffer();
         buf.append(owner.getName()).append(" ").append(owner.getFirstname()).append(" ").append(owner.getLastname());
         String ownerName = buf.toString();
 
         try {
             group = m_driverManager.getUserDriver().readGroup(dbc, currentProject.getGroupId()).getName();
-        } catch (CmsObjectNotFoundException e) {
+        } catch (CmsDbEntryNotFoundException e) {
             // the group could not be read
             group = "";
         }
-        
+
         try {
             managerGroup = m_driverManager.getUserDriver().readGroup(dbc, currentProject.getManagerGroupId()).getName();
-        } catch (CmsObjectNotFoundException e) {
+        } catch (CmsDbEntryNotFoundException e) {
             // the group could not be read
             managerGroup = "";
         }
-        
+
         List projectresources = m_driverManager.getProjectDriver().readProjectResources(dbc, currentProject);
-        
+
         // write backup project to the database
         try {
             conn = m_sqlManager.getConnection(dbc);
-            
+
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_CREATE_BACKUP");
             // first write the project
             stmt.setInt(1, tagId);
@@ -897,7 +935,11 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.setString(3, currentProject.getName());
             stmt.setTimestamp(4, new Timestamp(publishDate));
             stmt.setString(5, currentUser.getId().toString());
-            stmt.setString(6, currentUser.getName() + " " + currentUser.getFirstname() + " " + currentUser.getLastname());
+            stmt.setString(6, currentUser.getName()
+                + " "
+                + currentUser.getFirstname()
+                + " "
+                + currentUser.getLastname());
             stmt.setString(7, currentProject.getOwnerId().toString());
             stmt.setString(8, ownerName);
             stmt.setString(9, currentProject.getGroupId().toString());
@@ -909,7 +951,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.setInt(15, currentProject.getType());
             stmt.setInt(16, currentProject.getTaskId());
             stmt.executeUpdate();
-            
+
             m_sqlManager.closeAll(dbc, null, stmt, null);
 
             // now write the projectresources
@@ -923,7 +965,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                 stmt.clearParameters();
             }
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -932,7 +974,14 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#writeBackupProperties(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, java.util.List, org.opencms.util.CmsUUID, int, int)
      */
-    public void writeBackupProperties(CmsDbContext dbc, CmsResource resource, List properties, CmsUUID backupId, int tagId, int versionId) throws CmsDataAccessException {
+    public void writeBackupProperties(
+        CmsDbContext dbc,
+        CmsResource resource,
+        List properties,
+        CmsUUID backupId,
+        int tagId,
+        int versionId) throws CmsDataAccessException {
+
         Connection conn = null;
         PreparedStatement stmt = null;
         String propDefName = null;
@@ -941,27 +990,27 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         String value = null;
         CmsUUID id = null;
         CmsPropertyDefinition propDef = null;
-        
+
         try {
             conn = m_sqlManager.getConnection(dbc);
-            
+
             Iterator dummy = properties.iterator();
             while (dummy.hasNext()) {
-                property = (CmsProperty) dummy.next();
+                property = (CmsProperty)dummy.next();
                 propDefName = property.getName();
                 propDef = readBackupPropertyDefinition(dbc, propDefName);
-                    
+
                 for (int i = 0; i < 2; i++) {
                     mappingType = -1;
                     value = null;
                     id = null;
-                    
+
                     if (i == 0) {
                         // write the structure value on the first cycle
                         value = property.getStructureValue();
                         mappingType = CmsProperty.C_STRUCTURE_RECORD_MAPPING;
-                        id = resource.getStructureId();   
-                        
+                        id = resource.getStructureId();
+
                         if (value == null || "".equals(value)) {
                             continue;
                         }
@@ -977,7 +1026,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     }
 
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_CREATE_BACKUP");
-                    
+
                     stmt.setString(1, backupId.toString());
                     stmt.setString(2, new CmsUUID().toString());
                     stmt.setString(3, propDef.getId().toString());
@@ -986,13 +1035,13 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     stmt.setString(6, m_sqlManager.validateEmpty(value));
                     stmt.setInt(7, tagId);
                     stmt.setInt(8, versionId);
-                    
+
                     stmt.executeUpdate();
                     m_sqlManager.closeAll(dbc, null, stmt, null);
-                }                    
+                }
             }
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1001,8 +1050,14 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#writeBackupResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, java.util.List, int, long, int)
      */
-    public void writeBackupResource(CmsDbContext dbc, CmsResource resource, List properties, int tagId, long publishDate, int maxVersions) throws CmsDataAccessException {
-        
+    public void writeBackupResource(
+        CmsDbContext dbc,
+        CmsResource resource,
+        List properties,
+        int tagId,
+        long publishDate,
+        int maxVersions) throws CmsDataAccessException {
+
         Connection conn = null;
         PreparedStatement stmt = null;
         CmsUUID backupPkId = new CmsUUID();
@@ -1022,7 +1077,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-   
+
             // now get the new version id for this resource
             versionId = internalReadNextVersionId(dbc, resource);
 
@@ -1080,7 +1135,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             }
 
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1090,10 +1145,19 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     /**
      * @see org.opencms.db.I_CmsBackupDriver#writeBackupResourceContent(org.opencms.db.CmsDbContext, int, org.opencms.file.CmsResource, org.opencms.file.CmsBackupResource)
      */
-    public void writeBackupResourceContent(CmsDbContext dbc, int projectId, CmsResource resource, CmsBackupResource backupResource) throws CmsDataAccessException {
-            
+    public void writeBackupResourceContent(
+        CmsDbContext dbc,
+        int projectId,
+        CmsResource resource,
+        CmsBackupResource backupResource) throws CmsDataAccessException {
+
         if (!this.internalValidateBackupResource(dbc, resource, backupResource.getTagId())) {
-            internalWriteBackupFileContent(dbc, backupResource.getBackupId(), resource, backupResource.getTagId(), backupResource.getVersionId());
+            internalWriteBackupFileContent(
+                dbc,
+                backupResource.getBackupId(),
+                resource,
+                backupResource.getTagId(),
+                backupResource.getVersionId());
         }
     }
 
@@ -1103,6 +1167,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
+
         try {
             m_sqlManager = null;
             m_driverManager = null;
@@ -1111,7 +1176,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         }
         super.finalize();
     }
-    
+
     /**
      * Returns the amount of properties for a propertydefinition.<p>
      * 
@@ -1122,7 +1187,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @return the amount of properties for a propertydefinition
      * @throws CmsDataAccessException if something goes wrong
      */
-    protected int internalCountProperties(CmsDbContext dbc, CmsPropertyDefinition metadef, int projectId) throws CmsDataAccessException {
+    protected int internalCountProperties(CmsDbContext dbc, CmsPropertyDefinition metadef, int projectId)
+    throws CmsDataAccessException {
+
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1138,16 +1205,17 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             if (res.next()) {
                 returnValue = res.getInt(1);
             } else {
-                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_PROPERTIES_FOR_PROPERTYDEF_1, metadef.getName());
-                throw new CmsConsistencyException(message);
+                throw new CmsDbConsistencyException(Messages.get().container(
+                    Messages.ERR_NO_PROPERTIES_FOR_PROPERTYDEF_1,
+                    metadef.getName()));
             }
         } catch (SQLException exc) {
-            throw new CmsSqlException(this, stmt, exc);
+            throw new CmsDbSqlException(this, stmt, exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return returnValue;
-    }    
+    }
 
     /**
      * Internal method to write the backup content.<p>
@@ -1160,7 +1228,13 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    protected void internalWriteBackupFileContent(CmsDbContext dbc, CmsUUID backupId, CmsResource resource, int tagId, int versionId) throws CmsDataAccessException {
+    protected void internalWriteBackupFileContent(
+        CmsDbContext dbc,
+        CmsUUID backupId,
+        CmsResource resource,
+        int tagId,
+        int versionId) throws CmsDataAccessException {
+
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -1173,7 +1247,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             contentId = CmsUUID.getNullUUID();
             fileContent = new byte[0];
         }
-        
+
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_CONTENTS_WRITE_BACKUP");
@@ -1193,7 +1267,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             stmt.executeUpdate();
             fileContent = null;
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1242,7 +1316,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
      * @return true if the resource already exists, false otherweise
      * @throws CmsDataAccessException if something goes wrong.
      */
-    private boolean internalValidateBackupResource(CmsDbContext dbc, CmsResource resource, int tagId) throws CmsDataAccessException {
+    private boolean internalValidateBackupResource(CmsDbContext dbc, CmsResource resource, int tagId)
+    throws CmsDataAccessException {
+
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -1258,11 +1334,11 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             exists = res.next();
 
         } catch (SQLException e) {
-            throw new CmsSqlException(this, stmt, e);
+            throw new CmsDbSqlException(this, stmt, e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return exists;
     }
-    
+
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2005/05/13 15:13:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/16 13:46:55 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,13 +43,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_PASSWORD_TOO_SHORT_1 = "ERR_PASSWORD_TOO_SHORT_1";
-    
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_FAILED_1 = "ERR_LOGIN_FAILED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_MODIFY_ONLINE_1 = "ERR_MODIFY_ONLINE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_PERMISSION_OPERATION_2 = "ERR_NO_PERMISSION_OPERATION_2";
@@ -64,6 +58,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_NOT_MANAGER_OF_PROJECT_2 = "ERR_NOT_MANAGER_OF_PROJECT_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_PASSWORD_TOO_SHORT_1 = "ERR_PASSWORD_TOO_SHORT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_LOCKED_1 = "ERR_RESOURCE_LOCKED_1";
 
     /** Message constant for key in the resource bundle. */
@@ -71,7 +68,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SECURITY_LOGIN_FAILED_1 = "ERR_SECURITY_LOGIN_FAILED_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_STARTUP_FINISHED_0 = "ERR_STARTUP_FINISHED_0";
 
@@ -113,6 +110,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_SCHEDULER_MANAGER_0 = "GUI_ROLENAME_SCHEDULER_MANAGER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLENAME_SYSTEM_USER_0 = "GUI_ROLENAME_SYSTEM_USER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_USER_MANAGER_0 = "GUI_ROLENAME_USER_MANAGER_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/16 13:46:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.List;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public final class CmsRole {
@@ -132,6 +132,19 @@ public final class CmsRole {
     /** The "WORKPLACE_USER" role. */
     public static final CmsRole WORKPLACE_USER = new CmsRole("WORKPLACE_USER", new CmsRole[] {CmsRole.ADMINISTRATOR});
 
+    /** 
+     * The "SYSTEM_USER" role.<p>
+     *
+     * Additional parents: <code>{@link CmsRole#WORKPLACE_USER}</code>, <code>{@link CmsRole#PROJECT_MANAGER},</code>
+     * <code>{@link CmsRole#DEVELOPER}</code>.<p>
+     */
+    public static final CmsRole SYSTEM_USER = new CmsRole("SYSTEM_USER", new CmsRole[] {
+        // important: this role must be defined _after_ all other roles it referes to
+        CmsRole.ADMINISTRATOR,
+        CmsRole.WORKPLACE_USER,
+        CmsRole.PROJECT_MANAGER,
+        CmsRole.DEVELOPER});
+    
     /** The list of system roles. */
     private static List m_systemRoles;
 
@@ -224,6 +237,7 @@ public final class CmsRole {
         PROPERTY_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
         ROOT_FOLDER_ACCESS.m_groupName = defaultUsers.getGroupAdministrators();
         WORKPLACE_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
+        SYSTEM_USER.m_groupName = defaultUsers.getGroupUsers();
 
         // create a lookup list for the system roles
         m_systemRoles = Collections.unmodifiableList(Arrays.asList(new CmsRole[] {
@@ -241,7 +255,8 @@ public final class CmsRole {
             HISTORY_MANAGER,
             PROPERTY_MANAGER,
             ROOT_FOLDER_ACCESS,
-            WORKPLACE_MANAGER}));
+            WORKPLACE_MANAGER,
+            SYSTEM_USER}));
 
         // now initilaize all system roles
         for (int i = 0; i < m_systemRoles.size(); i++) {

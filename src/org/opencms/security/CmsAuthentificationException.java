@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsPrimaryKeyException.java,v $
- * Date   : $Date: 2005/05/11 08:32:42 $
- * Version: $Revision: 1.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAuthentificationException.java,v $
+ * Date   : $Date: 2005/05/16 13:46:55 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,52 +28,31 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-package org.opencms.db;
+
+package org.opencms.security;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
- * Signals that a foreign key in the VFS STRUCTURE, RESOURCES or FILES database tables is either
- * invalid or empty.<p>
+ * Signals that an attempt to authentificate (login) has a user has failed.<p> 
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2005/05/11 08:32:42 $
- * @since 5.1.4
+ * Usually this means that a proper password / user name combination was not provided.
+ * However, there are also other possible explanations, for example a user could be diabled.<p>
+ * 
+ * There are 
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @since 5.7.3
  */
-public class CmsPrimaryKeyException extends CmsException {
-    
-    // the allowed type range for this exception is >=100 and <200
-    
-    /** An entry in the STRUCTURE table has an invalid resource ID. */
-    public static final int C_INVALID_RESOURCE_ID = 101;
-    
-    /** An entry in the RESOURCES table has an invalid file ID. */
-    public static final int C_INVALID_FILE_ID = 102;
-    
-    /** An entry in the STRUCTURE table has no resource ID. */
-    public static final int C_RESOURCE_ID_EMPTY = 104;
-    
-    /** An entry in the RESOURCES table has no file ID. */
-    public static final int C_FILE_ID_EMPTY = 105;    
-    
-    /**
-     * Constructs a CmsPrimaryKeyException with the specified detail message and type.<p>
-     * 
-     * @param message the detail message
-     * @param type the type of the exception
-     */
-    public CmsPrimaryKeyException(String message, int type) {
-        super(message, type, null);
-    }    
-    
+public class CmsAuthentificationException extends CmsSecurityException {
+
     /**
      * Creates a new localized Exception.<p>
      * 
      * @param container the localized message container to use
      */
-    public CmsPrimaryKeyException(CmsMessageContainer container) {
+    public CmsAuthentificationException(CmsMessageContainer container) {
 
         super(container);
     }
@@ -84,17 +63,16 @@ public class CmsPrimaryKeyException extends CmsException {
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */
-    public CmsPrimaryKeyException(CmsMessageContainer container, Throwable cause) {
+    public CmsAuthentificationException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }   
-    
-    
+    }
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
-        return new CmsPrimaryKeyException(container, cause);
+
+        return new CmsAuthentificationException(container, cause);
     }
 }

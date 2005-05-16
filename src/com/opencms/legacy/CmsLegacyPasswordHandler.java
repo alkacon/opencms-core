@@ -25,7 +25,7 @@ public class CmsLegacyPasswordHandler extends CmsDefaultPasswordHandler {
         byte[] result;
                 
         try {     
-            if (I_CmsPasswordHandler.C_DIGEST_TYPE_PLAIN.equals(digestType.toLowerCase())) {
+            if (I_CmsPasswordHandler.DIGEST_TYPE_PLAIN.equals(digestType.toLowerCase())) {
                 result = password.getBytes(inputEncoding);
             } else {
                 md = MessageDigest.getInstance(digestType);

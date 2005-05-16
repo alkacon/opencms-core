@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/05/13 15:10:55 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,10 @@
 
 package org.opencms.db.generic;
 
-import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbPool;
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsProject;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
@@ -54,12 +53,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-
 /**
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.52 $ $Date: 2005/05/13 15:10:55 $
+ * @version $Revision: 1.53 $ $Date: 2005/05/16 13:46:56 $
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
@@ -70,17 +68,17 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
     /** The filename/path of the SQL query properties. */
     private static final String C_QUERY_PROPERTIES = "org/opencms/db/generic/query.properties";
 
-    /** A map holding all SQL queries. */
-    protected Map m_queries;
-
     /** A map to cache queries with replaced search patterns. */
     protected Map m_cachedQueries;
 
-    /** The pool URL to get connections from the JDBC driver manager, including DBCP's pool URL prefix. */
-    protected String m_poolUrl;
-    
     /** The type ID of the driver (vfs, user, project, workflow or backup) from where this SQL manager is referenced. */
     protected int m_driverType;
+
+    /** The pool URL to get connections from the JDBC driver manager, including DBCP's pool URL prefix. */
+    protected String m_poolUrl;
+
+    /** A map holding all SQL queries. */
+    protected Map m_queries;
 
     /**
      * Creates a new, empty SQL manager.<p>
@@ -91,24 +89,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
         m_queries = new HashMap();
         loadQueryProperties(C_QUERY_PROPERTIES);
     }
-    
-    /**
-     * Initializes this SQL manager.<p>
-     * 
-     * @param driverType the type ID of the driver (vfs,user,project,workflow or backup) from where this SQL manager is referenced
-     * @param poolUrl the pool URL to get connections from the JDBC driver manager
-     */
-    public void init(int driverType, String poolUrl) {
-        
-        if (!poolUrl.startsWith(CmsDbPool.C_DBCP_JDBC_URL_PREFIX)) {
-            poolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + poolUrl;
-        }        
-        
-        m_driverType = driverType;
-        m_poolUrl = poolUrl;
 
-    }
-    
     /**
      * Creates a new instance of a SQL manager.<p>
      * 
@@ -117,23 +98,25 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * @return a new instance of the SQL manager
      */
     public static org.opencms.db.generic.CmsSqlManager getInstance(String classname) {
-        
+
         org.opencms.db.generic.CmsSqlManager sqlManager;
-        
+
         try {
-           Object objectInstance = Class.forName(classname).newInstance();
-           sqlManager = (org.opencms.db.generic.CmsSqlManager)objectInstance;
+            Object objectInstance = Class.forName(classname).newInstance();
+            sqlManager = (org.opencms.db.generic.CmsSqlManager)objectInstance;
         } catch (Throwable t) {
-            OpenCms.getLog(org.opencms.db.generic.CmsSqlManager.class.getName()).error(". SQL manager class '" + classname  + "' could not be instanciated", t);
+            OpenCms.getLog(org.opencms.db.generic.CmsSqlManager.class.getName()).error(
+                ". SQL manager class '" + classname + "' could not be instanciated",
+                t);
             sqlManager = null;
         }
-        
+
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver SQL manager   : " + classname);
         }
-        
+
         return sqlManager;
-        
+
     }
 
     /**
@@ -153,7 +136,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
         return query;
     }
-    
+
     /**
      * Attemts to close the connection, statement and result set after a statement has been executed.<p>
      * 
@@ -169,10 +152,10 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
         // So, the connection tries to close it again when the connection is closed itself; 
         // as a result there is an error that forces the connection to be destroyed and not pooled
 
-        if (dbc == null) {            
+        if (dbc == null) {
             OpenCms.getLog(this).error("Database context is null!");
         }
-        
+
         try {
             // first, close the connection and (eventually) implicitly all assigned statements and result sets
             if (con != null && !con.isClosed()) {
@@ -205,7 +188,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
         } finally {
             res = null;
         }
-        
+
     }
 
     /**
@@ -245,6 +228,9 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
         int exceptionType,
         Throwable rootCause,
         boolean logSilent) {
+
+        int todo = 0;
+        // TODO: localize this using message containers 
 
         String className = "";
 
@@ -290,7 +276,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
         return new CmsException(message, exceptionType, rootCause);
     }
-    
+
     /**
      * Returns a JDBC connection from the connection pool.<p>
      * 
@@ -300,12 +286,12 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * 
      * @return a JDBC connection
      * @throws SQLException if a database access error occurs
-     */    
+     */
     public Connection getConnection(CmsDbContext dbc) throws SQLException {
-        
+
         return getConnection(dbc, 0);
     }
-    
+
     /**
      * Returns a JDBC connection from the connection pool specified by the given CmsProject id.<p>
      * 
@@ -317,39 +303,13 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * 
      * @return a JDBC connection
      * @throws SQLException if a database access error occurs
-     */       
+     */
     public Connection getConnection(CmsDbContext dbc, int projectId) throws SQLException {
-        
+
         if (dbc == null) {
             OpenCms.getLog(this).error("Null database context used");
         }
         return getConnection(projectId);
-    } 
-
-    /**
-     * Returns a JDBC connection from the connection pool specified by the given project ID.<p>
-     * 
-     * The project ID is (usually) the ID of the current project.<p>
-     * 
-     * Use this method to get a connection for reading/writing data either in online or offline projects
-     * such as files, folders.<p>
-     * 
-     * @param projectId the ID of a Cms project (e.g. the current project from the request context)
-     * @return a JDBC connection from the pool specified by the project-ID 
-     * @throws SQLException if a database access error occurs
-     */
-    protected Connection getConnection(int projectId) throws SQLException {
-        
-        // the specified project ID is not evaluated in this implementation.
-        // extensions of this object might evaluate the project ID to return
-        // different connections...        
-
-        if (projectId < 0) {
-            throw new SQLException("Unsupported project ID " + projectId + " to return a JDBC connection!");
-        }
-        
-        // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
-        return getConnectionByUrl(m_poolUrl);
     }
 
     /**
@@ -411,6 +371,23 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
         // unfortunately, this wrapper is essential, because some JDBC driver 
         // implementations don't accept the delegated objects of DBCP's connection pool. 
         return con.prepareStatement(query);
+    }
+
+    /**
+     * Initializes this SQL manager.<p>
+     * 
+     * @param driverType the type ID of the driver (vfs,user,project,workflow or backup) from where this SQL manager is referenced
+     * @param poolUrl the pool URL to get connections from the JDBC driver manager
+     */
+    public void init(int driverType, String poolUrl) {
+
+        if (!poolUrl.startsWith(CmsDbPool.C_DBCP_JDBC_URL_PREFIX)) {
+            poolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + poolUrl;
+        }
+
+        m_driverType = driverType;
+        m_poolUrl = poolUrl;
+
     }
 
     /**
@@ -489,7 +466,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * @return the the SQL query in this property list with the specified key
      */
     public String readQuery(String queryKey) {
-        
+
         String value = null;
         if ((value = (String)m_queries.get(queryKey)) == null) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -498,6 +475,26 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
         }
 
         return value;
+    }
+
+    /**
+     * Sets the designated parameter to the given Java array of bytes.<p>
+     * 
+     * The driver converts this to an SQL VARBINARY or LONGVARBINARY (depending on the argument's 
+     * size relative to the driver's limits on VARBINARY values) when it sends it to the database. 
+     * 
+     * @param statement the PreparedStatement where the content is set
+     * @param pos the first parameter is 1, the second is 2, ...
+     * @param content the parameter value 
+     * @throws SQLException if a database access error occurs
+     */
+    public void setBytes(PreparedStatement statement, int pos, byte[] content) throws SQLException {
+
+        if (content.length < 2000) {
+            statement.setBytes(pos, content);
+        } else {
+            statement.setBinaryStream(pos, new ByteArrayInputStream(content), content.length);
+        }
     }
 
     /**
@@ -533,10 +530,36 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
         } finally {
             m_cachedQueries = null;
             m_queries = null;
-            m_poolUrl = null;            
+            m_poolUrl = null;
         }
 
         super.finalize();
+    }
+
+    /**
+     * Returns a JDBC connection from the connection pool specified by the given project ID.<p>
+     * 
+     * The project ID is (usually) the ID of the current project.<p>
+     * 
+     * Use this method to get a connection for reading/writing data either in online or offline projects
+     * such as files, folders.<p>
+     * 
+     * @param projectId the ID of a Cms project (e.g. the current project from the request context)
+     * @return a JDBC connection from the pool specified by the project-ID 
+     * @throws SQLException if a database access error occurs
+     */
+    protected Connection getConnection(int projectId) throws SQLException {
+
+        // the specified project ID is not evaluated in this implementation.
+        // extensions of this object might evaluate the project ID to return
+        // different connections...        
+
+        if (projectId < 0) {
+            throw new SQLException("Unsupported project ID " + projectId + " to return a JDBC connection!");
+        }
+
+        // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
+        return getConnectionByUrl(m_poolUrl);
     }
 
     /**
@@ -599,35 +622,4 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             m_queries.put(currentKey, currentValue);
         }
     }
-    
-    /**
-     * Sets the designated parameter to the given Java array of bytes.<p>
-     * 
-     * The driver converts this to an SQL VARBINARY or LONGVARBINARY (depending on the argument's 
-     * size relative to the driver's limits on VARBINARY values) when it sends it to the database. 
-     * 
-     * @param statement the PreparedStatement where the content is set
-     * @param pos the first parameter is 1, the second is 2, ...
-     * @param content the parameter value 
-     * @throws SQLException if a database access error occurs
-     */
-    public void setBytes(PreparedStatement statement, int pos, byte[] content) throws SQLException {
-
-        if (content.length < 2000) {
-            statement.setBytes(pos, content);
-        } else {
-            statement.setBinaryStream(pos, new ByteArrayInputStream(content), content.length);
-        }
-    }
-    
-    /**
-     * Returns the pool URL to get connections from the JDBC driver manager.<p>
-     * 
-     * @return the pool URL to get connections from the JDBC driver manager
-     */
-//    public String getPoolUrl() {
-//        
-//        return m_poolUrl;
-//    }    
-
 }

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsObjectAlreadyExistsException.java,v $
- * Date   : $Date: 2005/05/11 07:58:46 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbEntryAlreadyExistsException.java,v $
+ * Date   : $Date: 2005/05/16 13:46:55 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -28,10 +28,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.db;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
 
 /**
  * Signals that an attempt to create an object was not successfull because it already exists.<p>
@@ -40,12 +41,12 @@ import org.opencms.i18n.CmsMessageContainer;
  * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsObjectAlreadyExistsException extends CmsDataAccessException {
+public class CmsDbEntryAlreadyExistsException extends CmsDbException {
 
     /**
      * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer)
      */
-    public CmsObjectAlreadyExistsException(CmsMessageContainer container) {
+    public CmsDbEntryAlreadyExistsException(CmsMessageContainer container) {
 
         super(container);
     }
@@ -53,9 +54,16 @@ public class CmsObjectAlreadyExistsException extends CmsDataAccessException {
     /**
      * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer, Throwable)
      */
-    public CmsObjectAlreadyExistsException(CmsMessageContainer container, Throwable cause) {
+    public CmsDbEntryAlreadyExistsException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
     }
-    
+
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+
+        return new CmsDbEntryAlreadyExistsException(container, cause);
+    }
 }

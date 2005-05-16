@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/05/13 15:11:28 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsException extends Exception implements I_CmsThrowable {
 
@@ -106,7 +106,7 @@ public class CmsException extends Exception implements I_CmsThrowable {
     /** 
      * Error code for not found exception.<p>
      * 
-     * @deprecated use a <code>{@link org.opencms.db.CmsObjectNotFoundException}</code> 
+     * @deprecated use a <code>{@link org.opencms.db.CmsDbEntryNotFoundException}</code> 
      *    or <code>{@link org.opencms.file.CmsVfsResourceNotFoundException}</code> instead
      */
     public static final int C_NOT_FOUND = 2;
@@ -117,7 +117,7 @@ public class CmsException extends Exception implements I_CmsThrowable {
     /** 
      * Error code for sql exception.<p>
      * 
-     * @deprecated use a <code>{@link org.opencms.db.CmsDataAccessException}</code> 
+     * @deprecated use a <code>{@link org.opencms.file.CmsDataAccessException}</code> 
      *      or one of their subclasses instead
      */
     public static final int C_SQL_ERROR = 4;
@@ -125,7 +125,7 @@ public class CmsException extends Exception implements I_CmsThrowable {
     /** 
      * Error code for unknown exception.
      *  
-     * @deprecated use a <code>{@link org.opencms.db.CmsDataAccessException}</code> 
+     * @deprecated use a <code>{@link org.opencms.file.CmsDataAccessException}</code> 
      *      or one of their subclasses instead
      */
     public static final int C_UNKNOWN_EXCEPTION = 0;

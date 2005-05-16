@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleViolationException.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbIoException.java,v $
  * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,29 +29,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.security;
+package org.opencms.db;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
- * A role violation occurs if a user without permissions tries to access a protected OpenCms system feature that can only 
- * be accessed by users in certain roles.<p>
+ * Signals that an IO exception occured when reading from or writing to the OpenCms database.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Michael Moossen (m.moossen@alkacon.com)
+ * @version $Revision: 1.1 $
+ * 
  * @since 5.7.3
  */
-public class CmsRoleViolationException extends CmsSecurityException {
-
-    /**
-     * Creates a new localized Exception.<p>
-     * 
-     * @param container the localized message container to use
-     */
-    public CmsRoleViolationException(CmsMessageContainer container) {
-
-        super(container);
-    }
+public class CmsDbIoException extends CmsDbException {    
 
     /**
      * Creates a new localized Exception that also containes a root cause.<p>
@@ -59,16 +50,17 @@ public class CmsRoleViolationException extends CmsSecurityException {
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */
-    public CmsRoleViolationException(CmsMessageContainer container, Throwable cause) {
+    public CmsDbIoException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }
-
+    }   
+    
+    
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-
-        return new CmsRoleViolationException(container, cause);
+        
+        return new CmsDbIoException(container, cause);
     }
 }

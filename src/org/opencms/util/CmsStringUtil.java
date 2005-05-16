@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/05/12 10:54:04 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -411,7 +411,7 @@ public final class CmsStringUtil {
      */
     public static boolean isValidJavaClassName(String className) {
 
-        if (className == null) {
+        if (CmsStringUtil.isEmpty(className)) {
             return false;
         }
         int length = className.length();

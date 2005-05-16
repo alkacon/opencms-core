@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/13 14:04:33 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2005/05/16 13:46:55 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,6 +62,7 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
@@ -93,7 +94,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -301,8 +302,7 @@ public final class CmsSecurityManager {
      *
      * @throws CmsException if operation was not succesful
      */
-    public void backupProject(CmsRequestContext context, int tagId, long publishDate)
-    throws CmsException {
+    public void backupProject(CmsRequestContext context, int tagId, long publishDate) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -334,7 +334,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.changeLastModifiedProjectId(dbc, resource);
         } catch (Exception e) {
@@ -359,6 +359,8 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
+            checkOfflineProject(dbc);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
             m_driverManager.changeLock(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -392,6 +394,9 @@ public final class CmsSecurityManager {
         String oldValue,
         String newValue,
         boolean recursive) throws CmsException, CmsVfsException {
+
+        int todo = 0;
+        // check if this belongs here - should be in driver manager (?)
 
         // collect the resources to look up
         List resources = new ArrayList();
@@ -514,6 +519,25 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Checks if the project in the given database context is not the "Online" project,
+     * and throws an Exception if this is the case.<p>
+     *  
+     * This is used to ensure a user is in an "Offline" project
+     * before write access to VFS resources is granted.<p>
+     * 
+     * @param dbc the current OpenCms users database context
+     * 
+     * @throws CmsVfsException if the project in the given database context is the "Online" project
+     */
+    public void checkOfflineProject(CmsDbContext dbc) throws CmsVfsException {
+
+        if (dbc.currentProject().isOnlineProject()) {
+            throw new CmsVfsException(org.opencms.file.Messages.get().container(
+                org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
+        }
+    }
+
+    /**
      * Performs a blocking permission check on a resource.<p>
      *
      * If the required permissions are not satisfied by the permissions the user has on the resource,
@@ -564,22 +588,18 @@ public final class CmsSecurityManager {
     public void checkPublishPermissions(CmsRequestContext context, CmsResource directPublishResource)
     throws CmsException, CmsSecurityException, CmsRoleViolationException {
 
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         // is the current project an "offline" project?
-        if (context.currentProject().isOnlineProject()) {
-            throw new CmsSecurityException(org.opencms.security.Messages.get().container(
-                org.opencms.security.Messages.ERR_MODIFY_ONLINE_1,
-                context.currentProject().getName()));
-        }
+        checkOfflineProject(dbc);
 
+        // check if the current project is unlocked
         if (context.currentProject().getFlags() != I_CmsConstants.C_PROJECT_STATE_UNLOCKED) {
             CmsMessageContainer errMsg = org.opencms.security.Messages.get().container(
                 org.opencms.security.Messages.ERR_RESOURCE_LOCKED_1,
                 context.currentProject().getName());
-
             throw new CmsLockException(errMsg);
         }
 
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         // check if this is a "direct publish" attempt        
         if (directPublishResource != null) {
             // the parent folder must not be new or deleted
@@ -592,7 +612,7 @@ public final class CmsSecurityManager {
                         Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
                         dbc.getRequestContext().removeSiteRoot(directPublishResource.getRootPath()),
                         parentFolder);
-                    throw new CmsSecurityException(errMsg);
+                    throw new CmsVfsException(errMsg);
                 }
                 if (parent.getState() == I_CmsConstants.C_STATE_NEW) {
                     // parent folder is new - direct publish not allowed
@@ -600,7 +620,7 @@ public final class CmsSecurityManager {
                         Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2,
                         context.removeSiteRoot(directPublishResource.getRootPath()),
                         parentFolder);
-                    throw new CmsSecurityException(errMsg);
+                    throw new CmsVfsException(errMsg);
                 }
 
             }
@@ -679,7 +699,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.chflags(dbc, resource, flags);
         } catch (Exception e) {
@@ -715,7 +735,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.chtype(dbc, resource, type);
         } catch (Exception e) {
@@ -744,7 +764,8 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
+            checkPermissions(dbc, source, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
             checkPermissions(dbc, destination, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
             m_driverManager.copyAccessControlEntries(dbc, source, destination);
         } catch (Exception e) {
@@ -796,6 +817,9 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsRequestContext rc = context;
         try {
+            checkOfflineProject(dbc);
+            checkPermissions(dbc, source, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
+            // target permissions will be checked later
             m_driverManager.copyResource(dbc, source, destination, siblingMode);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -821,7 +845,15 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
+            checkOfflineProject(dbc);
             checkManagerOfProjectRole(dbc, context.currentProject());
+
+            if (dbc.currentProject().getFlags() != I_CmsConstants.C_PROJECT_STATE_UNLOCKED) {
+                throw new CmsLockException(org.opencms.lock.Messages.get().container(
+                    org.opencms.lock.Messages.ERR_RESOURCE_LOCKED_1,
+                    dbc.currentProject().getName()));
+            }
+
             m_driverManager.copyResourceToProject(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -977,20 +1009,14 @@ public final class CmsSecurityManager {
     public CmsPropertyDefinition createPropertyDefinition(CmsRequestContext context, String name)
     throws CmsException, CmsSecurityException, CmsRoleViolationException {
 
-        if (CmsProject.isOnlineProject(context.currentProject().getId())) {
-            throw new CmsSecurityException(org.opencms.security.Messages.get().container(
-                org.opencms.security.Messages.ERR_MODIFY_ONLINE_1,
-                context.currentProject().getName()));
-        }
-
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-
         CmsPropertyDefinition result = null;
+
         try {
+            checkOfflineProject(dbc);
             checkRole(dbc, CmsRole.PROPERTY_MANAGER);
             result = m_driverManager.createPropertyDefinition(dbc, name);
         } catch (Exception e) {
-
             dbc.report(null, Messages.get().container(Messages.ERR_CREATE_PROPDEF_1, name), e);
         } finally {
             dbc.clear();
@@ -1023,6 +1049,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsResource newResource = null;
         try {
+            checkOfflineProject(dbc);
             newResource = m_driverManager.createResource(dbc, resourcename, type, content, properties);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_CREATE_RESOURCE_1, resourcename), e);
@@ -1047,6 +1074,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
+            checkOfflineProject(dbc);
             m_driverManager.createSibling(dbc, source, destination, properties);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -1304,34 +1332,34 @@ public final class CmsSecurityManager {
     /**
      * Deletes a project.<p>
      *
-     * All resources inside the project have to be be reset to their online state.<p>
+     * All modified resources currently inside this project will be reset to their online state.<p>
      * 
      * @param context the current request context
      * @param projectId the ID of the project to be deleted
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the project to delete is online
      * @throws CmsRoleViolationException if the current user does not own management access to the project
      */
-    public void deleteProject(CmsRequestContext context, int projectId)
-    throws CmsException, CmsSecurityException, CmsRoleViolationException {
+    public void deleteProject(CmsRequestContext context, int projectId) throws CmsException, CmsRoleViolationException {
 
-        // read the project that should be deleted
-        CmsProject deleteProject = readProject(projectId);
         if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             // online project must not be deleted
-            throw new CmsSecurityException(org.opencms.security.Messages.get().container(
-                org.opencms.security.Messages.ERR_MODIFY_ONLINE_1,
-                deleteProject.getName()));
+            throw new CmsVfsException(org.opencms.file.Messages.get().container(
+                org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
         }
+
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-
+        CmsProject deleteProject = null;
         try {
-
+            // read the project that should be deleted
+            deleteProject = m_driverManager.readProject(dbc, projectId);
             checkManagerOfProjectRole(dbc, context.currentProject());
             m_driverManager.deleteProject(dbc, deleteProject);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, deleteProject.getName()), e);
+            String projectName = deleteProject == null ? String.valueOf(projectId) : deleteProject.getName();
+            int todo = 0;
+            // TODO: This must be "delete project", not group
+            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, projectName), e);
         } finally {
             dbc.clear();
         }
@@ -1344,21 +1372,15 @@ public final class CmsSecurityManager {
      * @param name the name of the property definition to delete
      *
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the project to delete is online
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#PROPERTY_MANAGER}
+     * @throws CmsSecurityException if the project to delete is the "Online" project
+     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#PROPERTY_MANAGER}
      */
     public void deletePropertyDefinition(CmsRequestContext context, String name)
     throws CmsException, CmsSecurityException, CmsRoleViolationException {
 
-        CmsProject deleteProject = context.currentProject();
-        if (CmsProject.isOnlineProject(deleteProject.getId())) {
-            // online project must not be deleted
-            throw new CmsSecurityException(org.opencms.security.Messages.get().container(
-                org.opencms.security.Messages.ERR_MODIFY_ONLINE_1,
-                deleteProject.getName()));
-        }
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
+            checkOfflineProject(dbc);
             checkRole(dbc, CmsRole.PROPERTY_MANAGER);
             m_driverManager.deletePropertyDefinition(dbc, name);
         } catch (Exception e) {
@@ -1391,15 +1413,11 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.deleteResource(dbc, resource, siblingMode);
         } catch (Exception e) {
-            dbc
-                .report(
-                    null,
-                    Messages.get().container(Messages.ERR_DELETE_RESOURCE_1, context.getSitePath(resource)),
-                    e);
+            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_RESOURCE_1, context.getSitePath(resource)), e);
         } finally {
             dbc.clear();
         }
@@ -1596,11 +1614,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getAccessControlEntries(dbc, resource, getInherited);
         } catch (Exception e) {
-            dbc
-                .report(
-                    null,
-                    Messages.get().container(Messages.ERR_GET_ACL_ENTRIES_1, context.getSitePath(resource)),
-                    e);
+            dbc.report(null, Messages.get().container(Messages.ERR_GET_ACL_ENTRIES_1, context.getSitePath(resource)), e);
         } finally {
             dbc.clear();
         }
@@ -1630,11 +1644,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getAccessControlList(dbc, resource, inheritedOnly);
         } catch (Exception e) {
-            dbc
-                .report(
-                    null,
-                    Messages.get().container(Messages.ERR_GET_ACL_ENTRIES_1, context.getSitePath(resource)),
-                    e);
+            dbc.report(null, Messages.get().container(Messages.ERR_GET_ACL_ENTRIES_1, context.getSitePath(resource)), e);
 
         } finally {
             dbc.clear();
@@ -1754,6 +1764,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
+            checkRole(dbc, CmsRole.SYSTEM_USER);
             result = m_driverManager.getChild(dbc, groupname);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_CHILD_GROUPS_1, groupname), e);
@@ -1780,6 +1791,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
+            checkRole(dbc, CmsRole.SYSTEM_USER);
             result = m_driverManager.getChilds(dbc, groupname);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_CHILD_GROUPS_TRANSITIVE_1, groupname), e);
@@ -1824,11 +1836,11 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns all groups.<p>
+     * Returns all available groups.<p>
      *
      * @param context the current request context
      *
-     * @return a list of all <code>{@link CmsGroup}</code> objects
+     * @return a list of all available <code>{@link CmsGroup}</code> objects
      * 
      * @throws CmsException if operation was not succesful
      */
@@ -1837,6 +1849,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
+            checkRole(dbc, CmsRole.SYSTEM_USER);
             result = m_driverManager.getGroups(dbc);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_GROUPS_0), e);
@@ -2127,11 +2140,11 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns all users.<p>
+     * Returns all available users.<p>
      *
      * @param context the current request context
      * 
-     * @return a list of all <code>{@link CmsUser}</code> objects
+     * @return a list of all available <code>{@link CmsUser}</code> objects
      * 
      * @throws CmsException if operation was not succesful
      */
@@ -2140,6 +2153,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
+            checkRole(dbc, CmsRole.SYSTEM_USER);
             result = m_driverManager.getUsers(dbc);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_USERS_0), e);
@@ -2164,6 +2178,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
+            checkRole(dbc, CmsRole.SYSTEM_USER);
             result = m_driverManager.getUsers(dbc, type);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_USERS_OF_TYPE_1, String.valueOf(type)), e);
@@ -2188,6 +2203,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
+            checkRole(dbc, CmsRole.SYSTEM_USER);
             result = m_driverManager.getUsersOfGroup(dbc, groupname);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_USERS_OF_GROUP_1, groupname), e);
@@ -2322,8 +2338,10 @@ public final class CmsSecurityManager {
         // read all groups of the current user
         List groups;
         try {
-            groups = m_driverManager.getGroupsOfUser(dbc, dbc.currentUser().getName(), dbc.getRequestContext()
-                .getRemoteAddress());
+            groups = m_driverManager.getGroupsOfUser(
+                dbc,
+                dbc.currentUser().getName(),
+                dbc.getRequestContext().getRemoteAddress());
         } catch (CmsException e) {
             // any exception: return false
             return false;
@@ -2376,7 +2394,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
             m_driverManager.importAccessControlEntries(dbc, resource, acEntries);
         } catch (Exception e) {
@@ -2424,6 +2442,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsResource newResource = null;
         try {
+            checkOfflineProject(dbc);
             newResource = m_driverManager.createResource(dbc, resourcePath, resource, content, properties, importCase);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -2530,8 +2549,7 @@ public final class CmsSecurityManager {
 
         m_dbContextFactory = dbContextFactory;
 
-        CmsSystemConfiguration systemConfiguation = (CmsSystemConfiguration)configurationManager
-            .getConfiguration(CmsSystemConfiguration.class);
+        CmsSystemConfiguration systemConfiguation = (CmsSystemConfiguration)configurationManager.getConfiguration(CmsSystemConfiguration.class);
         CmsCacheSettings settings = systemConfiguation.getCacheSettings();
 
         String className = settings.getCacheKeyGenerator();
@@ -2550,12 +2568,7 @@ public final class CmsSecurityManager {
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_permissionCache", hashMap);
         }
 
-        try {
-            m_driverManager = CmsDriverManager.newInstance(configurationManager, this, dbContextFactory);
-        } catch (CmsException e) {
-            throw new CmsInitException(org.opencms.main.Messages.get().container(
-                org.opencms.main.Messages.ERR_CRITICAL_INIT_DATABASE_0));
-        }
+        m_driverManager = CmsDriverManager.newInstance(configurationManager, this, dbContextFactory);
 
         if (CmsLog.LOG.isInfoEnabled()) {
             CmsLog.LOG.info(Messages.get().key(Messages.INIT_SECURITY_MANAGER_INIT_0));
@@ -2622,7 +2635,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
             m_driverManager.lockResource(dbc, resource, mode);
         } catch (Exception e) {
@@ -4280,7 +4293,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
             m_driverManager.removeAccessControlEntry(dbc, resource, principal);
         } catch (Exception e) {
@@ -4342,7 +4355,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.replaceResource(dbc, resource, type, content, properties);
         } catch (Exception e) {
@@ -4397,7 +4410,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.restoreResource(dbc, resource, tag);
         } catch (Exception e) {
@@ -4585,20 +4598,25 @@ public final class CmsSecurityManager {
         long dateReleased,
         long dateExpired) throws CmsException, CmsSecurityException {
 
+        int todo = 0;
+        // TODO: Make 3 methods out of this (setDateLastModified, setDateReleased, setDateExpired) 
+
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.touch(dbc, resource, dateLastModified, dateReleased, dateExpired);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_TOUCH_RESOURCE_4,
-                new Object[] {
-                    CmsDateUtil.getDateTime(new Date(dateLastModified), DateFormat.SHORT, context.getLocale())
-                        .toString(),
-                    CmsDateUtil.getDateTime(new Date(dateReleased), DateFormat.SHORT, context.getLocale()).toString(),
-                    CmsDateUtil.getDateTime(new Date(dateExpired), DateFormat.SHORT, context.getLocale()).toString(),
-                    context.getSitePath(resource)}), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_TOUCH_RESOURCE_4,
+                    new Object[] {
+                        CmsDateUtil.getDateTime(new Date(dateLastModified), DateFormat.SHORT, context.getLocale()).toString(),
+                        CmsDateUtil.getDateTime(new Date(dateReleased), DateFormat.SHORT, context.getLocale()).toString(),
+                        CmsDateUtil.getDateTime(new Date(dateExpired), DateFormat.SHORT, context.getLocale()).toString(),
+                        context.getSitePath(resource)}),
+                e);
         } finally {
             dbc.clear();
         }
@@ -4621,7 +4639,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.undoChanges(dbc, resource);
         } catch (Exception e) {
@@ -4677,7 +4695,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.unlockResource(dbc, resource);
         } catch (Exception e) {
@@ -4767,15 +4785,11 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
             m_driverManager.writeAccessControlEntry(dbc, resource, ace);
         } catch (Exception e) {
-            dbc
-                .report(
-                    null,
-                    Messages.get().container(Messages.ERR_WRITE_ACL_ENTRY_1, context.getSitePath(resource)),
-                    e);
+            dbc.report(null, Messages.get().container(Messages.ERR_WRITE_ACL_ENTRY_1, context.getSitePath(resource)), e);
         } finally {
             dbc.clear();
         }
@@ -4807,7 +4821,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsFile result = null;
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             result = m_driverManager.writeFile(dbc, resource);
         } catch (Exception e) {
@@ -4863,7 +4877,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.writePropertyObject(dbc, resource, property);
         } catch (Exception e) {
@@ -4898,7 +4912,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
 
             // write the properties
@@ -4933,7 +4947,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            // check the access permissions
+            checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             m_driverManager.writeResource(dbc, resource);
         } catch (Exception e) {
@@ -5245,16 +5259,14 @@ public final class CmsSecurityManager {
             } else {
                 // view permissions can be ignored by filter
                 permissions.setPermissions(
-                // modify permissions so that view is allowed
-                    permissions.getAllowedPermissions() | CmsPermissionSet.PERMISSION_VIEW, permissions
-                        .getDeniedPermissions()
-                        & ~CmsPermissionSet.PERMISSION_VIEW);
+                    // modify permissions so that view is allowed
+                    permissions.getAllowedPermissions() | CmsPermissionSet.PERMISSION_VIEW,
+                    permissions.getDeniedPermissions() & ~CmsPermissionSet.PERMISSION_VIEW);
             }
         }
 
         Integer result;
-        if ((requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions
-            .getPermissions()) {
+        if ((requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions.getPermissions()) {
 
             result = PERM_ALLOWED_INTEGER;
         } else {
@@ -5345,7 +5357,7 @@ public final class CmsSecurityManager {
                     context.getSitePath(resource)));
 
             case PERM_DENIED:
-                throw new CmsSecurityException(Messages.get().container(
+                throw new CmsPermissionViolationException(Messages.get().container(
                     Messages.ERR_PERM_DENIED_2,
                     context.getSitePath(resource),
                     requiredPermissions.getPermissionString()));
@@ -5370,7 +5382,6 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#USER_MANAGER}
-     * 
      */
     private void deleteUser(CmsRequestContext context, CmsUser user) throws CmsException {
 

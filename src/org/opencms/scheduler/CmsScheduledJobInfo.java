@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2005/05/12 13:31:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -412,7 +412,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         String cronExpression,
         boolean reuseInstance,
         boolean active,
-        Map parameters) {
+        SortedMap parameters) {
 
         m_frozen = false;
         setId(id);
@@ -784,7 +784,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      *
      * @param parameters the parameters to set
      */
-    public void setParameters(Map parameters) {
+    public void setParameters(SortedMap parameters) {
 
         checkFrozen();
         if (parameters == null) {

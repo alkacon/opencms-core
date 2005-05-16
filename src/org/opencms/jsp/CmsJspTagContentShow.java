@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/05/03 15:56:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 
 import java.io.IOException;
@@ -59,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {
@@ -100,7 +99,7 @@ public class CmsJspTagContentShow extends TagSupport {
             try {
                 // read the element from the content
                 return content.getStringValue(cms, element, locale);
-            } catch (CmsXmlException e) {
+            } catch (Exception e) {
                 LOG.error(Messages.get().key(Messages.LOG_ERR_CONTENT_SHOW_1, element), e);
                 return null;
             }

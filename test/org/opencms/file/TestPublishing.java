@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.report.CmsShellReport;
-import org.opencms.security.CmsSecurityException;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestLogAppender;
 import org.opencms.test.OpenCmsTestProperties;
@@ -51,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   
@@ -537,7 +536,7 @@ public class TestPublishing extends OpenCmsTestCase {
             OpenCmsTestLogAppender.setBreakOnError(false);
             cms.publishResource(newFile);
             error = true;
-        } catch (CmsSecurityException e) {
+        } catch (CmsVfsException e) {
             error = false;
         }
         // reset log to stop test on error

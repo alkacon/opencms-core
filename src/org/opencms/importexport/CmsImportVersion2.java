@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2005/05/16 13:46:56 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -341,8 +341,8 @@ public class CmsImportVersion2 extends A_CmsImport {
         boolean convert = false;
 
         Map config = OpenCms.getPasswordHandler().getConfiguration();
-        if (config != null && config.containsKey(I_CmsPasswordHandler.C_CONVERT_DIGEST_ENCODING)) {
-            convert = Boolean.valueOf((String)config.get(I_CmsPasswordHandler.C_CONVERT_DIGEST_ENCODING)).booleanValue();
+        if (config != null && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
+            convert = Boolean.valueOf((String)config.get(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)).booleanValue();
         }
 
         if (convert) {
