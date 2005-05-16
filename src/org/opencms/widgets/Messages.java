@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Messages.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/16 17:10:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,6 +66,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MAP_PARAMETER_FORM_1 = "ERR_MAP_PARAMETER_FORM_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MAP_DUPLICATE_KEY_3 = "ERR_MAP_DUPLICATE_KEY_3";
+    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.widgets.messages";
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/16 17:10:06 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -617,7 +617,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         result.append("<table class=\"xmlTable\">\n");
 
         // show error header once if there were validation errors
-        if (getValidationErrorList().size() > 0) {
+        if (hasValidationErrors()) {
             result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
             result.append("<tr><td colspan=\"2\">&nbsp;</td>");
             result.append("<td class=\"xmlTdErrorHeader\">");
@@ -794,7 +794,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected String createWidgetErrorHeader() {
 
         StringBuffer result = new StringBuffer(8);
-        if (getValidationErrorList().size() > 0) {
+        if (hasValidationErrors()) {
             result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
             result.append("<tr><td colspan=\"2\">&nbsp;</td>");
             result.append("<td class=\"xmlTdErrorHeader\">");
@@ -872,8 +872,11 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             if (base.isCollectionBase()) {
                 // for a collection base, check if we are on the page where the collection base is shown
                 if (CmsStringUtil.isNotEmpty(getParamAction())) {
-                    // if no action set (usually for first display of dialog) make sure all values are shown 
+                    // if no action set is (usually for first display of dialog) make sure all values are shown 
                     String page = getParamPage();
+                    // keep in mind that since the paramPage will be set AFTER the widget values are filled,
+                    // so the first time this page is called from another page the following will result to "false",
+                    // but for every "submit" on the page this will be "true"
                     onPage = CmsStringUtil.isEmpty(page)
                         || CmsStringUtil.isEmpty(base.getDialogPage())
                         || base.getDialogPage().equals(page);
@@ -964,6 +967,16 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected List getWidgets() {
 
         return m_widgets;
+    }
+
+    /**
+     * Returns <code>true</code> if the current dialog (page) has validation errors.<p>
+     * 
+     * @return <code>true</code> if the current dialog (page) has validation errors
+     */
+    protected boolean hasValidationErrors() {
+
+        return (m_validationErrorList != null) && (m_validationErrorList.size() > 0);
     }
 
     /**

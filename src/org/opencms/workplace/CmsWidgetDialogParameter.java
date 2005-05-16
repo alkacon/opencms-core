@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialogParameter.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/16 17:10:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
@@ -391,6 +391,16 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
                     String key = m_value.substring(0, pos);
                     String value = m_value.substring(pos + 1);
                     SortedMap map = (SortedMap)m_baseCollection;
+                    if (map.containsKey(key)) {
+                        Object val = map.get(key);
+                        CmsWidgetException error = new CmsWidgetException(Messages.get().container(
+                            Messages.ERR_MAP_DUPLICATE_KEY_3,
+                            dialog.key(A_CmsWidget.getLabelKey(this), getKey()),
+                            key,
+                            val), this);
+                        setError(error);
+                        throw error;
+                    }
                     map.put(key, value);
                 } else {
                     CmsWidgetException error = new CmsWidgetException(Messages.get().container(
