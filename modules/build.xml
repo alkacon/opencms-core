@@ -93,14 +93,10 @@
         <sortlist property="modules.var" value="${modules.var}" override="true" />
     </target>
 
-	<target name="dependencies" description="Build all jars" depends="init">
-    	<for list="${modules.common.all}" param="module" trim="yes">
-    	  <sequential>
-    	  	<ant antfile="${basedir}/build-single.xml" target="jar" inheritAll="false" >
-    	  		<property name="module.name" value="@{module}" />
-    	  	</ant>
-    	  </sequential>
-    	</for>
+	<target name="dependencies" description="Build dependencies - internal target" >
+	  	<ant antfile="${basedir}/build-single.xml" target="dist" inheritAll="false" >
+	  		<property name="module.name" value="${module.name}" />
+	  	</ant>
 	</target>
 	
     <target name="clean" 
@@ -116,7 +112,7 @@
     </target>        
 	
     <target name="compile" 
-    	depends="dependencies" description="Compile the given modules">
+    	depends="init" description="Compile the given modules">
     	
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
@@ -128,7 +124,7 @@
     </target>        
 	
     <target name="jar" 
-    	depends="dependencies" description="Generates the given .jar files">
+    	depends="init" description="Generates the given .jar files">
 	
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
@@ -140,7 +136,7 @@
     </target>
     			
     <target name="dist" 
-    	depends="dependencies" description="Generates the given independent distros">
+    	depends="init" description="Generates the given independent distros">
 	
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
@@ -152,7 +148,7 @@
     </target>
     			
     <target name="tomcat.copy" 
-    	depends="dependencies" description="Copies the given updated modules to Tomcat directory">
+    	depends="init" description="Copies the given updated modules to Tomcat directory">
 	
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
@@ -164,7 +160,7 @@
     </target>
     			
     <target name="tomcat.update" 
-    	depends="dependencies" description="Recompiles changes and installs them in Tomcat webapps directory">
+    	depends="init" description="Recompiles changes and installs them in Tomcat webapps directory">
 	
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
@@ -176,7 +172,7 @@
     </target>
     			
     <target name="tomcat.all" 
-    	depends="dependencies" description="Does a complete recompile of the module and installs it in Tomcat webapps directory">
+    	depends="init" description="Does a complete recompile of the module and installs it in Tomcat webapps directory">
 	
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
@@ -188,7 +184,7 @@
     </target>
 
 	<target name="war"
-		depends="dependencies, dist" description="Updates the war file">
+		depends="dist" description="Updates the war file">
 		
 		<!-- be sure that the war file is uptodate -->
 		<ant antfile="${opencms.input}/build.xml" target="war"/>
