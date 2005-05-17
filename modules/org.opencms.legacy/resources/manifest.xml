@@ -2044,7 +2044,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[org_opencms_modules_htmlimport_HtmlImportBackoffice.icon.text]]></value>
+					<value><![CDATA[title.htmlimport]]></value>
 				</property>
 				<property>
 					<name>Title</name>
