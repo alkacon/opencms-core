@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.184 $
+ * Date   : $Date: 2005/05/17 15:29:17 $
+ * Version: $Revision: 1.185 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -126,7 +126,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.184 $
+ * @version $Revision: 1.185 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -286,7 +286,7 @@ public final class OpenCmsCore {
                 // output an error message to the console
                 System.err.println(Messages.get().key(Messages.LOG_INIT_FAILURE_MESSAGE_1, errorCondition.key()));
             }
-            LOG.error(Messages.get().key(errorCondition.getKey(), errorCondition.getArgs()));
+            LOG.error(errorCondition.key());
             m_instance = null;
         } else if (m_instance != null) {
             // OpenCms already was successfull initialized

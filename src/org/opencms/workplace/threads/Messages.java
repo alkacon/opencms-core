@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Messages.java,v $
- * Date   : $Date: 2005/05/16 17:45:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/17 15:29:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_REPLACE_THREAD_START_IMPORT_0 = "LOG_REPLACE_THREAD_START_IMPORT_0";
  
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.threads.messages";
+    private static final String BUNDLE_NAME = "org.opencms.workplace.threads.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

@@ -32,8 +32,10 @@
 package org.opencms.workplace.tools.content;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.report.A_CmsReportThread;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Thread for merging content pages.<p>
@@ -41,6 +43,8 @@ import org.opencms.report.A_CmsReportThread;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
 public class CmsMergePagesThread extends A_CmsReportThread {
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMergePagesThread.class);
 
     private CmsMergePages m_mergePages;
 
@@ -77,8 +81,8 @@ public class CmsMergePagesThread extends A_CmsReportThread {
             m_mergePages.actionMerge(getReport());
         } catch (Exception e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e.getMessage());
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage());
             }
         }        
     }

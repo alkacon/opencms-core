@@ -32,8 +32,10 @@
 package org.opencms.workplace.tools.content;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.report.A_CmsReportThread;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Thread for element rename.<p>
@@ -41,6 +43,9 @@ import org.opencms.report.A_CmsReportThread;
  * @author Armen Markarian (a.markarian@alkacon.com)
  */
 public class CmsElementRenameThread extends A_CmsReportThread {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsElementRenameThread.class);
 
     private CmsElementRename m_elementRename;
 
@@ -77,8 +82,8 @@ public class CmsElementRenameThread extends A_CmsReportThread {
             m_elementRename.actionRename(getReport());
         } catch (Exception e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e.getMessage());
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getMessage());
             }
         }        
     }

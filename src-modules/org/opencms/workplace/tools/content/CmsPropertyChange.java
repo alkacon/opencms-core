@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyChange.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/17 15:29:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -48,6 +48,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for the change property values dialog.<p> 
  * 
@@ -57,12 +59,12 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5.3
  */
 public class CmsPropertyChange extends CmsDialog {
-    
+
     /** Value for the action: show result. */
     public static final int ACTION_SHOWRESULT = 100;
     
@@ -71,7 +73,6 @@ public class CmsPropertyChange extends CmsDialog {
     
     /** The dialog type. */
     public static final String DIALOG_TYPE = "propertychange";
-    
     /** Request parameter name for the property name. */
     public static final String PARAM_NEWVALUE = "newvalue"; 
     /** Request parameter name for the property name. */
@@ -80,6 +81,10 @@ public class CmsPropertyChange extends CmsDialog {
     public static final String PARAM_PROPERTYNAME = "propertyname";  
     /** Request parameter name for the property name. */
     public static final String PARAM_RECURSIVE = "recursive"; 
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPropertyChange.class);
+
     
     private List m_changedResources;
     
@@ -109,6 +114,41 @@ public class CmsPropertyChange extends CmsDialog {
         
         this(new CmsJspActionElement(context, req, res));
     }          
+    
+    /**
+     * Builds the html for the property definition select box.<p>
+     * 
+     * @param cms the CmsObject
+     * @param selectValue the localized value for the "Please select" option
+     * @param attributes optional attributes for the &lt;select&gt; tag
+     * @return the html for the property definition select box
+     */
+    public static String buildSelectProperty(CmsObject cms, String selectValue, String attributes) {
+        
+        List propertyDef = new ArrayList();
+        try {
+            // get all property definitions
+            propertyDef = cms.readAllPropertyDefinitions();
+        } catch (CmsException e) {
+            // should usually never happen
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
+            }
+        }
+        
+        int propertyCount = propertyDef.size();
+        List options = new ArrayList(propertyCount + 1);
+        options.add(CmsEncoder.escapeXml(selectValue));
+        
+        for (int i=0; i<propertyCount; i++) {
+            // loop property definitions and get definition name
+            CmsPropertyDefinition currDef = (CmsPropertyDefinition)propertyDef.get(i);
+            options.add(CmsEncoder.escapeXml(currDef.getName()));
+        }
+        
+        CmsDialog wp = new CmsDialog(null);
+        return wp.buildSelect(attributes, options, options, -1); 
+    }
 
     /**
      * Changes the property values on the specified resources.<p>
@@ -170,41 +210,6 @@ public class CmsPropertyChange extends CmsDialog {
     public String buildSelectProperty(String attributes) {
         
         return buildSelectProperty(getCms(), key("please.select"), attributes);
-    }
-    
-    /**
-     * Builds the html for the property definition select box.<p>
-     * 
-     * @param cms the CmsObject
-     * @param selectValue the localized value for the "Please select" option
-     * @param attributes optional attributes for the &lt;select&gt; tag
-     * @return the html for the property definition select box
-     */
-    public static String buildSelectProperty(CmsObject cms, String selectValue, String attributes) {
-        
-        List propertyDef = new ArrayList();
-        try {
-            // get all property definitions
-            propertyDef = cms.readAllPropertyDefinitions();
-        } catch (CmsException e) {
-            // should usually never happen
-            if (OpenCms.getLog(CmsPropertyChange.class).isInfoEnabled()) {
-                OpenCms.getLog(CmsPropertyChange.class).info(e);
-            }
-        }
-        
-        int propertyCount = propertyDef.size();
-        List options = new ArrayList(propertyCount + 1);
-        options.add(CmsEncoder.escapeXml(selectValue));
-        
-        for (int i=0; i<propertyCount; i++) {
-            // loop property definitions and get definition name
-            CmsPropertyDefinition currDef = (CmsPropertyDefinition)propertyDef.get(i);
-            options.add(CmsEncoder.escapeXml(currDef.getName()));
-        }
-        
-        CmsDialog wp = new CmsDialog(null);
-        return wp.buildSelect(attributes, options, options, -1); 
     }
     
     /**

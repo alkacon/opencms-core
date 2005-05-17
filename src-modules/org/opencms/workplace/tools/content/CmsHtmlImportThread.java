@@ -32,8 +32,10 @@
 package org.opencms.workplace.tools.content;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.report.A_CmsReportThread;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Thread for extended html import. <p>
@@ -41,9 +43,12 @@ import org.opencms.report.A_CmsReportThread;
  * @author Michael Emmerich ((m.emmerich@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsHtmlImportThread extends A_CmsReportThread {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHtmlImportThread.class);
     
     /** the CmsObject to use. */
     private CmsObject m_cms;
@@ -84,8 +89,8 @@ public class CmsHtmlImportThread extends A_CmsReportThread {
             m_htmlImport.startImport(getReport());         
         } catch (Exception e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e.getMessage());
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage());
             }
         }
     }      

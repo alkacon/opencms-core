@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/04/29 15:54:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/17 15:29:17 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2005/04/29 15:54:15 $
+ * @version $Revision: 1.11 $ $Date: 2005/05/17 15:29:17 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
@@ -462,7 +462,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                 CmsModuleDependency dependency = (CmsModuleDependency)it.next();
                 missingModules += Messages.get().key(Messages.ERR_MOD_DEPENDENCY_INFO_2, dependency.getName(), dependency.getVersion());
             }
-            throw new CmsConfigurationException(Messages.get().key(Messages.ERR_MOD_DEPENDENCY_INFO_2, missingModules));
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_MOD_DEPENDENCY_INFO_2, missingModules));
         }
 
         //  add the imported module to the module manager

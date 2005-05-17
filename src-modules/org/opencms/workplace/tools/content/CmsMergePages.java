@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsMergePages.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/17 15:29:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  */
 public class CmsMergePages extends CmsReport {
@@ -632,29 +632,30 @@ public class CmsMergePages extends CmsReport {
      */
     public void validateParameters(CmsObject cms) {
 
+        Locale userLocale = getLocale();
         StringBuffer validationErrors = new StringBuffer();
         if (CmsStringUtil.isEmpty(getParamFolder1())) {
-            validationErrors.append("- Please select a the first folder for merging.<br>");
+            validationErrors.append(Messages.get().key(userLocale, Messages.GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_0, null)).append("<br>");
         } else {
             try {
-                cms.readResource(getParamFolder1());                
+                cms.readResource(getParamFolder1());
             } catch (CmsException e) {
-                validationErrors.append("- First folder is nor readable or does not exist.<br>");
+                validationErrors.append(Messages.get().key(userLocale, Messages.GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_1, new Object[]{getParamFolder1()})).append("<br>");
             }
         }
         if (CmsStringUtil.isEmpty(getParamFolder2())) {
-            validationErrors.append("- Please select a the second folder for merging..<br>");
+            validationErrors.append(Messages.get().key(userLocale, Messages.GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_0, null)).append("<br>");
         } else {
             try {
-                cms.readResource(getParamFolder2());                
+                cms.readResource(getParamFolder2());
             } catch (CmsException e) {
-                validationErrors.append("- Second folder is nor readable or does not exist.<br>");
+                validationErrors.append(Messages.get().key(userLocale, Messages.GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1, new Object[]{getParamFolder2()})).append("<br>");
             }
         }
         if (getParamFolder1().equals(getParamFolder2())) {
-            validationErrors.append("- Both folders must be different.<br>");
+            validationErrors.append(Messages.get().key(userLocale, Messages.GUI_MERGE_PAGES_VALIDATE_SAME_FOLDER_0, null)).append("<br>");
         }
-        
+
         setErrorMessage(validationErrors.toString());
     }    
 

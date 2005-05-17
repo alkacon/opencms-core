@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2005/05/04 11:11:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/17 15:29:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -212,7 +212,7 @@ public final class Messages extends A_CmsMessageBundle {
      * current user's locale if available or to the default locale else. <p>
      * 
      * This method is needed for localization of non- {@link org.opencms.main.CmsException} instances 
-     * that have to be thrown here due to API constraints (javax.servlet.jsp) and returned error strings. <p>
+     * that have to be thrown here due to API constraints (javax.servlet.jsp). <p>
      * 
      * @param container A CmsMessageContainer containing the message to localize. 
      * @param context The page context that is known to any calling {@link javax.servlet.jsp.tagext.TagSupport} instance (member <code>pageContext</code>). 
@@ -220,7 +220,7 @@ public final class Messages extends A_CmsMessageBundle {
      *         current user's locale if available or to the default locale else. <p>
      */
     public static String getLocalizedMessage(CmsMessageContainer container, PageContext context) {
-    
+
         return Messages.getLocalizedMessage(container, context.getRequest());
     }
 
@@ -238,18 +238,35 @@ public final class Messages extends A_CmsMessageBundle {
      *         current user's locale if available or to the default locale else. <p>
      */
     public static String getLocalizedMessage(CmsMessageContainer container, ServletRequest request) {
-    
-        String msg;
-        CmsRequestContext requestContext;
-        Locale locale;
+
         CmsObject cms = CmsFlexController.getCmsObject(request);
-        if ((cms == null)
-            || ((requestContext = cms.getRequestContext()) == null)
-            || ((locale = requestContext.getLocale()) == null)) {
-            msg = container.key();
-        } else {
-            msg = container.key(locale);
-        }
-        return msg;
+        return getLocalizedMessage(container, cms);
+
     }
+
+    /**
+     * Returns the String for the given CmsMessageContainer localized to the 
+     * current user's locale if available or to the default locale else. <p>
+     * 
+     * This method is needed for localization of non- {@link org.opencms.main.CmsException} instances 
+     * that have to be thrown here due to API constraints (javax.servlet.jsp). <p>
+     * 
+     * @param container A CmsMessageContainer containing the message to localize. 
+     * @param cms the <code>CmsObject</code> belonging to the current user (e.g. obtained with 
+     *        <code>CmsFlexController.getCmsObject(ServletRequest)</code>). 
+     * @return the String for the given CmsMessageContainer localized to the 
+     *         current user's locale if available or to the default locale else. <p>
+     */
+    public static String getLocalizedMessage(CmsMessageContainer container, CmsObject cms) {
+
+        Locale locale;
+        if (cms != null) {
+            CmsRequestContext context = cms.getRequestContext();
+            locale = (context != null) ? context.getLocale() : Locale.getDefault();
+        } else {
+            locale = Locale.getDefault();
+        }
+        return container.key(locale);
+    }
+
 }
