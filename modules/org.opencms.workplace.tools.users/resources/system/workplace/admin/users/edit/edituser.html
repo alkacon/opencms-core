@@ -1,12 +1,17 @@
 <%@ page buffer="none" import="
 
-	org.opencms.workplace.*
+	org.opencms.jsp.*,
+	org.opencms.workplace.*,
+	org.opencms.workplace.tools.users.*
 
 "%><%	
 
 	// initialize the workplace class
-	CmsDialog wp = new CmsDialog(pageContext, request, response);
-	
+	CmsEditUserDialog wp = new CmsEditUserDialog(new CmsJspActionElement(pageContext, request, response));
+	if (request.getParameter("usrName")==null) {
+		wp.getToolManager().jspRedirectTool(wp, "/users", null);
+		return;
+	}
 //////////////////// start of switch statement 
 
 	
@@ -43,8 +48,8 @@ default:
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-do so as were you editing the selected user: <%=request.getParameter("usrId")%> <br>
-<!-- wp.getCms().readUser(request.getParameter("usrId")) -->
+do so as were you editing the selected user: <br>
+<%= wp.getCms().readUser(request.getParameter("usrName")).toString() %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>

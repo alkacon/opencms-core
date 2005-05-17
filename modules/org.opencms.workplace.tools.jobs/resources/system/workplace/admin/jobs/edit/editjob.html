@@ -1,11 +1,17 @@
 <%@ page buffer="none" import="
 
-	org.opencms.workplace.*
+	org.opencms.jsp.*,
+	org.opencms.workplace.*,
+	org.opencms.workplace.tools.jobs.*
 
 "%><%	
 
 	// initialize the workplace class
-	CmsDialog wp = new CmsDialog(pageContext, request, response);
+	CmsEditJobDialog wp = new CmsEditJobDialog(new CmsJspActionElement(pageContext, request, response));
+	if (request.getParameter("jobId")==null) {
+		wp.getToolManager().jspRedirectTool(wp, "/jobs", null);
+		return;
+	}
 	
 //////////////////// start of switch statement 
 
@@ -43,7 +49,8 @@ default:
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-do so as were you editing the selected job: <%=request.getParameter("jobId")%> <br>
+do so as were you editing the selected job: <br>
+<%=request.getParameter("jobId")%>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>

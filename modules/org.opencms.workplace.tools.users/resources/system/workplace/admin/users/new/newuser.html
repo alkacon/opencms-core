@@ -1,11 +1,13 @@
 <%@ page buffer="none" import="
 
-	org.opencms.workplace.*
+	org.opencms.jsp.*,
+	org.opencms.workplace.*,
+	org.opencms.workplace.tools.users.*
 
 "%><%	
 
 	// initialize the workplace class
-	CmsDialog wp = new CmsDialog(pageContext, request, response);
+	CmsNewUserDialog wp = new CmsNewUserDialog(new CmsJspActionElement(pageContext, request, response));
 	
 //////////////////// start of switch statement 
 
@@ -41,7 +43,9 @@ default:
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
+<% if (wp.getParamFramename() == null) { %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<%  } %>
 
 <h2>do so as were you creating a new user</h2>
 

@@ -1,11 +1,13 @@
 <%@ page buffer="none" import="
 
-	org.opencms.workplace.*
+	org.opencms.jsp.*,
+	org.opencms.workplace.*,
+	org.opencms.workplace.tools.jobs.*
 
 "%><%	
 
 	// initialize the workplace class
-	CmsDialog wp = new CmsDialog(pageContext, request, response);
+	CmsNewJobDialog wp = new CmsNewJobDialog(new CmsJspActionElement(pageContext, request, response));
 	
 //////////////////// start of switch statement 
 
