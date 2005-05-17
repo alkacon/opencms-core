@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/12 08:58:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/17 09:52:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -73,7 +73,7 @@ public class CmsHtmlList {
     private int m_maxItemsPerPage = 20;
 
     /** Metadata for building the list. */
-    private final CmsListMetadata m_metadata;
+    private CmsListMetadata m_metadata;
 
     /** Display Name of the list. */
     private final CmsMessageContainer m_name;
@@ -974,5 +974,19 @@ public class CmsHtmlList {
         html.append("\t</tr>\n");
         html.append("</table>\n");
         return html.toString();
+    }
+
+    /**
+     * Sets the metadata for this list.<p>
+     * 
+     * Should only be used by the <code>{@link A_CmsListDialog}</code> class
+     * for temporaly removing the metadata object while the list is saved in the 
+     * <code>{@link org.opencms.workplace.CmsWorkplaceSettings}</code>.<p>     
+     * 
+     * @param metadata the list metadata
+     */
+    /*package*/ void setMetadata(CmsListMetadata metadata) {
+
+        m_metadata = metadata;
     }
 }

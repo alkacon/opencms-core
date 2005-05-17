@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/05/11 13:12:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/17 09:52:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,10 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -103,8 +105,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** Request parameter key for the column to sort the list. */
     public static final String PARAM_SORT_COL = "sortcol";
 
-    /** metadata for the list used in this dialog. */
-    private static CmsListMetadata m_metadata;
+    /** metadata map for all used list metadata objects. */
+    private static Map m_metadatas = new HashMap();
 
     /** the internal list. */
     private CmsHtmlList m_list;
@@ -146,7 +148,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         // initialization 
         if (getList() == null) {
             // create the list
-            setList(createList(listId, listName));
+            setList(new CmsHtmlList(listId, listName, getMetadata(listId)));
             if (searchableColId != null && getList().getMetadata().getColumnDefinition(searchableColId) != null) {
                 setSearchAction(listId, getList().getMetadata().getColumnDefinition(searchableColId));
             }
@@ -217,6 +219,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public CmsHtmlList getList() {
 
+        if (m_list != null && m_list.getMetadata() == null) {
+            m_list.setMetadata((CmsListMetadata)m_metadatas.get(m_list.getId()));
+        }
         return m_list;
     }
 
@@ -444,12 +449,15 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * 
      * @param listId the id of the expected list
      */
-    protected void listRecovery(String listId) {
+    protected synchronized void listRecovery(String listId) {
 
         CmsHtmlList list = null;
         list = getSettings().getHtmlList();
         if (list != null && !list.getId().equals(listId)) {
             list = null;
+        }
+        if (list != null) {
+            list.setMetadata(getMetadata(listId));
         }
         setList(list);
     }
@@ -457,9 +465,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /**
      * Save the state of the list in the session.<p>
      */
-    protected void listSave() {
+    protected synchronized void listSave() {
 
-        getSettings().setHtmlList(getList());
+        CmsHtmlList list = getList();
+        list.setMetadata(null);
+        getSettings().setHtmlList(list);
     }
 
     /**
@@ -502,7 +512,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         // makes the list searchable by login
         CmsListSearchAction searchAction = new CmsListSearchAction(listId, columnDefinition);
         searchAction.useDefaultShowAllAction();
-        m_metadata.setSearchAction(searchAction);
+        ((CmsListMetadata)m_metadatas.get(listId)).setSearchAction(searchAction);
     }
 
     /**
@@ -522,21 +532,21 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Should generate the metadata definition of the list, and return a 
-     * new list object associated to it.<p>
+     * Should generate the metadata definition for the list, and return the 
+     * corresponding <code>{@link CmsListMetadata}</code> object.<p>
      * 
-     * @return The list to display in this dialog
+     * @return The metadata for the given list
      */
-    private CmsHtmlList createList(String listId, CmsMessageContainer listName) {
+    private synchronized CmsListMetadata getMetadata(String listId) {
 
-        if (m_metadata == null) {
-            m_metadata = new CmsListMetadata();
+        if (m_metadatas.get(listId) == null) {
+            CmsListMetadata metadata = new CmsListMetadata();
 
-            setIndependentActions(m_metadata);
-            setColumns(m_metadata);
-            setMultiActions(m_metadata);
+            setIndependentActions(metadata);
+            setColumns(metadata);
+            setMultiActions(metadata);
+            m_metadatas.put(listId, metadata);
         }
-        return new CmsHtmlList(listId, listName, m_metadata);
-
+        return (CmsListMetadata)m_metadatas.get(listId);
     }
 }
