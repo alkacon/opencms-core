@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyException.java,v $
- * Date   : $Date: 2005/05/17 13:47:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsLegacyException extends CmsException implements I_CmsThrowable {
 
@@ -358,6 +358,21 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     public CmsLegacyException(String message, Throwable cause) {
 
         super(message, cause);
+    }
+    
+    /**
+     * Creates a CmsLegacyException with the provided error code and
+     * a given root cause.<p>
+     * 
+     * The error codes used should be the constants from the CmsLegacyException class or subclass.<p>
+     *
+     * @param type exception error code
+     * @param cause root cause exception
+     */
+    public CmsLegacyException(int type, Throwable cause) {
+
+        initCause(cause);
+        m_type = type;
     }
 
     /**

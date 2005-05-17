@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2005/05/17 16:14:07 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.60 $ $Date: 2005/04/30 11:15:38 $
+ * @version $Revision: 1.61 $ $Date: 2005/05/17 16:14:07 $
  */
 public class CmsExport implements Serializable {
     
@@ -714,13 +714,14 @@ public class CmsExport implements Serializable {
                     
                     throw e;
                 } catch (CmsException e) {
-                    if (e.getType() != CmsVfsException.C_VFS_RESOURCE_DELETED) {
-
-                        CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_ADDING_FILE_1, fileName);
+                    if (e instanceof CmsVfsException) { // file not found
+                        CmsMessageContainer message = Messages.get().container(
+                            Messages.ERR_IMPORTEXPORT_ERROR_ADDING_FILE_1,
+                            fileName);
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(message, e);
                         }
-                        
+
                         throw new CmsImportExportException(message, e);
                     }
                 }

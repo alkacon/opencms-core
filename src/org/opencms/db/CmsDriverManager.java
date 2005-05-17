@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.498 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.499 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.498 $
+ * @version $Revision: 1.499 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -547,13 +547,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     m_userGroupsCache.clear();
                 } else {
                     throw new CmsDbEntryNotFoundException(Messages.get().container(
-                        Messages.ERR_UNKNOWN_GROUP_1,
-                        groupname));
+                        Messages.ERR_UNKNOWN_GROUP_1, groupname));
                 }
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_UNKNOWN_USER_1,
-                    user.getName()));
+                    Messages.ERR_UNKNOWN_USER_1, user.getName()));
             }
         }
     }
@@ -638,8 +636,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             return newUser;
         } else {
             throw new CmsIllegalArgumentException(org.opencms.main.Messages.get().container(
-                Messages.ERR_BAD_USER_1,
-                name));
+                Messages.ERR_BAD_USER_1, name));
         }
 
     }
@@ -731,8 +728,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 }
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_UNKNOWN_USER_1,
-                    user.getName()));
+                    Messages.ERR_UNKNOWN_USER_1, user.getName()));
             }
             return newUser;
         } else {
@@ -955,7 +951,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void cmsEvent(CmsEvent event) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().container(Messages.LOG_CMS_EVENT_1, String.valueOf(event.getType())));
+            LOG.debug(Messages.get().key(Messages.LOG_CMS_EVENT_1, String.valueOf(event.getType())));
         }
 
         I_CmsReport report;
@@ -3508,7 +3504,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // initialize the access-module.
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().container(Messages.INIT_DRIVER_MANAGER_START_PHASE4_0));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_0));
         }
 
         // store the access objects
@@ -3608,8 +3604,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         try {
             projectResources = readProjectResources(dbc, dbc.currentProject());
         } catch (CmsException e) {
-            if (CmsLog.LOG.isErrorEnabled()) {
-                CmsLog.LOG.error(Messages.get().container(Messages.LOG_ERR_READ_PROJECT_RESOURCES_1, e));
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_ERR_READ_PROJECT_RESOURCES_1, e));
             }
             return false;
         }
@@ -4074,9 +4070,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         } catch (Throwable t) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_ERROR_INITIALIZING_DRIVER_1, driverName);
             if (LOG.isErrorEnabled()) {
-                LOG.error(message, t);
+                LOG.error(message.key(), t);
             }
-            t.printStackTrace(System.err);
             throw new CmsInitException(message, t);
         }
 
@@ -4126,7 +4121,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             if (LOG.isFatalEnabled()) {
                 LOG.fatal(message.key(), exc);
             }
-            throw new CmsException(message, exc);
+            throw new CmsDbException(message, exc);
 
         }
 
@@ -4230,7 +4225,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 try {
                     m_projectDriver.deleteProject(dbc, dbc.currentProject());
                 } catch (CmsException e) {
-                    LOG.error("Could not delete temporary project " + publishProjectId);
+                    LOG.error(Messages.get().key(Messages.LOG_DELETE_TEMP_PROJECT_FAILED_1, String.valueOf(publishProjectId)));
                 }
                 // if project was temporary set context to online project
                 cms.getRequestContext().setCurrentProject(readProject(dbc, I_CmsConstants.C_PROJECT_ONLINE_ID));
@@ -4415,7 +4410,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 }
             } catch (CmsException e) {
                 // the project resource probably doesnt exist (anymore)...
-                if (e.getType() != CmsVfsException.C_VFS_RESOURCE_NOT_FOUND) {
+                if (!(e instanceof CmsVfsResourceNotFoundException)) {
                     throw e;
                 }
             }
@@ -7202,11 +7197,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 for (int j = 0; j < pools.length; j++) {
                     try {
                         driver.closePool(pools[j]);
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug(". Shutting down        : closed connection pool '" + pools[j] + "'");
+                        if (CmsLog.LOG.isDebugEnabled()) {
+                            CmsLog.LOG.debug(Messages.get().key(Messages.INIT_CLOSE_CONN_POOL_1, pools[j]));
                         }
                     } catch (Throwable t) {
-                        LOG.error("Error closing connection pool '" + pools[j] + "'", t);
+                        LOG.error(Messages.get().key(Messages.LOG_CLOSE_CONN_POOL_ERROR_1, pools[j]), t);
                     }
                 }
             }

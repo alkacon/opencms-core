@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/17 16:13:36 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:32 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -227,7 +227,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
             Throwable e = targetEx.getTargetException();
             if (!(e instanceof CmsException)) {
                 // Only print an error if this is NO CmsException
-                throwException("User method " + methodName + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                throwException("User method " + methodName + " throwed an exception. " + e, CmsLegacyException.C_UNKNOWN_EXCEPTION);
             } else {
                 // This is a CmsException
                 // Error printing should be done previously.
@@ -1656,7 +1656,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
                         try {
                             stream.write(streamResults.getBytes(m_cms.getRequestContext().getEncoding()));
                         } catch (Exception e) {
-                            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+                            throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
                         }
                     }
                 }
@@ -1932,7 +1932,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @throws CmsException if something goes wrong
      */
     protected void throwException(String errorMessage) throws CmsException {
-        throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+        throwException(errorMessage, CmsLegacyException.C_UNKNOWN_EXCEPTION);
     }
 
     /**
@@ -1959,7 +1959,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @throws CmsException if something goes wrong
      */
     protected void throwException(String errorMessage, Exception e) throws CmsException {
-        throwException(errorMessage, e, CmsException.C_UNKNOWN_EXCEPTION);
+        throwException(errorMessage, e, CmsLegacyException.C_UNKNOWN_EXCEPTION);
     }
 
     /**

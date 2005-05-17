@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsDataAccessException.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,27 +38,15 @@ import org.opencms.main.CmsException;
  * Signals data access related issues, i.e. database access.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsDataAccessException extends CmsException {
-
-    /** Consistency check exception. */
-    public static final int C_DA_CONSISTENCY_EXCEPTION = 303;
 
     // the allowed type range for this exception is >=300 and <400    
 
     /** General data access exception. */
     public static final int C_DA_EXCEPTION = 300;
-
-    /** Ldap exception. */
-    public static final int C_DA_LDAP_EXCEPTION = 302;
-
-    /** Object not found exception. */
-    public static final int C_DA_OBJECT_NOT_FOUND_EXCEPTION = 304;
-
-    /** Serialization exception. */
-    public static final int C_DA_SERIALIZATION_EXCEPTION = 305;
 
     /** Sql exception. */
     public static final int C_DA_SQL_EXCEPTION = 301;
@@ -66,11 +54,7 @@ public class CmsDataAccessException extends CmsException {
     /** Error messages. */
     private static final String[] C_ERROR_MESSAGES = {
     /* 300 */"Data Access Exception",
-    /* 301 */"SQL Exception",
-    /* 302 */"LDAP Exception",
-    /* 303 */"Consistency Check Exception",
-    /* 304 */"Object Not Found Exception",
-    /* 305 */"Serialization Exception"};
+    /* 301 */"SQL Exception"};
 
     /**
      * Creates a new localized Exception.<p>

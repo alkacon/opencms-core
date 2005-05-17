@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,15 +38,29 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
+ * 
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_BACKUP_FILE_HEADER_NOT_FOUND_1 = "ERR_BACKUP_FILE_HEADER_NOT_FOUND_1";
+       
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_BACKUP_FILE_NOT_FOUND_1 = "ERR_BACKUP_FILE_NOT_FOUND_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CANNOT_READ_GROUPS_OF_USER_1 = "ERR_CANNOT_READ_GROUPS_OF_USER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COUNTING_PROPERTIES_1 = "ERR_COUNTING_PROPERTIES_1";
+     
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CREATE_SIBLING_FILE_NOT_FOUND_1 = "ERR_CREATE_SIBLING_FILE_NOT_FOUND_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETE_NONEMTY_FOLDER_2 = "ERR_DELETE_NONEMTY_FOLDER_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETING_PROPERTIES_1 = "ERR_DELETING_PROPERTIES_1";
@@ -65,6 +79,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ERROR_RESETING_RESOURCE_STATE_1 = "ERR_ERROR_RESETING_RESOURCE_STATE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_GENERIC_SQL_0 = "ERR_GENERIC_SQL_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_GENERIC_SQL_1 = "ERR_GENERIC_SQL_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GROUP_WITH_NAME_ALREADY_EXISTS_1 = "ERR_GROUP_WITH_NAME_ALREADY_EXISTS_1";
@@ -128,6 +148,30 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISHING_RESOURCE_1 = "ERR_PUBLISHING_RESOURCE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_DELETED_FILE_1 = "ERR_READ_DELETED_FILE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_DELETED_RESOURCE_1 = "ERR_READ_DELETED_RESOURCE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_FILE_WITH_STRUCTURE_ID_1 = "ERR_READ_FILE_WITH_STRUCTURE_ID_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_FOLDER_1 = "ERR_READ_FOLDER_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_FOLDER_WITH_ID_1 = "ERR_READ_FOLDER_WITH_ID_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_PARENT_ID_1 = "ERR_READ_PARENT_ID_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_RESOURCE_1 = "ERR_READ_RESOURCE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_RESOURCE_WITH_ID_1 = "ERR_READ_RESOURCE_WITH_ID_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_RESOURCE_1 = "ERR_READING_RESOURCE_1";
@@ -169,9 +213,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_WRITING_BACKUP_OF_PROJECT_1 = "ERR_WRITING_BACKUP_OF_PROJECT_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_WRITING_PUBLISHING_HISTORY_1 = "ERR_WRITING_PUBLISHING_HISTORY_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITING_TO_OUTPUT_STREAM_1 = "ERR_WRITING_TO_OUTPUT_STREAM_1";
 
     /** Message constant for key in the resource bundle. */
@@ -188,12 +229,28 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SHUTDOWN_DRIVER_1 = "INIT_SHUTDOWN_DRIVER_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEL_FILE_3 = "LOG_DEL_FILE_3";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEL_FOLDER_3 = "LOG_DEL_FOLDER_3";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PUBLISHING_FILE_3 = "LOG_PUBLISHING_FILE_3";
+    
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PUBLISHING_FOLDER_3 = "LOG_PUBLISHING_FOLDER_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_START_PUBLISHING_PROJECT_2 = "LOG_START_PUBLISHING_PROJECT_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1 = "LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WRITING_PUBLISHING_HISTORY_1 = "LOG_WRITING_PUBLISHING_HISTORY_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.generic.messages";

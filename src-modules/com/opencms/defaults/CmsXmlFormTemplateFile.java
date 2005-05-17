@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/17 16:13:36 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.w3c.dom.Element;
  * See the handleXxxTag Methods for more details.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:32 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -173,7 +173,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsW
 
                 // Only print an error if this is NO CmsException
                 throwException("Radio button method " + radioMethod + " in calling class " + callingObject.getClass().getName()
-                        + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                        + " throwed an exception. " + e, CmsLegacyException.C_UNKNOWN_EXCEPTION);
             } else {
 
                 // This is a CmsException
@@ -325,7 +325,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsW
 
                 // Only print an error if this is NO CmsException
                 throwException("User method " + selectMethod + " in calling class " + callingObject.getClass().getName()
-                        + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                        + " throwed an exception. " + e, CmsLegacyException.C_UNKNOWN_EXCEPTION);
             } else {
 
                 // This is a CmsException

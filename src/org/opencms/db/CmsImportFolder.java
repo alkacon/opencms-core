@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@
  
 package org.opencms.db;
 
-import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -56,7 +56,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class CmsImportFolder {
 
@@ -101,8 +101,8 @@ public class CmsImportFolder {
             m_cms.readFolder(importPath, CmsResourceFilter.IGNORE_EXPIRATION);
             // import the resources
             importZipResource(m_zipStreamIn, m_importPath, noSubFolder);
-        } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
+        } catch (Exception e) {
+            throw new CmsVfsException(Messages.get().container(Messages.ERR_IMPORT_FOLDER_1, importPath), e);
         }
     }
 
@@ -131,8 +131,8 @@ public class CmsImportFolder {
             }
             // all is done, unlock the resources
             m_cms.unlockResource(m_importPath);
-        } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
+        } catch (Exception e) {
+            throw new CmsVfsException(Messages.get().container(Messages.ERR_IMPORT_FOLDER_2, importFolderName, importPath), e);
         }
     }
 
@@ -158,23 +158,22 @@ public class CmsImportFolder {
 
     /**
      * Stores the import resource in an Object member variable.<p>
-     * @throws CmsException if something goes wrong 
+     * @throws CmsVfsException if the file to import is no valid zipfile
      */
-    private void getImportResource() throws CmsException {
-        try {
-            // get the import resource
-            m_importResource = new File(m_importFolderName);
-            // check if this is a folder or a ZIP file
-            if (m_importResource.isFile()) {
-                try {
-                    m_zipStreamIn = new ZipInputStream(new FileInputStream(m_importResource));
-                } catch (IOException e) {
-                    // if file but no ZIP file throw an exception
-                    throw new CmsException(e.toString());
-                }
+    private void getImportResource() throws CmsVfsException {
+
+        // get the import resource
+        m_importResource = new File(m_importFolderName);
+        // check if this is a folder or a ZIP file
+        if (m_importResource.isFile()) {
+            try {
+                m_zipStreamIn = new ZipInputStream(new FileInputStream(m_importResource));
+            } catch (IOException e) {
+                // if file but no ZIP file throw an exception
+                throw new CmsVfsException(Messages.get().container(
+                    Messages.ERR_NO_ZIPFILE_1,
+                    m_importResource.getName()), e);
             }
-        } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
         }
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/05/17 15:29:17 $
- * Version: $Revision: 1.185 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.186 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
-import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsSqlManager;
 import org.opencms.file.CmsObject;
@@ -50,6 +50,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.flex.CmsFlexController;
@@ -126,7 +127,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.185 $
+ * @version $Revision: 1.186 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1661,9 +1662,7 @@ public final class OpenCmsCore {
             if (s.getRootCause() != null) {
                 t = s.getRootCause();
             }
-        }
-
-        if (t instanceof CmsSecurityException) {
+        } else if (t instanceof CmsSecurityException) {
             // access error - display login dialog
             if (canWrite) {
                 try {
@@ -1676,29 +1675,13 @@ public final class OpenCmsCore {
         } else if (t instanceof CmsDbEntryNotFoundException) {
             // user or group does not exist
             status = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
-            isNotGuest = true;            
+            isNotGuest = true;
+        } else if (t instanceof CmsVfsResourceNotFoundException) {
+            // file not found - display 404 error.
+            status = HttpServletResponse.SC_NOT_FOUND;  
         } else if (t instanceof CmsException) {
-            CmsException e = (CmsException)t;
-
-            int exceptionType = e.getType();
-            switch (exceptionType) {
-
-                case CmsVfsException.C_VFS_RESOURCE_NOT_FOUND:
-                    // file not found - display 404 error.
-                    status = HttpServletResponse.SC_NOT_FOUND;
-                    break;
-
-                case CmsException.C_SERVICE_UNAVAILABLE:
-                    status = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
-                    break;
-
-                default:
-                    // other CmsException
-                    break;
-            }
-
-            if (e.getCause() != null) {
-                t = e.getCause();
+            if (t.getCause() != null) {
+                t = t.getCause();
             }
         }
 

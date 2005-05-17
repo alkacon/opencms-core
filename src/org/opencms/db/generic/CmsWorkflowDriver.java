@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.46 $ $Date: 2005/05/16 13:46:56 $
+ * @version $Revision: 1.47 $ $Date: 2005/05/17 16:13:36 $
  * @since 5.1
  */
 public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -119,8 +119,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setInt(1, newId);
             stmt.executeUpdate();
 
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -179,8 +180,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setInt(3, taskId);
             stmt.executeUpdate();
 
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -201,8 +203,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setString(2, newUserId.toString());
             stmt.setInt(3, taskId);
             stmt.executeUpdate();
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -271,8 +274,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             if (res.next()) {
                 result = new CmsUUID(res.getString(1));
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception exc) {
             throw new CmsDataAccessException(exc);
         } finally {
@@ -307,7 +311,8 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                     task));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -347,8 +352,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 tasklog = new CmsTaskLog(id, comment, user, starttime, type);
                 logs.add(tasklog);
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception exc) {
             throw new CmsDataAccessException(exc);
         } finally {
@@ -376,8 +382,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             if (res.next()) {
                 task = internalCreateTask(res);
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception exc) {
             throw new CmsDataAccessException(exc);
         } finally {
@@ -410,8 +417,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
 
                 tasklog = new CmsTaskLog(id, comment, user, starttime, type);
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception exc) {
             throw new CmsDataAccessException(exc);
         } finally {
@@ -452,8 +460,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 tasklog = new CmsTaskLog(id, comment, user, starttime, type);
                 logs.add(tasklog);
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception exc) {
             throw new CmsDataAccessException(exc);
         } finally {
@@ -482,8 +491,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             if (res.next()) {
                 result = res.getString(m_sqlManager.readQuery("C_PAR_VALUE"));
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -579,8 +589,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 tasks.add(task);
             }
 
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception exc) {
             throw new CmsDataAccessException(exc);
         } finally {
@@ -610,8 +621,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             if (res.next()) {
                 result = res.getInt("id");
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -667,8 +679,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setInt(21, task.getId());
             stmt.executeUpdate();
 
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -708,8 +721,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setInt(6, type);
 
             stmt.executeUpdate();
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -741,8 +755,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 internalWriteTaskParameter(dbc, taskId, parname, parvalue);
 
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -799,8 +814,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                     roleref);
 
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -943,8 +959,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setString(1, parvalue);
             stmt.setInt(2, parid);
             stmt.executeUpdate();
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -976,8 +993,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setString(3, m_sqlManager.validateEmpty(parname));
             stmt.setString(4, m_sqlManager.validateEmpty(parvalue));
             stmt.executeUpdate();
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, null);
@@ -1025,8 +1043,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setInt(7, roleref);
             stmt.setInt(8, taskId);
             stmt.executeUpdate();
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1075,8 +1094,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             stmt.setInt(7, priorityref);
             stmt.setInt(8, roleref);
             stmt.executeUpdate();
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, null);

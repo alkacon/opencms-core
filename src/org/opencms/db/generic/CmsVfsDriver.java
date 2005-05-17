@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.240 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.241 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.240 $ 
+ * @version $Revision: 1.241 $ 
  * @since 5.1
  */
 public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
@@ -153,7 +153,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -336,8 +337,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setString(1, new CmsUUID().toString());
             stmt.setString(2, name);
             stmt.executeUpdate();
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -520,7 +522,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 }
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -640,7 +643,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         // check if a resource with the specified ID already exists
         if (!validateResourceIdExists(dbc, project.getId(), resource.getResourceId())) {
-            throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + "] ");
+            throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                Messages.ERR_CREATE_SIBLING_FILE_NOT_FOUND_1, dbc.removeSiteRoot(resource.getRootPath())));
         }
 
         // write a new structure referring to the resource
@@ -678,7 +682,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -721,8 +726,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -775,8 +781,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             }
 
             stmt.executeUpdate();
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -947,7 +954,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1010,7 +1018,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 }
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1049,22 +1058,20 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                throw new CmsVfsResourceNotFoundException("["
-                    + this.getClass().getName()
-                    + ".readFile] "
-                    + structureId.toString());
+                throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                    Messages.ERR_READ_FILE_WITH_STRUCTURE_ID_1, structureId));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
         if (file != null && file.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
-            throw new CmsVfsException(
-                "[" + this.getClass().getName() + ".readFile] " + file.getRootPath(),
-                CmsVfsException.C_VFS_RESOURCE_DELETED);
+            throw new CmsVfsException(Messages.get().container(
+                Messages.ERR_READ_DELETED_FILE_1, dbc.removeSiteRoot(file.getRootPath())));
         }
 
         return file;
@@ -1091,7 +1098,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 resources.add(currentResource);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1121,7 +1129,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 files.add(file);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1151,13 +1160,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                throw new CmsVfsResourceNotFoundException("["
-                    + this.getClass().getName()
-                    + ".readFolder/1] "
-                    + folderId);
+                throw new CmsVfsResourceNotFoundException(
+                    Messages.get().container(Messages.ERR_READ_FOLDER_WITH_ID_1, folderId));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1190,13 +1198,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                throw new CmsVfsResourceNotFoundException("["
-                    + this.getClass().getName()
-                    + ".readFolder/2] "
-                    + folderPath);
+                throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                    Messages.ERR_READ_FOLDER_1, dbc.removeSiteRoot(folderPath)));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1226,7 +1233,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 folders.add(currentFolder);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1261,8 +1269,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1,
                     name));
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1290,8 +1299,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     new CmsUUID(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_ID"))),
                     res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME"))));
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1356,8 +1366,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 resultSize++;
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1422,8 +1433,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         propertyKey));
                 }
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1455,13 +1467,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                throw new CmsVfsResourceNotFoundException("["
-                    + this.getClass().getName()
-                    + ".readResource/2] "
-                    + structureId);
+                throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                    Messages.ERR_READ_RESOURCE_WITH_ID_1, structureId));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1470,9 +1481,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         if (resource != null
             && resource.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED
             && !includeDeleted) {
-            throw new CmsVfsException(
-                "[" + this.getClass().getName() + ".readResource/2] " + resource.getRootPath(),
-                CmsVfsException.C_VFS_RESOURCE_DELETED);
+            throw new CmsVfsException(Messages.get().container(
+                Messages.ERR_READ_DELETED_RESOURCE_1, dbc.removeSiteRoot(resource.getRootPath())));
         }
 
         return resource;
@@ -1505,19 +1515,20 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readResource/3] " + path);
+                throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                    Messages.ERR_READ_RESOURCE_1, dbc.removeSiteRoot(path)));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
         if (resource != null && resource.getState() == I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
-            throw new CmsVfsException(
-                "[" + this.getClass().getName() + ".readResource/3] " + resource.getRootPath(),
-                CmsVfsException.C_VFS_RESOURCE_DELETED);
+            throw new CmsVfsException(Messages.get().container(
+                Messages.ERR_READ_DELETED_RESOURCE_1, dbc.removeSiteRoot(resource.getRootPath())));
         }
 
         return resource;
@@ -1568,7 +1579,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 result.add(resource);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1600,7 +1612,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 result.add(resource);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1633,7 +1646,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 resources.add(resource);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1672,7 +1686,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 resources.add(resource);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1731,7 +1746,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             }
 
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1768,7 +1784,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 vfsLinks.add(currentResource);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1831,7 +1848,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             }
 
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1862,12 +1880,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 for (int i = 0, n = folders.size(); i < n; i++) {
                     CmsResource errorRes = (CmsResource)folders.get(i);
-                    errorResNames += "[" + errorRes.getRootPath() + "]";
+                    errorResNames += "[" + dbc.removeSiteRoot(errorRes.getRootPath()) + "]";
                 }
 
-                throw new CmsVfsException(
-                    "[" + this.getClass().getName() + "] " + resource.getName() + errorResNames,
-                    CmsVfsException.C_VFS_FOLDER_NOT_EMPTY);
+                throw new CmsVfsException(Messages.get().container(
+                    Messages.ERR_DELETE_NONEMTY_FOLDER_2, dbc.removeSiteRoot(resource.getRootPath()), errorResNames));
             }
         } else {
             String errorResNames = "";
@@ -1877,9 +1894,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 errorResNames += "[" + errorRes.getName() + "]";
             }
 
-            throw new CmsVfsException(
-                "[" + this.getClass().getName() + "] " + resource.getName() + errorResNames,
-                CmsVfsException.C_VFS_FOLDER_NOT_EMPTY);
+            throw new CmsVfsException(Messages.get().container(
+                Messages.ERR_DELETE_NONEMTY_FOLDER_2, dbc.removeSiteRoot(resource.getRootPath()), errorResNames));
         }
     }
 
@@ -1907,7 +1923,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1938,7 +1955,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 result = false;
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1965,7 +1983,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             res = stmt.executeQuery();
             exists = res.next();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1998,7 +2017,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 found = false;
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -2029,7 +2049,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setString(2, resourceId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -2051,7 +2072,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setString(2, resource.getResourceId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -2199,7 +2221,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 m_sqlManager.closeAll(dbc, null, stmt, null);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -2286,7 +2309,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setString(7, resource.getStructureId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -2347,8 +2371,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.executeUpdate();
             }
 
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -2400,8 +2425,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     Messages.ERR_COUNTING_PROPERTIES_1,
                     propertyDefinition.getName()));
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -2438,7 +2464,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 count = res.getInt(1);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -2479,10 +2506,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             if (res.next()) {
                 parentId = res.getString(1);
             } else {
-                throw new CmsVfsResourceNotFoundException("Unable to read parent id of resource " + resourcename);
+                throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                    Messages.ERR_READ_PARENT_ID_1, dbc.removeSiteRoot(resourcename)));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -2520,7 +2549,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setString(1, resource.getResourceId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }

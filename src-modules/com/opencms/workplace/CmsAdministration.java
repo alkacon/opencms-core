@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/17 16:13:36 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Name:  $ $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -159,7 +159,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
 
                 // The requested method was not found.
                 throwException("Could not find icon activation method " + iconVisibleMethod
-                        + " in calling class " + className + " for generating icon.", CmsException.C_NOT_FOUND);
+                        + " in calling class " + className + " for generating icon.", CmsLegacyException.C_NOT_FOUND);
             }
             catch(InvocationTargetException targetEx) {
 

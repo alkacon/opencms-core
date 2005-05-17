@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsException.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,23 +39,11 @@ import org.opencms.main.CmsException;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
+ * @version $Revision: 1.10 $
  * @since 5.1.4
  */
 public class CmsVfsException extends CmsDataAccessException {
-
-    /** Error code for not empty exception. */
-    public static final int C_VFS_FOLDER_NOT_EMPTY = 5; //C_NOT_EMPTY;    
-
-    /** Resource already exists. */
-    public static final int C_VFS_RESOURCE_ALREADY_EXISTS = 12; //C_FILE_EXISTS;
-
-    /** Resource deleted. */
-    public static final int C_VFS_RESOURCE_DELETED = 32; //C_RESOURCE_DELETED;
-
-    // TODO: to change the constants in a more consistent way
-    /** Resource not found. */
-    public static final int C_VFS_RESOURCE_NOT_FOUND = 2; //C_NOT_FOUND;
 
     /**
      * Creates a new localized Exception.<p>
@@ -79,17 +67,6 @@ public class CmsVfsException extends CmsDataAccessException {
     }
 
     /**
-     * Constructs a exception with the specified description message and type.<p>
-     * 
-     * @param message the description message
-     * @param type the type of the exception
-     */
-    public CmsVfsException(String message, int type) {
-
-        super(message, type);
-    }
-
-    /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
@@ -106,14 +83,6 @@ public class CmsVfsException extends CmsDataAccessException {
     protected String getErrorDescription(int type) {
 
         switch (type) {
-            case C_VFS_RESOURCE_NOT_FOUND:
-                return "Resource not found!";
-            case C_VFS_RESOURCE_ALREADY_EXISTS:
-                return "Resource already exists!";
-            case C_VFS_RESOURCE_DELETED:
-                return "Resource has been deleted!";
-            case C_VFS_FOLDER_NOT_EMPTY:
-                return "Folder is not empty!";
             default:
                 return super.getErrorDescription(type);
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/17 16:13:36 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
@@ -45,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:32 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -256,7 +257,7 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * @throws CmsException if something goes wrong
      */
     protected void throwException(String errorMessage) throws CmsException {
-        throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+        throwException(errorMessage, CmsLegacyException.C_UNKNOWN_EXCEPTION);
     }
 
     /**
@@ -289,7 +290,7 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
         if (e instanceof CmsException) {
             throw (CmsException)e;
         } else {
-            throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw new CmsLegacyException(errorMessage, CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2005/05/17 13:47:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.0 beta 1
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -108,7 +108,7 @@ public class CmsJspTemplate extends CmsDumpTemplate {
             if (e instanceof CmsException) {
                 throw (CmsException)e;
             } else {
-                throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+                throw new CmsLegacyException(errorMessage, CmsLegacyException.C_UNKNOWN_EXCEPTION);
             }
         }
         return s;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2005/05/17 13:47:27 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/17 16:13:36 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,12 @@
 
 package com.opencms.template.cache;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 
-import org.opencms.file.CmsObject;
-
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsCacheDirectives;
 import com.opencms.template.CmsCacheDirectives;
@@ -192,7 +192,7 @@ public class CmsElementXml extends A_CmsElement {
                         if(OpenCms.getLog(this).isErrorEnabled()) {
                             OpenCms.getLog(this).error("Non OpenCms error occured in getContent for template class " + m_className, e);
                         }
-                        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+                        throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
                     }
                 }
             }

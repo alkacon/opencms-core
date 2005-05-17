@@ -24,10 +24,11 @@
 
 package com.opencms.defaults;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsXmlTemplate;
@@ -175,7 +176,7 @@ public class CmsShowContent extends CmsXmlTemplate {
                 id = new Integer(paramId);
             } catch (NumberFormatException e) {
                 // throw exception if the id is not numeric
-                throw new CmsException(C_NON_NUMERICAL_ID_PARAMETER, CmsException.C_UNKNOWN_EXCEPTION);
+                throw new CmsLegacyException(C_NON_NUMERICAL_ID_PARAMETER, CmsLegacyException.C_UNKNOWN_EXCEPTION);
             }
         } else {
             // throw exception if id is not given (not as a tagcontent or url parameter)
@@ -326,7 +327,7 @@ public class CmsShowContent extends CmsXmlTemplate {
             if (e instanceof CmsException) {
                 throw (CmsException) e;
             } else {
-                throw new CmsException (e.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, e);
+                throw new CmsLegacyException (e.getMessage(), CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
             }
         }
         return list.toString();

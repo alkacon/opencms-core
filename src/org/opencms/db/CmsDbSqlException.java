@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbSqlException.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.db;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
 
 import java.sql.Statement;
 
@@ -44,31 +43,22 @@ import org.apache.commons.dbcp.DelegatingPreparedStatement;
  * Used to signal sql related issues.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
+ */
+/**
+ * Comment for <code>CmsDbSqlException</code>.<p>
  */
 public class CmsDbSqlException extends CmsDataAccessException {
 
     /**
-     * Constructor given the originator, the statement and the exception.<p>
+     * Creates a new localized Exception.<p>
      * 
-     * It generates an error log entry, if enabled.<p> 
-     * 
-     * @param originator the object that got the original <code>{@link java.sql.SQLException}</code>, may be <code>null</code>
-     * @param stmt the statement that generated the <code>{@link java.sql.SQLException}</code>, may be <code>null</code>
-     * @param rootCause the originating exception, may be <code>null</code> 
+     * @param container the localized message container to use
      */
-    public CmsDbSqlException(Object originator, Statement stmt, Exception rootCause) {
-        
-        super(createMessage(originator, rootCause, stmt), C_DA_SQL_EXCEPTION, rootCause);
+    public CmsDbSqlException(CmsMessageContainer container) {
 
-        if (OpenCms.getLog(this).isErrorEnabled()) {
-            if (rootCause != null) {
-                OpenCms.getLog(this).error(getMessage(), rootCause);
-            } else {
-                OpenCms.getLog(this).error(getMessage());
-            }
-        }
+        super(container);
     }
 
     /**
@@ -92,32 +82,12 @@ public class CmsDbSqlException extends CmsDataAccessException {
     }   
     
     /**
-     * Creates a message given an originating statement and exception.<p> 
+     * Returns the query that let the statement crash.<p>
      * 
-     * @param originator the object that got the original exception, may be <code>null</code>
-     * @param rootCause the originating exception, may be <code>null</code>
-     * @param stmt the originating statement, may be <code>null</code>
-     * 
-     * @return the new exception message
+     * @param stmt the Statement to get the crashed query from
+     * @return the crashed query
      */
-    public static String createMessage(Object originator, Throwable rootCause, Statement stmt) {
-
-        int todo = 0;
-        // TODO: localize this, also check / compare to org.opencms.db.generic.CmsSqlManager (redundancy?)
-        
-        String message = "";
-        if (originator != null) {
-            if (originator instanceof String) {
-                message = (String)originator;
-            } else {
-                message = originator.getClass().getName();
-            }
-            message = "[" + message + "] ";
-        }
-
-        if (rootCause != null) {
-            message += createMessage(rootCause);
-        }
+    public static String getErrorQuery(Statement stmt) {
 
         if (stmt != null) {
             // unfortunately, DelegatingPreparedStatement has no toString() method implementation
@@ -127,43 +97,9 @@ public class CmsDbSqlException extends CmsDataAccessException {
             }
             if (s != null) {
                 // the query that crashed
-                message += "query: " + s.toString();
+                return s.toString();
             }
-        }
-
-        return message;
-    }
-
-    /**
-     * Returns a description for a exception.<p>
-     * 
-     * @param rootCause the root cause
-     * 
-     * @return a description from the given exception
-     */
-    public static String createMessage(Throwable rootCause) {
-
-        StackTraceElement[] stackTraceElements = rootCause.getStackTrace();
-        String stackTraceElement = "";
-
-        // we want to see only the first stack trace element of 
-        // our own OpenCms classes in the log message...
-        for (int i = 0; i < stackTraceElements.length; i++) {
-            String currentStackTraceElement = stackTraceElements[i].toString();
-            if (currentStackTraceElement.indexOf(".opencms.") != -1) {
-                stackTraceElement = currentStackTraceElement;
-                break;
-            }
-        }
-
-        // where did we crash?
-        String message = "where: " + stackTraceElement + ", ";
-        // why did we crash?
-        message += "why: " + rootCause.toString();
-
-        return message;
-    }
-    
-    
- 
+        } 
+        return "";
+    }    
 }

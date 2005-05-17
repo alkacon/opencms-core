@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbIoException.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,12 +38,22 @@ import org.opencms.main.CmsException;
  * Signals that an IO exception occured when reading from or writing to the OpenCms database.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.7.3
  */
 public class CmsDbIoException extends CmsDbException {    
 
+    /**
+     * Creates a new localized Exception.<p>
+     * 
+     * @param container the localized message container to use
+     */
+    public CmsDbIoException(CmsMessageContainer container) {
+
+        super(container);
+    }
+    
     /**
      * Creates a new localized Exception that also containes a root cause.<p>
      * 

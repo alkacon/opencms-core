@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.report.I_CmsReport;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.4
  */
 public class CmsDbContext {
@@ -147,7 +147,7 @@ public class CmsDbContext {
     public void pop() throws CmsException {
 
         if (!isDefaultDbContext()) {
-            throw new CmsException("Unable to process non-default database context implementation");
+            throw new CmsException(Messages.get().container(Messages.ERR_PROCESS_DB_CONTEXT_0));
         }
     }
 

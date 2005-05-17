@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2005/05/17 13:47:30 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/17 16:13:36 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:30 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -209,7 +209,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
                 }
             }
         } catch (Exception exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, exc);
         }
     }
 
@@ -600,7 +600,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
                 return new FileInputStream(xmlFile);
             }
         } catch (Exception e) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
         }
     }
 

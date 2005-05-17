@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/17 16:13:36 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.util.CmsUUID;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.defaults.master.CmsPlausibilizationException;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
@@ -75,7 +76,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -3320,7 +3321,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error while saving data to Content Definition", ex);
                     }
-                    throw new CmsException(ex.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, ex);
+                    throw new CmsLegacyException(ex.getMessage(), CmsLegacyException.C_UNKNOWN_EXCEPTION, ex);
                 }
             } //if (save || saveexit)
 

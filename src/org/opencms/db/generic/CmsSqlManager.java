@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsProject;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -57,7 +56,7 @@ import java.util.Properties;
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.53 $ $Date: 2005/05/16 13:46:56 $
+ * @version $Revision: 1.54 $ $Date: 2005/05/17 16:13:36 $
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
@@ -206,75 +205,6 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
     public byte[] getBytes(ResultSet res, String attributeName) throws SQLException {
 
         return res.getBytes(attributeName);
-    }
-
-    /**
-     * Wraps an exception in a new CmsException object.<p>
-     * 
-     * Optionally, a log message is written to the OpenCms error logging channel.
-     * 
-     * @param o the object caused the exception
-     * @param message a message that is written to the log
-     * @param exceptionType the type of the exception
-     * @param rootCause the exception that was thrown
-     * @param logSilent if TRUE, no entry to the log is written
-     * @return CmsException
-     * 
-     * @deprecated use any <code>{@link CmsDataAccessException}</code> instead.
-     */
-    public CmsException getCmsException(
-        Object o,
-        String message,
-        int exceptionType,
-        Throwable rootCause,
-        boolean logSilent) {
-
-        int todo = 0;
-        // TODO: localize this using message containers 
-
-        String className = "";
-
-        if (o != null) {
-            className = "[" + o.getClass().getName() + "] ";
-        }
-
-        if (rootCause != null) {
-            StackTraceElement[] stackTraceElements = rootCause.getStackTrace();
-            String stackTraceElement = "";
-
-            // i want to see only the first stack trace element of 
-            // my own OpenCms classes in the log message...
-            for (int i = 0; i < stackTraceElements.length; i++) {
-                String currentStackTraceElement = stackTraceElements[i].toString();
-                if (currentStackTraceElement.indexOf(".opencms.") != -1) {
-                    stackTraceElement = currentStackTraceElement;
-                    break;
-                }
-            }
-
-            if (message != null) {
-                message = "[" + message + "] ";
-            } else {
-                message = "";
-            }
-
-            // where did we crash?
-            message += "where: " + stackTraceElement + ", ";
-            // why did we crash?
-            message += "why: " + rootCause.toString();
-        }
-
-        message = className + message;
-
-        if (!logSilent && OpenCms.getLog(this).isErrorEnabled()) {
-            if (rootCause != null) {
-                OpenCms.getLog(this).error(message, rootCause);
-            } else {
-                OpenCms.getLog(this).error(message);
-            }
-        }
-
-        return new CmsException(message, exceptionType, rootCause);
     }
 
     /**

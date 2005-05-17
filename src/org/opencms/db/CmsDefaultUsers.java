@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2005/02/17 12:43:46 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.db;
 
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 
 /**
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
  * 
- * @version $Revision: 1.22 $ $Date: 2005/02/17 12:43:46 $
+ * @version $Revision: 1.23 $ $Date: 2005/05/17 16:13:36 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
@@ -103,26 +103,26 @@ public class CmsDefaultUsers {
      * @param groupGuests the name of the guests group
      */
     public CmsDefaultUsers(
-        String userAdmin, 
+        String userAdmin,
         String userGuest,
         String userExport,
         String groupAdministrators,
         String groupProjectmanagers,
         String groupUsers,
         String groupGuests) {
+
         // check if all required user and group names are not null or empty
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {            
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Default user names   : checking...");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().container(Messages.INIT_CHECKING_DEFAULT_USER_NAMES_0));
         }
-        if (
-            CmsStringUtil.isEmpty(userAdmin) 
-         || CmsStringUtil.isEmpty(userGuest)
-         || CmsStringUtil.isEmpty(userExport)
-         || CmsStringUtil.isEmpty(groupAdministrators)
-         || CmsStringUtil.isEmpty(groupProjectmanagers)
-         || CmsStringUtil.isEmpty(groupUsers)
-         || CmsStringUtil.isEmpty(groupGuests)) {
-            throw new RuntimeException("CmsDefaultUsers(): Exactly 7 user / group names are required");
+        if (CmsStringUtil.isEmpty(userAdmin)
+            || CmsStringUtil.isEmpty(userGuest)
+            || CmsStringUtil.isEmpty(userExport)
+            || CmsStringUtil.isEmpty(groupAdministrators)
+            || CmsStringUtil.isEmpty(groupProjectmanagers)
+            || CmsStringUtil.isEmpty(groupUsers)
+            || CmsStringUtil.isEmpty(groupGuests)) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_USER_GROUP_NAMES_EMPTY_0));
         }
         // set members
         m_userAdmin = userAdmin.trim();
@@ -132,19 +132,17 @@ public class CmsDefaultUsers {
         m_groupProjectmanagers = groupProjectmanagers.trim();
         m_groupUsers = groupUsers.trim();
         m_groupGuests = groupGuests.trim();
-        
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {            
-          OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Admin user           : " + getUserAdmin());
-          OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Guest user           : " + getUserGuest());
-          OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export user          : " + getUserExport());
-          OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Administrators group : " + getGroupAdministrators());
-          OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Projectmanagers group: " + getGroupProjectmanagers());
-          OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Users group          : " + getGroupUsers());
-          OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Guests group         : " + getGroupGuests());
-      }        
-      if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {            
-          OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Default user names   : initialized");
-      } 
+
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADMIN_USER_1, getUserAdmin()));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_GUEST_USER_1, getUserGuest()));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_USER_1, getUserExport()));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADMIN_GROUP_1, getGroupAdministrators()));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_PROJECT_MANAGERS_GROUP_1, getGroupProjectmanagers()));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_USERS_GROUP_1, getGroupUsers()));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_GUESTS_GROUP_1, getGroupGuests()));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DEFAULT_USER_NAMES_INITIALIZED_0));
+        }    
     }
 
     /**

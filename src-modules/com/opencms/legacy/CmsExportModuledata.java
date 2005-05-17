@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2005/05/17 13:47:30 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/17 16:13:36 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,9 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsXmlSaxWriter;
 
-import com.opencms.defaults.master.*;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.CmsMasterMedia;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -78,7 +80,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:30 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -620,13 +622,13 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Unable to write ZIP dataset file " + filename, e);
             }
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
         } catch (IOException e) {
             getReport().println(e);
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Unable to write ZIP dataset file " + filename, e);
             }
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
         }
     }
 
@@ -676,13 +678,13 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Unable to write ZIP media content file " + contentFilename, e);
             }
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
         } catch (IOException e) {
             getReport().println(e);
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Unable to write ZIP media content file " + contentFilename, e);
             }
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
         }
     }
 

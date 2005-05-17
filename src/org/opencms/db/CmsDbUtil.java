@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ package org.opencms.db;
 
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -43,6 +43,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Hashtable;
+
+import org.apache.commons.logging.Log;
 
 /**
  * This class is used to create primary keys as integers for Cms database tables that
@@ -56,6 +58,9 @@ import java.util.Hashtable;
  */
 public final class CmsDbUtil {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDbUtil.class);  
+    
     /** Hashtable with border id's. */
     private static Hashtable c_borderId;
 
@@ -98,8 +103,8 @@ public final class CmsDbUtil {
                 if (i >= 10) {
                     throw exc;
                 } else {
-                    if (OpenCms.getLog(CmsDbUtil.class).isWarnEnabled()) {
-                        OpenCms.getLog(CmsDbUtil.class).warn("Trying to get timestamp " + column + " #" + i);
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().container(Messages.LOG_GET_TIMESTAMP_2, column, String.valueOf(i)));
                     }
                 }
             }
@@ -181,19 +186,20 @@ public final class CmsDbUtil {
      */
     private static void createId(Connection conn, String tableName, int newId) throws CmsDbSqlException {
 
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
 
         try {
-            statement = conn.prepareStatement("INSERT INTO CMS_SYSTEMID (TABLE_KEY,ID) VALUES (?,?)");
-            statement.setString(1, tableName);
-            statement.setInt(2, newId);
-            statement.executeUpdate();
+            stmt = conn.prepareStatement("INSERT INTO CMS_SYSTEMID (TABLE_KEY,ID) VALUES (?,?)");
+            stmt.setString(1, tableName);
+            stmt.setInt(2, newId);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(CmsDbUtil.class.getName(), statement, e);
+            throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
-            if (statement != null) {
+            if (stmt != null) {
                 try {
-                    statement.close();
+                    stmt.close();
                 } catch (SQLException exc) {
                     // nothing to do here
                 }
@@ -242,7 +248,8 @@ public final class CmsDbUtil {
             c_currentId.put(cacheKey, new Integer(id));
             c_borderId.put(cacheKey, new Integer(borderId));
         } catch (SQLException e) {
-            throw new CmsDbSqlException(CmsDbUtil.class.getName(), null, e);
+            throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_0), e);
         } finally {
             // close all db-resources
             if (con != null) {
@@ -279,7 +286,8 @@ public final class CmsDbUtil {
                 return I_CmsConstants.C_UNKNOWN_ID;
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(CmsDbUtil.class.getName(), stmt, e);
+            throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             // close all db-resources
             if (res != null) {
@@ -312,23 +320,24 @@ public final class CmsDbUtil {
      */
     private static boolean writeId(Connection conn, String tableName, int oldId, int newId) throws CmsDbSqlException {
 
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
 
         try {
-            statement = conn
+            stmt = conn
                 .prepareStatement("UPDATE CMS_SYSTEMID SET ID=? WHERE CMS_SYSTEMID.TABLE_KEY=? AND CMS_SYSTEMID.ID=?");
-            statement.setInt(1, newId);
-            statement.setString(2, tableName);
-            statement.setInt(3, oldId);
-            int amount = statement.executeUpdate();
+            stmt.setInt(1, newId);
+            stmt.setString(2, tableName);
+            stmt.setInt(3, oldId);
+            int amount = stmt.executeUpdate();
             // return, if the update had succeeded
             return (amount == 1);
         } catch (SQLException e) {
-            throw new CmsDbSqlException(CmsDbUtil.class.getName(), statement, e);
+            throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
-            if (statement != null) {
+            if (stmt != null) {
                 try {
-                    statement.close();
+                    stmt.close();
                 } catch (SQLException exc) {
                     // nothing to do here
                 }

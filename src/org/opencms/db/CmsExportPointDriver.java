@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPointDriver.java,v $
- * Date   : $Date: 2005/05/03 15:44:14 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.db;
 
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,15 +40,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods to write export points to the "real" file system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsExportPointDriver {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExportPointDriver.class);  
+    
     /** The export points resolved to a lookup map. */
     private HashMap m_exportpointLookupMap;
 
@@ -85,8 +90,8 @@ public class CmsExportPointDriver {
         File discFolder = new File(absoluteName(foldername, exportpoint));
         if (!discFolder.exists()) {
             boolean success = discFolder.mkdirs();
-            if (OpenCms.getLog(this).isWarnEnabled() && (!success)) {
-                OpenCms.getLog(this).warn("Couldn't create folder " + absoluteName(foldername, exportpoint));
+            if (LOG.isWarnEnabled() && (!success)) {
+                LOG.warn(Messages.get().key(Messages.LOG_CREATE_FOLDER_FAILED_1, absoluteName(foldername, exportpoint)));
             }
         }
     }
@@ -150,8 +155,8 @@ public class CmsExportPointDriver {
             s.write(content);
             s.close();
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Couldn't write to export point file " + discFile.getAbsolutePath(), e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_WRITE_EXPORT_POINT_FAILED_1, discFile.getAbsolutePath()), e);
             }
         }
     }

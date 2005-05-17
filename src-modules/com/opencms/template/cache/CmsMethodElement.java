@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2005/05/17 13:47:27 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/17 16:13:36 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -152,7 +152,7 @@ public class CmsMethodElement extends A_CmsElement {
                 Throwable e = targetEx.getTargetException();
                 if(!(e instanceof CmsException)) {
                     // Only print an error if this is NO CmsException
-                    throwException("User method " + m_methodName + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                    throwException("User method " + m_methodName + " throwed an exception. " + e, CmsLegacyException.C_UNKNOWN_EXCEPTION);
                 }else {
                     // This is a CmsException
                     // Error printing should be done previously.

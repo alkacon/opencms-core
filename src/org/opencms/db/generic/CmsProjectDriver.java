@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.216 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.217 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,11 @@ package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbContext;
-import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
-import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.file.CmsDataAccessException;
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.216 $
+ * @version $Revision: 1.217 $
  * @since 5.1
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
@@ -172,7 +172,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 createTime,
                 type);
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -222,7 +223,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -243,7 +245,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setInt(1, linkType);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -269,8 +272,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // create the statement
             stmt.setInt(1, project.getId());
             stmt.executeUpdate();
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -292,7 +296,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setString(2, resourceName);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -312,7 +317,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setInt(1, project.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -332,7 +338,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setInt(1, maxBackupTagId);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -359,7 +366,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setString(3, linkParameter);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -371,8 +379,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     public void destroy() throws Throwable {
 
         finalize();
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
     }
 
@@ -390,8 +398,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // ignore the exception - the project was not readable so fill in the defaults
         }
 
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.INIT_FILL_DEFAULTS_0));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_FILL_DEFAULTS_0));
         }
 
         String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
@@ -618,21 +626,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             } catch (CmsDataAccessException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(
-                        Messages.get().key(Messages.ERR_WRITING_PUBLISHING_HISTORY_1, currentFolder.getRootPath()),
+                        Messages.get().key(Messages.LOG_WRITING_PUBLISHING_HISTORY_1, currentFolder.getRootPath()),
                         e);
                 }
                 throw e;
             }
 
-            try {
-                // read the folder online
-                onlineFolder = m_driverManager.readFolder(dbc, currentFolder.getRootPath(), CmsResourceFilter.ALL);
-            } catch (CmsDataAccessException e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.ERR_READING_RESOURCE_1, currentFolder.getRootPath()), e);
-                }
-                throw e;
-            }
+            // read the folder online
+            onlineFolder = m_driverManager.readFolder(dbc, currentFolder.getRootPath(), CmsResourceFilter.ALL);
 
             try {
                 // delete the properties online and offline
@@ -692,17 +693,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
             report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug(
-                    "( "
-                        + m
-                        + " / "
-                        + n
-                        + " ) "
-                        + report.key("report.deleting.folder")
-                        + currentFolder.getRootPath()
-                        + report.key("report.dots")
-                        + report.key("report.ok"));
+            if (LOG.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_DEL_FOLDER_3, 
+                        dbc.removeSiteRoot(currentFolder.getRootPath()), String.valueOf(m), String.valueOf(n)));
+                }
             }
         } finally {
             // notify the app. that the published folder and it's properties have been modified offline
@@ -790,7 +785,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 } catch (CmsDataAccessException e) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().key(
-                            Messages.ERR_WRITING_PUBLISHING_HISTORY_1,
+                            Messages.LOG_WRITING_PUBLISHING_HISTORY_1,
                             offlineResource.getRootPath()), e);
                     }
                     throw e;
@@ -878,17 +873,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 }
                 report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug(
-                        "( "
-                            + m
-                            + " / "
-                            + n
-                            + " ) "
-                            + report.key("report.deleting.file")
-                            + offlineResource.getRootPath()
-                            + report.key("report.dots")
-                            + report.key("report.ok"));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_DEL_FILE_3, dbc.removeSiteRoot(offlineResource.getRootPath()), String.valueOf(m), String.valueOf(n)));
                 }
 
             } else if (offlineResource.getState() == I_CmsConstants.C_STATE_CHANGED) {
@@ -1028,24 +1014,16 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 } catch (CmsDataAccessException e) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(
-                            Messages.get().key(Messages.ERR_WRITING_PUBLISHING_HISTORY_1, newFile.getRootPath()),
+                            Messages.get().key(Messages.LOG_WRITING_PUBLISHING_HISTORY_1, newFile.getRootPath()),
                             e);
                     }
                     throw e;
                 }
                 report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug(
-                        "( "
-                            + m
-                            + " / "
-                            + n
-                            + " ) "
-                            + report.key("report.publishing.file")
-                            + offlineResource.getRootPath()
-                            + report.key("report.dots")
-                            + report.key("report.ok"));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_PUBLISHING_FILE_3, 
+                        dbc.removeSiteRoot(offlineResource.getRootPath()), String.valueOf(m), String.valueOf(n)));
                 }
 
             } else if (offlineResource.getState() == I_CmsConstants.C_STATE_NEW) {
@@ -1156,7 +1134,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 } catch (CmsDataAccessException e) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(
-                            Messages.get().key(Messages.ERR_WRITING_PUBLISHING_HISTORY_1, newFile.getRootPath()),
+                            Messages.get().key(Messages.LOG_WRITING_PUBLISHING_HISTORY_1, newFile.getRootPath()),
                             e);
                     }
 
@@ -1164,17 +1142,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 }
                 report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug(
-                        "( "
-                            + m
-                            + " / "
-                            + n
-                            + " ) "
-                            + report.key("report.publishing.file")
-                            + offlineResource.getRootPath()
-                            + report.key("report.dots")
-                            + report.key("report.ok"));
+                if (LOG.isDebugEnabled()) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_PUBLISHING_FILE_3, 
+                            dbc.removeSiteRoot(offlineResource.getRootPath()), String.valueOf(m), String.valueOf(n)));
+                    }
                 }
             }
         } finally {
@@ -1418,24 +1390,16 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             } catch (CmsDataAccessException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(
-                        Messages.get().key(Messages.ERR_WRITING_PUBLISHING_HISTORY_1, offlineFolder.getRootPath()),
+                        Messages.get().key(Messages.LOG_WRITING_PUBLISHING_HISTORY_1, offlineFolder.getRootPath()),
                         e);
                 }
                 throw e;
             }
             report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug(
-                    "( "
-                        + m
-                        + " / "
-                        + n
-                        + " ) "
-                        + report.key("report.publishing.folder")
-                        + offlineFolder.getRootPath()
-                        + report.key("report.dots")
-                        + report.key("report.ok"));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_PUBLISHING_FOLDER_3, 
+                    offlineFolder.getRootPath(), String.valueOf(m), String.valueOf(n)));
             }
         } finally {
             // notify the app. that the published folder and it's properties have been modified offline
@@ -1726,7 +1690,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     new Integer(id)));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1769,7 +1734,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     name));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1812,7 +1778,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     resourcePath));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1839,7 +1806,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 result.add(res.getString("RESOURCE_PATH"));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1878,8 +1846,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     res.getLong(m_sqlManager.readQuery("C_PROJECTS_DATE_CREATED")),
                     res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_TYPE"))));
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1909,8 +1878,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             while (res.next()) {
                 projects.add(new CmsProject(res, m_sqlManager));
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1938,8 +1908,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             while (res.next()) {
                 projects.add(new CmsProject(res, m_sqlManager));
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1967,8 +1938,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             while (res.next()) {
                 projects.add(new CmsProject(res, m_sqlManager));
             }
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -2033,7 +2005,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 resources.add(currentResource);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -2085,7 +2058,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     siblingCount));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -2116,7 +2090,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 returnValue = res.getString(1);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -2152,7 +2127,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 returnValue.add(res.getString(1));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -2175,8 +2151,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // create the statement
             stmt.setInt(1, project.getId());
             stmt.executeUpdate();
-        } catch (SQLException exc) {
-            throw new CmsDbSqlException(this, stmt, exc);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -2208,7 +2185,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setInt(8, resource.getSiblingCount());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -2239,7 +2217,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 returnValue = res.getInt(1);
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(this, stmt, e);
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -2256,7 +2235,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 stmt.setLong(5, timestamp);
                 stmt.executeUpdate();
             } catch (SQLException e) {
-                throw new CmsDbSqlException(this, stmt, e);
+                throw new CmsDbSqlException(Messages.get().container(Messages.ERR_GENERIC_SQL_1, stmt), e);
             } finally {
                 m_sqlManager.closeAll(dbc, conn, stmt, null);
             }

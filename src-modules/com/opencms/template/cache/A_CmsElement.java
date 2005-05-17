@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2005/05/17 13:47:27 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/17 16:13:36 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -505,7 +505,7 @@ public abstract class A_CmsElement {
             if(OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("IOException while writing to XMl template OutputStream", e);
             }
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
         }
     }
 

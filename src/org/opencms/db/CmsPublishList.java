@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2005/05/13 09:25:48 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/05/17 16:13:36 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db;
 
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
@@ -52,7 +53,7 @@ import java.util.List;
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2005/05/13 09:25:48 $
+ * @version $Revision: 1.20 $ $Date: 2005/05/17 16:13:36 $
  * @since 5.3.0
  * @see org.opencms.db.CmsDriverManager#getPublishList(CmsDbContext, CmsResource, boolean)
  */
@@ -97,17 +98,17 @@ public class CmsPublishList {
      * Adds a new/changed/deleted Cms file resource to the publish list.<p>
      * 
      * @param resource a new/changed/deleted Cms file resource
-     * @throws IllegalArgumentException if the specified resource is not a file or unchanged
+     * @throws CmsIllegalArgumentException if the specified resource is not a file or unchanged
      */
-    protected void addFile(CmsResource resource) throws IllegalArgumentException {
+    protected void addFile(CmsResource resource) throws CmsIllegalArgumentException {
         // it is essential that this method is only visible within the db package!
 
         if (resource.isFolder()) {
-            throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is not a Cms file resource!");
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PUBLISH_NO_CMS_FILE_1, resource.getRootPath()));
         }
 
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-            throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is a unchanged resource!");
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1, resource.getRootPath()));
         }
         
         if (! m_fileList.contains(resource)) {
@@ -143,11 +144,11 @@ public class CmsPublishList {
         // it is essential that this method is only visible within the db package!
 
         if (resource.isFile()) {
-            throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is not a Cms folder resource!");
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PUBLISH_NO_FOLDER_1, resource.getRootPath()));
         }
 
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-            throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is a unchanged resource!");
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1, resource.getRootPath()));
         }
         
         if (resource.getState() == I_CmsConstants.C_STATE_DELETED) {
