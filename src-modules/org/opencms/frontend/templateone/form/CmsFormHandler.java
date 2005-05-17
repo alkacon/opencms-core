@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/05/13 10:54:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/17 13:50:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * output formats of a submitted form.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsFormHandler extends CmsJspActionElement {
 
@@ -312,7 +312,7 @@ public class CmsFormHandler extends CmsJspActionElement {
      * @param formConfigUri URI of the form configuration file, if not provided, current URI is used for configuration
      * @throws Exception if creating the form configuration objects fails
      */
-    public void init(HttpServletRequest req, String formConfigUri) throws Exception {
+    public void init (HttpServletRequest req, String formConfigUri) throws Exception {
 
         setErrors(new HashMap());
         m_fieldValues = null;
@@ -349,6 +349,7 @@ public class CmsFormHandler extends CmsJspActionElement {
         if (getFormConfiguration().getMailType().equals(CmsForm.C_MAILTYPE_HTML)) {
             // create a HTML email
             CmsHtmlMail theMail = new CmsHtmlMail();
+            theMail.setCharset(getCmsObject().getRequestContext().getEncoding());
             if (CmsStringUtil.isNotEmpty(getFormConfiguration().getMailFrom())) {
                 theMail.setFrom(getFormConfiguration().getMailFrom());
             }
@@ -361,6 +362,7 @@ public class CmsFormHandler extends CmsJspActionElement {
         } else {
             // create a plain text email
             CmsSimpleMail theMail = new CmsSimpleMail();
+            theMail.setCharset(getCmsObject().getRequestContext().getEncoding());
             if (CmsStringUtil.isNotEmpty(getFormConfiguration().getMailFrom())) {
                 theMail.setFrom(getFormConfiguration().getMailFrom());
             }
@@ -393,6 +395,7 @@ public class CmsFormHandler extends CmsJspActionElement {
             if (getFormConfiguration().getMailType().equals(CmsForm.C_MAILTYPE_HTML)) {
                 // create a HTML email
                 CmsHtmlMail theMail = new CmsHtmlMail();
+                theMail.setCharset(getCmsObject().getRequestContext().getEncoding());
                 if (CmsStringUtil.isNotEmpty(getFormConfiguration().getMailFrom())) {
                     theMail.setFrom(getFormConfiguration().getMailFrom());
                 }
@@ -408,6 +411,7 @@ public class CmsFormHandler extends CmsJspActionElement {
             } else {
                 // create a plain text email
                 CmsSimpleMail theMail = new CmsSimpleMail();
+                theMail.setCharset(getCmsObject().getRequestContext().getEncoding());
                 if (CmsStringUtil.isNotEmpty(getFormConfiguration().getMailFrom())) {
                     theMail.setFrom(getFormConfiguration().getMailFrom());
                 }
