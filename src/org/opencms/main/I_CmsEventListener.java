@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/05/17 14:15:09 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,18 +40,18 @@ package org.opencms.main;
  * the OpenCms event mechanism. This can be done in the constructor of a class
  * like this:
  * <pre>
- * org.opencms.main.A_OpenCms.addCmsEventListener(this);
+ * org.opencms.main.OpenCms.addCmsEventListener(this);
  * </pre>
  * 
  * A typical implementation might look like this:
  * <pre>
- * public void cmsEvent(com.opencms.flex.CmsEvent event) {
+ * public void cmsEvent(org.opencms.main.CmsEvent event) {
  *     switch (event.getType()) {
- *         case com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT:
- *         case com.opencms.flex.I_CmsEventListener.EVENT_CLEAR_CACHES:
+ *         case org.opencms.main.I_CmsEventListener.EVENT_PUBLISH_PROJECT:
+ *         case org.opencms.main.I_CmsEventListener.EVENT_CLEAR_CACHES:
  *             // do something
  *             break;
- *         case com.opencms.flex.I_CmsEventListener.EVENT_LOGIN_USER:
+ *         case org.opencms.main.I_CmsEventListener.EVENT_LOGIN_USER:
  *            // do something else
  *             break;
  *         }
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent

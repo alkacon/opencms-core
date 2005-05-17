@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/05/17 14:15:09 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,12 +53,12 @@ import org.apache.commons.logging.Log;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /** Attribute name used for checking if _flex request parameters have already been processed. */
-    public static final String C_ATTRIBUTE_PROCESSED = "__com.opencms.flex.cache.CmsFlexRequest";
+    public static final String C_ATTRIBUTE_PROCESSED = "__org.opencms.flex.CmsFlexRequest";
 
     /** Request parameter for FlexCache commands. */
     public static final String C_PARAMETER_FLEX = "_flex";

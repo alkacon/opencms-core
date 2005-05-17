@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/17 14:15:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.Locale;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2005/02/17 12:44:35 $
+ * @version $Revision: 1.10 $ $Date: 2005/05/17 14:15:09 $
  */
 
 public interface I_CmsWpConstants {
@@ -981,13 +981,6 @@ public interface I_CmsWpConstants {
     int[] C_SELECTBOX_EDITORVIEWS_ALLOWED =  {
         3, 2
     };
-
-
-    /** classes of the different option values for editor view select boxes. */
-    String[] C_SELECTBOX_EDITORVIEWS_CLASSES =  {
-        "com.opencms.workplace.CmsEditor", "com.opencms.workplace.CmsEditor"
-    };
-
 
     /** templates of the different option values for editor view select boxes. */
     String[] C_SELECTBOX_EDITORVIEWS_TEMPLATES =  {
