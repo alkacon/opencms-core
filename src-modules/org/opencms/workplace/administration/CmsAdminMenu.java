@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/17 15:59:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * Implementation of the administration view leftside's menu.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsAdminMenu extends CmsToolDialog {
@@ -60,7 +60,7 @@ public class CmsAdminMenu extends CmsToolDialog {
 
     /** Group container. */
     private I_CmsIdentifiableObjectContainer m_groupContainer = new CmsIdentifiableObjectContainer(true, true);
-
+    
     /**
      * Default Constructor.<p>
      * 
@@ -69,7 +69,7 @@ public class CmsAdminMenu extends CmsToolDialog {
     public CmsAdminMenu(CmsJspActionElement jsp) {
 
         super(jsp);
-
+        initAdminTool();
         installMenu();
     }
 
@@ -203,8 +203,9 @@ public class CmsAdminMenu extends CmsToolDialog {
                 continue;
             }
 
+            String root = getToolManager().getRootToolPath(this);
             // leave out everything above the root
-            if (!tool.getHandler().getPath().startsWith(getToolManager().getRootToolPath(this))) {
+            if (!tool.getHandler().getPath().startsWith(root)) {
                 continue;
             }
             // cut out the root

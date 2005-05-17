@@ -150,6 +150,7 @@
     <target name="tomcat.copy" 
     	depends="init" description="Copies the given updated modules to Tomcat directory">
 	
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="tomcat.copy" />
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
     	  	<ant antfile="${basedir}/build-single.xml" target="tomcat.copy" inheritAll="false" >
@@ -162,6 +163,7 @@
     <target name="tomcat.update" 
     	depends="init" description="Recompiles changes and installs them in Tomcat webapps directory">
 	
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="tomcat.update" />
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
     	  	<ant antfile="${basedir}/build-single.xml" target="tomcat.update" inheritAll="false" >
@@ -174,6 +176,7 @@
     <target name="tomcat.all" 
     	depends="init" description="Does a complete recompile of the module and installs it in Tomcat webapps directory">
 	
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="tomcat.all" />
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
     	  	<ant antfile="${basedir}/build-single.xml" target="tomcat.all" inheritAll="false" >

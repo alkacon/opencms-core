@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/17 15:59:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -341,7 +341,7 @@ public class CmsToolManager {
      * @param toolPath the current tool path
      * @param rootToolPath the root tool path
      */
-    public void initParams(CmsWorkplace wp, String toolPath, String rootToolPath) {
+    public synchronized void initParams(CmsWorkplace wp, String toolPath, String rootToolPath) {
 
         setCurrentToolPath(wp, toolPath);
         setRootToolPath(wp, rootToolPath);

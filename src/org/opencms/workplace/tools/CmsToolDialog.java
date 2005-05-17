@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/05/12 08:58:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/17 15:59:39 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -243,16 +243,19 @@ public class CmsToolDialog extends CmsWorkplace {
             setParamPath(getParentPath());
         }
 
-        // a dialog just for the close link param accessors
-        CmsDialog wp = (CmsDialog)this;        
-        // set close link
-        if (wp.getParamCloseLink() == null) {
-             if (!getToolManager().getRootToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
-                  wp.setParamCloseLink(getToolManager().cmsLinkForPath(getJsp(), getParentPath(), null));
-                  params.put(CmsDialog.PARAM_CLOSELINK, wp.getParamCloseLink());
-             }
+        try {
+            // a dialog just for the close link param accessors
+            CmsDialog wp = (CmsDialog)this;        
+            // set close link
+            if (wp.getParamCloseLink() == null) {
+                 if (!getToolManager().getRootToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
+                      wp.setParamCloseLink(getToolManager().cmsLinkForPath(getJsp(), getParentPath(), null));
+                      params.put(CmsDialog.PARAM_CLOSELINK, wp.getParamCloseLink());
+                 }
+            }
+        } catch (Exception e) {
+            // ignore
         }
-
         return params;
     }
     
