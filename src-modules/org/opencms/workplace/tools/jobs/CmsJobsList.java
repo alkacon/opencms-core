@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsJobsList.java,v $
- * Date   : $Date: 2005/05/12 08:55:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/17 09:07:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsJobsList extends A_CmsListDialog {
@@ -315,7 +315,7 @@ public class CmsJobsList extends A_CmsListDialog {
         userActAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_NAME_0));
         userActAction.setConfirmationMessage(Messages.get().container(
             Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_CONF_0));
-        userActAction.setIconPath("buttons/apply_in.gif");
+        userActAction.setIconPath("tools/jobs/buttons/activate.gif");
         userActAction.setEnabled(true);
         userActAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_HELP_0));
         activateJob.setFirstAction(userActAction);
@@ -324,7 +324,7 @@ public class CmsJobsList extends A_CmsListDialog {
         userDeactAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_NAME_0));
         userDeactAction.setConfirmationMessage(Messages.get().container(
             Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_CONF_0));
-        userDeactAction.setIconPath("buttons/apply.gif");
+        userDeactAction.setIconPath("tools/jobs/buttons/deactivate.gif");
         userDeactAction.setEnabled(true);
         userDeactAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_HELP_0));
         activateJob.setSecondAction(userDeactAction);
@@ -342,7 +342,7 @@ public class CmsJobsList extends A_CmsListDialog {
         copyJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0));
         copyJob.setConfirmationMessage(Messages.get().container(
             Messages.GUI_JOBS_LIST_ACTION_COPY_CONF_0));
-        copyJob.setIconPath("buttons/apply.gif");
+        copyJob.setIconPath("tools/jobs/buttons/copy.gif");
         copyJob.setEnabled(true);
         copyJob.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_HELP_0));
         copyCol.addDirectAction(copyJob);
@@ -359,7 +359,7 @@ public class CmsJobsList extends A_CmsListDialog {
         delJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0));
         delJob.setConfirmationMessage(Messages.get().container(
             Messages.GUI_JOBS_LIST_ACTION_DELETE_CONF_0));
-        delJob.setIconPath("buttons/apply.gif");
+        delJob.setIconPath("list/delete.gif");
         delJob.setEnabled(true);
         delJob.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_HELP_0));
         delCol.addDirectAction(delJob);
@@ -428,18 +428,18 @@ public class CmsJobsList extends A_CmsListDialog {
         // create show context info action
         CmsListIndependentAction showContextInfoAction = new CmsListIndependentAction(LIST_ID, LIST_DETAIL_CONTEXTINFO);
         showContextInfoAction.setName(Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_CONTEXTINFO_NAME_0));
-        showContextInfoAction.setIconPath("buttons/properties.gif");
+        showContextInfoAction.setIconPath("tools/jobs/buttons/contextinfo.gif");
         showContextInfoAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_CONTEXTINFO_HELP_0));
         showContextInfoAction.setEnabled(true);
         showContextInfoAction.setConfirmationMessage(null);
         // create hide context info action
         CmsListIndependentAction hideContextInfoAction = new CmsListIndependentAction(LIST_ID, LIST_DETAIL_CONTEXTINFO);
         hideContextInfoAction.setName(Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_CONTEXTINFO_NAME_0));
-        hideContextInfoAction.setIconPath("buttons/properties.gif");
+        hideContextInfoAction.setIconPath("tools/jobs/buttons/contextinfo.gif");
         hideContextInfoAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_CONTEXTINFO_HELP_0));
         hideContextInfoAction.setEnabled(true);
         hideContextInfoAction.setConfirmationMessage(null);
-        // create list item
+        // create list item detail
         CmsListItemDetails jobsContextInfoDetails = new CmsListItemDetails(LIST_DETAIL_CONTEXTINFO);
         jobsContextInfoDetails.setAtColumn(LIST_COLUMN_NAME);
         jobsContextInfoDetails.setVisible(false);
@@ -455,7 +455,7 @@ public class CmsJobsList extends A_CmsListDialog {
         contextFormatter.setRemoteAddrMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_REMADR_0));
         contextFormatter.setRequestedURIMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_REQURI_0));
         jobsContextInfoDetails.setFormatter(contextFormatter);
-        // add context info item to meta data
+        // add context info item detail to meta data
         metadata.addItemDetails(jobsContextInfoDetails);
         
         // add independent job parameter button
@@ -463,14 +463,14 @@ public class CmsJobsList extends A_CmsListDialog {
         // create show parameter button
         CmsListIndependentAction showParameterAction = new CmsListIndependentAction(LIST_ID, LIST_DETAIL_PARAMETER);
         showParameterAction.setName(Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_PARAMETER_NAME_0));
-        showParameterAction.setIconPath("buttons/details.gif");
+        showParameterAction.setIconPath("tools/jobs/buttons/parameters.gif");
         showParameterAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_PARAMETER_HELP_0));
         showParameterAction.setEnabled(true);
         showParameterAction.setConfirmationMessage(null);
         // create hide parameter button
         CmsListIndependentAction hideParameterAction = new CmsListIndependentAction(LIST_ID, LIST_DETAIL_PARAMETER);
         hideParameterAction.setName(Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_PARAMETER_NAME_0));
-        hideParameterAction.setIconPath("buttons/details.gif");
+        hideParameterAction.setIconPath("tools/jobs/buttons/parameters.gif");
         hideParameterAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_PARAMETER_HELP_0));
         hideParameterAction.setEnabled(true);
         hideParameterAction.setConfirmationMessage(null);
@@ -497,7 +497,7 @@ public class CmsJobsList extends A_CmsListDialog {
         CmsListMultiAction activateJob = new CmsListMultiAction(LIST_ID, LIST_ACTION_MACTIVATE);
         activateJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MACTIVATE_NAME_0));
         activateJob.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MACTIVATE_CONF_0));
-        activateJob.setIconPath("buttons/apply.gif");
+        activateJob.setIconPath("tools/jobs/buttons/multi_activate.gif");
         activateJob.setEnabled(true);
         activateJob.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MACTIVATE_HELP_0));
         metadata.addMultiAction(activateJob);
@@ -506,7 +506,7 @@ public class CmsJobsList extends A_CmsListDialog {
         CmsListMultiAction deactivateJob = new CmsListMultiAction(LIST_ID, LIST_ACTION_MDEACTIVATE);
         deactivateJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_NAME_0));
         deactivateJob.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_CONF_0));
-        deactivateJob.setIconPath("buttons/apply_in.gif");
+        deactivateJob.setIconPath("tools/jobs/buttons/multi_deactivate.gif");
         deactivateJob.setEnabled(true);
         deactivateJob.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_HELP_0));
         metadata.addMultiAction(deactivateJob);

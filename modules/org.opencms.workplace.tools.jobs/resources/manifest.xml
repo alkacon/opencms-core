@@ -26,9 +26,7 @@
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/workplace/admin/jobs/"/>
-			<resource uri="/system/workplace/resources/admin/ic_jobsmanagement.png"/>
-			<resource uri="/system/workplace/resources/admin/ic_jobsmanagement_sm.png"/>
-			<resource uri="/system/workplace/resources/admin/ic_newjob.png"/>
+			<resource uri="/system/workplace/resources/tools/jobs/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -102,7 +100,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[admin/ic_jobsmanagement.png:admin/ic_jobsmanagement_sm.png]]></value>
+					<value><![CDATA[tools/jobs/icons/big/jobsmanagement.png:tools/jobs/icons/small/jobsmanagement.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -220,7 +218,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[admin/ic_newjob.png]]></value>
+					<value><![CDATA[tools/jobs/icons/big/newjob.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -228,7 +226,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Add user]]></value>
+					<value><![CDATA[Add Job]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -267,7 +265,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/admin</destination>
+			<destination>system/workplace/resources/tools</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -278,8 +276,41 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_jobsmanagement.png</source>
-			<destination>system/workplace/resources/admin/ic_jobsmanagement.png</destination>
+			<destination>system/workplace/resources/tools/jobs</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/jobs/icons</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/jobs/icons/big</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/jobs/icons/big/jobsmanagement.png</source>
+			<destination>system/workplace/resources/tools/jobs/icons/big/jobsmanagement.png</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -290,24 +321,130 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/ic_jobsmanagement_sm.png</source>
-			<destination>system/workplace/resources/admin/ic_jobsmanagement_sm.png</destination>
-			<type>image</type>
-			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/admin/ic_newjob.png</source>
-			<destination>system/workplace/resources/admin/ic_newjob.png</destination>
+			<source>system/workplace/resources/tools/jobs/icons/big/newjob.png</source>
+			<destination>system/workplace/resources/tools/jobs/icons/big/newjob.png</destination>
 			<type>image</type>
 			<datelastmodified>Thu, 20 Jan 2005 16:15:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 20 Jan 2005 16:15:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/jobs/icons/small</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/jobs/icons/small/jobsmanagement.png</source>
+			<destination>system/workplace/resources/tools/jobs/icons/small/jobsmanagement.png</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/jobs/buttons</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/jobs/buttons/activate.gif</source>
+			<destination>system/workplace/resources/tools/jobs/buttons/activate.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/jobs/buttons/deactivate.gif</source>
+			<destination>system/workplace/resources/tools/jobs/buttons/deactivate.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/jobs/buttons/copy.gif</source>
+			<destination>system/workplace/resources/tools/jobs/buttons/copy.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/jobs/buttons/contextinfo.gif</source>
+			<destination>system/workplace/resources/tools/jobs/buttons/contextinfo.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/jobs/buttons/parameters.gif</source>
+			<destination>system/workplace/resources/tools/jobs/buttons/parameters.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/jobs/buttons/multi_activate.gif</source>
+			<destination>system/workplace/resources/tools/jobs/buttons/multi_activate.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/jobs/buttons/multi_deactivate.gif</source>
+			<destination>system/workplace/resources/tools/jobs/buttons/multi_deactivate.gif</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

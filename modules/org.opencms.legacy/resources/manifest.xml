@@ -11616,5 +11616,63 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>system/workplace/views</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 15:39:50 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:39:50 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/views/administration</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 18 Aug 2004 16:13:47 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:40:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[20]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[/system/workplace/action/administration.html]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[select.admin]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		<file>
+			<destination>system/workplace/views/workflow</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 18 Aug 2004 16:13:56 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:40:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[30]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[/system/workplace/action/tasks.html]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[select.tasks]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
 	</files>
 </export>
