@@ -267,7 +267,7 @@ ${opencms.inputlib.textextraction}
 
 		<copy 
 			file="${opencms.input.warfiles}/WEB-INF/setupdata/version.properties" 
-			tofile="${opencms.output.classes}/com/opencms/core/version.properties" overwrite="true">			
+			tofile="${opencms.output.classes}/org/opencms/main/version.properties" overwrite="true">			
     		<filterset>
       			<filter token="OPENCMS_VERSION_NUMBER" value="${version.number}"/>
       			<filter token="OPENCMS_VERSION_NAME" value="${version.name}"/>
