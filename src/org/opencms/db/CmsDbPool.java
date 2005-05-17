@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/05/17 09:00:59 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * {@link org.opencms.db.CmsSqlManager}.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.32 $ $Date: 2005/05/16 13:46:56 $
+ * @version $Revision: 1.33 $ $Date: 2005/05/17 09:00:59 $
  * @since 5.1
  */
 public final class CmsDbPool {
@@ -257,37 +257,21 @@ public final class CmsDbPool {
             config.putAll(configuration);            
         }
         
-        
-        // create an instance of the JDBC driver
+        // read the values of the pool configuration specified by the given key
         String jdbcDriver = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_JDBC_DRIVER);
-        Class.forName(jdbcDriver).newInstance();
-        
-        // initialize a connection factory to make the DriverManager taking connections from the pool
-        String username = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_USERNAME);
-        String password = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_PASSWORD);       
         String jdbcUrl = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_JDBC_URL);
         String jdbcUrlParams = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_JDBC_URL_PARAMS);
-        if (jdbcUrlParams != null) {
-            jdbcUrl += jdbcUrlParams;
-        }        
-        // create the connection factory
-        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
-        
-        // try to connect once to the database to ensure it can be connected to at all
-        Connection con = connectionFactory.createConnection();
-        con.close();
-        
-        // read the values of the pool configuration specified by the given key
         int maxActive = config.getInteger(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_MAX_ACTIVE, 10);
         int maxWait = config.getInteger(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_MAX_WAIT, 2000);
         int maxIdle = config.getInteger(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_MAX_IDLE, 5);
         String testQuery = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_TEST_QUERY);
+        String username = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_USERNAME);
+        String password = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_PASSWORD);
         String poolUrl = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_POOL_URL);
         String whenExhaustedActionValue = config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_WHEN_EXHAUSTED_ACTION).trim();
-
         byte whenExhaustedAction = 0;
         boolean testOnBorrow = "true".equalsIgnoreCase(config.getString(C_KEY_DATABASE_POOL + '.' + key + '.' + C_KEY_TEST_ON_BORROW).trim());
-        
+
         if ("block".equalsIgnoreCase(whenExhaustedActionValue)) {
             whenExhaustedAction = GenericObjectPool.WHEN_EXHAUSTED_BLOCK;
         } else if ("fail".equalsIgnoreCase(whenExhaustedActionValue)) {
@@ -323,7 +307,10 @@ public final class CmsDbPool {
             ("block".equalsIgnoreCase(whenStmtsExhaustedActionValue)) ? GenericKeyedObjectPool.WHEN_EXHAUSTED_BLOCK
             : ("fail".equalsIgnoreCase(whenStmtsExhaustedActionValue))? GenericKeyedObjectPool.WHEN_EXHAUSTED_FAIL
             : GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW;
-        }             
+        }  
+            
+        // create an instance of the JDBC driver
+        Class.forName(jdbcDriver).newInstance();
         
         // initialize a keyed object pool to store connections
         GenericObjectPool connectionPool = new GenericObjectPool(null);
@@ -352,6 +339,13 @@ public final class CmsDbPool {
 
         connectionPool.setTestOnBorrow(testOnBorrow && (testQuery != null));
         connectionPool.setTestWhileIdle(true);
+
+        // initialize a connection factory to make the DriverManager taking connections from the pool
+        if (jdbcUrlParams != null) {
+            jdbcUrl += jdbcUrlParams;
+        }
+        
+        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
         
         // Set up statement pool, if desired
         GenericKeyedObjectPoolFactory statementFactory = null;
@@ -370,7 +364,11 @@ public final class CmsDbPool {
         
         // initialize a new pooling driver using the pool
         PoolingDriver driver = new PoolingDriver();
-        driver.registerPool(poolUrl, connectionPool);      
+        driver.registerPool(poolUrl, connectionPool);        
+
+        // try to connect once to the database to ensure it can be connected to at all
+        Connection con = connectionFactory.createConnection();
+        con.close();
         
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Init. JDBC pool      : " + poolUrl + " (" + jdbcUrl + ")");
@@ -378,4 +376,5 @@ public final class CmsDbPool {
              
         return driver;
     } 
+
 }
