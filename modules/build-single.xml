@@ -333,6 +333,12 @@
 		    	</copy>
 			</then>		
 		</if>
+		<if>
+			<available file="${opencms.core.lib}/opencms.jar" />
+			<then>
+		        <copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib" file="${opencms.core.lib}/opencms.jar" /> 
+			</then>		
+		</if>
     	<copy file="${module.output.zip}/${module.name}_${module.version}.zip" todir="${tomcat.home}/webapps/${app.name}/WEB-INF/packages/modules" />
     </target>
 
