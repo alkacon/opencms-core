@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo7.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/18 10:26:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,16 +53,10 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
-
-    /** Value for the action: save the settings. */
-    public static final int ACTION_SAVE = 300;
-
-    /** Request parameter value for the action: save the dialog. */
-    public static final String DIALOG_SAVE = "save";
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "widgetdemo4";
@@ -290,5 +284,13 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
             // set the default action               
             setAction(ACTION_DEFAULT);
         }
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return new String[] {"page1"};
     }
 }

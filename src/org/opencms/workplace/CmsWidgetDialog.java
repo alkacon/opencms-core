@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/16 17:10:06 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/05/18 10:26:19 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetDialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -73,6 +74,12 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** Value for the action: error in the form validation. */
     public static final int ACTION_ERROR = 303;
+    
+    /** Value for the action: save the dialog. */
+    public static final int ACTION_SAVE = 300;  
+
+    /** Request parameter value for the action: save the dialog. */
+    public static final String DIALOG_SAVE = "save";
 
     /** Indicates an optional element should be created. */
     public static final String EDITOR_ACTION_ELEMENT_ADD = "addelement";
@@ -85,6 +92,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWidgetDialog.class);
+    
+    /** The allowed pages for this dialog in a List. */
+    protected List m_pages;
 
     /** Controls which page is currently displayed in the dialog. */
     protected String m_paramPage;
@@ -247,6 +257,32 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         result.append("<tr><td colspan=\"5\">\n");
         result.append(super.dialogBlockStart(headline));
         return result.toString();
+    }
+    
+    /**
+     * Creats the HTML for the buttons on the dialog.<p>
+     * 
+     * @return the HTML for the buttons on the dialog.<p>
+     */
+    public String dialogButtonsCustom() {
+        
+        if (getPages().size() > 1) {
+            // this is a multi page dialog, create buttons according to current page
+            int pageIndex = getPages().indexOf(getParamPage());
+            if (pageIndex == getPages().size() - 1) {
+                // this is the last dialog page
+                return dialogButtons(new int[] {BUTTON_OK, BUTTON_BACK, BUTTON_CANCEL}, new String[3]);
+            } else if (pageIndex > 0) {
+                // this is a dialog page between first and last page
+                return dialogButtons(new int[] {BUTTON_BACK, BUTTON_CONTINUE, BUTTON_CANCEL}, new String[3]);
+            } else {
+                // this is the first dialog page
+                return dialogButtons(new int[] {BUTTON_CONTINUE, BUTTON_CANCEL}, new String[2]);
+            }
+        } else {
+            // this is a single page dialog, create common buttons
+            return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]);
+        }
     }
 
     /**
@@ -900,6 +936,26 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             m_widgetParamValues.put(base.getName(), params);
         }
     }
+    
+    /**
+     * Returns the allowed pages for this dialog.<p>
+     * 
+     * @return the allowed pages for this dialog
+     */
+    protected abstract String[] getPageArray();
+    
+    /**
+     * Returns the allowed pages for this dialog.<p>
+     * 
+     * @return the allowed pages for this dialog
+     */
+    protected List getPages() {
+
+        if (m_pages == null) {
+            m_pages = Arrays.asList(getPageArray());
+        }
+        return m_pages;
+    }
 
     /**
      * Returns the parameter widget definition for the given parameter name.<p>
@@ -977,6 +1033,85 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected boolean hasValidationErrors() {
 
         return (m_validationErrorList != null) && (m_validationErrorList.size() > 0);
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamPage()) || !getPages().contains(getParamPage())) {
+            // ensure a valid page is set
+            setParamPage((String)getPages().get(0));
+        }
+        
+        // fill the widget map
+        defineWidgets();
+        fillWidgetValues(request);
+
+        // set the action for the JSP switch 
+        if (DIALOG_SAVE.equals(getParamAction())) {
+            // ok button pressed, save    
+            List errors = commitWidgetValues();
+            if (errors.size() > 0) {
+                setAction(ACTION_DEFAULT);
+            }
+            setAction(ACTION_SAVE);
+        } else if (DIALOG_OK.equals(getParamAction())) {
+            // ok button pressed
+            setAction(ACTION_CANCEL);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            // cancel button pressed
+            setAction(ACTION_CANCEL);
+        } else if (EDITOR_ACTION_ELEMENT_ADD.equals(getParamAction())) {
+            // add optional input element
+            setAction(ACTION_ELEMENT_ADD);
+            actionToggleElement();
+            setAction(ACTION_DEFAULT);
+        } else if (EDITOR_ACTION_ELEMENT_REMOVE.equals(getParamAction())) {
+            // remove optional input element
+            setAction(ACTION_ELEMENT_REMOVE);
+            actionToggleElement();
+            setAction(ACTION_DEFAULT);
+        } else if (DIALOG_BACK.equals(getParamAction())) {
+            // go back one page           
+            setAction(ACTION_DEFAULT);
+            List errors = commitWidgetValues(getParamPage());           
+            if (errors.size() > 0) {
+                // found validation errors, redisplay page
+                return;
+            }
+            int pageIndex = getPages().indexOf(getParamPage()) - 1;
+            setParamPage((String)getPages().get(pageIndex));
+            
+        } else if (DIALOG_CONTINUE.equals(getParamAction())) {
+            // go to next page
+            setAction(ACTION_DEFAULT);
+            List errors = commitWidgetValues(getParamPage());           
+            if (errors.size() > 0) {
+                // found validation errors, redisplay page
+                return;
+            }
+            int pageIndex = getPages().indexOf(getParamPage()) + 1;
+            setParamPage((String)getPages().get(pageIndex));
+            
+        } else {
+            // first dialog call, set the default action               
+            setAction(ACTION_DEFAULT);
+        }
+    }
+    
+    /**
+     * Sets the allowed pages for this dialog.<p>
+     * 
+     * @param pages the allowed pages for this dialog
+     */
+    protected void setPages(List pages) {
+
+        m_pages = pages;
     }
 
     /**

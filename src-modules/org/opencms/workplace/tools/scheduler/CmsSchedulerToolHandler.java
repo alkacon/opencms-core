@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsEditJobDialog.java,v $
- * Date   : $Date: 2005/05/02 14:39:59 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerToolHandler.java,v $
+ * Date   : $Date: 2005/05/18 10:26:19 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,49 +29,36 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.workplace.tools.jobs;
+package org.opencms.workplace.tools.scheduler;
 
-import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsWorkplaceSettings;
-
-import javax.servlet.http.HttpServletRequest;
-
+import org.opencms.file.CmsObject;
+import org.opencms.security.CmsRole;
+import org.opencms.workplace.tools.A_CmsToolHandler;
 
 /**
- * Dialog for editing a job.<p>
+ * Scheduled Jobs management tool handler that hides the tool if the current user
+ * has not the needed privileges.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsEditJobDialog extends CmsDialog {
+public class CmsSchedulerToolHandler extends A_CmsToolHandler {
 
     /**
-     * Default constructor.<p>
-     * 
-     * @param jsp the jsp action element
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */
-    public CmsEditJobDialog(CmsJspActionElement jsp) {
+    public boolean isVisible(CmsObject cms) {
 
-        super(jsp);
-
+        return cms.hasRole(CmsRole.SCHEDULER_MANAGER);
     }
 
+    
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
      */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+    public boolean isEnabled(CmsObject cms) {
 
-        fillParamValues(request);
-        if (DIALOG_CANCEL.equals(getParamAction())) {
-            setAction(ACTION_CANCEL);
-        } else if (DIALOG_CONFIRMED.equals(getParamAction())) {
-            setAction(ACTION_CONFIRMED);
-        } else if (DIALOG_OK.equals(getParamAction())) {
-            setAction(ACTION_OK);
-        }
+        return true;
     }
-
-
 }

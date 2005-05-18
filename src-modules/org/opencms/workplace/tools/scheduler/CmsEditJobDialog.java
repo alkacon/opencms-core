@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/jobs/Attic/CmsNewJobDialog.java,v $
- * Date   : $Date: 2005/05/02 14:39:59 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Attic/CmsEditJobDialog.java,v $
+ * Date   : $Date: 2005/05/18 10:26:19 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.workplace.tools.jobs;
+package org.opencms.workplace.tools.scheduler;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsDialog;
@@ -39,20 +39,20 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Dialog for creating a new job.<p>
+ * Dialog for editing a job.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsNewJobDialog extends CmsDialog {
+public class CmsEditJobDialog extends CmsDialog {
 
     /**
      * Default constructor.<p>
      * 
      * @param jsp the jsp action element
      */
-    public CmsNewJobDialog(CmsJspActionElement jsp) {
+    public CmsEditJobDialog(CmsJspActionElement jsp) {
 
         super(jsp);
 

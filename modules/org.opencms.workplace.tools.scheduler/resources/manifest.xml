@@ -9,7 +9,7 @@
 		<export_version>4</export_version>
 	</info>
 	<module>
-		<name>org.opencms.workplace.tools.jobs</name>
+		<name>org.opencms.workplace.tools.scheduler</name>
 		<nicename><![CDATA[OpenCms 6.0 Scheduled Jobs Management]]></nicename>
 		<class/>
 		<description><![CDATA[This module contains the OpenCms administration tools for managing the scheduled jobs.
@@ -25,8 +25,8 @@
 		</dependencies>
 		<exportpoints/>
 		<resources>
-			<resource uri="/system/workplace/admin/jobs/"/>
-			<resource uri="/system/workplace/resources/tools/jobs/"/>
+			<resource uri="/system/workplace/admin/scheduler/"/>
+			<resource uri="/system/workplace/resources/tools/scheduler/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -70,7 +70,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/jobs</destination>
+			<destination>system/workplace/admin/scheduler</destination>
 			<type>folder</type>
 			<datelastmodified>Thu, 21 Apr 2005 14:55:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -80,7 +80,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.jobs.CmsJobsToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.scheduler.CmsSchedulerToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -100,7 +100,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/jobs/icons/big/jobsmanagement.png:tools/jobs/icons/small/jobsmanagement.png]]></value>
+					<value><![CDATA[tools/scheduler/icons/big/jobsmanagement.png:tools/scheduler/icons/small/jobsmanagement.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -108,14 +108,14 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[User Management]]></value>
+					<value><![CDATA[Scheduler Management]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/jobs/index.html</source>
-			<destination>system/workplace/admin/jobs/index.html</destination>
+			<source>system/workplace/admin/scheduler/index.html</source>
+			<destination>system/workplace/admin/scheduler/index.html</destination>
 			<type>jsp</type>
 			<datelastmodified>Thu, 21 Apr 2005 15:37:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -131,7 +131,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/jobs/edit</destination>
+			<destination>system/workplace/admin/scheduler/edit</destination>
 			<type>folder</type>
 			<datelastmodified>Thu, 21 Apr 2005 15:38:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -171,8 +171,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/jobs/edit/editjob.html</source>
-			<destination>system/workplace/admin/jobs/edit/editjob.html</destination>
+			<source>system/workplace/admin/scheduler/edit/editjob.html</source>
+			<destination>system/workplace/admin/scheduler/edit/editjob.html</destination>
 			<type>jsp</type>
 			<datelastmodified>Wed, 13 Apr 2005 14:50:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -188,7 +188,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/jobs/new</destination>
+			<destination>system/workplace/admin/scheduler/new</destination>
 			<type>folder</type>
 			<datelastmodified>Thu, 21 Apr 2005 15:40:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -218,7 +218,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/jobs/icons/big/newjob.png]]></value>
+					<value><![CDATA[tools/scheduler/icons/big/newjob.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -232,8 +232,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/jobs/new/newjob.html</source>
-			<destination>system/workplace/admin/jobs/new/newjob.html</destination>
+			<source>system/workplace/admin/scheduler/new/newjob.html</source>
+			<destination>system/workplace/admin/scheduler/new/newjob.html</destination>
 			<type>jsp</type>
 			<datelastmodified>Wed, 13 Apr 2005 15:12:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -276,7 +276,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/jobs</destination>
+			<destination>system/workplace/resources/tools/scheduler</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -287,7 +287,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/jobs/icons</destination>
+			<destination>system/workplace/resources/tools/scheduler/icons</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -298,7 +298,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/jobs/icons/big</destination>
+			<destination>system/workplace/resources/tools/scheduler/icons/big</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -309,8 +309,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/jobs/icons/big/jobsmanagement.png</source>
-			<destination>system/workplace/resources/tools/jobs/icons/big/jobsmanagement.png</destination>
+			<source>system/workplace/resources/tools/scheduler/icons/big/jobsmanagement.png</source>
+			<destination>system/workplace/resources/tools/scheduler/icons/big/jobsmanagement.png</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -321,8 +321,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/jobs/icons/big/newjob.png</source>
-			<destination>system/workplace/resources/tools/jobs/icons/big/newjob.png</destination>
+			<source>system/workplace/resources/tools/scheduler/icons/big/newjob.png</source>
+			<destination>system/workplace/resources/tools/scheduler/icons/big/newjob.png</destination>
 			<type>image</type>
 			<datelastmodified>Thu, 20 Jan 2005 16:15:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -333,7 +333,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/jobs/icons/small</destination>
+			<destination>system/workplace/resources/tools/scheduler/icons/small</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -344,8 +344,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/jobs/icons/small/jobsmanagement.png</source>
-			<destination>system/workplace/resources/tools/jobs/icons/small/jobsmanagement.png</destination>
+			<source>system/workplace/resources/tools/scheduler/icons/small/jobsmanagement.png</source>
+			<destination>system/workplace/resources/tools/scheduler/icons/small/jobsmanagement.png</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -356,7 +356,7 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/jobs/buttons</destination>
+			<destination>system/workplace/resources/tools/scheduler/buttons</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -367,8 +367,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/jobs/buttons/activate.gif</source>
-			<destination>system/workplace/resources/tools/jobs/buttons/activate.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/activate.gif</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/activate.gif</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -379,8 +379,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/jobs/buttons/deactivate.gif</source>
-			<destination>system/workplace/resources/tools/jobs/buttons/deactivate.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/deactivate.gif</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/deactivate.gif</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -391,8 +391,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/jobs/buttons/copy.gif</source>
-			<destination>system/workplace/resources/tools/jobs/buttons/copy.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/copy.gif</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/copy.gif</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -403,8 +403,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/jobs/buttons/contextinfo.gif</source>
-			<destination>system/workplace/resources/tools/jobs/buttons/contextinfo.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/contextinfo.gif</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/contextinfo.gif</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -415,8 +415,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/jobs/buttons/parameters.gif</source>
-			<destination>system/workplace/resources/tools/jobs/buttons/parameters.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/parameters.gif</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/parameters.gif</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -427,8 +427,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/jobs/buttons/multi_activate.gif</source>
-			<destination>system/workplace/resources/tools/jobs/buttons/multi_activate.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/multi_activate.gif</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/multi_activate.gif</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -439,8 +439,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/jobs/buttons/multi_deactivate.gif</source>
-			<destination>system/workplace/resources/tools/jobs/buttons/multi_deactivate.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/multi_deactivate.gif</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/multi_deactivate.gif</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
