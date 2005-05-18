@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/05/11 10:22:41 $
- * Version: $Revision: 1.638 $
+ * Date   : $Date: 2005/05/18 12:31:19 $
+ * Version: $Revision: 1.639 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@ OpenCms 5.9.1 Corrin (aka 6.0 rc 1) - May 27, 2005
   moreover the originally entered name can optional be set as Title and/or NavText
 - Refactored the HTML widgets so that they can be used on "normal" dialogs (i.e. without XML content)
 * Improved error handling when moving a folder to the same name with just different case
+- The legacy com.opencms.* packages have been moved to a separate module
+- The legacy Workplace implementation has been moved to a separate module
 
 OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April 28, 2005
 ! Added "search in search result" functionality

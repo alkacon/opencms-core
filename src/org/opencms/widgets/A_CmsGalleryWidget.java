@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsFileWidget.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
  * Date   : $Date: 2005/05/18 12:31:18 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,24 +32,25 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.galleries.A_CmsGallery;
 
 /**
- * Provides a OpenCms VFS file selection widget, for use on a widget dialog.<p>
+ * Base class for all gallery widget implementations.<p>
  *
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
- * @since 5.5.2
+ * @version $Revision: 1.1 $
+ * @since 5.5.3
  */
-public class CmsVfsFileWidget extends A_CmsWidget {
+public abstract class A_CmsGalleryWidget extends A_CmsWidget {
 
     /**
      * Creates a new editor widget.<p>
      */
-    public CmsVfsFileWidget() {
+    protected A_CmsGalleryWidget() {
 
         // empty constructor is required for class registration
     }
@@ -59,11 +60,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
      */
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
-        StringBuffer result = new StringBuffer(16);
-        result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "commons/tree.js"));
-        result.append("\n");
-        result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/fileselector.js"));
-        return result.toString();
+        return getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/" + getNameLower() + "gallery.js");
     }
 
     /**
@@ -71,7 +68,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
      */
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
-        return "\tinitVfsFileSelector();\n";
+        return "\tinit" + getNameUpper() + "Gallery();\n";
     }
 
     /**
@@ -80,17 +77,20 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(16);
-        result.append("function initVfsFileSelector() {\n");
-        //initialize tree javascript, does parts of CmsTree.initTree(CmsObject, encoding, skinuri);
-        result.append("\tinitResources(\"");
-        result.append(OpenCms.getWorkplaceManager().getEncoding());
-        result.append("\", \"");
-        result.append(I_CmsWpConstants.C_VFS_PATH_WORKPLACE);
-        result.append("\", \"");
-        result.append(CmsWorkplace.getSkinUri());
-        result.append("\", \"");
-        result.append(OpenCms.getSystemInfo().getOpenCmsContext());
-        result.append("\");\n");
+        result.append("function init");
+        result.append(getNameUpper());
+        result.append("Gallery() {\n");
+        result.append("\t");
+        result.append(getNameLower());
+        result.append("GalleryPath = \"");
+        result.append(A_CmsGallery.C_PATH_GALLERIES);
+        result.append(A_CmsGallery.C_OPEN_URI_SUFFIX);
+        result.append("?");
+        result.append(A_CmsGallery.PARAM_GALLERY_TYPENAME);
+        result.append("=");
+        result.append(getNameLower());
+        result.append("gallery");
+        result.append("\";\n");
         result.append("}\n");
         return result.toString();
     }
@@ -102,7 +102,6 @@ public class CmsVfsFileWidget extends A_CmsWidget {
 
         String id = param.getId();
         StringBuffer result = new StringBuffer(128);
-
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
         result.append("<input class=\"xmlInputMedium");
@@ -110,25 +109,73 @@ public class CmsVfsFileWidget extends A_CmsWidget {
             result.append(" xmlInputError");
         }
         result.append("\" value=\"");
-        result.append(param.getStringValue(cms));
+        String value = param.getStringValue(cms);
+        result.append(value);
         result.append("\" name=\"");
         result.append(id);
         result.append("\" id=\"");
         result.append(id);
-        result.append("\"></td>");
+        result.append("\" onkeyup=\"checkPreview('");
+        result.append(id);
+        result.append("');\"></td>");
         result.append(widgetDialog.dialogHorizontalSpacer(10));
         result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+
         result.append(widgetDialog.button(
-            "javascript:openTreeWin('EDITOR',  '" + id + "', document);",
+            "javascript:open" + getNameUpper() + "Gallery('" + A_CmsGallery.MODE_WIDGET + "',  '" + id + "');",
             null,
-            "folder",
-            "button.search",
+            getNameLower() + "gallery",
+            "button." + getNameLower() + "list",
+            widgetDialog.getButtonStyle()));
+        // create preview button
+        String previewClass = "hide";
+        if (CmsStringUtil.isNotEmpty(value) && value.startsWith("/")) {
+            // show button if field value is not empty and starts with a "/"
+            previewClass = "show";
+        }
+        result.append("<td class=\"");
+        result.append(previewClass);
+        result.append("\" id=\"preview");
+        result.append(id);
+        result.append("\">");
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+        result.append(widgetDialog.button(
+            "javascript:preview" + getNameUpper() + "('" + id + "');",
+            null,
+            "preview",
+            "button.preview",
             widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
+
         result.append("</td></tr></table>");
+
+        result.append("</td>");
+        result.append("</tr></table>");
 
         result.append("</td>");
 
         return result.toString();
     }
+
+    /**
+     * Returns the lower case name of the gallery, for example <code>"html"</code>.<p>
+     * 
+     * @return the lower case name of the gallery
+     */
+    public abstract String getNameLower();
+
+    /**
+     * Returns the upper case name of the gallery, for example <code>"Html"</code>.<p>
+     * 
+     * @return the upper case name of the gallery
+     */
+    public abstract String getNameUpper();
+
+    /**
+     * Returns <code>true</code> if the preview button should be shown.<p>
+     * 
+     * @param value the current widget value
+     * @return <code>true</code> if the preview button should be shown
+     */
+    public abstract boolean showPreview(String value);
 }

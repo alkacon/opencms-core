@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsTableGalleryWidget.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/18 12:31:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,20 +31,15 @@
 
 package org.opencms.widgets;
 
-import org.opencms.file.CmsObject;
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.galleries.A_CmsGallery;
-
 /**
- * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlStringValue} and accesses the available table galleries.<p>
+ * Provides a widget that allows access to the available OpenCms table galleries, for use on a widget dialog.<p>
  *
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
-public class CmsTableGalleryWidget extends A_CmsWidget {
+public class CmsTableGalleryWidget extends A_CmsHtmlGalleryWidget {
 
     /**
      * Creates a new editor widget.<p>
@@ -55,84 +50,19 @@ public class CmsTableGalleryWidget extends A_CmsWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
+     * @see org.opencms.widgets.A_CmsHtmlGalleryWidget#getNameLower()
      */
-    public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+    public String getNameLower() {
 
-        return getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/tablegallery.js");
+        return "table";
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
+     * @see org.opencms.widgets.A_CmsHtmlGalleryWidget#getNameUpper()
      */
-    public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+    public String getNameUpper() {
 
-        return "\tinitTableGallery();\n";
+        return "Table";
     }
 
-    /**
-     * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
-     */
-    public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
-
-        StringBuffer result = new StringBuffer(16);
-        result.append("function initTableGallery() {\n");
-        result.append("\ttableGalleryPath = \"");
-        result.append(A_CmsGallery.C_PATH_GALLERIES
-            + A_CmsGallery.C_OPEN_URI_SUFFIX
-            + "?"
-            + A_CmsGallery.PARAM_GALLERY_TYPENAME
-            + "=tablegallery");
-        result.append("\";\n");
-        result.append("}\n");
-        return result.toString();
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
-     */
-    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
-
-        String id = param.getId();
-        StringBuffer result = new StringBuffer(128);
-        result.append("<td class=\"xmlTd\">");
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\">");
-        result.append("<input type=\"hidden\" value=\"");
-        String fieldValue = param.getStringValue(cms);
-        result.append(CmsEncoder.escapeXml(fieldValue));
-        result.append("\" name=\"");
-        result.append(id);
-        result.append("\" id=\"");
-        result.append(id);
-        result.append("\">");
-        result.append("<tr><td class=\"xmlTd\">");
-        result.append("<div class=\"xmlHtmlGallery\" unselectable=\"on\" id=\"");
-        result.append("table.");
-        result.append(id);
-        result.append("\"><div>");
-        result.append("</td>");
-        result.append(widgetDialog.dialogHorizontalSpacer(10));
-        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-        result.append(widgetDialog.button("javascript:openTableGallery('"
-            + A_CmsGallery.MODE_WIDGET
-            + "',  '"
-            + id
-            + "');", null, "tablegallery", "button.tablelist", widgetDialog.getButtonStyle()));
-        result.append(widgetDialog.button(
-            "javascript:resetTableGallery('" + id + "');",
-            null,
-            "erase",
-            "button.erase",
-            widgetDialog.getButtonStyle()));
-        result.append("</tr></table>");
-        result.append("</td></tr>");
-        result.append("<script type=\"text/javascript\">checkTableContent('");
-        result.append(id);
-        result.append("');</script>");
-        result.append("</table>");
-
-        result.append("</td>");
-
-        return result.toString();
-    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsHtmlAreaWidget.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/18 12:31:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,11 @@ import org.opencms.workplace.CmsWorkplace;
 import java.util.Map;
 
 /**
- * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlHtmlValue}.<p>
+ * Provides a widget that creates a rich input field using the "HtmlArea" component, for use on a widget dialog.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsHtmlAreaWidget extends A_CmsWidget {

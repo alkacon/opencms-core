@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDownloadGalleryWidget.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/18 12:31:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,20 +31,17 @@
 
 package org.opencms.widgets;
 
-import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.galleries.A_CmsGallery;
 
 /**
- * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlVfsFileValue} and accesses the available download galleries.<p>
+ * Provides a widget that allows access to the available OpenCms download galleries, for use on a widget dialog.<p>
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.3
  */
-public class CmsDownloadGalleryWidget extends A_CmsWidget {
+public class CmsDownloadGalleryWidget extends A_CmsGalleryWidget {
 
     /**
      * Creates a new editor widget.<p>
@@ -55,96 +52,26 @@ public class CmsDownloadGalleryWidget extends A_CmsWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
+     * @see org.opencms.widgets.A_CmsGalleryWidget#getNameLower()
      */
-    public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+    public String getNameLower() {
 
-        return getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/downloadgallery.js");
+        return "download";
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
+     * @see org.opencms.widgets.A_CmsGalleryWidget#getNameUpper()
      */
-    public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+    public String getNameUpper() {
 
-        return "\tinitDownloadGallery();\n";
+        return "Download";
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
+     * @see org.opencms.widgets.A_CmsGalleryWidget#showPreview(java.lang.String)
      */
-    public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
+    public boolean showPreview(String value) {
 
-        StringBuffer result = new StringBuffer(16);
-        result.append("function initDownloadGallery() {\n");
-        result.append("\tdownGalleryPath = \"");
-        result.append(A_CmsGallery.C_PATH_GALLERIES
-            + A_CmsGallery.C_OPEN_URI_SUFFIX
-            + "?"
-            + A_CmsGallery.PARAM_GALLERY_TYPENAME
-            + "=downloadgallery");
-        result.append("\";\n");
-        result.append("}\n");
-        return result.toString();
-    }
-
-    /**
-     * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
-     */
-    public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
-
-        String id = param.getId();
-        StringBuffer result = new StringBuffer(128);
-        result.append("<td class=\"xmlTd\">");
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
-        result.append("<input class=\"xmlInputMedium");
-        if (param.hasError()) {
-            result.append(" xmlInputError");
-        }
-        result.append("\" value=\"");
-        String fieldValue = param.getStringValue(cms);
-        result.append(fieldValue);
-        result.append("\" name=\"");
-        result.append(id);
-        result.append("\" id=\"");
-        result.append(id);
-        result.append("\" onkeyup=\"checkPreview('");
-        result.append(id);
-        result.append("');\"></td>");
-        result.append(widgetDialog.dialogHorizontalSpacer(10));
-        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-        result.append(widgetDialog.button("javascript:openDownloadGallery('"
-            + A_CmsGallery.MODE_WIDGET
-            + "',  '"
-            + id
-            + "');", null, "downloadgallery", "button.downloadlist", widgetDialog.getButtonStyle()));
-        // create preview button
-        String previewClass = "hide";
-        if (CmsStringUtil.isNotEmpty(fieldValue) && fieldValue.startsWith("/")) {
-            // show button if field value is not empty and starts with a "/"
-            previewClass = "show";
-        }
-        result.append("<td class=\"");
-        result.append(previewClass);
-        result.append("\" id=\"preview");
-        result.append(id);
-        result.append("\">");
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-        result.append(widgetDialog.button(
-            "javascript:previewDownload('" + id + "');",
-            null,
-            "preview",
-            "button.preview",
-            widgetDialog.getButtonStyle()));
-        result.append("</tr></table>");
-
-        result.append("</td></tr></table>");
-
-        result.append("</td>");
-        result.append("</tr></table>");
-
-        result.append("</td>");
-
-        return result.toString();
+        return CmsStringUtil.isNotEmpty(value) && value.startsWith("/");
     }
 }
