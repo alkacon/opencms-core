@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/05/18 13:19:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/18 13:50:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
@@ -58,7 +58,7 @@ public class CmsListColumnDefinition {
     private CmsListColumnAlignEnum m_align;
 
     /** Comparator for sorting. */
-    private I_CmsListItemComparator m_comparator = null;
+    private I_CmsListItemComparator m_comparator = new CmsListItemDefaultComparator();
 
     /** Default action. */
     private CmsListDefaultAction m_defaultAction;
