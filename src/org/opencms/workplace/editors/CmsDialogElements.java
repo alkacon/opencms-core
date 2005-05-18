@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/18 07:34:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,8 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.page.CmsXmlPage;
@@ -55,6 +55,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for the editor elements dialog.<p> 
  * 
@@ -64,11 +66,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.0
  */
 public class CmsDialogElements extends CmsDialog {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDialogElements.class);  
     
     /** Value for the action: delete the content of an element. */
     public static final int ACTION_DELETECONTENT = 200;
@@ -153,8 +158,8 @@ public class CmsDialogElements extends CmsDialog {
         try {
             currentTemplate = cms.readPropertyObject(xmlPageUri, I_CmsConstants.C_PROPERTY_TEMPLATE, true).getValue();
         } catch (CmsException e) {
-            if (OpenCms.getLog(CmsDialogElements.class.getName()).isWarnEnabled()) {
-                OpenCms.getLog(CmsDialogElements.class.getName()).warn("Error reading property '" + I_CmsConstants.C_PROPERTY_TEMPLATE + "' on resource " + xmlPageUri, e);
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(e.getLocalizedMessage(), e);
             }
         } 
         if (currentTemplate != null && currentTemplate.length() > 0) {
@@ -164,8 +169,8 @@ public class CmsDialogElements extends CmsDialog {
                 // read the property from the template file
                 elements = cms.readPropertyObject(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS, false).getValue(null);
             } catch (CmsException e) {
-                if (OpenCms.getLog(CmsDialogElements.class.getName()).isWarnEnabled()) {
-                    OpenCms.getLog(CmsDialogElements.class.getName()).warn("Error reading property '" + I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS + "' on resource " + currentTemplate, e);
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(e.getLocalizedMessage(), e);
                 }
             }
             if (elements != null) {
@@ -219,7 +224,7 @@ public class CmsDialogElements extends CmsDialog {
             CmsFile pageFile = cms.readFile(xmlPageUri, CmsResourceFilter.IGNORE_EXPIRATION);
             page = CmsXmlPageFactory.unmarshal(cms, pageFile);
         } catch (CmsException e) {
-            OpenCms.getLog(CmsDialogElements.class).warn("Could not read xmlPage from uri '" + xmlPageUri + "'", e);
+            LOG.warn(Messages.get().key(Messages.LOG_READ_XMLPAGE_FAILED_1, xmlPageUri), e);
             // xmlpage will be null, only "template-elements" property on template will be checked
         }        
         return computeElements(cms, page, xmlPageUri, locale);        
@@ -239,8 +244,8 @@ public class CmsDialogElements extends CmsDialog {
             getCms().writeFile(file);
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
             }
         }
     }
@@ -307,8 +312,8 @@ public class CmsDialogElements extends CmsDialog {
                 getJsp().include(C_FILE_DIALOG_SCREEN_ERROR); 
             } catch (Exception exc) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(exc);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(exc);
                 }
             }
         }
@@ -376,8 +381,8 @@ public class CmsDialogElements extends CmsDialog {
             
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
             }
         }
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2005/04/20 16:06:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/18 07:34:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlConverter;
@@ -55,17 +56,22 @@ import java.util.Properties;
 
 import javax.servlet.jsp.JspException;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for building editors for the CmsDefaultPage page type.<p> 
  * 
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsDefaultPageEditor extends CmsEditor {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDefaultPageEditor.class);  
     
     /** The element locale. */
     private Locale m_elementLocale;
@@ -110,8 +116,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             showErrorPage(this, e, "save");
             } catch (JspException exc) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(exc);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(exc);
                 }       
             }
         }
@@ -137,8 +143,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             showErrorPage(this, e, "save");
             } catch (JspException exc) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(exc);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(exc);
                 }       
             }
         }
@@ -159,8 +165,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 getCms().unlockResource(getParamResource());
             } catch (CmsException e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
                 }       
             }
         }
@@ -418,8 +424,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 showErrorPage(this, e, "save");
                 } catch (JspException exc) {
                     // should usually never happen
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(exc);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(exc);
                     }       
                 }
             }
@@ -512,8 +518,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 showErrorPage(this, e, "read");
             } catch (JspException exc) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(exc);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(exc);
                 }       
             }
         }
@@ -610,7 +616,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
        try {
            result = getCms().readPropertyObject(getParamTempfile(), I_CmsConstants.C_PROPERTY_TEMPLATE, true).getValue("");
        } catch (CmsException e) {
-           OpenCms.getLog(this).warn("Template property could not be read", e);
+           LOG.warn(Messages.get().key(Messages.LOG_READ_TEMPLATE_PROP_FAILED_0), e);
        }
        return result;
    }
@@ -629,7 +635,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 result = getCms().readPropertyObject(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE, false).getValue("");
             }
         } catch (CmsException e) {
-            OpenCms.getLog(this).warn("Template property for style sheet could not be read");
+            LOG.warn(Messages.get().key(Messages.LOG_READ_TEMPLATE_PROP_STYLESHEET_FAILED_0), e);
         }
         return result;
    }

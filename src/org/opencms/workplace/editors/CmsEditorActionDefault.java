@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2005/03/17 10:31:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/18 07:34:41 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -56,16 +57,21 @@ import java.util.Locale;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.0
  */
 public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEditorActionDefault.class);  
+    
     /**
      * Default constructor needed for editor action handler implementation.<p>
      */
@@ -194,8 +200,8 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             return C_DIRECT_EDIT_MODE_ENABLED;
             
         }  catch (CmsException e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Error while calculation edit mode for " + filename, e);
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_CALC_EDIT_MODE_FAILED_1, filename), e);
             }
             // something went wrong - so the resource seems not to be editable
             return C_DIRECT_EDIT_MODE_INACTIVE;

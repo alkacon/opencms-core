@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogProperty.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/18 07:34:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@ package org.opencms.workplace.editors;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.commons.CmsPropertyCustom;
 import org.opencms.workplace.explorer.CmsNewResourceXmlPage;
@@ -47,6 +47,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for the special xmlpage property dialog.<p> 
  * 
@@ -59,11 +61,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.0
  */
 public class CmsDialogProperty extends CmsPropertyCustom {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDialogProperty.class);  
     
     /** Flag indicating if the template property was changed. */
     private boolean m_templateChanged;
@@ -152,8 +157,8 @@ public class CmsDialogProperty extends CmsPropertyCustom {
             templates = CmsNewResourceXmlPage.getTemplates(getCms());
         } catch (CmsException e) {
             // ignore this exception
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info("Could not read template", e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().key(Messages.LOG_READ_TEMPLATE_FAILED_0), e);
             }
         }
         if (currentTemplate == null) {
@@ -211,8 +216,8 @@ public class CmsDialogProperty extends CmsPropertyCustom {
                 name = getCms().readPropertyObject(currentTemplate, I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
             } catch (CmsException e) {
                 // ignore this exception - the title for this template was not readable
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info("Could not read title property on template", e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().key(Messages.LOG_READ_TITLE_PROP_FAILED_1, currentTemplate), e);
                 }
             }
             if (name == null) {

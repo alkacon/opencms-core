@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/18 07:34:41 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -53,18 +55,23 @@ import java.util.Locale;
 
 import javax.servlet.jsp.JspException;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides basic methods for building the file editors of OpenCms.<p> 
  * 
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsEditor extends CmsDialog {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEditor.class);  
+    
     /** Value for the action: change the body. */
     public static final int ACTION_CHANGE_BODY = 124;
 
@@ -591,34 +598,32 @@ public abstract class CmsEditor extends CmsDialog {
         
         try {
             getCms().copyResource(getCms().getSitePath(file), temporaryFilename, I_CmsConstants.C_COPY_AS_NEW);
-            getCms().touch(temporaryFilename, System.currentTimeMillis(), CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT, false);            
-        } catch (CmsException e) {
-            if (e.getType() == CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
-                try {
-                    CmsLock tempFileLock = getCms().getLock(temporaryFilename);
-                    if (!tempFileLock.equals(CmsLock.getNullLock())) {
-                        if (!tempFileLock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
-                            // the resource is locked by another user- change the lock to the current user
-                            getCms().changeLock(temporaryFilename);
-                        }
-                    } else {
-                        // the resource is not locked- create a lock for the current user
-                        getCms().lockResource(temporaryFilename);
+            getCms().touch(temporaryFilename, System.currentTimeMillis(), CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT, false);
+        } catch (CmsVfsResourceNotFoundException e) {
+            try {
+                CmsLock tempFileLock = getCms().getLock(temporaryFilename);
+                if (!tempFileLock.equals(CmsLock.getNullLock())) {
+                    if (!tempFileLock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
+                        // the resource is locked by another user- change the lock to the current user
+                        getCms().changeLock(temporaryFilename);
                     }
-                    
-                    // try to re-use the old temporary file
-                    getCms().changeLastModifiedProjectId(temporaryFilename);
-                } catch (Exception ex) {
-                    // should usually never happen
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(ex);
-                    }                           
-                    ok = false;
+                } else {
+                    // the resource is not locked- create a lock for the current user
+                    getCms().lockResource(temporaryFilename);
                 }
-            } else {
-                switchToCurrentProject();
-                throw e;
+                
+                // try to re-use the old temporary file
+                getCms().changeLastModifiedProjectId(temporaryFilename);
+            } catch (Exception ex) {
+                // should usually never happen
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(ex);
+                }                           
+                ok = false;
             }
+        } catch (CmsException e) {
+            switchToCurrentProject();
+            throw e;
         }
 
         String extendedTempFile = temporaryFilename;
@@ -631,16 +636,15 @@ public abstract class CmsEditor extends CmsDialog {
     
             try {
                 getCms().copyResource(getCms().getSitePath(file), extendedTempFile);
-            } catch (CmsException e) {
-                if (e.getType() != CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
-                    switchToCurrentProject();
-                    // This was not a "file exists" exception. Very bad.
-                    // We should not continue here since we may run into an endless loop.
-                    throw e;
-                }
+            } catch (CmsVfsResourceNotFoundException e) {
                 // temp file could not be created, try again
                 loop++;
-                ok = false;
+                ok = false;                
+            } catch (CmsException e) {
+                switchToCurrentProject();
+                // This was not a "file exists" exception. Very bad.
+                // We should not continue here since we may run into an endless loop.
+                throw e;
             }
         }
 
@@ -677,8 +681,8 @@ public abstract class CmsEditor extends CmsDialog {
             switchToCurrentProject();
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
             }
         }
     }
@@ -821,10 +825,10 @@ public abstract class CmsEditor extends CmsDialog {
         // log the error 
         if (exception != null) {
             String errorMessage = "Error while trying to " + key + " file " + getParamResource() + ": " + exception;
-            if (OpenCms.getLog(editor).isWarnEnabled()) {
-                OpenCms.getLog(editor).warn(errorMessage, exception);
-            } else if (OpenCms.getLog(editor).isErrorEnabled()) {
-                OpenCms.getLog(editor).error(errorMessage);
+            if (CmsLog.getLog(editor).isWarnEnabled()) {
+                CmsLog.getLog(editor).warn(errorMessage, exception);
+            } else if (CmsLog.getLog(editor).isErrorEnabled()) {
+                CmsLog.getLog(editor).error(errorMessage);
             }
         }
         // include the common error dialog

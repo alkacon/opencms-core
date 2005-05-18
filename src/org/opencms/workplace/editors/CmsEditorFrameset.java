@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorFrameset.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/18 07:34:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,13 @@ package org.opencms.workplace.editors;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Helper class to create the editor frameset.<p> 
@@ -48,11 +50,14 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
 public class CmsEditorFrameset extends CmsEditor {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEditorFrameset.class);  
     
     /** The title to be displayed in the editor. */
     private String m_paramEditorTitle;
@@ -91,8 +96,8 @@ public class CmsEditorFrameset extends CmsEditor {
                 getCms().unlockResource(getParamResource());
             } catch (CmsException e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
                 }
             }
         }
