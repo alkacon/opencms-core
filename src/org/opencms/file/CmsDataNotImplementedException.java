@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsDataNotImplementedException.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,15 +40,10 @@ import org.opencms.main.CmsException;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * @since 5.1.2
  */
 public class CmsDataNotImplementedException extends CmsDataAccessException {
-
-    // the allowed type range for this exception is >=400 and <500    
-
-    /** Administrator privileges required. */
-    public static final int C_NOT_IMPLEMENTED_EXCEPTION = 400;
 
     /**
      * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer)
@@ -73,7 +68,7 @@ public class CmsDataNotImplementedException extends CmsDataAccessException {
      */
     public CmsDataNotImplementedException(String message) {
 
-        super(message, C_NOT_IMPLEMENTED_EXCEPTION);
+        super(message);
     }
 
     /**
@@ -84,19 +79,4 @@ public class CmsDataNotImplementedException extends CmsDataAccessException {
         return new CmsDataNotImplementedException(container, cause);
     }
 
-    /**
-     * Returns the description String for the provided CmsException type.<p>
-     * 
-     * @param type exception error code 
-     * @return the description String for the provided CmsException type
-     */
-    protected String getErrorDescription(int type) {
-
-        switch (type) {
-            case C_NOT_IMPLEMENTED_EXCEPTION:
-                return "Method is not implemented";
-            default:
-                return super.getErrorDescription(type);
-        }
-    }
 }

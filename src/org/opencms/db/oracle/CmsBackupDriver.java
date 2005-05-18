@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,11 @@
 package org.opencms.db.oracle;
 
 import org.opencms.db.CmsDbContext;
-import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsDbException;
 import org.opencms.db.CmsDbIoException;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsBackupProject;
@@ -63,7 +64,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.50 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.51 $ $Date: 2005/05/18 12:48:14 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -116,10 +117,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 stmt4.executeBatch();
             }
 
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(Messages.ERR_GENERIC_SQL_0), e);
-        } catch (Exception ex) {
-            throw new CmsDataAccessException(ex);
+        } catch (Exception e) {
+            throw new CmsDbException(Messages.get().container(
+                Messages.ERR_DELETE_BACKUP_VERSIONS_1, currentResource.getRootPath()), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt1, null);
             m_sqlManager.closeAll(dbc, conn, stmt2, null);

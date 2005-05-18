@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db.postgresql;
 
 import org.opencms.db.CmsDbContext;
+import org.opencms.db.CmsDbException;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.generic.CmsSqlManager;
@@ -54,7 +55,7 @@ import java.util.List;
  * PostgreSql implementation of the backup driver methods.<p>
  * 
  * @author Antonio Core (antonio@starsolutions.it)
- * @version $Revision: 1.9 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.10 $ $Date: 2005/05/18 12:48:14 $
  * @since 6.0
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -116,11 +117,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 stmt4.executeBatch();
             }
 
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_0), e);
-        } catch (Exception ex) {
-            throw new CmsDataAccessException(ex);
+        } catch (Exception e) {
+            throw new CmsDbException(Messages.get().container(
+                Messages.ERR_DELETE_BACKUP_VERSIONS_1, currentResource.getRootPath()), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt1, null);
             m_sqlManager.closeAll(dbc, conn, stmt2, null);

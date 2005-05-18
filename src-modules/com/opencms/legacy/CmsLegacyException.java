@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyException.java,v $
- * Date   : $Date: 2005/05/18 08:41:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/18 12:48:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsLegacyException extends CmsException implements I_CmsThrowable {
 
@@ -60,17 +60,17 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     public static final String[] C_ERROR_DESCRIPTION = {
     /*  0 */"Unknown exception",
     /*  1 */"Access denied",
-    /*  2 */null, // moved to CmsVfsResourceNotFoundException
+    /*  2 */null,
     /*  3 */"Bad name",
-    /*  4 */null, // moved to and extended by CmsDataAccessException
-    /*  5 */null, // moved to CmsVfsException-C_VFS_FOLDER_NOT_EMPTY)
+    /*  4 */null,
+    /*  5 */null,
     /*  6 */"Admin access required",
-    /*  7 */null, // moved to CmsSerializationException
+    /*  7 */null,
     /*  8 */"Unknown User Group",
     /*  9 */"Group not empty",
     /* 10 */"Unknown User",
     /* 11 */"No removal from Default Group",
-    /* 12 */null, // moved to CmsVfsException-C_VFS_RESOURCE_ALREADY_EXISTS
+    /* 12 */null,
     /* 13 */"File not found exception",
     /* 14 */"Filesystem exception",
     /* 15 */"Internal use only",
@@ -86,15 +86,15 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     /* 25 */"XML tag missing",
     /* 26 */"Wrong XML template class",
     /* 27 */"No XML template class",
-    /* 28 */null, // moved to CmsLoaderException
+    /* 28 */null,
     /* 29 */"OpenCms class loader error",
     /* 30 */"New password is too short",
-    /* 31 */null, // unused
-    /* 32 */null, // moved to CmsVfsException-C_VFS_RESOURCE_DELETED
+    /* 31 */null,
+    /* 32 */null,
     /* 33 */"DriverManager init error",
     /* 34 */"Registry error",
     /* 35 */"Security Manager initialization error",
-    /* 36 */null, // unused
+    /* 36 */null,
     /* 37 */"Wrong scheme for http resource",
     /* 38 */"Wrong scheme for https resource",
     /* 39 */"Error in Flex cache",

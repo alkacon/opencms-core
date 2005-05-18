@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2005/04/26 16:37:54 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -354,9 +354,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         I_CmsXmlConfiguration configuration = getConfiguration(clazz);
         if (configuration == null) {
-            throw new CmsConfigurationException("Configuration manager write requested for unknown class '"
-                + clazz.getName()
-                + "'", CmsConfigurationException.C_CONFIGURATION_ERROR);
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_CONFIG_WITH_UNKNOWN_CLASS_1, clazz.getName()));
         }
 
         // generate the file URL for the XML input

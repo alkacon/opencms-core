@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Antonio Core (antonio@starsolutions.it)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 6.0
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
@@ -88,7 +88,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         if (existsGroup(dbc, groupName, reservedParam)) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_GROUP_WITH_NAME_ALREADY_EXISTS_1, groupName);
             if (LOG.isErrorEnabled()) {
-                LOG.error(message);
+                LOG.error(message.key());
             }
             throw new CmsDbEntryAlreadyExistsException(message);
         }
@@ -152,7 +152,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         if (existsUser(dbc, name, type, null)) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
             if (LOG.isErrorEnabled()) {
-                LOG.error(message);
+                LOG.error(message.key());
             }
             throw new CmsDbEntryAlreadyExistsException(message);
         }
@@ -214,7 +214,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         if (existsUser(dbc, name, type, reservedParam)) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
             if (LOG.isErrorEnabled()) {
-                LOG.error(message);
+                LOG.error(message.key());
             }
             throw new CmsDbEntryAlreadyExistsException(message);
         }

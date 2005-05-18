@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/04/29 15:00:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/18 12:48:15 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -128,7 +128,8 @@ public class CmsModuleManager {
 
         if (m_modules.containsKey(module.getName())) {
             // module is currently configured, no create possible
-            throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR);
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_MODULE_ALREADY_CONFIGURED_1, module.getName()));
+            
         }
 
         if (LOG.isInfoEnabled()) {
@@ -227,7 +228,7 @@ public class CmsModuleManager {
 
         if (!m_modules.containsKey(moduleName)) {
             // module is not currently configured, no update possible
-            throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR);
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_MODULE_NOT_CONFIGURED_1, moduleName));
         }
 
         if (LOG.isInfoEnabled()) {

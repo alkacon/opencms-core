@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -192,6 +192,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_CHILD_GROUPS_TRANSITIVE_1 = "ERR_GET_CHILD_GROUPS_TRANSITIVE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_GET_CONNECTION_1 = "ERR_GET_CONNECTION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_DIRECT_GROUP_OF_USER_1 = "ERR_GET_DIRECT_GROUP_OF_USER_1";

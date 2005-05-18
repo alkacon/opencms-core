@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/18 12:48:15 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.28 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.29 $ $Date: 2005/05/18 12:48:15 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -81,7 +81,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         if (existsUser(dbc, name, type, null)) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
             if (LOG.isErrorEnabled()) {
-                LOG.error(message);
+                LOG.error(message.key());
             }
             throw new CmsDbEntryAlreadyExistsException(message);
         }

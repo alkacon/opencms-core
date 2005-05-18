@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2005/04/26 11:57:39 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
 
@@ -367,7 +367,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
                         
                         CmsMessageContainer message = Messages.get().container(Messages.LOG_FLEXCACHEKEY_NOT_FOUND_1, getClass().getName());
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(message);
+                            LOG.debug(message.key());
                         }
                         
                         throw new CmsFlexCacheException(message, e);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationException.java,v $
- * Date   : $Date: 2005/05/10 07:50:57 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,41 +38,10 @@ import org.opencms.main.CmsException;
  * Exceptions that occur during the XML configuration process.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
  * @since 5.3
  */
-public class CmsConfigurationException extends CmsException {
-    
-    /** General configuration error. */
-    public static final int C_CONFIGURATION_ERROR = 300;
-    
-    /** Required module dependencies not fulfilled. */
-    public static final int C_CONFIGURATION_MODULE_DEPENDENCIES = 301;
-
-    /**
-     * Default constructor for a CmsConfigurationException.<p>
-     */
-    public CmsConfigurationException() {
-        this(C_CONFIGURATION_ERROR);
-    }
-    
-    /**
-     * Constructs a CmsConfigurationException with the specified description message and type.<p>
-     * 
-     * @param type the type of the exception
-     */
-    public CmsConfigurationException(int type) {
-        super(type);
-    }
-    
-    /**
-     * Constructs a CmsConfigurationException with the specified description message and root exception.<p>
-     * 
-     * @param type the type of the exception
-     * @param rootCause root cause exception
-     */
-    public CmsConfigurationException(int type, Throwable rootCause) {
-        super(type, rootCause);
-    }        
+public class CmsConfigurationException extends CmsException { 
     
     /**
      * Constructs a CmsConfigurationException with the specified description 
@@ -81,18 +50,8 @@ public class CmsConfigurationException extends CmsException {
      * @param message the description message
      */
     public CmsConfigurationException(String message) {
-        super(message, C_CONFIGURATION_ERROR);
+        super(message);
     }    
-        
-    /**
-     * Constructs a CmsConfigurationException with the specified description message and type.<p>
-     * 
-     * @param message the description message
-     * @param type the type of the exception
-     */
-    public CmsConfigurationException(String message, int type) {
-        super(message, type);
-    }
     
     /**
      * Creates a new localized Exception.<p>
@@ -121,30 +80,6 @@ public class CmsConfigurationException extends CmsException {
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
         
         return new CmsConfigurationException(container, cause);
-    }
-    
-    /**
-     * Returns the description String for the provided CmsException type.<p>
-     * 
-     * @param type exception error code 
-     * @return the description String for the provided CmsException type
-     */
-    protected String getErrorDescription(int type) {
-
-        if (m_message != null) {
-            // return the message of the CmsMessageContainer object, if it is set
-            return m_message.key();
-        } else {
-
-            switch (type) {
-                case C_CONFIGURATION_ERROR:
-                    return "Error in the OpenCms configuration.";
-                case C_CONFIGURATION_MODULE_DEPENDENCIES:
-                    return "Module dependencies not fulfilled.";
-                default:
-                    return super.getErrorDescription(type);
-            }
-        }
-    }         
+    }     
               
 }

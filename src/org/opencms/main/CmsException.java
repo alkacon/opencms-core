@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsException extends Exception implements I_CmsThrowable {
 
@@ -103,9 +103,14 @@ public class CmsException extends Exception implements I_CmsThrowable {
     /* 43 */"Import error",
     /* 44 */"Export error"};
 
-    /** Error code service unavailable. */
-    public static final int C_SERVICE_UNAVAILABLE = 17;
-
+    /** 
+     * Error code for not found exception.<p>
+     * 
+     * @deprecated use a <code>{@link org.opencms.db.CmsDbEntryNotFoundException}</code> 
+     *    or <code>{@link org.opencms.file.CmsVfsResourceNotFoundException}</code> instead
+     */
+    public static final int C_NOT_FOUND = 2;
+    
     /** 
      * Error code for sql exception.<p>
      * 

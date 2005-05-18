@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/05/18 08:41:34 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/18 12:48:15 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,39 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
     
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETE_BACKUP_VERSIONS_1 = "ERR_DELETE_BACKUP_VERSIONS_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_USER_GROUP_INITIALIZATION_FAILED_0 = "INIT_USER_GROUP_INITIALIZATION_FAILED_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_SET_DIGEST_ERROR_0 = "INIT_SET_DIGEST_ERROR_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DIGEST_ENC_3 = "INIT_DIGEST_ENC_3";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_USER_GROUP_DEFAULTS_INITIALIZED_0 = "INIT_USER_GROUP_DEFAULTS_INITIALIZED_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_JDBC_CONN_INVALID_PROJECT_ID_1 = "ERR_JDBC_CONN_INVALID_PROJECT_ID_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_QUERY_NOT_FOUND_1 = "LOG_QUERY_NOT_FOUND_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_NULL_DB_CONTEXT_0 = "LOG_NULL_DB_CONTEXT_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LOAD_QUERY_PROP_FILE_FAILED_1 = "LOG_LOAD_QUERY_PROP_FILE_FAILED_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DRIVER_SQL_MANAGER_1 = "INIT_DRIVER_SQL_MANAGER_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SQL_MANAGER_INIT_FAILED_1 = "LOG_SQL_MANAGER_INIT_FAILED_1";
+      
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BACKUP_FILE_HEADER_NOT_FOUND_1 = "ERR_BACKUP_FILE_HEADER_NOT_FOUND_1";
        

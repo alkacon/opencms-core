@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.1.11 
  */
 public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
@@ -200,10 +200,12 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
 
         // simple default configuration does not need to be initialized
         if (LOG.isDebugEnabled()) {
+            CmsMessageContainer message = Messages.get().container(Messages.LOG_INIT_CONFIG_CALLED_1, this);
+            LOG.debug(message.key());
             LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIG_CALLED_1, this));
             // supress compiler warning, this is never true
             if (this == null) {
-                throw new CmsConfigurationException();
+                throw new CmsConfigurationException(message);
             }
         }
         m_configuration = Collections.unmodifiableSortedMap(m_configuration);

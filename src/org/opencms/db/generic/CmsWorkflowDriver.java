@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/05/18 12:48:15 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.47 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.48 $ $Date: 2005/05/18 12:48:15 $
  * @since 5.1
  */
 public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -160,8 +160,8 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
     public void destroy() throws Throwable {
 
         finalize();
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
     }
 

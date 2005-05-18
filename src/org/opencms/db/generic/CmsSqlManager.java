@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2005/05/18 12:48:15 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
@@ -52,11 +51,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.54 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.55 $ $Date: 2005/05/18 12:48:15 $
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
@@ -67,6 +68,9 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
     /** The filename/path of the SQL query properties. */
     private static final String C_QUERY_PROPERTIES = "org/opencms/db/generic/query.properties";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSqlManager.class);  
+    
     /** A map to cache queries with replaced search patterns. */
     protected Map m_cachedQueries;
 
@@ -104,14 +108,12 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             Object objectInstance = Class.forName(classname).newInstance();
             sqlManager = (org.opencms.db.generic.CmsSqlManager)objectInstance;
         } catch (Throwable t) {
-            OpenCms.getLog(org.opencms.db.generic.CmsSqlManager.class.getName()).error(
-                ". SQL manager class '" + classname + "' could not be instanciated",
-                t);
+            LOG.error(Messages.get().key(Messages.LOG_SQL_MANAGER_INIT_FAILED_1, classname), t);
             sqlManager = null;
         }
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver SQL manager   : " + classname);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_SQL_MANAGER_1, classname));
         }
 
         return sqlManager;
@@ -152,7 +154,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
         // as a result there is an error that forces the connection to be destroyed and not pooled
 
         if (dbc == null) {
-            OpenCms.getLog(this).error("Database context is null!");
+            LOG.error(Messages.get().key(Messages.LOG_NULL_DB_CONTEXT_0));
         }
 
         try {
@@ -215,7 +217,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * @param dbc the current database context
      * 
      * @return a JDBC connection
-     * @throws SQLException if a database access error occurs
+     * @throws SQLException if the project id is not supported
      */
     public Connection getConnection(CmsDbContext dbc) throws SQLException {
 
@@ -237,7 +239,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
     public Connection getConnection(CmsDbContext dbc, int projectId) throws SQLException {
 
         if (dbc == null) {
-            OpenCms.getLog(this).error("Null database context used");
+            LOG.error(Messages.get().key(Messages.LOG_NULL_DB_CONTEXT_0));
         }
         return getConnection(projectId);
     }
@@ -399,8 +401,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
         String value = null;
         if ((value = (String)m_queries.get(queryKey)) == null) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Query '" + queryKey + "' not found!");
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_QUERY_NOT_FOUND_1, queryKey));
             }
         }
 
@@ -485,7 +487,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
         // different connections...        
 
         if (projectId < 0) {
-            throw new SQLException("Unsupported project ID " + projectId + " to return a JDBC connection!");
+            throw new SQLException(Messages.get().key(
+                Messages.ERR_JDBC_CONN_INVALID_PROJECT_ID_1, String.valueOf(projectId)));
         }
 
         // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
@@ -506,8 +509,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             m_queries.putAll(properties);
             replaceQuerySearchPatterns();
         } catch (Throwable t) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error loading " + propertyFilename, t);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_LOAD_QUERY_PROP_FILE_FAILED_1, propertyFilename), t);
             }
 
             properties = null;

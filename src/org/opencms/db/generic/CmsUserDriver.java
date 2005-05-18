@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.93 $
+ * @version $Revision: 1.94 $
  * @since 5.1
  */
 public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
@@ -605,19 +605,13 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         // create the digest
         try {
             m_digest = MessageDigest.getInstance(m_digestAlgorithm);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                    ". Using digest encoding: "
-                        + m_digest.getAlgorithm()
-                        + " from "
-                        + m_digest.getProvider().getName()
-                        + " version "
-                        + m_digest.getProvider().getVersion());
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DIGEST_ENC_3, m_digest.getAlgorithm(), 
+                    m_digest.getProvider().getName(), String.valueOf(m_digest.getProvider().getVersion())));
             }
         } catch (NoSuchAlgorithmException e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                    ". Error setting digest : using clear passwords - " + e.getMessage());
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_SET_DIGEST_ERROR_0), e);
             }
         }
 
@@ -626,8 +620,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 fillDefaults(dbc);
             }
         } catch (CmsException e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).error("Initialization of default users and groups failed", e);
+            if (CmsLog.LOG.isErrorEnabled()) {
+                CmsLog.LOG.error(Messages.get().key(Messages.INIT_USER_GROUP_INITIALIZATION_FAILED_0), e);
             }
             throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_USER_DRIVER_0), e);
         }
@@ -1652,8 +1646,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             createUserInGroup(dbc, export.getId(), guests.getId(), null);
         }
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Users and groups     : defaults initialized");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_USER_GROUP_DEFAULTS_INITIALIZED_0));
         }
 
         // avoid warning

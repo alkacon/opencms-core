@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -975,7 +975,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     
                     CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_CANNOT_MERGE_PAGE_FILE_3, resourcename, mastertemplate, bodyname);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(message);
+                        LOG.debug(message.key());
                     }
                     
                     throw new CmsImportExportException(message);

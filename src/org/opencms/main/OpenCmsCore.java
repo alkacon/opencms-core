@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.186 $
+ * Date   : $Date: 2005/05/18 12:48:14 $
+ * Version: $Revision: 1.187 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -127,7 +127,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.186 $
+ * @version $Revision: 1.187 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -688,7 +688,7 @@ public final class OpenCmsCore {
                     userName,
                     ((adminCms != null) ? (adminCms.getRequestContext().currentUser().getName()) : ""));
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(message);
+                    LOG.warn(message.key());
                 }
                 throw new CmsRoleViolationException(message);
             }
