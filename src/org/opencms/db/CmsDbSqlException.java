@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbSqlException.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/18 09:10:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.db;
 
-import org.opencms.file.CmsDataAccessException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
@@ -43,13 +42,13 @@ import org.apache.commons.dbcp.DelegatingPreparedStatement;
  * Used to signal sql related issues.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 /**
  * Comment for <code>CmsDbSqlException</code>.<p>
  */
-public class CmsDbSqlException extends CmsDataAccessException {
+public class CmsDbSqlException extends CmsDbException {
 
     /**
      * Creates a new localized Exception.<p>
