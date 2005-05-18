@@ -7,7 +7,7 @@
 	// previous page 
 	String prevPage = "index.jsp";
 	
-	boolean importWp = Bean.prepareStep8(request.getParameter("importWorkplace"));	
+	boolean importWp = Bean.prepareStep8();	
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>

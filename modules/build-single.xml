@@ -5,16 +5,16 @@
     <property name="opencms.output"						location="${opencms.input}/.." />
 	<property name="opencms.input.warfiles"            	location="${opencms.input}/webapp" />
     <property name="opencms.input.libs" 				location="${opencms.input.warfiles}/WEB-INF/lib" />
-    <property name="opencms.core.lib"	 				location="${opencms.output}/build/jars-core" />	
+	<property name="opencms.build" 						location="${opencms.output}/build"/>
+    <property name="opencms.core.lib"	 				location="${opencms.build}/jars-core" />	
 	
     <property name="module.input" 						location="${basedir}/${module.name}" />
     <property name="module.input.res" 					location="${module.input}/resources" />
     <property name="module.input.src.single"            location="${module.input}/src" />
     <property name="module.input.src.shared"            location="${opencms.input}/src-modules" />
-	
 	<property file="${module.input}/module.properties" />
-	<property name="module.output.classes"				location="${opencms.output}/build/classes-${module.name}" />
-    <property name="module.output.jar"              	location="${opencms.output}/build/jars-${module.name}" />
+	<property name="module.output.classes"				location="${opencms.build}/classes-${module.name}" />
+    <property name="module.output.jar"              	location="${opencms.build}/jars-${module.name}" />
 	<property name="module.output.zip"					location="${opencms.output}/zip" /> 
 
     <property name="app.name"			 				location="opencms" />	
@@ -55,8 +55,8 @@
     	<for list="${module.dependencies}" param="dependency">
     	  <sequential>
         	<property name="@{dependency}.input" value="${basedir}/@{dependency}" />
-    		<property name="@{dependency}.output.classes" location="${opencms.output}/build/classes-@{dependency}" />
-    	    <property name="@{dependency}.output.jar" location="${opencms.output}/build/jars-@{dependency}" />
+    		<property name="@{dependency}.output.classes" location="${opencms.build}/classes-@{dependency}" />
+    	    <property name="@{dependency}.output.jar" location="${opencms.build}/jars-@{dependency}" />
             <property file="${@{dependency}.input}/module.properties" prefix="@{dependency}" />
     	    <property name="@{dependency}.output.zip" location="${module.output.zip}/@{dependency}_${@{dependency}.module.version}.zip" />
 
@@ -375,15 +375,56 @@
 		<if>
 			<available file="${module.output.jar}" />
 			<then>
-                <zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
-                    <zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="*.jar" />    		
-                    <zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
-                </zip>        
+		    	<if>
+		    		<equals arg1="${module.name}" arg2="org.opencms.legacy" />
+		    		<then>
+		    			<copy 
+		    				file="${opencms.input}/modules/org.opencms.legacy/resources/system/login/version.js" 
+		    				tofile="${opencms.build}/version.js" overwrite="true">			
+		    	    		<filterset>
+		    	      			<filter token="OPENCMS_VERSION" value="${version.number} ${version.name}"/>
+		    	    		</filterset>			
+		    			</copy>
+		                <zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
+		                    <zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="*.jar" />    		
+		                    <zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" >
+				       			<exclude name="system/login/version.js" />
+							</zipfileset>		                    	
+			      			<zipfileset dir="${opencms.build}" prefix="system/login" includes="version.js" />	    			    			
+		                </zip>        
+		    		</then>
+		    		<else>
+		                <zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
+		                    <zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="*.jar" />    		
+		                    <zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+		                </zip>        
+		    		</else>
+		    	</if>
 			</then>		
             <else>
-                <zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
-                    <zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
-                </zip>        
+		    	<if>
+		    		<equals arg1="${module.name}" arg2="org.opencms.legacy" />
+		    		<then>
+		    			<copy 
+		    				file="${opencms.input}/modules/org.opencms.legacy/resources/system/login/version.js" 
+		    				tofile="${opencms.build}/version.js" overwrite="true">			
+		    	    		<filterset>
+		    	      			<filter token="OPENCMS_VERSION" value="${version.number} ${version.name}"/>
+		    	    		</filterset>			
+		    			</copy>
+		                <zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
+		                    <zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" >
+				       			<exclude name="system/login/version.js" />
+							</zipfileset>		                    	
+			      			<zipfileset dir="${opencms.build}" prefix="system/login" includes="version.js" />	    			    			
+		                </zip>        
+		    		</then>
+		    		<else>
+		                <zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
+		                    <zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+		                </zip>        
+		    		</else>
+		    	</if>
             </else>
 		</if>
                 

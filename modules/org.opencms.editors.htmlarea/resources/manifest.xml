@@ -24,7 +24,9 @@ The version of HtmlArea is 3.0 RC1.</p>
 		<datecreated>Mon, 20 Sep 2004 18:00:00 CEST</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
-		<dependencies/>
+		<dependencies>
+			<dependency name="org.opencms.workplace.explorer" version="0.9.0"/>
+		</dependencies>
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/modules/org.opencms.editors.htmlarea/"/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/05/12 16:06:53 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/05/18 10:40:29 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 
@@ -1086,18 +1086,11 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     /**
      * Prepares step 8 of the setup wizard.<p>
      * 
-     * @param param if "true", the workplace will be imported
      * @return true if the workplace should be imported
      */
-    public boolean prepareStep8(String param) {
-
-        boolean importWorkplace = false;
+    public boolean prepareStep8() {
 
         if (isInitialized()) {
-            // check params
-            if (param != null) {
-                importWorkplace = param.equals("true");
-            }
             checkEthernetAddress();
             // backup the XML configuration
             backupConfiguration("opencms-importexport.xml", "opencms-importexport.xml.ori");
@@ -1110,7 +1103,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             // save Properties to file "opencms.properties" 
             saveProperties(getProperties(), "opencms.properties", true);
         }
-        return importWorkplace;
+        return true;
     }
 
     /**

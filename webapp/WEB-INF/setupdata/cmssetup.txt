@@ -43,9 +43,6 @@ chacc "/" "group" "Projectmanagers" "+v+w+r+c+d+i"
 chacc "/" "group" "Users" "+v+w+r+c+i"
 chacc "/" "group" "Guests" "+v+r+i"
 
-# Import the workplace
-importResources "setupdata/vfs" "/"
-
 # Publish the project
 unlockCurrentProject
 publishProject
@@ -61,4 +58,3 @@ importModulesFromSetupBean
 updateIndex
 
 exit
-

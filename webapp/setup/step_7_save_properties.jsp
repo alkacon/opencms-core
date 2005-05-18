@@ -55,36 +55,21 @@ OpenCms Setup Wizard - Settings
 			<input type="text" name="ethernetAddress" value="<%= Bean.getEthernetAddress() %>" style="width: 150px;">
 			
 		</td>
-		<td><%= Bean.getHtmlHelpIcon("2", "") %></td>
+		<td><%= Bean.getHtmlHelpIcon("1", "") %></td>
 	</tr>
 		<tr>
 		<td>Enter the URL of your OpenCms site</td>		
 		<td>
 			<input type="text" name="workplaceSite" value="<%= serverUrl %>" style="width: 150px;">
 		</td>
-		<td><%= Bean.getHtmlHelpIcon("4", "") %></td>
+		<td><%= Bean.getHtmlHelpIcon("3", "") %></td>
 	</tr>
 	<tr>
 		<td>Enter a name for your OpenCms server</td>		
 		<td>
 			<input type="text" name="serverName" value="<%= Bean.getServerName() %>" style="width: 150px;">
 		</td>
-		<td><%= Bean.getHtmlHelpIcon("3", "") %></td>
-	</tr>
-</table>
-<%= Bean.getHtmlPart("C_BLOCK_END") %>
-
-<div class="dialogspacer" unselectable="on">&nbsp;</div>
-
-<%= Bean.getHtmlPart("C_BLOCK_START", "Workplace import") %>
-<table border="0" cellpadding="4" cellspacing="0">
-	<tr>
-		<td>Do you want to import the workplace?</td>
-		<td>
-			<input type="radio" name="importWorkplace" value="true" checked="checked"> Yes
-			<input type="radio" name="importWorkplace" value="false" > No
-		</td>
-		<td><%= Bean.getHtmlHelpIcon("1", "") %></td>
+		<td><%= Bean.getHtmlHelpIcon("2", "") %></td>
 	</tr>
 </table>
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
@@ -101,14 +86,6 @@ OpenCms Setup Wizard - Settings
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "1") %>
-<b>Importing the Workplace is required for an OpenCms installation.</b><br>&nbsp;<br>
-Do not change this setting unless you know exactly what you do!<br>&nbsp;<br>
-This imports all resources for the OpenCms Workplace in the virtual file system (VFS).
-A scenario where you might not want to import the Workplace is e.g. 
-to connect a second server against an already initialized OpenCms database.
-<%= Bean.getHtmlPart("C_HELP_END") %>
-
-<%= Bean.getHtmlPart("C_HELP_START", "2") %>
 <b>Why the ethernet address is needed:</b><br>&nbsp;<br>
 OpenCms generates unique keys for all resources based on a 
 128-bit UUID (Universally Unique IDentifier, aka GUID in the Windows world) algorithm.
@@ -121,13 +98,13 @@ This means there is a <i>very, very, very slight</i> chance that someone else in
 A valid MAC ethernet address looks like this: <code>4f:a1:f1:c2:36:bf</code>.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
-<%= Bean.getHtmlPart("C_HELP_START", "3") %>
+<%= Bean.getHtmlPart("C_HELP_START", "2") %>
 <b>The server name:</b><br>&nbsp;<br>
 This server name will be used for various log messages in OpenCms.<br>&nbsp;<br>
 This can be handy if you have to compare logfiles from a couple of different servers.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
-<%= Bean.getHtmlPart("C_HELP_START", "4") %>
+<%= Bean.getHtmlPart("C_HELP_START", "3") %>
 <b>The OpenCms site URL:</b><br>&nbsp;<br>
 OpenCms is capable of managing multiple sites.
 However, the OpenCms Workplace must always be accessed through one specific URL.<br>&nbsp;<br>

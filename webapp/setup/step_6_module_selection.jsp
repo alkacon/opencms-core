@@ -105,22 +105,29 @@ function checkDependencies(modulePackageName) {
 		return;
 	}
 
-	checkForwardDependencies(modulePackageName);
+	checkForwardDependencies(modulePackageName, 0);
 	checkBackwardDependencies(modulePackageName, 0);
 }
 
 // Checks whether other modules depend on the specified module.
-function checkForwardDependencies(modulePackageName) {	
+function checkForwardDependencies(modulePackageName, recursionCounter) {	
 	var dependencies;
 	var dependentModuleIndex = -1;
 	var form = document.modules;
 	var doUncheck = false;
 	var moduleIndex = -1;
 	
+	// check if we are stuck in an infinite loop of module dependencies
+	if (recursionCounter > 255) {
+		return 0;
+	}
+
 	if (modulePackageNames.length == 1) {
-		return;
+		return 0;
 	}	
 	
+	var updatesCount = 0;
+
 	moduleIndex = getPackageNameIndex(modulePackageName);		
 	if (moduleIndex > -1 && moduleDependencies[moduleIndex].length > 0) {
 		doUncheck = (form.availableModules[moduleIndex].checked == false);
@@ -136,10 +143,14 @@ function checkForwardDependencies(modulePackageName) {
 					form.availableModules[dependentModuleIndex].checked = true;
 				}
 			}
+			updatesCount = updatesCount + checkForwardDependencies(dependencies[j], recursionCounter+1);
 		}	
-		
-		alert("Dependencies have been updated!\r\n\r\n" + dependencies.length + " module(s) depend on this module.");			
+		updatesCount = updatesCount + dependencies.length;
 	}
+	if (recursionCounter==0) {
+		alert("Dependencies have been updated!\r\n\r\n" + updatesCount + " module(s) depend on this module.");
+	}
+	return updatesCount;
 }
 
 // Checks whether the specified module depends on another module.

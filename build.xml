@@ -195,9 +195,7 @@ ${opencms.inputlib.textextraction}
     <target name="clean" 
     	description="Delete existing ouput directories">
     	
-        <delete dir="${opencms.output.classes}" />
         <delete dir="${opencms.output.tests}" />
-        <delete dir="${opencms.output.jars}" />
         <delete dir="${opencms.output.warfiles}" />
         <delete dir="${opencms.output}/build" />
         <delete dir="${opencms.output.distfiles}" />
@@ -274,14 +272,6 @@ ${opencms.inputlib.textextraction}
     		</filterset>			
 		</copy>		
       				    	
-		<copy 
-			file="${opencms.input.warfiles}/WEB-INF/setupdata/vfs/system/login/version.js" 
-			tofile="${opencms.output.classes}/version.js" overwrite="true">			
-    		<filterset>
-      			<filter token="OPENCMS_VERSION" value="${version.number} ${version.name}"/>
-    		</filterset>			
-		</copy>
-
 		<copy 
 			file="${opencms.input.warfiles}/setup/versions.txt" 
 			tofile="${opencms.output.classes}/versions.txt" overwrite="true">			
@@ -368,7 +358,6 @@ ${opencms.inputlib.textextraction}
        			<exclude name="WEB-INF/config/opencms.properties" />
        			<exclude name="WEB-INF/config/opencms-system.xml" />
        			<exclude name="WEB-INF/config/registry.xml" />
-       			<exclude name="WEB-INF/setupdata/vfs/system/login/version.js" />
        			<exclude name="setup/versions.txt" />
        			<exclude name="setup/license.html" />
        			<exclude name="build.xml,.*,${excludes}" />
@@ -376,7 +365,6 @@ ${opencms.inputlib.textextraction}
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms.properties" />
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms-system.xml" />
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="registry.xml" />  			
-  			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/setupdata/vfs/system/login" includes="version.js" />
   			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="versions.txt" />
 			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="license.html" />
         </war>        
