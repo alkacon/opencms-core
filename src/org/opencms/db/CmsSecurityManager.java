@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2005/05/18 13:02:33 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,13 +67,11 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -94,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -180,7 +178,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.acceptTask(dbc, taskId);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_ACCEPT_TASK_1, String.valueOf(taskId)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_ACCEPT_TASK_1, new Integer(taskId)), e);
         } finally {
             dbc.clear();
         }
@@ -311,9 +309,9 @@ public final class CmsSecurityManager {
             CmsMessageContainer errMsg = Messages.get().container(
                 Messages.ERR_BACKUP_PROJECT_4,
                 new Object[] {
-                    String.valueOf(tagId),
+                    new Integer(tagId),
                     dbc.currentProject().getName(),
-                    String.valueOf(dbc.currentProject().getId()),
+                    new Integer(dbc.currentProject().getId()),
                     new Long(publishDate)});
             dbc.report(null, errMsg, e);
         } finally {
@@ -889,7 +887,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_COUNT_LOCKED_RESOURCES_PROJECT_2,
                 (project == null) ? "<failed to read>" : project.getName(),
-                String.valueOf(id)), e);
+                new Integer(id)), e);
         } finally {
             dbc.clear();
         }
@@ -1289,8 +1287,8 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_DELETE_BACKUPS_2,
-                CmsDateUtil.getDate(new Date(timestamp), DateFormat.MEDIUM, context.getLocale()),
-                String.valueOf(versions)), e);
+                new Date(timestamp),
+                new Integer(versions)), e);
         } finally {
             dbc.clear();
         }
@@ -1521,7 +1519,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.endTask(dbc, taskid);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_END_TASK_1, String.valueOf(taskid)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_END_TASK_1, new Integer(taskid)), e);
         } finally {
             dbc.clear();
         }
@@ -1587,7 +1585,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_FORWARD_TASK_3,
-                String.valueOf(taskid),
+                new Integer(taskid),
                 newUserName,
                 newRoleName), e);
         } finally {
@@ -2066,11 +2064,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             // todo: possibly the folder arg is a root path, then use         
             //       context.removeSiteRoot(folder) before output. 
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_GET_RESOURCES_IN_TIME_RANGE_3,
-                folder,
-                CmsDateUtil.getDate(new Date(starttime), DateFormat.SHORT, context.getLocale()),
-                CmsDateUtil.getDate(new Date(endtime), DateFormat.SHORT, context.getLocale())), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_GET_RESOURCES_IN_TIME_RANGE_3, folder, new Date(starttime), new Date(endtime)), e);
         } finally {
             dbc.clear();
         }
@@ -2107,7 +2101,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(
                 null,
-                Messages.get().container(Messages.ERR_GET_TASK_PARAM_2, parName, String.valueOf(taskId)),
+                Messages.get().container(Messages.ERR_GET_TASK_PARAM_2, parName, new Integer(taskId)),
                 e);
         } finally {
             dbc.clear();
@@ -2181,7 +2175,7 @@ public final class CmsSecurityManager {
             checkRole(dbc, CmsRole.SYSTEM_USER);
             result = m_driverManager.getUsers(dbc, type);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_GET_USERS_OF_TYPE_1, String.valueOf(type)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_GET_USERS_OF_TYPE_1, new Integer(type)), e);
         } finally {
             dbc.clear();
         }
@@ -2521,9 +2515,9 @@ public final class CmsSecurityManager {
                     lastname,
                     email,
                     address,
-                    String.valueOf(flags),
-                    String.valueOf(type),
-                    String.valueOf(additionalInfos)}), e);
+                    new Integer(flags),
+                    new Integer(type),
+                    additionalInfos}), e);
         } finally {
             dbc.clear();
         }
@@ -2813,7 +2807,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.reactivateTask(dbc, taskId);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_REACTIVATE_TASK_1, String.valueOf(taskId)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_REACTIVATE_TASK_1, new Integer(taskId)), e);
         } finally {
             dbc.clear();
         }
@@ -2839,7 +2833,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_TASK_OWNER_2,
                 task.getName(),
-                String.valueOf(task.getId())), e);
+                new Integer(task.getId())), e);
         } finally {
             dbc.clear();
         }
@@ -2963,7 +2957,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_BKP_FILE_2,
                 context.getSitePath(resource),
-                String.valueOf(tagId)), e);
+                new Integer(tagId)), e);
         } finally {
             dbc.clear();
         }
@@ -2989,7 +2983,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_BKP_PROJECT_2,
-                String.valueOf(tagId),
+                new Integer(tagId),
                 dbc.currentProject().getName()), e);
         } finally {
             dbc.clear();
@@ -3157,7 +3151,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 org.opencms.workflow.Messages.toTaskTypeString(taskType, context),
-                String.valueOf(projectId),
+                new Integer(projectId),
                 ownerName), e);
         } finally {
             dbc.clear();
@@ -3297,7 +3291,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_ORIGINAL_TASK_OWNER_2,
                 task.getName(),
-                String.valueOf(task.getId())), e);
+                new Integer(task.getId())), e);
         } finally {
             dbc.clear();
         }
@@ -3324,7 +3318,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_OWNER_FOR_PROJECT_2,
                 project.getName(),
-                String.valueOf(project.getId())), e);
+                new Integer(project.getId())), e);
         } finally {
             dbc.clear();
         }
@@ -3351,7 +3345,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_OWNER_FOR_TASK_2,
                 task.getName(),
-                String.valueOf(task.getId())), e);
+                new Integer(task.getId())), e);
         } finally {
             dbc.clear();
         }
@@ -3377,7 +3371,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_OWNER_FOR_TASKLOG_1,
-                String.valueOf(log.getId())), e);
+                new Integer(log.getId())), e);
         } finally {
             dbc.clear();
         }
@@ -3406,7 +3400,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_PATH_3,
-                String.valueOf(projectId),
+                new Integer(projectId),
                 path,
                 String.valueOf(filter)), e);
         } finally {
@@ -3435,7 +3429,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_PROJECT_FOR_TASK_2,
                 task.getName(),
-                String.valueOf(task.getId())), e);
+                new Integer(task.getId())), e);
         } finally {
             dbc.clear();
         }
@@ -3458,7 +3452,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readProject(dbc, id);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_PROJECT_FOR_ID_1, String.valueOf(id)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_PROJECT_FOR_ID_1, new Integer(id)), e);
         } finally {
             dbc.clear();
         }
@@ -3512,7 +3506,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_TASKLOGS_FOR_PROJECT_1,
-                String.valueOf(projectId)), e);
+                new Integer(projectId)), e);
         } finally {
             dbc.clear();
         }
@@ -3540,7 +3534,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_PROJECT_RESOURCES_2,
                 project.getName(),
-                String.valueOf(project.getId())), e);
+                new Integer(project.getId())), e);
         } finally {
             dbc.clear();
         }
@@ -3577,7 +3571,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_PROJECT_VIEW_2,
-                String.valueOf(projectId),
+                new Integer(projectId),
                 org.opencms.workflow.Messages.toTaskTypeString(state, context)), e);
         } finally {
             dbc.clear();
@@ -3936,9 +3930,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readStaticExportResources(dbc, parameterResources, timestamp);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_STATEXP_RESOURCES_1,
-                CmsDateUtil.getDateTime(new Date(timestamp), DateFormat.SHORT, context.getLocale())), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_STATEXP_RESOURCES_1, new Date(timestamp)), e);
         } finally {
             dbc.clear();
         }
@@ -3962,7 +3954,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readTask(dbc, id);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_TASK_FOR_ID_1, String.valueOf(id)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_TASK_FOR_ID_1, new Integer(id)), e);
         } finally {
             dbc.clear();
         }
@@ -3986,7 +3978,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readTaskLogs(dbc, taskid);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_TASKLOGS_FOR_ID_1, String.valueOf(taskid)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_TASKLOGS_FOR_ID_1, new Integer(taskid)), e);
         } finally {
             dbc.clear();
         }
@@ -4025,7 +4017,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_TASK_FOR_PROJECT_AND_TYPE_2,
-                String.valueOf(projectId),
+                new Integer(projectId),
                 org.opencms.workflow.Messages.toTaskTypeString(tasktype, context)), e);
         } finally {
             dbc.clear();
@@ -4071,7 +4063,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_TASK_FOR_PROJECT_AND_ROLE_AND_TYPE_3,
-                String.valueOf(projectId),
+                new Integer(projectId),
                 roleName,
                 org.opencms.workflow.Messages.toTaskTypeString(tasktype, context)), e);
         } finally {
@@ -4118,7 +4110,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_TASK_FOR_PROJECT_AND_USER_AND_TYPE_3,
-                String.valueOf(projectId),
+                new Integer(projectId),
                 userName,
                 org.opencms.workflow.Messages.toTaskTypeString(taskType, context)), e);
         } finally {
@@ -4417,7 +4409,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_RESTORE_RESOURCE_2,
                 context.getSitePath(resource),
-                String.valueOf(tag)), e);
+                new Integer(tag)), e);
         } finally {
             dbc.clear();
         }
@@ -4438,7 +4430,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.setName(dbc, taskId, name);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_SET_TASK_NAME_2, name, String.valueOf(taskId)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_SET_TASK_NAME_2, name, new Integer(taskId)), e);
         } finally {
             dbc.clear();
         }
@@ -4513,8 +4505,8 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_SET_TASK_PRIORITY_2,
-                String.valueOf(taskId),
-                String.valueOf(priority)), e);
+                new Integer(taskId),
+                new Integer(priority)), e);
         } finally {
             dbc.clear();
         }
@@ -4540,7 +4532,7 @@ public final class CmsSecurityManager {
                 Messages.ERR_SET_TASK_PARAM_3,
                 parName,
                 parValue,
-                String.valueOf(taskId)), e);
+                new Integer(taskId)), e);
         } finally {
             dbc.clear();
         }
@@ -4563,8 +4555,8 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_SET_TASK_TIMEOUT_2,
-                CmsDateUtil.getDateTime(new Date(timeout), DateFormat.SHORT, context.getLocale()).toString(),
-                String.valueOf(taskId)), e);
+                new Date(timeout),
+                new Integer(taskId)), e);
         } finally {
             dbc.clear();
         }
@@ -4612,9 +4604,9 @@ public final class CmsSecurityManager {
                 Messages.get().container(
                     Messages.ERR_TOUCH_RESOURCE_4,
                     new Object[] {
-                        CmsDateUtil.getDateTime(new Date(dateLastModified), DateFormat.SHORT, context.getLocale()).toString(),
-                        CmsDateUtil.getDateTime(new Date(dateReleased), DateFormat.SHORT, context.getLocale()).toString(),
-                        CmsDateUtil.getDateTime(new Date(dateExpired), DateFormat.SHORT, context.getLocale()).toString(),
+                        new Date(dateLastModified),
+                        new Date(dateReleased),
+                        new Date(dateExpired),
                         context.getSitePath(resource)}),
                 e);
         } finally {
@@ -4671,7 +4663,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_UNLOCK_PROJECT_2,
-                String.valueOf(projectId),
+                new Integer(projectId),
                 dbc.currentUser().getName()), e);
         } finally {
             dbc.clear();
@@ -4981,11 +4973,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.writeStaticExportPublishedResource(dbc, resourceName, linkType, linkParameter, timestamp);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_WRITE_STATEXP_PUBLISHED_RESOURCES_3,
-                resourceName,
-                linkParameter,
-                CmsDateUtil.getDateTime(new Date(timestamp), DateFormat.SHORT, context.getLocale()).toString()), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_WRITE_STATEXP_PUBLISHED_RESOURCES_3, resourceName, linkParameter, new Date(timestamp)), e);
         } finally {
             dbc.clear();
         }
@@ -5006,7 +4994,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.writeTaskLog(dbc, taskid, comment);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_WRITE_TASK_LOG_1, String.valueOf(taskid)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_WRITE_TASK_LOG_1, new Integer(taskid)), e);
         } finally {
             dbc.clear();
         }
@@ -5028,7 +5016,7 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.writeTaskLog(dbc, taskId, comment, type);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_WRITE_TASK_LOG_1, String.valueOf(taskId)), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_WRITE_TASK_LOG_1, new Integer(taskId)), e);
         } finally {
             dbc.clear();
         }

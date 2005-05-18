@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/05/11 15:24:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/18 13:02:33 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.3
  */
@@ -235,7 +235,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
                     // file size is larger than maximum allowed file size, throw an error
                     throw new CmsWorkplaceException(Messages.get().container(
-                        Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1, String.valueOf(maxFileSizeBytes / 1024)));
+                        Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1, new Long(maxFileSizeBytes / 1024)));
                 }
                 byte[] content = fi.get();
                 fi.delete();

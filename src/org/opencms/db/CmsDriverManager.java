@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.499 $
+ * Date   : $Date: 2005/05/18 13:02:33 $
+ * Version: $Revision: 1.500 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.499 $
+ * @version $Revision: 1.500 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -951,7 +951,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void cmsEvent(CmsEvent event) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_CMS_EVENT_1, String.valueOf(event.getType())));
+            LOG.debug(Messages.get().key(Messages.LOG_CMS_EVENT_1, new Integer(event.getType())));
         }
 
         I_CmsReport report;
@@ -4225,7 +4225,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 try {
                     m_projectDriver.deleteProject(dbc, dbc.currentProject());
                 } catch (CmsException e) {
-                    LOG.error(Messages.get().key(Messages.LOG_DELETE_TEMP_PROJECT_FAILED_1, String.valueOf(publishProjectId)));
+                    LOG.error(Messages.get().key(Messages.LOG_DELETE_TEMP_PROJECT_FAILED_1, new Integer(publishProjectId)));
                 }
                 // if project was temporary set context to online project
                 cms.getRequestContext().setCurrentProject(readProject(dbc, I_CmsConstants.C_PROJECT_ONLINE_ID));
@@ -6068,7 +6068,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             throw new CmsIllegalArgumentException(org.opencms.main.Messages.get().container(
                 org.opencms.main.Messages.ERR_ILLEGAL_ARG_2,
                 "name",
-                String.valueOf(name)));
+                name));
         }
         CmsTask task = m_workflowDriver.readTask(dbc, taskId);
         task.setName(name);

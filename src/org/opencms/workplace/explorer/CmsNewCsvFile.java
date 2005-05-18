@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/05/11 15:24:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/18 13:02:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.dom4j.io.DocumentSource;
  * </ul>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.7.3
  */
@@ -302,7 +302,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             // check file size
             if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
                 throw new CmsWorkplaceException(Messages.get().container(
-                    Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1, String.valueOf(maxFileSizeBytes / 1024)));
+                    Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1, new Long(maxFileSizeBytes / 1024)));
             }
             content = fi.get();
             fi.delete();
