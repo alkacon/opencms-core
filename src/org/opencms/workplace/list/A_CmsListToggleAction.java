@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsListToggleAction.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/18 13:19:27 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,13 +36,15 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
+import java.text.MessageFormat;
+
 /**
  * Abstract implementation of a toggle action for a html list.<p>
  * 
  * You have to extend this class and implement the <code>{@link #selectAction()}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
@@ -65,22 +67,23 @@ public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
     public String buttonHtml(CmsWorkplace wp) {
 
         String id = getId() + getItem().getId();
+        String confirmationMessage = getConfirmationMessage().key(wp.getLocale());
+        String helpText = getHelpText().key(wp.getLocale());
+        if (getColumn() != null && getItem().get(getColumn()) != null) {
+            confirmationMessage = new MessageFormat(confirmationMessage, wp.getLocale()).format(new Object[] {getItem().get(
+                getColumn())});
+            helpText = new MessageFormat(helpText, wp.getLocale()).format(new Object[] {getItem().get(getColumn())});
+        }
         String onClic = getListId()
             + "ListAction('"
             + getId()
             + "', '"
-            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
+            + CmsStringUtil.escapeJavaScript(confirmationMessage)
             + "', '"
             + CmsStringUtil.escapeJavaScript(getItem().getId())
             + "');";
 
-        return A_CmsHtmlIconButton.defaultButtonHtml(
-            id,
-            null,
-            getHelpText().key(wp.getLocale()),
-            isEnabled(),
-            getIconPath(),
-            onClic);
+        return A_CmsHtmlIconButton.defaultButtonHtml(id, null, helpText, isEnabled(), getIconPath(), onClic);
     }
 
     /**
@@ -105,6 +108,14 @@ public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
     public String getIconPath() {
 
         return selectAction().getIconPath();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.CmsListDirectAction#getColumn()
+     */
+    public String getColumn() {
+
+        return selectAction().getColumn();
     }
 
     /**

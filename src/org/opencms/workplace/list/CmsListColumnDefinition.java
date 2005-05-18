@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/18 13:19:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -47,7 +46,7 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
@@ -59,7 +58,7 @@ public class CmsListColumnDefinition {
     private CmsListColumnAlignEnum m_align;
 
     /** Comparator for sorting. */
-    private Comparator m_comparator;
+    private I_CmsListItemComparator m_comparator = null;
 
     /** Default action. */
     private CmsListDefaultAction m_defaultAction;
@@ -69,9 +68,6 @@ public class CmsListColumnDefinition {
 
     /** Display name. */
     private CmsMessageContainer m_name;
-
-    /** Sorteable flag. */
-    private boolean m_sorteable = true;
 
     /** Visible Flag. */
     private boolean m_visible = true;
@@ -151,13 +147,13 @@ public class CmsListColumnDefinition {
     /**
      * Returns the comparator, used for sorting.<p>
      *
-     * if no comparator was set, a new default list item comparator is used.<p>
+     * if no comparator was set, the default list item comparator is used.<p>
      * 
      * @return the comparator
      * 
      * @see CmsListItemDefaultComparator
      */
-    public Comparator getComparator() {
+    public I_CmsListItemComparator getListItemComparator() {
 
         return m_comparator;
     }
@@ -334,7 +330,7 @@ public class CmsListColumnDefinition {
      */
     public boolean isSorteable() {
 
-        return m_sorteable;
+        return getListItemComparator()!=null;
     }
 
     /**
@@ -362,7 +358,7 @@ public class CmsListColumnDefinition {
      *
      * @param comparator the comparator to set
      */
-    public void setComparator(Comparator comparator) {
+    public void setListItemComparator(I_CmsListItemComparator comparator) {
 
         m_comparator = comparator;
     }
@@ -387,16 +383,6 @@ public class CmsListColumnDefinition {
     public void setName(CmsMessageContainer name) {
 
         m_name = name;
-    }
-
-    /**
-     * Sets the sorteable.<p>
-     *
-     * @param sorteable the sorteable to set
-     */
-    public void setSorteable(boolean sorteable) {
-
-        m_sorteable = sorteable;
     }
 
     /**

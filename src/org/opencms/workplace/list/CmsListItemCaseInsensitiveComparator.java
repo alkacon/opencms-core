@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemDefaultComparator.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemCaseInsensitiveComparator.java,v $
  * Date   : $Date: 2005/05/18 13:19:27 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,23 +36,23 @@ import java.util.Comparator;
 import java.util.Locale;
 
 /**
- * Default comparator for case sensitive column sorting with string localization.<p>
+ * Comparator for case insensitive column sorting with string localization.<p>
  * 
  * If both list items column values are Strings then a localized collector is used for sorting; 
  * if not, the <code>{@link Comparable}</code> interface is used.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  * 
  * @see org.opencms.workplace.list.CmsListColumnDefinition
  */
-public class CmsListItemDefaultComparator implements I_CmsListItemComparator {
+public class CmsListItemCaseInsensitiveComparator implements I_CmsListItemComparator {
     
     /**
      * Default Constructor.<p>
      */
-    public CmsListItemDefaultComparator() {
+    public CmsListItemCaseInsensitiveComparator() {
         // no-op
     }
     
@@ -72,7 +72,7 @@ public class CmsListItemDefaultComparator implements I_CmsListItemComparator {
                 Comparable c1 = (Comparable)((CmsListItem)o1).get(columnId);
                 Comparable c2 = (Comparable)((CmsListItem)o2).get(columnId);
                 if (c1 instanceof String && c2 instanceof String) {
-                    return collator.compare(c1, c2);
+                    return collator.compare(((String)c1).toUpperCase(), ((String)c2).toUpperCase());
                 } else {
                     return c1.compareTo(c2);
                 }

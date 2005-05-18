@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/11 10:51:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/18 13:19:27 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,8 @@ import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemActionIconComparator;
+import org.opencms.workplace.list.CmsListItemDefaultComparator;
 import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
@@ -67,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends A_CmsListDialog {
@@ -299,7 +301,7 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
             Messages.get().container(Messages.GUI_USERS_LIST_COLS_ACTIONS_0),
             "", // no width
             CmsListColumnAlignEnum.ALIGN_CENTER);
-        actionsCol.setSorteable(false);
+        actionsCol.setListItemComparator(new CmsListItemActionIconComparator());
 
         // adds an activate/deactivate user action
         CmsUserActivateDeactivateAction userAction = new CmsUserActivateDeactivateAction(
@@ -330,6 +332,7 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
         CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN, Messages.get().container(
             Messages.GUI_USERS_LIST_COLS_LOGIN_0), "", // no width
             CmsListColumnAlignEnum.ALIGN_LEFT);
+        loginCol.setListItemComparator(new CmsListItemDefaultComparator());
         loginCol.setDefaultAction(new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT, Messages.get().container(
             Messages.GUI_USERS_LIST_ACTION_EDITUSER_NAME_0), Messages.get().container(
             Messages.GUI_USERS_LIST_ACTION_EDITUSER_HELP_0), null, true, // enabled
@@ -340,12 +343,14 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME, Messages.get().container(
             Messages.GUI_USERS_LIST_COLS_USERNAME_0), "", // no width
             CmsListColumnAlignEnum.ALIGN_LEFT);
+        nameCol.setListItemComparator(new CmsListItemDefaultComparator());
         metadata.addColumn(nameCol);
 
         // add column for email
         CmsListColumnDefinition emailCol = new CmsListColumnDefinition(LIST_COLUMN_EMAIL, Messages.get().container(
             Messages.GUI_USERS_LIST_COLS_EMAIL_0), "", // no width
             CmsListColumnAlignEnum.ALIGN_LEFT);
+        emailCol.setListItemComparator(new CmsListItemDefaultComparator());
         metadata.addColumn(emailCol);
 
         // add column for last login date
@@ -354,6 +359,7 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
             Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_0),
             "", // no width
             CmsListColumnAlignEnum.ALIGN_LEFT);
+        lastLoginCol.setListItemComparator(new CmsListItemDefaultComparator());
         lastLoginCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
             Messages.GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_1), Messages.get().container(
             Messages.GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0)));

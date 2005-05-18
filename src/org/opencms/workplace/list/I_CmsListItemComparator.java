@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/I_CmsListDirectAction.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/I_CmsListItemComparator.java,v $
  * Date   : $Date: 2005/05/18 13:19:27 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,41 +31,26 @@
 
 package org.opencms.workplace.list;
 
+import java.util.Comparator;
+import java.util.Locale;
+
 /**
- * Interface for list direct action, that is an action that may be applied
- * directly on a list item.<p>
+ * A list item comparator can be set at a column definition to set the sorting method for that column.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @author Michael Moossen (m.moossen@alkacon.com)
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public interface I_CmsListDirectAction extends I_CmsListAction {
+public interface I_CmsListItemComparator {
 
     /**
-     * Returns the current item.<p>
+     * Returns a new comparator for comparing list items by the given column,
+     * and using the given locale.<p>
      * 
-     * @return the current item
-     */
-    CmsListItem getItem();
-
-    /**
-     * Sets the current item, should be called before the <code>{@link #buttonHtml(org.opencms.workplace.CmsWorkplace)}</code> method.<p>
+     * @param columnId the id of the column to sort by
+     * @param locale the current used locale
      * 
-     * @param item the item
+     * @return a new comparator
      */
-    void setItem(CmsListItem item);
-    
-    /**
-     * Returns the id of the column to use as parameter for the helptext and confirmation message.<p>
-     * 
-     * @return the id of the column to use 
-     */
-    String getColumn();
-    
-    /**
-     * Sets the id of the column to use as parameter for the helptext and confirmation message.<p>
-     * 
-     * @param columnId the id of the column to use
-     */
-    void setColumn(String columnId);
+    Comparator getComparator(final String columnId, final Locale locale);
 }

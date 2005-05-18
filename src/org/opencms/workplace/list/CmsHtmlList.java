@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/17 09:52:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/18 13:19:27 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -49,7 +48,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -722,7 +721,7 @@ public class CmsHtmlList {
      */
     public void setSortedColumn(String sortedColumn, Locale locale) {
 
-        if (!m_metadata.isSorteable()) {
+        if (!getMetadata().getColumnDefinition(sortedColumn).isSorteable()) {
             return;
         }
         // check if the parameter is valid
@@ -744,15 +743,11 @@ public class CmsHtmlList {
         // sort new column
         m_sortedColumn = sortedColumn;
         m_currentSortOrder = CmsListOrderEnum.ORDER_ASCENDING;
-        Comparator c = getMetadata().getColumnDefinition(sortedColumn).getComparator();
+        I_CmsListItemComparator c = getMetadata().getColumnDefinition(sortedColumn).getListItemComparator();
         if (m_filteredItems == null) {
             m_filteredItems = new ArrayList(m_originalItems);
         }
-        if (c == null) {
-            Collections.sort(m_filteredItems, new CmsListItemDefaultComparator(m_sortedColumn, locale));
-        } else {
-            Collections.sort(m_filteredItems, c);
-        }
+        Collections.sort(m_filteredItems, c.getComparator(sortedColumn, locale));
     }
 
     /**

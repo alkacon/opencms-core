@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDefaultAction.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/18 13:19:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,13 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
+import java.text.MessageFormat;
+
 /**
  * Implementation of a default action in a html list column.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsListDefaultAction extends CmsListDirectAction {
@@ -95,22 +97,23 @@ public class CmsListDefaultAction extends CmsListDirectAction {
         String id = getId() + getItem().getId();
         String name = (getItem().get(m_column) != null) ? getItem().get(m_column).toString() : getName().key(
             wp.getLocale());
+        String confirmationMessage = getConfirmationMessage().key(wp.getLocale());
+        String helpText = getHelpText().key(wp.getLocale());
+        if (getColumn() != null && getItem().get(getColumn()) != null) {
+            confirmationMessage = new MessageFormat(confirmationMessage, wp.getLocale()).format(new Object[] {getItem().get(
+                getColumn())});
+            helpText = new MessageFormat(helpText, wp.getLocale()).format(new Object[] {getItem().get(getColumn())});
+        }
         String onClic = getListId()
             + "ListAction('"
             + getId()
             + "', '"
-            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
+            + CmsStringUtil.escapeJavaScript(confirmationMessage)
             + "', '"
             + CmsStringUtil.escapeJavaScript(getItem().getId())
             + "');";
 
-        return A_CmsHtmlIconButton.defaultButtonHtml(
-            id,
-            name,
-            getHelpText().key(wp.getLocale()),
-            isEnabled(),
-            getIconPath(),
-            onClic);
+        return A_CmsHtmlIconButton.defaultButtonHtml(id, name, helpText, isEnabled(), getIconPath(), onClic);
     }
 
     /**

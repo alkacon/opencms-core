@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/05/18 10:26:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/18 13:19:27 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsSchedulerList extends A_CmsListDialog {
@@ -304,7 +304,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         activateCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_ACTIVE_0));
         activateCol.setWidth("20");
         activateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        activateCol.setSorteable(false);
+        activateCol.setListItemComparator(new CmsListItemActionIconComparator());
         // create direct action to activate/deactivate job
         CmsActionActivateJob activateJob = new CmsActionActivateJob(
             LIST_ID,
@@ -336,7 +336,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         copyCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_COPY_0));
         copyCol.setWidth("20");
         copyCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        copyCol.setSorteable(false);
+        copyCol.setListItemComparator(new CmsListItemActionIconComparator());
         // direct action: copy job
         CmsListDirectAction copyJob = new CmsListDirectAction(LIST_ID, LIST_COLUMN_COPY);
         copyJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0));
@@ -353,7 +353,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         delCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_DELETE_0));
         delCol.setWidth("20");
         delCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        delCol.setSorteable(false);
+        delCol.setListItemComparator(new CmsListItemActionIconComparator());
         // direct action: delete job
         CmsListDirectAction delJob = new CmsListDirectAction(LIST_ID, LIST_ACTION_DELETE);
         delJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0));
@@ -370,6 +370,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         nameCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_NAME_0));
         nameCol.setWidth("30%");
         nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        nameCol.setListItemComparator(new CmsListItemDefaultComparator());
         // create default edit action for name column: edit job
         CmsListDefaultAction nameColAction = new CmsListDefaultAction (LIST_ID, LIST_ACTION_EDIT);
         nameColAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0));
@@ -386,6 +387,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         classCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_CLASS_0));
         classCol.setWidth("20%");
         classCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        classCol.setListItemComparator(new CmsListItemDefaultComparator());
         metadata.addColumn(classCol);
         
         // add column for last execution time
@@ -393,6 +395,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         lastExecCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_LASTEXE_0));
         lastExecCol.setWidth("25%");
         lastExecCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        lastExecCol.setListItemComparator(new CmsListItemDefaultComparator());
         // create date formatter for last execution time
         CmsListDateMacroFormatter listDateFormatter =  new CmsListDateMacroFormatter(Messages.get().container(
             Messages.GUI_JOBS_LIST_COL_LASTEXE_FORMAT_1), Messages.get().container(
@@ -405,6 +408,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         nextExecCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_NEXTEXE_0));
         nextExecCol.setWidth("25%");
         nextExecCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        nextExecCol.setListItemComparator(new CmsListItemDefaultComparator());
         // create date formatter for next execution time
         listDateFormatter = new CmsListDateMacroFormatter(Messages.get().container(
             Messages.GUI_JOBS_LIST_COL_NEXTEXE_FORMAT_1), Messages.get().container(
