@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/05/18 08:41:34 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.31 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.32 $ $Date: 2005/05/18 08:41:34 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -126,7 +126,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
                 throw new CmsDbEntryNotFoundException(
-                    Messages.get().container(Messages.ERR_READING_RESOURCE_1, resourceId));
+                    Messages.get().container(Messages.LOG_READING_RESOURCE_1, resourceId));
             }
             
             // write file content 

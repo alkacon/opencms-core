@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsDataAccessException.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/18 08:41:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,23 +38,10 @@ import org.opencms.main.CmsException;
  * Signals data access related issues, i.e. database access.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsDataAccessException extends CmsException {
-
-    // the allowed type range for this exception is >=300 and <400    
-
-    /** General data access exception. */
-    public static final int C_DA_EXCEPTION = 300;
-
-    /** Sql exception. */
-    public static final int C_DA_SQL_EXCEPTION = 301;
-
-    /** Error messages. */
-    private static final String[] C_ERROR_MESSAGES = {
-    /* 300 */"Data Access Exception",
-    /* 301 */"SQL Exception"};
 
     /**
      * Creates a new localized Exception.<p>
@@ -84,7 +71,7 @@ public class CmsDataAccessException extends CmsException {
      */
     public CmsDataAccessException(String message) {
 
-        super(message, C_DA_EXCEPTION);
+        super(message);
     }
 
     /**
@@ -119,7 +106,7 @@ public class CmsDataAccessException extends CmsException {
      */
     public CmsDataAccessException(String message, Throwable rootCause) {
 
-        super(message, C_DA_EXCEPTION, rootCause);
+        super(message, rootCause);
     }
 
     /**
@@ -129,7 +116,7 @@ public class CmsDataAccessException extends CmsException {
      */
     public CmsDataAccessException(Throwable rootCause) {
 
-        super(C_DA_EXCEPTION, rootCause);
+        super("Data Access Exception", rootCause);
     }
 
     /**
@@ -148,10 +135,6 @@ public class CmsDataAccessException extends CmsException {
      * @return the description String for the provided CmsException type
      */
     protected String getErrorDescription(int type) {
-
-        if (type >= 300 && type < 400) {
-            return C_ERROR_MESSAGES[type - 300];
-        }
         return super.getErrorDescription(type);
     }
 

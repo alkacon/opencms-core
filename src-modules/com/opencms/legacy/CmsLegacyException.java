@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyException.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/18 08:41:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,15 +49,9 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsLegacyException extends CmsException implements I_CmsThrowable {
-
-    /** Error code for bad name exception. */
-    public static final int C_BAD_NAME = 3;
-
-    /** Error code for ClassLoader errors. */
-    public static final int C_CLASSLOADER_ERROR = 29;
 
     /**
      * This array provides descriptions for the error codes stored as
@@ -112,12 +106,15 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     /* 45 */"Resource is not locked",
     /* 46 */"Insufficient lock to edit content of resource",
     /* 47 */"Resource locked by another user",
-    /* 47 */"Administrator priviledges are required to perform this operation",
-    /* 47 */"Project manager priviledges are required to perform this operation",
-    /* 47 */"Modify operation not allowed in 'Online' project",
-    /* 47 */"No permissions to perform this operation",
-    /* 47 */"Invalid password",           
-    /* 47 */"OpenCms login validation failed"};
+    /* 48 */"Administrator priviledges are required to perform this operation",
+    /* 49 */"Project manager priviledges are required to perform this operation",
+    /* 50 */"Modify operation not allowed in 'Online' project",
+    /* 51 */"No permissions to perform this operation",
+    /* 52 */"Invalid password",           
+    /* 53 */"OpenCms login validation failed",
+    /* 54 */"Error while loading invoking resource loader",     
+    /* 55 */"Resource loader not template enabled",
+    /* 56 */"Unknown resource type requested!"};
     
 
     /** Error code for export issues. */
@@ -167,6 +164,12 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
 
     /** Error code for not found exception.*/
     public static final int C_NOT_FOUND = 2;
+    
+    /** Error code for bad name exception. */
+    public static final int C_BAD_NAME = 3;
+
+    /** Error code for ClassLoader errors. */
+    public static final int C_CLASSLOADER_ERROR = 29;    
 
     /** Error code for driver manager initialization errors. */
     public static final int C_RB_INIT_ERROR = 33;
@@ -251,6 +254,15 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     
     /** Login failed. */
     public static final int C_SECURITY_LOGIN_FAILED = 53;
+    
+    /** Generic error code for loader errors. */
+    public static final int C_LOADER_GENERIC_ERROR = 54; 
+    
+    /** Non-template loader called through template loader facade. */
+    public static final int C_LOADER_NOT_TEMPLATE_ENABLED = 55;
+    
+    /** Unknown resource type. */
+    public static final int C_LOADER_UNKNOWN_RESOURCE_TYPE = 56;
     
     /** The container for the localized message.  */
     protected CmsMessageContainer m_message;

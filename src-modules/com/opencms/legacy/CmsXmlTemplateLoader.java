@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/05/17 13:47:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/18 08:41:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -586,7 +586,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             if (e instanceof CmsException) {
                 throw (CmsException)e;
             } else {
-                throw new CmsException(errorText, CmsLoaderException.C_LOADER_GENERIC_ERROR, e);
+                throw new CmsLegacyException(errorText, CmsLegacyException.C_LOADER_GENERIC_ERROR, e);
             }
         }
     }
@@ -653,7 +653,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             cms.getRequestContext().setAttribute(I_CmsRequest.C_CMS_REQUEST, cmsReq);
             cms.getRequestContext().setAttribute(I_CmsResponse.C_CMS_RESPONSE, cmsRes);
         } catch (IOException e) {
-            throw new CmsLoaderException("Trouble setting up legacy request / response", e);
+            throw new CmsLegacyException("Trouble setting up legacy request / response", e);
         }    
     }
     
@@ -704,7 +704,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error(errorMessage);
             } 
-            throw new CmsException(errorMessage, CmsLoaderException.C_LOADER_GENERIC_ERROR);
+            throw new CmsLegacyException(errorMessage, CmsLegacyException.C_LOADER_GENERIC_ERROR);
         }
 
         // Check the clearcache parameter

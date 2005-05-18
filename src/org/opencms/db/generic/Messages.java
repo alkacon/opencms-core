@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/18 08:41:34 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,9 +63,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_DELETE_NONEMTY_FOLDER_2 = "ERR_DELETE_NONEMTY_FOLDER_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DELETING_PROPERTIES_1 = "ERR_DELETING_PROPERTIES_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_ERROR_DELETING_PROPERTYDEF_1 = "ERR_ERROR_DELETING_PROPERTYDEF_1";
 
     /** Message constant for key in the resource bundle. */
@@ -76,9 +73,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ERROR_PUBLISHING_FOLDER_1 = "ERR_ERROR_PUBLISHING_FOLDER_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_ERROR_RESETING_RESOURCE_STATE_1 = "ERR_ERROR_RESETING_RESOURCE_STATE_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GENERIC_SQL_0 = "ERR_GENERIC_SQL_0";
@@ -136,18 +130,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PARENT_FOLDER_DELETED_1 = "ERR_PARENT_FOLDER_DELETED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_PUBLISHING_ACL_1 = "ERR_PUBLISHING_ACL_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_PUBLISHING_FILE_CONTENT_1 = "ERR_PUBLISHING_FILE_CONTENT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_PUBLISHING_PROPERTIES_1 = "ERR_PUBLISHING_PROPERTIES_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_PUBLISHING_RESOURCE_1 = "ERR_PUBLISHING_RESOURCE_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_DELETED_FILE_1 = "ERR_READ_DELETED_FILE_1";
@@ -174,16 +156,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_RESOURCE_WITH_ID_1 = "ERR_READ_RESOURCE_WITH_ID_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_READING_RESOURCE_1 = "ERR_READING_RESOURCE_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_USER_WITH_NAME_1 = "ERR_READING_USER_WITH_NAME_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_REMOVING_ACL_1 = "ERR_REMOVING_ACL_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_REMOVING_RESOURCE_1 = "ERR_REMOVING_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1 = "ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1";
@@ -235,13 +208,39 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEL_FOLDER_3 = "LOG_DEL_FOLDER_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DELETING_PROPERTIES_1 = "LOG_DELETING_PROPERTIES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERROR_RESETING_RESOURCE_STATE_1 = "LOG_ERROR_RESETING_RESOURCE_STATE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PUBLISHING_ACL_1 = "LOG_PUBLISHING_ACL_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISHING_FILE_3 = "LOG_PUBLISHING_FILE_3";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PUBLISHING_FILE_CONTENT_1 = "LOG_PUBLISHING_FILE_CONTENT_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISHING_FOLDER_3 = "LOG_PUBLISHING_FOLDER_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PUBLISHING_PROPERTIES_1 = "LOG_PUBLISHING_PROPERTIES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PUBLISHING_RESOURCE_1 = "LOG_PUBLISHING_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_READING_RESOURCE_1 = "LOG_READING_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_REMOVING_ACL_1 = "LOG_REMOVING_ACL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_REMOVING_RESOURCE_1 = "LOG_REMOVING_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_START_PUBLISHING_PROJECT_2 = "LOG_START_PUBLISHING_PROJECT_2";

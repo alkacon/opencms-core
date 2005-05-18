@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2005/05/17 16:13:36 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/18 08:41:34 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -168,7 +168,7 @@ public class CmsMethodElement extends A_CmsElement {
                 	try {
 	                    result = new String((byte[])methodResult, cms.getRequestContext().getEncoding());
                     } catch (UnsupportedEncodingException uee) {
-                        throw new CmsException(CmsLoaderException.C_LOADER_GENERIC_ERROR, uee);
+                        throw new CmsLegacyException(CmsLegacyException.C_LOADER_GENERIC_ERROR, uee);
                     }
                 }else if(methodResult instanceof Integer){
                     result = ((Integer)methodResult).toString();
@@ -191,7 +191,7 @@ public class CmsMethodElement extends A_CmsElement {
         try {
 	        return result.getBytes(cms.getRequestContext().getEncoding());
         } catch (UnsupportedEncodingException uee) {
-            throw new CmsException(CmsLoaderException.C_LOADER_GENERIC_ERROR, uee);
+            throw new CmsLegacyException(CmsLegacyException.C_LOADER_GENERIC_ERROR, uee);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2005/05/02 15:12:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/18 08:41:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_COLLECTOR_NAME_1 = "ERR_INVALID_COLLECTOR_NAME_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_POINTER_FILE_1 = "ERR_INVALID_POINTER_FILE_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOADER_NOT_TEMPLATE_ENABLED_0 = "ERR_LOADER_NOT_TEMPLATE_ENABLED_0";
 
