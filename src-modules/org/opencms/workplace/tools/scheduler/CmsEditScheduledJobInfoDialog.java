@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/05/19 09:35:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 09:41:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,13 +59,13 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /** The dialog type. */
-    public static final String DIALOG_TYPE = "widgetdemo8";
+    public static final String DIALOG_TYPE = "editjob";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1", "page2"};  

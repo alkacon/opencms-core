@@ -31,9 +31,6 @@ switch (wp.getAction()) {
     default:
 //////////////////// ACTION: show dialog (default)
 
-	String formHtml = wp.buildDialogForm();
-	if (!formHtml.equals(wp.ERROR_CREATEFORM)) {
-
 	wp.setParamAction(wp.DIALOG_SAVE);
 
 
@@ -87,7 +84,7 @@ function exitEditor() {
 
 <%= wp.dialogContentStart("Edit scheduled job dialog") %>
  
-<%= formHtml %>
+<%= wp.buildDialogForm() %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsCustom() %>
@@ -106,7 +103,6 @@ function exitEditor() {
 <%= wp.htmlEnd() %>
 
 <%
-	} // end form creation check
 } 
 //////////////////// end of switch statement 
 %>
