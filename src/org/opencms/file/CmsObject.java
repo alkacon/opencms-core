@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/05/19 07:15:14 $
- * Version: $Revision: 1.121 $
+ * Date   : $Date: 2005/05/19 09:54:29 $
+ * Version: $Revision: 1.122 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -69,7 +70,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.121 $
+ * @version $Revision: 1.122 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -389,10 +390,11 @@ public class CmsObject {
      * @param destination the name of the copy destination (full path)
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
      * 
      * @see #copyResource(String, String, int)
      */
-    public void copyResource(String source, String destination) throws CmsException {
+    public void copyResource(String source, String destination) throws CmsException, CmsIllegalArgumentException {
 
         copyResource(source, destination, I_CmsConstants.C_COPY_PRESERVE_SIBLING);
     }
@@ -417,8 +419,9 @@ public class CmsObject {
      * @param siblingMode indicates how to handle siblings during copy
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
      */
-    public void copyResource(String source, String destination, int siblingMode) throws CmsException {
+    public void copyResource(String source, String destination, int siblingMode) throws CmsException, CmsIllegalArgumentException {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource.getTypeId()).copyResource(this, m_securityManager, resource, destination, siblingMode);
@@ -577,10 +580,11 @@ public class CmsObject {
      * @return the created resource
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the given <code>resourcename</code> is null or of length 0
      * 
      * @see #createResource(String, int, byte[], List)
      */
-    public CmsResource createResource(String resourcename, int type) throws CmsException {
+    public CmsResource createResource(String resourcename, int type) throws CmsException, CmsIllegalArgumentException {
 
         return createResource(resourcename, type, new byte[0], Collections.EMPTY_LIST);
     }
@@ -597,9 +601,10 @@ public class CmsObject {
      * @return the created resource
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>resourcename</code> argument is null or of length 0
      */
     public CmsResource createResource(String resourcename, int type, byte[] content, List properties)
-    throws CmsException {
+    throws CmsException, CmsIllegalArgumentException {
 
         return getResourceType(type).createResource(this, m_securityManager, resourcename, content, properties);
     }

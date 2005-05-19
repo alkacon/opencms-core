@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityResourceCollector.java,v $
- * Date   : $Date: 2005/05/11 10:58:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/19 09:54:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file.collectors;
 
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -48,7 +49,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.7.2
  */
@@ -102,14 +103,14 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreePriorityDateAsc", "allInSubTreePriorityDateDesc" or "allInSubTreePriorityTitleDesc"
                 return null;
             default:
-                throw new CmsException("Invalid resource collector selected: " + collectorName);
+                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public String getCreateParam(CmsObject cms, String collectorName, String param) throws CmsException {
+    public String getCreateParam(CmsObject cms, String collectorName, String param) throws CmsDataAccessException {
 
         // if action is not set, use default action
         if (collectorName == null) {
@@ -128,14 +129,14 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreePriorityDateAsc", "allInSubTreePriorityDateDesc" or "allInSubTreePriorityTitleDesc"
                 return null;
             default:
-                throw new CmsException("Invalid resource collector selected: " + collectorName);
+                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List getResults(CmsObject cms, String collectorName, String param) throws CmsException {
+    public List getResults(CmsObject cms, String collectorName, String param) throws CmsException, CmsDataAccessException {
 
         // if action is not set use default
         if (collectorName == null) {
@@ -163,7 +164,7 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreePriorityTitleDesc"
                 return allInFolderPriorityTitle(cms, param, true);
             default:
-                throw new CmsException("Invalid resource collector selected: " + collectorName);
+                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
 
     }

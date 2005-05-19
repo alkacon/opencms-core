@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/18 12:48:14 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/05/19 09:54:29 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_GROUP_FAILED_2 = "ERR_ADD_USER_GROUP_FAILED_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_WEB_1 = "ERR_ADD_USER_WEB_1";
 
@@ -66,6 +66,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_GROUPNAME_1 = "ERR_BAD_GROUPNAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_BAD_RESOURCENAME_1 = "ERR_BAD_RESOURCENAME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_USER_1 = "ERR_BAD_USER_1";

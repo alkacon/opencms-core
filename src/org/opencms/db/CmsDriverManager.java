@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/19 08:57:24 $
- * Version: $Revision: 1.502 $
+ * Date   : $Date: 2005/05/19 09:54:29 $
+ * Version: $Revision: 1.503 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.502 $
+ * @version $Revision: 1.503 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1059,12 +1059,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @param siblingMode indicates how to handle siblings during copy
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>source</code> argument is null or of length 0
      * 
      * @see CmsObject#copyResource(String, String, int)
      * @see I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, int)
      */
     public void copyResource(CmsDbContext dbc, CmsResource source, String destination, int siblingMode)
-    throws CmsException {
+    throws CmsException, CmsIllegalArgumentException {
 
         // check the sibling mode to see if this resource has to be copied as a sibling
         boolean copyAsSibling = false;
@@ -1678,13 +1679,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return the created resource
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>resourcename</code> argument is null or of length 0
      * 
      * @see CmsObject#createResource(String, int, byte[], List)
      * @see CmsObject#createResource(String, int)
      * @see I_CmsResourceType#createResource(CmsObject, CmsSecurityManager, String, byte[], List)
      */
     public CmsResource createResource(CmsDbContext dbc, String resourcename, int type, byte[] content, List properties)
-    throws CmsException {
+    throws CmsException, CmsIllegalArgumentException {
 
         String targetName = resourcename;
 
@@ -3952,11 +3954,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @return the name of the resource inside the "lost and found" folder
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>resourcename</code> argument is null or of length 0
      * 
      * @see CmsObject#moveToLostAndFound(String)
      * @see CmsObject#getLostAndFoundName(String)
      */
-    public String moveToLostAndFound(CmsDbContext dbc, String resourcename, boolean returnNameOnly) throws CmsException {
+    public String moveToLostAndFound(CmsDbContext dbc, String resourcename, boolean returnNameOnly) throws CmsException, CmsIllegalArgumentException {
 
         CmsRequestContext context = dbc.getRequestContext();
         String siteRoot = context.getSiteRoot();
@@ -6699,7 +6702,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 && (c != '$')
                 && (c != '@')) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_USERNAME_ILLEGAL_CHARACTERS_1, username));
+                    Messages.ERR_USERNAME_ILLEGAL_CHARACTERS_1,
+                    username));
             }
         }
     }

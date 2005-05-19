@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/19 09:54:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
-import org.opencms.file.Messages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -53,7 +53,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
@@ -103,11 +103,11 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#chtype(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
      */
-    public void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource filename, int newType) throws CmsException {
+    public void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource filename, int newType) throws CmsException, CmsDataNotImplementedException {
         
         if (! OpenCms.getResourceManager().getResourceType(newType).isFolder()) {
             // it is not possible to change the type of a folder to a file type
-            throw new CmsDataNotImplementedException("Folder resource type can only be changed to another folder!");
+            throw new CmsDataNotImplementedException(Messages.get().key(Messages.ERR_CHTYPE_FOLDER_1, cms.getSitePath(filename)));
         }
         super.chtype(cms, securityManager, filename, newType);         
     }
@@ -121,7 +121,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         CmsResource source, 
         String destination, 
         int siblingMode
-    ) throws CmsException {
+    ) throws CmsIllegalArgumentException, CmsException {
 
         // first validate the destination name
         destination = validateFoldername(destination);
@@ -248,7 +248,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
      * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String)
      */
     public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
-    throws CmsException {
+    throws CmsException, CmsIllegalArgumentException {
         
         String dest = cms.getRequestContext().addSiteRoot(destination);
         if (!CmsResource.isFolder(dest)) {
@@ -257,7 +257,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         }
         if (resource.getRootPath().equalsIgnoreCase(dest)) {
             // move to target with same name is not allowed
-            throw new CmsVfsException(Messages.get().container(Messages.ERR_MOVE_SAME_NAME_1, destination));
+            throw new CmsVfsException(org.opencms.file.Messages.get().container(org.opencms.file.Messages.ERR_MOVE_SAME_NAME_1, destination));
         }   
 
         // check if the user has write access and if resource is locked
@@ -284,11 +284,11 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         int type, 
         byte[] content, 
         List properties
-    ) throws CmsException {
+    ) throws CmsException, CmsDataNotImplementedException {
 
         if (type != getTypeId()) {
             // it is not possible to replace a folder with a different type
-            throw new CmsDataNotImplementedException("Folder resource type can not be replaced!");
+            throw new CmsDataNotImplementedException(Messages.get().key(Messages.ERR_REPLACE_RESOURCE_FOLDER_1, cms.getSitePath(resource)));
         }
         // properties of a folder can be replaced, content is ignored
         super.replaceResource(cms, securityManager, resource, getTypeId(), null, properties);
@@ -305,7 +305,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     ) throws CmsException {
 
         // it is not possible to restore a folder from the backup
-        throw new CmsDataNotImplementedException("[" + this.getClass().getName() + "] Cannot restore folders.");
+        throw new CmsDataNotImplementedException(Messages.get().key(Messages.ERR_RESTORE_FOLDERS_1, this.getClass().getName()));
     }
 
     /**
@@ -414,12 +414,12 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
      *
      * @param resourcename folder name to check (complete path)
      * @return the validated folder name
-     * @throws CmsException if the folder name is empty or null
+     * @throws CmsIllegalArgumentException if the folder name is empty or null
      */
-    private String validateFoldername(String resourcename) throws CmsException {
+    private String validateFoldername(String resourcename) throws CmsIllegalArgumentException {
 
         if (CmsStringUtil.isEmpty(resourcename)) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, CmsException.C_BAD_NAME);
+            throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(org.opencms.db.Messages.ERR_BAD_RESOURCENAME_1, resourcename)); 
         }
         if (! CmsResource.isFolder(resourcename)) {
             resourcename = resourcename.concat("/");

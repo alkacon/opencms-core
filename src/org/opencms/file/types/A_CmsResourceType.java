@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/05/09 12:26:14 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/05/19 09:54:29 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,9 +40,9 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
-import org.opencms.file.Messages;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -56,13 +56,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Base implementation for resource type classes.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -81,6 +83,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** Macro for the site path of the current resouce. */
     public static final String MACRO_RESOURCE_SITE_PATH = "resource.site.path";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsResourceType.class);
 
     /** Flag for showing that this is an additional resource type which defined in a module. */
     protected boolean m_addititionalModuleResourceType;
@@ -141,27 +146,17 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public void addCopyResource(String source, String target, String type) throws CmsConfigurationException {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                "addCopyResource(String, String, String) called on "
-                    + this
-                    + " with source="
-                    + source
-                    + " target="
-                    + target
-                    + " type="
-                    + type);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_ADD_COPY_RESOURCE_4, new Object[] {this, source, target, type}));
         }
 
         if (m_frozen) {
             // configuration already frozen
-            throw new CmsConfigurationException("Resource type "
-                + this.getClass().getName()
-                + " with name='"
-                + getTypeName()
-                + "' id='"
-                + getTypeId()
-                + "' can't be reconfigured");
+            throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
+                org.opencms.configuration.Messages.ERR_CONFIGURATION_FROZEN_3,
+                this.getClass().getName(),
+                getTypeName(),
+                new Integer(getTypeId())));
         }
 
         // create the copy resource object an add it to the list
@@ -179,20 +174,17 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public void addDefaultProperty(CmsProperty property) throws CmsConfigurationException {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                "addDefaultProperty(CmsProperty) called on " + this + " with property=" + property);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_ADD_DFLT_PROP_2, this, property));
         }
 
         if (m_frozen) {
             // configuration already frozen
-            throw new CmsConfigurationException("Resource type "
-                + this.getClass().getName()
-                + " with name='"
-                + getTypeName()
-                + "' id='"
-                + getTypeId()
-                + "' can't be reconfigured");
+            throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
+                org.opencms.configuration.Messages.ERR_CONFIGURATION_FROZEN_3,
+                this.getClass().getName(),
+                getTypeName(),
+                new Integer(getTypeId())));
         }
 
         m_defaultProperties.add(property);
@@ -204,8 +196,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public void addMappingType(String mapping) {
 
         // this configuration does not support parameters 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("addMapping(" + mapping + ") added to " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().container(Messages.LOG_ADD_MAPPING_TYPE_2, mapping, this));
         }
         if (m_mappings == null) {
             m_mappings = new ArrayList();
@@ -383,8 +375,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public Map getConfiguration() {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_GET_CONFIGURATION_1, this));
         }
         return null;
     }
@@ -470,15 +462,15 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public final void initConfiguration() {
 
         // final since subclassed should NOT implement this, but rather the version with parameters (see below)
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("initConfiguration() called on " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIGURATION_1, this));
         }
     }
 
     /**
      * Special version of the configuration initialization used to also set resource type and id.<p>
      * 
-     * <i>Please note;</i> Many resource types defined in the core have in fact
+     * <i>Please note:</i> Many resource types defined in the core have in fact
      * a fixed resource type and a fixed id. Configurable name and id is used only
      * for certain types.<p>
      * 
@@ -488,22 +480,20 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public void initConfiguration(String name, String id) throws CmsConfigurationException {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(
-                "initConfiguration(String, String) called on " + this + " with name='" + name + "' id='" + id + "'");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIGURATION_3, this, name, id));
 
         }
 
         if (m_frozen) {
             // configuration already frozen
-            throw new CmsConfigurationException("Resource type "
-                + this.getClass().getName()
-                + " with name='"
-                + getTypeName()
-                + "' id='"
-                + getTypeId()
-                + "' can't be reconfigured");
+            throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
+                org.opencms.configuration.Messages.ERR_CONFIGURATION_FROZEN_3,
+                this.getClass().getName(),
+                getTypeName(),
+                new Integer(getTypeId())));
         }
+
         // freeze the configuration
         m_frozen = true;
 
@@ -517,13 +507,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         // check type id and type name
         if ((getTypeId() < 0) || (getTypeName() == null)) {
-            throw new CmsConfigurationException("Invalid resource type configuration type='"
-                + this.getClass().getName()
-                + "' name='"
-                + m_typeName
-                + "' id='"
-                + m_typeId
-                + "'");
+            throw new CmsConfigurationException(Messages.get().key(Messages.ERR_INVALID_RESTYPE_CONFIG_3, this.getClass().getName(), m_typeName, new Integer(m_typeId)));
         }
 
         m_defaultProperties = Collections.unmodifiableList(m_defaultProperties);
@@ -537,8 +521,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public void initialize(CmsObject cms) {
 
         // most resource type do not require any runtime information
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("initialize() called on " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_INITIALIZE_1, this));
         }
     }
 
@@ -595,7 +579,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         String dest = cms.getRequestContext().addSiteRoot(destination);
         if (resource.getRootPath().equalsIgnoreCase(dest)) {
             // move to target with same name is not allowed
-            throw new CmsVfsException(Messages.get().container(Messages.ERR_MOVE_SAME_NAME_1, destination));
+            throw new CmsVfsException(org.opencms.file.Messages.get().container(org.opencms.file.Messages.ERR_MOVE_SAME_NAME_1, destination));
         }        
         
         // check if the user has write access and if resource is locked
@@ -754,13 +738,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsObject cms, 
         CmsSecurityManager securityManager,
         CmsFile resource
-    ) throws CmsException {
+    ) throws CmsException, CmsVfsException {
 
         if (resource.isFile()) {
             return securityManager.writeFile(cms.getRequestContext(), resource);
         }
         // folders can never be written like a file
-        throw new CmsException("Attempt to write a folder as if it where a file!");
+        throw new CmsException(Messages.get().key(Messages.ERR_WRITE_FILE_IS_FOLDER_1, cms.getSitePath(resource)));
     }
 
     /**
@@ -860,19 +844,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
             try {
                 cms.copyResource(copyResource.getSource(), target, copyResource.getType());
-            } catch (CmsException e) {
+            } catch (Exception e) {
+                // CmsIllegalArgumentException as well as CmsException
                 // log the error and continue with the other copy resources
-                String message = "On resource "
-                    + resourcename
-                    + " unable to process copy resource "
-                    + copyResource
-                    + " target is "
-                    + target;
-                if (OpenCms.getLog(this).isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     // log stack trace in debug level only
-                    OpenCms.getLog(this).debug(message, e);
+                    LOG.debug(Messages.get().key(Messages.LOG_PROCESS_COPY_RESOURCES_3, resourcename, copyResource, target), e);
                 } else {
-                    OpenCms.getLog(this).error(message);
+                    LOG.error(Messages.get().key(Messages.LOG_PROCESS_COPY_RESOURCES_3, resourcename, copyResource, target));
                 }
             }
         }

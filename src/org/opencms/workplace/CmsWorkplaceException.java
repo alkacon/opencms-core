@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceException.java,v $
- * Date   : $Date: 2005/05/11 15:24:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 09:54:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,11 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
- * Signals that a VFS resource unexpectedly exists.<p> 
+ * Signals that an exceptional program flow happens in the workplace. Most often this 
+ * is triggered by wrong configurations or user input.<p> 
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2005/05/11 15:24:21 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/19 09:54:29 $
  * @since 5.1.2
  */
 public class CmsWorkplaceException extends CmsException {

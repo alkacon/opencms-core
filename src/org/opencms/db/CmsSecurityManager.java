@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/18 13:02:33 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2005/05/19 09:54:29 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -614,11 +614,10 @@ public final class CmsSecurityManager {
                 }
                 if (parent.getState() == I_CmsConstants.C_STATE_NEW) {
                     // parent folder is new - direct publish not allowed
-                    CmsMessageContainer errMsg = Messages.get().container(
+                    throw new CmsVfsException(Messages.get().container(
                         Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2,
                         context.removeSiteRoot(directPublishResource.getRootPath()),
-                        parentFolder);
-                    throw new CmsVfsException(errMsg);
+                        parentFolder));
                 }
 
             }

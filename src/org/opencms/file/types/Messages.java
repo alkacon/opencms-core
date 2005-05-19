@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/Messages.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Messages.java,v $
  * Date   : $Date: 2005/05/19 09:54:29 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file.collectors;
+package org.opencms.file.types;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
@@ -43,28 +43,49 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_UNKNOWN_RESTYPE_1 = "ERR_UNKNOWN_RESTYPE_1";  
-       
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_RESTYPE_INTID_2 = "LOG_RESTYPE_INTID_2";
-  
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_COLLECTOR_PARAM_SINGLE_FILE_0  = "ERR_COLLECTOR_PARAM_SINGLE_FILE_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_RESOURCE_WITHOUT_NAVPROP_1  = "LOG_RESOURCE_WITHOUT_NAVPROP_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_COLLECTOR_PARAM_INVALID_1  = "ERR_COLLECTOR_PARAM_INVALID_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_COLLECTOR_NAME_INVALID_1 = "ERR_COLLECTOR_NAME_INVALID_1";
+    public static final String ERR_CHTYPE_FOLDER_1 = "ERR_CHTYPE_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_COLLECTOR_PARAM_EMPTY_0  = "ERR_COLLECTOR_PARAM_EMPTY_0";
-    
+    public static final String ERR_INVALID_RESTYPE_CONFIG_3 = "ERR_INVALID_RESTYPE_CONFIG_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_REPLACE_RESOURCE_FOLDER_1 = "ERR_REPLACE_RESOURCE_FOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESTORE_FOLDERS_1 = "ERR_RESTORE_FOLDERS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_RESTYPE_CONFIG_NAME_3 = "ERR_INVALID_RESTYPE_CONFIG_NAME_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_WRITE_FILE_IS_FOLDER_1 = "ERR_WRITE_FILE_IS_FOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ADD_COPY_RESOURCE_4 = "LOG_ADD_COPY_RESOURCE_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ADD_DFLT_PROP_2 = "LOG_ADD_DFLT_PROP_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ADD_MAPPING_TYPE_2 = "LOG_ADD_MAPPING_TYPE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_GET_CONFIGURATION_1 = "LOG_GET_CONFIGURATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INIT_CONFIGURATION_1 = "LOG_INIT_CONFIGURATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INIT_CONFIGURATION_3 = "LOG_INIT_CONFIGURATION_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INITIALIZE_1 = "LOG_INITIALIZE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PROCESS_COPY_RESOURCES_3 = "LOG_PROCESS_COPY_RESOURCES_3";
+
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.file.collectors.messages";
+    private static final String BUNDLE_NAME = "org.opencms.file.types.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

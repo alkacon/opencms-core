@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2005/03/19 13:58:19 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/19 09:54:29 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.main.OpenCms;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -107,24 +107,20 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) &&  m_staticFrozen) {
             // configuration already frozen
-            throw new CmsConfigurationException("Resource type "
-                + this.getClass().getName()
-                + " with static name='"
-                + getStaticTypeName()
-                + "' static id='"
-                + getStaticTypeId()
-                + "' can't be reconfigured");
+            throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
+                org.opencms.configuration.Messages.ERR_CONFIGURATION_FROZEN_3,
+                this.getClass().getName(),
+                getStaticTypeName(),
+                new Integer(getStaticTypeId())));
         }
 
         if (!C_RESOURCE_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
-            throw new CmsConfigurationException("Resource type "
-                + this.getClass().getName()
-                + " must be configured with resource type name '"
-                + C_RESOURCE_TYPE_NAME
-                + "' (not '"
-                + name
-                + "')");
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
+                this.getClass().getName(),
+                C_RESOURCE_TYPE_NAME,
+                name));
         }
 
         // freeze the configuration

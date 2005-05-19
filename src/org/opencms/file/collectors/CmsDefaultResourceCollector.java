@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 09:54:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,15 @@
 
 package org.opencms.file.collectors;
 
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,13 +48,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * A default resource collector to generate some example list of resources from the VFS.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.2
  */
 public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
@@ -70,6 +74,9 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     /** Array list for fast collector name lookup. */
     private static final List COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(COLLECTORS));
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDefaultResourceCollector.class);
+
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCollectorNames()
      */
@@ -81,7 +88,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public String getCreateLink(CmsObject cms, String collectorName, String param) throws CmsException {
+    public String getCreateLink(CmsObject cms, String collectorName, String param) throws CmsDataAccessException, CmsException {
 
         // if action is not set, use default action
         if (collectorName == null) {
@@ -107,14 +114,14 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreeNavPos"
                 return null;
             default:
-                throw new CmsException("Invalid resource collector selected: " + collectorName);
+                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public String getCreateParam(CmsObject cms, String collectorName, String param) throws CmsException {
+    public String getCreateParam(CmsObject cms, String collectorName, String param) throws CmsDataAccessException {
 
         // if action is not set, use default action
         if (collectorName == null) {
@@ -140,14 +147,14 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreeNavPos"
                 return null;
             default:
-                throw new CmsException("Invalid resource collector selected: " + collectorName);
+                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List getResults(CmsObject cms, String collectorName, String param) throws CmsException {
+    public List getResults(CmsObject cms, String collectorName, String param) throws CmsDataAccessException, CmsException {
 
         // if action is not set use default
         if (collectorName == null) {
@@ -177,7 +184,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreeNavPos"
                 return allInFolderNavPos(cms, param, true);
             default:
-                throw new CmsException("Invalid resource collector selected: " + collectorName);
+                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
@@ -215,6 +222,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
      * @param readSubTree if true, collects all resources in the subtree
      * @return a List of Cms resources found by the collector
      * @throws CmsException if something goes wrong
+     * 
      */
     protected List allInFolderNavPos(CmsObject cms, String param, boolean readSubTree) throws CmsException {
 
@@ -235,10 +243,10 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
             // check if the resource has the NavPos property set or not
             if (navElement != null && navElement.getNavPosition() != Float.MAX_VALUE) {
                 navElementMap.put(navElement, resource);
-            } else if (OpenCms.getLog(this).isInfoEnabled()) {
+            } else if (LOG.isInfoEnabled()) {
                 // printing a log messages makes it a little easier to indentify 
                 // resources having not the NavPos property set
-                OpenCms.getLog(this).info("Resource w/o nav. properties found: " + navElement.getResourceName());
+                LOG.info(Messages.get().key(Messages.LOG_RESOURCE_WITHOUT_NAVPROP_1, navElement.getResourceName()));
             }
         }
 
@@ -276,9 +284,10 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
      * @return all resources in the folder matching the given criteria
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the given param argument is not a link to a single file
+     * 
      */
-    protected List getAllInFolder(CmsObject cms, String param, boolean tree) throws CmsException {
-
+    protected List getAllInFolder(CmsObject cms, String param, boolean tree) throws CmsException, CmsIllegalArgumentException {
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
@@ -304,12 +313,12 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     protected List getSingleFile(CmsObject cms, String param) throws CmsException {
 
         if ((param == null) || (cms == null)) {
-            throw new IllegalArgumentException("Collector requires a parameter in the form '/myfolder/file.html'");
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_COLLECTOR_PARAM_SINGLE_FILE_0));
         }
 
         // create a list and return it
         ArrayList result = new ArrayList(1);
-        result.add(cms.readFile(param));
+        result.add(cms.readFile(param)); 
         return result;
     }
 }

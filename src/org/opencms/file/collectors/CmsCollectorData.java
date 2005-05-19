@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCollectorData.java,v $
- * Date   : $Date: 2005/05/01 11:44:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/19 09:54:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.file.collectors;
 
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
@@ -46,7 +47,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.2
  */
 public class CmsCollectorData {
@@ -71,13 +72,12 @@ public class CmsCollectorData {
     public CmsCollectorData(String data) {
 
         if (data == null) {
-            throw new IllegalArgumentException(
-                "Collector requires a parameter in the form '/sites/default/myfolder/file_${number}.html|11|4'");
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_COLLECTOR_PARAM_EMPTY_0));
         }
 
         int pos1 = data.indexOf('|');
         if (pos1 == -1) {
-            throw new IllegalArgumentException("Malformed collector parameter '" + data + "'");
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_COLLECTOR_PARAM_INVALID_1));
         }
 
         int pos2 = data.indexOf('|', pos1 + 1);
@@ -108,7 +108,7 @@ public class CmsCollectorData {
                 }
             } catch (CmsLoaderException e1) {
                 // this resource type does not exist
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_UNKNOWN_RESTYPE_1, type));
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_UNKNOWN_RESTYPE_1, type), e1);
             }
         }
     }

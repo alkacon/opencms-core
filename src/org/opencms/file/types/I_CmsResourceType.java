@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/05/19 09:54:29 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 
 import java.util.List;
 
@@ -220,6 +221,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param destination the name of the copy destination with complete path
      * @param siblingMode indicates how to handle siblings during copy
      * 
+     * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#copyResource(String, String, int)
@@ -231,7 +233,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsResource source,
         String destination,
         int siblingMode
-    ) throws CmsException;
+    ) throws CmsException, CmsIllegalArgumentException;
 
     /**
      * Copies a resource to the current project of the user.<p>
@@ -246,6 +248,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param resource the resource to apply this operation to
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>resource</code> argument is null or of length 0
      * 
      * @see CmsObject#copyResourceToProject(String)
      * @see CmsSecurityManager#copyResourceToProject(org.opencms.file.CmsRequestContext, CmsResource)
@@ -254,7 +257,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsObject cms, 
         CmsSecurityManager securityManager, 
         CmsResource resource
-    ) throws CmsException;
+    ) throws CmsException, CmsIllegalArgumentException;
 
     /**
      * Creates a new resource of the given resource type
@@ -269,6 +272,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @return the created resource
      * 
      * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>source</code> argument is null or of length 0
      * 
      * @see CmsObject#createResource(String, int, byte[], List)
      * @see CmsObject#createResource(String, int)
@@ -280,7 +284,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         String resourcename, 
         byte[] content, 
         List properties
-    ) throws CmsException;
+    ) throws CmsException, CmsIllegalArgumentException;
     
     /**
      * Creates a new sibling of the source resource.<p>
@@ -495,6 +499,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param destination the destination resource name
      *
      * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>source</code> argument is null or of length 0
+     * 
      * 
      * @see CmsObject#moveResource(String, String)
      * @see CmsObject#renameResource(String, String)
@@ -506,7 +512,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsSecurityManager securityManager,
         CmsResource resource, 
         String destination
-    ) throws CmsException;
+    ) throws CmsException, CmsIllegalArgumentException;
 
     /**
      * Replaces the content, type and properties of a resource.<p>
