@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2005/05/19 16:05:45 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/05/19 16:46:04 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -160,7 +160,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     public void addConfiguration(I_CmsXmlConfiguration configuration) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Adding configuration: " + configuration);
+            LOG.debug(Messages.get().key(Messages.LOG_ADD_CONFIG_1, configuration));
         }
         m_configurations.add(configuration);
         cacheDtdSystemId(configuration);
@@ -313,7 +313,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         // does not need to be initialized
         if (LOG.isDebugEnabled()) {
-            LOG.debug("initConfiguration() called on " + this);
+            LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIGURATION_1, this));
         }
     }
 
@@ -327,7 +327,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         URL baseUrl = m_baseFolder.toURL();
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Base URL is " + baseUrl);
+            LOG.debug(Messages.get().key(Messages.LOG_BASE_URL_1, baseUrl));
         }
 
         // first load the base configuration
@@ -396,8 +396,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(
-                Messages.get().key(
+            LOG.info(Messages.get().key(
                 Messages.LOG_WRITE_CONFIG_SUCCESS_2,
                 file.getAbsolutePath(),
                 configuration.getClass().getName()));
@@ -419,8 +418,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
             + configuration.getXmlFileName();
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(
-                Messages.get().key(Messages.LOG_CREATE_CONFIG_BKP_2, fromName, toName));
+            LOG.debug(Messages.get().key(Messages.LOG_CREATE_CONFIG_BKP_2, fromName, toName));
         }
 
         try {

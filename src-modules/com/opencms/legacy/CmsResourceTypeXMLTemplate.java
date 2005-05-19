@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsResourceTypeXMLTemplate.java,v $
- * Date   : $Date: 2005/05/19 16:05:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 16:46:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.main.OpenCms;
  * Describes the resource type "XMLTemplate".
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -104,7 +104,7 @@ public class CmsResourceTypeXMLTemplate extends A_CmsResourceType {
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) &&  m_staticFrozen) {
             // configuration already frozen
             throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
-                org.opencms.configuration.Messages.ERR_CONFIG_FROZEN_3,
+                org.opencms.file.types.Messages.ERR_CONFIG_FROZEN_3,
                 this.getClass().getName(),
                 getStaticTypeName(),
                 new Integer(getStaticTypeId())));
