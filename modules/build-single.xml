@@ -93,8 +93,21 @@
                         <var name="module.package" value="${module.package}@{package}/" />
                     </sequential>
                 </for>
+            	<if>
+            		<available file="${module.input.src.test}" />
+            		<then>
+		            	<for param="file" >
+			            	<fileset dir="${module.input.src.test}">
+			            		<include name="*" />
+			            	</fileset>
+		                    <sequential>
+		                        <var name="notempty" value="true" />
+		                    </sequential>
+						</for>
+            		</then>
+            	</if>
                 <if>
-                   <available file="${module.input.src.test}" />
+                	<isset property="notempty" />
                     <then>
                         <property name="src.mode" value="shared" />  
                         <property name="module.input.src" value="${module.input.src.test}" />
@@ -237,9 +250,21 @@
                 <var name="module.dependencies.path" value="." />
                 <for list="${module.dependencies}" param="dependency">
                     <sequential>
-                        <var name="module.dependencies.path" value="${module.dependencies.path}:${@{dependency}.output.jar}/@{dependency}.jar" />
+						<if>
+							<available file="${@{dependency}.output.jar}" />
+							<then>
+			                    <for param="archive">
+				                    <fileset dir="${@{dependency}.output.jar}">
+				                      <include name="**/*.jar"/>
+				                    </fileset>
+			                        <sequential>
+				                    	<var name="module.dependencies.path" value="${module.dependencies.path}:@{archive}" />
+		                            </sequential>
+			                    </for>
+							</then>
+						</if>
                     </sequential>
-                </for>    		
+                </for>		
                 <!--echo message="${module.dependencies.path}" /-->
         
                 <var name="module.libs.path" value="." />
@@ -288,7 +313,6 @@
 	    	                                    <var name="package.dir" value="${package.dir}@{package}/" />
 	                                        </sequential>
 	                                    </for>
-	                                    <echo message="input libs: ${opencms.core.lib}"/>
 	                                    <javac 
 	                                        srcdir="${module.input.src.shared}"
 	                                        destdir="${module.output.classes}"
@@ -301,10 +325,7 @@
 	                                                <include name="**/*.jar"/>
 	                                            </fileset>
 	                                            <fileset dir="${opencms.core.lib}">
-	                                                <include name="opencms.jar"/>
-	                                            </fileset>
-	                                            <fileset dir="${opencms.core.lib}">
-	                                                <include name="opencms-legacy.jar"/>
+	                                                <include name="**/*.jar"/>
 	                                            </fileset>
 	                                            <pathelement path="${module.dependencies.path}"/>
 	                                            <pathelement path="${module.libs.path}"/>
@@ -363,9 +384,14 @@
                 
                 <for list="${module.dependencies}" param="dependency">
                     <sequential>
-                        <copy todir="${module.output.jar}">
-                            <fileset dir="${@{dependency}.output.jar}" includes="*.jar" />
-                        </copy>
+                    	<if>
+                    		<available file="${@{dependency}.output.jar}" />
+                    		<then>
+		                        <copy todir="${module.output.jar}">
+		                            <fileset dir="${@{dependency}.output.jar}" includes="*.jar" />
+		                        </copy>
+                    		</then>
+                    	</if>
                     </sequential>
                 </for>
 			</then>		

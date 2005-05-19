@@ -12,8 +12,11 @@
 		<name>org.opencms.workplace.tools.content</name>
 		<nicename><![CDATA[OpenCms 6.0 Content management administration tools]]></nicename>
 		<class/>
-		<description><![CDATA[This module contains the OpenCms administration tools for managing the content of resources, this includes property tools and element tools.
-(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
+		<description><![CDATA[
+<p>This module contains the OpenCms administration tools for managing the content of resources.<p>
+<p>Its includes file properties and content elements management tools.<p>
+<p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
+]]></description>
 		<version>0.9.5</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>

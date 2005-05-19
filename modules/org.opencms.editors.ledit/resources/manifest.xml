@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0 beta 3 Corrin</opencms_version>
+		<createdate>8/2/04 6:21 PM</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.editors.ledit</name>
+		<nicename><![CDATA[OpenCms 6.0 LEdit Editor]]></nicename>
+		<class/>
+		<description><![CDATA[
+<p>This module adds the AY-Software LEdit Editor to the OpenCms Workplace.</p>
+<p>Install this module if you want to use this ActiveX editor in OpenCms.</p>
+<p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
+]]></description>
+		<version>0.9.1</version>
+		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Mon, 14 Feb 2005 17:32:33 GMT</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies>
+			<dependency name="org.opencms.editors" version="0.9.0"/>
+		</dependencies>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/workplace/editors/ledit/"/>
+			<resource uri="/system/workplace/resources/buttons/"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Aug 2004 17:53:51 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Aug 2003 15:02:00 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>30</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/editors</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 15:37:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:58 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/editors/ledit</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:58 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[LEdit OCX text editor]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ledit/edit.js</source>
+			<destination>system/workplace/editors/ledit/edit.js</destination>
+			<type>plain</type>
+			<uuidresource>9bdfc642-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:53:01 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ledit/editor.jsp</source>
+			<destination>system/workplace/editors/ledit/editor.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>5f9bcced-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:58 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[LEdit OCX text editor]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ledit/editor_configuration.xml</source>
+			<destination>system/workplace/editors/ledit/editor_configuration.xml</destination>
+			<type>plain</type>
+			<uuidresource>5fa542d1-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:59 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editor configuration file]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ledit/mainpage.txt</source>
+			<destination>system/workplace/editors/ledit/mainpage.txt</destination>
+			<type>plain</type>
+			<uuidresource>5fb129b5-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:59 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Main editor page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 12:34:57 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 13:39:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/buttons</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 12:34:57 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 13:39:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/goto.gif</source>
+			<destination>system/workplace/resources/buttons/goto.gif</destination>
+			<type>image</type>
+			<uuidresource>610fb1a7-f039-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:37:03 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/help.gif</source>
+			<destination>system/workplace/resources/buttons/help.gif</destination>
+			<type>image</type>
+			<uuidresource>61273153-f039-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:37:04 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/print.gif</source>
+			<destination>system/workplace/resources/buttons/print.gif</destination>
+			<type>image</type>
+			<uuidresource>61a44fd7-f039-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:37:04 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/replace.gif</source>
+			<destination>system/workplace/resources/buttons/replace.gif</destination>
+			<type>image</type>
+			<uuidresource>61d83133-f039-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:37:05 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 12:34:57 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 13:39:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/ledit</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 12:52:04 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 13:39:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/ledit/edit.js</destination>
+			<type>plain</type>
+			<uuidresource>9bdfc642-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:53:01 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

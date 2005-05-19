@@ -12,8 +12,11 @@
 		<name>org.opencms.legacy</name>
 		<nicename><![CDATA[OpenCms 6.0 Legacy Module]]></nicename>
 		<class/>
-		<description><![CDATA[This module contains the OpenCms Legacy Module for OpenCms 5 backwards compatibility, 
-            mainly includes the old administration framework and tools, and the workflow view.]]></description>
+		<description><![CDATA[
+<p>This module contains the OpenCms Legacy Module for OpenCms 5 backwards compatibility.</p>
+<p>It mainly includes the OpenCms5 Administration Framework and tools, the Workflow View, and the XMLTemplate resource type support.<p>
+<p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
+]]></description>
 		<version>0.9.1</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
@@ -4496,6 +4499,53 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/commons</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 12:35:10 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 13:39:11 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/css_popup.css</source>
+			<destination>system/workplace/resources/commons/css_popup.css</destination>
+			<type>plain</type>
+			<uuidresource>f55ef4c9-f03a-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:48:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Popup dialog stylesheet]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/css_workplace.css</source>
+			<destination>system/workplace/resources/commons/css_workplace.css</destination>
+			<type>plain</type>
+			<uuidresource>f8f254bd-f03a-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:48:28 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Workplace master style sheet]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

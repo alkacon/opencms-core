@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0 beta 3 Corrin</opencms_version>
+		<createdate>8/2/04 6:21 PM</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.editors.msdhtml</name>
+		<nicename><![CDATA[OpenCms 6.0 Microsoft DHtml Editor]]></nicename>
+		<class/>
+		<description><![CDATA[
+<p>This module adds the Microsoft DHTML editor to the OpenCms Workplace.</p>
+<p>Install this module if you want a WYSIWYG editor for IE5+ based browsers.</p>
+<p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
+]]></description>
+		<version>0.9.1</version>
+		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Mon, 14 Feb 2005 17:32:33 GMT</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies>
+			<dependency name="org.opencms.editors" version="0.9.0"/>
+		</dependencies>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/workplace/editors/msdhtml"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Aug 2004 17:53:51 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Aug 2003 15:02:00 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>30</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/editors</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 15:37:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:58 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/editors/msdhtml</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:59 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[MSDHTML editor]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/msdhtml/edit.js</source>
+			<destination>system/workplace/editors/msdhtml/edit.js</destination>
+			<type>plain</type>
+			<uuidresource>a58f7af6-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:53:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/msdhtml/edithtml.js</source>
+			<destination>system/workplace/editors/msdhtml/edithtml.js</destination>
+			<type>plain</type>
+			<uuidresource>a904084a-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Tue, 17 Aug 2004 16:01:58 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:53:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/msdhtml/editor.jsp</source>
+			<destination>system/workplace/editors/msdhtml/editor.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>5fc1f29c-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:59 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[IE DHTML editor]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/msdhtml/editor_configuration.xml</source>
+			<destination>system/workplace/editors/msdhtml/editor_configuration.xml</destination>
+			<type>plain</type>
+			<uuidresource>5fcdd980-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:59 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editor configuration file]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/msdhtml/form_html.txt</source>
+			<destination>system/workplace/editors/msdhtml/form_html.txt</destination>
+			<type>plain</type>
+			<uuidresource>5fd4de64-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:59 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[WYSIWYG editor part]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/msdhtml/form_text.txt</source>
+			<destination>system/workplace/editors/msdhtml/form_text.txt</destination>
+			<type>plain</type>
+			<uuidresource>5fde7b58-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:59 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Text editor part]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/msdhtml/mainpage.txt</source>
+			<destination>system/workplace/editors/msdhtml/mainpage.txt</destination>
+			<type>plain</type>
+			<uuidresource>5fe7f13c-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Tue, 17 Aug 2004 18:03:35 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:59 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Main editor page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 12:52:13 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 13:39:30 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 12:52:13 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 13:39:30 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/msdhtml</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 12:52:13 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 13:39:30 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/msdhtml/edit.js</destination>
+			<type>plain</type>
+			<uuidresource>a58f7af6-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:53:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/msdhtml/edithtml.js</destination>
+			<type>plain</type>
+			<uuidresource>a904084a-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
+			<datelastmodified>Tue, 17 Aug 2004 16:01:58 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 12:53:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

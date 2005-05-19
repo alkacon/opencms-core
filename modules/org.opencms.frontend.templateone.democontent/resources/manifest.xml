@@ -12,8 +12,10 @@
 		<name>org.opencms.frontend.templateone.democontent</name>
 		<nicename><![CDATA[OpenCms 6.0 'templateone' demo content]]></nicename>
 		<class/>
-		<description><![CDATA[Contains example pages for usage of the OpenCms Template One.
-(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
+		<description><![CDATA[
+<p>Contains example pages for usage of the OpenCms Template One.<p>
+<p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
+]]></description>
 		<version>0.9.8</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
