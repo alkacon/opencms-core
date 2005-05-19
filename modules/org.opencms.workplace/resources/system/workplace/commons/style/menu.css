@@ -57,17 +57,6 @@ img {
   border: none;
 }
 
-.tip {
-    background: InfoBackground;
-    position: absolute;
-    z-index:3;
-    border: 1px solid ActiveBorder;
-    padding: 2px;
-    display: none;
-    text-align: left;
-    width: 300px;
-}
-
 /* --- loader ---*/
 
 #loader {
@@ -310,6 +299,8 @@ div.tree {
 
 #contexthelp {
   height: 80px;
+  width: 164px;
+  overflow: hidden;
 }
 
 <% /* style definitions valid only for NEW_ADMIN style */ %>
@@ -1065,7 +1056,7 @@ th a:link, th a:visited, th a:active {
 %>
 
 .help { 
-	color: InfoText; 
+    color: InfoText; 
     position: absolute; 
     top: 0px; 
     left: 0px; 
