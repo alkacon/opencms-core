@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlGalleryWidget.java,v $
- * Date   : $Date: 2005/05/18 12:31:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 17:02:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.galleries.A_CmsGallery;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
@@ -72,9 +72,9 @@ public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
         result.append(id);
         result.append("\">");
         result.append("<tr><td class=\"xmlTd\">");
-        result.append("<div class=\"xml");
-        result.append(getNameUpper());
-        result.append("Gallery\" unselectable=\"on\" id=\"");
+        // note that using "xmlHtmlGallery" here is ok since this is the formatting display area which is identical 
+        // for all widgets based on this class
+        result.append("<div class=\"xmlHtmlGallery\" unselectable=\"on\" id=\"");
         result.append(getNameLower());
         result.append(".");
         result.append(id);
