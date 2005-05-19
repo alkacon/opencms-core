@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsModuleConfiguration.java,v $
- * Date   : $Date: 2005/03/10 16:23:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/19 16:05:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,11 +75,9 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
     public CmsModuleConfiguration() {
         
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);
-        
         m_modules = new ArrayList();
-        
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Module configuration : initialized");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_MODULE_CONFIG_INIT_0));
         }                                 
     }
     
@@ -152,10 +150,8 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // create the module manager with the configured modules
         m_moduleManager = new CmsModuleManager(m_modules);
-                      
-        
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Module configuration : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_MODULE_CONFIG_FINISHED_0));
         }            
     }       
 

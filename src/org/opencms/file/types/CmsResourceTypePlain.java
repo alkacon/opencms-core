@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2005/03/17 10:46:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/19 16:05:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,24 +110,20 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) &&  m_staticFrozen) {
             // configuration already frozen
-            throw new CmsConfigurationException("Resource type "
-                + this.getClass().getName()
-                + " with static name='"
-                + getStaticTypeName()
-                + "' static id='"
-                + getStaticTypeId()
-                + "' can't be reconfigured");
+            throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
+                org.opencms.configuration.Messages.ERR_CONFIG_FROZEN_3,
+                this.getClass().getName(),
+                getStaticTypeName(),
+                new Integer(getStaticTypeId())));
         }
 
         if (!C_RESOURCE_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
-            throw new CmsConfigurationException("Resource type "
-                + this.getClass().getName()
-                + " must be configured with resource type name '"
-                + C_RESOURCE_TYPE_NAME
-                + "' (not '"
-                + name
-                + "')");
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
+                this.getClass().getName(),
+                C_RESOURCE_TYPE_NAME,
+                name));
         }
 
         // freeze the configuration

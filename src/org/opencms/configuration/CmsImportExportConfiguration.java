@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2005/04/06 06:29:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/19 16:05:45 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.configuration;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsStaticExportManager;
 
@@ -174,8 +173,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      */
     public CmsImportExportConfiguration() {
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);        
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Import configuration : initialized");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_IMPORT_CONFIG_INIT_0));
         }
     } 
 
@@ -453,8 +452,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      * Will be called when configuration of this object is finished.<p> 
      */
     public void initializeFinished() {
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Import configuration : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_IMPORT_CONFIG_FINISHED_0));
         }            
     }   
     
@@ -465,8 +464,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      */
     public void setImportExportManager(CmsImportExportManager manager) {
         m_importExportManager = manager;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Import manager init  : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().container(Messages.INIT_IMPORT_MANAGER_0));
         }
     }
     
@@ -477,8 +476,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      */
     public void setStaticExportManager(CmsStaticExportManager manager) {
         m_staticExportManager = manager;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Static export init   : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().container(Messages.INIT_STATEXP_MANAGER_0));
         }
     }
     

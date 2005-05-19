@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/04/26 13:20:51 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/05/19 16:05:45 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,6 +62,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.digester.Digester;
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Element;
 
@@ -72,7 +73,10 @@ import org.dom4j.Element;
  * @since 5.3
  */
 public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
+
     /** The "server" attribute. */
     protected static final String A_SERVER = "server";   
     
@@ -380,8 +384,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_requestHandlers = new ArrayList();
         m_configuredJobs = new ArrayList();
         m_runtimeProperties = new HashMap();
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". System configuration : initialized");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
         }          
     }
     
@@ -402,14 +406,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         m_configuredJobs.add(jobInfo);
         
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Scheduler config     : configured job named '" 
-                    + jobInfo.getJobName()                    
-                    + "' for class '"
-                    + jobInfo.getClassName()
-                    + "' with user "
-                    + jobInfo.getContextInfo().getUserName());
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_SCHEDULER_CONFIG_JOB_3,
+                jobInfo.getJobName(),
+                jobInfo.getClassName(),
+                jobInfo.getContextInfo().getUserName()));
         }          
     }    
     
@@ -423,17 +425,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         try {
             initClass = Class.forName(clazz).newInstance();
         } catch (Throwable t) {
-            OpenCms.getLog(this).error(". Request handler class '" + clazz  + "' could not be instanciated", t);
+            LOG.error(Messages.get().key(Messages.LOG_INIT_REQUEST_HANDLER_FAILURE_1, clazz), t);
             return;
         }
         if (initClass instanceof I_CmsRequestHandler) {
             m_requestHandlers.add(initClass);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Request handler      : " + clazz + " instanciated");
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_REQUEST_HANDLER_SUCCESS_1, clazz));
             }
         } else {        
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).error(". Request handler      : " + clazz + " invalid");
+            if (CmsLog.LOG.isErrorEnabled()) {
+                CmsLog.LOG.error(Messages.get().key(Messages.INIT_REQUEST_HANDLER_INVALID_1, clazz));
             }
         }
     }
@@ -448,17 +450,20 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         try {
             initClass = Class.forName(clazz).newInstance();
         } catch (Throwable t) {
-            OpenCms.getLog(this).error(". Resource init class '" + clazz  + "' could not be instanciated", t);
+            LOG.error(Messages.get().key(Messages.LOG_RESOURCE_INIT_CLASS_INVALID_1, clazz), t);
             return;
         }
         if (initClass instanceof I_CmsResourceInit) {
             m_resourceInitHandlers.add(initClass);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Resource init class  : " + clazz + " instanciated");
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get()
+                    .key(Messages.INIT_RESOURCE_INIT_SUCCESS_1, initClass));
             }
         } else {        
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).error(". Resource init class  : " + clazz + " invalid");
+            if (CmsLog.LOG.isErrorEnabled()) {
+                CmsLog.LOG.error(Messages.get().key(
+                    Messages.INIT_RESOURCE_INIT_INVALID_CLASS_1,
+                    initClass));
             }
         }
     }
@@ -1047,8 +1052,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * Will be called when configuration of this object is finished.<p> 
      */
     public void initializeFinished() {
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". System configuration : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SYSTEM_CONFIG_FINISHED_0));
         }            
     }   
     
@@ -1127,8 +1132,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public void setLocaleManager(CmsLocaleManager localeManager) {
         m_localeManager = localeManager;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". i18n configuration   : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_CONFIG_I18N_FINISHED_0));
         }                    
     }
     
@@ -1139,8 +1144,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public void setMailSettings(CmsMailSettings mailSettings) {
         m_mailSettings = mailSettings;
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Mail settings set " + m_mailSettings);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_MAIL_SETTINGS_1, mailSettings));
         }          
     }
 
@@ -1151,8 +1156,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public void setPasswordHandler(I_CmsPasswordHandler passwordHandler) {
         m_passwordHandler = passwordHandler;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Password handler     : " + passwordHandler.getClass().getName() + " instanciated");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_PWD_HANDLER_SUCCESS_1,
+                passwordHandler.getClass().getName()));
         }
     }    
     
@@ -1168,18 +1175,20 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         try {
             objectInstance = Class.forName(className).newInstance();
         } catch (Throwable t) {
-            OpenCms.getLog(this).error(". Resource init class '" + className  + "' could not be instanciated", t);
+            LOG.error(Messages.get().key(Messages.LOG_RESOURCE_INIT_FAILURE_1, className), t);
             return;
         }
         
         if (objectInstance instanceof I_CmsDbContextFactory) {
             m_runtimeInfoFactory = (I_CmsDbContextFactory)objectInstance;
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Runtime Info factory : " + className + " instanciated");
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(
+                    Messages.INIT_RUNTIME_INFO_FACTORY_SUCCESS_1,
+                    className));
             }
         } else {        
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isFatalEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).fatal(". Runtime Info factory : " + className + " invalid");
+            if (CmsLog.LOG.isFatalEnabled()) {
+                CmsLog.LOG.fatal(Messages.get().key(Messages.INIT_RUNTIME_INFO_FACTORY_FAILURE_1, className));
             }
         }        
         
@@ -1193,8 +1202,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void setSiteManager(CmsSiteManager siteManager) {
 
         m_siteManager = siteManager;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". site configuration   : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SITE_CONFIG_FINISHED_0));
         }          
     }    
 
@@ -1209,8 +1218,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         } catch (Throwable t) {
             m_tempFileProjectId = -1;
         }
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". System configuration : temporary file project id is " + m_tempFileProjectId);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_TEMPFILE_PROJECT_ID_1,
+                new Integer(m_tempFileProjectId)));
         }             
     }
         
@@ -1223,8 +1234,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void setVersionHistorySettings(String historyEnabled, String historyMaxCount) {
         m_versionHistoryEnabled = Boolean.valueOf(historyEnabled).booleanValue();
         m_versionHistoryMaxCount = Integer.valueOf(historyMaxCount).intValue();
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". History settings     : enabled=" + m_versionHistoryEnabled + " count=" + m_versionHistoryMaxCount);
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_HISTORY_SETTINGS_2,
+                // is Boolean type localized by underlying java.text.MessageFormat?
+                new Boolean(m_versionHistoryEnabled),
+                new Integer(m_versionHistoryMaxCount)));
         }             
     }     
     

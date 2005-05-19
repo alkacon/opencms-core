@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/05/02 13:47:40 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/05/19 16:05:45 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.configuration;
 
 import org.opencms.db.CmsExportPoint;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
@@ -337,8 +336,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      */
     public CmsWorkplaceConfiguration() {
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);        
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace config     : initialized");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_INIT_0));
         }               
     } 
 
@@ -921,9 +920,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      * Will be called when configuration of this object is finished.<p> 
      */
     public void initializeFinished() {
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace config     : finished");
-        }            
+
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_FINISHED_0));
+        }
     }   
     
     /**
@@ -933,8 +933,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      */
     public void setWorkplaceManager(CmsWorkplaceManager manager) {
         m_workplaceManager = manager;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace init       : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_INIT_FINISHED_0));
         }
     }
     

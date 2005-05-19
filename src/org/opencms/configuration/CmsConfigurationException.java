@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationException.java,v $
- * Date   : $Date: 2005/05/18 12:48:14 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/19 16:05:45 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,16 +42,6 @@ import org.opencms.main.CmsException;
  * @since 5.3
  */
 public class CmsConfigurationException extends CmsException { 
-    
-    /**
-     * Constructs a CmsConfigurationException with the specified description 
-     * and a default type.<p>
-     * 
-     * @param message the description message
-     */
-    public CmsConfigurationException(String message) {
-        super(message);
-    }    
     
     /**
      * Creates a new localized Exception.<p>

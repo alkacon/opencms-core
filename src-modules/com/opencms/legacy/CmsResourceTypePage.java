@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2005/05/17 13:47:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 16:05:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.A_CmsResourceType;
+import org.opencms.file.types.Messages;
 import org.opencms.importexport.A_CmsImport;
 import org.opencms.main.OpenCms;
 
@@ -46,7 +47,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -123,24 +124,20 @@ public class CmsResourceTypePage extends A_CmsResourceType {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) &&  m_staticFrozen) {
             // configuration already frozen
-            throw new CmsConfigurationException("Resource type "
-                + this.getClass().getName()
-                + " with static name='"
-                + getStaticTypeName()
-                + "' static id='"
-                + getStaticTypeId()
-                + "' can't be reconfigured");
+            throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
+                org.opencms.configuration.Messages.ERR_CONFIG_FROZEN_3,
+                this.getClass().getName(),
+                getStaticTypeName(),
+                new Integer(getStaticTypeId())));
         }
 
         if (!C_RESOURCE_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
-            throw new CmsConfigurationException("Resource type "
-                + this.getClass().getName()
-                + " must be configured with resource type name '"
-                + C_RESOURCE_TYPE_NAME
-                + "' (not '"
-                + name
-                + "')");
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
+                this.getClass().getName(),
+                C_RESOURCE_TYPE_NAME,
+                name));
         }
 
         // freeze the configuration

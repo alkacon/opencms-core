@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/A_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2005/03/17 10:31:09 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/19 16:05:45 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,11 @@
 
 package org.opencms.configuration;
 
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Abstract base implementation for xml configurations.<p>
@@ -42,7 +44,10 @@ import java.util.Map;
  * @since 5.3
  */
 public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
-        
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsXmlConfiguration.class);
+
     /** The name of the XML file used for this configuration. */
     private String m_xmlFileName; 
 
@@ -52,8 +57,12 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     public void addConfigurationParameter(String paramName, String paramValue) {
         
         // simple default configuration does not support parameters 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(
+                Messages.LOG_ADD_CONFIG_PARAM_CALLED_3,
+                paramName,
+                paramValue,
+                this));
         }            
     }    
     
@@ -63,8 +72,8 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     public Map getConfiguration() {
         
         // simple default configuration does not support parameters
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_GET_CONFIGURATION_1, this));
         }          
         return null;
     }
@@ -96,8 +105,8 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     public void initConfiguration() {
         
         // simple default configuration does not need to be initialized
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("initConfiguration() called on " + this);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIGURATION_1, this));
         }            
     }       
     

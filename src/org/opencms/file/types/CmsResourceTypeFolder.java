@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2005/05/19 09:54:29 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/19 16:05:45 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.main.OpenCms;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
 
@@ -93,7 +93,7 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) &&  m_staticFrozen) {
             // configuration already frozen
             throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
-                org.opencms.configuration.Messages.ERR_CONFIGURATION_FROZEN_3,
+                org.opencms.configuration.Messages.ERR_CONFIG_FROZEN_3,
                 this.getClass().getName(),
                 getStaticTypeName(),
                 new Integer(getStaticTypeId())));

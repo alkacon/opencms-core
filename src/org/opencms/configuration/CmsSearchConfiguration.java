@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2005/03/19 13:58:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/19 16:05:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  * Lucene search configuration class.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.3.5
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
@@ -104,8 +104,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
     public CmsSearchConfiguration() {
         
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);        
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Search configuration : initialized");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SEARCH_CONFIG_INIT_0));
         }
     }    
 
@@ -355,8 +355,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public void initializeFinished() {
         
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Search configuration : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SEARCH_CONFIG_FINISHED_0));
         }            
     }    
     
@@ -368,8 +368,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
     public void setSearchManager(CmsSearchManager manager) {
         
         m_searchManager = manager;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Search manager init  : finished");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SEARCH_MANAGER_FINISHED_0));
         }
     }    
     
