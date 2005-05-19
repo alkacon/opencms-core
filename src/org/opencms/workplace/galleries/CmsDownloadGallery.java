@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsDownloadGallery.java,v $
- * Date   : $Date: 2005/05/12 09:21:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Generates the download gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.5.2
  */
@@ -105,7 +105,7 @@ public class CmsDownloadGallery extends A_CmsGallery {
                         I_CmsConstants.C_PROPERTY_DESCRIPTION,
                         getParamResourcePath());
                     String keywords = getJsp().property(I_CmsConstants.C_PROPERTY_KEYWORDS, getParamResourcePath());
-                    String lastmodified = getSettings().getMessages().getDateTime(res.getDateLastModified());
+                    String lastmodified = getMessages().getDateTime(res.getDateLastModified());
                     html
                         .append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: left; width:100%; background-color: ThreeDFace; margin: 0;\">");
                     // file name

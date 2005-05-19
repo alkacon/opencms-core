@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2005/05/12 09:03:34 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
@@ -44,7 +45,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -315,7 +315,7 @@ public class CmsChnav extends CmsDialog {
      * 
      * @return the HTML for a navigation position select box
      */
-    public static String buildNavPosSelector(CmsObject cms, String filename, String attributes, CmsWorkplaceMessages messages) {
+    public static String buildNavPosSelector(CmsObject cms, String filename, String attributes, CmsMessages messages) {
         List navList = new ArrayList();
         List options = new ArrayList();
         List values = new ArrayList();
@@ -406,7 +406,7 @@ public class CmsChnav extends CmsDialog {
      */
     public String buildNavPosSelector() {
         synchronized (this) {
-            return buildNavPosSelector(getCms(), getParamResource(), null, getSettings().getMessages());
+            return buildNavPosSelector(getCms(), getParamResource(), null, getMessages());
         }
     }
 

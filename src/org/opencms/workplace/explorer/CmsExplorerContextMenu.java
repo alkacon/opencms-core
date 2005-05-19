@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2005/05/11 15:24:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -39,7 +40,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceAction;
-import org.opencms.workplace.CmsWorkplaceMessages;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * in the OpenCms configuration.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.3
  */
@@ -123,7 +123,7 @@ public class CmsExplorerContextMenu {
         // try to get the stored entries from the Map
         String entries = (String)m_generatedScripts.get(locale);
         if (entries == null) { 
-            CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
+            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
             // entries not yet in Map, so generate them
             StringBuffer result = new StringBuffer(3072);
             String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplace.C_PATH_WORKPLACE);  

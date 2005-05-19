@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndoChanges.java,v $
- * Date   : $Date: 2005/05/12 09:03:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -212,7 +212,7 @@ public class CmsUndoChanges extends CmsDialog {
      */
     public String getLastModifiedDate() {
         long dateLong = getCurrentResource().getDateLastModified();
-        return getSettings().getMessages().getDateTime(dateLong);
+        return getMessages().getDateTime(dateLong);
     }
     
     /**

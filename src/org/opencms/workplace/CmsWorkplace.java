@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/05/13 09:07:23 $
- * Version: $Revision: 1.114 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.115 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -87,15 +88,12 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.114 $
+ * @version $Revision: 1.115 $
  * 
  * @since 5.1
  */
 public abstract class CmsWorkplace {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsWorkplace.class); 
-    
     /** Constant for the JSP explorer filelist file. */
     public static final String C_FILE_EXPLORER_FILELIST = I_CmsWpConstants.C_VFS_PATH_WORKPLACE
         + "views/explorer/explorer_files.jsp";
@@ -129,7 +127,7 @@ public abstract class CmsWorkplace {
 
     /** Constant for the JSP common error dialog. */
     protected static final String C_FILE_DIALOG_SCREEN_ERRORPAGE = C_DIALOG_PATH_COMMON + "errorpage.jsp";
-    
+
     /** Constant for the JSP common wait screen. */
     protected static final String C_FILE_DIALOG_SCREEN_WAIT = C_DIALOG_PATH_COMMON + "wait.jsp";
 
@@ -141,6 +139,9 @@ public abstract class CmsWorkplace {
 
     /** Key name for the session workplace class. */
     protected static final String C_SESSION_WORKPLACE_CLASS = "__CmsWorkplace.WORKPLACE_CLASS";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWorkplace.class);
 
     /** The link to the explorer file list (cached for performance reasons). */
     private static String m_file_explorer_filelist;
@@ -163,6 +164,12 @@ public abstract class CmsWorkplace {
     /** The macro resolver, this is cached to avoid multiple instance generation. */
     private CmsMacroResolver m_macroResolver;
 
+    /** 
+     * The current used message bundle. 
+     * @see #initMessages()
+     */
+    private CmsMessages m_messages;
+
     /** The list of multi part file items. */
     private List m_multiPartFileItems;
 
@@ -174,6 +181,13 @@ public abstract class CmsWorkplace {
 
     /** The current OpenCms users workplace settings. */
     private CmsWorkplaceSettings m_settings;
+
+    /** 
+     * Temporary variable for easily adding new resource bundles.      
+     * @see #initMessages()
+     * @see #addMessages(String)
+     */
+    private List m_bundles = new ArrayList();
 
     /**
      * Public constructor.<p>
@@ -390,7 +404,7 @@ public abstract class CmsWorkplace {
         settings.setProject(cms.getRequestContext().currentProject().getId());
 
         // initialize messages and also store them in settings
-        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(
+        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(
             settings.getUserSettings().getLocale());
         settings.setMessages(messages);
 
@@ -483,7 +497,11 @@ public abstract class CmsWorkplace {
                 permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
                     cms.getRequestContext().currentUser());
                 if (LOG.isWarnEnabled()) {
-                    CmsLog.getLog(CmsTree.class).warn(Messages.get().key(Messages.LOG_READING_GROUPS_OF_USER_FAILED_1, cms.getRequestContext().currentUser().getName()), e);
+                    CmsLog.getLog(CmsTree.class).warn(
+                        Messages.get().key(
+                            Messages.LOG_READING_GROUPS_OF_USER_FAILED_1,
+                            cms.getRequestContext().currentUser().getName()),
+                        e);
                 }
             }
             if (permissions.getPermissionString().indexOf("+w") != -1) {
@@ -534,8 +552,7 @@ public abstract class CmsWorkplace {
         while (paramNames.hasNext()) {
             String paramName = (String)paramNames.next();
             String paramValue = request.getParameter(paramName);
-            retValue
-                .append(paramName + "=" + CmsEncoder.encode(paramValue, getCms().getRequestContext().getEncoding()));
+            retValue.append(paramName + "=" + CmsEncoder.encode(paramValue, getCms().getRequestContext().getEncoding()));
             if (paramNames.hasNext()) {
                 retValue.append("&");
             }
@@ -645,8 +662,7 @@ public abstract class CmsWorkplace {
                 }
                 result.append("<span unselectable=\"on\" ");
                 if (href != null) {
-                    result
-                        .append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                    result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
                 } else {
                     result.append("class=\"disabled\"");
                 }
@@ -678,8 +694,7 @@ public abstract class CmsWorkplace {
                 }
                 result.append("<span unselectable=\"on\" ");
                 if (href != null) {
-                    result
-                        .append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                    result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
                 } else {
                     result.append("class=\"disabled\"");
                 }
@@ -708,8 +723,7 @@ public abstract class CmsWorkplace {
                 }
                 result.append("<span unselectable=\"on\" ");
                 if (href != null) {
-                    result
-                        .append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                    result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
                 } else {
                     result.append("class=\"disabled\"");
                 }
@@ -844,8 +858,7 @@ public abstract class CmsWorkplace {
     public String buttonBarLineSpacer(int pixel) {
 
         StringBuffer result = new StringBuffer(128);
-        result
-            .append("<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"padding-right: 0px; padding-left: ");
+        result.append("<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"padding-right: 0px; padding-left: ");
         result.append(pixel);
         result.append("px;\"></span></span></td>\n");
         return result.toString();
@@ -1257,6 +1270,28 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Returns the current used message object.<p>
+     * 
+     * @return the current used message object
+     */
+    public CmsMessages getMessages() {
+
+        return m_messages;
+    }
+    
+    /**
+     * Auxiliary method for initialization of messages.<p>
+     * 
+     * @param bundleName the bundle name to instanciate
+     * 
+     * @see #initMessages()
+     */
+    protected void addMessages(String bundleName) {
+        
+        m_bundles.add(new CmsMessages(bundleName, getLocale()));
+    }
+    
+    /**
      * Returns a list of FileItem instances parsed from the request, in the order that they were transmitted.<p>
      * 
      * This list is automatically initialized from the createParameterMapFromMultiPart(HttpServletRequest) method.<p> 
@@ -1351,11 +1386,11 @@ public abstract class CmsWorkplace {
      * @param keyName the key for the desired string 
      * @return the resource string for the given key 
      * 
-     * @see CmsWorkplaceMessages#key(String)
+     * @see CmsMessages#key(String)
      */
     public String key(String keyName) {
 
-        return m_settings.getMessages().key(keyName);
+        return getMessages().key(keyName);
     }
 
     /**
@@ -1373,11 +1408,11 @@ public abstract class CmsWorkplace {
      * @param params the parameters to use for formatting
      * @return the resource string for the given key
      * 
-     * @see CmsWorkplaceMessages#key(String) 
+     * @see CmsMessages#key(String) 
      */
     public String key(String keyName, Object[] params) {
 
-        return m_settings.getMessages().key(keyName, params);
+        return getMessages().key(keyName, params);
     }
 
     /**
@@ -1391,11 +1426,11 @@ public abstract class CmsWorkplace {
      * @param defaultValue the default value in case the key does not exist in the bundle
      * @return the resource string for the given key it it exists, or the given default if not 
      * 
-     * @see CmsWorkplaceMessages#key(String, String)
+     * @see CmsMessages#key(String, String)
      */
     public String key(String keyName, String defaultValue) {
 
-        return m_settings.getMessages().key(keyName, defaultValue);
+        return getMessages().key(keyName, defaultValue);
     }
 
     /**
@@ -1514,7 +1549,7 @@ public abstract class CmsWorkplace {
 
         return paramsAsHidden(null);
     }
-    
+
     /**
      * Returns all initialized parameters of the current workplace class 
      * that are not in the given exclusion list as hidden field tags that can be inserted in a form.<p>
@@ -1523,7 +1558,7 @@ public abstract class CmsWorkplace {
      * 
      * @return all initialized parameters of the current workplace class
      * that are not in the given exclusion list as hidden field tags that can be inserted in a form
-     */    
+     */
     public String paramsAsHidden(Collection excludes) {
 
         StringBuffer result = new StringBuffer(512);
@@ -1594,7 +1629,7 @@ public abstract class CmsWorkplace {
      * 
      * The following macro contexts are available in the Workplace:<ul>
      * <li>Macros based on the current users OpenCms context (obtained from the current <code>{@link CmsObject}</code>).</li>
-     * <li>Localized key macros (obtained from the current <code>{@link CmsWorkplaceMessages}</code>).</li>
+     * <li>Localized key macros (obtained from the current <code>{@link CmsMessages}</code>).</li>
      * <li>Macros from the current JSP page context (obtained by <code>{@link #getJsp()}</code>).</li>
      * </ul>
      * 
@@ -1610,8 +1645,8 @@ public abstract class CmsWorkplace {
             // create a new macro resolver "with everything we got"
             m_macroResolver = CmsMacroResolver.newInstance()
             // initialize resolver with the objects available
-                .setCmsObject(m_cms).setMessages((m_settings == null) ? null : m_settings.getMessages())
-                .setJspPageContext((m_jsp == null) ? null : m_jsp.getJspContext());
+                .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
+                    (m_jsp == null) ? null : m_jsp.getJspContext());
         }
         // resolve the macros
         return m_macroResolver.resolveMacros(input);
@@ -1741,6 +1776,19 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Initializes the message object.<p>
+     * 
+     * By default the workplace messages object is used.<p>
+     * 
+     * You SHOULD override this method for setting the bundles you really need,
+     * using the <code>{@link #addMessages(String)}</code> method.<p>
+     */
+    protected void initMessages() {
+
+        m_messages = m_settings.getMessages();
+    }
+
+    /**
      * Initializes this workplace class instance.<p>
      * 
      * This method can be used in case there a workplace class was generated using
@@ -1757,11 +1805,18 @@ public abstract class CmsWorkplace {
 
             // get / create the workplace settings 
             m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
-            if (m_settings == null || m_settings.getMessages()!=OpenCms.getWorkplaceManager().getMessages(getLocale())) {
+            if (m_settings == null
+                || m_settings.getMessages() != OpenCms.getWorkplaceManager().getMessages(getLocale())) {
                 // create the settings object
                 m_settings = new CmsWorkplaceSettings();
                 initWorkplaceSettings(m_cms, m_settings, false);
                 storeSettings(m_session, m_settings);
+            }
+
+            // initialize Messages
+            initMessages();
+            if (!m_bundles.isEmpty()) {
+                m_messages = new CmsMultiMessages(m_bundles);
             }
 
             // check request for changes in the workplace settings
@@ -1769,6 +1824,7 @@ public abstract class CmsWorkplace {
 
             // set cms context accordingly
             initWorkplaceCmsContext(m_settings, m_cms);
+            
         }
     }
 

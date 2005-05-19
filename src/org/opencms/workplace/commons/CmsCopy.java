@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2005/05/12 09:03:34 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -218,19 +218,19 @@ public class CmsCopy extends CmsDialog {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
-            retValue.append(getSettings().getMessages().key("messagebox.option.folder.assibling.copy") + "<br>\n");
+            retValue.append(key("messagebox.option.folder.assibling.copy") + "<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_PRESERVE_SIBLING + "\"");
             if (defaultMode == I_CmsConstants.C_COPY_PRESERVE_SIBLING) {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
-            retValue.append(getSettings().getMessages().key("messagebox.option.folder.preserve.copy") + "<br>\n");
+            retValue.append(key("messagebox.option.folder.preserve.copy") + "<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_NEW + "\"");
             if (defaultMode == I_CmsConstants.C_COPY_AS_NEW) {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
-            retValue.append(getSettings().getMessages().key("messagebox.option.folder.asnewresource.copy") + "<br>\n");       
+            retValue.append(key("messagebox.option.folder.asnewresource.copy") + "<br>\n");       
             
         } else {
             // for files, show copy option "copy as sibling" and "copy as new resource"
@@ -240,13 +240,13 @@ public class CmsCopy extends CmsDialog {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
-            retValue.append(getSettings().getMessages().key("messagebox.option.file.assibling.copy") + "<br>\n");
+            retValue.append(key("messagebox.option.file.assibling.copy") + "<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_NEW + "\"");
             if (defaultMode == I_CmsConstants.C_COPY_AS_NEW) {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
-            retValue.append(getSettings().getMessages().key("messagebox.option.file.asnewresource.copy") + "<br>\n");       
+            retValue.append(key("messagebox.option.file.asnewresource.copy") + "<br>\n");       
         }
         
         return retValue.toString();

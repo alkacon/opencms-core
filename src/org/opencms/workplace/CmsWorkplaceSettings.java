@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/05/11 13:12:18 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.tools.CmsToolUserData;
 
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsMessages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +49,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -66,7 +67,7 @@ public class CmsWorkplaceSettings {
     private String m_galleryType;
     private CmsHtmlList m_htmlList;
     private Map m_lastUsedGalleries;
-    private CmsWorkplaceMessages m_messages;
+    private CmsMessages m_messages;
     private String m_permissionDetailView;
     private int m_project;
     private CmsPublishList m_publishList;
@@ -243,7 +244,7 @@ public class CmsWorkplaceSettings {
      * 
      * @return the initialized workplace messages for the current user
      */
-    public CmsWorkplaceMessages getMessages() {
+    public CmsMessages getMessages() {
 
         return m_messages;
     }
@@ -537,7 +538,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param messages the workplace messages for the current user
      */
-    public synchronized void setMessages(CmsWorkplaceMessages messages) {
+    public synchronized void setMessages(CmsMessages messages) {
 
         m_messages = messages;
     }

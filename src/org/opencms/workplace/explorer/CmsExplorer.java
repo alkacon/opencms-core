@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/05/11 15:24:21 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
@@ -405,7 +405,7 @@ public class CmsExplorer extends CmsWorkplace {
             // position 10: date of last modification
             if (showDateLastModified) {
                 content.append("\"");
-                content.append(getSettings().getMessages().getDateTime(res.getDateLastModified()));
+                content.append(getMessages().getDateTime(res.getDateLastModified()));
                 content.append("\",");
 
             } else {
@@ -428,7 +428,7 @@ public class CmsExplorer extends CmsWorkplace {
             // position 12: date of creation
             if (showDateCreated) {
                 content.append("\"");
-                content.append(getSettings().getMessages().getDateTime(res.getDateCreated()));
+                content.append(getMessages().getDateTime(res.getDateCreated()));
                 content.append("\",");
 
             } else {
@@ -453,7 +453,7 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\"");
                 long release = res.getDateReleased();
                 if (release != CmsResource.DATE_RELEASED_DEFAULT) {
-                    content.append(getSettings().getMessages().getDateTime(release));
+                    content.append(getMessages().getDateTime(release));
                 } else {
                     content.append(CmsTouch.C_RELEASE_EXPIRE_DEFAULT);
                 }
@@ -468,7 +468,7 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\"");
                 long expire = res.getDateExpired();
                 if (expire != CmsResource.DATE_EXPIRED_DEFAULT) {
-                    content.append(getSettings().getMessages().getDateTime(expire));
+                    content.append(getMessages().getDateTime(expire));
                 } else {
                     content.append(CmsTouch.C_RELEASE_EXPIRE_DEFAULT);
                 }

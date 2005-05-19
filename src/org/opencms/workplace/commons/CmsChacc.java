@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/05/10 07:50:57 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -1194,7 +1194,7 @@ public class CmsChacc extends CmsDialog {
         while (i.hasNext()) {
             String key = (String)i.next();
             int value = CmsPermissionSet.getPermissionValue(key);
-            String keyMessage = getSettings().getMessages().key(key);
+            String keyMessage = key(key);
             result.append("<tr>\n");
             result.append("\t<td class=\"dialogpermissioncell\">").append(keyMessage).append("</td>\n");
             result.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\"");

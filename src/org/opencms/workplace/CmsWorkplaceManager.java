@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.I_CmsLocaleHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 5.3.1
  */
@@ -592,9 +593,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      * @see CmsWorkplaceSettings#getMessages()
      * @see CmsWorkplace#getSettings()
      */
-    public CmsWorkplaceMessages getMessages(Locale locale) {
+    public CmsMessages getMessages(Locale locale) {
 
-        CmsWorkplaceMessages result = (CmsWorkplaceMessages)m_messages.get(locale);
+        CmsMessages result = (CmsMessages)m_messages.get(locale);
         if (result != null) {
             // messages have already been read
             return result;

@@ -179,12 +179,9 @@
         <echo message="Module libraries: ${module.libs}" />
     </target>	     
 	
-    <target name="buildcore" 
-    	unless="opencms.available" description="Generates the opencms.jar if it is missing">
+    <target name="buildcore" description="Generates/Update the opencms.jar">
     	
-    	<echo message="Core opencms.jar missing, building it using ${opencms.input}/build.xml" />    	 
 		<ant antfile="${opencms.input}/build.xml" target="jar"/>
-		<antcall target="clean" />
     </target>
         
     <target name="builddeps" description="Generates all the modules dependencies">

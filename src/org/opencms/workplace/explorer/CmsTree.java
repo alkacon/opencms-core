@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2005/05/11 15:24:21 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -46,7 +47,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -132,7 +132,7 @@ public class CmsTree extends CmsWorkplace {
         // get the localized workplace messages
         // TODO: Why a new message object, can it not be obtained from session?
         Locale locale = cms.getRequestContext().getLocale();
-        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
+        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
         
         retValue.append("function initTreeResources() {\n");
         retValue.append("\tinitResources(\"");

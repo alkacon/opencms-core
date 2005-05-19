@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/18 13:19:27 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends A_CmsListDialog {
@@ -123,6 +123,17 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
         super(jsp, LIST_ID, Messages.get().container(Messages.GUI_USERS_LIST_NAME_0), LIST_COLUMN_LOGIN, LIST_COLUMN_LOGIN);
     }
 
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        addMessages(Messages.get().getBundleName());
+        addMessages("org.opencms.workplace.list.messages");
+        addMessages("org.opencms.workplace.tools.messages");
+    }
+    
     /**
      * Public constructor with JSP variables.<p>
      * 

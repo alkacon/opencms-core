@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/05/10 15:45:19 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * 
  * @since 5.1
  */
@@ -154,7 +154,7 @@ public class CmsFrameset extends CmsWorkplace {
                 CmsBroadcast message = (CmsBroadcast)messageQueue.remove();
                 StringBuffer msg = new StringBuffer(256);
                 msg.append('[');
-                msg.append(getSettings().getMessages().getDateTime(message.getSendTime()));
+                msg.append(getMessages().getDateTime(message.getSendTime()));
                 msg.append("] ");
                 msg.append(key("label.broadcastmessagefrom"));
                 msg.append(' ');
@@ -349,7 +349,7 @@ public class CmsFrameset extends CmsWorkplace {
      * @return the last login time of the current user in localized format
      */
     public String getLoginTime() {
-        return getSettings().getMessages().getDateTime(getSettings().getUser().getLastlogin());
+        return getMessages().getDateTime(getSettings().getUser().getLastlogin());
     }
 
     /**

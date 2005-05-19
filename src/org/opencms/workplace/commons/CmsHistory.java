@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2005/05/12 09:03:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.5.1
  */
@@ -198,10 +198,10 @@ public class CmsHistory extends CmsDialog {
                 result.append(".gif\">");                
                 result.append("</td>\n");   
                 result.append("\t<td>");                
-                result.append(getSettings().getMessages().getDateTime(dateLastPublished));
+                result.append(getMessages().getDateTime(dateLastPublished));
                 result.append("</td>\n");   
                 result.append("\t<td>");
-                result.append(getSettings().getMessages().getDateTime(dateLastModified));
+                result.append(getMessages().getDateTime(dateLastModified));
                 result.append("</td>\n");   
                 result.append("\t<td>");
                 result.append(userName);

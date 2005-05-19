@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/05/19 13:57:24 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -70,7 +69,7 @@ import org.apache.commons.logging.Log;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -1057,7 +1056,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
     private Map getListDefaults() {
 
         if (m_listDefaults == null) {
-            CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(getRequestContext().getLocale());
+            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getRequestContext().getLocale());
             m_listDefaults = CmsTemplateContentListItem.getDefaultValuesFromMessages(messages);
         }
         return m_listDefaults;
