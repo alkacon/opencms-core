@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2005/05/19 16:05:45 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/19 16:27:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -192,10 +192,10 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
      */
     public void initConfiguration(String name, String id) throws CmsConfigurationException {
         
-        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) &&  m_staticFrozen) {
+        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
             // configuration already frozen
-            throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
-                org.opencms.configuration.Messages.ERR_CONFIG_FROZEN_3,
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_CONFIG_FROZEN_3,
                 this.getClass().getName(),
                 getStaticTypeName(),
                 new Integer(getStaticTypeId())));

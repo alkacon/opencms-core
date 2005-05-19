@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2005/05/19 16:05:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/19 16:27:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,8 +110,8 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) &&  m_staticFrozen) {
             // configuration already frozen
-            throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
-                org.opencms.configuration.Messages.ERR_CONFIG_FROZEN_3,
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_CONFIG_FROZEN_3,
                 this.getClass().getName(),
                 getStaticTypeName(),
                 new Integer(getStaticTypeId())));

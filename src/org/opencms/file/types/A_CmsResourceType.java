@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/05/19 16:05:45 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/05/19 16:27:33 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -152,8 +152,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         if (m_frozen) {
             // configuration already frozen
-            throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
-                org.opencms.configuration.Messages.ERR_CONFIG_FROZEN_3,
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_CONFIG_FROZEN_3,
                 this.getClass().getName(),
                 getTypeName(),
                 new Integer(getTypeId())));
@@ -180,8 +180,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         if (m_frozen) {
             // configuration already frozen
-            throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
-                org.opencms.configuration.Messages.ERR_CONFIG_FROZEN_3,
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_CONFIG_FROZEN_3,
                 this.getClass().getName(),
                 getTypeName(),
                 new Integer(getTypeId())));
@@ -488,7 +488,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         if (m_frozen) {
             // configuration already frozen
             throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
-                org.opencms.configuration.Messages.ERR_CONFIG_FROZEN_3,
+                org.opencms.file.types.Messages.ERR_CONFIG_FROZEN_3,
                 this.getClass().getName(),
                 getTypeName(),
                 new Integer(getTypeId())));
