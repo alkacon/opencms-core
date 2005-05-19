@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2005/03/13 09:51:11 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/19 12:57:48 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.xml;
 
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
@@ -44,6 +44,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -63,11 +65,14 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.3.5
  */
 public final class CmsXmlUtils {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlUtils.class);  
+    
     /**
      * Prevents instances of this class from being generated.<p> 
      */
@@ -355,7 +360,7 @@ public final class CmsXmlUtils {
             writer.close();
 
         } catch (Exception e) {
-            throw new CmsXmlException("Marshalling XML document failed", e);
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_MARSHALLING_XML_DOC_0), e);
         }
 
         return out;
@@ -376,7 +381,7 @@ public final class CmsXmlUtils {
         try {
             return out.toString(encoding);
         } catch (UnsupportedEncodingException e) {
-            throw new CmsXmlException("Marshalling XML document to String failed", e);
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_MARSHALLING_XML_DOC_TO_STRING_0), e);
         }
     }
 
@@ -521,7 +526,7 @@ public final class CmsXmlUtils {
             reader.setMergeAdjacentText(true);
             return reader.read(source);
         } catch (DocumentException e) {
-            throw new CmsXmlException("Unmarshalling xml document failed!", e);
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_UNMARSHALLING_XML_DOC_0), e);
         }
     }
 
@@ -559,8 +564,8 @@ public final class CmsXmlUtils {
             reader = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
         } catch (SAXException e) {
             // xerces parser not available - no schema validation possible
-            if (OpenCms.getLog(CmsXmlUtils.class).isWarnEnabled()) {
-                OpenCms.getLog(CmsXmlUtils.class).warn("Could not initialize Xerces SAX reader for validation", e);
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_VALIDATION_INIT_XERXES_SAX_READER_FAILED_0), e);
             }
             // no validation of the content is possible
             return;
@@ -575,15 +580,15 @@ public final class CmsXmlUtils {
             reader.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
         } catch (SAXNotRecognizedException e) {
             // should not happen as Xerces 2 support this feature
-            if (OpenCms.getLog(CmsXmlUtils.class).isWarnEnabled()) {
-                OpenCms.getLog(CmsXmlUtils.class).warn("Required SAX reader feature not recognized", e);
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_SAX_READER_FEATURE_NOT_RECOGNIZED_0), e);
             }
             // no validation of the content is possible
             return;
         } catch (SAXNotSupportedException e) {
             // should not happen as Xerces 2 support this feature
-            if (OpenCms.getLog(CmsXmlUtils.class).isWarnEnabled()) {
-                OpenCms.getLog(CmsXmlUtils.class).warn("Required SAX reader feature not supported", e);
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_SAX_READER_FEATURE_NOT_SUPPORTED_0), e);
             }
             // no validation of the content is possible
             return;
@@ -602,14 +607,14 @@ public final class CmsXmlUtils {
             reader.parse(new InputSource(new ByteArrayInputStream(xmlData)));
         } catch (IOException e) {
             // should not happen since we read form a byte array
-            if (OpenCms.getLog(CmsXmlUtils.class).isErrorEnabled()) {
-                OpenCms.getLog(CmsXmlUtils.class).error("Could not read XML from byte array", e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_READ_XML_FROM_BYTE_ARR_FAILED_0), e);
             }
             return;
         } catch (SAXException e) {
             // should not happen since all errors are handled in the XML error handler
-            if (OpenCms.getLog(CmsXmlUtils.class).isErrorEnabled()) {
-                OpenCms.getLog(CmsXmlUtils.class).error("Unexpected SAX exception while parsing content", e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_PARSE_SAX_EXC_0), e);
             }
             return;
         }
@@ -625,8 +630,8 @@ public final class CmsXmlUtils {
                 writer.close();
             } catch (IOException e) {
                 // should not happen since we write to a StringWriter
-                if (OpenCms.getLog(CmsXmlUtils.class).isErrorEnabled()) {
-                    OpenCms.getLog(CmsXmlUtils.class).error("Unexpected IO exception while writing to StringWriter", e);
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().key(Messages.LOG_STRINGWRITER_IO_EXC_0), e);
                 }
             }
             // generate String from XML for display of document in error message
@@ -635,7 +640,7 @@ public final class CmsXmlUtils {
             out.write("\n-------------------------------------------------------------------\n");
             out.write(content);
             out.write("\n-------------------------------------------------------------------\n");
-            throw new CmsXmlException("XML validation error:\n" + out.toString() + "\n");
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_XML_VALIDATION_1, out.toString()));
         }
     }
 

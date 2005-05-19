@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/05/19 12:57:48 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -62,11 +63,14 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlContentTypeManager.class);  
+    
     /** Stores the initialized XML content handlers. */
     private Map m_contentHandlers;
     
@@ -98,8 +102,8 @@ public class CmsXmlContentTypeManager {
         fastMap.setFast(true);
         m_contentHandlers = fastMap;
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". XML content config   : starting");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_START_CONTENT_CONFIG_0));
         }
     }
 
@@ -153,11 +157,11 @@ public class CmsXmlContentTypeManager {
         try {
             type = (I_CmsXmlSchemaType)clazz.newInstance();
         } catch (InstantiationException e) {
-            throw new CmsXmlException("Invalid XML content class type registered");
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_XCC_TYPE_REGISTERED_0));
         } catch (IllegalAccessException e) {
-            throw new CmsXmlException("Invalid XML content class type registered");
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_XCC_TYPE_REGISTERED_0));
         } catch (ClassCastException e) {
-            throw new CmsXmlException("Invalid XML content class type registered");
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_XCC_TYPE_REGISTERED_0));
         }
         m_registeredTypes.put(type.getTypeName(), type);
         return type;
@@ -176,7 +180,7 @@ public class CmsXmlContentTypeManager {
         try {
             classClazz = Class.forName(className);
         } catch (ClassNotFoundException e) {
-            OpenCms.getLog(this).error("XML content schema type class not found: " + className, e);
+            LOG.error(Messages.get().key(Messages.LOG_XML_CONTENT_SCHEMA_TYPE_CLASS_NOT_FOUND_1, className), e);
             return;
         }
 
@@ -185,28 +189,23 @@ public class CmsXmlContentTypeManager {
         try {
             type = addContentType(classClazz);
         } catch (Exception e) {
-            OpenCms.getLog(this).error("Error initializing XML content schema type class: " + classClazz.getName(), e);
+            LOG.error(Messages.get().key(Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1, classClazz.getName()), e);
             return;
         }
 
         // add the editor widget for the schema type        
         I_CmsWidget widget = getWidget(defaultWidget);
         if (widget == null) {
-            OpenCms.getLog(this).error(
-                "Error initializing default widget '" + defaultWidget + "' for content type: " + type.getTypeName());
+            LOG.error(Messages.get().key(Messages.LOG_INIT_DEFAULT_WIDGET_FOR_CONTENT_TYPE_2, defaultWidget , type.getTypeName()));
             return;
         }
 
         // store the registered default widget
         m_defaultWidgets.put(type.getTypeName(), widget);
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". XML content config   : added schema type '"
-                    + type.getTypeName()
-                    + "' using default widget '"
-                    + widget.getClass().getName()
-                    + "'");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_ST_USING_WIDGET_2, 
+                type.getTypeName(), widget.getClass().getName()));
         }
     }
 
@@ -224,7 +223,7 @@ public class CmsXmlContentTypeManager {
             widgetClazz = Class.forName(className);
             widget = (I_CmsWidget)widgetClazz.newInstance();
         } catch (Exception e) {
-            OpenCms.getLog(this).error("Error initializing XML widget for class: " + className, e);
+            LOG.error(Messages.get().key(Messages.LOG_XML_WIDGET_INITIALIZING_ERROR_1, className), e);
             return;
         } 
                 
@@ -234,16 +233,12 @@ public class CmsXmlContentTypeManager {
             m_widgetAliases.put(aliasName, widgetClazz.getName());
         }
         
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            String addOn = "";
+        if (CmsLog.LOG.isInfoEnabled()) {
             if (aliasName != null) {
-                addOn = " alias '" + aliasName + "'";                
-            }
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". XML content config   : added widget '"
-                    + widgetClazz.getName()
-                    + "'"
-                    + addOn);
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_WIDGET_1, widgetClazz.getName()));
+            } else {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_WIDGET_ALIAS_2, widgetClazz.getName(), aliasName));
+            } 
         }        
     }
 
@@ -279,13 +274,13 @@ public class CmsXmlContentTypeManager {
         try {
             contentHandler = (I_CmsXmlContentHandler)Class.forName(className).newInstance();
         } catch (InstantiationException e) {
-            throw new CmsXmlException("Invalid XML content handler requested: " + key);
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CONTENT_HANDLER_1, key));
         } catch (IllegalAccessException e) {
-            throw new CmsXmlException("Invalid XML content handler requested: " + key);
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CONTENT_HANDLER_1, key));
         } catch (ClassCastException e) {
-            throw new CmsXmlException("Invalid XML content handler requested: " + key);
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CONTENT_HANDLER_1, key));
         } catch (ClassNotFoundException e) {
-            throw new CmsXmlException("Invalid XML content handler requested: " + key);
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CONTENT_HANDLER_1, key));
         }
 
         // cache and return the content handler instance
@@ -306,10 +301,10 @@ public class CmsXmlContentTypeManager {
     public I_CmsXmlSchemaType getContentType(Element typeElement, Set nestedDefinitions) throws CmsXmlException {
 
         if (!CmsXmlContentDefinition.XSD_NODE_ELEMENT.equals(typeElement.getQName())) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CD_SCHEMA_STRUCTURE_0));
         }
         if (typeElement.elements().size() > 0) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CD_SCHEMA_STRUCTURE_0));
         }
 
         int todo = 0;
@@ -322,7 +317,7 @@ public class CmsXmlContentTypeManager {
         String minOccrs = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_MIN_OCCURS);
 
         if (CmsStringUtil.isEmpty(elementName) || CmsStringUtil.isEmpty(typeName)) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CD_SCHEMA_STRUCTURE_0));
         }
 
         boolean simpleType = true;
@@ -342,9 +337,7 @@ public class CmsXmlContentTypeManager {
             }
 
             if (simpleType) {
-                throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Schema type '"
-                    + typeName
-                    + "' unknown");
+                throw new CmsXmlException(Messages.get().container(Messages.ERR_UNKNOWN_SCHEMA_1, typeName));
             }
         }
 
@@ -467,9 +460,8 @@ public class CmsXmlContentTypeManager {
         // create and cache the special system id for the XML content type entity resolver
         CmsXmlEntityResolver.cacheSystemId(CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS, getSchemaBytes());
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". XML content config   : " + m_registeredTypes.size() + " XML content schema types initialized");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_NUM_ST_INITIALIZED_1, new Integer(m_registeredTypes.size())));
         }
     }
 
@@ -499,14 +491,14 @@ public class CmsXmlContentTypeManager {
             schemaStr = CmsXmlUtils.marshal(doc, CmsEncoder.C_UTF8_ENCODING);
         } catch (CmsXmlException e) {
             // should not ever happen
-            OpenCms.getLog(this).error("Error pretty-printing schema bytes", e);
+            LOG.error(Messages.get().key(Messages.LOG_PRETTY_PRINT_SCHEMA_BYTES_ERROR_0), e);
         }
 
         try {
             return schemaStr.getBytes(CmsEncoder.C_UTF8_ENCODING);
         } catch (UnsupportedEncodingException e) {
             // should not happen since the default encoding of UTF-8 is always valid
-            OpenCms.getLog(this).error("Error converting schema bytes", e);
+            LOG.error(Messages.get().key(Messages.LOG_CONVERTING_SCHEMA_BYTES_ERROR_0), e);
         }
         return null;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlErrorHandler.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 12:57:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
  
 package org.opencms.xml;
 
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
+
+import org.apache.commons.logging.Log;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -43,16 +45,19 @@ import org.xml.sax.SAXParseException;
  * Exceptions caused by warnings are suppressed (but written to the log if level is set to WARN).<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsXmlErrorHandler implements ErrorHandler {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlErrorHandler.class);  
+    
     /**
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
     public void error(SAXParseException exception) throws SAXException {
 
-        OpenCms.getLog(this).error("Error parsing XML resource", exception);
+        LOG.error(Messages.get().key(Messages.LOG_PARSING_XML_RESOURCE_ERROR_0), exception);
         throw exception;
     }
 
@@ -60,8 +65,7 @@ public class CmsXmlErrorHandler implements ErrorHandler {
      * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
      */
     public void fatalError(SAXParseException exception) throws SAXException {
-
-        OpenCms.getLog(this).error("Fatel error parsing XML resource", exception);
+        LOG.error(Messages.get().key(Messages.LOG_PARSING_XML_RESOURCE_FATAL_ERROR_0), exception);
         throw exception;
     }
 
@@ -70,8 +74,8 @@ public class CmsXmlErrorHandler implements ErrorHandler {
      */
     public void warning(SAXParseException exception) {
         
-        if (OpenCms.getLog(this).isWarnEnabled()) {
-            OpenCms.getLog(this).warn("Warning parsing XML resource", exception);
+        if (LOG.isWarnEnabled()) {
+            LOG.error(Messages.get().key(Messages.LOG_PARSING_XML_RESOURCE_WARNING_0), exception);
         }
     }  
 }

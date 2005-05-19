@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/19 12:57:48 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.xml.sax.InputSource;
  * Also provides a cache for XML content schema definitions.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
@@ -132,7 +132,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             } catch (CmsException e) {
                 // this should never happen
-                LOG.error("Unable to initialize default guest user");
+                LOG.error(Messages.get().key(Messages.LOG_INITIALIZE_DEFAULT_GUEST_USER_FAILED_0));
             }
 
             // register this object as event listener
@@ -205,7 +205,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         String cacheKey = getCacheKeyForCurrentProject(systemId);
         m_cacheContentDefinitions.put(cacheKey, contentDefinition);
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Xml entity resolver cached system id " + cacheKey);
+            LOG.debug(Messages.get().key(Messages.LOG_ER_CACHED_SYSTEM_ID_1, cacheKey));
         }
     }
 
@@ -222,7 +222,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cacheTemporary.clear();
                 m_cacheContentDefinitions.clear();
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Xml entity resolver flushed caches after recieving clearcache event");
+                    LOG.debug(Messages.get().key(Messages.LOG_ER_FLUSHED_CACHES_0));
                 }
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
@@ -253,7 +253,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         String cacheKey = getCacheKeyForCurrentProject(systemId);
         CmsXmlContentDefinition result = (CmsXmlContentDefinition)m_cacheContentDefinitions.get(cacheKey);
         if ((result != null) && LOG.isDebugEnabled()) {
-            LOG.debug("Successful cache lookup for content definition " + cacheKey);
+            LOG.debug(Messages.get().key(Messages.LOG_CACHE_LOOKUP_SUCCEEDED_1, cacheKey));
         }
         return result;
     }
@@ -284,7 +284,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
-                LOG.error("Did not find CmsXmlPage schema XSD at " + XMLPAGE_XSD_LOCATION, t);
+                LOG.error(Messages.get().key(Messages.LOG_XMLPAGE_XSD_NOT_FOUND_1, XMLPAGE_XSD_LOCATION), t);
             }
 
         } else if (systemId.equals(XMLPAGE_OLD_DTD_SYSTEM_ID_1) || systemId.endsWith(XMLPAGE_OLD_DTD_SYSTEM_ID_2)) {
@@ -301,7 +301,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
-                LOG.error("Did not find CmsXmlPage DTD at " + XMLPAGE_OLD_DTD_LOCATION, t);
+                LOG.error(Messages.get().key(Messages.LOG_XMLPAGE_DTD_NOT_FOUND_1, XMLPAGE_OLD_DTD_LOCATION), t);
             }
         } else if ((m_cms != null) && systemId.startsWith(OPENCMS_SCHEME)) {
 
@@ -322,11 +322,11 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 // store content in cache
                 m_cacheTemporary.put(cacheKey, content);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Xml entity resolver cached system id " + cacheKey);
+                    LOG.debug(Messages.get().key(Messages.LOG_ER_CACHED_SYS_ID_1, cacheKey));
                 }
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
-                LOG.error("Could not resolve OpenCms xml entity reference '" + systemId + "'", t);
+                LOG.error(Messages.get().key(Messages.LOG_ENTITY_RESOLVE_FAILED_1, systemId), t);
             } finally {
                 m_cms.getRequestContext().restoreSiteRoot();
             }
@@ -347,7 +347,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
-                LOG.error("Did not find DTD at " + location, t);
+                LOG.error(Messages.get().key(Messages.LOG_DTD_NOT_FOUND_1, location), t);
             }            
             
         }
@@ -406,11 +406,11 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         Object o;
         o = m_cacheTemporary.remove(getCacheKey(systemId, false));
         if ((null != o) && LOG.isDebugEnabled()) {
-            LOG.debug("Xml entity resolver uncached system id " + getCacheKey(systemId, false));
+            LOG.debug(Messages.get().key(Messages.LOG_ER_UNCACHED_SYS_ID_1, getCacheKey(systemId, false)));
         }
         o = m_cacheContentDefinitions.remove(getCacheKey(systemId, false));
         if ((null != o) && LOG.isDebugEnabled()) {
-            LOG.debug("Xml entity resolver uncached content defintion " + getCacheKey(systemId, false));
+            LOG.debug(Messages.get().key(Messages.LOG_ER_UNCACHED_CONTENT_DEF_1, getCacheKey(systemId, false)));
         }
     }
 }

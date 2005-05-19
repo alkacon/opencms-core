@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/05/19 12:57:48 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package org.opencms.xml;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.ByteArrayOutputStream;
@@ -57,7 +59,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -324,7 +326,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     public boolean hasLocale(Locale locale) {
 
         if (locale == null) {
-            throw new IllegalArgumentException("Locale must not be null");
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NULL_LOCALE_0));
         }
 
         return m_locales.contains(locale);
@@ -380,7 +382,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     public void removeLocale(Locale locale) throws CmsXmlException {
 
         if (!hasLocale(locale)) {
-            throw new CmsXmlException("Locale '" + locale + "' not available in XML document");
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_LOCALE_NOT_AVAILABLE_1, locale));
         }
 
         Element rootNode = m_document.getRootElement();
@@ -419,7 +421,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         try {
             return CmsXmlUtils.marshal(m_document, m_encoding);
         } catch (CmsXmlException e) {
-            throw new RuntimeException("Writing XML document to a String failed", e);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_WRITE_XML_DOC_TO_STRING_0), e);
         }
     }
 
