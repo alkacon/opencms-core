@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2005/05/19 09:35:16 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  * 
  * @since 5.1
  */
@@ -138,6 +138,9 @@ public class CmsDialog extends CmsToolDialog {
 
     /** Request parameter value for the action: continue. */
     public static final String DIALOG_CONTINUE = "continue";
+    
+    /** Request parameter value for the action: initial call. */
+    public static final String DIALOG_INITIAL = "initial";
 
     /** Request parameter value for the action: ok. */
     public static final String DIALOG_OK = "ok";

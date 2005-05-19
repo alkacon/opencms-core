@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/18 10:26:19 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/05/19 09:35:16 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -83,6 +83,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** Indicates an optional element should be created. */
     public static final String EDITOR_ACTION_ELEMENT_ADD = "addelement";
+    
+    /** Indicates an error on form creation. */
+    public static final String ERROR_CREATEFORM = "errorcreateform";
 
     /** Indicates an optional element should be removed. */
     public static final String EDITOR_ACTION_ELEMENT_REMOVE = "removeelement";
@@ -92,6 +95,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWidgetDialog.class);
+    
+    /** The errors thrown by save actions or form generation. */
+    protected List m_otherErrors;
     
     /** The allowed pages for this dialog in a List. */
     protected List m_pages;
@@ -207,6 +213,17 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             return "";
         }
     }
+    
+    /**
+     * Builds the HTML for the dialog form.<p>
+     * 
+     * @return the HTML for the dialog form
+     */
+    public String buildDialogForm() {
+
+       // create the dialog HTML
+       return createDialogHtml(getParamPage());
+    }
 
     /**
      * Returns the html for a button to remove an optional element.<p>
@@ -291,6 +308,16 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     public int getButtonStyle() {
 
         return getSettings().getUserSettings().getEditorButtonStyle();
+    }
+    
+    /**
+     * Returns the errors that are thrown by save actions or form generation.<p>
+     * 
+     * @return the errors that are thrown by save actions or form generation
+     */
+    public List getOtherErrors() {
+
+        return m_otherErrors;
     }
 
     /**
@@ -756,7 +783,6 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             result.append(": </td>");
             if (p.getIndex() == 0) {
                 // show help bubble only on first element of each content definition 
-                //result.append(widget.getHelpBubble(getCms(), this, p));
                 result.append(widgetHelpBubble(p));
             } else {
                 // create empty cell for all following elements 
@@ -830,7 +856,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected String createWidgetErrorHeader() {
 
         StringBuffer result = new StringBuffer(8);
-        if (hasValidationErrors()) {
+        if (hasValidationErrors() || hasOtherErrors()) {
             result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
             result.append("<tr><td colspan=\"2\">&nbsp;</td>");
             result.append("<td class=\"xmlTdErrorHeader\">");
@@ -838,6 +864,28 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             result.append("</td><td colspan=\"2\">&nbsp;");
             result.append("</td></tr>\n");
             result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
+            if (hasOtherErrors()) {
+                result.append(dialogBlockStart(""));
+                result.append(createWidgetTableStart());
+                Iterator i = getOtherErrors().iterator();
+                while (i.hasNext()) {
+                    Throwable t = (Throwable)i.next();
+                    result.append("<tr><td><img src=\"");
+                    result.append(getSkinUri()).append("editors/xmlcontent/");
+                    result.append("error.gif");
+                    result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError maxwidth\">");
+                    while (t != null) {
+                        result.append(t.getLocalizedMessage());
+                        t = t.getCause();
+                        if (t != null) {
+                            result.append("<br>");
+                        }
+                    }
+                    result.append("</td></tr>\n");
+                }
+                result.append(createWidgetTableEnd());
+                result.append(dialogBlockEnd());
+            }        
         }
         return result.toString();
     }
@@ -1024,6 +1072,16 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         return m_widgets;
     }
+    
+    /**
+     * Returns <code>true</code> if the current dialog (page) has other errors.<p>
+     * 
+     * @return <code>true</code> if the current dialog (page) has other errors
+     */
+    protected boolean hasOtherErrors() {
+
+        return (m_otherErrors != null) && (m_otherErrors.size() > 0);
+    }
 
     /**
      * Returns <code>true</code> if the current dialog (page) has validation errors.<p>
@@ -1102,6 +1160,16 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             // first dialog call, set the default action               
             setAction(ACTION_DEFAULT);
         }
+    }
+    
+    /**
+     * Sets the errors that are thrown by save actions or form generation.<p>
+     * 
+     * @param otherErrors the errors that are thrown by save actions or form generation
+     */
+    protected void setOtherErrors(List otherErrors) {
+
+        m_otherErrors = otherErrors;
     }
     
     /**

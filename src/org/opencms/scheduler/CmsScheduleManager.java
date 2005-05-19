@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/05/10 15:58:11 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/19 09:35:16 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.3.6
  * 
  * @see org.opencms.scheduler.CmsScheduledJobInfo
@@ -322,11 +322,13 @@ public class CmsScheduleManager implements Job {
         }
 
         String jobId = jobInfo.getId();
+        boolean idCreated = false;
         if (jobId == null) {
             // generate a new job id
             CmsUUID jobUUID = new CmsUUID();
             jobId = "OpenCmsJob_".concat(jobUUID.toString());
             jobInfo.setId(jobId);
+            idCreated = true;
         } else {
             // this job already was scheduled, remove the currently scheduled instance and keep the id            
             boolean foundJob = unscheduleJob(cms, jobId);
@@ -343,6 +345,9 @@ public class CmsScheduleManager implements Job {
         try {
             Class.forName(jobInfo.getClassName());
         } catch (ClassNotFoundException e) {
+            if (idCreated) {
+                jobInfo.setId(null);
+            }
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_JOB_CLASS_NOT_FOUND_1,
                 jobInfo.getClassName());
@@ -357,6 +362,9 @@ public class CmsScheduleManager implements Job {
         try {
             trigger.setCronExpression(jobInfo.getCronExpression());
         } catch (ParseException e) {
+            if (idCreated) {
+                jobInfo.setId(null);
+            }
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_BAD_CRON_EXPRESSION_2,
                 jobInfo.getJobName(),
@@ -384,6 +392,9 @@ public class CmsScheduleManager implements Job {
             try {
                 m_scheduler.scheduleJob(jobDetail, trigger);
             } catch (SchedulerException e) {
+                if (idCreated) {
+                    jobInfo.setId(null);
+                }
                 CmsMessageContainer message = Messages.get().container(
                     Messages.ERR_COULD_NOT_SCHEDULE_JOB_2,
                     jobInfo.getJobName(),

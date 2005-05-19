@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsContextInfo.java,v $
- * Date   : $Date: 2005/05/11 10:22:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/19 09:35:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -178,6 +178,29 @@ public class CmsContextInfo {
         setLocaleName(localeName);
         setEncoding(encoding);
         setRemoteAddr(remoteAddr);
+    }
+    
+    
+    /**
+     * Creates a clone of this context info object.<p>
+     * 
+     * @see java.lang.Object#clone()
+     */
+    public Object clone() {
+
+        CmsContextInfo result = new CmsContextInfo();
+        result.m_encoding = m_encoding;
+        result.m_frozen = false;
+        result.m_locale = m_locale;
+        result.m_localeName = m_localeName;
+        result.m_project = m_project;
+        result.m_projectName = m_projectName;
+        result.m_remoteAddr = m_remoteAddr;
+        result.m_requestedUri = m_requestedUri;
+        result.m_siteRoot = m_siteRoot;
+        result.m_user = m_user;
+        result.m_userName = m_userName;
+        return result;
     }
 
     /**

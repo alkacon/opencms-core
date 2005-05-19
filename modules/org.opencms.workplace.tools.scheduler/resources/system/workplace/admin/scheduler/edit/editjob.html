@@ -1,66 +1,112 @@
-<%@ page buffer="none" import="
-
-	org.opencms.jsp.*,
-	org.opencms.workplace.*,
-	org.opencms.workplace.tools.scheduler.*
-
-"%><%	
-
+<%@ page 
+	buffer="none" 
+	import="org.opencms.main.*,org.opencms.workplace.tools.scheduler.*" %><%	
+	
+	
 	// initialize the workplace class
-	CmsEditJobDialog wp = new CmsEditJobDialog(new CmsJspActionElement(pageContext, request, response));
-	if (request.getParameter("jobId")==null) {
-		wp.getToolManager().jspRedirectTool(wp, "/jobs", null);
-		return;
-	}
-	
+	CmsEditScheduledJobInfoDialog wp = new CmsEditScheduledJobInfoDialog(pageContext, request, response);
+		
 //////////////////// start of switch statement 
-
-	
 switch (wp.getAction()) {
-
-case CmsDialog.ACTION_CANCEL:
+    case CmsEditScheduledJobInfoDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
-
 	wp.actionCloseDialog();
+	break;
 
-break;
+    case CmsEditScheduledJobInfoDialog.ACTION_ERROR:
+//////////////////// ACTION: an error occured
+	break;
+	
+    case CmsEditScheduledJobInfoDialog.ACTION_SAVE:
+//////////////////// ACTION: save edited values
+	wp.setParamAction(wp.DIALOG_OK);
+	
+	wp.actionSave();
+	if (wp.getOtherErrors().size() == 0) {
+		wp.actionCloseDialog();
+    	break;
+    }
+	
+    case CmsEditScheduledJobInfoDialog.ACTION_DEFAULT:
+    default:
+//////////////////// ACTION: show dialog (default)
+
+	String formHtml = wp.buildDialogForm();
+	if (!formHtml.equals(wp.ERROR_CREATEFORM)) {
+
+	wp.setParamAction(wp.DIALOG_SAVE);
 
 
-//////////////////// ACTION: other actions handled outside of this JSP
-case CmsDialog.ACTION_CONFIRMED:
+%><%= wp.htmlStart("administration/index.html") %>
 
-	wp.actionCloseDialog();
+<script type="text/javascript" src="<%= wp.getResourceUri() %>editors/xmlcontent/edit.js"></script>
+<script type="text/javascript" src="<%= wp.getResourceUri() %>editors/xmlcontent/help.js"></script>
 
-break;
-//////////////////// ACTION: show start dialog
-case CmsDialog.ACTION_DEFAULT:
-default:
+<%= wp.getWidgetIncludes() %>
 
-	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
+<script type="text/javascript">
+<!--
 
-%><%= wp.htmlStart() %>
+// flag indicating if form initialization is finished
+var initialized = false;
 
-<%= wp.bodyStart("dialog", null) %>
+// the OpenCms context path
+var contextPath = "<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
+
+// action parameters of the form
+var actionAddElement = "<%= wp.EDITOR_ACTION_ELEMENT_ADD %>";
+var actionRemoveElement = "<%= wp.EDITOR_ACTION_ELEMENT_REMOVE %>";
+
+function init() {
+
+<%= wp.getWidgetInitCalls() %>
+
+	setTimeout("scrollForm();", 200);
+	initialized = true;
+}
+
+
+
+function exitEditor() {
+	try {
+		// close file selector popup if present
+		closeTreeWin();
+	} catch (e) {}
+}
+
+<%= wp.getWidgetInitMethods() %>
+
+//-->
+</script>
+
+<%= wp.bodyStart(null, "onload='init();' onunload='exitEditor();'") %>
 
 <%= wp.dialogStart() %>
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
-<%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'EDITOR');">
 
-do so as were you editing the selected job: <br>
-<%=request.getParameter("jobId")%>
+<%= wp.dialogContentStart("Edit scheduled job dialog") %>
+ 
+<%= formHtml %>
 
 <%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonsOkCancel() %>
+<%= wp.dialogButtonsCustom() %>
+
+<%= wp.paramsAsHidden() %>
+<% if (wp.getParamFramename() == null) { %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<%  } %>
 
 </form>
+
+<%= wp.getWidgetHtmlEnd() %>
 
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
+
 <%
+	} // end form creation check
 } 
 //////////////////// end of switch statement 
 %>

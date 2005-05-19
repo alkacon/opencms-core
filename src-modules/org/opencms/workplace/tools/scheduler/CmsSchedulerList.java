@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/05/18 13:19:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 09:35:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.CmsSchedulerException;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.*;
 
 import java.io.IOException;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsSchedulerList extends A_CmsListDialog {
@@ -199,9 +200,12 @@ public class CmsSchedulerList extends A_CmsListDialog {
             // edit a job from the list
             String jobId = getSelectedItem().getId();
             try {
-                // forward to the edit job screen
+                // forward to the edit job screen               
                 Map params = new HashMap();
-                params.put("jobId", jobId);          
+                params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, jobId);
+                String jobName = (String)getSelectedItem().get(LIST_COLUMN_NAME);
+                params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBNAME, jobName);
+                params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
                 getToolManager().jspRedirectTool(this, "/scheduler/edit", params);
             } catch (IOException e) {
                 // should never happen
@@ -282,7 +286,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             while (paramIt.hasNext()) {
                 String param = (String)paramIt.next();
                 String value = (String)job.getParameters().get(param);
-                params.append(param).append(": ");
+                params.append(param).append("=");
                 params.append(value).append("<br>");
             }
             item.set(LIST_DETAIL_PARAMETER, params);
