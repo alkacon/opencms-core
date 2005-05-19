@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/19 09:41:05 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/05/19 12:55:53 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -74,9 +75,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** Value for the action: error in the form validation. */
     public static final int ACTION_ERROR = 303;
-    
+
     /** Value for the action: save the dialog. */
-    public static final int ACTION_SAVE = 300;  
+    public static final int ACTION_SAVE = 300;
 
     /** Request parameter value for the action: save the dialog. */
     public static final String DIALOG_SAVE = "save";
@@ -92,10 +93,13 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWidgetDialog.class);
-    
+
+    /** The object edited with this widget dialog. */
+    protected Object m_dialogObject;
+
     /** The errors thrown by save actions or form generation. */
     protected List m_otherErrors;
-    
+
     /** The allowed pages for this dialog in a List. */
     protected List m_pages;
 
@@ -114,14 +118,15 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /** 
      * Parameter stores the index of the element to add or remove.<p>
      * 
-     * This must not be <code>null</code>, because it must appear 
+     * This must not be <code>null</code>, because it must be available 
      * when calling <code>{@link org.opencms.workplace.CmsWorkplace#paramsAsHidden()}</code>.<p>
      */
     private String m_paramElementIndex = "0";
+    
     /** 
      * Parameter stores the name of the element to add or remove.<p>
      * 
-     * This must not be <code>null</code>, because it must appear 
+     * This must not be <code>null</code>, because it must be available
      * when calling <code>{@link org.opencms.workplace.CmsWorkplace#paramsAsHidden()}</code>.<p>
      */
     private String m_paramElementName = "undefined";
@@ -210,7 +215,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             return "";
         }
     }
-    
+
     /**
      * Builds the HTML for the dialog form.<p>
      * 
@@ -218,8 +223,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      */
     public String buildDialogForm() {
 
-       // create the dialog HTML
-       return createDialogHtml(getParamPage());
+        // create the dialog HTML
+        return createDialogHtml(getParamPage());
     }
 
     /**
@@ -243,6 +248,14 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         } else {
             return "";
         }
+    }
+
+    /**
+     * Clears the "dialog object" for this widget dialog by removing it from the current users session.<p>
+     */
+    public void clearDialogObject() {
+
+        setDialogObject(null);
     }
 
     /**
@@ -272,14 +285,14 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         result.append(super.dialogBlockStart(headline));
         return result.toString();
     }
-    
+
     /**
      * Creats the HTML for the buttons on the dialog.<p>
      * 
      * @return the HTML for the buttons on the dialog.<p>
      */
     public String dialogButtonsCustom() {
-        
+
         if (getPages().size() > 1) {
             // this is a multi page dialog, create buttons according to current page
             int pageIndex = getPages().indexOf(getParamPage());
@@ -306,7 +319,21 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         return getSettings().getUserSettings().getEditorButtonStyle();
     }
-    
+
+    /**
+     * Returns the dialog object for this widget dialog, or <code>null</code>
+     * if no dialog object has been set.<p>
+     * 
+     * @return the dialog object for this widget dialog, or <code>null</code>
+     */
+    public Object getDialogObject() {
+
+        if (m_dialogObject == null) {
+            m_dialogObject = getDialogObjectMap().get(getClass().getName());
+        }
+        return m_dialogObject;
+    }
+
     /**
      * Returns the errors that are thrown by save actions or form generation.<p>
      * 
@@ -510,6 +537,22 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         result.append('\n');
         result.append(widgetParamsAsHidden());
         return result.toString();
+    }
+
+    /**
+     * Stores the given object as "dialog object" for this widget dialog in the current users session.<p> 
+     * 
+     * @param dialogObject the object to store
+     */
+    public void setDialogObject(Object dialogObject) {
+
+        m_dialogObject = dialogObject;
+        if (dialogObject == null) {
+            // null object: remove the entry from the map
+            getDialogObjectMap().remove(getClass().getName());
+        } else {
+            getDialogObjectMap().put(getClass().getName(), dialogObject);
+        }
     }
 
     /**
@@ -882,7 +925,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 }
                 result.append(createWidgetTableEnd());
                 result.append(dialogBlockEnd());
-            }        
+            }
         }
         return result.toString();
     }
@@ -981,14 +1024,14 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             m_widgetParamValues.put(base.getName(), params);
         }
     }
-    
+
     /**
      * Returns the allowed pages for this dialog.<p>
      * 
      * @return the allowed pages for this dialog
      */
     protected abstract String[] getPageArray();
-    
+
     /**
      * Returns the allowed pages for this dialog.<p>
      * 
@@ -1069,7 +1112,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         return m_widgets;
     }
-    
+
     /**
      * Returns <code>true</code> if the current dialog (page) has other errors.<p>
      * 
@@ -1089,7 +1132,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         return (m_validationErrorList != null) && (m_validationErrorList.size() > 0);
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
@@ -1097,12 +1140,12 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamPage()) || !getPages().contains(getParamPage())) {
             // ensure a valid page is set
             setParamPage((String)getPages().get(0));
         }
-        
+
         // fill the widget map
         defineWidgets();
         fillWidgetValues(request);
@@ -1134,31 +1177,31 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         } else if (DIALOG_BACK.equals(getParamAction())) {
             // go back one page           
             setAction(ACTION_DEFAULT);
-            List errors = commitWidgetValues(getParamPage());           
+            List errors = commitWidgetValues(getParamPage());
             if (errors.size() > 0) {
                 // found validation errors, redisplay page
                 return;
             }
             int pageIndex = getPages().indexOf(getParamPage()) - 1;
             setParamPage((String)getPages().get(pageIndex));
-            
+
         } else if (DIALOG_CONTINUE.equals(getParamAction())) {
             // go to next page
             setAction(ACTION_DEFAULT);
-            List errors = commitWidgetValues(getParamPage());           
+            List errors = commitWidgetValues(getParamPage());
             if (errors.size() > 0) {
                 // found validation errors, redisplay page
                 return;
             }
             int pageIndex = getPages().indexOf(getParamPage()) + 1;
             setParamPage((String)getPages().get(pageIndex));
-            
+
         } else {
             // first dialog call, set the default action               
             setAction(ACTION_DEFAULT);
         }
     }
-    
+
     /**
      * Sets the errors that are thrown by save actions or form generation.<p>
      * 
@@ -1168,7 +1211,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         m_otherErrors = otherErrors;
     }
-    
+
     /**
      * Sets the allowed pages for this dialog.<p>
      * 
@@ -1266,5 +1309,21 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             result.append("</div>");
             return result.toString();
         }
+    }
+
+    /**
+     * Returns the (interal use only) map of dialog objects.<p>
+     * 
+     * @return the (interal use only) map of dialog objects 
+     */
+    private Map getDialogObjectMap() {
+
+        Map objects = (Map)getSettings().getDialogObject();
+        if (objects == null) {
+            // using hashtable as most efficient version of a synchronized map
+            objects = new Hashtable();
+            getSettings().setDialogObject(objects);
+        }
+        return objects;
     }
 }

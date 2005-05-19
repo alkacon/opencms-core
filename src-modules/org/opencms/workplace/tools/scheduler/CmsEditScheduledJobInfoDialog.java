@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/05/19 09:41:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 12:55:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
@@ -267,7 +267,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             } 
         } else {
             // this is not the initial call, get job object from session
-            o = getSettings().getDialogObject();
+            o = getDialogObject();
         }
         
         if (!(o instanceof CmsScheduledJobInfo)) {
@@ -295,6 +295,6 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         super.initWorkplaceRequestValues(settings, request);
         
         // save the current state of the job (may be changed because of the widget values)
-        getSettings().setDialogObject(m_jobInfo);        
+        setDialogObject(m_jobInfo);        
     }
 }

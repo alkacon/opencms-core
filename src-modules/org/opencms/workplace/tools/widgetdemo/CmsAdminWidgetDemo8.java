@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo8.java,v $
- * Date   : $Date: 2005/05/18 10:26:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/19 12:55:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
@@ -71,10 +71,10 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
     public static final String DIALOG_TYPE = "widgetdemo8";
 
     /** Defines which pages are valid for this dialog. */
-    public static final String[] PAGE_ARRAY = {"page1", "page2"};
-
+    public static final String[] PAGES = {"page1", "page2"};
+    
     /** The allowed pages for this dialog in a List. */
-    public static final List PAGE_LIST = Arrays.asList(PAGE_ARRAY);
+    public static final List PAGE_LIST = Arrays.asList(PAGES);
 
     /** The job info object that is edited on this dialog. */
     protected CmsScheduledJobInfo m_jobInfo;
@@ -128,7 +128,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
      */
     public String dialogButtonsCustom() {
 
-        if (PAGE_ARRAY[1].equals(getParamPage())) {
+        if (PAGES[1].equals(getParamPage())) {
             // this is the second dialog page
             return dialogButtons(new int[] {BUTTON_OK, BUTTON_BACK, BUTTON_CANCEL}, new String[3]);
         } else {
@@ -142,7 +142,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
     public String getCancelAction() {
 
         // set the default action
-        setParamPage(PAGE_ARRAY[0]);
+        setParamPage(PAGES[0]);
 
         return DIALOG_SET;
     }
@@ -152,7 +152,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
      */
     protected void defineWidgets() {
 
-        Object o = getSettings().getDialogObject();
+        Object o = getDialogObject();
 
         // required to read the default values for the optional context parameters
         CmsContextInfo dC = new CmsContextInfo();
@@ -171,22 +171,30 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
             m_jobInfo = (CmsScheduledJobInfo)o;
         }
 
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "jobName", PAGE_ARRAY[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "className", PAGE_ARRAY[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "cronExpression", PAGE_ARRAY[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "jobName", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "className", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "cronExpression", PAGES[0], new CmsInputWidget()));
 
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.userName", PAGE_ARRAY[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.projectName", PAGE_ARRAY[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.siteRoot", dC.getSiteRoot(), PAGE_ARRAY[0], new CmsVfsFileWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.requestedUri", dC.getRequestedUri(), PAGE_ARRAY[0], new CmsVfsFileWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.localeName", dC.getLocaleName(), PAGE_ARRAY[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.encoding", dC.getEncoding(), PAGE_ARRAY[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.remoteAddr", dC.getRemoteAddr(), PAGE_ARRAY[0], new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.userName", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.projectName", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.siteRoot", dC.getSiteRoot(), PAGES[0], new CmsVfsFileWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.requestedUri", dC.getRequestedUri(), PAGES[0], new CmsVfsFileWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.localeName", dC.getLocaleName(), PAGES[0], new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.encoding", dC.getEncoding(), PAGES[0], new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.remoteAddr", dC.getRemoteAddr(), PAGES[0], new CmsInputWidget(), 0, 1));
 
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", PAGE_ARRAY[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGE_ARRAY[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGES[0], new CmsCheckboxWidget()));
 
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "parameters", PAGE_ARRAY[1], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "parameters", PAGES[1], new CmsInputWidget()));
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return PAGES;
     }
 
     /**
@@ -202,7 +210,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamPage()) || !PAGE_LIST.contains(getParamPage())) {
             // ensure a valid page is set
-            setParamPage(PAGE_ARRAY[0]);
+            setParamPage(PAGES[0]);
         }
 
         // fill the widget map
@@ -242,22 +250,22 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
         } else if (DIALOG_BACK.equals(getParamAction())) {
 
             setAction(ACTION_DEFAULT);
-            List errors = commitWidgetValues(PAGE_ARRAY[1]);
+            List errors = commitWidgetValues(PAGES[1]);
             if (errors.size() > 0) {
                 return;
             }
 
-            setParamPage(PAGE_ARRAY[0]);
+            setParamPage(PAGES[0]);
 
         } else if (DIALOG_CONTINUE.equals(getParamAction())) {
 
             setAction(ACTION_DEFAULT);
-            List errors = commitWidgetValues(PAGE_ARRAY[0]);
+            List errors = commitWidgetValues(PAGES[0]);
             if (errors.size() > 0) {
                 return;
             }
 
-            setParamPage(PAGE_ARRAY[1]);
+            setParamPage(PAGES[1]);
 
         } else {
             // set the default action               
@@ -265,15 +273,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
         }
 
         // save the current state of the job (may be changed because of the widget values)
-        getSettings().setDialogObject(m_jobInfo);
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
-     */
-    protected String[] getPageArray() {
-
-        return PAGE_ARRAY;
+        setDialogObject(m_jobInfo);
     }
 
 }

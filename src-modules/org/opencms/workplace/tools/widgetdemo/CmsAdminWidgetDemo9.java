@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo9.java,v $
- * Date   : $Date: 2005/05/18 10:26:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/19 12:55:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
@@ -59,15 +59,15 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
     /** The dialog type. */
     public static final String DIALOG_TYPE = "widgetdemo8";
 
+    /** Defines which pages are valid for this dialog. */
+    public static final String[] PAGES = {"page1", "page2"};
+
     /** The OpenCms context info object used for the job info. */
     CmsContextInfo m_contextInfo;
 
     /** The job info object that is edited on this dialog. */
     CmsScheduledJobInfo m_jobInfo;
 
-    /** Defines which pages are valid for this dialog. */
-    public static final String[] PAGES = {"page1", "page2"};   
-    
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -76,7 +76,7 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
     public CmsAdminWidgetDemo9(CmsJspActionElement jsp) {
 
         super(jsp);
-    }       
+    }
 
     /**
      * Public constructor with JSP variables.<p>
@@ -109,7 +109,18 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
         }
         return result.toString();
     }
-    
+
+    /**
+     * @see org.opencms.workplace.CmsDialog#getCancelAction()
+     */
+    public String getCancelAction() {
+
+        // set the default action
+        setParamPage((String)getPages().get(0));
+
+        return DIALOG_SET;
+    }
+
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
      * 
@@ -122,10 +133,10 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
 
         // create table
         result.append(createWidgetTableStart());
-        
+
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
-        
+
         if (dialog.equals(PAGES[0])) {
             result.append(createDialogRowsHtml(0, 2));
             result.append(dialogBlockStart("User context"));
@@ -141,7 +152,7 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
-        
+
         // close table
         result.append(createWidgetTableEnd());
 
@@ -153,16 +164,16 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
      */
     protected void defineWidgets() {
 
-        Object o = getSettings().getDialogObject();
-        
+        Object o = getDialogObject();
+
         // required to read the default values for the optional context parameters
         CmsContextInfo dC = new CmsContextInfo();
-        
+
         if (!(o instanceof CmsScheduledJobInfo)) {
             // create a new job info
             m_jobInfo = new CmsScheduledJobInfo();
             m_jobInfo.setContextInfo(dC);
-                       
+
             // add some parameters to check issues with pre-filled maps
             m_jobInfo.getParameters().put("key1", "value1");
             m_jobInfo.getParameters().put("key2", "value2");
@@ -170,7 +181,7 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
         } else {
             // reuse job info object stored in session
             m_jobInfo = (CmsScheduledJobInfo)o;
-        }        
+        }
 
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "jobName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "className", PAGES[0], new CmsInputWidget()));
@@ -186,8 +197,16 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
 
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGES[0], new CmsCheckboxWidget()));
-        
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "parameters", PAGES[1], new CmsInputWidget())); 
+
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "parameters", PAGES[1], new CmsInputWidget()));
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return PAGES;
     }
 
     /**
@@ -199,27 +218,8 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
         setParamDialogtype(DIALOG_TYPE);
 
         super.initWorkplaceRequestValues(settings, request);
-        
+
         // save the current state of the job (may be changed because of the widget values)
-        getSettings().setDialogObject(m_jobInfo);        
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsDialog#getCancelAction()
-     */
-    public String getCancelAction() {
-
-        // set the default action
-        setParamPage((String)getPages().get(0));
-        
-        return DIALOG_SET;
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
-     */
-    protected String[] getPageArray() {
-
-        return PAGES;
+        setDialogObject(m_jobInfo);
     }
 }
