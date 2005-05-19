@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/05/19 09:35:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/19 16:08:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,9 +56,11 @@ import javax.servlet.jsp.PageContext;
 /**
  * Main scheduled jobs management list view.<p>
  * 
+ * Defines the list columns and possible actions for scheduled jobs.<p>
+ * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsSchedulerList extends A_CmsListDialog {
@@ -172,8 +174,8 @@ public class CmsSchedulerList extends A_CmsListDialog {
                     Iterator itItems = getSelectedItems().iterator();
                     boolean activate = getParamListAction().equals(LIST_ACTION_MACTIVATE);
                     while (itItems.hasNext()) {
-                        CmsListItem listItem = (CmsListItem)itItems.next();
-                        
+                        // toggle the active state of the selected item(s)
+                        CmsListItem listItem = (CmsListItem)itItems.next();                     
                         CmsScheduledJobInfo job = (CmsScheduledJobInfo)OpenCms.getScheduleManager().getJob(listItem.getId()).clone();
                         job.setActive(activate);
                         OpenCms.getScheduleManager().scheduleJob(getCms(), job);
@@ -200,11 +202,12 @@ public class CmsSchedulerList extends A_CmsListDialog {
             // edit a job from the list
             String jobId = getSelectedItem().getId();
             try {
-                // forward to the edit job screen               
+                // forward to the edit job screen with additional parameters               
                 Map params = new HashMap();
                 params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, jobId);
                 String jobName = (String)getSelectedItem().get(LIST_COLUMN_NAME);
                 params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBNAME, jobName);
+                // set action parameter to initial dialog call
                 params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
                 getToolManager().jspRedirectTool(this, "/scheduler/edit", params);
             } catch (IOException e) {
@@ -214,10 +217,17 @@ public class CmsSchedulerList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_ACTION_COPY)) {
             // copy a job from the list
             String jobId = getSelectedItem().getId();
-            CmsScheduledJobInfo job = (CmsScheduledJobInfo)OpenCms.getScheduleManager().getJob(jobId).clone();
-            job.setActive(true);
-            // copy action has to be implemented!!
-            int warn = 0;
+            try {
+                // forward to the edit job screen with additional parameters
+                Map params = new HashMap();
+                params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, jobId);
+                // set action parameter to copy job action
+                params.put(CmsDialog.PARAM_ACTION, CmsEditScheduledJobInfoDialog.DIALOG_COPYJOB);
+                getToolManager().jspRedirectTool(this, "/scheduler/new", params);
+            } catch (IOException e) {
+                // should never happen
+                throw new RuntimeException(e);
+            }
         } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
             // activate a job from the list
             String jobId = getSelectedItem().getId();
@@ -228,9 +238,11 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 // update the XML configuration
                 writeConfiguration(true);
             } catch (CmsSchedulerException e) {
-                // TODO: exception handling
+                // should never happen
+                throw new RuntimeException(e);
             } catch (CmsRoleViolationException e) {
-                // TODO: exception handling
+                // should never happen
+                throw new RuntimeException(e);
             }
         } else if (getParamListAction().equals(LIST_ACTION_DEACTIVATE)) {
             // deactivate a job from the list
@@ -242,9 +254,11 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 // update the XML configuration
                 writeConfiguration(true);
             } catch (CmsSchedulerException e) {
-                // TODO: exception handling
+                // should never happen
+                throw new RuntimeException(e);
             } catch (CmsRoleViolationException e) {
-                // TODO: exception handling
+                // should never happen
+                throw new RuntimeException(e);
             }
         } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
             // delete a job from the list
@@ -255,7 +269,8 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 writeConfiguration(false);
                 getList().removeItem(jobId);
             } catch (CmsRoleViolationException e) {
-                // TODO: exception handling
+                // should never happen
+                throw new RuntimeException(e);
             }
         } else {
             throwListUnsupportedActionException();
@@ -270,17 +285,19 @@ public class CmsSchedulerList extends A_CmsListDialog {
 
         List items = new ArrayList();
         
+        // get all scheduled jobs from manager
         Iterator i = OpenCms.getScheduleManager().getJobs().iterator();
         while (i.hasNext()) {
             CmsScheduledJobInfo job = (CmsScheduledJobInfo)i.next();
             CmsListItem item = getList().newItem(job.getId().toString());
+            // set the contents of the columns
             item.set(LIST_COLUMN_NAME, job.getJobName());
             item.set(LIST_COLUMN_CLASS, job.getClassName());
             item.set(LIST_COLUMN_LASTEXE, job.getExecutionTimePrevious());
             item.set(LIST_COLUMN_NEXTEXE, job.getExecutionTimeNext());
-            // details: context info
+            // job details: context info
             item.set(LIST_DETAIL_CONTEXTINFO, job.getContextInfo());
-            // details: parameter
+            // job details: parameter
             StringBuffer params = new StringBuffer(32);
             Iterator paramIt = job.getParameters().keySet().iterator();
             while (paramIt.hasNext()) {

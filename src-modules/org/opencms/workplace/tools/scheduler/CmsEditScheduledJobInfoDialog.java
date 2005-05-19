@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/05/19 12:55:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/19 16:08:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,17 +55,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Dialog to edit new and existing scheduled jobs in the administration.<p>
+ * Dialog to edit new and existing scheduled jobs in the administration view.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.9.1
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
-
-    /** The dialog type. */
-    public static final String DIALOG_TYPE = "editjob";
+    
+    /** The action to copy a job to edit. */
+    public static final String DIALOG_COPYJOB = "copyjob";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1", "page2"};  
@@ -79,7 +79,10 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     /** The job info object that is edited on this dialog. */
     private CmsScheduledJobInfo m_jobInfo;
     
+    /** Stores the value of the request parameter for the job id. */
     private String m_paramJobid;
+    
+    /** Stores the value of the request parameter for the job name. */
     private String m_paramJobname;
     
     /**
@@ -105,29 +108,35 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     }
     
     /**
-     * Saves the edited scheduled job.<p>
+     * Commits the edited scheduled job to the scheduler.<p>
      */
-    public void actionSave() {
+    public void actionCommit() {
         
         List errors = new ArrayList();
 
         try {
+            // schedule the edited job
             OpenCms.getScheduleManager().scheduleJob(getCms(), m_jobInfo);
+            // clear the HTML list to be up to date after editing
             getSettings().setHtmlList(null);
             // update the XML configuration
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
         } catch (CmsRoleViolationException e) {
             errors.add(e);    
         } catch (CmsSchedulerException e) {
+            
             errors.add(e);
+        } catch (Throwable t) {
+            errors.add(t);    
         }
-        setOtherErrors(errors);
+        // set the list of errors to display when saving failed
+        setCommitErrors(errors);
     }
     
     /**
-     * Returns the job id parameter.<p>
+     * Returns the job id parameter value.<p>
      * 
-     * @return the job id parameter
+     * @return the job id parameter value
      */
     public String getParamJobid() {
 
@@ -135,9 +144,9 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     }
     
     /**
-     * Returns the job name parameter.<p>
+     * Returns the job name parameter value.<p>
      * 
-     * @return the job name parameter
+     * @return the job name parameter value
      */
     public String getParamJobname() {
 
@@ -145,9 +154,9 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     }
     
     /**
-     * Sets the job id parameter.<p>
+     * Sets the job id parameter value.<p>
      * 
-     * @param jobid the job id parameter
+     * @param jobid the job id parameter value
      */
     public void setParamJobid(String jobid) {
 
@@ -155,9 +164,9 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     }
     
     /**
-     * Sets the job name parameter.<p>
+     * Sets the job name parameter value.<p>
      * 
-     * @param jobname the job name parameter
+     * @param jobname the job name parameter value
      */
     public void setParamJobname(String jobname) {
 
@@ -165,7 +174,9 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     }
     
     /**
-     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
+     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
+     * 
+     * This overwrites the method from the super class to create a layout variation for the widgets.<p>
      * 
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
@@ -174,28 +185,30 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
         StringBuffer result = new StringBuffer(1024);
 
-        // create table
+        // create widget table
         result.append(createWidgetTableStart());
         
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
         
         if (dialog.equals(PAGES[0])) {
+            // create the widgets for the first dialog page
             result.append(createDialogRowsHtml(0, 4));
-            result.append(dialogBlockStart("User context"));
+            result.append(dialogBlockStart(key("editor.label.contextInfo")));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(5, 11));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         } else if (dialog.equals(PAGES[1])) {
-            result.append(dialogBlockStart("Parameters"));
+            // create the widget for the second dialog page
+            result.append(dialogBlockStart(key("editor.label.parameters")));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(12, 12));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
         
-        // close table
+        // close widget table
         result.append(createWidgetTableEnd());
 
         return result.toString();
@@ -206,16 +219,18 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
      */
     protected void defineWidgets() {
 
+        // initialize the scheduled job object to use for the dialog
         initScheduledJobObject();
-        // required to read the default values for the optional context parameters
+        
+        // required to read the default values for the optional context parameters for the widgets
         CmsContextInfo dC = new CmsContextInfo();
         
+        // widgets to display on the first dialog page
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "jobName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "className", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "cronExpression", PAGES[0], new CmsInputWidget()));       
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGES[0], new CmsCheckboxWidget()));
-
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.userName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.projectName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.siteRoot", dC.getSiteRoot(), PAGES[0], new CmsVfsFileWidget(), 0, 1));
@@ -224,19 +239,9 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.encoding", dC.getEncoding(), PAGES[0], new CmsInputWidget(), 0, 1));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.remoteAddr", dC.getRemoteAddr(), PAGES[0], new CmsInputWidget(), 0, 1));  
         
+        // widget to display on the second dialog page
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "parameters", PAGES[1], new CmsInputWidget())); 
     }
-    
-    /**
-     * @see org.opencms.workplace.CmsDialog#getCancelAction()
-     */
-//    public String getCancelAction() {
-//
-//        // set the default action
-//        setParamPage((String)getPages().get(0));
-//        
-//        return DIALOG_SET;
-//    }
     
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
@@ -248,6 +253,13 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     
     /**
      * Initializes the scheduled job object to work with depending on the dialog state and request parameters.<p>
+     * 
+     * Three initializations of the scheduled job object on first dialog call are possible:
+     * <ul>
+     * <li>edit an existing scheduled job</li>
+     * <li>create a new scheduled job</li>
+     * <li>copy an existing scheduled job and edit it</li>
+     * </ul>
      */
     protected void initScheduledJobObject() {
         
@@ -255,23 +267,23 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         
         boolean setActive = false;
         
-        if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
+        if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction()) || DIALOG_COPYJOB.equals(getParamAction())) {
             // this is the initial dialog call
             if (CmsStringUtil.isNotEmpty(getParamJobid())) {
-                // edit an existing job, get it from manager
+                // edit or copy an existing job, get the job object from manager
                 setActive = OpenCms.getScheduleManager().getJob(getParamJobid()).isActive();
                 o = OpenCms.getScheduleManager().getJob(getParamJobid()).clone();
             } else {
-                // create a new job
+                // create a new job for the new job dialog
                 o = null;
             } 
         } else {
-            // this is not the initial call, get job object from session
+            // this is not the initial call, get the job object from session
             o = getDialogObject();
         }
         
         if (!(o instanceof CmsScheduledJobInfo)) {
-            // create a new job info
+            // create a new job info object
             m_jobInfo = new CmsScheduledJobInfo();
             m_jobInfo.setContextInfo(new CmsContextInfo());
         } else {
@@ -280,7 +292,13 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         }
         
         if (setActive) {
+            // initial call of edit an existing job, set active state of cloned job
             m_jobInfo.setActive(true);
+        }
+        
+        if (DIALOG_COPYJOB.equals(getParamAction())) {
+            // initial call of copy job action, clear the job id of the cloned job
+            m_jobInfo.clearId();
         }
     }
 
@@ -288,10 +306,8 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-
+        
+        // initialize parameters and dialog actions in super implementation
         super.initWorkplaceRequestValues(settings, request);
         
         // save the current state of the job (may be changed because of the widget values)

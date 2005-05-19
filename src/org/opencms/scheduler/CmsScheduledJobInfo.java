@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2005/05/19 09:35:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/19 16:08:44 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -443,6 +443,14 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
                 paramValue,
                 this));
         }
+    }
+    
+    /**
+     * Clears the id of the job.<p>
+     */
+    public void clearId() {
+
+        setId(null);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/19 12:55:53 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/05/19 16:08:44 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetDialog;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,6 +54,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
@@ -62,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -94,11 +96,11 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWidgetDialog.class);
 
+    /** The errors thrown by commit actions. */
+    protected List m_commitErrors;
+
     /** The object edited with this widget dialog. */
     protected Object m_dialogObject;
-
-    /** The errors thrown by save actions or form generation. */
-    protected List m_otherErrors;
 
     /** The allowed pages for this dialog in a List. */
     protected List m_pages;
@@ -151,6 +153,100 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     public CmsWidgetDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+    
+    /**
+     * Deletes the edited dialog object from the session.<p>
+     */
+    public void actionCancel() {
+
+        clearDialogObject();
+    }
+    
+    /**
+     * Commits the edited object after pressing the "OK" button.<p>
+     */
+    public abstract void actionCommit();
+    
+    /**
+     * Performs the dialog actions depending on the initialized action.<p>
+     * 
+     * @throws IOException if writing to the JSP out fails
+     * @throws JspException if dialog actions fail
+     */
+    public void actionDialog() throws IOException, JspException {
+
+        switch (getAction()) {
+            
+        case ACTION_CANCEL:
+            // ACTION: cancel button pressed
+            actionCancel();
+            actionCloseDialog();
+            break;
+
+        case ACTION_ERROR:
+            // ACTION: an error occured (display nothing)
+            break;
+            
+        case ACTION_SAVE:
+            // ACTION: save edited values
+            setParamAction(DIALOG_OK);
+            actionCommit();
+            if (getCommitErrors().size() == 0) {
+                actionCloseDialog();
+                break;
+            }   
+            
+        case ACTION_DEFAULT:
+        default:
+            // ACTION: show dialog (default)
+            setParamAction(DIALOG_SAVE);          
+            StringBuffer result = new StringBuffer(2048);
+            result.append(htmlStart("administration/index.html"));
+            result.append("<script type=\"text/javascript\" src=\"").append(getResourceUri()).append("editors/xmlcontent/edit.js\"></script>\n");
+            result.append("<script type=\"text/javascript\" src=\"").append(getResourceUri()).append("editors/xmlcontent/help.js\"></script>\n");
+            result.append(getWidgetIncludes());
+            result.append("<script type=\"text/javascript\">\n<!--\n");
+            result.append("// flag indicating if form initialization is finished\n");
+            result.append("var initialized = false;\n");
+            result.append("// the OpenCms context path\n");
+            result.append("var contextPath = \"").append(OpenCms.getSystemInfo().getOpenCmsContext()).append("\";\n\n");
+            result.append("// action parameters of the form\n");
+            result.append("var actionAddElement = \"").append(EDITOR_ACTION_ELEMENT_ADD).append("\";\n");
+            result.append("var actionRemoveElement = \"").append(EDITOR_ACTION_ELEMENT_REMOVE).append("\";\n");
+            result.append("function init() {\n");
+            result.append(getWidgetInitCalls());
+            result.append("\tsetTimeout(\"scrollForm();\", 200);\n");
+            result.append("\tinitialized = true;\n");
+            result.append("}\n\n");
+            result.append("function exitEditor() {\n");
+            result.append("\ttry {\n");
+            result.append("\t\t// close file selector popup if present\n");
+            result.append("\t\tcloseTreeWin();\n");
+            result.append("\t} catch (e) {}\n");
+            result.append("}\n");
+            result.append(getWidgetInitMethods());
+            result.append("\n// -->\n</script>\n");
+            result.append(bodyStart(null, "onload='init();' onunload='exitEditor();'"));
+            result.append(dialogStart());
+            result.append("<form name=\"EDITOR\" id=\"EDITOR\" method=\"post\" action=\"").append(getDialogUri());
+            result.append("\" class=\"nomargin\" onsubmit=\"return submitAction('").append(DIALOG_OK).append("', null, 'EDITOR');\">\n");
+            result.append(dialogContentStart(null));
+            result.append(buildDialogForm());
+            result.append(dialogContentEnd());
+            result.append(dialogButtonsCustom());
+            result.append(paramsAsHidden());
+            if (getParamFramename() == null) { 
+                result.append("\n<input type=\"hidden\" name=\"").append(PARAM_FRAMENAME).append("\" value=\"\">\n");
+            } 
+            result.append("</form>\n");
+            result.append(getWidgetHtmlEnd());
+            result.append(dialogEnd());
+            result.append(bodyEnd());
+            result.append(htmlEnd());
+            JspWriter out = getJsp().getJspContext().getOut();
+            out.print(result.toString());          
+        }
     }
 
     /**
@@ -226,7 +322,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         // create the dialog HTML
         return createDialogHtml(getParamPage());
     }
-
+    
     /**
      * Returns the html for a button to remove an optional element.<p>
      * 
@@ -287,7 +383,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Creats the HTML for the buttons on the dialog.<p>
+     * Creates the HTML for the buttons on the dialog.<p>
      * 
      * @return the HTML for the buttons on the dialog.<p>
      */
@@ -321,6 +417,16 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
+     * Returns the errors that are thrown by save actions or form generation.<p>
+     * 
+     * @return the errors that are thrown by save actions or form generation
+     */
+    public List getCommitErrors() {
+
+        return m_commitErrors;
+    }
+
+    /**
      * Returns the dialog object for this widget dialog, or <code>null</code>
      * if no dialog object has been set.<p>
      * 
@@ -332,16 +438,6 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             m_dialogObject = getDialogObjectMap().get(getClass().getName());
         }
         return m_dialogObject;
-    }
-
-    /**
-     * Returns the errors that are thrown by save actions or form generation.<p>
-     * 
-     * @return the errors that are thrown by save actions or form generation
-     */
-    public List getOtherErrors() {
-
-        return m_otherErrors;
     }
 
     /**
@@ -707,7 +803,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
+     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
+     * 
+     * To get a more complex layout variation, you have to overwrite this method in your dialog class.<p>
      * 
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
@@ -907,7 +1005,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             if (hasOtherErrors()) {
                 result.append(dialogBlockStart(""));
                 result.append(createWidgetTableStart());
-                Iterator i = getOtherErrors().iterator();
+                Iterator i = getCommitErrors().iterator();
                 while (i.hasNext()) {
                     Throwable t = (Throwable)i.next();
                     result.append("<tr><td><img src=\"");
@@ -1120,7 +1218,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      */
     protected boolean hasOtherErrors() {
 
-        return (m_otherErrors != null) && (m_otherErrors.size() > 0);
+        return (m_commitErrors != null) && (m_commitErrors.size() > 0);
     }
 
     /**
@@ -1137,6 +1235,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        
+        // set the dialog type
+        setParamDialogtype(getClass().getName());
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
@@ -1207,9 +1308,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * 
      * @param otherErrors the errors that are thrown by save actions or form generation
      */
-    protected void setOtherErrors(List otherErrors) {
+    protected void setCommitErrors(List otherErrors) {
 
-        m_otherErrors = otherErrors;
+        m_commitErrors = otherErrors;
     }
 
     /**

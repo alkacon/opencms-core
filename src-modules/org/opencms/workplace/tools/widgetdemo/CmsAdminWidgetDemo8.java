@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo8.java,v $
- * Date   : $Date: 2005/05/19 12:55:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/19 16:08:44 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
@@ -99,6 +99,15 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
     public CmsAdminWidgetDemo8(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
+     */
+    public void actionCommit() {
+
+        // not implemented for this demo
+
     }
 
     /**
