@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsIcon.java,v $
-* Date   : $Date: 2005/05/17 16:13:36 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 07:15:14 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/19 07:15:14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -116,7 +116,7 @@ public class CmsIcon extends A_CmsWpElement {
                     
                     throwException("Icon activation method " + iconActiveMethod 
                             + " in calling class " + callingObject.getClass().getName() 
-                            + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                            + " throwed an exception. " + e);
                 }
                 else {
                     
@@ -128,7 +128,7 @@ public class CmsIcon extends A_CmsWpElement {
             catch(Exception exc2) {
                 throwException("Icon activation method " + iconActiveMethod 
                         + " in calling class " + callingObject.getClass().getName() 
-                        + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
+                        + " was found but could not be invoked. " + exc2);
             }
         }
         
@@ -160,7 +160,7 @@ public class CmsIcon extends A_CmsWpElement {
                     
                     throwException("Icon activation method " + iconVisibleMethod 
                             + " in calling class " + callingObject.getClass().getName() 
-                            + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                            + " throwed an exception. " + e);
                 }
                 else {
                     
@@ -172,7 +172,7 @@ public class CmsIcon extends A_CmsWpElement {
             catch(Exception exc2) {
                 throwException("Icon activation method " + iconVisibleMethod 
                     + " in calling class " + callingObject.getClass().getName() 
-                    + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
+                    + " was found but could not be invoked. " + exc2);
             }
         }
         

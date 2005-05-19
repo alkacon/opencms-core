@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2005/05/17 16:13:36 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 07:15:14 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Name:  $ $Revision: 1.3 $ $Date: 2005/05/19 07:15:14 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -170,7 +170,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
                 if(!(e instanceof CmsException)) {
 
                     throwException("Icon activation method " + iconVisibleMethod + " in calling class "
-                            + className + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                            + className + " throwed an exception. " + e);
                 }
                 else {
 
@@ -182,7 +182,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
             }
             catch(Exception exc2) {
                 throwException("Icon activation method " + iconVisibleMethod + " in calling class "
-                        + className + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
+                        + className + " was found but could not be invoked. " + exc2);
             }
         }
         templateDocument.setData("linkTo", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + C_VFS_PATH_WORKPLACE 

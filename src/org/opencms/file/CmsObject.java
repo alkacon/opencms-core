@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/05/13 14:04:33 $
- * Version: $Revision: 1.120 $
+ * Date   : $Date: 2005/05/19 07:15:14 $
+ * Version: $Revision: 1.121 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.120 $
+ * @version $Revision: 1.121 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1719,7 +1719,7 @@ public class CmsObject {
             newProject = m_securityManager.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         } catch (CmsException e) {
             // should not happen since the online project is always available
-            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED, e);
+            throw new CmsSecurityException(Messages.get().container(Messages.ERR_SECURITY_LOGIN_FAILED_1, username), e);
         }
         // switch the cms context to the new user and project
         m_context.switchUser(newUser, newProject);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsPrefsScroller.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/19 07:15:14 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PREFSSCROLLER&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -135,7 +135,7 @@ public class CmsPrefsScroller extends A_CmsWpElement {
             if(!(e instanceof CmsException)) {
                 
                 throwException("Prefs scroller fill method " + methodName + " in calling class " 
-                        + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                        + callingObject.getClass().getName() + " throwed an exception. " + e);
             }
             else {
                 

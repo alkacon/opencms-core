@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/05/18 12:48:15 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/19 07:15:15 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,39 +43,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_DELETE_BACKUP_VERSIONS_1 = "ERR_DELETE_BACKUP_VERSIONS_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_USER_GROUP_INITIALIZATION_FAILED_0 = "INIT_USER_GROUP_INITIALIZATION_FAILED_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_SET_DIGEST_ERROR_0 = "INIT_SET_DIGEST_ERROR_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_DIGEST_ENC_3 = "INIT_DIGEST_ENC_3";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_USER_GROUP_DEFAULTS_INITIALIZED_0 = "INIT_USER_GROUP_DEFAULTS_INITIALIZED_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_JDBC_CONN_INVALID_PROJECT_ID_1 = "ERR_JDBC_CONN_INVALID_PROJECT_ID_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_QUERY_NOT_FOUND_1 = "LOG_QUERY_NOT_FOUND_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_NULL_DB_CONTEXT_0 = "LOG_NULL_DB_CONTEXT_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_LOAD_QUERY_PROP_FILE_FAILED_1 = "LOG_LOAD_QUERY_PROP_FILE_FAILED_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_DRIVER_SQL_MANAGER_1 = "INIT_DRIVER_SQL_MANAGER_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_SQL_MANAGER_INIT_FAILED_1 = "LOG_SQL_MANAGER_INIT_FAILED_1";
       
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BACKUP_FILE_HEADER_NOT_FOUND_1 = "ERR_BACKUP_FILE_HEADER_NOT_FOUND_1";
@@ -91,6 +58,9 @@ public final class Messages extends A_CmsMessageBundle {
      
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_SIBLING_FILE_NOT_FOUND_1 = "ERR_CREATE_SIBLING_FILE_NOT_FOUND_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETE_BACKUP_VERSIONS_1 = "ERR_DELETE_BACKUP_VERSIONS_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_NONEMTY_FOLDER_2 = "ERR_DELETE_NONEMTY_FOLDER_2";
@@ -121,6 +91,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_RESOURCE_LENGTH_2 = "ERR_INVALID_RESOURCE_LENGTH_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_JDBC_CONN_INVALID_PROJECT_ID_1 = "ERR_JDBC_CONN_INVALID_PROJECT_ID_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_ACE_FOUND_2 = "ERR_NO_ACE_FOUND_2";
@@ -226,15 +199,30 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DIGEST_ALGORITHM_1 = "INIT_DIGEST_ALGORITHM_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DIGEST_ENC_3 = "INIT_DIGEST_ENC_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DIGEST_ENCODING_1 = "INIT_DIGEST_ENCODING_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DRIVER_SQL_MANAGER_1 = "INIT_DRIVER_SQL_MANAGER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_FILL_DEFAULTS_0 = "INIT_FILL_DEFAULTS_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_SET_DIGEST_ERROR_0 = "INIT_SET_DIGEST_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SHUTDOWN_DRIVER_1 = "INIT_SHUTDOWN_DRIVER_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_USER_GROUP_DEFAULTS_INITIALIZED_0 = "INIT_USER_GROUP_DEFAULTS_INITIALIZED_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_USER_GROUP_INITIALIZATION_FAILED_0 = "INIT_USER_GROUP_INITIALIZATION_FAILED_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEL_FILE_3 = "LOG_DEL_FILE_3";
@@ -247,6 +235,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_RESETING_RESOURCE_STATE_1 = "LOG_ERROR_RESETING_RESOURCE_STATE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LOAD_QUERY_PROP_FILE_FAILED_1 = "LOG_LOAD_QUERY_PROP_FILE_FAILED_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_NULL_DB_CONTEXT_0 = "LOG_NULL_DB_CONTEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISHING_ACL_1 = "LOG_PUBLISHING_ACL_1";
@@ -265,6 +259,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISHING_RESOURCE_1 = "LOG_PUBLISHING_RESOURCE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_QUERY_NOT_FOUND_1 = "LOG_QUERY_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READING_RESOURCE_1 = "LOG_READING_RESOURCE_1";
@@ -274,6 +271,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_REMOVING_RESOURCE_1 = "LOG_REMOVING_RESOURCE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SQL_MANAGER_INIT_FAILED_1 = "LOG_SQL_MANAGER_INIT_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_START_PUBLISHING_PROJECT_2 = "LOG_START_PUBLISHING_PROJECT_2";

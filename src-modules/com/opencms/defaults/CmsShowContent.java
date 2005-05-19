@@ -180,7 +180,7 @@ public class CmsShowContent extends CmsXmlTemplate {
             }
         } else {
             // throw exception if id is not given (not as a tagcontent or url parameter)
-            throw new CmsException(C_MISSING_ID_PARAMETER, CmsException.C_UNKNOWN_EXCEPTION);
+            throw new CmsException(C_MISSING_ID_PARAMETER);
         }
         // first get the contentdefinition's classname from a datablock
         String cdClassname = template.getDataValue(C_CONTENTDEFINITION_CLASS_DATABLOCK);
@@ -234,17 +234,17 @@ public class CmsShowContent extends CmsXmlTemplate {
         } catch (InvocationTargetException e) {
             // the constructor has throwed an exception, InvocationTargetExceptions of the egt-methods
             // will be catched inside the setDatablocks method and cannot propagate to this point
-            throw new CmsException(C_CONSTRUCTOR_THROWED_EXCEPTION, CmsException.C_UNKNOWN_EXCEPTION, e.getTargetException());
+            throw new CmsException(C_CONSTRUCTOR_THROWED_EXCEPTION, e.getTargetException());
         } catch (ClassCastException e) {
             // in this case the cast to A_CmsContentDefinition failed
-            throw new CmsException(C_CONSTRUCTOR_IS_NOT_SUBCLASS_OF_A_CMSCONTENTDEFINITION, CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw new CmsException(C_CONSTRUCTOR_IS_NOT_SUBCLASS_OF_A_CMSCONTENTDEFINITION, e);
         } catch (Exception e) {
             // rethrow any other exception
             if (e instanceof CmsException) {
                 throw (CmsException)e;
             } else {
                 // encapsulate in CmsException
-                throw new CmsException (e.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, e);
+                throw new CmsException (e.getMessage(), e);
             }
         }
         return "";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/19 07:15:14 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
@@ -137,7 +138,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         try {
             return OpenCms.getResourceManager().getResourceType(typeId).isFolder();
         } catch (CmsLoaderException e) {
-            throw new RuntimeException("Unable to resolve resource type: " + typeId, e);
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_UNKNOWN_RESOURCE_TYPE_1, new Integer(typeId)), e);
         }
     }
 
@@ -153,7 +154,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         try {
             return OpenCms.getResourceManager().getResourceType(typeName).isFolder();
         } catch (CmsLoaderException e) {
-            throw new RuntimeException("Unable to resolve resource type: " + typeName, e);
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_UNKNOWN_RESOURCE_TYPE_1, typeName), e);
         }
     }
 

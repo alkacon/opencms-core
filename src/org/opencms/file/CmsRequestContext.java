@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/05/19 07:15:14 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -44,7 +45,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsRequestContext {
 
@@ -389,7 +390,7 @@ public class CmsRequestContext {
     public synchronized void restoreSiteRoot() throws RuntimeException {
 
         if (m_savedSiteRoot == null) {
-            throw new RuntimeException("Saved siteroot empty!");
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EMPTY_SITEROOT_0));
         }
         m_siteRoot = m_savedSiteRoot;
         m_savedSiteRoot = null;
@@ -403,7 +404,7 @@ public class CmsRequestContext {
     public synchronized void saveSiteRoot() throws RuntimeException {
 
         if (m_savedSiteRoot != null) {
-            throw new RuntimeException("Saved siteroot not empty: " + m_savedSiteRoot);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_NONEMPTY_SITEROOT_1));
         }
         m_savedSiteRoot = m_siteRoot;
     }

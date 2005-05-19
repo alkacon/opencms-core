@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2005/05/17 16:13:36 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 07:15:15 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -3352,7 +3352,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         if (OpenCms.getLog(this).isErrorEnabled()) {
                             OpenCms.getLog(this).error("Error while doing redirect ", e);
                         }
-                        throw new CmsException(e.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, e);
+                        throw new CmsException(e.getMessage(), e);
                     }
                 } // if (exit || saveexit)
             } // noerror

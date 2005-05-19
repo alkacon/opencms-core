@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/05/18 12:48:14 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/05/19 07:15:14 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsException extends Exception implements I_CmsThrowable {
 
@@ -176,18 +176,6 @@ public class CmsException extends Exception implements I_CmsThrowable {
         
         return new CmsException(container, cause);
     }    
-
-    /**
-     * Creates a CmsException with the provided error code, 
-     * the error codes used should be the constants from the CmsEception class or subclass.<p>
-     *
-     * @param type exception error code
-     */
-    public CmsException(int type) {
-
-        super();
-        m_type = type;
-    }
 
     /**
      * Creates a CmsException with the provided error code and

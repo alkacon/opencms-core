@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/19 07:15:14 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import com.opencms.legacy.CmsLegacyException;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -390,6 +390,6 @@ public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants
      */
 
     protected void throwException(String errorMessage) throws CmsException {
-        throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+        throwException(errorMessage, CmsLegacyException.C_UNKNOWN_EXCEPTION);
     }
 }

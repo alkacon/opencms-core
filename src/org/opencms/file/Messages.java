@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Messages.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 07:15:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,16 +38,30 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Achim Westermann (a.westermann@alkacon.com)
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_EMPTY_SITEROOT_0 = "ERR_EMPTY_SITEROOT_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_SAME_NAME_1 = "ERR_MOVE_SAME_NAME_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NONEMPTY_SITEROOT_1 = "ERR_NONEMPTY_SITEROOT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0 = "ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SECURITY_LOGIN_FAILED_1 = "ERR_SECURITY_LOGIN_FAILED_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNKNOWN_RESOURCE_TYPE_1 = "ERR_UNKNOWN_RESOURCE_TYPE_1";
+
+    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.file.messages";
 

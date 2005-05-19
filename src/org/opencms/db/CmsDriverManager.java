@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/18 13:02:33 $
- * Version: $Revision: 1.500 $
+ * Date   : $Date: 2005/05/19 07:15:14 $
+ * Version: $Revision: 1.501 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.500 $
+ * @version $Revision: 1.501 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3857,7 +3857,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             m_userDriver.writeUser(dbc, newUser);
         } catch (Throwable t) {
             // any error here: throw a security exception
-            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED, t);
+            throw new CmsSecurityException(org.opencms.file.Messages.get().container(org.opencms.file.Messages.ERR_SECURITY_LOGIN_FAILED_1, username), t);
         }
 
         // update cache
@@ -5948,11 +5948,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             try {
                 user = m_userDriver.readUser(dbc, username, oldPassword, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
             } catch (CmsDbEntryNotFoundException e) {
-                throw new CmsDataAccessException("["
-                    + getClass().getName()
-                    + "] Error resetting password for user '"
-                    + username
-                    + "'", e);
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_RESET_PASSWORD_1, username), e);
             }
 
             // dito as a web user
@@ -5963,11 +5960,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     oldPassword,
                     I_CmsConstants.C_USER_TYPE_WEBUSER);
             } catch (CmsDbEntryNotFoundException e) {
-                throw new CmsDataAccessException("["
-                    + getClass().getName()
-                    + "] Error resetting password for user '"
-                    + username
-                    + "'", e);
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_RESET_PASSWORD_1, username), e);
             }
 
             if (user == null) {

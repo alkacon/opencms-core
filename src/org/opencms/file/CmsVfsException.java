@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsException.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/19 07:15:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.main.CmsException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.kandzior@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.1.4
  */
 public class CmsVfsException extends CmsDataAccessException {
@@ -72,19 +72,5 @@ public class CmsVfsException extends CmsDataAccessException {
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
         return new CmsVfsException(container, cause);
-    }
-
-    /**
-     * Returns the description String for the provided CmsException type.<p>
-     * 
-     * @param type exception error code 
-     * @return the description String for the provided CmsException type
-     */
-    protected String getErrorDescription(int type) {
-
-        switch (type) {
-            default:
-                return super.getErrorDescription(type);
-        }
     }
 }

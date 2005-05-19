@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsSecurityException.java,v $
- * Date   : $Date: 2005/05/18 12:48:14 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/19 07:15:14 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.main.CmsException;
  * but that the current user who attemted it does not have the required permissions at the current time.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.1.4
  */
 public class CmsSecurityException extends CmsException {
@@ -75,32 +75,6 @@ public class CmsSecurityException extends CmsException {
         return new CmsSecurityException(container, cause);
     }
     
-    /** No permissions to perform operation. */
-    public static final int C_SECURITY_NO_PERMISSIONS = 303;
-       
-    /** Invalid password (only for password change and validation of password). */    
-    public static final int C_SECURITY_INVALID_PASSWORD = 305;
-    
-    /** Login failed. */
-    public static final int C_SECURITY_LOGIN_FAILED = 306;
-
-    /**
-     * Default constructor for a CmsSecurityException.<p>
-     */
-    public CmsSecurityException() {
-        super();
-    }
-    
-    /**
-     * Constructs a CmsSecurityException with the specified description message and type.<p>
-     * 
-     * @param message the description message
-     * @param type the type of the message
-     */
-    public CmsSecurityException(String message, int type) {
-        super(message, type);
-    }
-    
     /**
      * Constructs a CmsSecurityException with the specified description message.<p>
      * 
@@ -108,34 +82,5 @@ public class CmsSecurityException extends CmsException {
      */
     public CmsSecurityException(String message) {
         super(message);
-    }
-    
-    /**
-     * Constructs a CmsSecurityException with the specified description message and root exception.<p>
-     * 
-     * @param type the type of the exception
-     * @param rootCause root cause exception
-     */
-    public CmsSecurityException(int type, Throwable rootCause) {
-        super(type, rootCause);
-    }
-    
-    /**
-     * Returns the description String for the provided CmsException type.<p>
-     * 
-     * @param type exception error code 
-     * @return the description String for the provided CmsException type
-     */    
-    protected String getErrorDescription(int type) {
-        switch (type) {
-            case C_SECURITY_NO_PERMISSIONS:
-                return "No permissions to perform this operation";
-            case C_SECURITY_INVALID_PASSWORD:
-                return "Invalid password";                
-            case C_SECURITY_LOGIN_FAILED:
-                return "OpenCms login validation failed";                
-            default:
-                return super.getErrorDescription(type);
-        }
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/19 07:15:14 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
 import com.opencms.legacy.CmsLegacyException;
+import com.opencms.legacy.CmsLegacySecurityException;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Constructor;
@@ -156,7 +157,7 @@ public class CmsDbAccess {
                 throw new CmsException(errorMessages.toString(), CmsException.C_SQL_ERROR);
             }
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, null, null);
         }
@@ -261,7 +262,7 @@ public class CmsDbAccess {
             updateMedia(dataset.m_masterId, dataset.m_mediaToAdd, new Vector(), new Vector());
             updateChannels(cms, dataset.m_masterId, dataset.m_channelToAdd, dataset.m_channelToDelete);
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
@@ -286,11 +287,11 @@ public class CmsDbAccess {
         if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't write it!
-            throw new CmsSecurityException("Can't update a cd with a backup cd ", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Can't update a cd with a backup cd ", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (!content.isWriteable()) {
             // no write access
-            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not writeable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         CmsUUID newMasterId = new CmsUUID();
         int projectId = cms.getRequestContext().currentProject().getId();
@@ -317,7 +318,7 @@ public class CmsDbAccess {
             updateMedia(dataset.m_masterId, mediaToAdd, new Vector(), new Vector());
             updateChannels(cms, dataset.m_masterId, channelToAdd, new Vector());
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
@@ -338,7 +339,7 @@ public class CmsDbAccess {
         }
         if (!content.isWriteable()) {
             // no write access
-            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not writeable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (!dataset.m_lockedBy.isNullUUID()) {
             // lock the resource into the current project
@@ -356,7 +357,7 @@ public class CmsDbAccess {
             stmt.setInt(4, content.getSubId());
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
@@ -377,21 +378,21 @@ public class CmsDbAccess {
         if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't write it!
-            throw new CmsSecurityException("Can't update a cd with a backup cd", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Can't update a cd with a backup cd", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         // read the lockstate
         readLockstate(dataset, content.getSubId());
         if (!dataset.m_lockedBy.equals(cms.getRequestContext().currentUser().getId())) {
             // is not locked by this user
-            throw new CmsSecurityException("Not locked by this user", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not locked by this user", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (dataset.m_lockedInProject != dataset.m_projectId) {
             // not locked in this project
-            throw new CmsSecurityException("Not locked in this project", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not locked in this project", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (!content.isWriteable()) {
             // no write access
-            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not writeable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
 
         long currentTime = new java.util.Date().getTime();
@@ -417,7 +418,7 @@ public class CmsDbAccess {
             updateMedia(dataset.m_masterId, dataset.m_mediaToAdd, dataset.m_mediaToUpdate, dataset.m_mediaToDelete);
             updateChannels(cms, dataset.m_masterId, dataset.m_channelToAdd, dataset.m_channelToDelete);
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
@@ -434,7 +435,7 @@ public class CmsDbAccess {
     public void read(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset, CmsUUID contentId) throws CmsException {
         if (!content.isReadable()) {
             // no read access
-            throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not readable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         String statement_key = "read_offline";
         if (isOnlineProject(cms)) {
@@ -456,10 +457,10 @@ public class CmsDbAccess {
                 throw new CmsLegacyException("[" + this.getClass().getName() + ".read] no content found for CID:" + contentId + ", SID: " + content.getSubId() + ", statement: " + statement_key, CmsLegacyException.C_NOT_FOUND);
             }
             if (!checkAccess(content, false)) {
-                throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+                throw new CmsLegacySecurityException("Not readable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
             }
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
@@ -490,7 +491,7 @@ public class CmsDbAccess {
                 // no values found - this is a new row
             }
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
@@ -506,7 +507,7 @@ public class CmsDbAccess {
     public Vector readMedia(CmsObject cms, CmsMasterContent content) throws CmsException {
         if (!content.isReadable()) {
             // no read access
-            throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not readable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         Vector retValue = new Vector();
         String statement_key = "read_media_offline";
@@ -527,7 +528,7 @@ public class CmsDbAccess {
                 retValue.add(new CmsMasterMedia(res.getInt(i++), new CmsUUID(res.getString(i++)), res.getInt(i++), res.getInt(i++), res.getInt(i++), res.getInt(i++), res.getString(i++), res.getInt(i++), res.getString(i++), res.getString(i++), res.getString(i++), res.getBytes(i++)));
             }
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
@@ -544,7 +545,7 @@ public class CmsDbAccess {
     public Vector readChannels(CmsObject cms, CmsMasterContent content) throws CmsException {
         if (!content.isReadable()) {
             // no read access
-            throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not readable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         Vector retValue = new Vector();
         String statement_key = "read_channel_names_offline";
@@ -568,7 +569,7 @@ public class CmsDbAccess {
             }
             
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
@@ -605,7 +606,7 @@ public class CmsDbAccess {
                 theDataSets.add(dataset);
             }
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
@@ -627,21 +628,21 @@ public class CmsDbAccess {
         if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't delete it!
-            throw new CmsSecurityException("Can't delete a backup cd", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Can't delete a backup cd", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         // read the lockstate
         readLockstate(dataset, content.getSubId());
         if ((!dataset.m_lockedBy.equals(cms.getRequestContext().currentUser().getId()))) {
             // is not locked by this user
-            throw new CmsSecurityException("Not locked by this user", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not locked by this user", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (dataset.m_lockedInProject != dataset.m_projectId) {
             // not locked in this project
-            throw new CmsSecurityException("Not locked in this project", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not locked in this project", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (!content.isWriteable()) {
             // no write access
-            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not writeable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
 
         if (dataset.m_state == I_CmsConstants.C_STATE_NEW) {
@@ -662,7 +663,7 @@ public class CmsDbAccess {
                 deleteAllMedia(dataset.m_masterId);
                 deleteAllChannels(dataset.m_masterId);
             } catch (SQLException exc) {
-                throw new CmsException(CmsException.C_SQL_ERROR, exc);
+                throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
             } finally {
                 m_sqlManager.closeAll(null, conn, stmt, null);
             }
@@ -680,7 +681,7 @@ public class CmsDbAccess {
                 stmt.setInt(rowcounter++, content.getSubId());
                 stmt.executeUpdate();
             } catch (SQLException exc) {
-                throw new CmsException(CmsException.C_SQL_ERROR, exc);
+                throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
             } finally {
                 m_sqlManager.closeAll(null, conn, stmt, null);
             }
@@ -702,11 +703,11 @@ public class CmsDbAccess {
         if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't delete it!
-            throw new CmsSecurityException("Can't undelete a backup cd ", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Can't undelete a backup cd ", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (!content.isWriteable()) {
             // no write access
-            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not writeable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         // set state to deleted and update the line
         dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
@@ -722,7 +723,7 @@ public class CmsDbAccess {
             stmt.setInt(rowcounter++, content.getSubId());
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
@@ -743,21 +744,21 @@ public class CmsDbAccess {
         if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't delete it!
-            throw new CmsSecurityException("Can't change permissions of a backup cd ", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Can't change permissions of a backup cd ", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         // read the lockstate
         readLockstate(dataset, content.getSubId());
         if (!dataset.m_lockedBy.equals(cms.getRequestContext().currentUser().getId())) {
             // is not locked by this user
-            throw new CmsSecurityException("Not locked by this user", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not locked by this user", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (dataset.m_lockedInProject != dataset.m_projectId) {
             // not locked in this project
-            throw new CmsSecurityException("Not locked in this project", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not locked in this project", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (!content.isWriteable()) {
             // no write access
-            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsLegacySecurityException("Not writeable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (dataset.m_state != I_CmsConstants.C_STATE_NEW) {
             dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
@@ -780,7 +781,7 @@ public class CmsDbAccess {
             stmt.setInt(8, content.getSubId());
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
@@ -1407,7 +1408,7 @@ public class CmsDbAccess {
             }
             retVector = createVectorOfCd(allBackup, contentDefinitionClass, cms);
         } catch (SQLException e) {
-            throw new CmsException(CmsException.C_SQL_ERROR, e);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, e);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
@@ -1482,7 +1483,7 @@ public class CmsDbAccess {
                 throw new CmsLegacyException("Row not found: " + masterId + " " + subId + " version " + versionId, CmsLegacyException.C_NOT_FOUND);
             }
         } catch (SQLException e) {
-            throw new CmsException(CmsException.C_SQL_ERROR, e);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, e);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
@@ -1553,7 +1554,7 @@ public class CmsDbAccess {
         try {
             deleteAllMedia(dataset.m_masterId);
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         }
         // copy the media from backup
         try {
@@ -1580,7 +1581,7 @@ public class CmsDbAccess {
                 }
             }
         } catch (SQLException e) {
-            throw new CmsException(CmsException.C_SQL_ERROR, e);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, e);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
@@ -1644,7 +1645,7 @@ public class CmsDbAccess {
                 publishOneLine(cms, publishHistoryId, dataset, subId, contentDefinitionName, enableHistory, versionId, publishingDate, changedRessources, changedModuleData);
             }
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
@@ -1709,7 +1710,7 @@ public class CmsDbAccess {
             stmt.setInt(4, subId);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
@@ -1755,7 +1756,7 @@ public class CmsDbAccess {
             stmt.setString(1, masterId.toString());
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
@@ -1769,7 +1770,7 @@ public class CmsDbAccess {
             stmt.setString(1, masterId.toString());
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
@@ -1784,7 +1785,7 @@ public class CmsDbAccess {
             stmt.setInt(2, subId);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
@@ -1818,7 +1819,7 @@ public class CmsDbAccess {
             sqlFillValues(stmt, subId, dataset);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
@@ -1851,7 +1852,7 @@ public class CmsDbAccess {
                 }
             }
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
@@ -1884,7 +1885,7 @@ public class CmsDbAccess {
                 }
             }
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
@@ -1948,7 +1949,7 @@ public class CmsDbAccess {
             stmt.setString(lastId++, userName);
             stmt.executeUpdate();
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, null);
         }
@@ -1982,7 +1983,7 @@ public class CmsDbAccess {
                 }
             }
         } catch (SQLException exc) {
-            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
@@ -2025,7 +2026,7 @@ public class CmsDbAccess {
             stmt.setInt(8, 0);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException(CmsException.C_SQL_ERROR, e);
+            throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, e);
         } finally {
             m_sqlManager.closeAll(null, conn, stmt, res);
         }
