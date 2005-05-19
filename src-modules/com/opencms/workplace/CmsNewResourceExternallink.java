@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
@@ -59,7 +60,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -279,7 +280,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                                     + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));
                         }
                     } catch(Exception e) {
-                        throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
+                        throw new CmsLegacyException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
                             + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), e);
                     }
                     return null;

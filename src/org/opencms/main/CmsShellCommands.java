@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2005/05/19 08:57:23 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.main;
 
+import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -68,7 +69,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -360,7 +361,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
 
         if (module == null) {
-            throw new CmsException("Unknown module: " + moduleName);
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_MODULE_1, moduleName));
         }
 
         String filename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(

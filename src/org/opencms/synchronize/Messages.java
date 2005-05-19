@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/Messages.java,v $
- * Date   : $Date: 2005/04/28 08:24:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 08:57:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EXISTANT_FILE_2 = "ERR_EXISTANT_FILE_2";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IO_WRITE_SYNCLIST_0 = "ERR_IO_WRITE_SYNCLIST_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_FILE_1 = "ERR_READING_FILE_1";
 

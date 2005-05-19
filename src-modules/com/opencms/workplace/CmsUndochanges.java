@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsUndochanges.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -119,7 +119,7 @@ public class CmsUndochanges extends CmsWorkplaceDefault {
                             CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendRedirect(lasturl);
                         }
                     }catch(Exception e) {
-                        throw new CmsException("Redirect fails :"
+                        throw new CmsLegacyException("Redirect fails :"
                             + getConfigFile(cms).getWorkplaceActionPath()
                             + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), e);
                     }

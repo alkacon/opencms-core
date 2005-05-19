@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -375,7 +375,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     // read the data from the user object
                     CmsUser theUser = cms.readUser(user);
                     if(theUser == null) {
-                        throw new CmsException("user does not exist");
+                        throw new CmsLegacyException("user does not exist");
                     }
                     firstname = theUser.getFirstname();
                     desc = theUser.getDescription();

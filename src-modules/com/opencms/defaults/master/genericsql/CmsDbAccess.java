@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 08:57:24 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -154,7 +154,7 @@ public class CmsDbAccess {
                     errorMessages.append((String)i.next());
                     errorMessages.append("\n");
                 }
-                throw new CmsException(errorMessages.toString(), CmsException.C_SQL_ERROR);
+                throw new CmsLegacyException(errorMessages.toString(), CmsLegacyException.C_SQL_ERROR);
             }
         } catch (SQLException exc) {
             throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, exc);

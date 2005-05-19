@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2005/05/17 16:13:36 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 08:57:21 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:21 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -234,7 +234,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             newDataset = getMasterDataSet(subIdInt, masterElement);
         } catch (Exception e) {
             m_report.println(e);
-            throw new CmsException("Cannot get dataset ", e);
+            throw new CmsLegacyException("Cannot get dataset ", e);
         }
         
         m_report.print("'" + CmsEncoder.escapeHtml(newDataset.m_title) + "' (" + classname + ")");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.io.IOException;
@@ -45,7 +46,7 @@ import java.util.Hashtable;
  * editing news.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/19 08:57:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -108,7 +109,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault {
                 CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
                     +"empty.html");
             } catch (IOException exc) {
-                throw new CmsException("Could not redirect to empty.html", exc);
+                throw new CmsLegacyException("Could not redirect to empty.html", exc);
             }
         }
         // Finally start the processing

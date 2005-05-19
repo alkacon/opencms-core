@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2005/05/19 07:15:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 08:57:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Enumeration;
@@ -46,7 +47,7 @@ import java.util.Vector;
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -112,7 +113,7 @@ public final class CmsReplace extends CmsWorkplaceDefault {
                 // send the user back to the file listing finally
                 CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));
             } catch (Exception ex) {
-                throw new CmsException("Redirect failed: " + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), ex);
+                throw new CmsLegacyException("Redirect failed: " + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), ex);
             }
         }
 

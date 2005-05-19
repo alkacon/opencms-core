@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/19 08:57:23 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
@@ -53,7 +54,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:32 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/19 08:57:23 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -1438,7 +1439,7 @@ public class CmsXmlNav extends A_CmsNavBase {
                     deep = Integer.parseInt(st.nextToken().trim());
                 }
             } catch (Exception e) {
-                throw new CmsException(e.getMessage());
+                throw new CmsLegacyException(e.getMessage());
             }
         }
         
@@ -1752,7 +1753,7 @@ public class CmsXmlNav extends A_CmsNavBase {
                 iParamCount = st.countTokens();
 
                 if (iParamCount < 1) {
-                    throw new CmsException("Not enough parameters!");
+                    throw new CmsLegacyException("Not enough parameters!");
                 }
 
                 if (st.hasMoreTokens()) {
@@ -1781,7 +1782,7 @@ public class CmsXmlNav extends A_CmsNavBase {
                 }
 
             } catch (Exception e) {
-                throw new CmsException(e.getMessage());
+                throw new CmsLegacyException(e.getMessage());
             }
 
             int ifound = 0;
@@ -1824,7 +1825,7 @@ public class CmsXmlNav extends A_CmsNavBase {
                 currentFolder = cms.getRequestContext().getUri();
             }
         } else {
-            throw new CmsException("Not enough parameters!");
+            throw new CmsLegacyException("Not enough parameters!");
         }
 
         return CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + sReturnPath;

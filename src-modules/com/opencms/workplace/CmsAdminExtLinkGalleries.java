@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ import java.util.List;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -276,7 +277,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                                     + "/externallinkgallery/");
                             }
                         } catch(Exception e) {
-                            throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceAdministrationPath()
+                            throw new CmsLegacyException("Redirect fails :" + getConfigFile(cms).getWorkplaceAdministrationPath()
                                 + "/externallinkgallery/", e);
                         }
                         return null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 08:57:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.0 beta 1
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -94,11 +94,11 @@ public class CmsJspTemplate extends CmsDumpTemplate {
             s = loader.dump(cms, file, null, null, req, res);            
         } catch (java.lang.ClassCastException e) {
             s = null;
-            throw new CmsException("[CmsJspTemplate] " + jspFile + " is not a JSP");
+            throw new CmsLegacyException("[CmsJspTemplate] " + jspFile + " is not a JSP");
         } catch (org.opencms.main.CmsException e) {
             s = null;
             // File might not exist or no read permissions
-            throw new CmsException("[CmsJspTemplate] Error while reading JSP " + jspFile + "\n" + e, e);
+            throw new CmsLegacyException("[CmsJspTemplate] Error while reading JSP " + jspFile + "\n" + e, e);
         } catch (Exception e) {
             s = null;
             String errorMessage = "[CmsJspTemplate] Error while loading jsp file " + jspFile + ": " + e;

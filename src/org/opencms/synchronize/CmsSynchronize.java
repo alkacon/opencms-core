@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/05/09 12:38:29 $
- * Version: $Revision: 1.44 $
- * Date   : $Date: 2005/05/09 12:38:29 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/05/19 08:57:22 $
+ * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/05/19 08:57:22 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@
 
 package org.opencms.synchronize;
 
+import org.opencms.db.CmsDbIoException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.44 $ $Date: 2005/05/09 12:38:29 $
+ * @version $Revision: 1.45 $ $Date: 2005/05/19 08:57:22 $
  */
 public class CmsSynchronize {
 
@@ -769,7 +770,7 @@ public class CmsSynchronize {
                 pOut.println(sync.toString());
             }
         } catch (IOException e) {
-            throw new CmsException(e.getMessage());
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_IO_WRITE_SYNCLIST_0), e); 
         } finally {
             // close all streams that were used
             try {

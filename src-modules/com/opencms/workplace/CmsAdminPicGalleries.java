@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Enumeration;
@@ -51,7 +52,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -289,7 +290,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                                                 getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));
                                         }
                                     } catch(Exception ex) {
-                                        throw new CmsException(
+                                        throw new CmsLegacyException(
                                             "Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
                                             + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), ex);
                                     }
@@ -336,7 +337,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                                 CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendRedirect(lasturl);
                             }
                             catch(Exception ex) {
-                                throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() +
+                                throw new CmsLegacyException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() +
                                         lasturl, ex);
                             }
                             return null;

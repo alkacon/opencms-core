@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2005/05/17 13:47:27 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/19 08:57:24 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 
 import com.opencms.core.I_CmsResponse;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsCacheDirectives;
 
@@ -97,7 +98,7 @@ public class CmsUri {
         A_CmsElement elem = elementCache.getElementLocator().get(cms, m_startingElement, parameters);
 
         if(elem == null){
-            throw new CmsException("Couldn't create start element for this uri, have a look at the log file for details.");
+            throw new CmsLegacyException("Couldn't create start element for this uri, have a look at the log file for details.");
         }
         // put the elementdefinition infos in the parameter
         try {
@@ -140,7 +141,7 @@ public class CmsUri {
                                         cms, new CmsElementDescriptor(currentDef.getClassName(),
                                         currentDef.getTemplateName()), parameters);
                 if(currentEle == null){
-                    throw new CmsException("Couldn't create element '"+name+"', have a look at the log file for details.");
+                    throw new CmsLegacyException("Couldn't create element '"+name+"', have a look at the log file for details.");
                 }
                 currentEle.checkProxySettings(cms, proxySettings, parameters);
             }

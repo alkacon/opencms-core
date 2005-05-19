@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsXmlPageTemplate.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 08:57:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  *
  * @author  Carsten Weinholz
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -94,11 +94,11 @@ public class CmsXmlPageTemplate extends CmsDumpTemplate {
             s = loader.dump(cms, file, elementName, locale, null, null);
         } catch (java.lang.ClassCastException e) {
             s = null;
-            throw new CmsException("[CmsXmlPageTemplate] " + filename + " is not a xml page");
+            throw new CmsLegacyException("[CmsXmlPageTemplate] " + filename + " is not a xml page");
         } catch (org.opencms.main.CmsException e) {
             s = null;
             // File might not exist or no read permissions
-            throw new CmsException("[CmsXmlPageTemplate] Error while reading xml page " + filename + "\n" + e, e);
+            throw new CmsLegacyException("[CmsXmlPageTemplate] Error while reading xml page " + filename + "\n" + e, e);
         } catch (Exception e) {
             s = null;
             String errorMessage = "[CmsXmlPageTemplate] Error while loading xml page file " + filename + ": " + e;

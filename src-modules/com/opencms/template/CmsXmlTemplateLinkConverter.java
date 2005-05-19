@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsXmlTemplateLinkConverter.java,v $
- * Date   : $Date: 2005/05/17 13:47:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 08:57:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import com.opencms.htmlconverter.CmsHtmlConverter;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.net.URL;
@@ -48,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * This class is mostly required for database imports of OpenCms versions &lt; 5.0.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * @since 5.3.2
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -123,7 +124,7 @@ public final class CmsXmlTemplateLinkConverter {
             // check errors...
             if (converter.hasErrors(body)) {
                 String errors = converter.showErrors(body);
-                throw new CmsException(errors);
+                throw new CmsLegacyException(errors);
             }
             // configure the converter
             converter.setConverterConfString(m_converterConfiguration);
@@ -134,7 +135,7 @@ public final class CmsXmlTemplateLinkConverter {
             body = converter.convertHTML(body);
         } catch (Exception e) {
             e.printStackTrace(System.err);
-            throw new CmsException("[LinkSubstitution] can't convert the editor content:" + e.toString());
+            throw new CmsLegacyException("[LinkSubstitution] can't convert the editor content:" + e.toString());
         }
         // remove the preparetags
         int startIndex = body.indexOf("<body");
@@ -171,7 +172,7 @@ public final class CmsXmlTemplateLinkConverter {
         try {
             if (converter.hasErrors(content)) {
                 String errors = converter.showErrors(content);
-                throw new CmsException(errors);
+                throw new CmsLegacyException(errors);
             }
             converter.setConverterConfString(m_converterConfiguration);
             // get parameter to create the url object of the edited file
@@ -184,7 +185,7 @@ public final class CmsXmlTemplateLinkConverter {
             converter.setOriginalUrl(urltool);
             retValue = converter.convertHTML(content);
         } catch (Exception e) {
-            throw new CmsException("[LinkSubstitution] can't convert the editor content:" + e.toString());
+            throw new CmsLegacyException("[LinkSubstitution] can't convert the editor content:" + e.toString());
         }
         return retValue;
     }

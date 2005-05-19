@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -41,6 +40,7 @@ import org.opencms.workplace.threads.CmsDatabaseImportThread;
 import org.opencms.workplace.threads.CmsModuleReplaceThread;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -49,7 +49,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -190,7 +189,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 s.write(filecontent);
                 s.close();
             } catch (Exception e) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage());
+                throw new CmsLegacyException("[" + this.getClass().getName() + "] " + e.getMessage());
             }
             session.removeValue(C_MODULE_NAV);
             templateSelector = importModule(cms, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + I_CmsConstants.C_MODULE_PATH + filename));

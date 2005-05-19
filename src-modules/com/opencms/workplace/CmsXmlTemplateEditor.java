@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsTemplateClassManager;
@@ -67,7 +68,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/19 08:57:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -258,10 +259,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         try{
             tempProject = OpenCms.getWorkplaceManager().getTempFileProjectId();
         }catch(Exception e){
-            throw new CmsException("Can not read projectId of tempfileproject for creating temporary file for editing! "+e.toString());
+            throw new CmsLegacyException("Can not read projectId of tempfileproject for creating temporary file for editing! "+e.toString());
         }
         if(tempProject == 0){
-            throw new CmsException("Can not create temporary file for editing!");
+            throw new CmsLegacyException("Can not create temporary file for editing!");
         }
         int curProject = cms.getRequestContext().currentProject().getId();
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
@@ -47,7 +48,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -142,7 +143,7 @@ public class CmsUnlock extends CmsWorkplaceDefault {
                     CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendRedirect(lasturl);
                 }
             } catch (Exception e) {
-                throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
+                throw new CmsLegacyException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
                         + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), e);
             }
             return null;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/19 08:57:23 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:32 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/19 08:57:23 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -922,7 +922,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                 removeData(C_EDIT_TEMPLATE +"."+oldName);
             }
         }else {
-            throw new CmsException("Section already exists: " + newName, CmsException.C_BAD_NAME);
+            throw new CmsLegacyException("Section already exists: " + newName, CmsLegacyException.C_BAD_NAME);
         }
     }
     /* parameters search and replace are ignored.*/
@@ -1049,7 +1049,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         try{
             copyOfContent = CmsXmlTemplateLinkConverter.convertFromEditor(cms, copyOfContent, filePath, relativeRoot);
         }catch(CmsException e){
-            throw new CmsException("["+this.getClass().getName()+"] cant parse the content:", e);
+            throw new CmsLegacyException("["+this.getClass().getName()+"] cant parse the content:", e);
         }
         int startIndex = copyOfContent.indexOf("<body");
         startIndex = copyOfContent.indexOf(">", startIndex + 1) + 1;

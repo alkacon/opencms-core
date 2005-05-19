@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2005/05/17 13:47:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 08:57:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package com.opencms.defaults;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.mail.CmsHtmlMail;
 import org.opencms.mail.CmsMailTransport;
 import org.opencms.mail.CmsSimpleMail;
@@ -42,6 +41,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.I_CmsScheduledJob;
 
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsRegistry;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
@@ -71,8 +71,6 @@ import java.util.Vector;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-
-import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * This class contains the functionaility for checking the validity of external links.<p>
@@ -162,7 +160,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
             try {
                 mail.setFrom(mailFrom);
             } catch (MessagingException e) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, invalid recipient email address.", CmsException.C_BAD_NAME);
+                throw new CmsLegacyException("[" + this.getClass().getName() + "] " + "Error in sending email, invalid recipient email address.", CmsLegacyException.C_BAD_NAME);
             }
             mail.setSubject(mailSubject);
             mail.setHtmlMsg(mailContent);
@@ -182,7 +180,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
             try {
                 mail.setFrom(mailFrom);
             } catch (MessagingException e) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email, invalid recipient email address.", CmsException.C_BAD_NAME);
+                throw new CmsLegacyException("[" + this.getClass().getName() + "] " + "Error in sending email, invalid recipient email address.", CmsLegacyException.C_BAD_NAME);
             }
             mail.setSubject(mailSubject);
             mail.setMsg(mailContent);
@@ -239,7 +237,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
             writer.write(content);
             writer.close();
         } catch (IOException e) {
-            throw new CmsException("Cannot write output file.", e);
+            throw new CmsLegacyException("Cannot write output file.", e);
         }
     }
 
@@ -496,7 +494,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
             oout.close();
             oout.flush();                                                           
         } catch (IOException e) {
-            throw new CmsException("Error writing serialized hashtable. "+e);
+            throw new CmsLegacyException("Error writing serialized hashtable. "+e);
         } finally {
             try {
                 if (fOut != null) {
@@ -539,7 +537,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
             result = (Hashtable) s;
         }
         } catch (Exception e) {  
-            throw new CmsException("Error writing serialized hashtable. "+e);
+            throw new CmsLegacyException("Error writing serialized hashtable. "+e);
         } finally {
         try {
             if (fIn != null) {

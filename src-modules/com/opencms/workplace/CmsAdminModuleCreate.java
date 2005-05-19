@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -265,7 +266,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                     try {
                         CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceAdministrationPath() + "module/index.html");
                     }catch(Exception e) {
-                        throw new CmsException("Redirect fails :system/workplace/administration/module/index.html", e);
+                        throw new CmsLegacyException("Redirect fails :system/workplace/administration/module/index.html", e);
                     }
                     return null;
                 }

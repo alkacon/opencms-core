@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/04/28 14:13:52 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2005/05/19 08:57:21 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  * 
  * @since 5.3.5
  */
@@ -2564,7 +2564,7 @@ public class OpenCmsTestCase extends TestCase {
         if (storage != null) {
             m_currentResourceStrorage = storage;
         } else {
-            throw new CmsException("Resource storage " + name + " not found");
+            throw new CmsException(Messages.get().container(Messages.ERR_RESOURCE_STORAGE_NOT_FOUND_0));
         }
     }
 

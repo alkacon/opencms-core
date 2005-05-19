@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2005/05/19 07:15:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 08:57:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,25 +30,23 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Vector;
 
 /**
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -133,7 +131,7 @@ public class CmsChtype extends CmsWorkplaceDefault {
                     CmsXmlTemplateLoader.getResponse(requestContext).sendRedirect(lasturl);
                 }
             } catch (Exception e) {
-                throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
+                throw new CmsLegacyException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
                         + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), e);
             }
             return null;

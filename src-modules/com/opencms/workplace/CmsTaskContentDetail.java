@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
@@ -41,6 +40,7 @@ import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskService;
 
 import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/19 08:57:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -568,7 +568,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                 session.removeValue("lasturl");
             }
             catch(IOException exc) {
-                throw new CmsException("Could not redirect to " + lastUrl, exc);
+                throw new CmsLegacyException("Could not redirect to " + lastUrl, exc);
             }
             return null;
         }

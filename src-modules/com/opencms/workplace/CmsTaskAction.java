@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.workflow.CmsTaskLog;
 import org.opencms.workflow.CmsTaskService;
 import org.opencms.workplace.I_CmsWpConstants;
 
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/19 08:57:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -263,17 +264,17 @@ public class CmsTaskAction implements I_CmsWpConstants {
                 continue;
             }
             if (to[i].getEmail().indexOf("@") == -1 || to[i].getEmail().indexOf(".") == -1) {
-                throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, Invalid recipient email address: " + to[i].getEmail(), CmsException.C_BAD_NAME);
+                throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, Invalid recipient email address: " + to[i].getEmail(), CmsLegacyException.C_BAD_NAME);
             }
             try {
                 v.addElement(new InternetAddress(to[i].getEmail()));
             } catch (AddressException e) {
-                throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, Invalid recipient email address: " + to[i].getEmail(), CmsException.C_BAD_NAME);
+                throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, Invalid recipient email address: " + to[i].getEmail(), CmsLegacyException.C_BAD_NAME);
             }
         }
         
         if (v.size() == 0) {
-            throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
+            throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsLegacyException.C_BAD_NAME);
         }
         return createMail(from, v, subject, content, false);
     }
@@ -297,14 +298,14 @@ public class CmsTaskAction implements I_CmsWpConstants {
             fromAddress = OpenCms.getSystemInfo().getMailSettings().getMailFromDefault();
         }
         if (fromAddress == null || fromAddress.equals("")) {            
-            throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown sender email address.", CmsException.C_BAD_NAME);
+            throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown sender email address.", CmsLegacyException.C_BAD_NAME);
         }
         if (fromAddress.indexOf("@") == -1 || fromAddress.indexOf(".") == -1) {
-            throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown sender email address: " + fromAddress, CmsException.C_BAD_NAME);
+            throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown sender email address: " + fromAddress, CmsLegacyException.C_BAD_NAME);
         }
         
         if (to.size() == 0) {
-            throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
+            throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsLegacyException.C_BAD_NAME);
         } else if (createAddresses) {
             List receivers = new ArrayList(to.size());
             for (int i=0; i<to.size(); i++) {
@@ -312,7 +313,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
                 try {
                     receivers.add(new InternetAddress(rec.getEmail()));
                 } catch (AddressException e) {
-                    throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, invalid recipient email address.", CmsException.C_BAD_NAME);
+                    throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, invalid recipient email address.", CmsLegacyException.C_BAD_NAME);
                 }
             }
             mail.setTo(receivers);
@@ -322,7 +323,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         try {
             mail.setFrom(fromAddress);
         } catch (MessagingException e) {
-            throw new CmsException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, invalid sender email address.", CmsException.C_BAD_NAME);
+            throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, invalid sender email address.", CmsLegacyException.C_BAD_NAME);
         }
         mail.setSubject(subject == null ? "" : subject);
         mail.setMsg(content == null ? "" : content);

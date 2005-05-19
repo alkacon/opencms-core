@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2005/05/18 08:41:34 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/05/19 08:57:24 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -210,13 +210,13 @@ public class CmsMethodElement extends A_CmsElement {
      * CmsException of the given type.
      * @param errorMessage String with the error message to be printed.
      * @param type Type of the exception to be thrown.
-     * @throws CmsException
+     * @throws CmsLegacyException
      */
-    protected void throwException(String errorMessage, int type) throws CmsException {
+    protected void throwException(String errorMessage, int type) throws CmsLegacyException {
         if(OpenCms.getLog(this).isErrorEnabled() ) {
             OpenCms.getLog(this).error(errorMessage);
         }
-        throw new CmsException(errorMessage, type);
+        throw new CmsLegacyException(errorMessage, type);
     }
 
 }

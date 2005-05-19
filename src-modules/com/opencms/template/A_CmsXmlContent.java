@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2005/05/17 16:13:36 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 08:57:23 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:23 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -1008,7 +1008,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
     public void init(CmsObject cms, String filename) throws CmsException {
 
         if (!filename.startsWith("/")) {
-            throw new CmsException("A relative path has entered the A_CmsXmlContent class. filename=" + filename + "");
+            throw new CmsLegacyException("A relative path has entered the A_CmsXmlContent class. filename=" + filename + "");
         }
         String currentProject = cms.getRequestContext().currentProject().getName();
         Document parsedContent = null;
@@ -1941,13 +1941,13 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * CmsException of the given type.
      * @param errorMessage String with the error message to be printed.
      * @param type Type of the exception to be thrown.
-     * @throws CmsException if something goes wrong
+     * @throws CmsLegacyException if something goes wrong
      */
-    protected void throwException(String errorMessage, int type) throws CmsException {
+    protected void throwException(String errorMessage, int type) throws CmsLegacyException {
         if (OpenCms.getLog(this).isErrorEnabled()) {
             OpenCms.getLog(this).error(errorMessage);
         }
-        throw new CmsException(errorMessage, type);
+        throw new CmsLegacyException(errorMessage, type);
     }
 
     /**

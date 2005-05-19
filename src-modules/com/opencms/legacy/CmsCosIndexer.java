@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2005/05/17 13:47:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 08:57:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:30 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/19 08:57:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -275,7 +275,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
             return null;
             
         } catch (Exception exc) {
-            throw new CmsException ("Instanciation of index resource failed", exc);
+            throw new CmsLegacyException ("Instanciation of index resource failed", exc);
         }
     }
     

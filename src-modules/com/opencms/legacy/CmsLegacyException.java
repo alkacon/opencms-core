@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyException.java,v $
- * Date   : $Date: 2005/05/18 12:48:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/19 08:57:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package com.opencms.legacy;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsThrowable;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -49,7 +50,7 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsLegacyException extends CmsException implements I_CmsThrowable {
 
@@ -269,6 +270,9 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
 
     /** Stores the error code of the CmsLegacyException. */
     protected int m_type;
+    
+    /** Stores the error message of the CmsLegacyException.  */
+    protected String m_messageString;
 
     /**
      * Creates a simple CmsLegacyException.<p>
@@ -331,7 +335,8 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      */
     public CmsLegacyException(String message) {
 
-        super(message);
+        super();
+        m_messageString = message;
     }
 
     /**
@@ -342,7 +347,8 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      */
     public CmsLegacyException(String message, int type) {
 
-        super(message);
+        super();
+        m_messageString = message;
         m_type = type;
     }
 
@@ -356,7 +362,9 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      */
     public CmsLegacyException(String message, int type, Throwable cause) {
 
-        super(message, cause);
+        super();
+        initCause(cause);
+        m_messageString = message;
         m_type = type;
     }
 
@@ -369,7 +377,9 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      */
     public CmsLegacyException(String message, Throwable cause) {
 
-        super(message, cause);
+        super();
+        initCause(cause);
+        m_messageString = message;
     }
     
     /**
@@ -433,7 +443,10 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
         }
 
         StringBuffer result = new StringBuffer(256);
-        result.append(super.getMessage());
+        if (CmsStringUtil.isNotEmpty(m_messageString)) {
+            result.append(m_messageString);
+        }    
+        
 
         if (getType() > 0) {
             result.append(' ');

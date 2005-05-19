@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2005/05/17 16:13:36 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/19 08:57:23 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:23 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -1301,7 +1301,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                     if(OpenCms.getLog(this).isErrorEnabled() ) {
                         OpenCms.getLog(this).error(errorMessage, e);
                     }
-                    throw new CmsException(errorMessage);
+                    throw new CmsLegacyException(errorMessage);
                 }
             }
         }
@@ -1439,7 +1439,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                         throw (CmsException)e;
                     }
                     else {
-                        throw new CmsException("Error while executing getContent for subtemplate \"" + tagcontent + "\". " + e);
+                        throw new CmsLegacyException("Error while executing getContent for subtemplate \"" + tagcontent + "\". " + e);
                     }
                 }
             }
@@ -1472,13 +1472,13 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * CmsException of the given type.
      * @param errorMessage String with the error message to be printed.
      * @param type Type of the exception to be thrown.
-     * @throws CmsException
+     * @throws CmsLegacyException
      */
-    protected void throwException(String errorMessage, int type) throws CmsException {
+    protected void throwException(String errorMessage, int type) throws CmsLegacyException {
         if(OpenCms.getLog(this).isErrorEnabled() ) {
             OpenCms.getLog(this).error(errorMessage);
         }
-        throw new CmsException(errorMessage, type);
+        throw new CmsLegacyException(errorMessage, type);
     }
 
     /**

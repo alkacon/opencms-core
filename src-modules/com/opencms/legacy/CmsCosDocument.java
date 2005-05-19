@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2005/05/17 13:47:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 08:57:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:30 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/19 08:57:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
@@ -160,7 +160,7 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
         try {
             return C_DOCUMENT_KEY_PREFIX + ((CmsMasterContent)Class.forName(resourceType).newInstance()).getSubId();
         } catch (Exception exc) {
-            throw new CmsException("Instanciation of resource type class " + resourceType + " failed.", exc);
+            throw new CmsLegacyException("Instanciation of resource type class " + resourceType + " failed.", exc);
         }
     }
 
@@ -182,7 +182,7 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
                 keys.add(C_DOCUMENT_KEY_PREFIX + id);
             }
         } catch (Exception exc) {
-            throw new CmsException("Creation of document keys failed.", exc);
+            throw new CmsLegacyException("Creation of document keys failed.", exc);
         }
 
         return keys;

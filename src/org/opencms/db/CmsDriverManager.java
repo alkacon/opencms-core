@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/19 07:15:14 $
- * Version: $Revision: 1.501 $
+ * Date   : $Date: 2005/05/19 08:57:24 $
+ * Version: $Revision: 1.502 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.501 $
+ * @version $Revision: 1.502 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6699,8 +6699,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 && (c != '$')
                 && (c != '@')) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_USERNAME_ILLEGAL_CHARACTERS_1,
-                    username));
+                    Messages.ERR_USERNAME_ILLEGAL_CHARACTERS_1, username));
             }
         }
     }
@@ -7255,19 +7254,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Checks if characters in a String are allowed for filenames.<p>
      *
      * @param taskname String to check
-     * @throws CmsException C_BAD_NAME if the check fails
+     * @throws CmsIllegalArgumentException the taskname is not valid
      */
-    protected void validTaskname(String taskname) throws CmsException {
+    protected void validTaskname(String taskname) throws CmsIllegalArgumentException {
 
-        if (taskname == null) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + taskname, CmsException.C_BAD_NAME);
+        if (taskname == null || taskname.trim().length() == 0) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_TASKNAME_0));
         }
 
         int l = taskname.length();
-
-        if (l == 0) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + taskname, CmsException.C_BAD_NAME);
-        }
 
         for (int i = 0; i < l; i++) {
             char c = taskname.charAt(i);
@@ -7289,7 +7284,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 && (c != '#')
                 && (c != '&')
                 && (c != ';')) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + taskname, CmsException.C_BAD_NAME);
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_TASKNAME_ILLEGAL_CHARACTERS_1, taskname));
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2005/04/29 15:54:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 08:57:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NOT_FOUND_ELEM_XMLTEMPLATE_0 = "ERR_NOT_FOUND_ELEM_XMLTEMPLATE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_BODY_CONTENT_NOT_FOUND_0 = "ERR_BODY_CONTENT_NOT_FOUND_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1 = "LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1";

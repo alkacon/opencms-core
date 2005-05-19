@@ -288,6 +288,7 @@
 	    	                                    <var name="package.dir" value="${package.dir}@{package}/" />
 	                                        </sequential>
 	                                    </for>
+	                                    <echo message="input libs: ${opencms.core.lib}"/>
 	                                    <javac 
 	                                        srcdir="${module.input.src.shared}"
 	                                        destdir="${module.output.classes}"
@@ -300,7 +301,10 @@
 	                                                <include name="**/*.jar"/>
 	                                            </fileset>
 	                                            <fileset dir="${opencms.core.lib}">
-	                                                <include name="**/*.jar"/>
+	                                                <include name="opencms.jar"/>
+	                                            </fileset>
+	                                            <fileset dir="${opencms.core.lib}">
+	                                                <include name="opencms-legacy.jar"/>
 	                                            </fileset>
 	                                            <pathelement path="${module.dependencies.path}"/>
 	                                            <pathelement path="${module.libs.path}"/>

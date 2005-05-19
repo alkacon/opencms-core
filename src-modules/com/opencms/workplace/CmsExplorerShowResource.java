@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsExplorerShowResource.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/19 08:57:22 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
+import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class  CmsExplorerShowResource extends CmsWorkplaceDefault {
         try {
             CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendRedirect(url);
         } catch(IOException exc) {
-            throw new CmsException(exc.getMessage(), exc);
+            throw new CmsLegacyException(exc.getMessage(), exc);
         }
         return "".getBytes();
     }
