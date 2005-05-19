@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/19 09:54:29 $
- * Version: $Revision: 1.503 $
+ * Date   : $Date: 2005/05/19 15:24:33 $
+ * Version: $Revision: 1.504 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.503 $
+ * @version $Revision: 1.504 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5968,17 +5968,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
 
             if (user == null) {
-                throw new CmsDataAccessException("["
-                    + getClass().getName()
-                    + "] Error resetting password for user '"
-                    + username
-                    + "'");
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_RESET_PASSWORD_1, username));
             }
 
             m_userDriver.writePassword(dbc, username, user.getType(), oldPassword, newPassword);
 
-        } else {
-            throw new CmsDataAccessException("[" + getClass().getName() + "] Missing old/new password");
+        } else if (CmsStringUtil.isEmpty(oldPassword)) {
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_PWD_OLD_MISSING_0));
+        } else if (CmsStringUtil.isEmpty(newPassword)) {
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_PWD_NEW_MISSING_0));
         }
     }
 

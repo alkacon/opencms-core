@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2005/05/19 09:54:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/19 15:24:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
@@ -107,7 +107,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         
         if (! OpenCms.getResourceManager().getResourceType(newType).isFolder()) {
             // it is not possible to change the type of a folder to a file type
-            throw new CmsDataNotImplementedException(Messages.get().key(Messages.ERR_CHTYPE_FOLDER_1, cms.getSitePath(filename)));
+            throw new CmsDataNotImplementedException(Messages.get().container(Messages.ERR_CHTYPE_FOLDER_1, cms.getSitePath(filename)));
         }
         super.chtype(cms, securityManager, filename, newType);         
     }
@@ -288,7 +288,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         if (type != getTypeId()) {
             // it is not possible to replace a folder with a different type
-            throw new CmsDataNotImplementedException(Messages.get().key(Messages.ERR_REPLACE_RESOURCE_FOLDER_1, cms.getSitePath(resource)));
+            throw new CmsDataNotImplementedException(Messages.get().container(Messages.ERR_REPLACE_RESOURCE_FOLDER_1, cms.getSitePath(resource)));
         }
         // properties of a folder can be replaced, content is ignored
         super.replaceResource(cms, securityManager, resource, getTypeId(), null, properties);
@@ -305,7 +305,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     ) throws CmsException {
 
         // it is not possible to restore a folder from the backup
-        throw new CmsDataNotImplementedException(Messages.get().key(Messages.ERR_RESTORE_FOLDERS_1, this.getClass().getName()));
+        throw new CmsDataNotImplementedException(Messages.get().container(Messages.ERR_RESTORE_FOLDERS_1, this.getClass().getName()));
     }
 
     /**

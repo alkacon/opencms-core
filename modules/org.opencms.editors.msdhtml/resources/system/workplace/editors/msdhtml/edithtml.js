@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.msdhtml/resources/system/workplace/editors/msdhtml/Attic/edithtml.js,v $
- * Date   : $Date: 2005/05/19 09:29:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 15:24:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -708,6 +708,7 @@ function doEditHTML(para) {
 		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=tablegallery", "TableBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
+		break;
 	default:
 		alert("Sorry, the requested function " + para + " is not implemented.");
 	}

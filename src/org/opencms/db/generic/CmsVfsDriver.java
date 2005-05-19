@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.241 $
+ * Date   : $Date: 2005/05/19 15:24:34 $
+ * Version: $Revision: 1.242 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.241 $ 
+ * @version $Revision: 1.242 $ 
  * @since 5.1
  */
 public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
@@ -701,11 +701,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             if (internalCountProperties(dbc, metadef, I_CmsConstants.C_PROJECT_ONLINE_ID) != 0
                 || internalCountProperties(dbc, metadef, Integer.MAX_VALUE) != 0) {
 
-                throw new CmsDataAccessException("["
-                    + this.getClass().getName()
-                    + "] "
-                    + metadef.getName()
-                    + "could not be deleted because property is attached to resources");
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_DELETE_USED_PROPERTY_1, metadef.getName()));
             }
 
             conn = m_sqlManager.getConnection(dbc);

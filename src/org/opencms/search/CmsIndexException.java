@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexException.java,v $
- * Date   : $Date: 2005/05/11 08:32:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/19 15:24:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,31 +41,10 @@ import org.opencms.main.CmsException;
  * in the <code>org.opencms.search</code> package.
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2005/05/11 08:32:42 $
+ * @version $Revision: 1.9 $ $Date: 2005/05/19 15:24:34 $
  * @since 5.3.1
  */
 public class CmsIndexException extends CmsException {
-
-    /**
-     * Constructs a CmsIndexException with the specified detail message.<p>
-     * 
-     * @param message the detail message
-     */
-    public CmsIndexException(String message) {
-
-        super(message, 0);
-    }
-
-    /**
-     * Constructs a CmsIndexException with the specified detail message and type.<p>
-     * 
-     * @param message the detail message
-     * @param type the type
-     */
-    public CmsIndexException(String message, int type) {
-
-        super(message, type);
-    }
 
     /**
      * Constructs a CmsIndexException with the specified detail message
