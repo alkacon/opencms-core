@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/04/26 13:01:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 6.0 alpha 3
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
@@ -85,8 +85,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public static final String[] C_VALUE_NAMES_ARRAY_OPENCMS = {"uri", "filename", "folder", "default.encoding"};
 
     /** The "magic" commands wrapped in a List. */
-    public static final List C_VALUE_NAMES_OPENCMS = Collections.unmodifiableList(Arrays
-        .asList(C_VALUE_NAMES_ARRAY_OPENCMS));
+    public static final List C_VALUE_NAMES_OPENCMS = Collections.unmodifiableList(Arrays.asList(C_VALUE_NAMES_ARRAY_OPENCMS));
 
     /** Key used to specify the current time as macro value. */
     public static final String KEY_CURRENT_TIME = "currenttime";
@@ -205,6 +204,31 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public static CmsMacroResolver newInstance() {
 
         return new CmsMacroResolver();
+    }
+
+    /**
+     * Resolves the macros in the given input using the provided parameters.<p>
+     * 
+     * A macro in the form <code>${key}</code> in the content is replaced with it's assigned value
+     * returned by the <code>{@link I_CmsMacroResolver#getMacroValue(String)}</code> method of the given 
+     * <code>{@link I_CmsMacroResolver}</code> instance.<p>
+     * 
+     * If a macro is found that can not be mapped to a value by the given macro resolver,
+     * it is left untoched in the input.<p>
+     * 
+     * @param input the input in which to resolve the macros
+     * @param cms the OpenCms user context to use when resolving macros
+     * @param messages the message resource bundle to use when resolving macros
+     * 
+     * @return the input with the macros resolved
+     */
+    public static String resolveMacros(String input, CmsObject cms, CmsMessages messages) {
+
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.m_cms = cms;
+        resolver.m_messages = messages;
+        resolver.m_keepEmptyMacors = true;
+        return resolver.resolveMacros(input);
     }
 
     /**
@@ -360,7 +384,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                     }
                 } catch (CmsException e) {
                     if (LOG.isWarnEnabled()) {
-                        CmsMessageContainer message = Messages.get().container(Messages.LOG_PROPERTY_READING_FAILED_2, macro, controller.getCurrentRequest().getElementUri());
+                        CmsMessageContainer message = Messages.get().container(
+                            Messages.LOG_PROPERTY_READING_FAILED_2,
+                            macro,
+                            controller.getCurrentRequest().getElementUri());
                         LOG.warn(message.key(), e);
                     }
                 }
@@ -379,7 +406,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                     }
                 } catch (CmsException e) {
                     if (LOG.isWarnEnabled()) {
-                        CmsMessageContainer message = Messages.get().container(Messages.LOG_PROPERTY_READING_FAILED_2, macro, m_cms.getRequestContext().getUri());
+                        CmsMessageContainer message = Messages.get().container(
+                            Messages.LOG_PROPERTY_READING_FAILED_2,
+                            macro,
+                            m_cms.getRequestContext().getUri());
                         LOG.warn(message.key(), e);
                     }
                 }

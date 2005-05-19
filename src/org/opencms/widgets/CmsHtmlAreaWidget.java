@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsHtmlAreaWidget.java,v $
- * Date   : $Date: 2005/05/18 12:31:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,17 +42,27 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public class CmsHtmlAreaWidget extends A_CmsWidget {
 
     /**
-     * Creates a new editor widget.<p>
+     * Creates a new html area editor widget.<p>
      */
     public CmsHtmlAreaWidget() {
 
         // empty constructor is required for class registration
+    }
+
+    /**
+     * Creates a new html area editor widget with the given configuration.<p>
+     * 
+     * @param configuration the configuration to use
+     */
+    public CmsHtmlAreaWidget(String configuration) {
+
+        m_configuration = configuration;
     }
 
     /**
@@ -115,6 +125,14 @@ public class CmsHtmlAreaWidget extends A_CmsWidget {
         result.append("</td>");
 
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#newInstance()
+     */
+    public I_CmsWidget newInstance() {
+
+        return new CmsHtmlAreaWidget(m_configuration);
     }
 
     /**

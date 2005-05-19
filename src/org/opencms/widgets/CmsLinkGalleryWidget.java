@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsLinkGalleryWidget.java,v $
- * Date   : $Date: 2005/05/18 12:31:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,21 +34,31 @@ package org.opencms.widgets;
 import org.opencms.util.CmsStringUtil;
 
 /**
- * Provides a widget that allows access to the available OpenCms link galleries, for use on a widget dialog.<p>
+ * Provides a widget that allows access to the available OpenCms external link galleries, for use on a widget dialog.<p>
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.3
  */
 public class CmsLinkGalleryWidget extends A_CmsGalleryWidget {
 
     /**
-     * Creates a new editor widget.<p>
+     * Creates a new external link gallery widget.<p>
      */
     public CmsLinkGalleryWidget() {
 
         // empty constructor is required for class registration
+    }
+
+    /**
+     * Creates a new external link gallery widget with the given configuration.<p>
+     * 
+     * @param configuration the configuration to use
+     */
+    public CmsLinkGalleryWidget(String configuration) {
+
+        m_configuration = configuration;
     }
 
     /**
@@ -65,6 +75,14 @@ public class CmsLinkGalleryWidget extends A_CmsGalleryWidget {
     public String getNameUpper() {
 
         return "Link";
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#newInstance()
+     */
+    public I_CmsWidget newInstance() {
+
+        return new CmsLinkGalleryWidget(m_configuration);
     }
 
     /**

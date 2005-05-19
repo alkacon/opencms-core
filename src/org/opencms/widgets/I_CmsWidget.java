@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidget.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public interface I_CmsWidget {
@@ -119,6 +119,23 @@ public interface I_CmsWidget {
      * @return a HTML &lt;div&gt; containing the help text for this widget
      */
     String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter value);
+
+    /**
+     * Creates a duplicate of this widget instance.<p>
+     * 
+     * @return a duplicate of this widget instance
+     */
+    I_CmsWidget newInstance();
+
+    /**
+     * Sets the configuration of this widget.<p>
+     * 
+     * This can be used to enable / disable certain widget features that should not always be available.
+     * It depends on the widget implementation on how this information is used.<p>
+     * 
+     * @param configuration the configuration to set
+     */
+    void setConfiguration(String configuration);
 
     /**
      * Sets the value of in the given widget parameter by reading the "right" 

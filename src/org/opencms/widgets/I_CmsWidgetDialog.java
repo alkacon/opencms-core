@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.widgets;
 
+import org.opencms.i18n.CmsMessages;
+
 import java.text.ParseException;
 import java.util.Locale;
 
@@ -40,7 +42,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.2
  */
 public interface I_CmsWidgetDialog {
@@ -106,7 +108,7 @@ public interface I_CmsWidgetDialog {
         boolean mondayFirst,
         String dateStatusFunc,
         boolean showTime);
-    
+
     /**
      * Builds an invisible horiziontal spacer with the specified width.<p>
      * 
@@ -154,17 +156,9 @@ public interface I_CmsWidgetDialog {
     Locale getLocale();
 
     /**
-     * Returns the localized resource string for the given message key, 
-     * checking the workplace default resources and all module bundles.<p>
-     * 
-     * If the key was not found, the provided default value 
-     * is returned.<p>
-     * 
-     * @param keyName the key for the desired string 
-     * @param defaultValue the default value in case the key does not exist in the bundle
-     * @return the resource string for the given key it it exists, or the given default if not 
-     * 
-     * @see org.opencms.i18n.CmsMessages#key(String, String)
+     * Returns a messages object used to render localized keys for the widget dialog.<p>
+     *  
+     * @return a messages object used to render localized keys for the widget dialog
      */
-    String key(String keyName, String defaultValue);
+    CmsMessages getMessages();
 }

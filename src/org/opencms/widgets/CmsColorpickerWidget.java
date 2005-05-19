@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsColorpickerWidget.java,v $
- * Date   : $Date: 2005/05/18 12:31:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.types.CmsXmlColorValue;
@@ -44,17 +43,27 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.2
  */
 public class CmsColorpickerWidget extends A_CmsWidget {
 
     /**
-     * Creates a new editor widget.<p>
+     * Creates a new color picker widget.<p>
      */
     public CmsColorpickerWidget() {
 
         // empty constructor is required for class registration
+    }
+
+    /**
+     * Creates a new color picker widget with the given configuration.<p>
+     * 
+     * @param configuration the configuration to use
+     */
+    public CmsColorpickerWidget(String configuration) {
+
+        m_configuration = configuration;
     }
 
     /**
@@ -81,7 +90,7 @@ public class CmsColorpickerWidget extends A_CmsWidget {
         StringBuffer result = new StringBuffer(128);
         result.append("function initColorPicker() {\n");
         result.append("\tcolorPicker.title = \"");
-        result.append(widgetDialog.key("dialog.color.title", CmsMessages.formatUnknownKey("dialog.color.title")));
+        result.append(widgetDialog.getMessages().key("dialog.color.title"));
         result.append("\";\n");
         result.append("\tcolorPicker.url=\"");
         result.append(CmsWorkplace.getSkinUri());
@@ -129,6 +138,14 @@ public class CmsColorpickerWidget extends A_CmsWidget {
 
         result.append("</td>");
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#newInstance()
+     */
+    public I_CmsWidget newInstance() {
+
+        return new CmsColorpickerWidget(m_configuration);
     }
 
     /**

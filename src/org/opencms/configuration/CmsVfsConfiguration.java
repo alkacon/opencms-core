@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/05/19 16:05:45 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -521,7 +521,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         it = m_xmlContentTypeManager.getRegisteredSchemaTypes().iterator();
         while (it.hasNext()) {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)it.next();
-            I_CmsWidget widget = m_xmlContentTypeManager.getDefaultWidget(type.getTypeName());
+            I_CmsWidget widget = m_xmlContentTypeManager.getWidgetDefault(type.getTypeName());
             xmlSchemaTypesElement.addElement(N_SCHEMATYPE)
                 .addAttribute(A_CLASS, type.getClass().getName())
                 .addAttribute(A_DEFAULTWIDGET, widget.getClass().getName());

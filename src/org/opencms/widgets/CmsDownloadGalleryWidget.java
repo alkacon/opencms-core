@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDownloadGalleryWidget.java,v $
- * Date   : $Date: 2005/05/18 12:31:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,17 +38,27 @@ import org.opencms.util.CmsStringUtil;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.3
  */
 public class CmsDownloadGalleryWidget extends A_CmsGalleryWidget {
 
     /**
-     * Creates a new editor widget.<p>
+     * Creates a new download gallery widget.<p>
      */
     public CmsDownloadGalleryWidget() {
 
         // empty constructor is required for class registration
+    }
+
+    /**
+     * Creates a new download gallery widget with the given configuration.<p>
+     * 
+     * @param configuration the configuration to use
+     */
+    public CmsDownloadGalleryWidget(String configuration) {
+
+        m_configuration = configuration;
     }
 
     /**
@@ -65,6 +75,14 @@ public class CmsDownloadGalleryWidget extends A_CmsGalleryWidget {
     public String getNameUpper() {
 
         return "Download";
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#newInstance()
+     */
+    public I_CmsWidget newInstance() {
+
+        return new CmsDownloadGalleryWidget(m_configuration);
     }
 
     /**

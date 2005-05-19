@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,10 +62,13 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
+
+    /** Constant for the "configuration" appinfo attribute name. */
+    public static final String APPINFO_ATTR_CONFIGURATION = "configuration";
 
     /** Constant for the "element" appinfo attribute name. */
     public static final String APPINFO_ATTR_ELEMENT = "element";
@@ -135,6 +138,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     protected static final String MESSAGE_VALIDATION_DEFAULT_WARNING = "${validation.path}: "
         + "${key.editor.xmlcontent.validation.warning|${validation.value}|[${validation.regex}]}";
 
+    /** The configuration values for the element widgets (as defined in the annotations). */
+    protected Map m_configurationValues;
+
     /** The default values for the elements (as defined in the annotations). */
     protected Map m_defaultValues;
 
@@ -171,17 +177,26 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getConfiguration(org.opencms.xml.types.I_CmsXmlSchemaType)
+     */
+    public String getConfiguration(I_CmsXmlSchemaType type) {
+
+        String elementName = type.getName();
+        return (String)m_configurationValues.get(elementName);
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefault(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.util.Locale)
      */
     public String getDefault(CmsObject cms, I_CmsXmlSchemaType type, Locale locale) {
-        
+
         String elementName = type.getName();
         String defaultValue = (String)m_defaultValues.get(elementName);
         if (defaultValue == null) {
             // use the "getDefault" method of the given value, will use value from standard XML schema
             defaultValue = type.getDefault(locale);
-        }        
-        if (defaultValue != null) {            
+        }
+        if (defaultValue != null) {
             // return the default value with processed macros
             CmsMacroResolver resolver = CmsMacroResolver.newInstance()
                 .setCmsObject(cms)
@@ -189,7 +204,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             return resolver.resolveMacros(defaultValue);
         }
         // no default value is available
-        return null; 
+        return null;
     }
 
     /**
@@ -231,12 +246,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         // try the specific widget settings first
         I_CmsWidget result = (I_CmsWidget)m_elementWidgets.get(value.getName());
-        if (result != null) {
-            return result;
+        if (result == null) {
+            // use default widget mappings
+            result = OpenCms.getXmlContentTypeManager().getWidgetDefault(value.getTypeName());
         }
+        // set the configuration value for this widget
+        result.setConfiguration(getConfiguration(value));
 
-        // use default widget mappings
-        return OpenCms.getXmlContentTypeManager().getDefaultWidget(value.getTypeName());
+        return result;
     }
 
     /**
@@ -395,6 +412,27 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * Adds a configuration value for an element widget.<p>
+     * 
+     * @param contentDefinition the XML content definition this XML content handler belongs to
+     * @param elementName the element name to map
+     * @param configurationValue the configuration value to use
+     * 
+     * @throws CmsXmlException in case an unknown element name is used
+     */
+    protected void addConfiguration(
+        CmsXmlContentDefinition contentDefinition,
+        String elementName,
+        String configurationValue) throws CmsXmlException {
+
+        if (contentDefinition.getSchemaType(elementName) == null) {
+            throw new CmsXmlException("Unregistered XML content type " + elementName + " used for configuration value");
+        }
+
+        m_configurationValues.put(elementName, configurationValue);
+    }
+
+    /**
      * Adds a default value for an element.<p>
      * 
      * @param contentDefinition the XML content definition this XML content handler belongs to
@@ -468,7 +506,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * Adds a GUI widget for a soecified element.<p> 
+     * Adds a GUI widget for a specified element.<p> 
      * 
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to map
@@ -557,6 +595,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_validationWarningRules = new HashMap();
         m_validationWarningMessages = new HashMap();
         m_defaultValues = new HashMap();
+        m_configurationValues = new HashMap();
         m_previewLocation = null;
     }
 
@@ -567,7 +606,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * sophisticated logic for generating the defaults then just using the XML schema "default"
      * attribute.<p> 
      * 
-     * @param root the "defaultvalues" element from the appinfo node of the XML content definition
+     * @param root the "defaults" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the validation rules belong to
      * @throws CmsXmlException if something goes wrong
      */
@@ -609,9 +648,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             Element element = (Element)i.next();
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
             String widgetClass = element.attributeValue(APPINFO_ATTR_WIDGET);
+            String configuration = element.attributeValue(APPINFO_ATTR_CONFIGURATION);
             if ((elementName != null) && (widgetClass != null)) {
                 // add a widget mapping for the element
                 addWidget(contentDefinition, elementName, widgetClass);
+                if (configuration != null) {
+                    addConfiguration(contentDefinition, elementName, configuration);
+                }
             }
         }
     }
@@ -705,8 +748,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             String message = element.attributeValue(APPINFO_ATTR_MESSAGE);
             if ((elementName != null) && (regex != null)) {
                 // add a validation ruls for the element
-                addValidationRule(contentDefinition, elementName, regex, message, APPINFO_ATTR_TYPE_WARNING
-                    .equals(type));
+                addValidationRule(
+                    contentDefinition,
+                    elementName,
+                    regex,
+                    message,
+                    APPINFO_ATTR_TYPE_WARNING.equals(type));
             }
         }
     }

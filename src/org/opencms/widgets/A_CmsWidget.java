@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public abstract class A_CmsWidget implements I_CmsWidget {
@@ -51,6 +51,9 @@ public abstract class A_CmsWidget implements I_CmsWidget {
 
     /** Prefix for message locales. */
     static final String LABEL_PREFIX = "editor.label.";
+
+    /** The configuration options of this widget. */
+    protected String m_configuration;
 
     /**
      * Returns the localized help key for the provided widget parameter.<p>
@@ -138,7 +141,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
 
         StringBuffer result = new StringBuffer(128);
         String locKey = getHelpKey(param);
-        String locValue = widgetDialog.key(locKey, null);
+        String locValue = widgetDialog.getMessages().key(locKey, true);
         if (locValue == null) {
             // there was no help message found for this key, so return a spacer cell
             return widgetDialog.dialogHorizontalSpacer(16);
@@ -168,7 +171,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
         StringBuffer result = new StringBuffer(128);
         // calculate the key
         String locKey = getHelpKey(param);
-        String locValue = widgetDialog.key(locKey, null);
+        String locValue = widgetDialog.getMessages().key(locKey, true);
         if (locValue == null) {
             // there was no help message found for this key, so return an empty string
             return "";
@@ -194,6 +197,14 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     public int hashCode() {
 
         return getClass().getName().hashCode();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#setConfiguration(java.lang.String)
+     */
+    public void setConfiguration(String configuration) {
+
+        m_configuration = configuration;
     }
 
     /**

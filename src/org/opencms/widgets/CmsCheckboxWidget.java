@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCheckboxWidget.java,v $
- * Date   : $Date: 2005/05/19 09:35:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,17 +42,30 @@ import java.util.Map;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.2
  */
 public class CmsCheckboxWidget extends A_CmsWidget {
 
+    /** Suffix for the hidden input that contains the original value. */
+    public static final String HIDDEN_SUFFIX = ".value";
+
     /**
-     * Creates a new editor widget.<p>
+     * Creates a new checkbox widget.<p>
      */
     public CmsCheckboxWidget() {
 
         // empty constructor is required for class registration
+    }
+
+    /**
+     * Creates a new checkbox widget with the given configuration.<p>
+     * 
+     * @param configuration the configuration to use
+     */
+    public CmsCheckboxWidget(String configuration) {
+
+        m_configuration = configuration;
     }
 
     /**
@@ -81,9 +94,14 @@ public class CmsCheckboxWidget extends A_CmsWidget {
 
         return result.toString();
     }
-    
-    /** Suffix for the hidden input that contains the original value. */
-    public static final String HIDDEN_SUFFIX = ".value";
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#newInstance()
+     */
+    public I_CmsWidget newInstance() {
+
+        return new CmsCheckboxWidget(m_configuration);
+    }
 
     /**
      * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
@@ -118,7 +136,7 @@ public class CmsCheckboxWidget extends A_CmsWidget {
             } else {
                 // no hidden value found, use default value
                 value = param.getDefault(cms);
-            }            
+            }
             param.setStringValue(cms, value);
         }
     }

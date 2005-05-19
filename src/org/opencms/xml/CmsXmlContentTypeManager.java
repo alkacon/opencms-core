@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/05/19 12:57:48 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,17 +63,17 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsXmlContentTypeManager.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsXmlContentTypeManager.class);
+
     /** Stores the initialized XML content handlers. */
     private Map m_contentHandlers;
-    
+
     /** Stores the registered content widgets. */
     private Map m_defaultWidgets;
 
@@ -85,7 +85,7 @@ public class CmsXmlContentTypeManager {
 
     /** The alias names for the widgets. */
     private Map m_widgetAliases;
-    
+
     /**
      * Creates a new content type manager.<p> 
      */
@@ -115,23 +115,15 @@ public class CmsXmlContentTypeManager {
     public static CmsXmlContentTypeManager createTypeManagerForTestCases() {
 
         CmsXmlContentTypeManager typeManager = new CmsXmlContentTypeManager();
-        
+
         typeManager.addWidget("org.opencms.widgets.CmsCalendarWidget", null);
         typeManager.addWidget("org.opencms.widgets.CmsHtmlAreaWidget", null);
         typeManager.addWidget("org.opencms.widgets.CmsInputWidget", null);
-        
-        typeManager.addSchemaType(
-            "org.opencms.xml.types.CmsXmlDateTimeValue",
-            "org.opencms.widgets.CmsCalendarWidget");
-        typeManager.addSchemaType(
-            "org.opencms.xml.types.CmsXmlHtmlValue",
-            "org.opencms.widgets.CmsHtmlAreaWidget");
-        typeManager.addSchemaType(
-            "org.opencms.xml.types.CmsXmlLocaleValue",
-            "org.opencms.widgets.CmsInputWidget");
-        typeManager.addSchemaType(
-            "org.opencms.xml.types.CmsXmlStringValue",
-            "org.opencms.widgets.CmsInputWidget");
+
+        typeManager.addSchemaType("org.opencms.xml.types.CmsXmlDateTimeValue", "org.opencms.widgets.CmsCalendarWidget");
+        typeManager.addSchemaType("org.opencms.xml.types.CmsXmlHtmlValue", "org.opencms.widgets.CmsHtmlAreaWidget");
+        typeManager.addSchemaType("org.opencms.xml.types.CmsXmlLocaleValue", "org.opencms.widgets.CmsInputWidget");
+        typeManager.addSchemaType("org.opencms.xml.types.CmsXmlStringValue", "org.opencms.widgets.CmsInputWidget");
 
         try {
             typeManager.initialize(null);
@@ -189,14 +181,19 @@ public class CmsXmlContentTypeManager {
         try {
             type = addContentType(classClazz);
         } catch (Exception e) {
-            LOG.error(Messages.get().key(Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1, classClazz.getName()), e);
+            LOG.error(
+                Messages.get().key(Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1, classClazz.getName()),
+                e);
             return;
         }
 
         // add the editor widget for the schema type        
         I_CmsWidget widget = getWidget(defaultWidget);
         if (widget == null) {
-            LOG.error(Messages.get().key(Messages.LOG_INIT_DEFAULT_WIDGET_FOR_CONTENT_TYPE_2, defaultWidget , type.getTypeName()));
+            LOG.error(Messages.get().key(
+                Messages.LOG_INIT_DEFAULT_WIDGET_FOR_CONTENT_TYPE_2,
+                defaultWidget,
+                type.getTypeName()));
             return;
         }
 
@@ -204,8 +201,10 @@ public class CmsXmlContentTypeManager {
         m_defaultWidgets.put(type.getTypeName(), widget);
 
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_ST_USING_WIDGET_2, 
-                type.getTypeName(), widget.getClass().getName()));
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_ADD_ST_USING_WIDGET_2,
+                type.getTypeName(),
+                widget.getClass().getName()));
         }
     }
 
@@ -225,21 +224,21 @@ public class CmsXmlContentTypeManager {
         } catch (Exception e) {
             LOG.error(Messages.get().key(Messages.LOG_XML_WIDGET_INITIALIZING_ERROR_1, className), e);
             return;
-        } 
-                
+        }
+
         m_registeredWidgets.put(widgetClazz.getName(), widget);
-        
+
         if (aliasName != null) {
             m_widgetAliases.put(aliasName, widgetClazz.getName());
         }
-        
+
         if (CmsLog.LOG.isInfoEnabled()) {
             if (aliasName != null) {
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_WIDGET_1, widgetClazz.getName()));
             } else {
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_WIDGET_ALIAS_2, widgetClazz.getName(), aliasName));
-            } 
-        }        
+            }
+        }
     }
 
     /**
@@ -309,7 +308,7 @@ public class CmsXmlContentTypeManager {
 
         int todo = 0;
         // TODO: Use validation methods from CmsXmlContentDefinition here
-        
+
         String elementName = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_NAME);
         String typeName = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_TYPE);
         String defaultValue = typeElement.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_DEFAULT);
@@ -363,17 +362,6 @@ public class CmsXmlContentTypeManager {
         return (I_CmsXmlSchemaType)m_registeredTypes.get(typeName);
     }
 
-    /**
-     * Returns the editor widget for the specified XML content type.<p>
-     * 
-     * @param typeName the name of the XML content type to get the widget for
-     * @return the editor widget for the specified XML content type
-     */
-    public I_CmsWidget getDefaultWidget(String typeName) {
-
-        return (I_CmsWidget)m_defaultWidgets.get(typeName);
-    }
-
     /** 
      * Retruns an alphabetically sorted list of all configured XML content schema types.<p>
      * 
@@ -406,10 +394,10 @@ public class CmsXmlContentTypeManager {
                 // the alias mapping was found
                 return aliasName;
             }
-        }        
-        return  null;
+        }
+        return null;
     }
-    
+
     /** 
      * Retruns an alphabetically sorted list of the class names of all configured XML widgets.<p>
      * 
@@ -436,9 +424,27 @@ public class CmsXmlContentTypeManager {
             // not found by class name, look up an alias
             String className = (String)m_widgetAliases.get(name);
             if (className != null) {
-                return (I_CmsWidget)m_registeredWidgets.get(className);
+                result = (I_CmsWidget)m_registeredWidgets.get(className);
             }
-        }    
+        }
+        if (result != null) {
+            result = result.newInstance();
+        }
+        return result;
+    }
+
+    /**
+     * Returns the editor widget for the specified XML content type.<p>
+     * 
+     * @param typeName the name of the XML content type to get the widget for
+     * @return the editor widget for the specified XML content type
+     */
+    public I_CmsWidget getWidgetDefault(String typeName) {
+
+        I_CmsWidget result = (I_CmsWidget)m_defaultWidgets.get(typeName);
+        if (result != null) {
+            result = result.newInstance();
+        }
         return result;
     }
 
@@ -452,7 +458,7 @@ public class CmsXmlContentTypeManager {
     public synchronized void initialize(CmsObject cms) throws CmsRoleViolationException {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-            
+
             // simple test cases don't require this check
             cms.checkRole(CmsRole.ADMINISTRATOR);
         }
@@ -461,7 +467,9 @@ public class CmsXmlContentTypeManager {
         CmsXmlEntityResolver.cacheSystemId(CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS, getSchemaBytes());
 
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_NUM_ST_INITIALIZED_1, new Integer(m_registeredTypes.size())));
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_NUM_ST_INITIALIZED_1,
+                new Integer(m_registeredTypes.size())));
         }
     }
 

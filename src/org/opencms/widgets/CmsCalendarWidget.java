@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCalendarWidget.java,v $
- * Date   : $Date: 2005/05/18 12:31:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public class CmsCalendarWidget extends A_CmsWidget {
@@ -55,11 +55,21 @@ public class CmsCalendarWidget extends A_CmsWidget {
     private static final Log LOG = CmsLog.getLog(CmsCalendarWidget.class);
 
     /**
-     * Creates a new editor widget.<p>
+     * Creates a new calendar widget.<p>
      */
     public CmsCalendarWidget() {
 
         // empty constructor is required for class registration
+    }
+
+    /**
+     * Creates a new calendar widget with the given configuration.<p>
+     * 
+     * @param configuration the configuration to use
+     */
+    public CmsCalendarWidget(String configuration) {
+
+        m_configuration = configuration;
     }
 
     /**
@@ -121,6 +131,14 @@ public class CmsCalendarWidget extends A_CmsWidget {
         result.append("</td>");
 
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#newInstance()
+     */
+    public I_CmsWidget newInstance() {
+
+        return new CmsCalendarWidget(m_configuration);
     }
 
     /**

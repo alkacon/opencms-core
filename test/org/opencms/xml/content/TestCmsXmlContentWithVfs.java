@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -643,16 +643,21 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         xmlcontent.validateXmlStructure(resolver);
         
         I_CmsWidget widget;        
-
+        I_CmsXmlContentHandler handler = definition.getContentHandler();
+        
         // make sure the selected widgets are of the configured "non-standard" type
-        widget = definition.getContentHandler().getWidget(xmlcontent.getValue("Title", Locale.ENGLISH));
+        widget = handler.getWidget(xmlcontent.getValue("Title", Locale.ENGLISH));
         assertNotNull(widget);
         assertEquals(CmsCheckboxWidget.class.getName(), widget.getClass().getName());
         
         // make sure the alias name works
-        widget = definition.getContentHandler().getWidget(xmlcontent.getValue("Test", Locale.ENGLISH));
+        widget = handler.getWidget(xmlcontent.getValue("Test", Locale.ENGLISH));
         assertNotNull(widget);
         assertEquals(CmsHtmlAreaWidget.class.getName(), widget.getClass().getName());
+        
+        // check configuration
+        assertEquals("Configuration for Title", handler.getConfiguration(xmlcontent.getValue("Title", Locale.ENGLISH)));
+        assertEquals("Configuration for Test", handler.getConfiguration(xmlcontent.getValue("Test", Locale.ENGLISH)));
     }
 
     /**

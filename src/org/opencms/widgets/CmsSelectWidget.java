@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidget.java,v $
- * Date   : $Date: 2005/05/18 12:31:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.StringTokenizer;
@@ -46,7 +47,7 @@ import java.util.StringTokenizer;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.3
  */
 public class CmsSelectWidget extends A_CmsWidget {
@@ -74,11 +75,11 @@ public class CmsSelectWidget extends A_CmsWidget {
     /**
      * Creates a select widget with the specified select options.<p>
      * 
-     * @param selectOptions the possible options for the select box
+     * @param configuration the configuration (possible options) for the select box
      */
-    public CmsSelectWidget(String selectOptions) {
+    public CmsSelectWidget(String configuration) {
 
-        m_selectOptions = selectOptions;
+        m_configuration = configuration;
     }
 
     /**
@@ -100,7 +101,7 @@ public class CmsSelectWidget extends A_CmsWidget {
         result.append("\">");
 
         // get select box options from default value String
-        String defaultValue = getSelectOptions(cms, param);
+        String defaultValue = getSelectOptions(cms, widgetDialog, param);
         if (CmsStringUtil.isEmpty(defaultValue)) {
             defaultValue = "";
         }
@@ -161,6 +162,14 @@ public class CmsSelectWidget extends A_CmsWidget {
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsWidget#newInstance()
+     */
+    public I_CmsWidget newInstance() {
+
+        return new CmsSelectWidget(m_configuration);
+    }
+
+    /**
      * Returns the possible options for the select box.<p>
      * 
      * In case the select Options have not been directly set, 
@@ -171,12 +180,17 @@ public class CmsSelectWidget extends A_CmsWidget {
      *   
      * @return the possible options for the select box
      */
-    private String getSelectOptions(CmsObject cms, I_CmsWidgetParameter param) {
+    private String getSelectOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         if (m_selectOptions == null) {
-            m_selectOptions = param.getDefault(cms);
+            if (m_configuration == null) {
+                // use the default value
+                m_selectOptions = param.getDefault(cms);
+            } else {
+                // use the configuration value, with processed macros
+                m_selectOptions = CmsMacroResolver.resolveMacros(m_configuration, cms, widgetDialog.getMessages());
+            }
         }
         return m_selectOptions;
     }
-
 }

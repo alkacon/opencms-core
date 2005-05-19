@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/19 16:08:44 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/05/19 16:35:47 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -1350,7 +1350,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             return param.getWidget().getHelpBubble(getCms(), this, param);
         }
         String locKey = A_CmsWidget.getHelpKey(param);
-        String locValue = ((I_CmsWidgetDialog)this).key(locKey, null);
+        String locValue = ((I_CmsWidgetDialog)this).getMessages().key(locKey, true);
         if (locValue == null) {
             // there was no help message found for this key, so return a spacer cell
             return this.dialogHorizontalSpacer(16);
@@ -1392,7 +1392,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         StringBuffer result = new StringBuffer(128);
         // calculate the key
         String locKey = A_CmsWidget.getHelpKey(param);
-        String locValue = ((I_CmsWidgetDialog)this).key(locKey, null);
+        String locValue = ((I_CmsWidgetDialog)this).getMessages().key(locKey, true);
         if (locValue == null) {
             // there was no help message found for this key, so return an empty string
             return "";
