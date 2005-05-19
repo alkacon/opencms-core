@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/05/17 15:59:40 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/19 15:27:04 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -364,26 +364,18 @@ public class CmsToolManager {
      */
     public void jspRedirectTool(CmsWorkplace wp, String toolPath, Map params) throws IOException {
 
-        Map myParams = new HashMap(wp.getJsp().getRequest().getParameterMap());
-        if (params != null) {
-            Iterator it = params.keySet().iterator();
-            while (it.hasNext()) {
-                String key = (String)it.next();
-                if (myParams.containsKey(key)) {
-                    myParams.remove(key);
-                }
-                myParams.put(key, params.get(key));
-            }
+        Map myParams = params;
+        if (myParams == null) {
+            myParams = new HashMap();
         }
+        // remove path param
         if (myParams.containsKey(CmsToolDialog.PARAM_PATH)) {
             myParams.remove(CmsToolDialog.PARAM_PATH);
         }
-        myParams.put(CmsToolDialog.PARAM_PATH, toolPath);
-        if (myParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
-            myParams.remove(CmsDialog.PARAM_CLOSELINK);
+        // put close link if not set
+        if (!myParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
+            myParams.put(CmsDialog.PARAM_CLOSELINK, cmsLinkForPath(wp.getJsp(), getCurrentToolPath(wp), null));
         }
-        myParams.put(CmsDialog.PARAM_CLOSELINK, cmsLinkForPath(wp.getJsp(), getCurrentToolPath(wp), null));
-        //resolveAdminTool(toolPath).getHandler().getLink()
         wp.getJsp().getResponse().sendRedirect(cmsLinkForPath(wp.getJsp(), toolPath, myParams));
     }
 
@@ -407,18 +399,24 @@ public class CmsToolManager {
         if (params == null) {
             return link.toString();
         }
-        Iterator i = params.keySet().iterator();
-        while (i.hasNext()) {
-            String key = i.next().toString();
+        Iterator it = params.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next().toString();
             Object value = params.get(key);
             if (value instanceof String[]) {
-                value = ((String[])value)[0];
+                for (int j = 0; j < ((String[])value).length; j++) {
+                    String val = ((String[])value)[j];
+                    link.append("&");
+                    link.append(key);
+                    link.append("=");
+                    link.append(val);
+                }
+            } else {
+                link.append("&");
+                link.append(key);
+                link.append("=");
+                link.append(value);
             }
-            link.append("&");
-            link.append(key);
-            link.append("=");
-            // TODO: encode?
-            link.append(value);
         }
 
         return link.toString();

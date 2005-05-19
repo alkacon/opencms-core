@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/05/17 15:59:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 15:27:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * Implementation of the administration view leftside's menu.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsAdminMenu extends CmsToolDialog {
@@ -223,7 +223,7 @@ public class CmsAdminMenu extends CmsToolDialog {
                     tool.getHandler().getGroup(),
                     tool.getHandler().getName(),
                     tool.getHandler().getSmallIconPath(),
-                    getToolManager().linkForPath(tool.getHandler().getPath(), null),
+                    getToolManager().cmsLinkForPath(getJsp(), tool.getHandler().getPath(), null),
                     tool.getHandler().isEnabled(getCms()) ? tool.getHandler().getHelpText(): tool.getHandler().getDisabledHelpText(),
                     tool.getHandler().isEnabled(getCms()),
                     tool.getHandler().getPosition(),

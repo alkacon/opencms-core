@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenuItem.java,v $
- * Date   : $Date: 2005/05/12 08:58:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/19 15:27:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
  * required html code for a menu item.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsAdminMenuItem {
@@ -179,7 +179,7 @@ public class CmsAdminMenuItem {
         html.append("'>\n");
         html.append("\t<tr>\n");
         html.append("\t\t<td>\n");
-        String onClic = "return openView('" + getId() + "', '" + wp.getJsp().link(m_link) + "', '" + m_target + "');";
+        String onClic = "return openView('" + getId() + "', '" + m_link + "', '" + m_target + "');";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
             getId(),
             getName(),
