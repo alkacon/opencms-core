@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsListToggleAction.java,v $
- * Date   : $Date: 2005/05/18 13:19:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/19 14:46:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,6 @@
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.tools.A_CmsHtmlIconButton;
-
-import java.text.MessageFormat;
 
 /**
  * Abstract implementation of a toggle action for a html list.<p>
@@ -44,10 +39,10 @@ import java.text.MessageFormat;
  * You have to extend this class and implement the <code>{@link #selectAction()}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
-public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
+public abstract class A_CmsListToggleAction extends CmsListDirectAction {
 
     /**
      * Default Constructor.<p>
@@ -58,32 +53,6 @@ public abstract class A_CmsListToggleAction extends CmsListDefaultAction {
     protected A_CmsListToggleAction(String listId, String id) {
 
         super(listId, id);
-
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
-     */
-    public String buttonHtml(CmsWorkplace wp) {
-
-        String id = getId() + getItem().getId();
-        String confirmationMessage = getConfirmationMessage().key(wp.getLocale());
-        String helpText = getHelpText().key(wp.getLocale());
-        if (getColumn() != null && getItem().get(getColumn()) != null) {
-            confirmationMessage = new MessageFormat(confirmationMessage, wp.getLocale()).format(new Object[] {getItem().get(
-                getColumn())});
-            helpText = new MessageFormat(helpText, wp.getLocale()).format(new Object[] {getItem().get(getColumn())});
-        }
-        String onClic = getListId()
-            + "ListAction('"
-            + getId()
-            + "', '"
-            + CmsStringUtil.escapeJavaScript(confirmationMessage)
-            + "', '"
-            + CmsStringUtil.escapeJavaScript(getItem().getId())
-            + "');";
-
-        return A_CmsHtmlIconButton.defaultButtonHtml(id, null, helpText, isEnabled(), getIconPath(), onClic);
     }
 
     /**
