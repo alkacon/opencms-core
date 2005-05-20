@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2005/05/04 15:16:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/20 15:11:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -107,9 +107,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_EMPTY_0 = "GUI_LIST_EMPTY_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_LIST_EMPTY_MESSAGE_0 = "GUI_LIST_EMPTY_MESSAGE_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_PAGING_FILTER_TEXT_3 = "GUI_LIST_PAGING_FILTER_TEXT_3";

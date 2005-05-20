@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListSearchAction.java,v $
- * Date   : $Date: 2005/05/20 09:52:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/20 15:11:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,167 +32,94 @@
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.tools.A_CmsHtmlIconButton;
-import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Default implementation for a seach action in an html list.<p>
  * 
+ * It allows to search in several columns, including item details.<p>
+ * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
-public class CmsListSearchAction extends CmsListIndependentAction {
+public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsSearchAction {
 
-    /** The action id for the search action. */
-    public static final String SEARCH_ACTION_ID = "search";
-
-    /** The action id for the show all action. */
-    public static final String SHOWALL_ACTION_ID = "showall";
-
-    /** A default show all action. */
-    public final I_CmsListAction m_defaultShowAllAction;
-
-    /** Column name to search in. */
-    private final String m_columnId;
-
-    /** Show all action. */
-    private I_CmsListAction m_showAllAction = null;
+    /** Ids of Columns to search into. */
+    private final List m_columns = new ArrayList();
 
     /**
      * Default Constructor.<p>
      * 
      * @param listId the id of the associated list
-     * @param column the column to search in
+     * @param column the column to search into
      */
     public CmsListSearchAction(String listId, CmsListColumnDefinition column) {
 
-        this(
-            listId,
-            SEARCH_ACTION_ID,
-            new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SEARCH_NAME_0),
-            "list/search.gif",
-            new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SEARCH_HELP_1, new Object[] {"${key."
-                + column.getName().getKey()
-                + "}"}),
-            new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SEARCH_CONF_0),
-            column.getId());
+        super(listId);
+        useDefaultShowAllAction();
+        m_columns.add(column);
     }
-
+    
     /**
-     * Customized Constructor.<p>
+     * Adds a column to search into.<p>
      * 
-     * @param listId the id of the associated list
-     * @param id unique id
-     * @param name the name
-     * @param icon the icon
-     * @param helpText the help text
-     * @param confirmationMessage the confirmation message
-     * @param columnId the column to sort
+     * @param column the additional column to search into
      */
-    public CmsListSearchAction(
-        String listId,
-        String id,
-        CmsMessageContainer name,
-        String icon,
-        CmsMessageContainer helpText,
-        CmsMessageContainer confirmationMessage,
-        String columnId) {
+    public void addColumn(CmsListColumnDefinition column) {
 
-        super(listId, id, name, helpText, icon, true, confirmationMessage);
-        m_columnId = columnId;
-        m_defaultShowAllAction = new CmsListIndependentAction(listId, SHOWALL_ACTION_ID) {
-
-            /**
-             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
-             */
-            public String buttonHtml(CmsWorkplace wp) {
-
-                String onClic = getListId()
-                    + "ListSearchAction('"
-                    + getId()
-                    + "', '"
-                    + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
-                    + "');";
-                return A_CmsHtmlIconButton.defaultButtonHtml(
-                    CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-                    getId(),
-                    getName().key(wp.getLocale()),
-                    getHelpText().key(wp.getLocale()),
-                    isEnabled(),
-                    getIconPath(),
-                    onClic);
-            }
-        };
-        m_defaultShowAllAction.setName(new CmsMessageContainer(Messages.get(), Messages.GUI_LIST_ACTION_SHOWALL_NAME_0));
-        m_defaultShowAllAction.setHelpText(new CmsMessageContainer(
-            Messages.get(),
-            Messages.GUI_LIST_ACTION_SHOWALL_HELP_0));
-        m_defaultShowAllAction.setIconPath("list/showall.gif");
-        m_defaultShowAllAction.setEnabled(true);
-        m_defaultShowAllAction.setConfirmationMessage(new CmsMessageContainer(
-            Messages.get(),
-            Messages.GUI_LIST_ACTION_SHOWALL_CONF_0));
+        m_columns.add(column);
     }
 
     /**
-     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
+     * @see org.opencms.workplace.list.A_CmsListSearchAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
      */
     public String buttonHtml(CmsWorkplace wp) {
 
-        String onClic = getListId()
-            + "ListSearchAction('"
-            + getId()
-            + "', '"
-            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
-            + "');";
-        return A_CmsHtmlIconButton.defaultButtonHtml(
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            getId(),
-            getName().key(wp.getLocale()),
-            getHelpText().key(wp.getLocale()),
-            isEnabled(),
-            getIconPath(),
-            onClic);
+        if (getHelpText() == C_EMPTY_MESSAGE) {
+            String columns = "";
+            Iterator it = m_columns.iterator();
+            while (it.hasNext()) {
+                CmsListColumnDefinition col = (CmsListColumnDefinition)it.next();
+                columns += "${key." + col.getName().getKey() + "}";
+                if (it.hasNext()) {
+                    columns += ", ";
+                }
+            }
+            setHelpText(new CmsMessageContainer(
+                Messages.get(),
+                Messages.GUI_LIST_ACTION_SEARCH_HELP_1,
+                new Object[] {columns}));
+        }
+        return super.buttonHtml(wp);
     }
 
-    /**
-     * Returns the column name to sort.<p>
-     * 
-     * @return the column name to sort
-     */
-    public String getColumnId() {
-
-        return m_columnId;
-    }
 
     /**
-     * Returns the Show-All action.<p>
-     *
-     * @return the Show-All action
+     * @see org.opencms.workplace.list.I_CmsSearchAction#filter(java.util.List, java.lang.String)
      */
-    public I_CmsListAction getShowAllAction() {
-
-        return m_showAllAction;
-    }
-
-    /**
-     * Sets the Show-All action.<p>
-     *
-     * @param showAllAction the Show-All action to set
-     */
-    public void setShowAllAction(I_CmsListAction showAllAction) {
-
-        m_showAllAction = showAllAction;
-    }
-
-    /**
-     * Sets the current used show-all action to the default.<p>
-     */
-    public void useDefaultShowAllAction() {
-
-        m_showAllAction = m_defaultShowAllAction;
+    public List filter(List items, String filter) {
+        
+        List res = new ArrayList();
+        Iterator itItems = items.iterator();
+        while (itItems.hasNext()) {
+            CmsListItem item = (CmsListItem)itItems.next();
+            if (res.contains(item)) {
+                continue;
+            }
+            Iterator itCols = m_columns.iterator();
+            while (itCols.hasNext()) {
+                CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+                if (item.get(col.getId()).toString().indexOf(filter) > -1) {
+                    res.add(item);
+                    break;
+                }
+            }
+        }
+        return res;
     }
 }

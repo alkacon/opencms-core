@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/20 11:47:11 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/05/20 15:11:42 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.CmsListSearchAction;
 import org.opencms.workplace.list.I_CmsListAction;
 
 import java.io.IOException;
@@ -70,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends A_CmsListDialog {
@@ -121,15 +122,9 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
      */
     public CmsUsersAdminTool(CmsJspActionElement jsp) {
 
-        super(
-            jsp,
-            LIST_ID,
-            Messages.get().container(Messages.GUI_USERS_LIST_NAME_0),
-            LIST_COLUMN_LOGIN,
-            LIST_COLUMN_LOGIN);
+        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_USERS_LIST_NAME_0), LIST_COLUMN_LOGIN, null);
     }
 
-    
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -298,12 +293,12 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
         // add default resource bundles
         super.initMessages();
     }
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setColumns(CmsListMetadata metadata) {
-    
+
         // add column for direct actions
         CmsListColumnDefinition actionsCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIONS, Messages.get().container(
             Messages.GUI_USERS_LIST_COLS_ACTIONS_0), "", // no width
@@ -370,8 +365,9 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
             Messages.GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_1), Messages.get().container(
             Messages.GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0)));
         metadata.addColumn(lastLoginCol);
+
     }
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
@@ -400,8 +396,9 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
             false,
             showAddressAction,
             hideAddressAction);
+        userAddressDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_ADDRESS_NAME_0));
         userAddressDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_ADDRESS_FORMAT_0)));
+            Messages.GUI_USERS_DETAIL_ADDRESS_NAME_0)));
         metadata.addItemDetails(userAddressDetails);
 
         // add user groups details
@@ -428,12 +425,20 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
             true,
             showGroupsAction,
             hideGroupsAction);
+        userGroupsDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_GROUPS_NAME_0));
         userGroupsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_GROUPS_FORMAT_0)));
+            Messages.GUI_USERS_DETAIL_GROUPS_NAME_0)));
         metadata.addItemDetails(userGroupsDetails);
 
         // adds a reload button
         metadata.addIndependentAction(CmsListIndependentAction.getDefaultRefreshListAction(LIST_ID));
+
+        // makes the list searchable
+        CmsListSearchAction searchAction = new CmsListSearchAction(
+            LIST_ID,
+            metadata.getColumnDefinition(LIST_COLUMN_LOGIN));
+        searchAction.addColumn(metadata.getItemDetailDefinition(LIST_DETAIL_GROUPS));
+        metadata.setSearchAction(searchAction);
     }
 
     /**
@@ -457,4 +462,4 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
         metadata.addMultiAction(activateUser);
     }
 
-                    }
+}

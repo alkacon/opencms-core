@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/20 11:47:11 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/20 15:11:42 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -522,13 +522,13 @@ public class CmsHtmlList {
             js.append(A_CmsListDialog.LIST_SEARCH);
             js.append("';\n");
             js.append("\t\tif (action=='");
-            js.append(CmsListSearchAction.SHOWALL_ACTION_ID);
+            js.append(A_CmsListSearchAction.SHOWALL_ACTION_ID);
             js.append("') {\n");
             js.append("\t\t\tform.");
             js.append(A_CmsListDialog.PARAM_SEARCH_FILTER);
             js.append(".value = '';\n");
             js.append("\t\t} else if (action=='");
-            js.append(CmsListSearchAction.SEARCH_ACTION_ID);
+            js.append(A_CmsListSearchAction.SEARCH_ACTION_ID);
             js.append("') {\n");
             js.append("\t\t\tform.");
             js.append(A_CmsListDialog.PARAM_SEARCH_FILTER);
@@ -602,7 +602,7 @@ public class CmsHtmlList {
         if (getMetadata().isSearchable()) {
             js.append(m_id);
             js.append("ListSearchAction('");
-            js.append(CmsListSearchAction.SEARCH_ACTION_ID);
+            js.append(A_CmsListSearchAction.SEARCH_ACTION_ID);
             js.append("', '");
             js.append(getMetadata().getSearchAction().getConfirmationMessage().key(wp.getLocale()));
             js.append("');");
@@ -693,17 +693,8 @@ public class CmsHtmlList {
             m_filteredItems = null;
             m_searchFilter = "";
         } else {
-            // TODO: I_CmsListSearchMethod
-            m_filteredItems = new ArrayList();
+            m_filteredItems = getMetadata().getSearchAction().filter(m_originalItems, searchFilter);
             m_searchFilter = searchFilter;
-            Iterator it = m_originalItems.iterator();
-            String colName = m_metadata.getSearchAction().getColumnId();
-            while (it.hasNext()) {
-                CmsListItem item = (CmsListItem)it.next();
-                if (item.get(colName).toString().indexOf(m_searchFilter) > -1) {
-                    m_filteredItems.add(item);
-                }
-            }
         }
         String sCol = m_sortedColumn;
         m_sortedColumn = "";

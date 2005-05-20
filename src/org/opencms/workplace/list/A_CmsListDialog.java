@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/05/20 11:57:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/20 15:11:42 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -531,10 +531,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected void setSearchAction(String listId, CmsListColumnDefinition columnDefinition) {
 
-        // makes the list searchable by login
-        CmsListSearchAction searchAction = new CmsListSearchAction(listId, columnDefinition);
-        searchAction.useDefaultShowAllAction();
-        ((CmsListMetadata)m_metadatas.get(listId)).setSearchAction(searchAction);
+        if (((CmsListMetadata)m_metadatas.get(listId)).getSearchAction()!=null) {
+            // makes the list searchable
+            CmsListSearchAction searchAction = new CmsListSearchAction(listId, columnDefinition);
+            searchAction.useDefaultShowAllAction();
+            ((CmsListMetadata)m_metadatas.get(listId)).setSearchAction(searchAction);
+        }
     }
 
     /**
@@ -566,8 +568,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
         if (m_metadatas.get(listId) == null) {
             CmsListMetadata metadata = new CmsListMetadata();
 
-            setIndependentActions(metadata);
             setColumns(metadata);
+            setIndependentActions(metadata);
             setMultiActions(metadata);
             m_metadatas.put(listId, metadata);
         }
