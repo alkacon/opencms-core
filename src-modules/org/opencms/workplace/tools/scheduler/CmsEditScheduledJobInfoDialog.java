@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/05/20 10:01:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/20 11:58:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.CmsScheduledJobInfo;
-import org.opencms.scheduler.CmsSchedulerException;
-import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsInputWidget;
@@ -59,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.9.1
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
@@ -123,14 +121,8 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         try {
             // schedule the edited job
             OpenCms.getScheduleManager().scheduleJob(getCms(), m_jobInfo);
-            // clear the HTML list to be up to date after editing
-            getSettings().setHtmlList(null);
             // update the XML configuration
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
-        } catch (CmsRoleViolationException e) {
-            errors.add(e);    
-        } catch (CmsSchedulerException e) {            
-            errors.add(e);
         } catch (Throwable t) {
             errors.add(t);    
         }
@@ -209,14 +201,14 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
             result.append(createDialogRowsHtml(0, 4));
-            result.append(dialogBlockStart(key("editor.label.contextInfo")));
+            result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(5, 11));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         } else if (dialog.equals(PAGES[1])) {
             // create the widget for the second dialog page
-            result.append(dialogBlockStart(key("editor.label.parameters.block")));
+            result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(12, 12));
             result.append(createWidgetTableEnd());
