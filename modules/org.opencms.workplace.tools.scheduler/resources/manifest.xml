@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0 beta 3 Corrin</opencms_version>
-		<createdate>5/19/05 10:26 AM</createdate>
+		<createdate>5/20/05 3:09 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -97,7 +97,7 @@
 		<file>
 			<destination>system/workplace/admin/scheduler</destination>
 			<type>folder</type>
-			<datelastmodified>Thu, 21 Apr 2005 14:55:50 GMT</datelastmodified>
+			<datelastmodified>Fri, 20 May 2005 12:59:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 27 Jan 2005 11:37:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -125,7 +125,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/scheduler/icons/big/jobsmanagement.png:tools/scheduler/icons/small/jobsmanagement.png]]></value>
+					<value><![CDATA[tools/scheduler/icons/big/scheduler.png:tools/scheduler/icons/small/scheduler.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -201,7 +201,7 @@
 			<destination>system/workplace/admin/scheduler/edit/editjob.html</destination>
 			<type>jsp</type>
 			<uuidresource>29239560-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Thu, 19 May 2005 09:04:22 GMT</datelastmodified>
+			<datelastmodified>Thu, 19 May 2005 15:58:27 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 13 Apr 2005 11:22:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -217,7 +217,7 @@
 		<file>
 			<destination>system/workplace/admin/scheduler/new</destination>
 			<type>folder</type>
-			<datelastmodified>Thu, 21 Apr 2005 15:40:01 GMT</datelastmodified>
+			<datelastmodified>Fri, 20 May 2005 13:00:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 13 Apr 2005 15:08:08 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -245,7 +245,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/scheduler/icons/big/newjob.png]]></value>
+					<value><![CDATA[tools/scheduler/icons/big/scheduler_new.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -262,7 +262,7 @@
 			<destination>system/workplace/admin/scheduler/new/newjob.html</destination>
 			<type>jsp</type>
 			<uuidresource>29239560-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Thu, 19 May 2005 09:04:22 GMT</datelastmodified>
+			<datelastmodified>Thu, 19 May 2005 15:58:27 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 13 Apr 2005 11:22:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -316,113 +316,124 @@
 		<file>
 			<destination>system/workplace/resources/tools/scheduler/buttons</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 20 May 2005 12:34:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/scheduler/buttons/activate.gif</source>
-			<destination>system/workplace/resources/tools/scheduler/buttons/activate.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/active.png</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/active.png</destination>
 			<type>image</type>
-			<uuidresource>2949e242-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<uuidresource>8f8169de-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/scheduler/buttons/contextinfo.gif</source>
-			<destination>system/workplace/resources/tools/scheduler/buttons/contextinfo.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/copy.png</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/copy.png</destination>
 			<type>image</type>
-			<uuidresource>294ffcce-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<uuidresource>8f878461-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/scheduler/buttons/copy.gif</source>
-			<destination>system/workplace/resources/tools/scheduler/buttons/copy.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/delete.png</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/delete.png</destination>
 			<type>image</type>
-			<uuidresource>294e762a-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<uuidresource>8f8a91a4-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/scheduler/buttons/deactivate.gif</source>
-			<destination>system/workplace/resources/tools/scheduler/buttons/deactivate.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/details_hide.png</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/details_hide.png</destination>
 			<type>image</type>
-			<uuidresource>294b68e6-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<uuidresource>5e56c851-c937-11d9-8189-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 13:59:22 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/scheduler/buttons/edit.gif</source>
-			<destination>system/workplace/resources/tools/scheduler/buttons/edit.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/details_show.png</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/details_show.png</destination>
 			<type>image</type>
-			<uuidresource>1ea95471-c915-11d9-845d-417e0ce441a2</uuidresource>
-			<datelastmodified>Fri, 20 May 2005 09:54:13 GMT</datelastmodified>
+			<uuidresource>5e50adce-c937-11d9-8189-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 20 May 2005 09:54:13 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 13:59:22 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/scheduler/buttons/multi_activate.gif</source>
-			<destination>system/workplace/resources/tools/scheduler/buttons/multi_activate.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/edit.png</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/edit.png</destination>
 			<type>image</type>
-			<uuidresource>295490b6-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<uuidresource>8f90d33a-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/scheduler/buttons/multi_deactivate.gif</source>
-			<destination>system/workplace/resources/tools/scheduler/buttons/multi_deactivate.gif</destination>
+			<source>system/workplace/resources/tools/scheduler/buttons/inactive.png</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/inactive.png</destination>
 			<type>image</type>
-			<uuidresource>29579dfa-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<uuidresource>8f8f4c97-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/scheduler/buttons/parameters.gif</source>
-			<destination>system/workplace/resources/tools/scheduler/buttons/parameters.gif</destination>
+			<destination>system/workplace/resources/tools/scheduler/buttons/multi_activate.png</destination>
 			<type>image</type>
-			<uuidresource>29518372-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<uuidresource>8f8169de-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/scheduler/buttons/multi_deactivate.png</destination>
+			<type>image</type>
+			<uuidresource>8f8f4c97-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -431,9 +442,9 @@
 		<file>
 			<destination>system/workplace/resources/tools/scheduler/icons</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 20 May 2005 12:34:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -442,35 +453,35 @@
 		<file>
 			<destination>system/workplace/resources/tools/scheduler/icons/big</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 20 May 2005 12:34:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/scheduler/icons/big/jobsmanagement.png</source>
-			<destination>system/workplace/resources/tools/scheduler/icons/big/jobsmanagement.png</destination>
+			<source>system/workplace/resources/tools/scheduler/icons/big/scheduler.png</source>
+			<destination>system/workplace/resources/tools/scheduler/icons/big/scheduler.png</destination>
 			<type>image</type>
-			<uuidresource>293a9ff0-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<uuidresource>8f9e8ee4-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/scheduler/icons/big/newjob.png</source>
-			<destination>system/workplace/resources/tools/scheduler/icons/big/newjob.png</destination>
+			<source>system/workplace/resources/tools/scheduler/icons/big/scheduler_new.png</source>
+			<destination>system/workplace/resources/tools/scheduler/icons/big/scheduler_new.png</destination>
 			<type>image</type>
-			<uuidresource>293dad34-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Thu, 20 Jan 2005 16:15:53 GMT</datelastmodified>
+			<uuidresource>8f9b81a1-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 20 Jan 2005 16:15:53 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -479,22 +490,22 @@
 		<file>
 			<destination>system/workplace/resources/tools/scheduler/icons/small</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 20 May 2005 12:34:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/scheduler/icons/small/jobsmanagement.png</source>
-			<destination>system/workplace/resources/tools/scheduler/icons/small/jobsmanagement.png</destination>
+			<source>system/workplace/resources/tools/scheduler/icons/small/scheduler.png</source>
+			<destination>system/workplace/resources/tools/scheduler/icons/small/scheduler.png</destination>
 			<type>image</type>
-			<uuidresource>2942411b-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
+			<uuidresource>8fa4a969-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

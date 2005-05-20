@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/20 11:57:13 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/05/20 14:14:31 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -986,7 +986,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected String createWidgetErrorHeader() {
 
         StringBuffer result = new StringBuffer(8);
-        if (hasValidationErrors() || hasOtherErrors()) {
+        if (hasValidationErrors() || hasCommitErrors()) {
             result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
             result.append("<tr><td colspan=\"2\">&nbsp;</td>");
             result.append("<td class=\"xmlTdErrorHeader\">");
@@ -994,7 +994,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             result.append("</td><td colspan=\"2\">&nbsp;");
             result.append("</td></tr>\n");
             result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
-            if (hasOtherErrors()) {
+            if (hasCommitErrors()) {
                 result.append(dialogBlockStart(""));
                 result.append(createWidgetTableStart());
                 Iterator i = getCommitErrors().iterator();
@@ -1204,11 +1204,11 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Returns <code>true</code> if the current dialog (page) has other errors.<p>
+     * Returns <code>true</code> if the current dialog (page) has commit errors.<p>
      * 
-     * @return <code>true</code> if the current dialog (page) has other errors
+     * @return <code>true</code> if the current dialog (page) has commit errors
      */
-    protected boolean hasOtherErrors() {
+    protected boolean hasCommitErrors() {
 
         return (m_commitErrors != null) && (m_commitErrors.size() > 0);
     }
