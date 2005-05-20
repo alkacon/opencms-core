@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/05/20 09:52:37 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/20 11:16:37 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -222,45 +222,6 @@ public class CmsToolDialog extends CmsWorkplace {
     }
 
     /**
-     * Initializes the admin tool main view.<p>
-     * 
-     * @return the new modified params array
-     */
-    public Map initAdminTool() {
-
-        Map params = new HashMap(getJsp().getRequest().getParameterMap());
-        // initialize
-        getToolManager().initParams(this, getParamPath(), getParamRoot());
-
-        // adjust params if called as default
-        if (!useNewStyle()) {
-            params.put(PARAM_STYLE, "new");
-            setParamStyle("new");
-        }
-
-        // load parent if not enabled
-        if (!getAdminTool().getHandler().isEnabled(getCms())) {
-            params.put(PARAM_PATH, getParentPath());
-            setParamPath(getParentPath());
-        }
-
-        try {
-            // a dialog just for the close link param accessors
-            CmsDialog wp = (CmsDialog)this;
-            // set close link
-            if (wp.getParamCloseLink() == null) {
-                if (!getToolManager().getRootToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
-                    wp.setParamCloseLink(getToolManager().cmsLinkForPath(getJsp(), getParentPath(), null));
-                    params.put(CmsDialog.PARAM_CLOSELINK, wp.getParamCloseLink());
-                }
-            }
-        } catch (Exception e) {
-            // ignore
-        }
-        return params;
-    }
-
-    /**
      * Builds an block area for icons.<p>
      * 
      * @param segment the HTML segment (START / END)
@@ -317,6 +278,45 @@ public class CmsToolDialog extends CmsWorkplace {
     public String iconsBlockAreaStart(String headline) {
 
         return iconsBlockArea(HTML_START, headline);
+    }
+
+    /**
+     * Initializes the admin tool main view.<p>
+     * 
+     * @return the new modified params array
+     */
+    public Map initAdminTool() {
+
+        Map params = new HashMap(getJsp().getRequest().getParameterMap());
+        // initialize
+        getToolManager().initParams(this, getParamPath(), getParamRoot());
+
+        // adjust params if called as default
+        if (!useNewStyle()) {
+            params.put(PARAM_STYLE, "new");
+            setParamStyle("new");
+        }
+
+        // load parent if not enabled
+        if (!getAdminTool().getHandler().isEnabled(getCms())) {
+            params.put(PARAM_PATH, getParentPath());
+            setParamPath(getParentPath());
+        }
+
+        try {
+            // a dialog just for the close link param accessors
+            CmsDialog wp = (CmsDialog)this;
+            // set close link
+            if (wp.getParamCloseLink() == null) {
+                if (!getToolManager().getRootToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
+                    wp.setParamCloseLink(getToolManager().cmsLinkForPath(getJsp(), getParentPath(), null));
+                    params.put(CmsDialog.PARAM_CLOSELINK, wp.getParamCloseLink());
+                }
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        return params;
     }
 
     /**
@@ -459,6 +459,17 @@ public class CmsToolDialog extends CmsWorkplace {
     public boolean useNewStyle() {
 
         return getParamStyle() != null && getParamStyle().equals("new");
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        // add specific dialog resource bundle
+        addMessages(Messages.get().getBundleName());
+        // add default resource bundles
+        super.initMessages();
     }
 
     /**

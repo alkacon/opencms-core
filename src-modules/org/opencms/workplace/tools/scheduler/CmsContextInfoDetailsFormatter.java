@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsContextInfoDetailsFormatter.java,v $
- * Date   : $Date: 2005/05/18 10:26:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/20 11:16:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,13 +35,15 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.workplace.list.I_CmsListFormatter;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * This list item detail formatter creates a two column table to represent a context info object.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
@@ -60,11 +62,14 @@ public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
     private CmsMessageContainer m_encodingMessage;
     /** Request message header. */
     private CmsMessageContainer m_requestedURIMessage;
-
+    /** Cache for localized messages. */
+    private Map m_cache = new HashMap();
+    
     /**
      * Default constructor.<p>
      */
     public CmsContextInfoDetailsFormatter() {
+
         //noop
     }
 
@@ -73,13 +78,25 @@ public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
      */
     public String format(Object data, Locale locale) {
 
-        String userMessage = m_userMessage.key(locale);
-        String projectMessage = m_projectMessage.key(locale);
-        String localeMessage = m_localeMessage.key(locale);
-        String rootSiteMessage = m_rootSiteMessage.key(locale);
-        String requestedURIMessage = m_requestedURIMessage.key(locale);
-        String remoteAddrMessage = m_remoteAddrMessage.key(locale);
-        String encodingMessage = m_encodingMessage.key(locale);
+        Map cache = (Map)m_cache.get(locale);
+        if (cache==null) {
+            cache = new HashMap();
+            cache.put(m_userMessage, m_userMessage.key(locale));
+            cache.put(m_projectMessage, m_projectMessage.key(locale));
+            cache.put(m_localeMessage, m_localeMessage.key(locale));
+            cache.put(m_rootSiteMessage, m_rootSiteMessage.key(locale));
+            cache.put(m_requestedURIMessage, m_requestedURIMessage.key(locale));
+            cache.put(m_remoteAddrMessage, m_remoteAddrMessage.key(locale));
+            cache.put(m_encodingMessage, m_encodingMessage.key(locale));
+            m_cache.put(locale, cache);
+        }
+        String userMessage = (String)cache.get(m_userMessage);
+        String projectMessage = (String)cache.get(m_projectMessage);
+        String localeMessage = (String)cache.get(m_localeMessage);
+        String rootSiteMessage = (String)cache.get(m_rootSiteMessage);
+        String requestedURIMessage = (String)cache.get(m_requestedURIMessage);
+        String remoteAddrMessage = (String)cache.get(m_remoteAddrMessage);
+        String encodingMessage = (String)cache.get(m_encodingMessage);
         CmsContextInfo info = (CmsContextInfo)data;
         StringBuffer html = new StringBuffer(512);
         html.append("<table border='0' cellspacing='0' cellpadding='0'>\n");
@@ -170,6 +187,7 @@ public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
         html.append("</table>\n");
         return html.toString();
     }
+
     /**
      * Sets the encoding Message.<p>
      *
@@ -179,6 +197,7 @@ public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
 
         m_encodingMessage = encodingMessage;
     }
+
     /**
      * Sets the locale Message.<p>
      *
@@ -188,6 +207,7 @@ public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
 
         m_localeMessage = localeMessage;
     }
+
     /**
      * Sets the project Message.<p>
      *
@@ -197,6 +217,7 @@ public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
 
         m_projectMessage = projectMessage;
     }
+
     /**
      * Sets the remote Address Message.<p>
      *
@@ -206,6 +227,7 @@ public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
 
         m_remoteAddrMessage = remoteAddrMessage;
     }
+
     /**
      * Sets the requested URI Message.<p>
      *
@@ -215,6 +237,7 @@ public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
 
         m_requestedURIMessage = requestedURIMessage;
     }
+
     /**
      * Sets the rootSiteMessage.<p>
      *
@@ -224,6 +247,7 @@ public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
 
         m_rootSiteMessage = rootSiteMessage;
     }
+
     /**
      * Sets the userMessage.<p>
      *

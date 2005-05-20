@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/20 10:01:07 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/05/20 11:16:37 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -1228,8 +1228,10 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      */
     protected void initMessages() {
 
+        // add specific dialog resource bundle
         addMessages(Messages.get().getBundleName());
-        addMessages(org.opencms.workplace.tools.Messages.get().getBundleName());
+        // add default resource bundles
+        super.initMessages();
     }
 
     /**

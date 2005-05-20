@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/05/20 10:01:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/20 11:16:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,20 @@ import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.CmsSchedulerException;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.list.*;
+import org.opencms.workplace.list.A_CmsListDialog;
+import org.opencms.workplace.list.CmsListColumnAlignEnum;
+import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDateMacroFormatter;
+import org.opencms.workplace.list.CmsListDefaultAction;
+import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListIndependentAction;
+import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemActionIconComparator;
+import org.opencms.workplace.list.CmsListItemDefaultComparator;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
+import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.CmsListMultiAction;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsSchedulerList extends A_CmsListDialog {
@@ -136,6 +149,17 @@ public class CmsSchedulerList extends A_CmsListDialog {
     public CmsSchedulerList(CmsJspActionElement jsp) {
 
         super(jsp, LIST_ID, new CmsMessageContainer(Messages.get(), Messages.GUI_JOBS_LIST_NAME_0), LIST_COLUMN_NAME, LIST_COLUMN_NAME);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        // add specific dialog resource bundle
+        addMessages(Messages.get().getBundleName());
+        // add default resource bundles
+        super.initMessages();
     }
 
     /**
