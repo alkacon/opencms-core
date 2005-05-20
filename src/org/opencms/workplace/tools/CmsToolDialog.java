@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/05/20 11:16:37 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/20 11:57:53 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -459,17 +459,6 @@ public class CmsToolDialog extends CmsWorkplace {
     public boolean useNewStyle() {
 
         return getParamStyle() != null && getParamStyle().equals("new");
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    protected void initMessages() {
-
-        // add specific dialog resource bundle
-        addMessages(Messages.get().getBundleName());
-        // add default resource bundles
-        super.initMessages();
     }
 
     /**

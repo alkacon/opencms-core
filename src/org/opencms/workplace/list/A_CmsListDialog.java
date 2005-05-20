@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/05/20 11:47:11 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/20 11:57:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -425,10 +425,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected void initMessages() {
 
-        // add specific dialog resource bundle
         addMessages(Messages.get().getBundleName());
-        // add default resource bundles
-        super.initMessages();
+        addMessages(org.opencms.workplace.tools.Messages.get().getBundleName());
     }
 
     /**
