@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/20 14:34:21 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.xml.page;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
@@ -54,7 +55,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.5.0
  */
@@ -158,7 +159,7 @@ public class TestCmsXmlPage extends TestCase {
         boolean success = false;
         try {
             page.addValue("body[0]", Locale.ENGLISH);
-        } catch (IllegalArgumentException e) {
+        } catch (CmsIllegalArgumentException e) {
             success = true;
         }
         if (! success) {
@@ -168,7 +169,7 @@ public class TestCmsXmlPage extends TestCase {
         success = false;
         try {
             page.addValue("body[1]", Locale.ENGLISH);
-        } catch (IllegalArgumentException e) {
+        } catch (CmsIllegalArgumentException e) {
             success = true;
         }
         if (! success) {
