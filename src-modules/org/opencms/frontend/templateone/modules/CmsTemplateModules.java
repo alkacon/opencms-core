@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/CmsTemplateModules.java,v $
- * Date   : $Date: 2005/05/13 10:54:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/20 14:35:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 6.0 alpha 2
  */
 public class CmsTemplateModules extends CmsJspActionElement {
@@ -161,7 +161,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
             LOG.debug(Messages.get().key(
                 Messages.LOG_DEBUG_BUILD_HTML_NAVLIST_2,
                 startfolder,
-                String.valueOf(faqResourceTypeId)));
+                new Integer(faqResourceTypeId)));
         }
 
         // read the resource tree
@@ -364,7 +364,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
             if (LOG.isErrorEnabled()) {
                 LOG.error(org.opencms.db.Messages.get().key(
                     org.opencms.db.Messages.ERR_READ_RESOURCES_WITH_TYPE_2,
-                    String.valueOf(resourceTypeId),
+                    new Integer(resourceTypeId),
                     foldername), e);
             }
             result = -1;
