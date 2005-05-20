@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/05/20 11:47:11 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
@@ -59,6 +62,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -77,7 +82,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 
@@ -128,6 +133,9 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /** Name of the target node. */
     public static final String NODE_TARGET = "target";
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlPage.class);
 
     /** The XML page content definition is static. */
     private static CmsXmlContentDefinition m_contentDefinition;
@@ -172,77 +180,39 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     public void addLocale(CmsObject cms, Locale locale) throws CmsXmlException {
 
         if (hasLocale(locale)) {
-            throw new CmsXmlException("Locale '" + locale + "' already exists in XML document");
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XML_PAGE_LOCALE_EXISTS_1,
+                locale));
         }
         // add element node for Locale
         getContentDefinition().createLocale(cms, this, m_document.getRootElement(), locale);
         // re-initialize the bookmarks
         initDocument(m_document, m_encoding, null);
     }
-    
-    /**
-     * Renames the page-element value from the old to the new one.<p>
-     * 
-     * @param oldValue the old value 
-     * @param newValue the new value
-     * @param locale the locale
-     */
-    public void renameValue(String oldValue, String newValue, Locale locale) {
-        
-        CmsXmlHtmlValue oldXmlHtmlValue = (CmsXmlHtmlValue)getValue(oldValue, locale);
-        if (oldXmlHtmlValue == null) {
-            throw new IllegalArgumentException("XML page does not contain the element '"
-                + oldValue
-                + "' for language '"
-                + locale
-                + "'");
-        }
-
-        if (hasValue(newValue, locale)) {
-            throw new IllegalArgumentException("XML page does already contain the element '"
-                + newValue
-                + "' for language '"
-                + locale
-                + "'");
-        }
-
-        if (newValue.indexOf('[') >= 0) {
-            throw new IllegalArgumentException("XML page element names must not contain indexes, invalid name '"
-                + newValue
-                + "''");
-        }
-
-        // get the element 
-        Element element = oldXmlHtmlValue.getElement();
-
-        // update value of the element attribute 'NAME'         
-        element.addAttribute(ATTRIBUTE_NAME, newValue);
-
-        // re-initialize the document to update the bookmarks
-        initDocument(m_document, m_encoding, m_contentDefinition);
-    }
 
     /**
      * Adds a new, empty value with the given name and locale
      * to this XML document.<p>
-     *  
+     * 
      * @param name the name of the value
      * @param locale the locale of the value
+     *  
+     * @throws CmsIllegalArgumentException if the name contains an index ("[&lt;number&gt;]") or the value for the 
+     *         given locale already exists in the xmlpage.
+     *     
      */
-    public void addValue(String name, Locale locale) {
+    public void addValue(String name, Locale locale) throws CmsIllegalArgumentException {
 
         if (name.indexOf('[') >= 0) {
-            throw new IllegalArgumentException("XML page element names must not contain indexes, invalid name '"
-                + name
-                + "''");
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_XML_PAGE_CONTAINS_INDEX_1, name));
         }
 
         if (hasValue(name, locale)) {
-            throw new IllegalArgumentException("XML page already contains an element '"
-                + name
-                + "' for language '"
-                + locale
-                + "'");
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_XML_PAGE_LANG_ELEM_EXISTS_2,
+                name,
+                locale));
         }
 
         Element pages = m_document.getRootElement();
@@ -292,9 +262,13 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     }
 
     /**
+     * @throws CmsRuntimeException if unmarshalling of the xmlpage DTD fails
+     * 
+     * @return the unmarshalled content definition for this xmlpage 
      * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition()
+     * 
      */
-    public CmsXmlContentDefinition getContentDefinition() {
+    public CmsXmlContentDefinition getContentDefinition() throws CmsRuntimeException {
 
         if (m_contentDefinition == null) {
             // since XML page schema is cached anyway we don't need an CmsObject instance
@@ -305,7 +279,8 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                 // store content definition in static variable
                 m_contentDefinition = CmsXmlContentDefinition.unmarshal(source, C_XMLPAGE_XSD_SYSTEM_ID, resolver);
             } catch (CmsXmlException e) {
-                throw new RuntimeException("Unable to unmarshal XML page content definition schema", e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_XML_PAGE_UNMARSHAL_CONTENDDEF_0), e);
             }
         }
         return m_contentDefinition;
@@ -393,6 +368,49 @@ public class CmsXmlPage extends A_CmsXmlDocument {
             element.detach();
         }
     }
+    
+    /**
+     * Renames the page-element value from the old to the new one.<p>
+     * 
+     * @param oldValue the old value 
+     * @param newValue the new value
+     * @param locale the locale
+     * 
+     * @throws CmsIllegalArgumentException if the name contains an index ("[&lt;number&gt;]"), the new value for the 
+     *         given locale already exists in the xmlpage or the the old value does not exist for the locale in the xmlpage.
+     * 
+     */
+    public void renameValue(String oldValue, String newValue, Locale locale) throws CmsIllegalArgumentException {
+        
+        CmsXmlHtmlValue oldXmlHtmlValue = (CmsXmlHtmlValue)getValue(oldValue, locale);
+        if (oldXmlHtmlValue == null) {
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(
+                Messages.ERR_XML_PAGE_NO_ELEM_FOR_LANG_2,
+                oldValue,
+                locale));
+        }
+
+        if (hasValue(newValue, locale)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_XML_PAGE_LANG_ELEM_EXISTS_2,
+                newValue,
+                locale));
+        }
+        if (newValue.indexOf('[') >= 0) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_XML_PAGE_CONTAINS_INDEX_1, newValue));
+        }
+
+        // get the element 
+        Element element = oldXmlHtmlValue.getElement();
+
+        // update value of the element attribute 'NAME'         
+        element.addAttribute(ATTRIBUTE_NAME, newValue);
+
+        // re-initialize the document to update the bookmarks
+        initDocument(m_document, m_encoding, m_contentDefinition);
+    }
 
     /**
      * Sets the enabled flag of an already existing element.<p>
@@ -443,7 +461,10 @@ public class CmsXmlPage extends A_CmsXmlDocument {
             // set the values
             value.setStringValue(cms, content);
         } else {
-            throw new CmsXmlException("Invalid XML page element '" + locale + "/" + name + "' selected");
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XML_PAGE_INVALID_ELEM_SELECT_2,
+                locale,
+                name));
         }
     }
 
@@ -495,7 +516,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                 }
             }
         } catch (NullPointerException e) {
-            OpenCms.getLog(this).error("Error while initalizing XML page bookmarks", e);
+            LOG.error(Messages.get().key(Messages.ERR_XML_PAGE_INIT_BOOKMARKS_0), e);
         }
     }
 
@@ -562,7 +583,9 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                 }
 
             } catch (NullPointerException e) {
-                OpenCms.getLog(this).error("Error while converting old xmlPage content", e);
+                OpenCms.getLog(this).error(
+                    Messages.get().key(Messages.ERR_XML_PAGE_CONVERT_CONTENT_0),
+                    e);
             }
         }
 

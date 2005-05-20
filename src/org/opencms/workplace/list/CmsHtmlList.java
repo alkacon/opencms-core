@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/20 09:52:37 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/20 11:47:11 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -49,7 +50,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -649,12 +650,14 @@ public class CmsHtmlList {
      * Sets the current page.<p>
      *
      * @param currentPage the current page to set
+     * 
+     * @throws CmsIllegalArgumentException if the argument is invalid
      */
-    public void setCurrentPage(int currentPage) {
+    public void setCurrentPage(int currentPage) throws CmsIllegalArgumentException {
 
         if (getSize() != 0) {
             if (currentPage < 1 || currentPage > getNumberOfPages()) {
-                throw new IllegalArgumentException(Messages.get().key(
+                throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.ERR_LIST_INVALID_PAGE_1,
                     new Integer(currentPage)));
             }
@@ -719,15 +722,19 @@ public class CmsHtmlList {
      *
      * @param sortedColumn the sorted column to set
      * @param locale the used locale for sorting
+     * 
+     * @throws CmsIllegalArgumentException if the <code>sortedColumn</code> argument is invalid
      */
-    public void setSortedColumn(String sortedColumn, Locale locale) {
+    public void setSortedColumn(String sortedColumn, Locale locale) throws CmsIllegalArgumentException {
 
         if (!getMetadata().getColumnDefinition(sortedColumn).isSorteable()) {
             return;
         }
         // check if the parameter is valid
         if (m_metadata.getColumnDefinition(sortedColumn) == null) {
-            throw new IllegalArgumentException(Messages.get().key(Messages.ERR_LIST_INVALID_COLUMN_1, sortedColumn));
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_LIST_INVALID_COLUMN_1,
+                sortedColumn));
         }
         // reset view
         setCurrentPage(1);
@@ -995,7 +1002,7 @@ public class CmsHtmlList {
      * 
      * @param metadata the list metadata
      */
-    /*package*/void setMetadata(CmsListMetadata metadata) {
+    /*package*/ void setMetadata(CmsListMetadata metadata) {
 
         m_metadata = metadata;
     }

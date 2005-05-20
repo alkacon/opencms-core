@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/05/20 11:47:11 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.I_CmsWidgetParameter;
@@ -44,6 +44,8 @@ import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+
 import org.dom4j.Element;
 
 /**
@@ -51,10 +53,13 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_CmsWidgetParameter {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsXmlContentValue.class);
 
     /** The default value for nodes of this value. */
     protected String m_defaultValue;
@@ -207,7 +212,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
                 value.setStringValue(cms, defaultValue);
             } catch (CmsRuntimeException e) {
                 // should not happen if default value is correct
-                OpenCms.getLog(this).error("Invalid default value '" + defaultValue + "' for XML content", e);
+                LOG.error(Messages.get().key(
+                    Messages.ERR_XMLCONTENT_INVALID_DEFAULT_VALUE_1,
+                    defaultValue), e);
                 element.clearContent();
             }
         }
@@ -405,15 +412,19 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
      * @param schemaUri the schema uri to load the XML schema file from
      * 
      * @return the loaded XML schema
+     * 
+     * @throws CmsRuntimeException if something goes wrong
      */
-    protected String readSchemaDefinition(String schemaUri) {
+    protected String readSchemaDefinition(String schemaUri) throws CmsRuntimeException {
 
         // the schema definition is located in a separate file for easier editing
         String schemaDefinition;
         try {
             schemaDefinition = CmsFileUtil.readFile(schemaUri, CmsEncoder.C_UTF8_ENCODING);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to load external schema: " + schemaUri, e);
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                schemaUri), e);
         }
         return schemaDefinition;
     }

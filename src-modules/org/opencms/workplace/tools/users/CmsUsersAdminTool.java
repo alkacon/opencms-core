@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/20 11:16:37 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/05/20 11:47:11 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -69,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends A_CmsListDialog {
@@ -128,6 +129,7 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
             LIST_COLUMN_LOGIN);
     }
 
+    
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -144,8 +146,11 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
      * This method should handle every defined list multi action,
      * by comparing <code>{@link #getParamListAction()}</code> with the id 
      * of the action to execute.<p> 
+     * 
+     * @throws CmsRuntimeException to signal that an action is not supported
+     * 
      */
-    public void executeListMultiActions() {
+    public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_ACTION_DELETE)) {
             // execute the delete multiaction
@@ -188,8 +193,11 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
      * This method should handle every defined list single action,
      * by comparing <code>{@link #getParamListAction()}</code> with the id 
      * of the action to execute.<p> 
+     * 
+     * @throws CmsRuntimeException to signal that an action is not supported
+     * 
      */
-    public void executeListSingleActions() {
+    public void executeListSingleActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             String usrName = getSelectedItem().get(LIST_COLUMN_LOGIN).toString();
@@ -290,12 +298,12 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
         // add default resource bundles
         super.initMessages();
     }
-
+    
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setColumns(CmsListMetadata metadata) {
-
+    
         // add column for direct actions
         CmsListColumnDefinition actionsCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIONS, Messages.get().container(
             Messages.GUI_USERS_LIST_COLS_ACTIONS_0), "", // no width
@@ -363,7 +371,7 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
             Messages.GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0)));
         metadata.addColumn(lastLoginCol);
     }
-
+    
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
@@ -449,4 +457,4 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
         metadata.addMultiAction(activateUser);
     }
 
-}
+                    }

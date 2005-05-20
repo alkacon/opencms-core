@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/05/20 09:13:46 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/05/20 11:47:11 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -738,13 +739,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsObject cms, 
         CmsSecurityManager securityManager,
         CmsFile resource
-    ) throws CmsException, CmsVfsException {
+    ) throws CmsException, CmsVfsException, CmsSecurityException {
 
         if (resource.isFile()) {
             return securityManager.writeFile(cms.getRequestContext(), resource);
         }
         // folders can never be written like a file
-        throw new CmsException(Messages.get().container(Messages.ERR_WRITE_FILE_IS_FOLDER_1, cms.getSitePath(resource)));
+        throw new CmsVfsException(Messages.get().container(Messages.ERR_WRITE_FILE_IS_FOLDER_1, cms.getSitePath(resource)));
     }
 
     /**

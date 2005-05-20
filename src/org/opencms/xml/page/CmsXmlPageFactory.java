@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPageFactory.java,v $
- * Date   : $Date: 2005/03/17 10:31:39 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/20 11:47:11 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -53,6 +54,8 @@ import java.util.Locale;
 
 import javax.servlet.ServletRequest;
 
+import org.apache.commons.logging.Log;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -63,10 +66,13 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public final class CmsXmlPageFactory {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlPageFactory.class);
 
     /**
      * No instances of this class should be created.<p> 
@@ -114,7 +120,7 @@ public final class CmsXmlPageFactory {
             return CmsXmlUtils.marshal(createDocument(locale), encoding);
         } catch (CmsXmlException e) {
             // this should never happen
-            OpenCms.getLog(CmsXmlPageFactory.class).error("Could not create XML document", e);
+            LOG.error(Messages.get().key(Messages.ERR_XML_PAGE_FACT_CREATE_DOC_0), e);
             return null;
         }
     }
@@ -191,7 +197,9 @@ public final class CmsXmlPageFactory {
         } else {
             encoding = CmsEncoder.lookupEncoding(encoding, null);
             if (encoding == null) {
-                throw new CmsXmlException("Invalid content-encoding property set for xml page '" + fileName + "'");
+                throw new CmsXmlException(Messages.get().container(
+                    Messages.ERR_XML_PAGE_FACT_INVALID_ENC_1,
+                    fileName));
             }
         }
 
@@ -209,9 +217,9 @@ public final class CmsXmlPageFactory {
                     newPage = unmarshal(contentStr, encoding, new CmsXmlEntityResolver(cms));
                 } catch (UnsupportedEncodingException e) {
                     // this will not happen since the encodig has already been validated
-                    throw new CmsXmlException(
-                        "Invalid content-encoding property set for xml page '" + fileName + "'",
-                        e);
+                    throw new CmsXmlException(Messages.get().container(
+                        Messages.ERR_XML_PAGE_FACT_INVALID_ENC_1,
+                        fileName), e);
                 }
             }
         } else {
@@ -243,7 +251,9 @@ public final class CmsXmlPageFactory {
         
         if (resource.getTypeId() != CmsResourceTypeXmlPage.getStaticTypeId()) {
             // sanity check: resource must be of type XML page
-            throw new CmsXmlException("Resource '" + cms.getSitePath(resource) + "' is not of required type XML page");
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XML_PAGE_FACT_NO_XMLPAGE_TYPE_1,
+                cms.getSitePath(resource)));
         }
 
         // try to get the requested page form the current request attributes 
@@ -294,7 +304,9 @@ public final class CmsXmlPageFactory {
             doc = CmsXmlContentFactory.unmarshal(cms, file); 
         } else {
             // sanity check: file type not an A_CmsXmlDocument
-            throw new CmsXmlException("Resource '" + filename + "' is not a vaild A_CmsXmlDocument resource");
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XML_PAGE_FACT_NO_XML_DOCUMENT_1,
+                file));
         }
         
         // store the page that was read as request attribute for future read requests

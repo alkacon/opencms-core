@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/05/20 11:16:37 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/20 11:47:11 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -49,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -478,7 +479,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected synchronized void listSave() {
 
         CmsHtmlList list = getList();
-        if (list != null) {
+        if (list!=null) {
             list.setMetadata(null);
         }
         getSettings().setHtmlList(list);
@@ -490,11 +491,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * Next time the list is displayed the list will be reloaded.<p>
      */
     protected void removeList() {
-
+        
         setList(null);
         listSave();
     }
-
+    
     /**
      * Should create the columns and add them to the given list metadata object.<p>
      * 
@@ -545,10 +546,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * Should be triggered if your list implementation does not 
      * support the <code>{@link #getParamListAction()}</code>
      * action.<p>
+     * 
+     * @throws CmsRuntimeException always to signal that this operation is not supported
      */
-    protected void throwListUnsupportedActionException() {
+    protected void throwListUnsupportedActionException() throws CmsRuntimeException {
 
-        throw new RuntimeException(Messages.get().key(
+        throw new CmsRuntimeException(Messages.get().container(
             Messages.ERR_LIST_UNSUPPORTED_ACTION_2,
             getList().getName(),
             getParamListAction()));

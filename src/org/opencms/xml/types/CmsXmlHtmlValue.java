@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/05/20 11:47:11 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
@@ -47,6 +47,8 @@ import org.opencms.xml.page.CmsXmlPage;
 import java.util.Iterator;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.htmlparser.util.ParserException;
@@ -56,10 +58,13 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlHtmlValue.class);
 
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME = "OpenCmsHtml";
@@ -145,7 +150,9 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                 value.setStringValue(cms, defaultValue);
             } catch (CmsRuntimeException e) {
                 // should not happen if default value is correct
-                OpenCms.getLog(this).error("Invalid default value '" + defaultValue + "' for XML content", e);
+                LOG.error(Messages.get().key(
+                    Messages.ERR_XMLCONTENT_INVALID_DEFAULT_VALUE_1,
+                    defaultValue), e);
                 element.clearContent();
             }
         }
@@ -271,7 +278,8 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                 // replace links in HTML by macros and fill link table      
                 value = linkProcessor.replaceLinks(value);
             } catch (Exception exc) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_HTML_DATA_PROCESSING_0));
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_HTML_DATA_PROCESSING_0));
             }
         }
 
@@ -337,7 +345,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                     content = linkProcessor.processLinks(content);
                 } catch (ParserException e) {
                     // should better not happen
-                    OpenCms.getLog(this).error("HTML link processing failed", e);
+                    LOG.error(Messages.get().key(Messages.ERR_XMLCONTENT_LINK_PROCESS_FAILED_0), e);
                 }
             }
         }

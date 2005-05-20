@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/05/20 11:16:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/20 11:47:11 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.CmsSchedulerException;
@@ -73,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsSchedulerList extends A_CmsListDialog {
@@ -152,17 +153,6 @@ public class CmsSchedulerList extends A_CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    protected void initMessages() {
-
-        // add specific dialog resource bundle
-        addMessages(Messages.get().getBundleName());
-        // add default resource bundles
-        super.initMessages();
-    }
-
-    /**
      * Public constructor with JSP variables.<p>
      * 
      * @param context the JSP page context
@@ -178,8 +168,11 @@ public class CmsSchedulerList extends A_CmsListDialog {
      * This method should handle every defined list multi action,
      * by comparing <code>{@link #getParamListAction()}</code> with the id 
      * of the action to execute.<p> 
+     * 
+     * @throws CmsRuntimeException to signal that an action is not supported
+     * 
      */
-    public void executeListMultiActions() {
+    public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_ACTION_MDELETE)) {
             // execute the delete multiaction
@@ -222,8 +215,11 @@ public class CmsSchedulerList extends A_CmsListDialog {
      * This method should handle every defined list single action,
      * by comparing <code>{@link #getParamListAction()}</code> with the id 
      * of the action to execute.<p> 
+     * 
+     * @throws CmsRuntimeException to signal that an action is not supported
+     * 
      */
-    public void executeListSingleActions() {
+    public void executeListSingleActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             // edit a job from the list
@@ -346,7 +342,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setColumns(CmsListMetadata metadata) {
-        
+
         // add column for edit action
         CmsListColumnDefinition editCol = new CmsListColumnDefinition(LIST_COLUMN_EDIT);
         editCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_EDIT_0));

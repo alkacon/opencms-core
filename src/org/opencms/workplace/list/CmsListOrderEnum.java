@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListOrderEnum.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/20 11:47:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.main.CmsIllegalArgumentException;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -49,7 +51,7 @@ import java.util.List;
  * <p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public final class CmsListOrderEnum {
@@ -88,8 +90,11 @@ public final class CmsListOrderEnum {
      * @param value the align to parse
      * 
      * @return the enumeration element
+     * 
+     * @throws CmsIllegalArgumentException if the given value could not be matched against a 
+     *         <code>CmsListColumnAlignEnum</code> type.
      */
-    public static CmsListOrderEnum valueOf(String value) {
+    public static CmsListOrderEnum valueOf(String value) throws CmsIllegalArgumentException {
 
         Iterator iter = VALUES.iterator();
         while (iter.hasNext()) {
@@ -98,7 +103,7 @@ public final class CmsListOrderEnum {
                 return target;
             }
         }
-        throw new IllegalArgumentException(Messages.get().key(
+        throw new CmsIllegalArgumentException(Messages.get().container(
             Messages.ERR_LIST_ENUM_PARSE_2,
             new Integer(value),
             CmsListOrderEnum.class.getName()));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItem.java,v $
- * Date   : $Date: 2005/05/03 11:09:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/20 11:47:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.main.CmsIllegalArgumentException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +40,7 @@ import java.util.Map;
  * Generic list item.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsListItem {
@@ -70,12 +72,16 @@ public class CmsListItem {
      * @param columnId the column id
      * 
      * @return the content, may be <code>null</code>
+     * 
+     * @throws CmsIllegalArgumentException if the given <code>columnId</code> is invalid
      */
-    public Object get(String columnId) {
+    public Object get(String columnId) throws CmsIllegalArgumentException {
 
         if (getMetadata().getColumnDefinition(columnId) == null
             && getMetadata().getItemDetailDefinition(columnId) == null) {
-            throw new IllegalArgumentException(Messages.get().key(Messages.ERR_LIST_INVALID_COLUMN_1, columnId));
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_LIST_INVALID_COLUMN_1,
+                columnId));
         }
         return m_values.get(columnId);
     }
@@ -109,12 +115,16 @@ public class CmsListItem {
      * @param value the value to display
      * 
      * @return the previous value, or <code>null</code> if unset
+     * @throws CmsIllegalArgumentException if the given <code>columnId</code> is invalid
+     * 
      */
-    public Object set(String columnId, Object value) {
+    public Object set(String columnId, Object value) throws CmsIllegalArgumentException {
 
         if (getMetadata().getColumnDefinition(columnId) == null
             && getMetadata().getItemDetailDefinition(columnId) == null) {
-            throw new IllegalArgumentException(Messages.get().key(Messages.ERR_LIST_INVALID_COLUMN_1, columnId));
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_LIST_INVALID_COLUMN_1,
+                columnId));
         }
         return m_values.put(columnId, value);
     }
