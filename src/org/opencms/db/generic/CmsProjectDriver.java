@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/05/18 08:41:34 $
- * Version: $Revision: 1.218 $
+ * Date   : $Date: 2005/05/20 14:29:15 $
+ * Version: $Revision: 1.219 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.218 $
+ * @version $Revision: 1.219 $
  * @since 5.1
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
@@ -696,7 +696,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             if (LOG.isDebugEnabled()) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_DEL_FOLDER_3, 
-                        dbc.removeSiteRoot(currentFolder.getRootPath()), String.valueOf(m), String.valueOf(n)));
+                        dbc.removeSiteRoot(currentFolder.getRootPath()), new Integer(m), new Integer(n)));
                 }
             }
         } finally {
@@ -874,7 +874,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_DEL_FILE_3, dbc.removeSiteRoot(offlineResource.getRootPath()), String.valueOf(m), String.valueOf(n)));
+                    LOG.debug(Messages.get().key(Messages.LOG_DEL_FILE_3, dbc.removeSiteRoot(offlineResource.getRootPath()), new Integer(m), new Integer(n)));
                 }
 
             } else if (offlineResource.getState() == I_CmsConstants.C_STATE_CHANGED) {
@@ -1023,7 +1023,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_PUBLISHING_FILE_3, 
-                        dbc.removeSiteRoot(offlineResource.getRootPath()), String.valueOf(m), String.valueOf(n)));
+                        dbc.removeSiteRoot(offlineResource.getRootPath()), new Integer(m), new Integer(n)));
                 }
 
             } else if (offlineResource.getState() == I_CmsConstants.C_STATE_NEW) {
@@ -1145,7 +1145,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 if (LOG.isDebugEnabled()) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(Messages.LOG_PUBLISHING_FILE_3, 
-                            dbc.removeSiteRoot(offlineResource.getRootPath()), String.valueOf(m), String.valueOf(n)));
+                            dbc.removeSiteRoot(offlineResource.getRootPath()), new Integer(m), new Integer(n)));
                     }
                 }
             }
@@ -1399,7 +1399,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_PUBLISHING_FOLDER_3, 
-                    offlineFolder.getRootPath(), String.valueOf(m), String.valueOf(n)));
+                    offlineFolder.getRootPath(), new Integer(m), new Integer(n)));
             }
         } finally {
             // notify the app. that the published folder and it's properties have been modified offline

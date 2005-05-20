@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/20 14:29:15 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ public final class CmsDbUtil {
                     throw exc;
                 } else {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().container(Messages.LOG_GET_TIMESTAMP_2, column, String.valueOf(i)));
+                        LOG.warn(Messages.get().container(Messages.LOG_GET_TIMESTAMP_2, column, new Integer(i)));
                     }
                 }
             }

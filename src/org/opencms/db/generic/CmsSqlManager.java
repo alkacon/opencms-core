@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/05/18 12:48:15 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/05/20 14:29:15 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.55 $ $Date: 2005/05/18 12:48:15 $
+ * @version $Revision: 1.56 $ $Date: 2005/05/20 14:29:15 $
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
@@ -488,7 +488,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
         if (projectId < 0) {
             throw new SQLException(Messages.get().key(
-                Messages.ERR_JDBC_CONN_INVALID_PROJECT_ID_1, String.valueOf(projectId)));
+                Messages.ERR_JDBC_CONN_INVALID_PROJECT_ID_1, new Integer(projectId)));
         }
 
         // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
