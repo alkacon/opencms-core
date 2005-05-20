@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/05/19 16:08:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/20 10:01:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsSchedulerList extends A_CmsListDialog {
@@ -100,6 +100,9 @@ public class CmsSchedulerList extends A_CmsListDialog {
     
     /** List column delete. */
     public static final String LIST_COLUMN_DELETE = "delete";
+    
+    /** List column edit. */
+    public static final String LIST_COLUMN_EDIT = "editcol";
     
     /** List column last execution. */
     public static final String LIST_COLUMN_LASTEXE = "lastexe";
@@ -319,6 +322,23 @@ public class CmsSchedulerList extends A_CmsListDialog {
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setColumns(CmsListMetadata metadata) {
+        
+        // add column for edit action
+        CmsListColumnDefinition editCol = new CmsListColumnDefinition(LIST_COLUMN_EDIT);
+        editCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_EDIT_0));
+        editCol.setWidth("20");
+        editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        editCol.setListItemComparator(null);
+        // create default edit action for edit column: edit job
+        CmsListDirectAction editColAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_EDIT);
+        editColAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0));
+        editColAction.setIconPath(PATH_BUTTONS + "edit.gif");
+        editColAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_HELP_0));
+        editColAction.setEnabled(true);
+        editColAction.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_CONF_0));
+        // set action for the edit column
+        editCol.addDirectAction(editColAction);
+        metadata.addColumn(editCol);
 
         // add column for activate/deactivate action
         CmsListColumnDefinition activateCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIVATE);
@@ -357,7 +377,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         copyCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_COPY_0));
         copyCol.setWidth("20");
         copyCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        copyCol.setListItemComparator(new CmsListItemActionIconComparator());
+        copyCol.setListItemComparator(null);
         // direct action: copy job
         CmsListDirectAction copyJob = new CmsListDirectAction(LIST_ID, LIST_COLUMN_COPY);
         copyJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0));
@@ -374,7 +394,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         delCol.setName(Messages.get().container(Messages.GUI_JOBS_LIST_COL_DELETE_0));
         delCol.setWidth("20");
         delCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        delCol.setListItemComparator(new CmsListItemActionIconComparator());
+        delCol.setListItemComparator(null);
         // direct action: delete job
         CmsListDirectAction delJob = new CmsListDirectAction(LIST_ID, LIST_ACTION_DELETE);
         delJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0));

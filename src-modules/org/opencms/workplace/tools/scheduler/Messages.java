@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Messages.java,v $
- * Date   : $Date: 2005/05/18 10:26:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/20 10:01:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -194,6 +194,9 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_DELETE_0 = "GUI_JOBS_LIST_COL_DELETE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_JOBS_LIST_COL_EDIT_0 = "GUI_JOBS_LIST_COL_EDIT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_LASTEXE_0 = "GUI_JOBS_LIST_COL_LASTEXE_0";

@@ -377,6 +377,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/scheduler/buttons/edit.gif</source>
+			<destination>system/workplace/resources/tools/scheduler/buttons/edit.gif</destination>
+			<type>image</type>
+			<uuidresource>1ea95471-c915-11d9-845d-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 09:54:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 20 May 2005 09:54:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/tools/scheduler/buttons/multi_activate.gif</source>
 			<destination>system/workplace/resources/tools/scheduler/buttons/multi_activate.gif</destination>
 			<type>image</type>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/05/19 09:35:16 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/20 10:01:07 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.3.6
  * 
  * @see org.opencms.scheduler.CmsScheduledJobInfo
@@ -330,14 +330,16 @@ public class CmsScheduleManager implements Job {
             jobInfo.setId(jobId);
             idCreated = true;
         } else {
-            // this job already was scheduled, remove the currently scheduled instance and keep the id            
-            boolean foundJob = unscheduleJob(cms, jobId);
-            if (!foundJob) {
-                CmsMessageContainer message = Messages.get().container(Messages.ERR_JOB_WITH_ID_DOES_NOT_EXIST_1, jobId);
-                LOG.warn(message.key());
-                // can not continue
-                throw new CmsSchedulerException(message);
-            }
+            // this job already was scheduled, remove the currently scheduled instance and keep the id     
+            unscheduleJob(cms, jobId);
+            // removed check because of editing issues
+//            boolean foundJob = unscheduleJob(cms, jobId);
+//            if (!foundJob) {
+//                CmsMessageContainer message = Messages.get().container(Messages.ERR_JOB_WITH_ID_DOES_NOT_EXIST_1, jobId);
+//                LOG.warn(message.key());
+//                // can not continue
+//                throw new CmsSchedulerException(message);
+//            }
             // open the job configuration (in case it has been frozen)
             jobInfo.setFrozen(false);
         }

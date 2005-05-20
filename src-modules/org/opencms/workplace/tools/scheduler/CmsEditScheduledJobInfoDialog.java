@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/05/19 16:08:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/20 10:01:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.9.1
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
@@ -113,7 +113,13 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     public void actionCommit() {
         
         List errors = new ArrayList();
-
+        
+        CmsScheduledJobInfo jobCopy = null;
+        if (m_jobInfo.getId() != null) {
+            // get a copy of the valid job if id is present
+            jobCopy = OpenCms.getScheduleManager().getJob(m_jobInfo.getId());
+        }
+        
         try {
             // schedule the edited job
             OpenCms.getScheduleManager().scheduleJob(getCms(), m_jobInfo);
@@ -123,12 +129,21 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
         } catch (CmsRoleViolationException e) {
             errors.add(e);    
-        } catch (CmsSchedulerException e) {
-            
+        } catch (CmsSchedulerException e) {            
             errors.add(e);
         } catch (Throwable t) {
             errors.add(t);    
         }
+        
+        if (errors.size() > 0 && jobCopy != null) {
+            // re-schedule copy of the valid job if an error scheduling a present job occurred
+            try {
+                OpenCms.getScheduleManager().scheduleJob(getCms(), jobCopy);    
+            } catch (Throwable t) {
+                errors.add(t);
+            }
+        }
+        
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
     }
@@ -201,7 +216,7 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             result.append(dialogBlockEnd());
         } else if (dialog.equals(PAGES[1])) {
             // create the widget for the second dialog page
-            result.append(dialogBlockStart(key("editor.label.parameters")));
+            result.append(dialogBlockStart(key("editor.label.parameters.block")));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(12, 12));
             result.append(createWidgetTableEnd());
@@ -249,6 +264,17 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     protected String[] getPageArray() {
 
         return PAGES;
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        // add specific dialog resource bundle
+        addMessages(Messages.get().getBundleName());
+        // add default resource bundles
+        super.initMessages();
     }
     
     /**

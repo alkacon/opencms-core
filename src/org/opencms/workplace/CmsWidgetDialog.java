@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/19 16:35:47 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/05/20 10:01:07 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -818,15 +818,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         result.append("<table class=\"xmlTable\">\n");
 
         // show error header once if there were validation errors
-        if (hasValidationErrors()) {
-            result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
-            result.append("<tr><td colspan=\"2\">&nbsp;</td>");
-            result.append("<td class=\"xmlTdErrorHeader\">");
-            result.append(key("editor.xmlcontent.validation.error.title"));
-            result.append("</td><td colspan=\"2\">&nbsp;");
-            result.append("</td></tr>\n");
-            result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
-        }
+        result.append(createWidgetErrorHeader());
 
         Iterator i = getWidgets().iterator();
         // iterate the type sequence                    
@@ -934,7 +926,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             } else {
                 // disabled element, show message for optional element
                 result.append("<td class=\"xmlTdDisabled maxwidth\">");
-                result.append(key("editor.xmlcontent.optionalelement"));
+                result.append(key("editor.widget.optionalelement"));
                 result.append("</td>");
             }
 
@@ -998,7 +990,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
             result.append("<tr><td colspan=\"2\">&nbsp;</td>");
             result.append("<td class=\"xmlTdErrorHeader\">");
-            result.append(key("editor.xmlcontent.validation.error.title"));
+            result.append(key("editor.widget.validation.error.title"));
             result.append("</td><td colspan=\"2\">&nbsp;");
             result.append("</td></tr>\n");
             result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
@@ -1229,6 +1221,15 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected boolean hasValidationErrors() {
 
         return (m_validationErrorList != null) && (m_validationErrorList.size() > 0);
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        addMessages(Messages.get().getBundleName());
+        addMessages(org.opencms.workplace.tools.Messages.get().getBundleName());
     }
 
     /**
