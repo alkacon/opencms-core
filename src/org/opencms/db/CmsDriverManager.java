@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/19 15:24:33 $
- * Version: $Revision: 1.504 $
+ * Date   : $Date: 2005/05/20 11:57:31 $
+ * Version: $Revision: 1.505 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.504 $
+ * @version $Revision: 1.505 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6701,8 +6701,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 && (c != '$')
                 && (c != '@')) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_USERNAME_ILLEGAL_CHARACTERS_1,
-                    username));
+                    Messages.ERR_USERNAME_ILLEGAL_CHARACTERS_2,
+                    username,
+                    new Character(c)));
             }
         }
     }

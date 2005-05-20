@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/19 15:24:34 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/05/20 11:57:31 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -521,7 +521,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_USER_NOT_IN_GROUP_2 = "ERR_USER_NOT_IN_GROUP_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_USERNAME_ILLEGAL_CHARACTERS_1 = "ERR_USERNAME_ILLEGAL_CHARACTERS_1";
+    public static final String ERR_USERNAME_ILLEGAL_CHARACTERS_2 = "ERR_USERNAME_ILLEGAL_CHARACTERS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_USERNAME_PASSWORD_MISMATCH_1 = "ERR_USERNAME_PASSWORD_MISMATCH_1";
