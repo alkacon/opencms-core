@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2005/05/16 17:45:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/20 09:13:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@ package org.opencms.workplace.tools.history;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -54,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -222,7 +224,7 @@ public class CmsAdminHistoryClear extends CmsReport {
                     setParamAction(REPORT_BEGIN);
                     setParamThread(thread.getUUID().toString());
                     getJsp().include(C_FILE_REPORT_OUTPUT);  
-                } catch (CmsException e) {
+                } catch (CmsRuntimeException e) {
                     // error setting history values, show error dialog
                     setParamMessage(key("error.message.historyclear"));
                     setParamErrorstack(CmsException.getStackTraceAsString(e));
@@ -237,9 +239,9 @@ public class CmsAdminHistoryClear extends CmsReport {
      * Returns the necessary parameters to perform the backup deletion.<p>
      * 
      * @return a map with necessary parameters for the deleteBackups method
-     * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if something goes wrong
      */
-    private Map getBackupParams() throws CmsException {
+    private Map getBackupParams() throws CmsIllegalArgumentException {
         HttpServletRequest request = getJsp().getRequest();
         Map parameterMap = new HashMap(); 
         
@@ -261,7 +263,8 @@ public class CmsAdminHistoryClear extends CmsReport {
                 timeStamp = getCalendarDate(paramDate, false);
             } catch (ParseException ex) {
                 // no date values submitted, throw exception
-                throw new CmsException("Invalid arguments. Check the date field of the dialog", CmsException.C_BAD_NAME, ex);
+                
+                throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_DATE_1, paramDate), ex);
             }
         }
         

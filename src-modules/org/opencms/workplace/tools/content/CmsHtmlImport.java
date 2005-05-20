@@ -30,6 +30,7 @@
  */
 
 package org.opencms.workplace.tools.content;
+import org.opencms.db.CmsDbIoException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResourceFilter;
@@ -46,6 +47,7 @@ import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -82,7 +84,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsHtmlImport {
 
@@ -390,58 +392,44 @@ public class CmsHtmlImport {
      * Tests if all given input parameters for the HTML Import are valid, i.e. that all the 
      * given folders do exist. <p>
      * 
-     * @throws CmsParameterValidationException if some parameters are not valid
+     * @throws CmsIllegalArgumentException if some parameters are not valid
      */
-    public void checkParameters() throws CmsParameterValidationException {
+    public void checkParameters() throws CmsIllegalArgumentException {
 
-        Locale userLocale = getLocale();
-        // error buffer, will store the any errors
-        StringBuffer errorBuffer = new StringBuffer();
         // check the input directory
         File inputDir = new File(m_inputDir);
         if (!inputDir.exists() || inputDir.isFile()) {
-            // the input directory is not valid, so mark this as an error
-            errorBuffer.append("<br><br>");
-            errorBuffer.append(Messages.get().key(
-                userLocale,
-                Messages.GUI_HTMLIMPORT_INPUTDIR_1,
-                new Object[] {m_inputDir}));
+            // the input directory is not valid
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.GUI_HTMLIMPORT_INPUTDIR_1, m_inputDir));
         }
 
         // check the destination directory        
         try {
             m_cmsObject.readFolder(m_destinationDir);
         } catch (CmsException e) {
-            // an excpetion is thrown if the folder does not exist, so mark this as an error
-            errorBuffer.append("<br>");
-            errorBuffer.append(Messages.get().key(
-                userLocale,
-                Messages.GUI_HTMLIMPORT_DESTDIR_1,
-                new Object[] {m_destinationDir}));
+            // an excpetion is thrown if the folder does not exist
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.GUI_HTMLIMPORT_DESTDIR_1, m_destinationDir), e);
         }
 
         // check the image gallery
         try {
             m_cmsObject.readFolder(m_imageGallery);
         } catch (CmsException e) {
-            // an excpetion is thrown if the folder does not exist, so mark this as an error
-            errorBuffer.append("<br>");
-            errorBuffer.append(Messages.get().key(
-                userLocale,
-                Messages.GUI_HTMLIMPORT_DESTDIR_1,
-                new Object[] {m_imageGallery}));
+            // an excpetion is thrown if the folder does not exist
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.GUI_HTMLIMPORT_DESTDIR_1, m_imageGallery), e);
         }
 
         // check the link gallery
         try {
             m_cmsObject.readFolder(m_linkGallery);
         } catch (CmsException e) {
-            // an excpetion is thrown if the folder does not exist, so mark this as an error
-            errorBuffer.append("<br>");
-            errorBuffer.append(Messages.get().key(
-                userLocale,
-                Messages.GUI_HTMLIMPORT_LINKGALLERY_1,
-                new Object[] {m_linkGallery}));
+            // an excpetion is thrown if the folder does not exist
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.GUI_HTMLIMPORT_LINKGALLERY_1, m_linkGallery), e);
+            
         }
 
         // check the download gallery
@@ -449,12 +437,9 @@ public class CmsHtmlImport {
             try {
                 m_cmsObject.readFolder(m_downloadGallery);
             } catch (CmsException e) {
-                // an excpetion is thrown if the folder does not exist, so mark this as an error
-                errorBuffer.append("<br>");
-                errorBuffer.append(Messages.get().key(
-                    userLocale,
-                    Messages.GUI_HTMLIMPORT_DOWNGALLERY_1,
-                    new Object[] {m_downloadGallery}));
+                // an excpetion is thrown if the folder does not exist
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.GUI_HTMLIMPORT_DOWNGALLERY_1, m_downloadGallery), e);
             }
         }
 
@@ -462,32 +447,21 @@ public class CmsHtmlImport {
         try {
             m_cmsObject.readResource(m_template, CmsResourceFilter.ALL);
         } catch (CmsException e) {
-            // an excpetion is thrown if the template does not exist, so mark this as an error
-            errorBuffer.append("<br>");
-            errorBuffer.append(Messages.get().key(
-                userLocale,
-                Messages.GUI_HTMLIMPORT_TEMPLATE_1,
-                new Object[] {m_template}));
+            // an excpetion is thrown if the template does not exist
+            if (!isValidElement()) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.GUI_HTMLIMPORT_TEMPLATE_1, m_template), e);
+            }
         }
 
         // check the element
         if (!isValidElement()) {
-            errorBuffer.append("<br>");
-            errorBuffer.append(Messages.get().key(
-                userLocale,
-                Messages.GUI_HTMLIMPORT_INVALID_ELEM_2,
-                new Object[] {m_element, m_template}));
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.GUI_HTMLIMPORT_INVALID_ELEM_2, m_element, m_template));
         }
 
         // check if we are in an offline project
         if (m_cmsObject.getRequestContext().currentProject().isOnlineProject()) {
-            errorBuffer.append("<br>");
-            errorBuffer.append(Messages.get().key(userLocale, Messages.GUI_HTMLIMPORT_CONSTRAINT_OFFLINE_0, null));
-        }
-
-        // if there were any errors collected, throw a CmsParameterValidationException
-        if (errorBuffer.length() > 0) {
-            throw new CmsParameterValidationException(errorBuffer.toString());
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.GUI_HTMLIMPORT_CONSTRAINT_OFFLINE_0));
         }
     }
 
@@ -1207,7 +1181,7 @@ public class CmsHtmlImport {
             }
             return buffer;
         } catch (IOException e) {
-            throw new CmsException(e.getMessage());
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_GET_FILE_BYTES_1, file.getAbsolutePath()), e);
         } finally {
             try {
                 if (fileStream != null) {

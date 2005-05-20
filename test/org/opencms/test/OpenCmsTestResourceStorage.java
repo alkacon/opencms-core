@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/20 09:13:46 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class OpenCmsTestResourceStorage {
 
@@ -102,9 +102,9 @@ public class OpenCmsTestResourceStorage {
      * 
      * @param resourceName the name of the resource to get 
      * @return OpenCmsTestResourceStorageEntry with all the attributes of a CmsResource
-     * @throws CmsException in case something goes wrong
+     * @throws Exception in case something goes wrong
      */
-    public OpenCmsTestResourceStorageEntry get(String resourceName) throws CmsException {
+    public OpenCmsTestResourceStorageEntry get(String resourceName) throws Exception {
 
         String mappedResourceName = mapResourcename(resourceName);
 
@@ -112,7 +112,7 @@ public class OpenCmsTestResourceStorage {
         entry = (OpenCmsTestResourceStorageEntry)m_storage.get(mappedResourceName);
 
         if (entry == null) {
-            throw new CmsException("Not found in storage " + resourceName + " -> " + mappedResourceName);
+            throw new Exception("Not found in storage " + resourceName + " -> " + mappedResourceName);
         }
 
         return entry;
@@ -142,16 +142,16 @@ public class OpenCmsTestResourceStorage {
      * 
      * @param resourceName the name of the resource to get  the state
      * @return precalculated resource state
-     * @throws CmsException in case something goes wrong
+     * @throws Exception in case something goes wrong
      */
-    public int getPreCalculatedState(String resourceName) throws CmsException {
+    public int getPreCalculatedState(String resourceName) throws Exception {
         
          String mappedResourceName = mapResourcename(resourceName);
          
          Integer state = null;
          state = (Integer)m_precalcState.get(mappedResourceName);
          if (state == null) {
-            throw new CmsException("Not found in storage " + resourceName + " -> " + mappedResourceName);
+            throw new Exception("Not found in storage " + resourceName + " -> " + mappedResourceName);
         }
         return state.intValue();
     }

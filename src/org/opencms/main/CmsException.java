@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/05/19 07:15:14 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/05/20 09:13:46 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,12 +45,9 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsException extends Exception implements I_CmsThrowable {
-
-    /** Error code for bad name exception. */
-    public static final int C_BAD_NAME = 3;
     
     /**
      * This array provides descriptions for the error codes stored as
@@ -190,16 +187,6 @@ public class CmsException extends Exception implements I_CmsThrowable {
 
         super(cause);
         m_type = type;
-    }
-
-    /**
-     * Creates a CmsException with the provided description message.<p>
-     *
-     * @param message the description message
-     */
-    public CmsException(String message) {
-
-        super(message);
     }
 
     /**

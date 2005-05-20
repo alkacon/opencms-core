@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2005/05/10 07:50:57 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/20 09:13:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.5.0
  */
@@ -216,7 +216,7 @@ public class CmsChtype extends CmsDialog {
                 // get new resource type id from request
                 newType = Integer.parseInt(getParamNewResourceType());
             } catch (NumberFormatException nf) {
-                throw new CmsException(Messages.get().key(Messages.ERR_GET_RESTYPE_1, getParamNewResourceType()));    
+                throw new CmsException(Messages.get().container(Messages.ERR_GET_RESTYPE_1, getParamNewResourceType()));    
             }
             // check the resource lock state
             checkLock(getParamResource());

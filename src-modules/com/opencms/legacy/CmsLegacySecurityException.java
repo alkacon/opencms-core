@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacySecurityException.java,v $
- * Date   : $Date: 2005/05/19 07:15:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/20 09:13:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  * but that the current user who attemted it does not have the required permissions at the current time.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.4
  */
 public class CmsLegacySecurityException extends CmsSecurityException {
@@ -101,7 +101,8 @@ public class CmsLegacySecurityException extends CmsSecurityException {
      */
     public CmsLegacySecurityException(String message) {
 
-        super(message);
+        super(null);
+        m_errorMessage = message;
     }
 
     /**
@@ -112,7 +113,8 @@ public class CmsLegacySecurityException extends CmsSecurityException {
      */
     public CmsLegacySecurityException(String message, int type) {
 
-        super(message);
+        super(null);
+        m_errorMessage = message;
         m_type = type;
     }
 
@@ -126,7 +128,7 @@ public class CmsLegacySecurityException extends CmsSecurityException {
      */
     public CmsLegacySecurityException(String message, int type, Throwable cause) {
 
-        super(message);
+        super(null);
         m_errorMessage = message;
         initCause(cause);
         m_type = type;
@@ -141,7 +143,8 @@ public class CmsLegacySecurityException extends CmsSecurityException {
      */
     public CmsLegacySecurityException(String message, Throwable cause) {
 
-        super(message);
+        super(null);
+        m_errorMessage = message;
         initCause(cause);
     }
 

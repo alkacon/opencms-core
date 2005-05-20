@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/20 09:13:46 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/20 09:13:46 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -162,7 +162,7 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault {
                         templateSelector = "errorinuse";
                     }
                     else {
-                        if(e.getType() == CmsException.C_BAD_NAME) {
+                        if(e.getType() == CmsLegacyException.C_BAD_NAME) {
                             templateSelector = "errorformat";
                         }
                         else {

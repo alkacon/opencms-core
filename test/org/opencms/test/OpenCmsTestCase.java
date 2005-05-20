@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/05/19 08:57:21 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2005/05/20 09:13:46 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.74 $
+ * @version $Revision: 1.75 $
  * 
  * @since 5.3.5
  */
@@ -1075,8 +1075,8 @@ public class OpenCmsTestCase extends TestCase {
                     fail("[ACE not found" + ace + "]");
                 }
             }
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
 
@@ -1124,8 +1124,8 @@ public class OpenCmsTestCase extends TestCase {
                     fail("[Permission set not found " + principal + ":" + permission + "]");
                 }
             }
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
 
@@ -1194,8 +1194,8 @@ public class OpenCmsTestCase extends TestCase {
                     fail("[Permission set not found " + principal + ":" + permission + "]");
                 }
             }
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
 
@@ -1445,8 +1445,8 @@ public class OpenCmsTestCase extends TestCase {
 
             // compare the current resource with the stored resource
             assertFilter(cms, storedResource, resource, filter);
-        } catch (CmsException e) {
-            fail("cannot read resource " + resource.getRootPath() + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resource.getRootPath() + " " + e.getMessage());
         }
     }
 
@@ -1681,8 +1681,8 @@ public class OpenCmsTestCase extends TestCase {
 
             // compare the current resource with the stored resource
             assertFilter(cms, storedResource, res, filter);
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
 
@@ -1945,8 +1945,8 @@ public class OpenCmsTestCase extends TestCase {
             if (!resourceProperty.isIdentical(property)) {
                 fail("property is not identical :" + property + " != " + resourceProperty);
             }
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
 
@@ -1997,8 +1997,8 @@ public class OpenCmsTestCase extends TestCase {
             if (storedNotFound.length() > 0) {
                 fail("properties not found in stored value: " + storedNotFound);
             }
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
 
@@ -2064,8 +2064,8 @@ public class OpenCmsTestCase extends TestCase {
                 fail("error comparing resource " + resourceName + " with stored values: " + noMatches);
             }
 
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
 
@@ -2104,8 +2104,8 @@ public class OpenCmsTestCase extends TestCase {
             if (!resourceProperty.isIdentical(property)) {
                 fail("property is not identical :" + property + " != " + resourceProperty);
             }
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
 
@@ -2156,8 +2156,8 @@ public class OpenCmsTestCase extends TestCase {
             if (storedFound.length() > 0) {
                 fail("properties already found in stored value: " + storedFound);
             }
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
 
@@ -2197,8 +2197,8 @@ public class OpenCmsTestCase extends TestCase {
             if (resourceProperty != CmsProperty.getNullProperty()) {
                 fail("property is not removed :" + property + " != " + resourceProperty);
             }
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
 
@@ -2251,8 +2251,8 @@ public class OpenCmsTestCase extends TestCase {
             if (storedNotFound.length() > 0) {
                 fail("properties not found in stored value: " + storedNotFound);
             }
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
 
@@ -2325,8 +2325,8 @@ public class OpenCmsTestCase extends TestCase {
                     + "]");
             }
 
-        } catch (CmsException e) {
-            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        } catch (Exception e) {
+            fail("cannot read resource " + resourceName + " " + e.getMessage());
         }
     }
 
@@ -2449,9 +2449,9 @@ public class OpenCmsTestCase extends TestCase {
      * 
      * @param resourceName the name of the resource to get  the state
      * @return precalculated resource state
-     * @throws CmsException in case something goes wrong
+     * @throws Exception in case something goes wrong
      */
-    public int getPreCalculatedState(String resourceName) throws CmsException {
+    public int getPreCalculatedState(String resourceName) throws Exception {
 
         return m_currentResourceStrorage.getPreCalculatedState(resourceName);
     }

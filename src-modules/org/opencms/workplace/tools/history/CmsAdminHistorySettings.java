@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/20 09:13:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.history;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -51,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -164,7 +165,7 @@ public class CmsAdminHistorySettings extends CmsDialog {
             performEditOperation(request);
             // set the request parameters before returning to the overview
             actionCloseDialog();              
-        } catch (CmsException e) {
+        } catch (CmsIllegalArgumentException e) {
             // error setting history values, show error dialog
             setParamMessage(key("error.message.historysettings"));
             setParamErrorstack(CmsException.getStackTraceAsString(e));
@@ -178,9 +179,9 @@ public class CmsAdminHistorySettings extends CmsDialog {
      * 
      * @param request the HttpServletRequest
      * @return true if everything was ok
-     * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the entered number is no positive integer
      */
-    private boolean performEditOperation(HttpServletRequest request) throws CmsException {
+    private boolean performEditOperation(HttpServletRequest request) throws CmsIllegalArgumentException {
         // get the new settings from the request parameters
         String paramEnabled = request.getParameter("enable");
         String paramVersions = request.getParameter("versions");
@@ -192,11 +193,11 @@ public class CmsAdminHistorySettings extends CmsDialog {
             versions = Integer.parseInt(paramVersions);
         } catch (NumberFormatException e) {
             // no int value submitted, throw exception
-            throw new CmsException("No integer value entered", CmsException.C_BAD_NAME, e);
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NO_INT_ENTERED_0), e);
         }
         if (versions < 1) {
             // version value too low, throw exception
-            throw new CmsException("The entered version value must not be smaller than 1", CmsException.C_BAD_NAME);
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NO_POSITIVE_INT_0));
         }
         
         OpenCms.getSystemInfo().setVersionHistorySettings(enabled, versions);

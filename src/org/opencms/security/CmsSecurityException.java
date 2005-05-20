@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsSecurityException.java,v $
- * Date   : $Date: 2005/05/19 07:15:14 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/05/20 09:13:45 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.main.CmsException;
  * but that the current user who attemted it does not have the required permissions at the current time.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.1.4
  */
 public class CmsSecurityException extends CmsException {
@@ -73,14 +73,5 @@ public class CmsSecurityException extends CmsException {
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
         
         return new CmsSecurityException(container, cause);
-    }
-    
-    /**
-     * Constructs a CmsSecurityException with the specified description message.<p>
-     * 
-     * @param message the description message
-     */
-    public CmsSecurityException(String message) {
-        super(message);
     }
 }

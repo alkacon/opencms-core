@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestDummyResourceInit.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/20 09:13:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ public class CmsTestDummyResourceInit implements I_CmsResourceInit {
        // just a dummy implementation
         
         if (System.currentTimeMillis() == 0) {
-            throw new CmsResourceInitException ();
+            throw new CmsResourceInitException (Messages.get().container(Messages.ERR_CONFIG_WITH_UNKNOWN_CLASS_1, ""));
         }
         return null;
     }
