@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacySecurityException.java,v $
- * Date   : $Date: 2005/05/20 09:13:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/20 14:32:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  * but that the current user who attemted it does not have the required permissions at the current time.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1.4
  */
 public class CmsLegacySecurityException extends CmsSecurityException {
@@ -235,7 +235,7 @@ public class CmsLegacySecurityException extends CmsSecurityException {
             case C_SECURITY_INVALID_PASSWORD:
                 return "Invalid password";                              
             default:
-                return super.getErrorDescription(type);
+                return this.getClass().getName();
         }
     }
 }

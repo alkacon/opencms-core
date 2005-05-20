@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/05/19 08:57:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/20 14:32:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -580,7 +580,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         // otherwise we try to throw an exception.
         CmsRequestContext reqContext = cms.getRequestContext();
         if ((DEBUG == 0) && reqContext.currentUser().isGuestUser()
-            && (!(e instanceof CmsLegacyException && ((CmsLegacyException)e).getType() == CmsLegacyException.C_NO_USER))) {
+            && (!(e instanceof CmsLegacyException && ((e instanceof CmsLegacyException) && (((CmsLegacyException)e).getType() == CmsLegacyException.C_NO_USER))))) { 
             throw new CmsLegacyException(errorText, CmsLegacyException.C_SERVICE_UNAVAILABLE, e);
         } else {
             if (e instanceof CmsException) {

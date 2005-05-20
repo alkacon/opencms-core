@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/20 14:32:31 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:32 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/20 14:32:31 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -489,7 +489,8 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
             cms.readResource(bodyPath, CmsResourceFilter.ALL);
             validatedBodyPath = bodyPath;
         } catch (CmsException e) {
-            if (e.getType()==CmsLegacyException.C_NOT_FOUND) {
+            if ((e instanceof CmsLegacyException) && (((CmsLegacyException)e).getType() == CmsLegacyException.C_NOT_FOUND)) {
+                
                 String defaultBodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + CmsResource.getParentFolder(cms.getSitePath(page)).substring(1) + page.getName();
                 try {
                     cms.readResource(defaultBodyPath, CmsResourceFilter.ALL);

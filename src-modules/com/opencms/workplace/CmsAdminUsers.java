@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2005/05/19 08:57:22 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/05/20 14:32:31 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
+ * @version $Revision: 1.4 $ $Date: 2005/05/20 14:32:31 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -334,7 +334,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                 session.putValue("TOWN", town);
                                 session.putValue("USEREMAIL", email);
                                 session.putValue("DEFAULTGROUP", defaultGroup);
-                                if(e.getType() == CmsLegacySecurityException.C_SECURITY_INVALID_PASSWORD) {
+                                if ((e instanceof CmsLegacySecurityException) && (((CmsLegacySecurityException)e).getType() == CmsLegacySecurityException.C_SECURITY_INVALID_PASSWORD)) {
                                     if(e.getMessage().equals("unequal passwords")) {
                                         templateSelector = "passworderror1";
                                     }else {
@@ -347,11 +347,10 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                         }
                                     }
                                 }else {
-                                    if(e.getType() == CmsLegacyException.C_NO_GROUP) {
+                                    if ((e instanceof CmsLegacyException) && (((CmsLegacyException)e).getType() == CmsLegacyException.C_NO_GROUP)) {
                                         templateSelector = "errornogroup1";
                                     }else {
-                                        if(e.getType() == CmsLegacyException.C_NO_USER
-                                                && e.getMessage().equals("user data missing")) {
+                                        if ((e instanceof CmsLegacyException) && (((CmsLegacyException)e).getType() == CmsLegacyException.C_NOT_FOUND && e.getMessage().equals("user data missing"))) {
                                             templateSelector = "errordatamissing1";
                                         }else {
                                             // unknown error
@@ -495,7 +494,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                     session.putValue("TOWN", town);
                                     session.putValue("USEREMAIL", email);
                                     session.putValue("DEFAULTGROUP", defaultGroup);
-                                    if(e.getType() == CmsLegacySecurityException.C_SECURITY_INVALID_PASSWORD) {
+                                    if ((e instanceof CmsLegacySecurityException) && (((CmsLegacySecurityException)e).getType() == CmsLegacyException.C_SECURITY_INVALID_PASSWORD)) {
                                         if(e.getMessage().equals("unequal passwords")) {
                                             templateSelector = "passworderror3";
                                         }else {
@@ -508,15 +507,13 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                             }
                                         }
                                     }else {
-                                        if(e.getType() == CmsLegacyException.C_NO_GROUP) {
+                                        if ((e instanceof CmsLegacyException) && (((CmsLegacyException)e).getType() == CmsLegacyException.C_NO_GROUP)) {
                                             templateSelector = "errornogroup2";
                                         }else {
-                                            if(e.getType() == CmsLegacyException.C_NO_USER
-                                                    && e.getMessage().equals("user data missing")) {
+                                            if ((e instanceof CmsLegacyException) && (((CmsLegacyException)e).getType() == CmsLegacyException.C_NO_USER && e.getMessage().equals("user data missing"))) {
                                                 templateSelector = "errordatamissing2";
                                             }else {
-                                                if(e.getType() == CmsLegacyException.C_NOT_ADMIN
-                                                        && e.getMessage().equals("disabled admin")) {
+                                                if ((e instanceof CmsLegacyException) && (((CmsLegacyException)e).getType() == CmsLegacyException.C_NOT_ADMIN && e.getMessage().equals("disabled admin"))) {
                                                     templateSelector = "errordisabledadmin";
                                                 }else {
                                                     session.putValue("ERROR", new String("yes"));
