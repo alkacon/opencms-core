@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/05/20 09:52:37 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/20 14:06:30 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -164,7 +164,13 @@ public class CmsToolManager {
      */
     public String cmsLinkForPath(CmsJspActionElement jsp, String toolPath, Map params) {
 
-        return jsp.link(linkForPath(toolPath, params));
+        StringBuffer link = new StringBuffer(128);
+        link.append(C_VIEW_JSPPAGE_LOCATION);
+        link.append("?");
+        link.append(CmsToolDialog.PARAM_PATH);
+        link.append("=");
+        link.append(toolPath);        
+        return jsp.link(rewriteUrl(link.toString(), params));
     }
 
     /**
@@ -350,10 +356,10 @@ public class CmsToolManager {
     }
 
     /**
-     * Includes the given tool with the given parameters in the response.<p>
+     * Redirects to the given tool with the given parameters.<p>
      * 
      * @param wp the workplace object
-     * @param toolPath the path to the tool to include
+     * @param toolPath the path to the tool to redirect to
      * @param params the parameters to send
      * 
      * @throws IOException if something goes wrong
@@ -376,25 +382,47 @@ public class CmsToolManager {
     }
 
     /**
-     * Returns a link for a given path.<p>
+     * Redirects to the given page with the given parameters.<p>
      * 
-     * @param toolPath the path
+     * @param wp the workplace object
+     * @param pagePath the path to the page to redirect to
+     * @param params the parameters to send
+     * 
+     * @throws IOException if something goes wrong
+     */
+    public void jspRedirectPage(CmsWorkplace wp, String pagePath, Map params) throws IOException {
+
+        Map myParams = params;
+        if (myParams == null) {
+            myParams = new HashMap();
+        }
+        // put close link if not set
+        if (!myParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
+            myParams.put(CmsDialog.PARAM_CLOSELINK, cmsLinkForPath(wp.getJsp(), getCurrentToolPath(wp), null));
+        }
+        wp.getJsp().getResponse().sendRedirect(wp.getJsp().link(rewriteUrl(pagePath, myParams)));
+    }
+
+    /**
+     * Returns a link for a given baseUrl and parameters.<p>
+     * 
+     * @param baseUrl the base url
      * @param params a map of additional parameters
      * 
      * @return the link
      */
-    public String linkForPath(String toolPath, Map params) {
-
-        StringBuffer link = new StringBuffer(512);
-        link.append(C_VIEW_JSPPAGE_LOCATION);
-        link.append("?");
-        link.append(CmsToolDialog.PARAM_PATH);
-        link.append("=");
-        link.append(toolPath);
+    private String rewriteUrl(String baseUrl, Map params) {
 
         if (params == null) {
-            return link.toString();
+            return baseUrl;
         }
+        StringBuffer link = new StringBuffer(512);
+        String sep = "?";
+        if (baseUrl.indexOf('?')>-1) {
+            sep = "&";
+        } 
+
+        boolean first = true;
         Iterator it = params.keySet().iterator();
         while (it.hasNext()) {
             String key = it.next().toString();
@@ -402,16 +430,24 @@ public class CmsToolManager {
             if (value instanceof String[]) {
                 for (int j = 0; j < ((String[])value).length; j++) {
                     String val = ((String[])value)[j];
-                    link.append("&");
+                    link.append(sep);
                     link.append(key);
                     link.append("=");
                     link.append(val);
+                    if (first) {
+                        sep = "&";
+                        first = false;
+                    }
                 }
             } else {
-                link.append("&");
+                link.append(sep);
                 link.append(key);
                 link.append("=");
                 link.append(value);
+                if (first) {
+                    sep = "&";
+                    first = false;
+                }
             }
         }
 
