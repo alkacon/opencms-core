@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2005/05/19 08:57:24 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/05/20 12:10:17 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1575,7 +1575,7 @@ public class CmsDbAccess {
                     sqlFillValues(stmt2, media);
                     stmt2.executeUpdate();
                 } catch (SQLException ex) {
-                    throw new CmsException(CmsException.C_SQL_ERROR, ex);
+                    throw new CmsLegacyException(CmsLegacyException.C_SQL_ERROR, ex);
                 } finally {
                     m_sqlManager.closeAll(null, conn2, stmt2, null);
                 }

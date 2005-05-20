@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2005/05/19 08:57:21 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/05/20 12:10:17 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,9 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlException;
 
-import com.opencms.defaults.master.*;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.CmsMasterMedia;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -77,7 +79,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:21 $
+ * @version $Revision: 1.4 $ $Date: 2005/05/20 12:10:17 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -245,7 +247,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             channelRelations = getMasterChannelRelation(masterElement);
         } catch (Exception e) {
             m_report.println(e);
-            throw new CmsException("Cannot get channelrelations ", e);
+            throw new CmsLegacyException("Cannot get channelrelations ", e);
         }
         
         // try to get the media
@@ -253,7 +255,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             masterMedia = getMasterMedia(masterElement);
         } catch (Exception e) {
             m_report.println(e);
-            throw new CmsException("Cannot get media ", e);
+            throw new CmsLegacyException("Cannot get media ", e);
         }
         
         // add the channels and media to the dataset
@@ -272,7 +274,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             newMaster.chgrp(m_cms, groupId);
         } catch (Exception e) {
             m_report.println(e);
-            throw new CmsException("Cannot write master ", e);
+            throw new CmsLegacyException("Cannot write master ", e);
         }
         
         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);

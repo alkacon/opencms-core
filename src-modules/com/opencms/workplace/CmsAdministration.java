@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/05/20 12:10:17 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.3 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Name:  $ $Revision: 1.4 $ $Date: 2005/05/20 12:10:17 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -315,8 +315,8 @@ public class CmsAdministration extends CmsWorkplaceDefault {
                 } catch(CmsException e) {
                     throw e;
                 } catch(Throwable t) {
-                    throw new CmsException("[" + this.getClass().getName() + "] "
-                            + t.getMessage(), CmsException.C_SQL_ERROR, t);
+                    throw new CmsLegacyException("[" + this.getClass().getName() + "] "
+                            + t.getMessage(), CmsLegacyException.C_SQL_ERROR, t);
                 }
             } // end of for
             sort(iconNames, index, folderPos, numFolders);
@@ -349,8 +349,8 @@ public class CmsAdministration extends CmsWorkplaceDefault {
                         + "index.html?initial=true");
             }
             catch(Exception e) {
-                throw new CmsException("Redirect fails :" + cms.getSitePath((CmsFile)iconVector2.get(0)),
-                        CmsException.C_UNKNOWN_EXCEPTION, e);
+                throw new CmsLegacyException("Redirect fails :" + cms.getSitePath((CmsFile)iconVector2.get(0)),
+                    CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
             }
             return null;
         }

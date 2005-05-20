@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2005/05/19 08:57:22 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/20 12:10:17 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2005/05/19 08:57:22 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/20 12:10:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -255,7 +255,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
             task = taskService.readTask(taskid);
         }
         catch(Exception exc) {
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+            throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, exc);
         }
         CmsUser owner = null;
         try {
