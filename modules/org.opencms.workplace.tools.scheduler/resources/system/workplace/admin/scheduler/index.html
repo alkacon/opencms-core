@@ -11,6 +11,10 @@
 
 //////////////////// start of switch statement 
 switch (wp.getAction()) {
+    /////////////////// ACTION: cancel button pressed: redirect to closelink
+    case CmsDialog.ACTION_CANCEL:
+        wp.actionCloseDialog();
+        return;
 
     //////////////////// ACTION: default actions
     case A_CmsListDialog.ACTION_LIST_SEARCH:

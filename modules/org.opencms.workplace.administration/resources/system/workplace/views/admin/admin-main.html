@@ -12,17 +12,26 @@
     Map params = wp.initAdminTool();
 
     if (wp.getAdminTool().getHandler().getLink().indexOf("galleryoverview")>-1) {
+        if (wp.getAction()==CmsDialog.ACTION_CANCEL) {
+            wp.actionCloseDialog();
+            return;
+        }
         jsp.include("tool-fs.html", null, params);
         return;
-    }
+    } 
 
     // just grouping or real tool
     if (!wp.getAdminTool().getHandler().getLink().equals(wp.getCms().getRequestContext().getUri())) {
         //real tool
         jsp.include(wp.getAdminTool().getHandler().getLink(), null, params);
-    } else {  
-
-        // just grouping %>
+        return;
+    } 
+    // just grouping 
+    if (wp.getAction()==CmsDialog.ACTION_CANCEL) {
+        wp.actionCloseDialog();
+        return;
+    }
+%>
 <%= wp.htmlStart() %>
 <%= wp.bodyStart(null) %>
     <%= wp.dialogStart() %>
@@ -31,5 +40,3 @@
     <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
 <%=wp.htmlEnd() %>
-
-<%  } %>

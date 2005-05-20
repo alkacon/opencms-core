@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/general.js,v $
- * Date   : $Date: 2005/05/12 08:58:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/20 10:37:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,23 +40,34 @@ function getFormForId(id) {
  * Opens a new page in the right frame.
  * It also shows the loading screen during loading
  */
-function openPage(href) {
+function openPage(url) {
     target = isFramed() ? parent.admin_content : this;
     if (!isFramed()) {
        if (parent.parent.admin_content) {
            target = parent.parent.admin_content;
        }
     }
-    openPageIn(href, target);
+    openPageIn(url, target);
 }
 
 /*
  * Opens a new page in the given target frame.
  * It also shows the loading screen during loading
  */
-function openPageIn(href, target) {
+function openPageIn(url, target) {
     loadingOn();
-    target.location = href;
+    if (url.indexOf("system/workplace/views/admin/admin-main.html")<0) {
+       finalUrl = url;
+    } else {
+        finalUrl = target.location.href;
+        if (finalUrl.indexOf("?")>-1) {
+            finalUrl = finalUrl + "&";
+        } else {
+            finalUrl = finalUrl + "?";
+        }
+        finalUrl = finalUrl + "action=cancel&closelink=" + url;
+    }
+    target.location.href = finalUrl;
 }
 
 /*

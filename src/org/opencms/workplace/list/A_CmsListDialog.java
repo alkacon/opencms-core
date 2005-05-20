@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/05/18 13:44:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/20 10:37:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -424,8 +424,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
+        super.initWorkplaceRequestValues(settings, request);
         // set the action for the JSP switch 
         if (LIST_SEARCH.equals(getParamAction())) {
             setAction(ACTION_LIST_SEARCH);
