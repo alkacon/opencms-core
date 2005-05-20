@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2005/05/20 12:48:02 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/20 16:53:12 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * Test cases for the OpenCms scheduler thread pool.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -314,6 +314,7 @@ public class TestCmsScheduler extends TestCase {
         
         CmsScheduledJobInfo newInfo = (CmsScheduledJobInfo)jobInfo.clone();
         newInfo.setJobName("My CHANGED name");
+        newInfo.setActive(true);
         assertEquals(1, scheduler.getJobs().size());
         
         // re-schedule the job with a different name
@@ -323,6 +324,23 @@ public class TestCmsScheduler extends TestCase {
         assertEquals(1, scheduler.getJobs().size());        
         jobInfo = scheduler.getJob(newInfo.getId());
         assertEquals("My CHANGED name", jobInfo.getJobName());
+        
+        // change cron expression to something invalid
+        newInfo = (CmsScheduledJobInfo)jobInfo.clone();
+        newInfo.setActive(true);
+        newInfo.setCronExpression("* * * * * *");
+        assertEquals(1, scheduler.getJobs().size());
+        
+        CmsSchedulerException error = null;
+        try {
+            // re-schedule the job with a different name
+            scheduler.scheduleJob(null, newInfo); 
+        } catch (CmsSchedulerException e) {
+            error = e;
+        }
+        assertNotNull(error);
+        // ensure the job is still scheduled
+        assertEquals(1, scheduler.getJobs().size());        
         
         // shutdown the scheduler
         scheduler.shutDown();        
