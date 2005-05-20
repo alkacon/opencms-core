@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2005/05/18 07:34:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/20 08:54:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -71,14 +70,11 @@ import org.apache.commons.logging.Log;
  * all display options will be disabled by default.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.14
  */
 public class CmsEditorDisplayOptions {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEditorDisplayOptions.class);  
     
     /** The name of the configuration folder.<p> */
     public static final String C_FOLDER_EDITORCONFIGURATION = CmsEditor.C_PATH_EDITORS + "configuration/";
@@ -91,6 +87,9 @@ public class CmsEditorDisplayOptions {
     
     /** Maximum size of the user editor configuration mappings.<p> */
     public static final int C_SIZE_USERENTRIES = 100;
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEditorDisplayOptions.class);  
     
     /** Stores all loaded editor configuration options.<p> */
     private Map m_loadedConfigurations;
@@ -146,14 +145,14 @@ public class CmsEditorDisplayOptions {
                         m_loadedConfigurations.put(nav.getFileName(), displayOptions);
                     } catch (CmsException e) {
                         // set configuration to not available
-                        if (OpenCms.getLog(this).isInfoEnabled()) {
-                            OpenCms.getLog(this).info(e);
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info(e);
                         }
                         mappedConfigFile = C_NO_MAPPING_FOR_USER;
                     } catch (IOException e) {
                         // set configuration to not available
-                        if (OpenCms.getLog(this).isInfoEnabled()) {
-                            OpenCms.getLog(this).info(e);
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info(e);
                         }
                         mappedConfigFile = C_NO_MAPPING_FOR_USER;
                         displayOptions = null;
