@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/04/20 08:32:08 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/20 15:12:41 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.i18n;
 
+import org.opencms.file.CmsRfsResourceNotFoundException;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -51,7 +52,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.0 beta 2
  */
@@ -185,7 +186,7 @@ public class CmsMessages {
     /**
      * Returns the resource bundle this message object was initialized with.<p>
      * 
-     * @return the resource bundle this message object was initialized with
+     * @return the resource bundle this message object was initialized with or null if initialization was not successful
      */
     public ResourceBundle getBundle() {
 
@@ -291,14 +292,29 @@ public class CmsMessages {
      * 
      * @param keyName the key  
      * @return the resource string for the given key
-     * @throws MissingResourceException in case the key is not found of the bundle is not initialized
+     * @throws CmsRfsResourceNotFoundException in case the key is not found or the bundle is not initialized
      */
-    public String getString(String keyName) throws MissingResourceException {
+    public String getString(String keyName) throws CmsRfsResourceNotFoundException {
 
-        if (m_resourceBundle != null) {
-            return m_resourceBundle.getString(keyName);
+        MissingResourceException unfound = null;
+        try {
+            if (m_resourceBundle != null) {
+                return m_resourceBundle.getString(keyName);
+            }
+        } catch (MissingResourceException mre) {
+            unfound = mre;
+        }
+
+        // throw an exception if a) m_resourceBundle was not initialized (null)
+        //                       b) m_resourceBundle threw one itself
+        if (unfound == null) {
+            throw new CmsRfsResourceNotFoundException(Messages.get().container(
+                Messages.ERR_RESOURCE_BUNDLE_NOT_FOUND_1,
+                keyName));
         } else {
-            throw new MissingResourceException("ResourceBundle not initialized", this.getClass().getName(), keyName);
+            throw new CmsRfsResourceNotFoundException(Messages.get().container(
+                Messages.ERR_RESOURCE_BUNDLE_NOT_FOUND_1,
+                keyName), unfound);
         }
     }
 

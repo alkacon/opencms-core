@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2005/04/20 08:32:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/20 15:12:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,14 @@
 
 package org.opencms.i18n;
 
+import org.opencms.file.CmsRfsResourceNotFoundException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.MissingResourceException;
 
 import org.apache.commons.logging.Log;
 
@@ -50,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexnader Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.7.3
  */
@@ -96,12 +97,15 @@ public class CmsMultiMessages extends CmsMessages {
      * initialized with the provided list of bundles.<p>
      * 
      * @param messages list of <code>{@link CmsMessages}</code>, should not be null or empty
+     * 
+     * @throws CmsIllegalArgumentException if the given <code>List</code> is null or empty
      */
-    public CmsMultiMessages(List messages) {
+    public CmsMultiMessages(List messages) throws CmsIllegalArgumentException {
 
         super();
         if ((messages == null) || (messages.size() == 0)) {
-            throw new IllegalArgumentException("At last one OpenCms message bundle must be provided.");
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_MULTIMSG_EMPTY_LIST_0));
         }
         // use "old" Hashtable since it is the most efficient synchronized HashMap implementation
         m_messageCache = new Hashtable();
@@ -114,7 +118,7 @@ public class CmsMultiMessages extends CmsMessages {
     /**
      * @see org.opencms.i18n.CmsMessages#getString(java.lang.String)
      */
-    public String getString(String keyName) throws MissingResourceException {
+    public String getString(String keyName) {
 
         return resolveKey(keyName);
     }
@@ -147,12 +151,12 @@ public class CmsMultiMessages extends CmsMessages {
      * If the key was not found, <code>null</code> is returned.<p>
      * 
      * @param keyName the key for the desired string 
-     * @return the resource string for the given key 
+     * @return the resource string for the given key or null if not found
      */
     private String resolveKey(String keyName) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Resolving message key '" + keyName + "'");
+            LOG.debug(Messages.get().key(Messages.LOG_RESOLVE_MESSAGE_KEY_1, keyName));
         }
 
         String result = (String)m_messageCache.get(keyName);
@@ -166,7 +170,7 @@ public class CmsMultiMessages extends CmsMessages {
                 try {
                     result = ((CmsMessages)m_messages.get(i)).getString(keyName);
                     // if no exception is thrown here we have found the result
-                } catch (MissingResourceException e) {
+                } catch (CmsRfsResourceNotFoundException e) {
                     // can usually be ignored
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(e);
@@ -176,21 +180,25 @@ public class CmsMultiMessages extends CmsMessages {
         } else {
             // result was found in cache
             if (LOG.isDebugEnabled()) {
-                LOG.debug("'" + keyName + "' found in message cache, result is '" + result + "'");
+                LOG.debug(Messages.get().key(
+                    Messages.LOG_MESSAGE_KEY_FOUND_CACHED_2,
+                    keyName,
+                    result)
+                );
             }
             return result;
         }
         if (result == null) {
             // key was not found in "regular" bundle as well as module messages
             if (LOG.isDebugEnabled()) {
-                LOG.debug("'" + keyName + "' not found in all module messages");
+                LOG.debug(Messages.get().key(Messages.LOG_MESSAGE_KEY_NOT_FOUND_1, keyName));
             }
             // ensure null values are also cached
             m_messageCache.put(keyName, NULL_STRING);
         } else {
             // optional debug output
             if (LOG.isDebugEnabled()) {
-                LOG.debug("message for key '" + keyName + "' is '" + result + "'");
+                LOG.debug(Messages.get().key(Messages.LOG_MESSAGE_KEY_FOUND_2, keyName, result));
             }
             // cache the result
             m_messageCache.put(keyName, result);

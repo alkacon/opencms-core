@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/20 15:12:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.i18n;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.io.UnsupportedEncodingException;
@@ -44,6 +45,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
 
 /**
  * The OpenCms CmsEncoder class provides static methods to decode and encode data.<p>
@@ -63,12 +66,17 @@ import java.util.regex.Pattern;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
 public final class CmsEncoder {
+    
+    /** Default encoding for JavaScript decodeUriComponent methods is UTF-8 by w3c standard. */
+    public static final String C_UTF8_ENCODING = "UTF-8";
+
 
     /** The regex pattern to match HTML entities. */
     private static final Pattern C_ENTITIY_PATTERN = Pattern.compile("\\&#\\d+;");
     
-    /** Default encoding for JavaScript decodeUriComponent methods is UTF-8 by w3c standard. */
-    public static final String C_UTF8_ENCODING = "UTF-8";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEncoder.class);
         
     /** A cache for encoding name lookup. */
     private static Map m_encodingCache = new HashMap(16);
@@ -142,8 +150,8 @@ public final class CmsEncoder {
                 // this can _never_ happen since the charset was looked up first 
             }
         } else {
-            if (OpenCms.getLog(CmsEncoder.class).isWarnEnabled()) {
-                OpenCms.getLog(CmsEncoder.class).warn("Invalid encoding scheme '" + encoding + "' used, falling back to default");
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.ERR_UNSUPPORTED_VM_ENCODING_1, encoding));
             }
             encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             try {
@@ -153,7 +161,7 @@ public final class CmsEncoder {
             }            
         }
         // this code is unreachable in pratice
-        OpenCms.getLog(CmsEncoder.class).error("Issues with encoding using scheme '" + encoding + "'");
+        LOG.error(Messages.get().key(Messages.ERR_ENCODING_ISSUES_1, encoding));
         return null;
     }
     

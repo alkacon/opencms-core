@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/20 11:57:31 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/05/20 15:12:41 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,7 +18,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -42,12 +41,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.9.1
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_PWD_OLD_MISSING_0 = "ERR_PWD_OLD_MISSING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_PWD_NEW_MISSING_0 = "ERR_PWD_NEW_MISSING_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCEPT_TASK_1 = "ERR_ACCEPT_TASK_1";
@@ -314,6 +307,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_PUBLISH_UNCHANGED_RESOURCE_1 = "ERR_PUBLISH_UNCHANGED_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_PWD_NEW_MISSING_0 = "ERR_PWD_NEW_MISSING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PWD_OLD_MISSING_0 = "ERR_PWD_OLD_MISSING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_REACTIVATE_TASK_1 = "ERR_REACTIVATE_TASK_1";
 
     /** Message constant for key in the resource bundle. */
@@ -510,6 +509,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNLOCK_RESOURCE_2 = "ERR_UNLOCK_RESOURCE_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNSUPPORTED_OPERATION_2 = "ERR_UNSUPPORTED_OPERATION_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_USER_GROUP_NAMES_EMPTY_0 = "ERR_USER_GROUP_NAMES_EMPTY_0";

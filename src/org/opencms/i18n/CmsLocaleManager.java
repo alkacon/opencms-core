@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/05/20 15:12:41 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,6 +54,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.logging.Log;
 
 /**
  * Manages the locales configured for this OpenCms installation.<p>
@@ -63,9 +64,13 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
+
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLocaleManager.class);
 
     /** Runtime property name for locale handler. */
     public static final String C_LOCALE_HANDLER = "class_locale_handler";
@@ -96,8 +101,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
         m_availableLocales = new ArrayList();
         m_defaultLocales = new ArrayList();
         m_localeHandler = new CmsDefaultLocaleHandler();
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". i18n configuration   : starting");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_I18N_CONFIG_START_0));
         }
 
         LRUMap lruMap = new LRUMap(256);
@@ -160,8 +165,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
                         (localeNames.length > 1) ? localeNames[1] : "",
                         (localeNames.length > 2) ? localeNames[2] : "");
                 } catch (Throwable t) {
-                    OpenCms.getLog(OpenCms.getLocaleManager()).debug(
-                        "Could not create a Locale out of '" + localeName + "'",
+                    LOG.debug(
+                        Messages.get().key(Messages.LOG_CREATE_LOCALE_FAILED_1, localeName),
                         t);
                     // map this error to the default locale
                     locale = getDefaultLocale();
@@ -212,24 +217,24 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // add full variation (language / country / variant)
         if (!m_availableLocales.contains(locale)) {
             m_availableLocales.add(locale);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". i18n configuration   : adding locale " + locale);
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_I18N_CONFIG_ADD_LOCALE_1, locale));
             }
         }
         // add variation with only language and country
         locale = new Locale(locale.getLanguage(), locale.getCountry());
         if (!m_availableLocales.contains(locale)) {
             m_availableLocales.add(locale);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". i18n configuration   : adding locale " + locale);
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_I18N_CONFIG_ADD_LOCALE_1, locale));
             }
         }
         // add variation with language only
         locale = new Locale(locale.getLanguage());
         if (!m_availableLocales.contains(locale)) {
             m_availableLocales.add(locale);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". i18n configuration   : adding locale " + locale);
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_I18N_CONFIG_ADD_LOCALE_1, locale));
             }
         }
     }
@@ -246,7 +251,11 @@ public class CmsLocaleManager implements I_CmsEventListener {
             m_defaultLocales.add(locale);
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                    ". i18n configuration   : default locale " + m_defaultLocales.size() + " is " + locale);
+                    Messages.get().key(
+                        Messages.INIT_I18N_CONFIG_DEFAULT_LOCALE_2,
+                        new Integer(m_defaultLocales.size()),
+                        locale));
+                
             }
         }
     }
@@ -404,7 +413,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
         try {
             defaultNames = cms.readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_LOCALE, true).getValue();
         } catch (CmsException e) {
-            OpenCms.getLog(this).warn("Could not read locale property for resource " + resourceName, e);
+            LOG.warn(Messages.get().container(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
         }
 
         List result = null;
@@ -523,14 +532,14 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // still some values might be "null"
         if (locale == null) {
             locale = getDefaultLocale();
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("No locale found - using default: " + locale);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_LOCALE_NOT_FOUND_1, locale));
             }
         }
         if (encoding == null) {
             encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("No encoding found - using default: " + encoding);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_ENCODING_NOT_FOUND_1, encoding));
             }
         }      
         
@@ -562,8 +571,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
         m_defaultLocale = (Locale)m_defaultLocales.get(0);
         // set initialized status
         m_initialized = true;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". i18n configuration   : vfs access initialized");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_I18N_CONFIG_VFSACCESS_0));
         }
     }
 
@@ -591,9 +600,10 @@ public class CmsLocaleManager implements I_CmsEventListener {
         if (localeHandler != null) {
             m_localeHandler = localeHandler;
         }
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". i18n configuration   : locale handler is " + m_localeHandler.getClass().getName());
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_I18N_CONFIG_LOC_HANDLER_1,
+                m_localeHandler.getClass().getName()));
         }
     }
 
@@ -630,9 +640,9 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // flush all caches   
         m_localeCache.clear();
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
+        if (LOG.isDebugEnabled()) {
             String eventType = "EVENT_CLEAR_CACHES";
-            OpenCms.getLog(this).debug("Locale manager flushed caches after recieving event " + eventType);
+            LOG.debug(Messages.get().key(Messages.LOG_LOCALE_MANAGER_FLUSH_CACHE_1, eventType));
         }
     }
 

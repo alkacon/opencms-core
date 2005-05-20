@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsAcceptLanguageHeaderParser.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/20 15:12:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,6 +86,8 @@
  */
 package org.opencms.i18n;
 
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
@@ -104,7 +106,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Daniel Rall (dlr@collab.net)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsAcceptLanguageHeaderParser implements Iterator {
 
@@ -264,8 +266,14 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
 
     /**
      * Not implemented.
+     * 
+     * @throws CmsIllegalArgumentException always to signal that remove is not implemented 
+     *         (<b>interface contract defines {@link UnsupportedOperationException}</b>) 
      */
-    public final void remove() {
-        throw new UnsupportedOperationException(getClass().getName() + " does not support remove()");
+    public final void remove() throws CmsIllegalArgumentException {
+        throw new CmsRuntimeException(org.opencms.db.Messages.get().container(
+            org.opencms.db.Messages.ERR_UNSUPPORTED_OPERATION_2,
+            getClass().getName(),
+            "remove()"));
     }
 }

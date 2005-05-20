@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/20 15:12:41 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
@@ -43,14 +44,19 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Default implementation of the locale handler.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDefaultLocaleHandler.class);
 
     /** A cms object that has been initialized with Admin permissions. */
     private CmsObject m_adminCmsObject;
@@ -60,13 +66,6 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
      */
     public CmsDefaultLocaleHandler() {
         // noop
-    }
-    
-    /**
-     * @see org.opencms.i18n.I_CmsLocaleHandler#initHandler(org.opencms.file.CmsObject)
-     */
-    public void initHandler(CmsObject cms) {
-        m_adminCmsObject = cms;
     }
     
     /**
@@ -87,8 +86,10 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
             try {
                 encoding = m_adminCmsObject.readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
             } catch (CmsException e) {
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info("Could not read encoding property for resource " + resourceName, e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().container(
+                        Messages.ERR_READ_ENCODING_PROP_1,
+                        resourceName), e);
                 } 
                 encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             }
@@ -99,7 +100,9 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
             try {
                 req.setCharacterEncoding(encoding);
             } catch (UnsupportedEncodingException e) {
-                OpenCms.getLog(this).error("Unsupported encoding set for request '" + encoding + "'", e);
+                LOG.error(
+                    Messages.get().key(Messages.ERR_UNSUPPORTED_REQUEST_ENCODING_1, encoding),
+                    e);
             }
         }
         
@@ -113,4 +116,11 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
         
         return new CmsI18nInfo(locale, encoding);        
     }     
+    
+    /**
+     * @see org.opencms.i18n.I_CmsLocaleHandler#initHandler(org.opencms.file.CmsObject)
+     */
+    public void initHandler(CmsObject cms) {
+        m_adminCmsObject = cms;
+    }
 }
