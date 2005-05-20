@@ -269,8 +269,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/list/search.gif</source>
-			<destination>system/workplace/resources/list/search.gif</destination>
+			<source>system/workplace/resources/list/search.png</source>
+			<destination>system/workplace/resources/list/search.png</destination>
 			<type>image</type>
 			<uuidresource>c0041e53-6af4-11d9-b9f2-2f77a917d9ae</uuidresource>
 			<datelastmodified>Thu, 20 Jan 2005 15:05:41 GMT</datelastmodified>

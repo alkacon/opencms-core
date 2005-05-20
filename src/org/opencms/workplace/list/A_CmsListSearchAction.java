@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListSearchAction.java,v $
- * Date   : $Date: 2005/05/20 15:11:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/20 16:52:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * It provides the default show all action accessor and the rendering method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
@@ -58,7 +58,7 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
         Messages.get(),
         Messages.GUI_LIST_ACTION_SEARCH_CONF_0);
     /** Default icon for search action. */
-    private static final String SEARCH_ICON = "list/search.gif";
+    private static final String SEARCH_ICON = "list/search.png";
 
     /** Default name for search action. */
     private static final CmsMessageContainer SEARCH_NAME = new CmsMessageContainer(
