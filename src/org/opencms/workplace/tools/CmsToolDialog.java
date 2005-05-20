@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/05/20 11:57:53 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/20 16:45:17 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -140,7 +140,7 @@ public class CmsToolDialog extends CmsWorkplace {
                 Messages.get().key(getLocale(), Messages.GUI_ADMIN_VIEW_UPLEVEL_0, null),
                 parentName,
                 true,
-                "admin/images/up.gif",
+                "admin/images/up.png",
                 onClic));
             html.append("\n\t\t\t</td>\n");
         }

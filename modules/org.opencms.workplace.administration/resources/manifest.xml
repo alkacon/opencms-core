@@ -108,8 +108,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/images/up.gif</source>
-			<destination>system/workplace/resources/admin/images/up.gif</destination>
+			<source>system/workplace/resources/admin/images/up.png</source>
+			<destination>system/workplace/resources/admin/images/up.png</destination>
 			<type>image</type>
 			<datelastmodified>Fri, 11 Feb 2005 09:56:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -257,8 +257,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/list/reload.gif</source>
-			<destination>system/workplace/resources/list/reload.gif</destination>
+			<source>system/workplace/resources/list/reload.png</source>
+			<destination>system/workplace/resources/list/reload.png</destination>
 			<type>image</type>
 			<datelastmodified>Tue, 18 Jan 2005 10:32:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>

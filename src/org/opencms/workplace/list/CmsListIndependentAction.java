@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListIndependentAction.java,v $
- * Date   : $Date: 2005/05/20 09:52:37 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/20 16:45:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * Default implementation of a independent action for a html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsListIndependentAction extends A_CmsListAction {
@@ -126,7 +126,7 @@ public class CmsListIndependentAction extends A_CmsListAction {
             LIST_ACTION_REFRESH,
             Messages.get().container(Messages.GUI_LIST_ACTION_REFRESH_NAME_0),
             Messages.get().container(Messages.GUI_LIST_ACTION_REFRESH_HELP_0),
-            "list/reload.gif",
+            "list/reload.png",
             true, // enabled
             Messages.get().container(Messages.GUI_LIST_ACTION_REFRESH_CONF_0));
     }

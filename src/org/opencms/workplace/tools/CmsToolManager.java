@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/05/20 14:06:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/20 16:45:17 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -417,6 +417,7 @@ public class CmsToolManager {
             return baseUrl;
         }
         StringBuffer link = new StringBuffer(512);
+        link.append(baseUrl);
         String sep = "?";
         if (baseUrl.indexOf('?')>-1) {
             sep = "&";
