@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/05/18 13:50:56 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/20 09:52:37 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,9 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
+import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -46,7 +48,7 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
@@ -75,8 +77,11 @@ public class CmsListColumnDefinition {
     /** Column width. */
     private String m_width;
 
-    /** the data formatter. */
+    /** Data formatter. */
     private I_CmsListFormatter m_formatter;
+
+    /** Customized help text. */
+    private CmsMessageContainer m_helpText;
 
     /**
      * Default Constructor.<p>
@@ -245,6 +250,24 @@ public class CmsListColumnDefinition {
     }
 
     /**
+     * Indicates if the current column is sorteable or not.<p>
+     * 
+     * if <code>true</code> a default list item comparator is used.<p>
+     * 
+     * if <code>false</code> any previously set list item comparator is removed.<p>
+     * 
+     * @param sorteable the sorteable flag
+     */
+    public void setSorteable(boolean sorteable) {
+
+        if (sorteable) {
+            setListItemComparator(new CmsListItemDefaultComparator());
+        } else {
+            setListItemComparator(null);
+        }
+    }
+
+    /**
      * Returns the html code for a column header.<p>
      * 
      * @param list the list to generate the header code for
@@ -257,11 +280,11 @@ public class CmsListColumnDefinition {
         if (!isVisible()) {
             return "";
         }
-        
+
         String listId = list.getId();
         String sortedCol = list.getSortedColumn();
         CmsListOrderEnum order = list.getCurrentSortOrder();
-        
+
         StringBuffer html = new StringBuffer(512);
         html.append("<th");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth())) {
@@ -280,25 +303,30 @@ public class CmsListColumnDefinition {
         String id = listId + getId() + "Sort";
         String onClic = listId + "ListSort('" + getId() + "');";
         String helpText = null;
-        if (isSorteable()) {
-            if (nextOrder.equals(CmsListOrderEnum.ORDER_ASCENDING)) {
-                helpText = Messages.get().key(
-                    locale,
-                    Messages.GUI_LIST_COLUMN_ASC_SORT_1,
-                    new Object[] {getName().key(locale)});
+        if (m_helpText != null) {
+            helpText = new MessageFormat(m_helpText.key(locale), locale).format(new Object[] {getName().key(locale)});
+        } else {
+            if (isSorteable()) {
+                if (nextOrder.equals(CmsListOrderEnum.ORDER_ASCENDING)) {
+                    helpText = Messages.get().key(
+                        locale,
+                        Messages.GUI_LIST_COLUMN_ASC_SORT_1,
+                        new Object[] {getName().key(locale)});
+                } else {
+                    helpText = Messages.get().key(
+                        locale,
+                        Messages.GUI_LIST_COLUMN_DESC_SORT_1,
+                        new Object[] {getName().key(locale)});
+                }
             } else {
                 helpText = Messages.get().key(
                     locale,
-                    Messages.GUI_LIST_COLUMN_DESC_SORT_1,
+                    Messages.GUI_LIST_COLUMN_NO_SORT_1,
                     new Object[] {getName().key(locale)});
             }
-        } else {
-            helpText = Messages.get().key(
-                locale,
-                Messages.GUI_LIST_COLUMN_NO_SORT_1,
-                new Object[] {getName().key(locale)});
         }
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
+            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
             getName().key(locale),
             helpText,
@@ -330,7 +358,7 @@ public class CmsListColumnDefinition {
      */
     public boolean isSorteable() {
 
-        return getListItemComparator()!=null;
+        return getListItemComparator() != null;
     }
 
     /**
@@ -405,5 +433,27 @@ public class CmsListColumnDefinition {
         m_width = width;
     }
 
-}
+    /**
+     * Returns the customized help Text.<p>
+     * 
+     * if <code>null</code> a default help text indicating the sort actions is used.<p>
+     *
+     * @return the customized help Text
+     */
+    public CmsMessageContainer getHelpText() {
 
+        return m_helpText;
+    }
+
+    /**
+     * Sets the customized help Text.<p>
+     *
+     * if <code>null</code> a default help text indicating the sort actions is used.<p>
+     *
+     * @param helpText the customized help Text to set
+     */
+    public void setHelpText(CmsMessageContainer helpText) {
+
+        m_helpText = helpText;
+    }
+}

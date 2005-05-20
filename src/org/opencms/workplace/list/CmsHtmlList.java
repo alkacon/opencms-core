@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/18 13:19:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/20 09:52:37 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
+import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +49,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -856,7 +857,14 @@ public class CmsHtmlList {
             helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_HELPDIS_0, null);
         }
         String onClic = m_id + "ListSetPage(" + (getCurrentPage() - 1) + ")";
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(id, name, helpText, enabled, iconPath, onClic));
+        html.append(A_CmsHtmlIconButton.defaultButtonHtml(
+            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+            id,
+            name,
+            helpText,
+            enabled,
+            iconPath,
+            onClic));
         html.append("\n");
         // next button
         id = m_id + "Next";
@@ -868,7 +876,14 @@ public class CmsHtmlList {
             helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_HELPDIS_0, null);
         }
         onClic = m_id + "ListSetPage(" + (getCurrentPage() + 1) + ")";
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(id, name, helpText, enabled, iconPath, onClic));
+        html.append(A_CmsHtmlIconButton.defaultButtonHtml(
+            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+            id,
+            name,
+            helpText,
+            enabled,
+            iconPath,
+            onClic));
         html.append("\n");
         // page selection list
         html.append("\t\t\t<select name='");
@@ -980,7 +995,7 @@ public class CmsHtmlList {
      * 
      * @param metadata the list metadata
      */
-    /*package*/ void setMetadata(CmsListMetadata metadata) {
+    /*package*/void setMetadata(CmsListMetadata metadata) {
 
         m_metadata = metadata;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMultiAction.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/20 09:52:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,13 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
+import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
 /**
  * Default implementation of a list multi action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsListMultiAction extends A_CmsListAction {
@@ -52,9 +53,10 @@ public class CmsListMultiAction extends A_CmsListAction {
      * @param id unique id
      */
     public CmsListMultiAction(String listId, String id) {
+
         super(listId, id);
     }
-    
+
     /**
      * Full Constructor.<p>
      * 
@@ -95,8 +97,14 @@ public class CmsListMultiAction extends A_CmsListAction {
                 + "', '"
                 + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
                 + "');";
-            return A_CmsHtmlIconButton.defaultButtonHtml(getId(), getName().key(wp.getLocale()), getHelpText().key(
-                wp.getLocale()), isEnabled(), getIconPath(), onClic);
+            return A_CmsHtmlIconButton.defaultButtonHtml(
+                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+                getId(),
+                getName().key(wp.getLocale()),
+                getHelpText().key(wp.getLocale()),
+                isEnabled(),
+                getIconPath(),
+                onClic);
         }
         return "";
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/20 09:52:37 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public class CmsTool {
@@ -113,12 +113,14 @@ public class CmsTool {
         }
         String link = OpenCms.getWorkplaceManager().getToolManager().cmsLinkForPath(
             wp.getJsp(),
-            this.getHandler().getPath(), null);
+            this.getHandler().getPath(),
+            null);
         String onClic = "openPage('" + link + "');";
-        return A_CmsHtmlIconButton.defaultBigButtonHtml(
+        return A_CmsHtmlIconButton.defaultButtonHtml(
+            CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT,
             getId(),
             m_handler.getName(),
-            m_handler.isEnabled(wp.getCms())?m_handler.getHelpText():m_handler.getDisabledHelpText(),
+            m_handler.isEnabled(wp.getCms()) ? m_handler.getHelpText() : m_handler.getDisabledHelpText(),
             m_handler.isEnabled(wp.getCms()),
             m_handler.getIconPath(),
             onClic);

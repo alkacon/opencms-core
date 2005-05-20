@@ -10,7 +10,14 @@
     CmsAdminFrameset wp = new CmsAdminFrameset(jsp);
     // reset root
     wp.getToolManager().initParams(wp, null, "/");
-	
+    // rewrite params
+    String params = wp.allParamsAsRequest();
+    if (params==null) {
+       params = "";
+    }
+    if (params.length()>0) {
+       params = "?" + params;
+    }
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
 
@@ -26,8 +33,8 @@ var _context = "";
 </head>
 	<frameset cols="<%=(wp.withMenu()?"212,":"")%>*" border="0" frameborder="0" framespacing="0">
 <%    if (wp.withMenu()) { %>                
-		<frame <%= wp.getFrameSource("admin_menu", jsp.link("admin-menu.html") + "?" + wp.allParamsAsRequest()) %> frameborder="0" border="0" noresize scrolling="auto">
+		<frame <%= wp.getFrameSource("admin_menu", jsp.link("admin-menu.html") + params) %> frameborder="0" border="0" noresize scrolling="auto">
 <%    } %>
-		<frame <%= wp.getFrameSource("admin_content", jsp.link(CmsToolManager.C_VIEW_JSPPAGE_LOCATION) + "?" + wp.allParamsAsRequest()) %> frameborder="0" border="0" framespacing="0" marginheight="7" marginwidth="7" noresize scrolling="yes">
+		<frame <%= wp.getFrameSource("admin_content", jsp.link(CmsToolManager.C_VIEW_JSPPAGE_LOCATION) + params) %> frameborder="0" border="0" framespacing="0" marginheight="7" marginwidth="7" noresize scrolling="yes">
 	</frameset>
 </html>

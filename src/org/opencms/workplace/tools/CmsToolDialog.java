@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/05/17 15:59:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/20 09:52:37 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -135,6 +135,7 @@ public class CmsToolDialog extends CmsWorkplace {
             html.append("\t\t\t<td class='uplevel'>\n\t\t\t\t");
             String onClic = "openPage('" + upLevelLink + "');";
             html.append(A_CmsHtmlIconButton.defaultButtonHtml(
+                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 "id-up-level",
                 Messages.get().key(getLocale(), Messages.GUI_ADMIN_VIEW_UPLEVEL_0, null),
                 parentName,
@@ -148,7 +149,7 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("</div>\n");
         return resolveMacros(html.toString());
     }
-    
+
     /**
      * Returns the admin tool.<p>
      *
@@ -156,7 +157,7 @@ public class CmsToolDialog extends CmsWorkplace {
      */
     public CmsTool getAdminTool() {
 
-        CmsTool ret =  getToolManager().getCurrentTool(this);
+        CmsTool ret = getToolManager().getCurrentTool(this);
         return ret;
     }
 
@@ -226,8 +227,8 @@ public class CmsToolDialog extends CmsWorkplace {
      * @return the new modified params array
      */
     public Map initAdminTool() {
-        Map params = new HashMap(getJsp().getRequest().getParameterMap());
 
+        Map params = new HashMap(getJsp().getRequest().getParameterMap());
         // initialize
         getToolManager().initParams(this, getParamPath(), getParamRoot());
 
@@ -245,20 +246,20 @@ public class CmsToolDialog extends CmsWorkplace {
 
         try {
             // a dialog just for the close link param accessors
-            CmsDialog wp = (CmsDialog)this;        
+            CmsDialog wp = (CmsDialog)this;
             // set close link
             if (wp.getParamCloseLink() == null) {
-                 if (!getToolManager().getRootToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
-                      wp.setParamCloseLink(getToolManager().cmsLinkForPath(getJsp(), getParentPath(), null));
-                      params.put(CmsDialog.PARAM_CLOSELINK, wp.getParamCloseLink());
-                 }
+                if (!getToolManager().getRootToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
+                    wp.setParamCloseLink(getToolManager().cmsLinkForPath(getJsp(), getParentPath(), null));
+                    params.put(CmsDialog.PARAM_CLOSELINK, wp.getParamCloseLink());
+                }
             }
         } catch (Exception e) {
             // ignore
         }
         return params;
     }
-    
+
     /**
      * Builds an block area for icons.<p>
      * 

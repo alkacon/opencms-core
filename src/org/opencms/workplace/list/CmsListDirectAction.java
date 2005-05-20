@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDirectAction.java,v $
- * Date   : $Date: 2005/05/18 13:19:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/20 09:52:37 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
+import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
 import java.text.MessageFormat;
 
@@ -42,7 +43,7 @@ import java.text.MessageFormat;
  * Default implementation of a direct action for a html list column.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDirectAction {
@@ -103,8 +104,7 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
         if (getColumn() != null && getItem().get(getColumn()) != null) {
             confirmationMessage = new MessageFormat(confirmationMessage, wp.getLocale()).format(new Object[] {getItem().get(
                 getColumn())});
-            helpText = new MessageFormat(helpText, wp.getLocale()).format(new Object[] {getItem().get(
-                getColumn())});
+            helpText = new MessageFormat(helpText, wp.getLocale()).format(new Object[] {getItem().get(getColumn())});
         }
         String onClic = getListId()
             + "ListAction('"
@@ -115,7 +115,8 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
             + CmsStringUtil.escapeJavaScript(getItem().getId())
             + "');";
 
-        return A_CmsHtmlIconButton.defaultButtonHtml(id, null, helpText, isEnabled(), getIconPath(), onClic);
+        return A_CmsHtmlIconButton.defaultButtonHtml(CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY, id, getName().key(
+            wp.getLocale()), helpText, isEnabled(), getIconPath(), onClic);
     }
 
     /**

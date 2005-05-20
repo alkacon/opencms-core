@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/Messages.java,v $
- * Date   : $Date: 2005/05/11 08:09:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/20 09:52:37 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -133,6 +133,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERS_LIST_ACTION_ACTIVATE_DISABLED_HELP_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_DISABLED_HELP_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_ACTIVATE_DISABLED_NAME_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_DISABLED_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_ACTIVATE_HELP_0 = "GUI_USERS_LIST_ACTION_ACTIVATE_HELP_0";
 
     /** Message contant for key in the resource bundle. */
@@ -176,6 +179,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_COLS_ACTIONS_0 = "GUI_USERS_LIST_COLS_ACTIONS_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_COLS_ACTIONS_HELP_0 = "GUI_USERS_LIST_COLS_ACTIONS_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_COLS_EMAIL_0 = "GUI_USERS_LIST_COLS_EMAIL_0";

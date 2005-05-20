@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenuItem.java,v $
- * Date   : $Date: 2005/05/19 15:27:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/20 09:52:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,14 @@ package org.opencms.workplace.administration;
 
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
+import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
 /**
  * Html icon button implementation that generates the
  * required html code for a menu item.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsAdminMenuItem {
@@ -181,6 +182,7 @@ public class CmsAdminMenuItem {
         html.append("\t\t<td>\n");
         String onClic = "return openView('" + getId() + "', '" + m_link + "', '" + m_target + "');";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
+            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             getId(),
             getName(),
             getHelpText(),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/05/20 09:52:37 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends A_CmsListDialog {
@@ -313,7 +313,7 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
             "", // no width
             CmsListColumnAlignEnum.ALIGN_CENTER);
         actionsCol.setListItemComparator(new CmsListItemActionIconComparator());
-
+        actionsCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ACTIONS_HELP_0));
         // adds an activate/deactivate user action
         CmsUserActivateDeactivateAction userAction = new CmsUserActivateDeactivateAction(
             LIST_ID,

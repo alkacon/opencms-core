@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/05/12 08:58:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/20 09:52:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Default skeleton for an html icon button.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
@@ -102,6 +102,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * If not enabled be sure to take an according helptext.
      * <p>
      * 
+     * @param style the style of the button
      * @param id the id
      * @param name the name
      * @param helpText the help text
@@ -111,7 +112,8 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * 
      * @return html code
      */
-    public static String defaultBigButtonHtml(
+    public static String defaultButtonHtml(
+        CmsHtmlIconButtonStyleEnum style,
         String id,
         String name,
         String helpText,
@@ -120,9 +122,11 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String onClic) {
 
         StringBuffer html = new StringBuffer(1024);
-        html.append("<div class='bigLink' id='img");
-        html.append(id);
-        html.append("'>\n");
+        if (style == CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
+            html.append("<div class='bigLink' id='img");
+            html.append(id);
+            html.append("'>\n");
+        } 
         html.append("\t<span class='link");
         if (enabled) {
             html.append("'");
@@ -141,6 +145,11 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
             html.append(onClic);
             html.append("\"");
         }
+        if (style == CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY) {
+            html.append(" title='");
+            html.append(name);
+            html.append("'");
+        }
         html.append(">");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)) {
             html.append("<img src='");
@@ -155,9 +164,11 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
                 html.append(name);
                 html.append("'");
             }
-            html.append("><br>");
+            if (style == CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
+                html.append("><br>");
+            }
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+        if (style != CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY && CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
             if (enabled) {
                 html.append("<a href='#'>");
             }
@@ -167,97 +178,9 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
             }
         }
         html.append("</span>\n");
-        html.append("</div>\n");
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
-            html.append("<div class='help' id='help");
-            html.append(id);
-            html.append("' name='help");
-            html.append(id);
-            html.append("' onmouseout=\"hideMenuHelp('");
-            html.append(id);
-            html.append("');\" onmouseover=\"showMenuHelp('");
-            html.append(id);
-            html.append("');\">");
-            html.append(helpText);
+        if (style == CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
             html.append("</div>\n");
         }
-        return html.toString();
-    }
-
-    /**
-     * Generates a default html code for icon buttons.<p>
-     * 
-     * If the name is empty only the icon is displayed.<br>
-     * If the iconPath is empty only the name is displayed.<br>
-     * If the onClic is empty no link is generated.<br>
-     * If the helptext is empty no mouse events are generated.<br>
-     * If not enabled be sure to take an according helptext.
-     * <p>
-     * 
-     * @param id the id
-     * @param name the name
-     * @param helpText the help text
-     * @param enabled if enabled or not
-     * @param iconPath the path to the icon
-     * @param onClic the js code to execute
-     * 
-     * @return html code
-     */
-    public static String defaultButtonHtml(
-        String id,
-        String name,
-        String helpText,
-        boolean enabled,
-        String iconPath,
-        String onClic) {
-
-        StringBuffer html = new StringBuffer(1024);
-        html.append("<span id='img");
-        html.append(id);
-        html.append("' class='link");
-        if (enabled) {
-            html.append("'");
-        } else {
-            html.append(" linkdisabled'");
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
-            html.append(" onMouseOver=\"showMenuHelp('");
-            html.append(id);
-            html.append("');\" onMouseOut=\"hideMenuHelp('");
-            html.append(id);
-            html.append("');\"");
-        }
-        if (enabled && CmsStringUtil.isNotEmptyOrWhitespaceOnly(onClic)) {
-            html.append(" onClick=\"");
-            html.append(onClic);
-            html.append("\"");
-        }
-        html.append(">");
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)) {
-            html.append("<img src='");
-            html.append(CmsWorkplace.getSkinUri());
-            html.append(iconPath);
-            html.append("'");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-                html.append(" alt='");
-                html.append(name);
-                html.append("'");
-                html.append(" title='");
-                html.append(name);
-                html.append("'");
-            }
-            html.append(">");
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-            if (enabled) {
-                html.append("<a href='#'>");
-            }
-            html.append(name);
-            if (enabled) {
-                html.append("</a>");
-            }
-        }
-        html.append("</span>\n");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
             html.append("<div class='help' id='help");
             html.append(id);
