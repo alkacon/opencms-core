@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemActionIconComparator.java,v $
- * Date   : $Date: 2005/05/18 13:19:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/20 16:55:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace.list;
 
 import java.util.Comparator;
@@ -43,25 +43,26 @@ import java.util.Locale;
  * if not, the <code>{@link Comparable}</code> interface is used.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  * 
  * @see org.opencms.workplace.list.CmsListColumnDefinition
  */
 public class CmsListItemActionIconComparator implements I_CmsListItemComparator {
-    
+
     /**
      * Default Constructor.<p>
      */
     public CmsListItemActionIconComparator() {
+
         // no-op
     }
-    
+
     /**
      * @see org.opencms.workplace.list.I_CmsListItemComparator#getComparator(java.lang.String, java.util.Locale)
      */
     public Comparator getComparator(final String columnId, final Locale locale) {
-        
+
         return new Comparator() {
 
             /**
@@ -70,7 +71,7 @@ public class CmsListItemActionIconComparator implements I_CmsListItemComparator 
             public int compare(Object o1, Object o2) {
 
                 CmsListColumnDefinition col = ((CmsListItem)o1).getMetadata().getColumnDefinition(columnId);
-                if (col.getDirectActions().size()>0) {
+                if (col.getDirectActions().size() > 0) {
                     I_CmsListDirectAction action = (I_CmsListDirectAction)col.getDirectActions().get(0);
                     CmsListItem tmp = action.getItem();
                     action.setItem((CmsListItem)o1);
@@ -78,11 +79,27 @@ public class CmsListItemActionIconComparator implements I_CmsListItemComparator 
                     action.setItem((CmsListItem)o2);
                     String i2 = action.getIconPath();
                     action.setItem(tmp);
-                    return i1.compareTo(i2);
+                    if (i1 != null) {
+                        if (i2 == null) {
+                            return 1;
+                        }
+                        return i1.compareTo(i2);
+                    } else if (i2 != null) {
+                        return -1;
+                    }
+                    return 0;
                 } else {
                     Comparable c1 = (Comparable)((CmsListItem)o1).get(columnId);
                     Comparable c2 = (Comparable)((CmsListItem)o2).get(columnId);
-                    return c1.compareTo(c2);
+                    if (c1 != null) {
+                        if (c2 == null) {
+                            return 1;
+                        }
+                        return c1.compareTo(c2);
+                    } else if (c2 != null) {
+                        return -1;
+                    }
+                    return 0;
                 }
             }
         };

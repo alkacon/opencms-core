@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListSearchAction.java,v $
- * Date   : $Date: 2005/05/20 15:11:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/20 16:55:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * It allows to search in several columns, including item details.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsSearchAction {
@@ -114,6 +114,9 @@ public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsS
             Iterator itCols = m_columns.iterator();
             while (itCols.hasNext()) {
                 CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+                if (item.get(col.getId())==null) {
+                    continue;
+                }
                 if (item.get(col.getId()).toString().indexOf(filter) > -1) {
                     res.add(item);
                     break;

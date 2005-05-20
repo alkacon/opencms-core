@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListAction.java,v $
- * Date   : $Date: 2005/05/20 15:11:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/20 16:55:03 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,15 @@
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
 /**
  * The default skeleton for a list action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_CmsListAction {
@@ -58,6 +60,16 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
     public A_CmsListAction(String listId, String id) {
         
         super(id);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(id)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_LIST_INVALID_NULL_ARG_1,
+                "id"));
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(listId)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_LIST_INVALID_NULL_ARG_1,
+                "listId"));
+        }
         m_listId = listId;
         setConfirmationMessage(null);
     }

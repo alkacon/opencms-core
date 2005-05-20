@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemDefaultComparator.java,v $
- * Date   : $Date: 2005/05/18 13:19:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/20 16:55:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace.list;
 
 import java.text.Collator;
@@ -42,25 +42,26 @@ import java.util.Locale;
  * if not, the <code>{@link Comparable}</code> interface is used.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  * 
  * @see org.opencms.workplace.list.CmsListColumnDefinition
  */
 public class CmsListItemDefaultComparator implements I_CmsListItemComparator {
-    
+
     /**
      * Default Constructor.<p>
      */
     public CmsListItemDefaultComparator() {
+
         // no-op
     }
-    
+
     /**
      * @see org.opencms.workplace.list.I_CmsListItemComparator#getComparator(java.lang.String, java.util.Locale)
      */
     public Comparator getComparator(final String columnId, final Locale locale) {
-        
+
         final Collator collator = Collator.getInstance(locale);
         return new Comparator() {
 
@@ -73,9 +74,15 @@ public class CmsListItemDefaultComparator implements I_CmsListItemComparator {
                 Comparable c2 = (Comparable)((CmsListItem)o2).get(columnId);
                 if (c1 instanceof String && c2 instanceof String) {
                     return collator.compare(c1, c2);
-                } else {
+                } else if (c1 != null) {
+                    if (c2 == null) {
+                        return 1;
+                    }
                     return c1.compareTo(c2);
+                } else if (c2 != null) {
+                    return -1;
                 }
+                return 0;
             }
         };
     }

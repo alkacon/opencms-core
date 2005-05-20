@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/05/11 15:10:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/20 16:55:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
@@ -380,7 +380,7 @@ public class CmsListMetadata {
         Iterator itDet = m_itemDetails.elementList().iterator();
         while (itDet.hasNext()) {
             CmsListItemDetails lid = (CmsListItemDetails)itDet.next();
-            if (lid.isVisible() && CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.get(lid.getId()).toString())) {
+            if (lid.isVisible() && item.get(lid.getId())!=null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.get(lid.getId()).toString())) {
                 int padCols = 0;
                 itCols = m_columns.elementList().iterator();
                 while (itCols.hasNext()) {

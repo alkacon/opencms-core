@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItem.java,v $
- * Date   : $Date: 2005/05/20 11:47:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/20 16:55:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.list;
 
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ import java.util.Map;
  * Generic list item.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsListItem {
@@ -62,6 +63,16 @@ public class CmsListItem {
      */
     public CmsListItem(CmsListMetadata metadata, String id) {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(id)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_LIST_INVALID_NULL_ARG_1,
+                "id"));
+        }
+        if (metadata == null) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_LIST_INVALID_NULL_ARG_1,
+                "metadata"));
+        }
         m_metadata = metadata;
         m_id = id;
     }

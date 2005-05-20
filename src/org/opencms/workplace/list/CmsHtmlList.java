@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/20 15:11:42 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/20 16:55:03 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -64,7 +64,7 @@ public class CmsHtmlList {
     /** Current sort order. */
     private CmsListOrderEnum m_currentSortOrder;
 
-    /** Filtered list of items or <code>null</code> if no filter is set. */
+    /** Filtered list of items or <code>null</code> if no filter is set and not sorted. */
     private List m_filteredItems;
 
     /** Dhtml id. */
@@ -146,9 +146,6 @@ public class CmsHtmlList {
         m_originalItems.add(position, listItem);
     }
 
-    // TODO: think about wenn and/or how to refresh
-    // TODO: new CmsListInfo class with less data for storing in CmsWorkplaceSettings
-
     /**
      * This method resets the content of the list (no the metadata).<p>
      * 
@@ -170,7 +167,7 @@ public class CmsHtmlList {
      */
     public List getAllContent() {
 
-        return m_originalItems;
+        return Collections.unmodifiableList(m_originalItems);
     }
 
     /**
@@ -185,7 +182,7 @@ public class CmsHtmlList {
         if (m_filteredItems == null) {
             return getAllContent();
         } else {
-            return m_filteredItems;
+            return Collections.unmodifiableList(m_filteredItems);
         }
     }
 
@@ -321,7 +318,7 @@ public class CmsHtmlList {
      */
     public int getTotalNumberOfPages() {
 
-        return (int)Math.ceil((double)m_originalItems.size() / getMaxItemsPerPage());
+        return (int)Math.ceil((double)getAllContent().size() / getMaxItemsPerPage());
     }
 
     /**
@@ -331,7 +328,7 @@ public class CmsHtmlList {
      */
     public int getTotalSize() {
 
-        return m_originalItems.size();
+        return getAllContent().size();
     }
 
     /**
@@ -584,7 +581,7 @@ public class CmsHtmlList {
      */
     public CmsListItem newItem(String id) {
 
-        return new CmsListItem(this.getMetadata(), id);
+        return new CmsListItem(getMetadata(), id);
     }
 
     /**
@@ -638,7 +635,6 @@ public class CmsHtmlList {
     public CmsListItem removeItem(String id) {
 
         CmsListItem item = getItem(id);
-        m_visibleItems.remove(item);
         if (m_filteredItems != null) {
             m_filteredItems.remove(item);
         }
@@ -693,7 +689,7 @@ public class CmsHtmlList {
             m_filteredItems = null;
             m_searchFilter = "";
         } else {
-            m_filteredItems = getMetadata().getSearchAction().filter(m_originalItems, searchFilter);
+            m_filteredItems = getMetadata().getSearchAction().filter(getAllContent(), searchFilter);
             m_searchFilter = searchFilter;
         }
         String sCol = m_sortedColumn;
@@ -744,7 +740,7 @@ public class CmsHtmlList {
         m_currentSortOrder = CmsListOrderEnum.ORDER_ASCENDING;
         I_CmsListItemComparator c = getMetadata().getColumnDefinition(sortedColumn).getListItemComparator();
         if (m_filteredItems == null) {
-            m_filteredItems = new ArrayList(m_originalItems);
+            m_filteredItems = new ArrayList(getAllContent());
         }
         Collections.sort(m_filteredItems, c.getComparator(sortedColumn, locale));
     }

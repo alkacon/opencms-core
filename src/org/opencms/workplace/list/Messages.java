@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2005/05/20 15:11:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/20 16:55:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_LIST_INVALID_COLUMN_1 = "ERR_LIST_INVALID_COLUMN_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_LIST_INVALID_NULL_ARG_1 = "ERR_LIST_INVALID_NULL_ARG_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_LIST_INVALID_PAGE_1 = "ERR_LIST_INVALID_PAGE_1";
