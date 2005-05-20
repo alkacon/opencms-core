@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/20 14:31:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.editors;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
@@ -42,6 +43,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -56,7 +59,7 @@ import org.dom4j.Element;
  * Provides methods to get the editor information for the editor manager.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.1
  */
@@ -92,8 +95,8 @@ public class CmsWorkplaceEditorConfiguration {
     /** Name of the single user agent node. */
     protected static final String C_NODE_AGENT = "agent";
     
-    /** Debug flag. */
-    public static final boolean C_DEBUG = false;
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWorkplaceEditorConfiguration.class); 
     
     private List m_browserPattern;
     private String m_editorLabel;
@@ -343,9 +346,9 @@ public class CmsWorkplaceEditorConfiguration {
         for (int i = 0; i < getBrowserPattern().size(); i++) {            
             boolean matches = ((Pattern)getBrowserPattern().get(i)).matcher(currentBrowser.trim()).matches();
             if (matches) {
-                if (C_DEBUG) {
-                    System.err.println("[CmsWorkplaceEditorConfiguration.isMatchingBrowser] - It matches! (" + currentBrowser + ")");
-                }
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_BROWSER_MATCHES_CONFIG_1, currentBrowser));  
+                }    
                 return true;
             }            
         }
@@ -359,7 +362,8 @@ public class CmsWorkplaceEditorConfiguration {
      */
     private void setBrowserPattern(List pattern) {
         if (pattern == null || pattern.size() == 0) {
-            logConfigurationError("Editor user agent pattern not set.", null);
+            setValidConfiguration(false);
+            LOG.error(Messages.get().key(Messages.LOG_EDITOR_CONFIG_NO_PATTERN_0));
         }
         m_browserPattern = pattern;
     }
@@ -371,7 +375,8 @@ public class CmsWorkplaceEditorConfiguration {
      */
     private void setEditorLabel(String label) {
         if (label == null || "".equals(label.trim())) {
-            logConfigurationError("Editor label not set.", null);
+            setValidConfiguration(false);
+            LOG.error(Messages.get().key(Messages.LOG_EDITOR_CONFIG_NO_LABEL_0));
         }
         m_editorLabel = label;
     }
@@ -382,7 +387,8 @@ public class CmsWorkplaceEditorConfiguration {
      */
     private void setEditorUri(String uri) {
         if (uri == null || "".equals(uri.trim())) {
-            logConfigurationError("Editor URI not set.", null);
+            setValidConfiguration(false);
+            LOG.error(Messages.get().key(Messages.LOG_EDITOR_CONFIG_NO_URI_0));
         }
         m_editorUri = uri;
     }
@@ -394,7 +400,8 @@ public class CmsWorkplaceEditorConfiguration {
      */
     private void setResourceTypes(Map types) {
         if (types == null || types.size() == 0) {
-            logConfigurationError("No resource types specified for editor.", null);
+            setValidConfiguration(false);
+            LOG.error(Messages.get().key(Messages.LOG_NO_RESOURCE_TYPES_0));
         }
         m_resTypes = types;
     }
@@ -406,7 +413,8 @@ public class CmsWorkplaceEditorConfiguration {
      */
     private void setUserAgentsRegEx(List agents) {
         if (agents == null || agents.size() == 0) {
-            logConfigurationError("No user agents specified for editor.", null);
+            setValidConfiguration(false);
+            LOG.error(Messages.get().key(Messages.LOG_NO_USER_AGENTS_0));
         }
         m_userAgentsRegEx = agents;
     }

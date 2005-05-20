@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorHandler.java,v $
- * Date   : $Date: 2005/03/17 10:31:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/20 14:31:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -42,6 +43,8 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
+
+import org.apache.commons.logging.Log;
 
 /**
  * This editor handler class returns the editor URI depending on various factors.<p>
@@ -57,11 +60,14 @@ import javax.servlet.jsp.JspException;
  * @see org.opencms.workplace.editors.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.1
  */
 public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler {
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEditorHandler.class);  
     
     /**
      * Default constructor needed for editor handler implementation.<p>
@@ -121,8 +127,8 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
             jsp.getCmsObject().readResource(editorUri);
         } catch (Throwable t) {
             // preferred or selected editor not found, try default editor
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(t);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(t);
             }            
             editorUri = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getDefaultEditorUri(jsp.getRequestContext(), resourceType, userAgent);
         }

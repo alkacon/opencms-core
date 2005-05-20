@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2005/05/18 07:34:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/20 14:31:37 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
@@ -64,7 +63,7 @@ import org.apache.commons.logging.Log;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1.12
  */
@@ -113,7 +112,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         } catch (CmsException e) {
             // show error page
             try {
-            showErrorPage(this, e, "save");
+            showErrorPage(this, e);
             } catch (JspException exc) {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {
@@ -140,7 +139,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         } catch (CmsException e) {
             // show error page
             try {
-            showErrorPage(this, e, "save");
+            showErrorPage(this, e);
             } catch (JspException exc) {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {
@@ -246,7 +245,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             performSaveContent(getParamElementname(), getElementLocale());
         } catch (CmsException e) {
             // show error page
-            showErrorPage(this, e, "save");
+            showErrorPage(this, e);
         }
         
         // redirect to the temporary file with current active element language
@@ -265,10 +264,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
              // copy the temporary file content back to the original file
              commitTempFile();
 
-         } catch (CmsXmlException e) {
-             showErrorPage(e, "xml");
          } catch (CmsException e) {
-             showErrorPage(e, "save");
+             showErrorPage(e);
          }
      
          if (getAction() != ACTION_CANCEL) {
@@ -421,7 +418,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             } catch (CmsException e) {
                 // show error page
                 try {
-                showErrorPage(this, e, "save");
+                showErrorPage(this, e);
                 } catch (JspException exc) {
                     // should usually never happen
                     if (LOG.isInfoEnabled()) {
@@ -515,7 +512,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         } catch (CmsException e) {
             // reading of file contents failed, show error page
             try {
-                showErrorPage(this, e, "read");
+                showErrorPage(this, e);
             } catch (JspException exc) {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {

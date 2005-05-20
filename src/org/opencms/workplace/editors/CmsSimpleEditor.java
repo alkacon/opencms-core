@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/20 14:31:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,17 +35,18 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.xml.CmsXmlException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Creates the output for editing a resource (text or JSP files).<p> 
@@ -58,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.12
  */
@@ -67,6 +68,9 @@ public class CmsSimpleEditor extends CmsEditor {
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     private static final String EDITOR_TYPE = "simple";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSimpleEditor.class);  
+    
     /**
      * Public constructor.<p>
      * 
@@ -144,16 +148,16 @@ public class CmsSimpleEditor extends CmsEditor {
             try {
                 content = new String(editFile.getContents(), getFileEncoding());
             } catch (UnsupportedEncodingException e) {
-                throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
+                throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()), e);
             }
         } catch (CmsException e) {
             // reading of file contents failed, show error dialog
             try {
-                showErrorPage(this, e, "read");
+                showErrorPage(this, e);
             } catch (JspException exc) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(exc);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(exc);
                 }
             }
         }
@@ -189,20 +193,18 @@ public class CmsSimpleEditor extends CmsEditor {
             try {
                 editFile.setContents(decodedContent.getBytes(getFileEncoding()));
             } catch (UnsupportedEncodingException e) {
-                throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
+                throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()), e);
             }        
             // the file content might have been modified during the write operation
             CmsFile writtenFile = getCms().writeFile(editFile);
             try {
                 decodedContent = new String(writtenFile.getContents(), getFileEncoding());
             } catch (UnsupportedEncodingException e) {
-                throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
+                throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()), e);
             }
             setParamContent(encodeContent(decodedContent));            
-        } catch (CmsXmlException e) {
-            showErrorPage(e, "xml");
         } catch (CmsException e) {
-            showErrorPage(e, "save");
+            showErrorPage(e);
         }
     
         if (getAction() != ACTION_CANCEL) {

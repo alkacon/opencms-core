@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/20 14:31:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -49,6 +50,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import org.apache.commons.logging.Log;
 
 /**
  * The editor manager stores information about all available configured editors in OpenCms.<p>
@@ -62,7 +65,7 @@ import java.util.TreeMap;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.1
  */
@@ -70,8 +73,12 @@ public class CmsWorkplaceEditorManager {
     
     /** The filename of the editor configuration XML file. */
     public static final String C_EDITOR_CONFIGURATION_FILENAME = "editor_configuration.xml";
+    
     /** The filename of the editor JSP. */
     public static final String C_EDITOR_FILENAME = "editor.jsp";
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWorkplaceEditorManager.class);  
     
     private List m_editorConfigurations;
     private Map m_preferredEditors;
@@ -87,7 +94,7 @@ public class CmsWorkplaceEditorManager {
         try {
             editorFolders = cms.getSubFolders(CmsEditor.C_PATH_EDITORS);
         } catch (CmsException e) {
-            OpenCms.getLog(this).error("Workplace init: Unable to read editor folder '" + CmsEditor.C_PATH_EDITORS + "', editors disabled!");
+            LOG.error(Messages.get().key(Messages.LOG_READ_EDITIR_FOLDER_FAILED_1, CmsEditor.C_PATH_EDITORS));
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             editorFolders = new ArrayList();
         }
@@ -107,8 +114,8 @@ public class CmsWorkplaceEditorManager {
                 configFile = cms.readFile(folderName + C_EDITOR_CONFIGURATION_FILENAME, CmsResourceFilter.IGNORE_EXPIRATION);
             } catch (CmsException e) {
                 // no configuration file present, ignore this folder
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
                 }                
                 continue;
             }

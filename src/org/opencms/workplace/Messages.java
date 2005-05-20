@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2005/05/10 15:45:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/20 14:30:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -126,6 +126,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ENC_MULTIPART_REQ_ERROR_0 = "LOG_ENC_MULTIPART_REQ_ERROR_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INCLUDE_ERRORPAGE_FAILED_0 = "LOG_INCLUDE_ERRORPAGE_FAILED_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_TEMP_FILE_PROJECT_0 = "LOG_NO_TEMP_FILE_PROJECT_0";
 

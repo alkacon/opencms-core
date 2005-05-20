@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/05/20 14:31:37 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,14 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
+import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetDialog;
 import org.opencms.widgets.I_CmsWidgetParameter;
-import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -69,13 +70,15 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Creates the editor for XML content definitions.<p> 
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -112,6 +115,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     private static final String EDITOR_TYPE = "xmlcontent";
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlContentEditor.class);  
     
     /** The content object to edit. */
     private CmsXmlContent m_content;
@@ -160,8 +166,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             try {
                 m_content.addLocale(getCms(), getElementLocale());
             } catch (CmsXmlException e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error(e);
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
         }
@@ -180,8 +186,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             }
         } catch (Exception e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(e);
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage(), e);
             }
         }
     }
@@ -201,8 +207,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 getCms().unlockResource(getParamResource());
             } catch (CmsException e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage(), e);
                 }       
             }
         }
@@ -300,8 +306,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             m_content = newContent;                         
                         
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error creating new XML content item '" + m_paramNewLink + "'" , e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_CREATE_XML_CONTENT_ITEM_1, m_paramNewLink) , e);
             }                
             throw new JspException(e);
         }
@@ -321,7 +327,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             writeContent();
         } catch (CmsException e) {
             // show error page
-            showErrorPage(this, e, "save");
+            showErrorPage(this, e);
         }
         
         // get preview uri from content handler
@@ -374,10 +380,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 writeContent();  
                 commitTempFile();
             }
-        } catch (CmsXmlException e) {
-            showErrorPage(e, "xml");
         } catch (CmsException e) {
-            showErrorPage(e, "save");
+            showErrorPage(e);
         }
     
     }
@@ -396,7 +400,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             setEditorValues(getElementLocale());
         } catch (CmsXmlException e) {
             // an error occured while trying to set the values, stop action
-            showErrorPage(e, "xml");
+            showErrorPage(e);
             return;
         }
         
@@ -432,7 +436,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 writeContent();
             } catch (CmsException e) {
                 // an error occured while trying to save
-                showErrorPage(e, "save");
+                showErrorPage(e);
             }
         }    
     }
@@ -586,7 +590,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             }
             return result.toString();
         } catch (Exception e) {
-            showErrorPage(e, "xml");
+            showErrorPage(e);
             return "";
         }       
     }
@@ -609,7 +613,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 result.append("\n");
             }
         } catch (Exception e) {
-            showErrorPage(e, "xml");
+            showErrorPage(e);
         }
         return result.toString();
     }
@@ -631,7 +635,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 result.append(widget.getDialogInitCall(getCms(), this));
             }
         } catch (Exception e) {
-            showErrorPage(e, "xml");
+            showErrorPage(e);
         }
         return result.toString();
     }
@@ -655,7 +659,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 result.append("\n");
             }
         } catch (Exception e) {
-            showErrorPage(e, "xml");
+            showErrorPage(e);
         }
         return result.toString();
     }
@@ -836,11 +840,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 } catch (CmsException e) {
                     // error during initialization, show error page
                     try {
-                        showErrorPage(this, e, "read");
+                        showErrorPage(this, e);
                     } catch (JspException exc) {
                         // should usually never happen
-                        if (OpenCms.getLog(this).isInfoEnabled()) {
-                            OpenCms.getLog(this).info(exc);
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info(exc);
                         }
                     }
                 }
@@ -862,8 +866,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 actionDirectEdit();
             } catch (Exception e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
             }
             setAction(ACTION_EXIT);
@@ -879,8 +883,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             try {
                 actionToggleElement();
             } catch (JspException e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Failed to include the common error page");    
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(org.opencms.workplace.Messages.get().key(
+                        org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));    
                 }    
             }
             if (getAction() != ACTION_CANCEL && getAction() != ACTION_SHOW_ERRORMESSAGE) {
@@ -892,8 +897,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             try {
                 actionToggleElement();
             } catch (JspException e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Failed to include the common error page");    
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(org.opencms.workplace.Messages.get().key(
+                        org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));     
                 }    
             }
             if (getAction() != ACTION_CANCEL && getAction() != ACTION_SHOW_ERRORMESSAGE) {
@@ -925,11 +931,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             } catch (CmsException e) {
                 // error during initialization
                 try {
-                    showErrorPage(this, e, "read");
+                    showErrorPage(this, e);
                 } catch (JspException exc) {
                     // should usually never happen
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(exc);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(exc);
                     }       
                 }
             }
@@ -1166,7 +1172,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // close table
             result.append("</table>\n");                     
         } catch (Throwable t) {
-            OpenCms.getLog(this).error("Error in XML editor", t);
+            LOG.error("Error in XML editor", t);
         }               
         return result;
     }
@@ -1200,8 +1206,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         try {
             m_file.setContents(decodedContent.getBytes(getFileEncoding()));
         } catch (UnsupportedEncodingException e) {
-            throw new CmsException("Invalid content encoding encountered while editing file '" + getParamResource() + "'");
-        }        
+            throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()), e);
+        }  
         // the file content might have been modified during the write operation    
         m_file = getCms().writeFile(m_file);
         m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2005/04/20 16:06:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/20 14:31:37 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.page.CmsXmlPageFactory;
@@ -46,6 +47,8 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Creates the output for editing a CmsDefaultPage with the simple textarea editor.<p> 
  * 
@@ -55,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.0
  */
@@ -64,6 +67,9 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     private static final String EDITOR_TYPE = "simplehtml";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSimplePageEditor.class);  
+    
     /**
      * Public constructor.<p>
      * 
@@ -91,11 +97,11 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             } catch (CmsException e) {
                 // error during initialization
                 try {
-                    showErrorPage(this, e, "read");
+                    showErrorPage(this, e);
                 } catch (JspException exc) {
                     // should usually never happen
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(exc);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(exc);
                     }
                 }
             }
@@ -112,8 +118,8 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                 actionDirectEdit();
             } catch (Exception e) {
                 // should usually never happen
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(e);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
                 }
             }
             setAction(ACTION_EXIT);
@@ -155,11 +161,11 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             } catch (CmsException e) {
                 // error during initialization
                 try {
-                    showErrorPage(this, e, "read");
+                    showErrorPage(this, e);
                 } catch (JspException exc) {
                     // should usually never happen
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(exc);
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(exc);
                     }       
                 }
             }

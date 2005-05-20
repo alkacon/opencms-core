@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/05/18 07:34:41 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/20 14:31:37 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -63,7 +62,7 @@ import org.apache.commons.logging.Log;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1.12
  */
@@ -774,28 +773,15 @@ public abstract class CmsEditor extends CmsDialog {
      * Shows the selected error page in case of an exception.<p>
      * 
      * @param exception the current exception
-     * @param key the suffix for the localized error messages, e.g. "save" for key "error.message.editorsave"
      * @throws JspException if inclusion of the error page fails
      */
-    protected void showErrorPage(Exception exception, String key) throws JspException {
+    protected void showErrorPage(Exception exception) throws JspException {
         // reset the action parameter            
         setParamAction("");                               
-        showErrorPage(this, exception, key, C_FILE_DIALOG_EDITOR_CONFIRM);
+        showErrorPage(this, exception);
         // save not successful, set cancel action 
         setAction(ACTION_CANCEL);
         return;        
-    }
-    
-    /**
-     * Shows the common error page in case of an exception.<p>
-     * 
-     * @param editor initialized instance of the editor class
-     * @param exception the current exception
-     * @param key the suffix key for the localized error messages, e.g. "save" for key "error.message.editorsave"
-     * @throws JspException if inclusion of the error page fails
-     */
-    protected void showErrorPage(Object editor, Exception exception, String key) throws JspException {
-        showErrorPage(editor, exception, key, C_FILE_DIALOG_SCREEN_ERROR);
     }
     
     /**
@@ -803,35 +789,22 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @param editor initialized instance of the editor class
      * @param exception the current exception
-     * @param key the suffix for the localized error messages, e.g. "save" for key "error.message.editorsave"
-     * @param dialogUri the URI of the error dialog to use in the VFS
      * @throws JspException if inclusion of the error page fails
      */    
-    protected void showErrorPage(Object editor, Exception exception, String key, String dialogUri) throws JspException {
+    protected void showErrorPage(Object editor, Exception exception) throws JspException {
         // save initialized instance of the editor class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, editor);
+        
         // reading of file contents failed, show error dialog
         setAction(ACTION_SHOW_ERRORMESSAGE);
+        setParamTitle(key("title.edit") + ": " + CmsResource.getName(getParamResource()));
         if (exception != null) {
-            setParamErrorstack(CmsException.getStackTraceAsString(exception));
-        } else {
-            setParamErrorstack(null);
-        }
-
-        setParamTitle(key("error.title.editor" + key));
-        setParamMessage(key("error.message.editor" + key));
-        String reasonSuggestion = key("error.reason.editor" + key) + "<br>\n" + key("error.suggestion.editor" + key) + "\n";
-        setParamReasonSuggestion(reasonSuggestion);
-        // log the error 
-        if (exception != null) {
-            String errorMessage = "Error while trying to " + key + " file " + getParamResource() + ": " + exception;
+            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, exception);
             if (CmsLog.getLog(editor).isWarnEnabled()) {
-                CmsLog.getLog(editor).warn(errorMessage, exception);
-            } else if (CmsLog.getLog(editor).isErrorEnabled()) {
-                CmsLog.getLog(editor).error(errorMessage);
-            }
-        }
+                CmsLog.getLog(editor).warn(exception.getLocalizedMessage(), exception);
+            } 
+        } 
         // include the common error dialog
-        getJsp().include(dialogUri);
+        getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE); 
     }
 }
