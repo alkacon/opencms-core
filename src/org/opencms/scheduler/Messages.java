@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/Messages.java,v $
- * Date   : $Date: 2005/05/12 10:53:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/20 12:48:02 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,25 +43,31 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_BAD_CONTEXT_INFO_0 = "ERR_BAD_CONTEXT_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_CRON_EXPRESSION_2 = "ERR_BAD_CRON_EXPRESSION_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_JOB_CLASS_NAME_1 = "ERR_BAD_JOB_CLASS_NAME_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_BAD_CONTEXT_INFO_0 = "ERR_BAD_CONTEXT_INFO_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_BAD_JOB_PARAMS_0 = "ERR_BAD_JOB_PARAMS_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_JOB_NAME_1 = "ERR_BAD_JOB_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_BAD_JOB_PARAMS_0 = "ERR_BAD_JOB_PARAMS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COULD_NOT_RESCHEDULE_JOB_2 = "ERR_COULD_NOT_RESCHEDULE_JOB_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COULD_NOT_SCHEDULE_JOB_2 = "ERR_COULD_NOT_SCHEDULE_JOB_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_JOB_CONFIGURATION_0 = "ERR_INVALID_JOB_CONFIGURATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_JOB_CLASS_BAD_INTERFACE_2 = "ERR_JOB_CLASS_BAD_INTERFACE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_JOB_CLASS_NOT_FOUND_1 = "ERR_JOB_CLASS_NOT_FOUND_1";

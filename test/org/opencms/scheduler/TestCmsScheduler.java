@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2005/04/17 18:07:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/20 12:48:02 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * Test cases for the OpenCms scheduler thread pool.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -90,11 +90,8 @@ public class TestCmsScheduler extends TestCase {
         properties.put("org.quartz.scheduler.rmi.export", "false");
         properties.put("org.quartz.scheduler.rmi.proxy", "false");
         properties.put("org.quartz.scheduler.xaTransacted", "false");
-
         properties.put("org.quartz.threadPool.class", "org.opencms.scheduler.CmsSchedulerThreadPool");
-
         properties.put("org.quartz.jobStore.misfireThreshold", "60000");
-
         properties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
 
         SchedulerFactory schedulerFactory = new StdSchedulerFactory(properties);
@@ -215,7 +212,7 @@ public class TestCmsScheduler extends TestCase {
     }
 
     /**
-     * Tests launching of an OpenCms job with the OpenCms schedule manager.<p>
+     * Tests adding and removing a job to the OpenCms schedule manager.<p>
      *  
      * @throws Exception if something goes wrong
      */
@@ -256,19 +253,81 @@ public class TestCmsScheduler extends TestCase {
             fail("Test class not run after " + SECONDS_TO_WAIT + " seconds.");
         }
         
-        boolean result;
+        CmsScheduledJobInfo result;
         assertEquals(1, scheduler.getJobs().size());
         result = scheduler.unscheduleJob(null, jobInfo.getId());
-        assertEquals(true, result);
+        assertNotNull(result);
         assertEquals(0, scheduler.getJobs().size());
 
         result = scheduler.unscheduleJob(null, "iDontExist");
-        assertEquals(false, result);
+        assertNull(result);
         
         // shutdown the scheduler
         scheduler.shutDown();        
     }    
+    
+    /**
+     * Tests adding an existing job again to the OpenCms scheduler.<p>
+     *  
+     * @throws Exception if something goes wrong
+     */
+    public void testAddExistingJobAgainToScheduler() throws Exception {
 
+        System.out.println("Trying to schedule an existing job again with the OpenCms scheduler.");
+        TestScheduledJob.m_runCount = 0;
+        
+        CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
+        CmsContextInfo contextInfo = new CmsContextInfo();
+        contextInfo.setUserName(OpenCms.getDefaultUsers().getUserAdmin());
+        jobInfo.setContextInfo(contextInfo);
+        jobInfo.setJobName("My job");
+        jobInfo.setClassName(TestScheduledJob.class.getName());  
+        
+        jobInfo.setCronExpression("0/2 * * * * ?");
+                
+        List jobs = new ArrayList();
+        jobs.add(jobInfo);
+        // create the scheduler with the test job
+        CmsScheduleManager scheduler = new CmsScheduleManager(jobs);
+        
+        // initialize the manager, this will start the scheduled jobs
+        scheduler.initialize(null);
+        
+        int seconds = 0;
+        do {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                fail("Something caused the waiting test thread to interrupt!");
+            }
+            seconds++;
+        } while ((seconds < SECONDS_TO_WAIT) && (TestScheduledJob.m_runCount < 3));
+
+        if (TestScheduledJob.m_runCount == 3) {
+            System.out.println("Test job was correctly run 3 times in OpenCms scheduler.");
+        } else {
+            fail("Test class not run after " + SECONDS_TO_WAIT + " seconds.");
+        }
+        
+        jobInfo = scheduler.getJob(jobInfo.getId());
+        assertEquals("My job", jobInfo.getJobName());
+        
+        CmsScheduledJobInfo newInfo = (CmsScheduledJobInfo)jobInfo.clone();
+        newInfo.setJobName("My CHANGED name");
+        assertEquals(1, scheduler.getJobs().size());
+        
+        // re-schedule the job with a different name
+        scheduler.scheduleJob(null, newInfo);
+        // size must still be the same
+        assertEquals(jobInfo.getId(), newInfo.getId());
+        assertEquals(1, scheduler.getJobs().size());        
+        jobInfo = scheduler.getJob(newInfo.getId());
+        assertEquals("My CHANGED name", jobInfo.getJobName());
+        
+        // shutdown the scheduler
+        scheduler.shutDown();        
+    }
+    
     /**
      * Tests activating and deactivating of scheduled jobs.<p>
      *  
@@ -432,7 +491,7 @@ public class TestCmsScheduler extends TestCase {
     }         
     
     /**
-     * Tests launching of an OpenCms job with the OpenCms schedule manager.<p>
+     * Tests launching of a persistent OpenCms job with the OpenCms schedule manager.<p>
      *  
      * @throws Exception if something goes wrong
      */

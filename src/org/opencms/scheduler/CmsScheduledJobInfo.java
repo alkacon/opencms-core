@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2005/05/19 16:08:44 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/20 12:48:02 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -444,9 +444,13 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
                 this));
         }
     }
-    
+
     /**
      * Clears the id of the job.<p>
+     * 
+     * This is useful if you want to create a copy of a job without keeping the job id.
+     * Use <code>{@link CmsScheduledJobInfo#clone()}</code> first to create the copy,
+     * and then clear the id of the clone.<p>
      */
     public void clearId() {
 
@@ -724,6 +728,20 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
             throw new CmsIllegalArgumentException(
                 Messages.get().container(Messages.ERR_BAD_JOB_CLASS_NAME_1, className));
         }
+        Class jobClass;
+        try {
+            jobClass = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_JOB_CLASS_NOT_FOUND_1,
+                className));
+        }
+        if (!I_CmsScheduledJob.class.isAssignableFrom(jobClass)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_JOB_CLASS_BAD_INTERFACE_2,
+                className,
+                I_CmsScheduledJob.class.getName()));
+        }
 
         m_className = className;
         if (getJobName() == null) {
@@ -827,6 +845,19 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Returns the Quartz trigger used for scheduling this job.<p>
+     *
+     * This is an internal operation that should only by performed by the 
+     * <code>{@link CmsScheduleManager}</code>, never by using this API directly.<p>
+     * 
+     * @return the Quartz trigger used for scheduling this job
+     */
+    protected Trigger getTrigger() {
+
+        return m_trigger;
+    }
+
+    /**
      * Sets the "frozen" state of this job.<p>
      *
      * This is an internal operation to be used only by the <code>{@link CmsScheduleManager}</code>.<p>
@@ -862,12 +893,12 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Sets the (cron) trigger used for scheduling this job.<p>
+     * Sets the Quartz trigger used for scheduling this job.<p>
      *
      * This is an internal operation that should only by performed by the 
      * <code>{@link CmsScheduleManager}</code>, never by using this API directly.<p>
      * 
-     * @param trigger the (cron) trigger to set
+     * @param trigger the Quartz trigger to set
      */
     protected void setTrigger(Trigger trigger) {
 
