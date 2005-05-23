@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2005/05/23 12:36:19 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  * 
  * @since 5.1
  */
@@ -889,43 +889,6 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Returns the default error suggestion String for error messages.<p>
-     * 
-     * @return the default error suggestion String
-     */
-    public String getErrorSuggestionDefault() {
-
-        return key("error.reason." + getParamDialogtype())
-            + "<br>\n"
-            + key("error.suggestion." + getParamDialogtype())
-            + "\n";
-    }
-
-    /**
-     * Returns the formatted value of the errorstack parameter for inclusion in an iframe, 
-     * or an empty String if this parameter was not provided.<p>
-     * 
-     * The error stack is used by the common error screen 
-     * that is displayed if an error occurs.<p>
-     * 
-     * @return the formatted value of the errorstack parameter
-     */
-    public String getFormattedErrorstack() {
-
-        String exception = m_paramErrorstack;
-        if (exception == null || "".equals(exception)) {
-            return "";
-        } else {
-            exception = CmsStringUtil.escapeJavaScript(exception);
-            exception = CmsStringUtil.substitute(exception, ">", "&gt;");
-            exception = CmsStringUtil.substitute(exception, "<", "&lt;");
-            return "<html><body style='background-color: Window; overflow: scroll;'><pre>"
-                + exception
-                + "</pre></body></html>";
-        }
-    }
-
-    /**
      * Returns the value of the action parameter, 
      * or null if this parameter was not provided.<p>
      * 
@@ -975,20 +938,6 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Returns the value of the errorstack parameter, 
-     * or null if this parameter was not provided.<p>
-     * 
-     * The error stack is used by the common error screen 
-     * that is displayed if an error occurs.<p>
-     * 
-     * @return the value of the errorstack parameter
-     */
-    public String getParamErrorstack() {
-
-        return CmsStringUtil.substitute(m_paramErrorstack, "\n", "\n<br>");
-    }
-
-    /**
      * Returns the value of the frame name parameter.<p>
      * 
      * @return the value of the errorstack parameter
@@ -1026,16 +975,6 @@ public class CmsDialog extends CmsToolDialog {
     public String getParamMessage() {
 
         return m_paramMessage;
-    }
-
-    /**
-     * Returns the value of the reasonSuggestion parameter.<p>
-     *  
-     * @return the value of the reasonSuggestion parameter
-     */
-    public String getParamReasonSuggestion() {
-
-        return m_paramReasonSuggestion;
     }
 
     /**
@@ -1236,17 +1175,6 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Sets the value of the errorstack parameter,
-     * this should be a stack trace as String.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setParamErrorstack(String value) {
-
-        m_paramErrorstack = value;
-    }
-
-    /**
      * Sets the value of the frame name parameter.<p>
      * 
      * @param value the value to set
@@ -1274,16 +1202,6 @@ public class CmsDialog extends CmsToolDialog {
     public void setParamMessage(String value) {
 
         m_paramMessage = value;
-    }
-
-    /**
-     * Sets the value of the reasonSuggestion parameter.<p>
-     * 
-     * @param value the value of the reasonSuggestion parameter
-     */
-    public void setParamReasonSuggestion(String value) {
-
-        m_paramReasonSuggestion = value;
     }
 
     /**
