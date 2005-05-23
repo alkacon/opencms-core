@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/05/07 16:08:28 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/05/23 16:21:44 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.main;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.staticexport.CmsStaticExportData;
 import org.opencms.staticexport.CmsStaticExportRequest;
 
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
@@ -248,9 +249,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             cms.getRequestContext().setUri(handlerUri);
         } catch (CmsException e) {
-            // unlikely to happen 
+            // unlikely to happen, comment: that's what they all say
+            CmsMessageContainer container = Messages.get().container(
+                Messages.LOG_INIT_CMSOBJECT_IN_ERROR_HANDLER_2,
+                new Integer(errorCode),
+                handlerUri);
             if (LOG.isWarnEnabled()) {
-                LOG.warn("Error initializing CmsObject in " + errorCode + " URI handler for '" + handlerUri + "'", e);
+                LOG.warn(org.opencms.jsp.Messages.getLocalizedMessage(container, req), e);
             }
         }
         CmsFile file;
@@ -266,11 +271,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         try {
             OpenCms.getResourceManager().loadResource(cms, file, req, res);
         } catch (CmsException e) {
-            throw new ServletException("Error showing error handler resource in "
-                + errorCode
-                + " URI handler for '"
-                + handlerUri
-                + "'", e);
+            CmsMessageContainer container = Messages.get().container(
+                Messages.ERR_SHOW_ERR_HANDLER_RESOURCE_2,
+                new Integer(errorCode),
+                handlerUri);
+            throw new ServletException(
+                org.opencms.jsp.Messages.getLocalizedMessage(container, req),
+                e);
         }
     }
 }

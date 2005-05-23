@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/05/19 09:54:29 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/23 16:21:44 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_ALREADY_INITIALIZED_0 = "ERR_ALREADY_INITIALIZED_0";
-
+    
     /** Message contant for key in the resource bundle. */
     public static final String ERR_CONTEXT_INFO_FROZEN_0 = "ERR_CONTEXT_INFO_FROZEN_0";
 
@@ -115,6 +115,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_READ_INTERNAL_RESOURCE_1 = "ERR_READ_INTERNAL_RESOURCE_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_SHOW_ERR_HANDLER_RESOURCE_2 = "ERR_SHOW_ERR_HANDLER_RESOURCE_2";
     
     /** Message contant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_MODULE_1 = "ERR_UNKNOWN_MODULE_1";
@@ -232,6 +235,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_WRITING_CONFIG_1 = "LOG_ERROR_WRITING_CONFIG_1";
+
+/** Message contant for key in the resource bundle. */
+public static final String LOG_INIT_CMSOBJECT_IN_ERROR_HANDLER_2 = "LOG_INIT_CMSOBJECT_IN_ERROR_HANDLER_2";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_INIT_FAILURE_MESSAGE_1 = "LOG_INIT_FAILURE_MESSAGE_1";
