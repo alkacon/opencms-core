@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/05/20 16:45:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/23 13:18:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.9.1
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
@@ -187,7 +187,11 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
+            result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_JOBSETTINGS_BLOCK_0)));
+            result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(0, 4));
+            result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(5, 11));

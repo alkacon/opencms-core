@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Messages.java,v $
- * Date   : $Date: 2005/05/20 12:17:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/23 13:18:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITJOB_ADMIN_TOOL_NAME_0 = "GUI_EDITJOB_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0 = "GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_LABEL_JOBSETTINGS_BLOCK_0 = "GUI_EDITOR_LABEL_JOBSETTINGS_BLOCK_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0 = "GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_ADMIN_TOOL_GROUP_0 = "GUI_JOBS_ADMIN_TOOL_GROUP_0";
@@ -242,12 +251,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWJOB_ADMIN_TOOL_NAME_0 = "GUI_NEWJOB_ADMIN_TOOL_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0 = "GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0 = "GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.scheduler.messages";
