@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUserActivateDeactivateAction.java,v $
- * Date   : $Date: 2005/05/20 16:55:03 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/23 08:51:17 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.workplace.list.I_CmsListDirectAction;
  * Activate/deactivate action for a html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public class CmsUserActivateDeactivateAction extends A_CmsListTwoStatesAction {
@@ -119,7 +119,7 @@ public class CmsUserActivateDeactivateAction extends A_CmsListTwoStatesAction {
 
         if (getItem() != null) {
             try {
-                String usrName = getItem().get(CmsUsersAdminTool.LIST_COLUMN_LOGIN).toString();
+                String usrName = getCms().readUser(new CmsUUID(getItem().getId())).getName();
                 return !getCms().userInGroup(usrName, OpenCms.getDefaultUsers().getGroupAdministrators());
             } catch (Exception e) {
                 throw new RuntimeException(e);

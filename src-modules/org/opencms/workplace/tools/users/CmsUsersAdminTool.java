@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/20 15:11:42 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/05/23 08:51:17 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends A_CmsListDialog {
@@ -262,7 +262,7 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
                     }
                     html.append(user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN));
                 }
-                item.set(LIST_DETAIL_ADDRESS, html);
+                item.set(LIST_DETAIL_ADDRESS, html.toString());
                 // groups
                 Iterator itGroups = getCms().getGroupsOfUser(user.getName()).iterator();
                 html = new StringBuffer(512);

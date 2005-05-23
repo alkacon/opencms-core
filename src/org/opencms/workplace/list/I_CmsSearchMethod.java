@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/I_CmsSearchAction.java,v $
- * Date   : $Date: 2005/05/20 15:11:42 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/I_CmsSearchMethod.java,v $
+ * Date   : $Date: 2005/05/23 08:51:17 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -40,7 +40,7 @@ import java.util.List;
  * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public interface I_CmsSearchAction extends I_CmsListAction {
+public interface I_CmsSearchMethod extends I_CmsListAction {
 
     /**
      * Returns a sublist of the given items, that match the filter string.<p>

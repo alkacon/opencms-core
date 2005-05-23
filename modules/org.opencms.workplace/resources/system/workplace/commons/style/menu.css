@@ -151,7 +151,7 @@ img {
   height: 20px;
   display: inline;
   vertical-align: middle;
-  padding: 1px 5px 1px 1px;
+  padding: 0px 0px 0px 0px;
   text-decoration: none;
 }
 
@@ -350,36 +350,12 @@ th {
   color: WindowText;
 }
 
-
-.screenTitle img,
-.screenTitle input,
-.screenTitle select {
-  vertical-align: middle;
-}
-
 p, hr {
   margin: 5px 0;
 }
 
-.screenButtons {
-  width: 666px; 
-}
-
-.msgWarning {
-  margin: 10px 0;
-}
-
-.msgWarning img {
-  float: left;
-  margin-right: 5px;
-}
-
 hr {
   clear: both;
-}
-
-.buttons {
-  margin: 7px 0;
 }
 
 .misc {
@@ -401,11 +377,6 @@ hr {
 .iconblock {
     margin: auto; 
     width: 95%;
-}
-
-
-.toolsArea button {
-  display: none;
 }
 
 <%

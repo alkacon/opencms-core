@@ -94,6 +94,7 @@
     </target>
 
 	<target name="dependencies" description="Build dependencies - internal target" >
+		<!-- just redirect back to the calling build-single script, for avoiding ant's recursive loop check -->
 	  	<ant antfile="${basedir}/build-single.xml" target="dist" inheritAll="false" >
 	  		<property name="module.name" value="${module.name}" />
 	  	</ant>
@@ -114,6 +115,7 @@
     <target name="compile" 
     	depends="init" description="Compile the given modules">
     	
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="jar"/>
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
     	  	<ant antfile="${basedir}/build-single.xml" target="compile" inheritAll="false" >
@@ -126,6 +128,7 @@
     <target name="jar" 
     	depends="init" description="Generates the given .jar files">
 	
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="jar"/>
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
     	  	<ant antfile="${basedir}/build-single.xml" target="jar" inheritAll="false" >
@@ -138,6 +141,7 @@
     <target name="dist" 
     	depends="init" description="Generates the given independent distros">
 	
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="jar"/>
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
     	  	<ant antfile="${basedir}/build-single.xml" target="dist" inheritAll="false" >

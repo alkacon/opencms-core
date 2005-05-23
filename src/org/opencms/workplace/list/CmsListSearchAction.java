@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListSearchAction.java,v $
- * Date   : $Date: 2005/05/20 16:55:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/23 08:51:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,10 +44,10 @@ import java.util.List;
  * It allows to search in several columns, including item details.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
-public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsSearchAction {
+public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsSearchMethod {
 
     /** Ids of Columns to search into. */
     private final List m_columns = new ArrayList();
@@ -64,7 +64,7 @@ public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsS
         useDefaultShowAllAction();
         m_columns.add(column);
     }
-    
+
     /**
      * Adds a column to search into.<p>
      * 
@@ -80,6 +80,7 @@ public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsS
      */
     public String buttonHtml(CmsWorkplace wp) {
 
+        // delay the composition of the help text as much as possible
         if (getHelpText() == C_EMPTY_MESSAGE) {
             String columns = "";
             Iterator it = m_columns.iterator();
@@ -90,6 +91,11 @@ public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsS
                     columns += ", ";
                 }
             }
+            if (columns.lastIndexOf(", ") > 0) {
+                columns = columns.substring(0, columns.lastIndexOf(", "))
+                    + " and "
+                    + columns.substring(columns.lastIndexOf(", ") + 2);
+            }
             setHelpText(new CmsMessageContainer(
                 Messages.get(),
                 Messages.GUI_LIST_ACTION_SEARCH_HELP_1,
@@ -98,12 +104,11 @@ public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsS
         return super.buttonHtml(wp);
     }
 
-
     /**
-     * @see org.opencms.workplace.list.I_CmsSearchAction#filter(java.util.List, java.lang.String)
+     * @see org.opencms.workplace.list.I_CmsSearchMethod#filter(java.util.List, java.lang.String)
      */
     public List filter(List items, String filter) {
-        
+
         List res = new ArrayList();
         Iterator itItems = items.iterator();
         while (itItems.hasNext()) {
@@ -114,7 +119,7 @@ public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsS
             Iterator itCols = m_columns.iterator();
             while (itCols.hasNext()) {
                 CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
-                if (item.get(col.getId())==null) {
+                if (item.get(col.getId()) == null) {
                     continue;
                 }
                 if (item.get(col.getId()).toString().indexOf(filter) > -1) {

@@ -128,12 +128,6 @@
             </else>
         </if>
         
-        <condition property="opencms.available">
-        	<and>
-	            <available file="${opencms.core.lib}/opencms.jar"/>
-    		</and>
-        </condition>
-        
         <condition property="tomcat.home" value="${env.TOMCAT_HOME}">
             <available file="${env.TOMCAT_HOME}" type="dir"/>
         </condition>
@@ -179,11 +173,6 @@
         <echo message="Module libraries: ${module.libs}" />
     </target>	     
 	
-    <target name="buildcore" description="Generates/Update the opencms.jar">
-    	
-		<ant antfile="${opencms.input}/build.xml" target="jar"/>
-    </target>
-        
     <target name="builddeps" description="Generates all the modules dependencies">
     	<for list="${module.dependencies}" param="dependency">
     		<sequential>
@@ -203,7 +192,7 @@
 	</target>
 	
 	<target name="checklibs" 
-    	depends="init, buildcore, builddeps" description="Stop target if libraries required for compilation are missing">
+    	depends="init, builddeps" description="Stop target if libraries required for compilation are missing">
     	
     	<var name="module.libs.missing" value="" />
     	<for list="${module.libs}" param="library">
