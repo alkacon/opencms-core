@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentErrorHandler.java,v $
- * Date   : $Date: 2005/04/18 21:21:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/23 09:36:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.4
  */
 public class CmsXmlContentErrorHandler {
@@ -79,7 +79,7 @@ public class CmsXmlContentErrorHandler {
      * Adds an error message to the internal list of errors,
      * also raised the "has errors" flag.<p>
      * 
-     * @param value the value that contians the error
+     * @param value the value that contains the error
      * @param message the error message to add
      */
     public void addError(I_CmsXmlContentValue value, String message) {
@@ -90,7 +90,10 @@ public class CmsXmlContentErrorHandler {
         localeErrors.put(value.getPath(), message);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Validation error " + value.getPath() + ": " + message);
+            LOG.debug(Messages.get().key(
+                Messages.LOG_XMLCONTENT_VALIDATION_ERR_2,
+                value.getPath(),
+                message));
         }
     }
 
@@ -109,7 +112,10 @@ public class CmsXmlContentErrorHandler {
         localeWarnings.put(value.getPath(), message);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Validation warning " + value.getPath() + ": " + message);
+            LOG.debug(Messages.get().key(
+                Messages.LOG_XMLCONTENT_VALIDATION_WARN_2,
+                value.getPath(),
+                message));
         }
     }
 

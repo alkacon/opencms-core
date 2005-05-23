@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/Messages.java,v $
- * Date   : $Date: 2005/05/20 11:47:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/23 09:36:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_NESTED_SETVALUE_0 = "ERR_NESTED_SETVALUE_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_XMLCONTENT_INVALID_DEFAULT_VALUE_1 = "ERR_XMLCONTENT_INVALID_DEFAULT_VALUE_1";
+    public static final String ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1 = "ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_LINK_PROCESS_FAILED_0 = "ERR_XMLCONTENT_LINK_PROCESS_FAILED_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/05/19 16:35:47 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/05/23 09:36:51 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -335,7 +335,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         // get the original VFS file from the content
         CmsFile file = content.getFile();
         if (file == null) {
-            throw new CmsXmlException("File not available to resolve element mappings");
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_RESOLVE_FILE_NOT_FOUND_0));
         }
 
         // get filename
@@ -426,7 +427,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         String configurationValue) throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException("Unregistered XML content type " + elementName + " used for configuration value");
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_CONFIG_ELEM_UNKNOWN_1,
+                elementName));
         }
 
         m_configurationValues.put(elementName, configurationValue);
@@ -445,7 +448,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException("Unregistered XML content type " + elementName + " used for default value");
+            throw new CmsXmlException(org.opencms.xml.types.Messages.get().container(
+                org.opencms.xml.types.Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1,
+                elementName));
         }
 
         m_defaultValues.put(elementName, defaultValue);
@@ -464,7 +469,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException("Unregistered XML content type " + elementName + " used for mapping");
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_INVALID_ELEM_MAPPING_1,
+                elementName));
         }
 
         m_elementMappings.put(elementName, mapping);
@@ -489,7 +496,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         boolean isWarning) throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException("Unregistered XML content type " + elementName + " used for validation ruls");
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_INVALID_ELEM_VALIDATION_1,
+                elementName));
         }
 
         if (isWarning) {
@@ -518,18 +527,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
-            throw new CmsXmlException("Unregistered XML content type " + elementName + " used for layout widget");
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_INVALID_ELEM_LAYOUTWIDGET_1,
+                elementName));
         }
 
         I_CmsWidget widget = OpenCms.getXmlContentTypeManager().getWidget(className);
 
         if (widget == null) {
-            throw new CmsXmlException("Unregistered XML widget '"
-                + className
-                + "' configured as GUI for element "
-                + elementName
-                + " in content definition "
-                + contentDefinition.getSchemaLocation());
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_INVALID_WIDGET_3,
+                className,
+                elementName,
+                contentDefinition.getSchemaLocation()));
         }
         m_elementWidgets.put(elementName, widget);
     }
@@ -697,10 +707,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         String preview = root.attributeValue(APPINFO_ATTR_URI);
         if (preview == null) {
-            throw new CmsXmlException("Missing preview uri for element "
-                + root.getName()
-                + " in content definition "
-                + contentDefinition.getSchemaLocation());
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_MISSING_PREVIEW_URI_2,
+                root.getName(),
+                contentDefinition.getSchemaLocation()));
         }
         m_previewLocation = preview;
     }
@@ -717,10 +727,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         String name = root.attributeValue(APPINFO_ATTR_NAME);
         if (name == null) {
-            throw new CmsXmlException("Missing resource bundle name for element "
-                + root.getName()
-                + " in content definition "
-                + contentDefinition.getSchemaLocation());
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_MISSING_RESOURCE_BUNDLE_NAME_2,
+                root.getName(),
+                contentDefinition.getSchemaLocation()));
         }
         m_messageBundleName = name;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2005/05/07 16:08:28 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/05/23 09:36:51 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,9 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.xml.A_CmsXmlDocument;
@@ -58,6 +60,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -74,13 +78,16 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /** The property to set to enable xerces schema validation. */
     public static final String C_XERCES_SCHEMA_PROPERTY = "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlContent.class);
 
     /**
      * Hides the public constructor.<p>
@@ -136,7 +143,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     public void addLocale(CmsObject cms, Locale locale) throws CmsXmlException {
 
         if (hasLocale(locale)) {
-            throw new CmsXmlException("Locale '" + locale + "' already exists in XML document");
+            throw new CmsXmlException(org.opencms.xml.page.Messages.get().container(
+                org.opencms.xml.page.Messages.ERR_XML_PAGE_LOCALE_EXISTS_1,
+                locale));
         }
         // add element node for Locale
         m_contentDefinition.createLocale(cms, this, m_document.getRootElement(), locale);
@@ -153,14 +162,20 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @param locale the locale where to add the new value 
      * @param index the index where to add the value (relative to all other values of this type)
      * 
-     * @return the created XML content value
+     * @return the created XML content value 
+     * 
+     * @throws CmsIllegalArgumentException if the given path is invalid
+     * @throws CmsRuntimeException if the element identified by the path already occured {@link I_CmsXmlSchemaType#getMaxOccurs()}  
+     *         or the given <code>index</code> is invalid (too high).
      */
-    public I_CmsXmlContentValue addValue(CmsObject cms, String path, Locale locale, int index) {
+    public I_CmsXmlContentValue addValue(CmsObject cms, String path, Locale locale, int index) throws CmsIllegalArgumentException, CmsRuntimeException {
 
         // get the schema type of the requested path           
         I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(path);
         if (type == null) {
-            throw new IllegalArgumentException("Unknown XML content element path according to schema: " + path);
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1,
+                path));
         }
         
         Element parentElement;
@@ -171,7 +186,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             String parentPath = CmsXmlUtils.removeLastXpathElement(path);
             Object o = getBookmark(parentPath, locale);
             if (o == null) {
-                throw new IllegalArgumentException("Unknown XML content element path: " + path);
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_1,
+                    path));
             }
             CmsXmlNestedContentDefinition parentValue = (CmsXmlNestedContentDefinition)o;
             parentElement = parentValue.getElement();
@@ -192,22 +209,18 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
             if (siblings.size() >= type.getMaxOccurs()) {
                 // must not allow adding an element if max occurs would be violated
-                throw new RuntimeException("Element '"
-                    + elementName
-                    + "' can occur at maximum "
-                    + type.getMaxOccurs()
-                    + " times");
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_XMLCONTENT_ELEM_MAXOCCURS_2,
+                    elementName,
+                    new Integer(type.getMaxOccurs())));
             }
 
             if (index > siblings.size()) {
                 // index position behind last element of the list
-                throw new RuntimeException("You can't insert at position "
-                    + index
-                    + " because element '"
-                    + elementName
-                    + "' only occurs "
-                    + siblings.size()
-                    + " times");
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_3,
+                    new Integer(index),
+                    new Integer(siblings.size())));
             }
 
             // check for offset required to append beyond last position
@@ -220,11 +233,10 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
             if (index > 0) {
                 // since the element does not occur, index must be 0
-                throw new RuntimeException("You must insert at 0 not at position "
-                    + index
-                    + " because element '"
-                    + elementName
-                    + "' does not yet occur in the parent node");
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_2,
+                    new Integer(index),
+                    elementName));
             }
 
             // check where in the type sequence the type should appear
@@ -320,11 +332,14 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // first get the value from the selected locale and index
         I_CmsXmlContentValue value = getValue(name, locale, index);
 
-        // chech for the min / max occurs constrains
+        // check for the min / max occurs constrains
         List values = getValues(name, locale);
         if (values.size() <= value.getMinOccurs()) {
             // must not allow removing an element if min occurs would be violated
-            throw new RuntimeException("Element '" + name + "' must occur at last " + value.getMinOccurs() + " times");
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_ELEM_MINOCCURS_2,
+                name,
+                new Integer(value.getMinOccurs())));
         }
 
         // detach the value node from the XML document
@@ -405,8 +420,10 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @param locale the locale to get the root element for
      * 
      * @return the XML root element node for the given locale
+     * 
+     * @throws CmsRuntimeException if no language element is found in the document
      */
-    protected Element getLocaleNode(Locale locale) {
+    protected Element getLocaleNode(Locale locale) throws CmsRuntimeException {
 
         String localeStr = locale.toString();
         Iterator i = m_document.getRootElement().elements().iterator();
@@ -419,7 +436,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         }
 
         // language element was not found
-        throw new RuntimeException("No initialized locale " + locale + " available in XML document");
+        throw new CmsRuntimeException(Messages.get().container(
+            Messages.ERR_XMLCONTENT_MISSING_LOCALE_1,
+            locale));
     }
 
     /**
@@ -444,7 +463,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
                 processSchemaNode(node, null, locale, definition);
             } catch (NullPointerException e) {
-                OpenCms.getLog(this).error("Error while initalizing XML content bookmarks", e);
+                LOG.error(Messages.get().key(Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
             }
         }
 
@@ -493,18 +512,22 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @param resolver the XML entity resolver to use, required for VFS access
      * 
      * @return the content definition object for this xml content object
+     * 
+     * @throws CmsRuntimeException if the schema location attribute (<code>systemId</code>)cannot be found, 
+     *         parsing of the schema fails, an underlying IOException occurs or unmarshalling fails
+     *           
      */
-    private CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) {
+    private CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) throws CmsRuntimeException {
 
         String schema = m_document.getRootElement().attributeValue(
             I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION);
-
         // Note regarding exception handling:
         // Since this object already is a valid XML content object,
         // it must have a valid schema, otherwise it would not exist.
         // Therefore the exceptions should never be really thrown.
         if (schema == null) {
-            throw new RuntimeException("No XML schema set for content definition");
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_XMLCONTENT_MISSING_SCHEMA_0));
         }
 
         CmsXmlContentDefinition result = null;
@@ -526,11 +549,14 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                     cmsResolver.cacheContentDefinition(schema, result);
                 }
             } catch (SAXException e) {
-                throw new RuntimeException("Could not parse XML content definition schema", e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_XML_SCHEMA_PARSE_0), e);
             } catch (IOException e) {
-                throw new RuntimeException("IO error resolving XML content definition schema", e);
+                throw new CmsRuntimeException(Messages.get()
+                    .container(Messages.ERR_XML_SCHEMA_IO_0), e);
             } catch (CmsXmlException e) {
-                throw new RuntimeException("Unable to unmarshal XML content definition schema", e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_XMLCONTENT_UNMARSHAL_0), e);
             }
         }
 
@@ -601,8 +627,11 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 }
             } else {
                 // unknown XML node name according to schema
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("XML node name '" + name + "' invalid according to schema " + definition.getSchemaLocation());
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().key(
+                        Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
+                        name,
+                        definition.getSchemaLocation()));
                 }
             }
 

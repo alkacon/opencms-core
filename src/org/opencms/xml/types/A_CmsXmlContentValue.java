@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/05/20 11:47:11 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/05/23 09:36:51 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_CmsWidgetParameter {
@@ -213,7 +213,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
             } catch (CmsRuntimeException e) {
                 // should not happen if default value is correct
                 LOG.error(Messages.get().key(
-                    Messages.ERR_XMLCONTENT_INVALID_DEFAULT_VALUE_1,
+                    Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1,
                     defaultValue), e);
                 element.clearContent();
             }

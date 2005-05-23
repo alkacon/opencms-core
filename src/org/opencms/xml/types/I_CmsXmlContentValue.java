@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/23 09:36:51 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
@@ -118,7 +118,8 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * extraction and replacement in the content.<p>
      * 
      * @param cms an initialized instance of a CmsObject
-     * @param value the value to set
+     * @param value the value to set 
+     * 
      */
     void setStringValue(CmsObject cms, String value);
 }

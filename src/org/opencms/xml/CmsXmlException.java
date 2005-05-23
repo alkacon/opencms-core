@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlException.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/23 09:36:51 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.xml;
 
 import org.opencms.i18n.CmsMessageContainer;
@@ -38,11 +38,11 @@ import org.opencms.main.CmsException;
  * Signals that an error occured while processing an xml resource.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1.4
  */
 public class CmsXmlException extends CmsException {
-    
+
     /**
      * Creates a new localized Exception.<p>
      * 
@@ -63,43 +63,23 @@ public class CmsXmlException extends CmsException {
 
         super(container, cause);
     }
-    
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsXmlException(container, cause);
     }
-    
+
     // the allowed type range for this exception is >=400 and <500    
-        
+
     /**
      * Default constructor for a CmsXmlPageException.<p>
      */
     public CmsXmlException() {
+
         super();
     }
 
-    /**
-     * Constructs a CmsXmlPageException with the specified description message.<p>
-     * 
-     * @param message the description message
-     */
-    public CmsXmlException(String message) {
-        // temporarily leave this constructor until the org.opencms.xml.content package will be localized.
-        super();
-    }    
-    
-    /**
-     * Constructs a CmsXmlPageException with the specified description message and root cause.<p>
-     * 
-     * @param message the description message
-     * @param rootCause the root cause
-     */
-    public CmsXmlException(String message, Throwable rootCause) {
-        // temporarily leave this constructor until the org.opencms.xml.content package will be localized.
-        super();
-    }        
-    
 }

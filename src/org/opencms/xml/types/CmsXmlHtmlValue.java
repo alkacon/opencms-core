@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2005/05/20 11:47:11 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/23 09:36:51 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -151,7 +151,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
             } catch (CmsRuntimeException e) {
                 // should not happen if default value is correct
                 LOG.error(Messages.get().key(
-                    Messages.ERR_XMLCONTENT_INVALID_DEFAULT_VALUE_1,
+                    Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1,
                     defaultValue), e);
                 element.clearContent();
             }
@@ -224,7 +224,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(org.opencms.file.CmsObject)
      */
-    public String getStringValue(CmsObject cms) throws CmsRuntimeException {
+    public String getStringValue(CmsObject cms) {
 
         if (m_stringValue == null) {
             m_stringValue = createStringValue(cms, m_document);
