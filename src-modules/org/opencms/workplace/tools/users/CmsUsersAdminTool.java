@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/23 08:51:17 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/05/23 13:38:18 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends A_CmsListDialog {
@@ -429,9 +429,6 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
         userGroupsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_USERS_DETAIL_GROUPS_NAME_0)));
         metadata.addItemDetails(userGroupsDetails);
-
-        // adds a reload button
-        metadata.addIndependentAction(CmsListIndependentAction.getDefaultRefreshListAction(LIST_ID));
 
         // makes the list searchable
         CmsListSearchAction searchAction = new CmsListSearchAction(

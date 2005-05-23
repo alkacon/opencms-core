@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/05/20 15:46:56 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/23 13:38:18 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
 public class CmsSchedulerList extends A_CmsListDialog {
@@ -484,9 +484,6 @@ public class CmsSchedulerList extends A_CmsListDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // add default reload button
-        metadata.addIndependentAction(CmsListIndependentAction.getDefaultRefreshListAction(LIST_ID));
-        
         // add independent job context info button
         
         // create show context info action
