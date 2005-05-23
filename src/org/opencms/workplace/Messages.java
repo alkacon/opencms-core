@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2005/05/20 14:30:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/23 12:37:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.9.1
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INITIALIZE_WORKPLACE_0 = "ERR_INITIALIZE_WORKPLACE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_DIALOG_HANDLER_2 = "INIT_ADD_DIALOG_HANDLER_2";

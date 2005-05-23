@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/05/23 12:37:17 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 5.3.1
  */
@@ -673,76 +673,80 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public synchronized void initialize(CmsObject cms) throws CmsException, CmsRoleViolationException {
 
-        // ensure that the current user has permissions to initialize the workplace
-        cms.checkRole(CmsRole.WORKPLACE_MANAGER);
-
-        // set the workplace encoding
-        m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-
-        // add the additional explorer types found in the modules
-        CmsModuleManager moduleManager = OpenCms.getModuleManager();
-        Iterator j = moduleManager.getModuleNames().iterator();
-        while (j.hasNext()) {
-            CmsModule module = moduleManager.getModule((String)j.next());
-            List explorerTypes = module.getExplorerTypes();
-            Iterator l = explorerTypes.iterator();
-            while (l.hasNext()) {
-                CmsExplorerTypeSettings explorerType = (CmsExplorerTypeSettings)l.next();
-                addExplorerTypeSetting(explorerType);
-            }
-        }
-        // initialize the workplace views
-        initWorkplaceViews(cms);
-        // initialize the workplace editor manager
-        m_editorManager = new CmsWorkplaceEditorManager(cms);
-        // initialize the locale handler
-        initHandler(cms);
-        // sort the explorer type settings
-        Collections.sort(m_explorerTypeSettings);
-        // create the access control lists for each explorer type
-        Iterator i = m_explorerTypeSettings.iterator();
-        while (i.hasNext()) {
-            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
-            settings.getAccess().createAccessControlList(cms);
-        }
-
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_VFS_ACCESS_INITIALIZED_0));
-        }
         try {
-            // read the temporary file project
-            m_tempFileProject = cms.readProject(I_CmsProjectDriver.C_TEMP_FILE_PROJECT_NAME);
-        } catch (CmsException e) {
-            // during initial setup of OpenCms the temp file project does not yet exist...
-            LOG.error(Messages.get().key(Messages.LOG_NO_TEMP_FILE_PROJECT_0));
-        }
-        // create an instance of editor display options
-        m_editorDisplayOptions = new CmsEditorDisplayOptions();
-        // read out the configured gallery classes
-        j = OpenCms.getResourceManager().getResourceTypes().iterator();
-        while (j.hasNext()) {
-            I_CmsResourceType resourceType = (I_CmsResourceType)j.next();
-            if (resourceType instanceof CmsResourceTypeFolderExtended) {
-                // found a configured extended folder resource type
-                CmsResourceTypeFolderExtended galleryType = (CmsResourceTypeFolderExtended)resourceType;
-                String folderClassName = galleryType.getFolderClassName();
-                if (CmsStringUtil.isNotEmpty(folderClassName)) {
-                    // only process this as a gallery if the folder name is not empty
-                    try {
-                        // check, if the folder class is a subclass of A_CmsGallery
-                        if (A_CmsGallery.class.isAssignableFrom(Class.forName(folderClassName))) {
-                            // store the gallery class name with the type name as lookup key                        
-                            m_galleries.put(galleryType.getTypeName(), galleryType);
+            // ensure that the current user has permissions to initialize the workplace
+            cms.checkRole(CmsRole.WORKPLACE_MANAGER);
+
+            // set the workplace encoding
+            m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+
+            // add the additional explorer types found in the modules
+            CmsModuleManager moduleManager = OpenCms.getModuleManager();
+            Iterator j = moduleManager.getModuleNames().iterator();
+            while (j.hasNext()) {
+                CmsModule module = moduleManager.getModule((String)j.next());
+                List explorerTypes = module.getExplorerTypes();
+                Iterator l = explorerTypes.iterator();
+                while (l.hasNext()) {
+                    CmsExplorerTypeSettings explorerType = (CmsExplorerTypeSettings)l.next();
+                    addExplorerTypeSetting(explorerType);
+                }
+            }
+            // initialize the workplace views
+            initWorkplaceViews(cms);
+            // initialize the workplace editor manager
+            m_editorManager = new CmsWorkplaceEditorManager(cms);
+            // initialize the locale handler
+            initHandler(cms);
+            // sort the explorer type settings
+            Collections.sort(m_explorerTypeSettings);
+            // create the access control lists for each explorer type
+            Iterator i = m_explorerTypeSettings.iterator();
+            while (i.hasNext()) {
+                CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
+                settings.getAccess().createAccessControlList(cms);
+            }
+
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_VFS_ACCESS_INITIALIZED_0));
+            }
+            try {
+                // read the temporary file project
+                m_tempFileProject = cms.readProject(I_CmsProjectDriver.C_TEMP_FILE_PROJECT_NAME);
+            } catch (CmsException e) {
+                // during initial setup of OpenCms the temp file project does not yet exist...
+                LOG.error(Messages.get().key(Messages.LOG_NO_TEMP_FILE_PROJECT_0));
+            }
+            // create an instance of editor display options
+            m_editorDisplayOptions = new CmsEditorDisplayOptions();
+            // read out the configured gallery classes
+            j = OpenCms.getResourceManager().getResourceTypes().iterator();
+            while (j.hasNext()) {
+                I_CmsResourceType resourceType = (I_CmsResourceType)j.next();
+                if (resourceType instanceof CmsResourceTypeFolderExtended) {
+                    // found a configured extended folder resource type
+                    CmsResourceTypeFolderExtended galleryType = (CmsResourceTypeFolderExtended)resourceType;
+                    String folderClassName = galleryType.getFolderClassName();
+                    if (CmsStringUtil.isNotEmpty(folderClassName)) {
+                        // only process this as a gallery if the folder name is not empty
+                        try {
+                            // check, if the folder class is a subclass of A_CmsGallery
+                            if (A_CmsGallery.class.isAssignableFrom(Class.forName(folderClassName))) {
+                                // store the gallery class name with the type name as lookup key                        
+                                m_galleries.put(galleryType.getTypeName(), galleryType);
+                            }
+                        } catch (ClassNotFoundException e) {
+                            LOG.error(e.getLocalizedMessage());
                         }
-                    } catch (ClassNotFoundException e) {
-                        LOG.error(e.getLocalizedMessage());
                     }
                 }
             }
+            m_toolManager = new CmsToolManager(cms);
+            // throw away all cached message objects
+            m_messages.clear();
+        } catch (CmsException e) {
+            throw new CmsException(Messages.get().container(Messages.ERR_INITIALIZE_WORKPLACE_0));
         }
-        m_toolManager = new CmsToolManager(cms);
-        // throw away all cached message objects
-        m_messages.clear();
     }
 
     /**

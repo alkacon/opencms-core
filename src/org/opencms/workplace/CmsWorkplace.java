@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.115 $
+ * Date   : $Date: 2005/05/23 12:37:17 $
+ * Version: $Revision: 1.116 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.115 $
+ * @version $Revision: 1.116 $
  * 
  * @since 5.1
  */
@@ -121,9 +121,6 @@ public abstract class CmsWorkplace {
 
     /** Constant for the JSP common confirmation dialog. */
     protected static final String C_FILE_DIALOG_SCREEN_CONFIRM = C_DIALOG_PATH_COMMON + "confirmation.jsp";
-
-    /** Constant for the JSP common error dialog. */
-    protected static final String C_FILE_DIALOG_SCREEN_ERROR = C_DIALOG_PATH_COMMON + "error.jsp";
 
     /** Constant for the JSP common error dialog. */
     protected static final String C_FILE_DIALOG_SCREEN_ERRORPAGE = C_DIALOG_PATH_COMMON + "errorpage.jsp";
