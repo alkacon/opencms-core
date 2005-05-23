@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2005/05/12 09:03:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -202,9 +202,7 @@ public class CmsMove extends CmsDialog {
             getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM);             
         } catch (Throwable e) {
             // error during move operation, show error dialog
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
+            includeErrorpage(this, e);  
         }
     }
     

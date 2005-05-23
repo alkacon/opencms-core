@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsErrorpage.java,v $
- * Date   : $Date: 2005/05/12 11:09:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,11 @@ import org.opencms.workplace.CmsDialog;
  * 
  * The following files use this class:
  * <ul>
- * <li>/commons/includes/error.jsp
+ * <li>/commons/includes/errorpage.jsp
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.9.1
  */
@@ -68,9 +68,14 @@ public final class CmsErrorpage {
      * @return the error message to be displayed
      */
     public static String getErrorMessage(CmsDialog wp) {
-
+   
         StringBuffer result = new StringBuffer(512);
         Throwable t = (Throwable)wp.getJsp().getRequest().getAttribute("throwable");
+        // if a localized message is already set as a parameter, append it.
+        if (CmsStringUtil.isNotEmpty(wp.getParamMessage())) {
+            result.append(wp.getParamMessage());
+            result.append("<br><br>").append(wp.key("label.reason")).append(": ");
+        } 
         result.append(getMessage(wp, t));
         // recursively append all error reasons to the message
         for (Throwable cause = t.getCause(); cause != null; cause = cause.getCause()) {

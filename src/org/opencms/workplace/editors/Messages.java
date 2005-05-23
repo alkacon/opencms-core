@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Messages.java,v $
- * Date   : $Date: 2005/05/20 14:31:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,34 +41,52 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.9.1
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_CONTENT_ENC_1 = "ERR_INVALID_CONTENT_ENC_1";
     
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_READ_EDITIR_FOLDER_FAILED_1 = "LOG_READ_EDITIR_FOLDER_FAILED_1";
+    public static final String ERR_NO_EDITOR_FOUND_0 = "ERR_NO_EDITOR_FOUND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPDATE_ELEMENTS_0 = "ERR_UPDATE_ELEMENTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_BROWSER_MATCHES_CONFIG_1 = "LOG_BROWSER_MATCHES_CONFIG_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_EDITOR_CONFIG_NO_PATTERN_0 = "LOG_EDITOR_CONFIG_NO_PATTERN_0";
+    public static final String LOG_CALC_EDIT_MODE_FAILED_1 = "LOG_CALC_EDIT_MODE_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_CREATE_XML_CONTENT_ITEM_1 = "LOG_CREATE_XML_CONTENT_ITEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_EDITOR_CONFIG_ERROR_0 = "LOG_EDITOR_CONFIG_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_EDITOR_CONFIG_NO_LABEL_0 = "LOG_EDITOR_CONFIG_NO_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_EDITOR_CONFIG_NO_PATTERN_0 = "LOG_EDITOR_CONFIG_NO_PATTERN_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_EDITOR_CONFIG_NO_URI_0 = "LOG_EDITOR_CONFIG_NO_URI_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_MAP_CONFIG_FILE_TO_USER_2 = "LOG_MAP_CONFIG_FILE_TO_USER_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_RESOURCE_TYPES_0 = "LOG_NO_RESOURCE_TYPES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_USER_AGENTS_0 = "LOG_NO_USER_AGENTS_0";
+    
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_READ_EDITIR_FOLDER_FAILED_1 = "LOG_READ_EDITIR_FOLDER_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_EDITOR_CONFIG_ERROR_0 = "LOG_EDITOR_CONFIG_ERROR_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_INVALID_CONTENT_ENC_1 = "ERR_INVALID_CONTENT_ENC_1";
+    public static final String LOG_READ_TEMPLATE_FAILED_0 = "LOG_READ_TEMPLATE_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_TEMPLATE_PROP_FAILED_0 = "LOG_READ_TEMPLATE_PROP_FAILED_0";
@@ -77,22 +95,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_READ_TEMPLATE_PROP_STYLESHEET_FAILED_0 = "LOG_READ_TEMPLATE_PROP_STYLESHEET_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_READ_XMLPAGE_FAILED_1 = "LOG_READ_XMLPAGE_FAILED_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_TITLE_PROP_FAILED_1 = "LOG_READ_TITLE_PROP_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_READ_TEMPLATE_FAILED_0 = "LOG_READ_TEMPLATE_FAILED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_CALC_EDIT_MODE_FAILED_1 = "LOG_CALC_EDIT_MODE_FAILED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_MAP_CONFIG_FILE_TO_USER_2 = "LOG_MAP_CONFIG_FILE_TO_USER_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_CREATE_XML_CONTENT_ITEM_1 = "LOG_CREATE_XML_CONTENT_ITEM_1";
+    public static final String LOG_READ_XMLPAGE_FAILED_1 = "LOG_READ_XMLPAGE_FAILED_1";
 
     
     

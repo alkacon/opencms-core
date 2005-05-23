@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2005/05/11 15:24:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsVfsException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
@@ -64,7 +63,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.3
  */
@@ -188,11 +187,8 @@ public class CmsNewResourceFolder extends CmsNewResource {
             setResourceCreated(true);
         } catch (CmsException e) {
             // error creating folder, show error dialog
-            CmsVfsException exc = new CmsVfsException(Messages.get().container(Messages.ERR_CREATE_FOLDER_0), e);
-            LOG.error(exc);
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_CREATE_FOLDER_0));
+            includeErrorpage(this, e);   
         }
 
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/05/18 13:02:33 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -57,7 +56,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.logging.Log;
 
 /**
  * The new resource upload dialog handles the upload of single files or zipped files.<p>
@@ -68,14 +66,11 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResourceUpload extends CmsNewResource {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsNewResourceUpload.class);  
     
     /** The value for the resource upload applet action. */
     public static final int ACTION_APPLET = 140;
@@ -194,10 +189,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
             }
         } catch (CmsException e) {
             // error updating file, show error dialog
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            LOG.error(e.getLocalizedMessage());
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_UPLOAD_FILE_0));
+            includeErrorpage(this, e);
         }
     }
 
@@ -277,11 +270,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
             }
         } catch (CmsException e) {
             // error uploading file, show error dialog
-            setAction(ACTION_SHOWERROR);
-            LOG.error(e.getLocalizedMessage());
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_UPLOAD_FILE_0));
+            includeErrorpage(this, e);   
         }
     }
 
@@ -612,9 +602,6 @@ public class CmsNewResourceUpload extends CmsNewResource {
             setAction(ACTION_SUBMITFORM2);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
-        } else if (DIALOG_SHOWERROR.equals(getParamAction())) {
-            setAction(ACTION_SHOWERROR);
-            actionUploadError();
         } else {
             if (getSettings().getUserSettings().useUploadApplet()) {
                 setAction(ACTION_APPLET);
@@ -623,23 +610,6 @@ public class CmsNewResourceUpload extends CmsNewResource {
             }
             // build title for new resource dialog     
             setParamTitle(key("title.upload"));
-        }
-    }
-
-    /**
-     * Includes the error dialog if the upload applet has an error.<p>
-     */
-    private void actionUploadError() {
-
-        // error uploading file, show error dialog
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        setParamErrorstack(getParamUploadError());
-        setParamMessage(key("error.message.upload"));
-        setParamReasonSuggestion(key("error.reason.upload") + "<br>\n" + key("error.suggestion.upload") + "\n");
-        try {
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
-        } catch (JspException e) {
-            LOG.error(e);
         }
     }
 

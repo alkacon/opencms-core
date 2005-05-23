@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourcePointer.java,v $
- * Date   : $Date: 2005/05/11 15:24:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,9 @@
 
 package org.opencms.workplace.explorer;
 
-import org.opencms.file.CmsVfsException;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.List;
@@ -44,8 +42,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-
-import org.apache.commons.logging.Log;
 
 /**
  * The new resource pointer dialog handles the creation of a pointer (external link).<p>
@@ -56,14 +52,11 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResourcePointer extends CmsNewResource {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsNewResourcePointer.class);  
     
     /** Request parameter name for the link target. */
     public static final String PARAM_LINKTARGET = "linktarget";
@@ -134,11 +127,8 @@ public class CmsNewResourcePointer extends CmsNewResource {
             setResourceCreated(true);
         } catch (CmsException e) {
             // error creating pointer, show error dialog
-            CmsVfsException exc = new CmsVfsException(Messages.get().container(Messages.ERR_CREATE_LINK_0), e);
-            LOG.error(exc);
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_CREATE_LINK_0));
+            includeErrorpage(this, e);   
         }
 
     }

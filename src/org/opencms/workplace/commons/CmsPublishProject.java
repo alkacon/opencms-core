@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/05/16 17:45:08 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.12
  */
@@ -317,9 +317,7 @@ public class CmsPublishProject extends CmsReport {
                     
                 } catch (CmsException e) {
                     // error while unlocking resources, show error screen
-                    getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-                    getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-                    getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
+                    includeErrorpage(this, e);  
                 }                         
         }
     }

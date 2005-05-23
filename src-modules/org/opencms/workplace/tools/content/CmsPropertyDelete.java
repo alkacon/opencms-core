@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyDelete.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/23 12:39:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.workplace.tools.content;
 
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.3
  */
@@ -117,11 +118,7 @@ public class CmsPropertyDelete extends CmsDialog {
             actionCloseDialog();
         } catch (CmsException e) {              
             // error while deleting property definition, show error dialog
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message." + getParamDialogtype()));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-            
+            includeErrorpage(this, e);  
         }
     }  
     
@@ -171,15 +168,13 @@ public class CmsPropertyDelete extends CmsDialog {
                     // close the dialog
                     actionCloseDialog();
                 }
-            } else {                
-                setParamMessage(key("error.message.deleteproperty"));
+            } else {
+                
                 StringBuffer reason = new StringBuffer();
-                reason.append(key("error.reason.deleteproperty"));
                 reason.append(dialogWhiteBoxStart());
                 reason.append(buildResourceList(resourcesLockedByOtherUser, true));
                 reason.append(dialogWhiteBoxEnd());
-                setParamReasonSuggestion(reason.toString());
-                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+                throw new CmsVfsException(Messages.get().container(Messages.ERR_DEL_PROP_RESOURCES_LOCKED_1, reason.toString()));
             }
         } catch (CmsException e) {              
             // error while deleting property definition, show error dialog

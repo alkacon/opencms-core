@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsEditPointer.java,v $
- * Date   : $Date: 2005/05/10 07:50:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -55,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.0
  */
@@ -107,9 +106,8 @@ public class CmsEditPointer extends CmsDialog {
             actionCloseDialog();
         } catch (CmsException e) {
             // error changing link target, show error dialog
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);  
+            setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_CHANGE_LINK_TARGET_0));
+            includeErrorpage(this, e); 
         }
     }
     
@@ -130,12 +128,8 @@ public class CmsEditPointer extends CmsDialog {
                 linkTarget = new String(file.getContents());
             } catch (CmsException e1) {
                 // error reading file, show error dialog
-                CmsException e = new CmsException(Messages.get().container(Messages.ERR_GET_LINK_TARGET_1, getParamResource()), e1);
-                getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-                CmsLog.getLog(CmsEditPointer.class).error(e.getLocalizedMessage());
-                getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-                
+                setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_GET_LINK_TARGET_1, getParamResource()));
+                includeErrorpage(this, e1);
 
             }
         }

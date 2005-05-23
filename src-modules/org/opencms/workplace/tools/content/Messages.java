@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2005/05/20 09:13:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/23 12:39:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
     
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DEL_PROP_RESOURCES_LOCKED_1 = "ERR_DEL_PROP_RESOURCES_LOCKED_1";
+  
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_FILE_BYTES_1 = "ERR_GET_FILE_BYTES_1";
   

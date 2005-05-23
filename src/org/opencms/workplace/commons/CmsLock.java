@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2005/05/12 09:03:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsDialogSelector;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -57,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.12
  */
@@ -208,10 +207,7 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
             actionCloseDialog();
         } catch (CmsException e) {
             // exception occured, show error dialog
-            CmsLog.getLog(CmsLock.class).error(e.getLocalizedMessage());
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
+            includeErrorpage(this, e);  
         }
     }
     

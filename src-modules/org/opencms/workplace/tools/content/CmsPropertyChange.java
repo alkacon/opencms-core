@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyChange.java,v $
- * Date   : $Date: 2005/05/17 15:29:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/23 12:39:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.3
  */
@@ -170,10 +170,7 @@ public class CmsPropertyChange extends CmsDialog {
             }    
         } catch (CmsException e) {              
             // error while changing property values, show error dialog
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message." + getParamDialogtype()));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            includeErrorpage(this, e);
             
         }
     } 

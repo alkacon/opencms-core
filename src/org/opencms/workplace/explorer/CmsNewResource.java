@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/05/11 15:24:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.3
  */
@@ -165,11 +165,7 @@ public class CmsNewResource extends CmsDialog {
             setResourceCreated(true);
         } catch (CmsException e) {
             // error creating file, show error dialog
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message.newresource"));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);            
+            includeErrorpage(this, e);             
         }
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorHandler.java,v $
- * Date   : $Date: 2005/05/20 14:31:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceException;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  * @see org.opencms.workplace.editors.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.1
  */
@@ -96,7 +97,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
                 resTypeId = res.getTypeId();
             } catch (CmsException e) {
                 // resource could not be read, show error dialog
-                return showErrorDialog(jsp, e);
+                showErrorDialog(jsp, e); 
             }
         }
         
@@ -105,7 +106,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
             resourceType = OpenCms.getResourceManager().getResourceType(resTypeId).getTypeName();
         } catch (CmsException e) {
             // resource type name can not be determined, show error dialog
-            return showErrorDialog(jsp, e);
+            showErrorDialog(jsp, e);
         }
         
         // get the editor URI from the editor manager
@@ -135,7 +136,8 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
         
         if (editorUri == null) {
             // no valid editor was found, show the error dialog
-            return showErrorDialog(jsp, null);
+            CmsWorkplaceException e = new CmsWorkplaceException(Messages.get().container(Messages.ERR_NO_EDITOR_FOUND_0));
+            showErrorDialog(jsp, e);
         }
         return editorUri;
     }  
@@ -152,29 +154,17 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
      * 
      * @param jsp the instanciated CmsJspActionElement
      * @param t a throwable object, can be null
-     * @return always null
      */
-    private static String showErrorDialog(CmsJspActionElement jsp, Throwable t)  {
+    private static void showErrorDialog(CmsJspActionElement jsp, Throwable t)  {
         CmsDialog wp = new CmsDialog(jsp);
-        
+        wp.setParamMessage(Messages.get().getBundle(wp.getLocale()).key(Messages.ERR_NO_EDITOR_FOUND_0));
         wp.fillParamValues(jsp.getRequest());
-        wp.setParamMessage(wp.key("error.message.editor.load"));
-        wp.setParamReasonSuggestion(wp.key("error.reason.editor.load") + "<br>\n" + wp.key("error.suggestion.editor.load") + "\n");
-        if (t != null) {
-            // set the error stack parameter, if present
-            wp.setParamErrorstack(t.toString());
-        }
-        // store initialized editor class as request attribute
-        jsp.getRequest().setAttribute(CmsWorkplace.C_SESSION_WORKPLACE_CLASS, wp);
         try {
-            jsp.include(CmsWorkplace.C_FILE_DIALOG_SCREEN_ERROR);
+            wp.includeErrorpage(wp, t);
         } catch (JspException e) {
-            // should usually never happen
-            if (OpenCms.getLog(CmsEditorHandler.class).isInfoEnabled()) {
-                OpenCms.getLog(CmsEditorHandler.class).info(e);
-            }
-        }
-        return null;
+            LOG.debug(org.opencms.workplace.commons.Messages.get().key(
+                org.opencms.workplace.commons.Messages.LOG_ERROR_INCLUDE_FAILED_1, C_FILE_DIALOG_SCREEN_ERRORPAGE), e);
+        }    
     }
     
 }

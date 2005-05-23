@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2005/05/20 09:13:45 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.5.0
  */
@@ -226,10 +226,7 @@ public class CmsChtype extends CmsDialog {
             actionCloseDialog();
         } catch (CmsException e) {
             // error changing resource type, show error dialog
-            LOG.error(e.getLocalizedMessage());
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
+            includeErrorpage(this, e);  
         }
     }
     

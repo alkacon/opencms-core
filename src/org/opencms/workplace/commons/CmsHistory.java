@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -57,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.5.1
  */
@@ -110,10 +109,7 @@ public class CmsHistory extends CmsDialog {
                 performRestoreOperation();
             } catch (CmsException e) {
                 // Cms error defining property, show error dialog
-                CmsLog.getLog(CmsHistory.class).error(e);
-                getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-                getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-                getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);                
+                includeErrorpage(this, e);                  
             }    
         }              
         

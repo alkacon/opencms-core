@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.3
  */
@@ -123,9 +123,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             }    
         } catch (CmsException e) {
             // Cms error defining property, show error dialog
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
+            includeErrorpage(this, e);  
         } 
     }
     
@@ -392,10 +390,8 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             setShowNavigation(getExplorerTypeSettings().isShowNavigation());
         } catch (CmsException e) {
             // error reading file, show error dialog
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
             try {
-                getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
+                includeErrorpage(this, e);  
             } catch (JspException exc) {
                 LOG.error(Messages.get().key(Messages.LOG_ERROR_INCLUDE_FAILED_1, C_FILE_DIALOG_SCREEN_ERRORPAGE));                      
             }

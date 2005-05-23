@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo6.java,v $
- * Date   : $Date: 2005/05/19 16:08:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/23 12:39:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
@@ -238,10 +238,8 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
             
             if (errors.size() > 0) {
                 setAction(ACTION_ERROR);
-                getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-                getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, errors.get(0));
                 try {
-                    getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
+                    includeErrorpage(this, (Throwable)errors.get(0));   
                 } catch (JspException e) {
                     // ignore
                 }
@@ -257,10 +255,8 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
             
             if (errors.size() > 0) {
                 setAction(ACTION_ERROR);
-                getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-                getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, errors.get(0));
                 try {
-                    getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
+                    includeErrorpage(this, (Throwable)errors.get(0));   
                 } catch (JspException e) {
                     // ignore
                 }

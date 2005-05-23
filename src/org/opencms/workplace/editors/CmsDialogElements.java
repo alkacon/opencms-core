@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2005/05/18 07:34:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.0
  */
@@ -252,8 +253,10 @@ public class CmsDialogElements extends CmsDialog {
     
     /**
      * Updates the enabled/diabled status of all elements of the current page.<p>
+     * 
+     * @throws JspException if there is an error including the error page
      */
-    public void actionUpdateElements() {
+    public void actionUpdateElements() throws JspException {
         try {
             List elementList = computeElements();
             CmsFile file = getCms().readFile(getParamTempfile(), CmsResourceFilter.IGNORE_EXPIRATION);
@@ -302,20 +305,8 @@ public class CmsDialogElements extends CmsDialog {
             }                       
         } catch (CmsException e) {
             // show error dialog
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamMessage(key("error.message.editor.elements"));
-            String reason = key("error.reason.editor.elements") + "<br>\n" + key("error.suggestion.editor.elements") + "\n";
-            setParamReasonSuggestion(reason);
-            // save initialized instance of this class in request attribute for included sub-elements
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            try {
-                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR); 
-            } catch (Exception exc) {
-                // should usually never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(exc);
-                }
-            }
+            setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_UPDATE_ELEMENTS_0));
+            includeErrorpage(this, e);   
         }
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/cache/Attic/CmsReInitWorkplace.java,v $
- * Date   : $Date: 2005/05/16 17:45:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/23 12:39:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,8 @@ package org.opencms.workplace.tools.cache;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsReport;
-import org.opencms.workplace.CmsWorkplaceException;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.tools.staticexport.CmsStaticExportThread;
 
@@ -45,13 +43,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Provides an output window for re-initialization of the OpenCms Workplace.<p> 
  *
  * @author  Michael Emmerich(m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.10
  */
@@ -59,9 +55,6 @@ public class CmsReInitWorkplace extends CmsReport {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "reinitworkplace";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsReInitWorkplace.class);
 
     /**
      * Public constructor.<p>
@@ -106,13 +99,8 @@ public class CmsReInitWorkplace extends CmsReport {
                     // after successful re-initialization, close dialog
                     actionCloseDialog();
                 } catch (CmsException e) {
-
                     // create a new Exception with custom message
-                    CmsWorkplaceException ereinit = new CmsWorkplaceException(Messages.get().container(
-                        Messages.LOG_ERR_WORKPLACE_REINIT_0), e);
-                    LOG.error(ereinit.getLocalizedMessage(), ereinit);    
-                    getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, ereinit);
-                    getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
+                    includeErrorpage(this, e);  
                 }
                 break;
         }

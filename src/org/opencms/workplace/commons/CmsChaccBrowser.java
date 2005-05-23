@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2005/05/12 09:03:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/23 12:38:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -46,8 +45,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Provides methods for building the groups and users popup window.<p> 
  * 
@@ -57,14 +54,11 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
 public class CmsChaccBrowser extends CmsDialog {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsChaccBrowser.class);  
     
     /** The dialog type. */
     public static final String DIALOG_TYPE = "chaccbrowser";
@@ -176,10 +170,7 @@ public class CmsChaccBrowser extends CmsDialog {
             groups = getCms().getGroups();
         } catch (CmsException e) {
             // should usually never happen
-            LOG.error(e.getLocalizedMessage());
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
+            includeErrorpage(this, e);   
         }
         
         for (int i=0; i<groups.size(); i++) {
@@ -202,9 +193,7 @@ public class CmsChaccBrowser extends CmsDialog {
             users = getCms().getUsers();
         } catch (CmsException e) {
             // should usually never happen
-            LOG.error(e.getLocalizedMessage());
-            getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, e);
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            includeErrorpage(this, e);
         }
 
         for (int i=0; i<users.size(); i++) {
