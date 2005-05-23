@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListIndependentAction.java,v $
- * Date   : $Date: 2005/05/20 16:45:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/23 16:06:05 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * Default implementation of a independent action for a html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public class CmsListIndependentAction extends A_CmsListAction {
@@ -107,29 +107,7 @@ public class CmsListIndependentAction extends A_CmsListAction {
     }
 
     /** list action id constant. */
-    public static final String LIST_ACTION_REFRESH = "refresh";
-
-    /** list action id constant. */
     public static final String LIST_ACTION_PRINT = "print";
-
-    /**
-     * Creates a new list refresh action for the given list.<p>
-     * 
-     * @param listId the id of the associated list
-     * 
-     * @return a new list refresh action
-     */
-    public static final CmsListIndependentAction getDefaultRefreshListAction(String listId) {
-
-        return new CmsListIndependentAction(
-            listId,
-            LIST_ACTION_REFRESH,
-            Messages.get().container(Messages.GUI_LIST_ACTION_REFRESH_NAME_0),
-            Messages.get().container(Messages.GUI_LIST_ACTION_REFRESH_HELP_0),
-            "list/reload.png",
-            true, // enabled
-            Messages.get().container(Messages.GUI_LIST_ACTION_REFRESH_CONF_0));
-    }
 
     /**
      * Creates a new list print action for the given list.<p>

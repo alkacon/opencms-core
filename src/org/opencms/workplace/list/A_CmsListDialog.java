@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/05/20 16:45:17 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/23 16:06:05 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -72,6 +72,30 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /** Value for the action: sort the list. */
     public static final int ACTION_LIST_SORT = 80;
+
+    /** Standard list button location. */
+    public static final String ICON_ACTIVE = "list/active.png";
+
+    /** Standard list button location. */
+    public static final String ICON_DELETE = "list/delete.png";
+
+    /** Standard list button location. */
+    public static final String ICON_DETAILS_HIDE = "list/details_hide.png";
+
+    /** Standard list button location. */
+    public static final String ICON_DETAILS_SHOW = "list/details_show.png";
+
+    /** Standard list button location. */
+    public static final String ICON_INACTIVE = "list/inactive.png";
+
+    /** Standard list button location. */
+    public static final String ICON_MULTI_ACTIVATE = "list/multi_activate.png";
+
+    /** Standard list button location. */
+    public static final String ICON_MULTI_DEACTIVATE = "list/multi_deactivate.png";
+
+    /** Standard list button location. */
+    public static final String ICON_MULTI_DELETE = "list/multi_delete.png";
 
     /** Request parameter value for the list action: a list item independent action has been triggered. */
     public static final String LIST_INDEPENDENT_ACTION = "listindependentaction";
@@ -196,16 +220,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public void executeListIndepActions() {
 
-        Iterator itIndepActions = getList().getMetadata().getIndependentActions().iterator();
-        while (itIndepActions.hasNext()) {
-            I_CmsListAction action = (I_CmsListAction)itIndepActions.next();
-            if (action.getId().equals(CmsListIndependentAction.LIST_ACTION_REFRESH)) {
-                if (getParamListAction().equals(CmsListIndependentAction.LIST_ACTION_REFRESH)) {
-                    refreshList();
-                }
-                break;
-            }
-        }
         // toogle item details
         if (getList().getMetadata().getItemDetailDefinition(getParamListAction()) != null) {
             getList().getMetadata().toogleDetailState(getParamListAction());
@@ -477,7 +491,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected synchronized void listSave() {
 
         CmsHtmlList list = getList();
-        if (list!=null) {
+        if (list != null) {
             list.setMetadata(null);
         }
         getSettings().setHtmlList(list);
@@ -489,11 +503,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * Next time the list is displayed the list will be reloaded.<p>
      */
     protected void removeList() {
-        
+
         setList(null);
         listSave();
     }
-    
+
     /**
      * Should create the columns and add them to the given list metadata object.<p>
      * 
@@ -531,7 +545,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected void setSearchAction(String listId, CmsListColumnDefinition columnDefinition) {
 
-        if (((CmsListMetadata)m_metadatas.get(listId)).getSearchAction()==null) {
+        if (((CmsListMetadata)m_metadatas.get(listId)).getSearchAction() == null) {
             // makes the list searchable
             CmsListSearchAction searchAction = new CmsListSearchAction(listId, columnDefinition);
             searchAction.useDefaultShowAllAction();

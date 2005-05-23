@@ -218,6 +218,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/list/active.png</source>
+			<destination>system/workplace/resources/list/active.png</destination>
+			<type>image</type>
+			<uuidresource>8f8169de-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 15:02:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/list/arrow_down.gif</source>
 			<destination>system/workplace/resources/list/arrow_down.gif</destination>
 			<type>image</type>
@@ -244,25 +257,91 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/list/delete.gif</source>
-			<destination>system/workplace/resources/list/delete.gif</destination>
+			<source>system/workplace/resources/list/delete.png</source>
+			<destination>system/workplace/resources/list/delete.png</destination>
 			<type>image</type>
-			<uuidresource>70d7e909-6af5-11d9-b9f2-2f77a917d9ae</uuidresource>
-			<datelastmodified>Thu, 20 Jan 2005 15:10:37 GMT</datelastmodified>
+			<uuidresource>8f8a91a4-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 15:02:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 20 Jan 2005 15:10:37 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/list/reload.png</source>
-			<destination>system/workplace/resources/list/reload.png</destination>
+			<source>system/workplace/resources/list/details_hide.png</source>
+			<destination>system/workplace/resources/list/details_hide.png</destination>
 			<type>image</type>
-			<datelastmodified>Tue, 18 Jan 2005 10:32:42 GMT</datelastmodified>
+			<uuidresource>5e56c851-c937-11d9-8189-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 14:44:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 24 Jan 2005 16:55:33 GMT</datecreated>
+			<datecreated>Fri, 20 May 2005 13:59:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/details_show.png</source>
+			<destination>system/workplace/resources/list/details_show.png</destination>
+			<type>image</type>
+			<uuidresource>5e50adce-c937-11d9-8189-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 13:59:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 20 May 2005 13:59:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/inactive.png</source>
+			<destination>system/workplace/resources/list/inactive.png</destination>
+			<type>image</type>
+			<uuidresource>8f8f4c97-c92b-11d9-abad-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 15:32:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 20 May 2005 12:34:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/multi_activate.png</source>
+			<destination>system/workplace/resources/list/multi_activate.png</destination>
+			<type>image</type>
+			<uuidresource>dc9b9b0f-c942-11d9-b68c-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 15:23:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 20 May 2005 15:21:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/multi_deactivate.png</source>
+			<destination>system/workplace/resources/list/multi_deactivate.png</destination>
+			<type>image</type>
+			<uuidresource>e86ea4f4-c942-11d9-b68c-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 15:32:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 20 May 2005 15:21:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/multi_delete.png</source>
+			<destination>system/workplace/resources/list/multi_delete.png</destination>
+			<type>image</type>
+			<uuidresource>15f9e2a3-c943-11d9-b68c-417e0ce441a2</uuidresource>
+			<datelastmodified>Fri, 20 May 2005 15:23:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 20 May 2005 15:23:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
