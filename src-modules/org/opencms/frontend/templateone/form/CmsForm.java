@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/05/02 14:49:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.frontend.templateone.form;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
@@ -55,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides the necessary information to create an input form, email messages and confirmation outputs.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsForm {
     
@@ -940,9 +941,14 @@ public class CmsForm {
      * @param locale the currently active Locale
      * @param messages the localized messages
      * @param initial if true, field values are filled with values specified in the XML configuration, otherwise values are read from the request
-     * @throws Exception if parsing the configuration fails 
+     * @throws CmsConfigurationException if parsing the configuration fails 
      */
-    private void initInputFields(CmsXmlContent content, CmsJspActionElement jsp, Locale locale, CmsMessages messages, boolean initial) throws Exception {
+    private void initInputFields(
+        CmsXmlContent content,
+        CmsJspActionElement jsp,
+        Locale locale,
+        CmsMessages messages,
+        boolean initial) throws CmsConfigurationException {
 
         CmsObject cms = jsp.getCmsObject();
         List fieldValues = content.getValues(C_NODE_INPUTFIELD, locale);
@@ -1048,7 +1054,7 @@ public class CmsForm {
                         field.setItems(items);                        
                     } else {
                         // no items specified for checkbox, radio button or selectbox
-                        throw new Exception("No items specified for input field \"" + field.getName() + "\", type: " + field.getType());
+                        throw new CmsConfigurationException(Messages.get().container(Messages.ERR_INIT_INPUT_FIELD_MISSING_ITEM_2, field.getName(), field.getType()));
                     }
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/Messages.java,v $
- * Date   : $Date: 2005/05/13 10:54:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INIT_INPUT_FIELD_MISSING_ITEM_2 = "ERR_INIT_INPUT_FIELD_MISSING_ITEM_2";
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_PATTERN_SYNTAX_0 = "LOG_ERR_PATTERN_SYNTAX_0";
 

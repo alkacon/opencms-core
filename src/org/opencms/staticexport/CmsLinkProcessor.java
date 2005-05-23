@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/03/30 07:32:19 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -299,7 +299,7 @@ public class CmsLinkProcessor {
     }
 
     /**
-     * Initialized the parser and processes the content input.<p>
+     * Initializes the parser and processes the content input.<p>
      * 
      * @param content the content to process
      * @param encoding the encoding to use

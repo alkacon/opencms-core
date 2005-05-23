@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersAdminTool.java,v $
- * Date   : $Date: 2005/05/23 13:38:18 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.7.3
  */
 public class CmsUsersAdminTool extends A_CmsListDialog {
@@ -157,7 +157,8 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
                     getList().removeItem(listItem.getId());
                 }
             } catch (CmsException e) {
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_DELETE_SELECTED_USERS_0), e);
             }
         } else if (getParamListAction().equals(LIST_ACTION_MACTIVATE)) {
             // execute the activate multiaction
@@ -175,7 +176,8 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
                     getCms().writeUser(user);
                 }
             } catch (CmsException e) {
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_ACTIVATE_SELECTED_USERS_0), e);
             }
             // refreshing no needed becaus the activate action does not add/remove rows to the list
         } else {
@@ -189,7 +191,7 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
      * by comparing <code>{@link #getParamListAction()}</code> with the id 
      * of the action to execute.<p> 
      * 
-     * @throws CmsRuntimeException to signal that an action is not supported
+     * @throws CmsRuntimeException to signal that an action is not supported or in case an action failed
      * 
      */
     public void executeListSingleActions() throws CmsRuntimeException {
@@ -204,29 +206,34 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
 
             } catch (IOException e) {
                 // should never happen
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_USER_0), e);
             }
         } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
             // execute the activate action
             CmsListItem listItem = getSelectedItem();
+            String usrName ="";
             try {
-                String usrName = listItem.get(LIST_COLUMN_LOGIN).toString();
+                usrName = listItem.get(LIST_COLUMN_LOGIN).toString();
                 CmsUser user = getCms().readUser(usrName);
                 user.setEnabled();
                 getCms().writeUser(user);
             } catch (CmsException e) {
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get()
+                    .container(Messages.ERR_ACTIVATE_USER_1, usrName), e);
             }
         } else if (getParamListAction().equals(LIST_ACTION_DEACTIVATE)) {
             // execute the activate action
             CmsListItem listItem = getSelectedItem();
+            String usrName = "";
             try {
-                String usrName = listItem.get(LIST_COLUMN_LOGIN).toString();
+                usrName = listItem.get(LIST_COLUMN_LOGIN).toString();
                 CmsUser user = getCms().readUser(usrName);
                 user.setDisabled();
                 getCms().writeUser(user);
             } catch (CmsException e) {
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_DEACTIVATE_USER_1,
+                    usrName), e);
             }
         } else {
             throwListUnsupportedActionException();
@@ -277,7 +284,9 @@ public class CmsUsersAdminTool extends A_CmsListDialog {
                 ret.add(item);
             }
         } catch (CmsException e) {
-            throw new RuntimeException(e);
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_CREATE_LIST_1,
+                this.getCms().getRequestContext().getUri()));
         }
 
         return ret;

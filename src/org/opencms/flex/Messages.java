@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/Messages.java,v $
- * Date   : $Date: 2005/04/25 09:10:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ADD_COOKIE_0 = "ERR_ADD_COOKIE_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FLEXREQUESTDISPATCHER_CLASSCAST_EXCEPTION_2 = "ERR_FLEXREQUESTDISPATCHER_CLASSCAST_EXCEPTION_2";
 
@@ -217,6 +220,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_FLEXRESPONSE_FLUSHED_1 = "LOG_FLEXRESPONSE_FLUSHED_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_FLEXRESPONSE_PARSE_ERROR_IN_CACHE_KEY_2 = "LOG_FLEXRESPONSE_PARSE_ERROR_IN_CACHE_KEY_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXRESPONSE_SENDREDIRECT_1 = "LOG_FLEXRESPONSE_SENDREDIRECT_1";
 
     /** Message constant for key in the resource bundle. */
@@ -233,9 +239,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1 = "LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_FLEXRESPONSE_PARSE_ERROR_IN_CACHE_KEY_2 = "LOG_FLEXRESPONSE_PARSE_ERROR_IN_CACHE_KEY_2";
     
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.flex.messages";

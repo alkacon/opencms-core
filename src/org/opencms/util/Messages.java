@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Messages.java,v $
- * Date   : $Date: 2005/04/28 08:23:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,18 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONTROL_STRING_LENGTH_0 = "ERR_CONTROL_STRING_LENGTH_0";    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONTROL_STRING_START_0 = "ERR_CONTROL_STRING_START_0";    
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_CONVERSION_SPEC_1 = "ERR_INVALID_CONVERSION_SPEC_1";    
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_DOUBLE_FMT_CHAR_2 = "ERR_INVALID_DOUBLE_FMT_CHAR_2";    
+    
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_ETHERNET_ADDRESS_0 = "ERR_INVALID_ETHERNET_ADDRESS_0";    
     
     /** Message constant for key in the resource bundle. */
@@ -79,6 +91,14 @@ public final class Messages extends A_CmsMessageBundle {
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
+    }
+
+    /**
      * Returns an instance of this localized message accessor.<p>
      * 
      * @return an instance of this localized message accessor
@@ -86,14 +106,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static I_CmsMessageBundle get() {
 
         return INSTANCE;
-    }
-
-    /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleVersion.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.module;
 
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 
 /**
@@ -161,7 +163,8 @@ public class CmsModuleVersion implements Comparable {
             m_number += (long)Math.pow(1000.0, (4 - m_dots));
             setVersion(m_number);
         } else {
-            throw new RuntimeException("Maximum version number of 999.999.999.999 exceeded");
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_MODULE_VERSION_NUMBER_0));
         }
     }
     
@@ -218,7 +221,9 @@ public class CmsModuleVersion implements Comparable {
         String[] split = CmsStringUtil.splitAsArray(version, '.');
         m_dots = split.length;
         if (m_dots > 4) {
-            throw new IllegalArgumentException("Version can have only 4 numbers");
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_INVALID_VERSION_LENGTH_1,
+                version));
         }
         String[] numbers = new String[5];
         System.arraycopy(split, 0, numbers, 1, m_dots);
@@ -229,8 +234,10 @@ public class CmsModuleVersion implements Comparable {
         for (int i = numbers.length - 1; i >= 0; i--) {
             int number = Integer.valueOf(numbers[numbers.length - i - 1]).intValue();
             if ((number > 999) || (number < 0)) {
-                throw new IllegalArgumentException("Version sub-number must be > 0 and < 999");
-            }
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_INVALID_VERSION_SUBNUMBER_1,
+                    new Integer(number)));
+    }
             m_number = (long)Math.pow(1000.0, i) * number + m_number;
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUserActivateDeactivateAction.java,v $
- * Date   : $Date: 2005/05/23 08:51:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListTwoStatesAction;
@@ -44,7 +45,7 @@ import org.opencms.workplace.list.I_CmsListDirectAction;
  * Activate/deactivate action for a html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsUserActivateDeactivateAction extends A_CmsListTwoStatesAction {
@@ -122,7 +123,8 @@ public class CmsUserActivateDeactivateAction extends A_CmsListTwoStatesAction {
                 String usrName = getCms().readUser(new CmsUUID(getItem().getId())).getName();
                 return !getCms().userInGroup(usrName, OpenCms.getDefaultUsers().getGroupAdministrators());
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_IS_ENABLED_USER_0), e);
             }
         }
         return super.isEnabled();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
@@ -165,7 +165,6 @@ public class CmsExplorer extends CmsWorkplace {
             } catch (CmsException e) {
                 // should usually never happen
                 LOG.error(e);
-                //throw new RuntimeException(e);
                 throw new CmsRuntimeException(e.getMessageContainer(), e);
             }
         }

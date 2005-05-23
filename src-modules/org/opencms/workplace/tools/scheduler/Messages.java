@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Messages.java,v $
- * Date   : $Date: 2005/05/23 13:18:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,22 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COPY_JOB_1 = "ERR_COPY_JOB_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETE_JOB_1 = "ERR_DELETE_JOB_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_EDIT_JOB_1 = "ERR_EDIT_JOB_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SCHEDULE_JOB_1 = "ERR_SCHEDULE_JOB_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNSCHEDULE_JOB_1 = "ERR_UNSCHEDULE_JOB_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITJOB_ADMIN_TOOL_GROUP_0 = "GUI_EDITJOB_ADMIN_TOOL_GROUP_0";
 

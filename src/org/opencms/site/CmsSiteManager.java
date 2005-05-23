@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/05/02 13:33:47 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -60,13 +61,10 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
-
-    /** Error message if a configuration change is attempted after configuration is frozen. */
-    public static final String C_MESSAGE_FROZEN = "Site configuration has been frozen and can not longer be changed!";
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSiteManager.class);
@@ -283,7 +281,7 @@ public final class CmsSiteManager implements Cloneable {
     public void addSite(String server, String uri, String secureServer) throws CmsConfigurationException {
 
         if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
         }
         CmsSiteMatcher matcher = new CmsSiteMatcher(server);
         CmsSite site = new CmsSite(uri, matcher);
@@ -498,7 +496,7 @@ public final class CmsSiteManager implements Cloneable {
     public void setDefaultUri(String defaultUri) {
 
         if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
         }
         m_defaultUri = defaultUri;
     }
@@ -514,7 +512,7 @@ public final class CmsSiteManager implements Cloneable {
     public void setWorkplaceServer(String workplaceServer) {
 
         if (m_frozen) {
-            throw new RuntimeException(C_MESSAGE_FROZEN);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
         }
         m_workplaceServer = workplaceServer;
     }

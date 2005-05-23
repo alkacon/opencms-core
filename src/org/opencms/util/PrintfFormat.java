@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/PrintfFormat.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,10 +58,12 @@
 
 package org.opencms.util;
 
-import java.util.Enumeration;
-import java.util.Vector;
-import java.util.Locale;
+import org.opencms.main.CmsIllegalArgumentException;
+
 import java.text.DecimalFormatSymbols;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.Vector;
 
 /**
  * PrintfFormat allows the formatting of an array of
@@ -661,16 +663,17 @@ public class PrintfFormat {
          * conversion specification.
          * @param fmtArg  String specifying the
          *     conversion specification.
-         * @exception IllegalArgumentException if the
+         * @exception CmsIllegalArgumentException if the
          *     input string is null, zero length, or
          *     otherwise malformed.
          */
-        private ConversionSpecification(String fmtArg) throws IllegalArgumentException {
+        private ConversionSpecification(String fmtArg) throws CmsIllegalArgumentException {
             if (fmtArg == null) {
                 throw new NullPointerException();
             }
             if (fmtArg.length() == 0) {
-                throw new IllegalArgumentException("Control strings must have positive" + " lengths.");
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_CONTROL_STRING_LENGTH_0));
             }
             if (fmtArg.charAt(0) == '%') {
                 m_fmt = fmtArg;
@@ -691,13 +694,18 @@ public class PrintfFormat {
                             }
                         }
                     } else {
-                        throw new IllegalArgumentException("Malformed conversion specification=" + fmtArg);
+                        throw new CmsIllegalArgumentException(Messages.get().container(
+                            Messages.ERR_INVALID_CONVERSION_SPEC_1,
+                            fmtArg));
                     }
                 } else {
-                    throw new IllegalArgumentException("Malformed conversion specification=" + fmtArg);
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.ERR_INVALID_CONVERSION_SPEC_1,
+                        fmtArg));
                 }
             } else {
-                throw new IllegalArgumentException("Control strings must begin with %.");
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_CONTROL_STRING_START_0));
             }
         }
 
@@ -1594,11 +1602,11 @@ public class PrintfFormat {
          * specification.
          * @param s the double to format.
          * @return the formatted String.
-         * @exception IllegalArgumentException if the
+         * @exception CmsIllegalArgumentException if the
          *     conversion character is c, C, s, S, i, d,
          *     x, X, or o.
          */
-        String internalsprintf(double s) throws IllegalArgumentException {
+        String internalsprintf(double s) throws CmsIllegalArgumentException {
             String s2 = "";
             switch (m_conversionCharacter) {
                 case 'f' :
@@ -1613,7 +1621,10 @@ public class PrintfFormat {
                     s2 = printGFormat(s);
                     break;
                 default :
-                    throw new IllegalArgumentException("Cannot " + "format a double with a format using a " + m_conversionCharacter + " conversion character.");
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
+                        "double",
+                        new Character(m_conversionCharacter)));
             }
             return s2;
         }
@@ -1623,10 +1634,10 @@ public class PrintfFormat {
          * specification.
          * @param s the int to format.
          * @return the formatted String.
-         * @exception IllegalArgumentException if the
+         * @exception CmsIllegalArgumentException if the
          *     conversion character is f, e, E, g, or G.
          */
-        String internalsprintf(int s) throws IllegalArgumentException {
+        String internalsprintf(int s) throws CmsIllegalArgumentException {
             String s2 = "";
             switch (m_conversionCharacter) {
                 case 'd' :
@@ -1663,7 +1674,10 @@ public class PrintfFormat {
                     s2 = printCFormat((char)s);
                     break;
                 default :
-                    throw new IllegalArgumentException("Cannot format a int with a format using a " + m_conversionCharacter + " conversion character.");
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
+                        "int",
+                        new Character(m_conversionCharacter)));
             }
             return s2;
         }
@@ -1673,10 +1687,10 @@ public class PrintfFormat {
          * specification.
          * @param s the long to format.
          * @return the formatted String.
-         * @exception IllegalArgumentException if the
+         * @exception CmsIllegalArgumentException if the
          *     conversion character is f, e, E, g, or G.
          */
-        String internalsprintf(long s) throws IllegalArgumentException {
+        String internalsprintf(long s) throws CmsIllegalArgumentException {
             String s2 = "";
             switch (m_conversionCharacter) {
                 case 'd' :
@@ -1713,7 +1727,10 @@ public class PrintfFormat {
                     s2 = printCFormat((char)s);
                     break;
                 default :
-                    throw new IllegalArgumentException("Cannot format a long with a format using a " + m_conversionCharacter + " conversion character.");
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
+                        "long",
+                        new Character(m_conversionCharacter)));
             }
             return s2;
         }
@@ -1723,15 +1740,18 @@ public class PrintfFormat {
          * specification.
          * @param s the Object to format.
          * @return the formatted String.
-         * @exception IllegalArgumentException if the
+         * @exception CmsIllegalArgumentException if the
          *     conversion character is neither s nor S.
          */
-        String internalsprintf(Object s) {
+        String internalsprintf(Object s) throws CmsIllegalArgumentException {
             String s2 = "";
             if (m_conversionCharacter == 's' || m_conversionCharacter == 'S') {
                 s2 = printSFormat(s.toString());
             } else {
-                throw new IllegalArgumentException("Cannot format a String with a format using" + " a " + m_conversionCharacter + " conversion character.");
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
+                    "String",
+                    new Character(m_conversionCharacter)));
             }
             return s2;
         }
@@ -1741,15 +1761,18 @@ public class PrintfFormat {
          * specification.
          * @param s the String to format.
          * @return the formatted String.
-         * @exception IllegalArgumentException if the
+         * @exception CmsIllegalArgumentException if the
          *   conversion character is neither s nor S.
          */
-        String internalsprintf(String s) throws IllegalArgumentException {
+        String internalsprintf(String s) throws CmsIllegalArgumentException {
             String s2 = "";
             if (m_conversionCharacter == 's' || m_conversionCharacter == 'S') {
                 s2 = printSFormat(s);
             } else {
-                throw new IllegalArgumentException("Cannot " + "format a String with a format using a " + m_conversionCharacter + " conversion character.");
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
+                    "String",
+                    new Character(m_conversionCharacter)));
             }
             return s2;
         }
@@ -3243,11 +3266,11 @@ public class PrintfFormat {
      * the format.
      * @param locale the locale
      * @param fmtArg  Control string.
-     * @exception IllegalArgumentException if the control
+     * @exception CmsIllegalArgumentException if the control
      * string is null, zero length, or otherwise
      * malformed.
      */
-    public PrintfFormat(Locale locale, String fmtArg) throws IllegalArgumentException {
+    public PrintfFormat(Locale locale, String fmtArg) throws CmsIllegalArgumentException {
         m_dfs = new DecimalFormatSymbols(locale);
         int ePos = 0;
         ConversionSpecification sFmt = null;
@@ -3375,11 +3398,11 @@ public class PrintfFormat {
      * Format a double.
      * @param x The double to format.
      * @return  The formatted String.
-     * @exception IllegalArgumentException if the
+     * @exception CmsIllegalArgumentException if the
      *     conversion character is c, C, s, S,
      *     d, d, x, X, or o.
      */
-    public String sprintf(double x) throws IllegalArgumentException {
+    public String sprintf(double x) throws CmsIllegalArgumentException {
         Enumeration e = m_vFmt.elements();
         ConversionSpecification cs = null;
         char c = 0;
@@ -3402,11 +3425,11 @@ public class PrintfFormat {
      * Format an int.
      * @param x The int to format.
      * @return  The formatted String.
-     * @exception IllegalArgumentException if the
+     * @exception CmsIllegalArgumentException if the
      *     conversion character is f, e, E, g, G, s,
      *     or S.
      */
-    public String sprintf(int x) throws IllegalArgumentException {
+    public String sprintf(int x) throws CmsIllegalArgumentException {
         Enumeration e = m_vFmt.elements();
         ConversionSpecification cs = null;
         char c = 0;
@@ -3429,11 +3452,11 @@ public class PrintfFormat {
      * Format an long.
      * @param x The long to format.
      * @return  The formatted String.
-     * @exception IllegalArgumentException if the
+     * @exception CmsIllegalArgumentException if the
      *     conversion character is f, e, E, g, G, s,
      *     or S.
      */
-    public String sprintf(long x) throws IllegalArgumentException {
+    public String sprintf(long x) throws CmsIllegalArgumentException {
         Enumeration e = m_vFmt.elements();
         ConversionSpecification cs = null;
         char c = 0;
@@ -3461,11 +3484,11 @@ public class PrintfFormat {
      * (use toString).
      * @param x the Object to format.
      * @return  the formatted String.
-     * @exception IllegalArgumentException if the
+     * @exception CmsIllegalArgumentException if the
      *    conversion character is inappropriate for
      *    formatting an unwrapped value.
      */
-    public String sprintf(Object x) throws IllegalArgumentException {
+    public String sprintf(Object x) throws CmsIllegalArgumentException {
         Enumeration e = m_vFmt.elements();
         ConversionSpecification cs = null;
         char c = 0;
@@ -3575,10 +3598,10 @@ public class PrintfFormat {
      * Format a String.
      * @param x The String to format.
      * @return  The formatted String.
-     * @exception IllegalArgumentException if the
+     * @exception CmsIllegalArgumentException if the
      *   conversion character is neither s nor S.
      */
-    public String sprintf(String x) throws IllegalArgumentException {
+    public String sprintf(String x) throws CmsIllegalArgumentException {
         Enumeration e = m_vFmt.elements();
         ConversionSpecification cs = null;
         char c = 0;

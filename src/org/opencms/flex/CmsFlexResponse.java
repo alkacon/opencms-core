@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/04/26 10:30:34 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.flex;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsDateUtil;
 
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
 
@@ -334,7 +335,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     public void addCookie(Cookie cookie) {
 
         if (cookie == null) {
-            throw new IllegalArgumentException();
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_ADD_COOKIE_0));
         }
 
         StringBuffer header = new StringBuffer(128);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/05/03 15:56:51 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,8 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -58,7 +58,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer {
@@ -262,7 +262,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
-    public int doStartTag() throws JspException {
+    public int doStartTag() throws JspException, CmsIllegalArgumentException {
 
         // check if the tag contains a pageSize, pageIndex and pageNavLength attribute, or none of them
         int pageAttribCount = 0;
@@ -271,25 +271,19 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         //pageAttribCount += CmsStringUtil.isNotEmpty(m_pageNavLength) ? 1 : 0;
 
         if (pageAttribCount > 0 && pageAttribCount < 2) {
-            CmsMessageContainer errorMsgContainer = Messages.get().container(Messages.ERR_TAG_CONTENTLOAD_INDEX_SIZE_0);
-            String msg = Messages.getLocalizedMessage(errorMsgContainer, pageContext);
-            throw new IllegalArgumentException(msg);
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_TAG_CONTENTLOAD_INDEX_SIZE_0));
         }
 
         // check if the tag contains a collector attribute
         if (CmsStringUtil.isEmpty(m_collector)) {
-            CmsMessageContainer errorMsgContainer = Messages.get().container(
-                Messages.ERR_TAG_CONTENTLOAD_MISSING_COLLECTOR_0);
-            String msg = Messages.getLocalizedMessage(errorMsgContainer, pageContext);
-            throw new IllegalArgumentException(msg);
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_TAG_CONTENTLOAD_MISSING_COLLECTOR_0));
         }
 
         // check if the tag contains a param attribute
         if (CmsStringUtil.isEmpty(m_param)) {
-            CmsMessageContainer errorMsgContainer = Messages.get().container(
-                Messages.ERR_TAG_CONTENTLOAD_MISSING_PARAM_0);
-            String msg = Messages.getLocalizedMessage(errorMsgContainer, pageContext);
-            throw new IllegalArgumentException(msg);
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_TAG_CONTENTLOAD_MISSING_PARAM_0));
         }
 
         // initialize OpenCms access objects

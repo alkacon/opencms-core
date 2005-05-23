@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/Messages.java,v $
- * Date   : $Date: 2005/05/02 13:33:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,10 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFIG_FROZEN_0 = "ERR_CONFIG_FROZEN_0";    
+  
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DEFAULT_SITE_ROOT_1 = "INIT_DEFAULT_SITE_ROOT_1";    
     

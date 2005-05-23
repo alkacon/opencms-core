@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/Messages.java,v $
- * Date   : $Date: 2005/05/18 12:48:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,10 +41,19 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.9.1
  */
 public final class Messages extends A_CmsMessageBundle {
- 
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CHECK_DEPENDENCY_INVALID_MODE_1 = "ERR_CHECK_DEPENDENCY_INVALID_MODE_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORT_MOD_ALREADY_INSTALLED_1 = "ERR_IMPORT_MOD_ALREADY_INSTALLED_1";
-
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_VERSION_LENGTH_1 = "ERR_INVALID_VERSION_LENGTH_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_VERSION_SUBNUMBER_1 = "ERR_INVALID_VERSION_SUBNUMBER_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IO_MODULE_IMPORT_0 = "ERR_IO_MODULE_IMPORT_0";
 
@@ -77,6 +86,9 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODULE_NOT_CONFIGURED_1 = "ERR_MODULE_NOT_CONFIGURED_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MODULE_VERSION_NUMBER_0 = "ERR_MODULE_VERSION_NUMBER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_MOD_FOR_EXPORT_1 = "ERR_NO_MOD_FOR_EXPORT_1";

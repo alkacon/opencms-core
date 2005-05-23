@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsHtmlIconButtonStyleEnum.java,v $
- * Date   : $Date: 2005/05/20 09:52:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools;
 
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.workplace.list.Messages;
 
 import java.util.Arrays;
@@ -51,7 +52,7 @@ import java.util.List;
  * <p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public final class CmsHtmlIconButtonStyleEnum {
@@ -90,8 +91,10 @@ public final class CmsHtmlIconButtonStyleEnum {
      * @param value the style to parse
      * 
      * @return the enumeration element
+     * 
+     * @throws CmsIllegalArgumentException if the given instance for the argument is not found
      */
-    public static CmsHtmlIconButtonStyleEnum valueOf(String value) {
+    public static CmsHtmlIconButtonStyleEnum valueOf(String value) throws CmsIllegalArgumentException {
 
         Iterator iter = VALUES.iterator();
         while (iter.hasNext()) {
@@ -100,7 +103,7 @@ public final class CmsHtmlIconButtonStyleEnum {
                 return target;
             }
         }
-        throw new IllegalArgumentException(Messages.get().key(
+        throw new CmsIllegalArgumentException(Messages.get().container(
             Messages.ERR_LIST_ENUM_PARSE_2,
             new Integer(value),
             CmsHtmlIconButtonStyleEnum.class.getName()));

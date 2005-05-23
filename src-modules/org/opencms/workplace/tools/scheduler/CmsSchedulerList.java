@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/05/23 13:38:18 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.7.3
  */
 public class CmsSchedulerList extends A_CmsListDialog {
@@ -177,20 +177,22 @@ public class CmsSchedulerList extends A_CmsListDialog {
      * 
      */
     public void executeListMultiActions() throws CmsRuntimeException {
-
+        CmsListItem listItem = null;
         if (getParamListAction().equals(LIST_ACTION_MDELETE)) {
             // execute the delete multiaction
             try {
                 Iterator itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
+                    listItem = (CmsListItem)itItems.next();
                     OpenCms.getScheduleManager().unscheduleJob(getCms(), listItem.getId());
                     getList().removeItem(listItem.getId());
                 }
                 // update the XML configuration
                 writeConfiguration(false);
             } catch (CmsException e) {
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_UNSCHEDULE_JOB_1,
+                    (listItem == null) ? (Object)"?" : new Integer(listItem.getId())), e);
             }
         } else if (getParamListAction().equals(LIST_ACTION_MACTIVATE)
             || getParamListAction().equals(LIST_ACTION_MDEACTIVATE)) {
@@ -200,7 +202,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
                     boolean activate = getParamListAction().equals(LIST_ACTION_MACTIVATE);
                     while (itItems.hasNext()) {
                         // toggle the active state of the selected item(s)
-                        CmsListItem listItem = (CmsListItem)itItems.next();                     
+                        listItem = (CmsListItem)itItems.next();                     
                         CmsScheduledJobInfo job = (CmsScheduledJobInfo)OpenCms.getScheduleManager().getJob(listItem.getId()).clone();
                         job.setActive(activate);
                         OpenCms.getScheduleManager().scheduleJob(getCms(), job);
@@ -208,7 +210,9 @@ public class CmsSchedulerList extends A_CmsListDialog {
                     // update the XML configuration
                     writeConfiguration(true);
                 } catch (CmsException e) {
-                    throw new RuntimeException(e);
+                    throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_SCHEDULE_JOB_1,
+                    (listItem == null) ? (Object)"?" : new Integer(listItem.getId())), e);
                 }
         } else {
             throwListUnsupportedActionException();
@@ -221,7 +225,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
      * by comparing <code>{@link #getParamListAction()}</code> with the id 
      * of the action to execute.<p> 
      * 
-     * @throws CmsRuntimeException to signal that an action is not supported
+     * @throws CmsRuntimeException to signal that an action is not supported or failed
      * 
      */
     public void executeListSingleActions() throws CmsRuntimeException {
@@ -240,7 +244,9 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 getToolManager().jspRedirectTool(this, "/scheduler/edit", params);
             } catch (IOException e) {
                 // should never happen
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_EDIT_JOB_1,
+                    jobId), e);
             }
         } else if (getParamListAction().equals(LIST_ACTION_COPY)) {
             // copy a job from the list
@@ -254,7 +260,9 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 getToolManager().jspRedirectTool(this, "/scheduler/new", params);
             } catch (IOException e) {
                 // should never happen
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_COPY_JOB_1,
+                    jobId), e);
             }
         } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
             // activate a job from the list
@@ -267,7 +275,9 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 writeConfiguration(true);
             } catch (CmsException e) {
                 // should never happen
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_SCHEDULE_JOB_1,
+                    jobId), e);
             }
         } else if (getParamListAction().equals(LIST_ACTION_DEACTIVATE)) {
             // deactivate a job from the list
@@ -280,7 +290,9 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 writeConfiguration(true);
             } catch (CmsException e) {
                 // should never happen
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_UNSCHEDULE_JOB_1,
+                    jobId), e);
             }
         } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
             // delete a job from the list
@@ -292,7 +304,9 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 getList().removeItem(jobId);
             } catch (CmsRoleViolationException e) {
                 // should never happen
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_DELETE_JOB_1,
+                    jobId), e);
             }
         } else {
             throwListUnsupportedActionException();

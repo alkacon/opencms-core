@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/05/18 12:48:15 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/23 15:40:38 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
@@ -203,7 +204,9 @@ public class CmsModuleManager {
             }
         } else {
             // invalid mode selected
-            throw new RuntimeException("checkDependencies() invalid mode parameter: " + mode);
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_CHECK_DEPENDENCY_INVALID_MODE_1,
+                new Integer(mode)));
         }
 
         return result;
