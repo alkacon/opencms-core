@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2005/05/20 09:13:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/23 07:26:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package org.opencms.workplace.tools.history;
 
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
@@ -52,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -167,10 +166,8 @@ public class CmsAdminHistorySettings extends CmsDialog {
             actionCloseDialog();              
         } catch (CmsIllegalArgumentException e) {
             // error setting history values, show error dialog
-            setParamMessage(key("error.message.historysettings"));
-            setParamErrorstack(CmsException.getStackTraceAsString(e));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            
+            includeErrorpage(this, e);
         }
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/05/18 12:48:15 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/05/23 07:26:46 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.48 $ $Date: 2005/05/18 12:48:15 $
+ * @version $Revision: 1.49 $ $Date: 2005/05/23 07:26:46 $
  * @since 5.1
  */
 public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -278,7 +278,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READ_AGENT_0), exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -356,7 +356,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READ_TASK_LOGS_0), exc);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -386,7 +386,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READ_TASK_1), exc);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -421,7 +421,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READ_TASK_LOG_0), exc);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -464,7 +464,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READ_TASK_LOGS_0), exc);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -593,7 +593,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (Exception exc) {
-            throw new CmsDataAccessException(exc);
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READ_TASKS_0), exc);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);

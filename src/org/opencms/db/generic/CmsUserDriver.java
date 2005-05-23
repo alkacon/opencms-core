@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/18 12:48:14 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2005/05/23 07:26:46 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,11 @@ package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbContext;
-import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsDbEntryAlreadyExistsException;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbIoException;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsUserDriver;
 import org.opencms.file.CmsDataAccessException;
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.94 $
+ * @version $Revision: 1.95 $
  * @since 5.1
  */
 public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
@@ -995,9 +995,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
-            throw new CmsDataAccessException(e);
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } catch (ClassNotFoundException e) {
-            throw new CmsDataAccessException(e);
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1034,9 +1034,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
-            throw new CmsDataAccessException(e);
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } catch (ClassNotFoundException e) {
-            throw new CmsDataAccessException(e);
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1080,9 +1080,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
-            throw new CmsDataAccessException(e);
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } catch (ClassNotFoundException e) {
-            throw new CmsDataAccessException(e);
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1121,9 +1121,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
-            throw new CmsDataAccessException(e);
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USERS_0), e);
         } catch (ClassNotFoundException e) {
-            throw new CmsDataAccessException(e);
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READING_USERS_0), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1156,9 +1156,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
-            throw new CmsDataAccessException(e);
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USERS_OF_GROUP_1, name), e);
         } catch (ClassNotFoundException e) {
-            throw new CmsDataAccessException(e);
+            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READING_USERS_OF_GROUP_1, name), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2005/05/19 08:57:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/23 07:26:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2005/05/19 08:57:21 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/23 07:26:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -122,7 +122,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
             m_subId = m_contentDefinition.getSubId();
 
         } catch (Exception exc) {
-            throw new CmsIndexException("Indexing contents of class" + cdClassName + " failed.", exc);
+            throw new CmsIndexException(Messages.get().container(Messages.ERR_COS_INDEXING_CONTENTS_OF_CLASS_1, cdClassName), exc);
         }        
     }
     
@@ -213,7 +213,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
                 OpenCms.getLog(this).warn("Failed to index " + channel, exc);
             }
             
-            throw new CmsIndexException("Indexing contents of " + channel + " failed.", exc);
+            throw new CmsIndexException(Messages.get().container(Messages.ERR_COS_INDEXING_CONTENTS_OF_CLASS_1, channel), exc);
         } finally {
             
             // switch back to the original project
@@ -238,7 +238,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
             CmsResource channel = cms.readFolder(channelName, CmsResourceFilter.IGNORE_EXPIRATION);
             id = channel.getResourceId();
         } catch (Exception exc) {
-            throw new CmsIndexException("Can't access channel " + channelName, exc);
+            throw new CmsIndexException(Messages.get().container(Messages.ERR_COS_ACCESS_CHANNEL_1, channelName), exc);
         } finally {
             cms.getRequestContext().setSiteRoot(siteRoot);
         }

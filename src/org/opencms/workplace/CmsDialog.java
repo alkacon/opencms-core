@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/05/20 10:37:41 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2005/05/23 07:26:46 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.tools.CmsToolDialog;
@@ -54,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  * 
  * @since 5.1
  */
@@ -817,6 +818,21 @@ public class CmsDialog extends CmsToolDialog {
     public String dialogWhiteBoxStart() {
 
         return dialogWhiteBox(HTML_START);
+    }
+    
+    /**
+     * Displays the throwable on the error page and logs the error.<p>
+     * 
+     * @param wp the workplace class
+     * @param t the throwable to be displayed on the errorpage
+     * @throws JspException if the include of the errorpage jsp fails
+     */
+    public void includeErrorpage(CmsWorkplace wp, Throwable t) throws JspException {
+
+        CmsLog.getLog(wp).error(t);
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, wp);
+        getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, t);
+        getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
     }
 
     /**

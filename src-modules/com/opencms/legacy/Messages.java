@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/Messages.java,v $
- * Date   : $Date: 2005/05/17 13:47:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/23 07:26:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,15 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
     
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COS_INDEXING_CONTENTS_OF_CLASS_1 = "ERR_COS_INDEXING_CONTENTS_OF_CLASS_1";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COS_INDEXING_CONTENTS_1 = "ERR_COS_INDEXING_CONTENTS_1";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COS_ACCESS_CHANNEL_1 = "ERR_COS_ACCESS_CHANNEL_1";
+   
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COS_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1 = "ERR_COS_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1";
     

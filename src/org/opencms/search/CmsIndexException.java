@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexException.java,v $
- * Date   : $Date: 2005/05/19 15:24:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/23 07:26:46 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,22 +41,10 @@ import org.opencms.main.CmsException;
  * in the <code>org.opencms.search</code> package.
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2005/05/19 15:24:34 $
+ * @version $Revision: 1.10 $ $Date: 2005/05/23 07:26:46 $
  * @since 5.3.1
  */
 public class CmsIndexException extends CmsException {
-
-    /**
-     * Constructs a CmsIndexException with the specified detail message
-     * and adds the original exception as a delegated root cause.<p>
-     * 
-     * @param message the detail message
-     * @param rootCause the delegated exception
-     */
-    public CmsIndexException(String message, Throwable rootCause) {
-
-        super(message, 0, rootCause);
-    }
     
     /**
      * Creates a new localized Exception.<p>

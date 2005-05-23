@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/05/19 15:24:34 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/23 07:26:46 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -150,6 +150,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_FILE_WITH_STRUCTURE_ID_1 = "ERR_READ_FILE_WITH_STRUCTURE_ID_1";
     
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_AGENT_0 = "ERR_READ_AGENT_0";
+    
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_FOLDER_1 = "ERR_READ_FOLDER_1";
     
     /** Message constant for key in the resource bundle. */
@@ -163,6 +166,27 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_RESOURCE_WITH_ID_1 = "ERR_READ_RESOURCE_WITH_ID_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_TASK_1 = "ERR_READ_TASK_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_TASKS_0 = "ERR_READ_TASKS_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_TASK_LOG_0 = "ERR_READ_TASK_LOG_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_TASK_LOGS_0 = "ERR_READ_TASK_LOGS_0";
+     
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READING_USER_0 = "ERR_READING_USER_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READING_USERS_0 = "ERR_READING_USERS_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READING_USERS_OF_GROUP_1 = "ERR_READING_USERS_OF_GROUP_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_USER_WITH_NAME_1 = "ERR_READING_USER_WITH_NAME_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/05/20 14:37:24 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/05/23 07:26:46 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,15 +45,12 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class CmsException extends Exception implements I_CmsThrowable {
 
     /** The container for the localized message.  */
     protected CmsMessageContainer m_message;
-
-    /** Stores the error code of the CmsException. */
-    protected int m_type;
 
     /**
      * Creates a simple CmsException.<p>
@@ -97,42 +94,6 @@ public class CmsException extends Exception implements I_CmsThrowable {
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
         
         return new CmsException(container, cause);
-    }    
-
-    /**
-     * Creates a CmsException with the provided description message.<p>
-     *
-     * @param message the description message
-     */
-    public CmsException(String message) {
-
-        super(message);
-    }
-
-    /**
-     * Creates a CmsException with the provided description message, error code and 
-     * a given root cause.<p>
-     *
-     * @param message the description message
-     * @param type exception error code
-     * @param cause root cause exception
-     */
-    public CmsException(String message, int type, Throwable cause) {
-
-        super(message, cause);
-        m_type = type;
-    }
-
-    /**
-     * Construtcs a CmsException with the provided description message and 
-     * a given root cause.<p>
-     *
-     * @param message the description message
-     * @param cause root cause exception
-     */
-    public CmsException(String message, Throwable cause) {
-
-        super(message, cause);
     }
 
     /**
