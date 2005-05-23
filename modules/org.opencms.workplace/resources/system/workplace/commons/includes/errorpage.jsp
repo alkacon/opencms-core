@@ -1,5 +1,6 @@
 <%@ page import="org.opencms.workplace.*,
                  org.opencms.workplace.commons.CmsErrorpage,
+                 org.opencms.workplace.editors.CmsEditor,
                  org.opencms.util.CmsStringUtil" buffer="none" %><%
 	
 	// get workplace class from request attribute
@@ -36,6 +37,18 @@ function closeErrorDialog(actionValue, theForm) {
 	// removed history.back() in order to avoid odd dialog behaviour (does not close anymore)
 	submitAction(actionValue, theForm);
 }
+
+
+function confirmAction(actionValue, theForm) {
+    if (actionValue == "ok") {
+        return true;
+    } else {
+	theForm.target = "_top";
+        theForm.action.value = "<%= CmsEditor.EDITOR_EXIT %>";
+        theForm.submit();
+        return false;
+    }
+}
 </script>
 
 <%= wp.bodyStart("dialog") %>
@@ -65,11 +78,15 @@ function closeErrorDialog(actionValue, theForm) {
 <% wp.setParamAction(CmsDialog.DIALOG_CANCEL); %>
 <%= wp.paramsAsHidden() %>
 <%
-        String stackTrace = CmsErrorpage.getFormattedErrorstack(wp);
-	if (CmsStringUtil.isEmpty(stackTrace)) {
+	if (wp instanceof CmsEditor) {
+	    String okAttribute = "";
+            String discardAttribute = "onclick=\"confirmAction('" + CmsDialog.DIALOG_CANCEL + "', form);\"";
+            String detailsAttribute = "onclick=\"toggleElement('errordetails');\"";
 %>
-<%= wp.dialogButtonsClose("onclick=\"closeErrorDialog('" + wp.getCancelAction() + "', form);\"") %>
-<%	} else { %>
+<%= wp.dialogButtons(new int[] {wp.BUTTON_EDIT, wp.BUTTON_DISCARD, wp.BUTTON_DETAILS}, new String[] {okAttribute, discardAttribute, detailsAttribute}) %>
+<%	} else { 
+
+    %>
 <%= wp.dialogButtonsCloseDetails("onclick=\"closeErrorDialog('" + wp.getCancelAction() + "', form);\"", "onclick=\"toggleElement('errordetails');\"") %>
 <%	} %>
 </form>
