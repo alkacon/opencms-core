@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/05/23 15:54:03 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,20 +45,12 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsException extends Exception implements I_CmsThrowable {
 
     /** The container for the localized message.  */
     protected CmsMessageContainer m_message;
-
-    /**
-     * Creates a simple CmsException.<p>
-     */
-    public CmsException() {
-
-        super();
-    }
 
     /**
      * Creates a new localized Exception.<p>
@@ -136,15 +128,7 @@ public class CmsException extends Exception implements I_CmsThrowable {
      */
     public String getMessage() {
 
-        if (m_message != null) {
-            // localized message is available
-            return getLocalizedMessage();
-        }
-
-        StringBuffer result = new StringBuffer(256);
-        result.append(super.getMessage());
-
-        return result.toString();
+        return getLocalizedMessage();
     }
 
     /**

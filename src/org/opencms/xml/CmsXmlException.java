@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlException.java,v $
- * Date   : $Date: 2005/05/23 09:36:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/23 15:54:03 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.CmsException;
  * Signals that an error occured while processing an xml resource.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.1.4
  */
 public class CmsXmlException extends CmsException {
@@ -70,16 +70,6 @@ public class CmsXmlException extends CmsException {
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
         return new CmsXmlException(container, cause);
-    }
-
-    // the allowed type range for this exception is >=400 and <500    
-
-    /**
-     * Default constructor for a CmsXmlPageException.<p>
-     */
-    public CmsXmlException() {
-
-        super();
     }
 
 }

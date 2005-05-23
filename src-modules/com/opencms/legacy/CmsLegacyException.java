@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyException.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/23 15:54:03 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsLegacyException extends CmsException implements I_CmsThrowable {
 
@@ -323,8 +323,7 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      * @param type exception error code
      */
     public CmsLegacyException(int type) {
-
-        super();
+        super(null);
         m_type = type;
     }
 
@@ -334,8 +333,7 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      * @param message the description message
      */
     public CmsLegacyException(String message) {
-
-        super();
+        super(null);
         m_messageString = message;
     }
 
@@ -346,8 +344,7 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      * @param type exception error code
      */
     public CmsLegacyException(String message, int type) {
-
-        super();
+        super(null);
         m_messageString = message;
         m_type = type;
     }
@@ -361,8 +358,7 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      * @param cause root cause exception
      */
     public CmsLegacyException(String message, int type, Throwable cause) {
-
-        super();
+        super(null);
         initCause(cause);
         m_messageString = message;
         m_type = type;
@@ -376,8 +372,7 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      * @param cause root cause exception
      */
     public CmsLegacyException(String message, Throwable cause) {
-
-        super();
+        super(null);
         initCause(cause);
         m_messageString = message;
     }
