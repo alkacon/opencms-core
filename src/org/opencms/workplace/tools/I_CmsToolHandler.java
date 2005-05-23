@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsToolHandler.java,v $
- * Date   : $Date: 2005/05/11 08:09:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/23 13:12:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,17 +40,24 @@ import org.opencms.file.CmsObject;
  * <code>{@link org.opencms.workplace.tools.CmsToolManager}</code>.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public interface I_CmsToolHandler {
 
     /**
-     * Returns the name.<p>
+     * Returns the displayed name.<p>
      *
      * @return the name
      */
     String getName();
+
+    /**
+     * Returns the short name for the menu.<p>
+     *
+     * @return the short name
+     */
+    String getShortName();
 
     /**
      * Returns the group.<p>

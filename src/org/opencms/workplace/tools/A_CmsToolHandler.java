@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/05/11 08:09:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/23 13:12:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.util.CmsStringUtil;
  * Helper class to build easily other admin tool handlers.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public abstract class A_CmsToolHandler implements I_CmsToolHandler {
@@ -52,20 +52,20 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     /** Property for the args.<p> */
     public static final String C_ARGS_PROPERTY_DEFINITION = "admintoolhandler-args";
 
+    /** Default disabled help text constant.<p> */
+    public static final String C_DEFAULT_DISABLED_HELPTEXT = "${key." + Messages.GUI_TOOLS_DISABLED_HELP_0 + "}";
+
     /** Arg-name and arg-value separator.<p> */
     public static final String C_VALUE_SEPARATOR = ":";
 
-    /** Default disabled help text constant.<p> */
-    public static final String C_DEFAULT_DISABLED_HELPTEXT = "${key." + Messages.GUI_TOOLS_DISABLED_HELP_0 + "}";
+    /** Help text or description if disabled. */
+    private String m_disabledHelpText;
 
     /** Group to be included in. */
     private String m_group;
 
     /** Help text or description. */
     private String m_helpText;
-
-    /** Help text or description if disabled. */
-    private String m_disabledHelpText;
 
     /** Icon path (32x32). */
     private String m_iconPath;
@@ -82,8 +82,19 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     /** Relative position in group. */
     private float m_position;
 
+    /** Menu item name. */
+    private String m_shortName;
+
     /** Small icon path (16x16). */
     private String m_smallIconPath;
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#getDisabledHelpText()
+     */
+    public String getDisabledHelpText() {
+
+        return m_disabledHelpText;
+    }
 
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getGroup()
@@ -99,14 +110,6 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     public String getHelpText() {
 
         return m_helpText;
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.I_CmsToolHandler#getDisabledHelpText()
-     */
-    public String getDisabledHelpText() {
-
-        return m_disabledHelpText;
     }
 
     /**
@@ -150,11 +153,29 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     }
 
     /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#getShortName()
+     */
+    public String getShortName() {
+
+        return m_shortName;
+    }
+
+    /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getSmallIconPath()
      */
     public String getSmallIconPath() {
 
         return m_smallIconPath;
+    }
+
+    /**
+     * Sets the help text if disabled.<p>
+     *
+     * @param disabledHelpText the help text to set
+     */
+    public void setDisabledHelpText(String disabledHelpText) {
+
+        m_disabledHelpText = disabledHelpText;
     }
 
     /**
@@ -175,16 +196,6 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     public void setHelpText(String helpText) {
 
         m_helpText = helpText;
-    }
-
-    /**
-     * Sets the help text if disabled.<p>
-     *
-     * @param disabledHelpText the help text to set
-     */
-    public void setDisabledHelpText(String disabledHelpText) {
-
-        m_disabledHelpText = disabledHelpText;
     }
 
     /**
@@ -238,6 +249,16 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     }
 
     /**
+     * Sets the short name.<p>
+     *
+     * @param shortName the short name to set
+     */
+    public void setShortName(String shortName) {
+
+        m_shortName = shortName;
+    }
+
+    /**
      * Sets the small icon path.<p>
      *
      * @param smallIconPath the samll icon path to set
@@ -248,21 +269,15 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     }
 
     /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-
-        return m_path + " - " + m_group + " - " + m_position;
-    }
-
-    /**
      * Default implementation.
      * 
      * It takes the icon path from <code>{@link org.opencms.jsp.CmsJspNavElement#C_PROPERTY_NAVIMAGE}</code> property, 
      * or uses a default icon if undefined, the name is taken from the 
      * <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_NAVTEXT}</code> property, 
      * or uses the <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_TITLE}</code> property if undefined, 
-     * or an default text, if still undefined. The help text is taken from the 
+     * or an default text, if still undefined, if you want 2 different names, one for the big icon tools and onew for 
+     * the menu entries, use a <code>{@link A_CmsToolHandler#C_VALUE_SEPARATOR}</code> to separate them in the property.
+     * (if you do so, the first one is for big icons and the small one for menu entries). the help text is taken from the 
      * <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_DESCRIPTION}</code> property or a
      * default text if undefined, if you want to custumize a help text while disabled, use a 
      * <code>{@link A_CmsToolHandler#C_VALUE_SEPARATOR}</code> as a separator in the same property.<p> 
@@ -288,16 +303,20 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
             name = "${key." + Messages.GUI_TOOLS_DEFAULT_NAME_0 + "}";
         }
+        String shortName = name;
+        if (name.indexOf(C_VALUE_SEPARATOR) >= 0) {
+            shortName = name.substring(name.indexOf(C_VALUE_SEPARATOR) + 1);
+            name = name.substring(0, name.indexOf(C_VALUE_SEPARATOR));
+        }
         setName(name);
+        setShortName(shortName);
 
         String iconPath = navElem.getNavImage();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(iconPath)) {
             iconPath = "${key." + Messages.GUI_TOOLS_DEFAULT_ICON_0 + "}";
         }
-        String smallIconPath = null;
-        if (iconPath.indexOf(C_VALUE_SEPARATOR) < 0) {
-            smallIconPath = iconPath;
-        } else {
+        String smallIconPath = iconPath;
+        if (iconPath.indexOf(C_VALUE_SEPARATOR) >= 0) {
             smallIconPath = iconPath.substring(iconPath.indexOf(C_VALUE_SEPARATOR) + 1);
             iconPath = iconPath.substring(0, iconPath.indexOf(C_VALUE_SEPARATOR));
         }
@@ -308,10 +327,8 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(helpText)) {
             helpText = "${key." + Messages.GUI_TOOLS_DEFAULT_HELP_0 + "}";
         }
-        String disabledHelpText = null;
-        if (helpText.indexOf(C_VALUE_SEPARATOR) < 0) {
-            disabledHelpText = C_DEFAULT_DISABLED_HELPTEXT;
-        } else {
+        String disabledHelpText = C_DEFAULT_DISABLED_HELPTEXT;
+        if (helpText.indexOf(C_VALUE_SEPARATOR) >= 0) {
             disabledHelpText = helpText.substring(helpText.indexOf(C_VALUE_SEPARATOR) + 1);
             helpText = helpText.substring(0, helpText.indexOf(C_VALUE_SEPARATOR));
         }
@@ -376,13 +393,21 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
         } catch (CmsException e) {
             // noop
         }
-        
+
         // install point
         setPath(path);
         setGroup(group);
         setPosition(navElem.getNavPosition());
-        
+
         return true;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        return m_path + " - " + m_group + " - " + m_position;
     }
 
 }

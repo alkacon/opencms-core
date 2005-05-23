@@ -125,7 +125,6 @@ img {
   cursor: hand;
   cursor: pointer;
   color: WindowText;
-  padding-left: 2px;
   text-decoration: none;
 }
 
@@ -151,16 +150,18 @@ img {
   height: 20px;
   display: inline;
   vertical-align: middle;
-  padding: 0px 0px 0px 0px;
   text-decoration: none;
 }
 
 /* ---------- big icon buttons  --------- */
 .bigLink {
   width: 128px;
-  height: 78px;
   float: left;
   text-align: center;
+  padding-top: 5px;
+  padding-bottom: 2px;
+  padding-right: 2px;
+  padding-left: 2px;
 }
 
 .bigLink .link img {
@@ -168,7 +169,9 @@ img {
   height: 32px;
   display: inline;
   vertical-align: middle;
-  padding: 1px 1px 1px 1px;
+  padding-bottom: 1px;
+  padding-right: 1px;
+  padding-left: 1px;
   text-decoration: none;
 }
 

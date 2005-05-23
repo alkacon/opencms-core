@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/05/20 16:45:17 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/23 13:12:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -79,8 +79,11 @@ public class CmsToolManager {
     /** Location of the admin view jsp page. */
     public static final String C_VIEW_JSPPAGE_LOCATION = C_ADMINVIEW_ROOT_LOCATION + "/admin-main.html";
 
-    /** List of All available tools. */
+    /** List of all available tools. */
     private final CmsIdentifiableObjectContainer m_tools = new CmsIdentifiableObjectContainer(true, false);
+
+    /** List of all available urls and related tool paths. */
+    private final CmsIdentifiableObjectContainer m_urls = new CmsIdentifiableObjectContainer(true, false);
 
     /**
      * Default Constructor, called by the <code>{@link org.opencms.workplace.CmsWorkplaceManager#initialize(CmsObject)}</code> method.<p>
@@ -154,7 +157,7 @@ public class CmsToolManager {
     }
 
     /**
-     * Returns a valid OpenCms link for the given tool path.<p>
+     * Returns a valid link for the given tool path.<p>
      * 
      * @param jsp the jsp action element
      * @param toolPath the tool path
@@ -162,7 +165,7 @@ public class CmsToolManager {
      * 
      * @return a valid OpenCms link
      */
-    public String cmsLinkForPath(CmsJspActionElement jsp, String toolPath, Map params) {
+    public String linkForPath(CmsJspActionElement jsp, String toolPath, Map params) {
 
         StringBuffer link = new StringBuffer(128);
         link.append(C_VIEW_JSPPAGE_LOCATION);
@@ -171,6 +174,18 @@ public class CmsToolManager {
         link.append("=");
         link.append(toolPath);        
         return jsp.link(rewriteUrl(link.toString(), params));
+    }
+    
+    /**
+     * Returns the tool path for the given url.<p>
+     * 
+     * @param url the url of the tool
+     * 
+     * @return the associated tool path
+     */
+    public String getToolPathForUrl(String url) {
+        
+        return (String)m_urls.getObject(url);
     }
 
     /**
@@ -195,7 +210,7 @@ public class CmsToolManager {
             adminTool = resolveAdminTool(parent);
 
             String id = "nav" + adminTool.getId();
-            String onClic = "openPage('" + cmsLinkForPath(wp.getJsp(), parent, null) + "');";
+            String onClic = "openPage('" + linkForPath(wp.getJsp(), parent, null) + "');";
             String link = A_CmsHtmlIconButton.defaultButtonHtml(
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 id,
@@ -376,9 +391,9 @@ public class CmsToolManager {
         }
         // put close link if not set
         if (!myParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
-            myParams.put(CmsDialog.PARAM_CLOSELINK, cmsLinkForPath(wp.getJsp(), getCurrentToolPath(wp), null));
+            myParams.put(CmsDialog.PARAM_CLOSELINK, linkForPath(wp.getJsp(), getCurrentToolPath(wp), null));
         }
-        wp.getJsp().getResponse().sendRedirect(cmsLinkForPath(wp.getJsp(), toolPath, myParams));
+        wp.getJsp().getResponse().sendRedirect(linkForPath(wp.getJsp(), toolPath, myParams));
     }
 
     /**
@@ -398,7 +413,7 @@ public class CmsToolManager {
         }
         // put close link if not set
         if (!myParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
-            myParams.put(CmsDialog.PARAM_CLOSELINK, cmsLinkForPath(wp.getJsp(), getCurrentToolPath(wp), null));
+            myParams.put(CmsDialog.PARAM_CLOSELINK, linkForPath(wp.getJsp(), getCurrentToolPath(wp), null));
         }
         wp.getJsp().getResponse().sendRedirect(wp.getJsp().link(rewriteUrl(pagePath, myParams)));
     }
@@ -522,9 +537,10 @@ public class CmsToolManager {
         String id = "tool" + m_tools.elementList().size();
         CmsTool tool = new CmsTool(id, handler);
 
-        // register
+        // try to register
         try {
             m_tools.addIdentifiableObject(handler.getPath(), tool);
+            m_urls.addIdentifiableObject(handler.getLink(), handler.getPath());
         } catch (RuntimeException ex) {
             // noop
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/05/20 16:45:17 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/23 13:12:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -119,7 +119,7 @@ public class CmsToolDialog extends CmsWorkplace {
         StringBuffer html = new StringBuffer(512);
         String toolPath = getCurrentToolPath();
         String parentPath = getParentPath();
-        String upLevelLink = getToolManager().cmsLinkForPath(getJsp(), parentPath, null);
+        String upLevelLink = getToolManager().linkForPath(getJsp(), parentPath, null);
         String parentName = getToolManager().resolveAdminTool(parentPath).getHandler().getName();
 
         html.append(getToolManager().generateNavBar(toolPath, this));
@@ -309,7 +309,7 @@ public class CmsToolDialog extends CmsWorkplace {
             // set close link
             if (wp.getParamCloseLink() == null) {
                 if (!getToolManager().getRootToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
-                    wp.setParamCloseLink(getToolManager().cmsLinkForPath(getJsp(), getParentPath(), null));
+                    wp.setParamCloseLink(getToolManager().linkForPath(getJsp(), getParentPath(), null));
                     params.put(CmsDialog.PARAM_CLOSELINK, wp.getParamCloseLink());
                 }
             }

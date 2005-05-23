@@ -2249,5 +2249,26 @@
 			</properties>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/views/reload.jsp</source>
+			<destination>system/workplace/views/reload.jsp</destination>
+			<type>jsp</type>
+			<datelastmodified>Wed, 18 Aug 2004 10:46:32 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 16:20:43 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Top Frameset - Reload page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
 	</files>
 </export>

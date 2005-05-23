@@ -85,7 +85,7 @@ if (wp.showSiteSelector()) {
 </form>
 
 <%= wp.buttonBarSeparator(5, 0) %>        
-<%= wp.button("javascript:window.top.location.reload(true);", null, "reload", "button.reload", buttonStyle) %>
+<%= wp.button("reload.jsp", null, "reload", "button.reload", buttonStyle) %>
 <%= wp.button("../commons/preferences.jsp", "body", "preferences", "button.preferences", buttonStyle) %>
 
 <% 
