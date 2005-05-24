@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/05/24 11:05:56 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/05/24 16:13:02 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -1103,7 +1103,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 for (int j=0; j<elementCount; j++) {
                     // get value and corresponding widget
                     I_CmsXmlContentValue value = elementSequence.getValue(j);
-                    I_CmsWidget widget = contentDefinition.getContentHandler().getWidget(value);    
+                    I_CmsWidget widget = null;
+                    if (type.isSimpleType()) {
+                        widget = contentDefinition.getContentHandler().getWidget(value);
+                    }
                     
                     // create label and help bubble cells
                     result.append("<tr>");
