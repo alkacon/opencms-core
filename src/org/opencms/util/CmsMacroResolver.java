@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/05/19 16:35:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/24 07:45:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 6.0 alpha 3
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
@@ -384,11 +384,10 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                     }
                 } catch (CmsException e) {
                     if (LOG.isWarnEnabled()) {
-                        CmsMessageContainer message = Messages.get().container(
+                        LOG.warn(Messages.get().key(
                             Messages.LOG_PROPERTY_READING_FAILED_2,
                             macro,
-                            controller.getCurrentRequest().getElementUri());
-                        LOG.warn(message.key(), e);
+                            controller.getCurrentRequest().getElementUri()), e);
                     }
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/05/18 12:48:14 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2005/05/24 07:45:07 $
+ * Version: $Revision: 1.97 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -708,7 +708,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);
@@ -867,7 +867,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCE_1, targetName);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, exc);
+                LOG.debug(message.key(), exc);
             }
 
             // an error while importing the file
@@ -1091,7 +1091,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_MERGING_PAGE_FILE_1, resourcename);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);
@@ -1133,7 +1133,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_COPYING_PROPERTY_DEFINITIONS_0);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message);
@@ -1219,7 +1219,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_REMOVING_FOLDERS_OF_IMPORTED_BODY_FILES_0);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);

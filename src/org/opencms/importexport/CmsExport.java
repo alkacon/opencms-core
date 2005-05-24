@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/05/17 16:14:07 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2005/05/24 07:45:07 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.61 $ $Date: 2005/05/17 16:14:07 $
+ * @version $Revision: 1.62 $ $Date: 2005/05/24 07:45:07 $
  */
 public class CmsExport implements Serializable {
     
@@ -251,7 +251,7 @@ public class CmsExport implements Serializable {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1, getExportFileName());
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, se);
+                LOG.debug(message.key(), se);
             }
             
             throw new CmsImportExportException(message, se);
@@ -260,7 +260,7 @@ public class CmsExport implements Serializable {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1, getExportFileName());
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, ioe);
+                LOG.debug(message.key(), ioe);
             }
             
             throw new CmsImportExportException(message, ioe);
@@ -391,7 +391,7 @@ public class CmsExport implements Serializable {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_ADDING_CHILD_RESOURCES_1, folderName);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);
@@ -719,7 +719,7 @@ public class CmsExport implements Serializable {
                             Messages.ERR_IMPORTEXPORT_ERROR_ADDING_FILE_1,
                             fileName);
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(message, e);
+                            LOG.debug(message.key(), e);
                         }
 
                         throw new CmsImportExportException(message, e);
@@ -806,7 +806,7 @@ public class CmsExport implements Serializable {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_ADDING_PARENT_FOLDERS_1, resourceName);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);
@@ -982,7 +982,7 @@ public class CmsExport implements Serializable {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_APPENDING_RESOURCE_TO_MANIFEST_1, resource.getRootPath());
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);
@@ -1071,7 +1071,7 @@ public class CmsExport implements Serializable {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_READING_PARENT_GROUP_1, group.getName());
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);
@@ -1105,7 +1105,7 @@ public class CmsExport implements Serializable {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_READING_ALL_GROUPS_0);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);
@@ -1172,7 +1172,7 @@ public class CmsExport implements Serializable {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_READING_GROUPS_OF_USER_1, user.getName());
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);
@@ -1206,7 +1206,7 @@ public class CmsExport implements Serializable {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_READING_ALL_USERS_0);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);

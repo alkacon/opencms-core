@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2005/05/18 13:02:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/24 07:45:07 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.1.11 
  */
 public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
@@ -149,7 +149,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
         } catch (NoSuchAlgorithmException e) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_UNSUPPORTED_ALGORITHM_1, digestType);
             if (LOG.isErrorEnabled()) {
-                LOG.error(message, e);
+                LOG.error(message.key(), e);
             }
             throw new CmsPasswordEncryptionException(message, e);
         } catch (UnsupportedEncodingException e) {
@@ -157,7 +157,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
                 Messages.ERR_UNSUPPORTED_PASSWORD_ENCODING_1,
                 inputEncoding);
             if (LOG.isErrorEnabled()) {
-                LOG.error(message, e);
+                LOG.error(message.key(), e);
             }
             throw new CmsPasswordEncryptionException(message, e);
         }

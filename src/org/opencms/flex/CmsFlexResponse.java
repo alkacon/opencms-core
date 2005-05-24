@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/24 07:45:08 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
 
@@ -834,8 +834,10 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         m_key = new CmsFlexCacheKey(resourcename, cacheDirectives, online);
         if (m_key.hadParseError()) {
             // We throw the exception here to make sure this response has a valid key (cache=never)
-            CmsMessageContainer message = Messages.get().container(Messages.LOG_FLEXRESPONSE_PARSE_ERROR_IN_CACHE_KEY_2, cacheDirectives, resourcename);
-            throw new CmsFlexCacheException(message);
+            throw new CmsFlexCacheException(Messages.get().container(
+                Messages.LOG_FLEXRESPONSE_PARSE_ERROR_IN_CACHE_KEY_2,
+                cacheDirectives,
+                resourcename));
         }
         return m_key;
     }

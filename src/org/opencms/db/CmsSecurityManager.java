@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/19 09:54:29 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2005/05/24 07:45:07 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -306,14 +306,13 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.backupProject(dbc, tagId, publishDate);
         } catch (Exception e) {
-            CmsMessageContainer errMsg = Messages.get().container(
+            dbc.report(null, Messages.get().container(
                 Messages.ERR_BACKUP_PROJECT_4,
                 new Object[] {
                     new Integer(tagId),
                     dbc.currentProject().getName(),
                     new Integer(dbc.currentProject().getId()),
-                    new Long(publishDate)});
-            dbc.report(null, errMsg, e);
+                    new Long(publishDate)}), e);
         } finally {
             dbc.clear();
         }
@@ -606,11 +605,12 @@ public final class CmsSecurityManager {
                 CmsResource parent = readResource(context, parentFolder, CmsResourceFilter.ALL);
                 if (parent.getState() == I_CmsConstants.C_STATE_DELETED) {
                     // parent folder is deleted - direct publish not allowed
-                    CmsMessageContainer errMsg = Messages.get().container(
-                        Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
-                        dbc.getRequestContext().removeSiteRoot(directPublishResource.getRootPath()),
-                        parentFolder);
-                    throw new CmsVfsException(errMsg);
+                    throw new CmsVfsException(Messages.get()
+                        .container(
+                            Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
+                            dbc.getRequestContext().removeSiteRoot(
+                                directPublishResource.getRootPath()),
+                            parentFolder));
                 }
                 if (parent.getState() == I_CmsConstants.C_STATE_NEW) {
                     // parent folder is new - direct publish not allowed

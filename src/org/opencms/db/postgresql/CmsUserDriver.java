@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/18 12:48:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/24 07:45:07 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Antonio Core (antonio@starsolutions.it)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 6.0
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
@@ -290,8 +290,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                 m_sqlManager.closeAll(dbc, conn, stmt, null);
             }
         } else {
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_GROUP_WITH_NAME_1, group.getName());
-            throw new CmsDbEntryNotFoundException(message);
+            throw new CmsDbEntryNotFoundException(Messages.get().container(
+                Messages.ERR_NO_GROUP_WITH_NAME_1,
+                group.getName()));
         }
     }
 

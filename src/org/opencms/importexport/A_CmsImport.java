@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/04/29 15:54:15 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2005/05/24 07:45:07 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -507,7 +507,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_GROUP_1, name);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             throw new CmsImportExportException(message, e);
         }
@@ -568,7 +568,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_GROUPS_0);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);
@@ -641,7 +641,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_USER_1, name);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             throw new CmsImportExportException(message, e);
         }
@@ -736,7 +736,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_USERS_0);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);

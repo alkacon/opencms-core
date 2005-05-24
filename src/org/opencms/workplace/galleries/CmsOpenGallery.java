@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsOpenGallery.java,v $
- * Date   : $Date: 2005/05/12 09:21:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/24 07:45:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -129,7 +129,7 @@ public class CmsOpenGallery extends CmsDialog {
         } catch (CmsException e) {
             // requested type is not configured
             CmsMessageContainer message = Messages.get().container(Messages.ERR_OPEN_GALLERY_1, galleryType); 
-            LOG.error(message, e);
+            LOG.error(message.key(), e);
             throw new CmsRuntimeException(message, e);
         }
 

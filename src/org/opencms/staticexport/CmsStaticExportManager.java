@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/05/02 13:33:48 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2005/05/24 07:45:07 $
+ * Version: $Revision: 1.100 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.99 $
+ * @version $Revision: 1.100 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1363,7 +1363,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         if (CmsLog.LOG.isInfoEnabled()) {
             if (isStaticExportEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_ENABLED_0 ));                
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_ENABLED_0));                
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_DEFAULT_1, new Boolean(getExportPropertyDefault())));
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_PATH_1, getExportPath()));
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_RFS_PREFIX_1, getRfsPrefix()));

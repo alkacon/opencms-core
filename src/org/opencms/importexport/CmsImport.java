@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2005/04/29 15:54:15 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/05/24 07:45:07 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.30 $ $Date: 2005/04/29 15:54:15 $
+ * @version $Revision: 1.31 $ $Date: 2005/05/24 07:45:07 $
  */
 public class CmsImport implements Serializable {
     
@@ -234,7 +234,7 @@ public class CmsImport implements Serializable {
                 
                 CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_CLOSING_ZIP_ARCHIVE_1, m_importZip.getName());
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(message, e);
+                    LOG.debug(message.key(), e);
                 }
                 
                 throw new CmsImportExportException(message, e);
@@ -396,7 +396,7 @@ public class CmsImport implements Serializable {
 
                 CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_CLOSING_ZIP_ARCHIVE_1, m_importZip.getName());
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(message, e);
+                    LOG.debug(message.key(), e);
                 }
                 
                 throw new CmsImportExportException(message, e);
@@ -470,7 +470,7 @@ public class CmsImport implements Serializable {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_OPENING_ZIP_ARCHIVE_1, m_importFile);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);
@@ -520,7 +520,7 @@ public class CmsImport implements Serializable {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_CREATING_DIGEST_1, digest);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);

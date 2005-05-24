@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2005/05/24 07:45:07 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -394,7 +394,7 @@ public class CmsImportVersion3 extends A_CmsImport {
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
             
             throw new CmsImportExportException(message, e);
@@ -551,9 +551,10 @@ public class CmsImportVersion3 extends A_CmsImport {
             success = false;
             m_report.println(exc);
             
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCE_1, destination);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, exc);
+                LOG.debug(Messages.get().key(
+                    Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCE_1,
+                    destination), exc);
             }
             
             try {
