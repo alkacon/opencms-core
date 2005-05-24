@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestCmsModuleVersion.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/24 15:05:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
  
 package org.opencms.module;
 
+import org.opencms.main.CmsIllegalArgumentException;
+
 import junit.framework.TestCase;
 
 /**
@@ -38,7 +40,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsModuleVersion extends TestCase {
     
@@ -183,7 +185,7 @@ public class TestCmsModuleVersion extends TestCase {
         gotError = false;
         try { 
             v1 = new CmsModuleVersion("2222.45.6");
-        } catch (IllegalArgumentException e) {
+        } catch (CmsIllegalArgumentException e) {
             gotError = true;
         }
         if (! gotError) {
@@ -193,7 +195,7 @@ public class TestCmsModuleVersion extends TestCase {
         gotError = false;
         try { 
             v1 = new CmsModuleVersion("1.2.3.4.5");
-        } catch (IllegalArgumentException e) {
+        } catch (CmsIllegalArgumentException e) {
             gotError = true;
         }
         if (! gotError) {
