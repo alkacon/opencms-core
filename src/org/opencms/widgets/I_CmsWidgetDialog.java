@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/19 16:35:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/24 11:05:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.2
  */
 public interface I_CmsWidgetDialog {
@@ -161,4 +161,13 @@ public interface I_CmsWidgetDialog {
      * @return a messages object used to render localized keys for the widget dialog
      */
     CmsMessages getMessages();
+    
+    /**
+     * Tests if we are working with the new administration dialog style.<p>
+     * 
+     * This param is not intended for external use.<p>
+     * 
+     * @return <code>true</code> if using the new style
+     */
+    boolean useNewStyle();
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/help.js,v $
- * Date   : $Date: 2005/05/19 09:29:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/24 11:05:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,11 +75,20 @@ function showHelp(id) {
     	selectBoxes = document.getElementsByTagName("select");
     }
     
-    var icon = document.getElementById("img" + id);
     if (text.style.visibility == "visible") {
         return;
     }
-    x = findPosX(icon) + 8;
+    
+    // get the help icon element
+    var icon = document.getElementById("img" + id);
+    var xOffset = 8;
+    if (icon == null) { 
+    	// no icon found, this is a combo help text  
+    	icon = document.getElementById(id);
+    	xOffset = 50;
+    }
+    
+    x = findPosX(icon) + xOffset;
     y = findPosY(icon) + 8;
     var textHeight = text.scrollHeight;
     var textWidth = text.scrollWidth;
@@ -147,4 +156,3 @@ function hideHelp(id) {
     	}
     }
 }
-

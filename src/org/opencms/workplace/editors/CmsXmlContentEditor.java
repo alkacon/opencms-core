@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/05/20 14:31:37 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/05/24 11:05:56 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -759,6 +759,14 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             return false;    
         }
         return true;
+    }
+    
+    /**
+     * @see org.opencms.workplace.tools.CmsToolDialog#useNewStyle()
+     */
+    public boolean useNewStyle() {
+
+        return false;
     }
     
     /**

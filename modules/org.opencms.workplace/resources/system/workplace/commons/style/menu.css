@@ -999,6 +999,35 @@ body.dialogadmin {
         <% } %>
 }
 
+div.widgetcombo {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 0px;
+    width: 300px;
+    border: 1px solid WindowFrame; 
+    background-color: Window;
+    visibility: hidden;
+}
+
+button.widgetcombobutton {
+	height: 17px;
+	width: 17px;
+}
+
+div.widgetcombo a {
+	text-decoration: none;
+	display:block;
+	background-color: Window;
+	color: WindowText;
+	width: 100%;
+}
+
+div.widgetcombo a:hover {
+	background-color: Highlight;
+	color: HighlightText;
+}
+
   <% if (style == NEW_ADMIN) { %>
 
 .list th { 

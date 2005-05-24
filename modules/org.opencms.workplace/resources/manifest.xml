@@ -1728,6 +1728,42 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/components/widgets/combo.png</source>
+			<destination>system/workplace/resources/components/widgets/combo.png</destination>
+			<type>image</type>
+			<uuidresource>c86d0555-cc2e-11d9-a1b9-31e8d3cc2cc2</uuidresource>
+			<datelastmodified>Tue, 24 May 2005 08:35:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 24 May 2005 08:35:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Combo box button icon]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/combobox.js</source>
+			<destination>system/workplace/resources/components/widgets/combobox.js</destination>
+			<type>plain</type>
+			<uuidresource>f66e9bbd-cba0-11d9-8d0d-31e8d3cc2cc2</uuidresource>
+			<datelastmodified>Tue, 24 May 2005 08:37:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 May 2005 15:40:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to create combo box]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/components/widgets/fileselector.js</source>
 			<destination>system/workplace/resources/components/widgets/fileselector.js</destination>
 			<type>plain</type>

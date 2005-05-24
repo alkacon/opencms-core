@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo4.java,v $
- * Date   : $Date: 2005/05/19 16:08:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/24 11:05:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
@@ -89,7 +89,6 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
     public void actionCommit() {
 
         // not implemented for this demo
-
     }
 
     /**
@@ -159,7 +158,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
                     result.append(": </td>");
                     if (p.getIndex() == 0) {
                         // show help bubble only on first element of each content definition 
-                        result.append(widgetHelpBubble(p));
+                        result.append(p.getWidget().getHelpBubble(getCms(), this, p));
                     } else {
                         // create empty cell for all following elements 
                         result.append(dialogHorizontalSpacer(16));
@@ -214,8 +213,19 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter("htmlgalwidget", new CmsHtmlGalleryWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("tablegalwidget", new CmsTableGalleryWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("extgalwidget", new CmsLinkGalleryWidget(), 0, 5));
+        addWidget(new CmsWidgetDialogParameter("combowidget", new CmsComboWidget("Value1:Hilfe für Value 1|Value2:Hilfe für den zweiten Wert|Value3"), 0, 2));
     }
 
+    
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#initMessages()
+     */
+    protected void initMessages() {
+
+        addMessages(Messages.get().getBundleName());
+        super.initMessages();
+    }
+    
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */

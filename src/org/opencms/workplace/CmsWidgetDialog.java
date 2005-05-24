@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/23 12:37:17 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/05/24 11:05:56 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -522,8 +522,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         Iterator i = getWidgets().iterator();
         while (i.hasNext()) {
             CmsWidgetDialogParameter param = (CmsWidgetDialogParameter)i.next();
-            //result.append(widget.getDialogHtmlEnd(getCms(), this, param));
-            result.append(widgetHelpText(param));
+            result.append(param.getWidget().getDialogHtmlEnd(getCms(), this, param));
         }
         return result.toString();
     }
@@ -909,7 +908,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             result.append(": </td>");
             if (p.getIndex() == 0) {
                 // show help bubble only on first element of each content definition 
-                result.append(widgetHelpBubble(p));
+                result.append(p.getWidget().getHelpBubble(getCms(), this, p));
             } else {
                 // create empty cell for all following elements 
                 result.append(dialogHorizontalSpacer(16));
@@ -933,7 +932,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
 
                 if (!addValue) {
-                    result.append(dialogHorizontalSpacer(24));
+                    result.append(dialogHorizontalSpacer(25));
                 } else {
                     result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
                     result.append(buildAddElement(base.getName(), p.getIndex(), addValue));
@@ -1330,83 +1329,6 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected void setValidationErrorList(List errors) {
 
         m_validationErrorList = errors;
-    }
-
-    /**
-     * Implementation for the Administration framework.<p>  
-     * 
-     * @param param the widget parameter
-     * 
-     * @return html code
-     * 
-     * @see org.opencms.widgets.I_CmsWidget#getHelpBubble(org.opencms.file.CmsObject, I_CmsWidgetDialog, CmsWidgetDialogParameter)
-     */
-    protected String widgetHelpBubble(CmsWidgetDialogParameter param) {
-
-        if (!useNewStyle()) {
-            return param.getWidget().getHelpBubble(getCms(), this, param);
-        }
-        String locKey = A_CmsWidget.getHelpKey(param);
-        String locValue = ((I_CmsWidgetDialog)this).getMessages().key(locKey, true);
-        if (locValue == null) {
-            // there was no help message found for this key, so return a spacer cell
-            return this.dialogHorizontalSpacer(16);
-        } else {
-            StringBuffer result = new StringBuffer(256);
-            result.append("<td>");
-            result.append("<img name=\"img");
-            result.append(locKey);
-            result.append("\" id=\"img");
-            result.append(locKey);
-            result.append("\" src=\"");
-            result.append(OpenCms.getLinkManager().substituteLink(
-                getCms(),
-                "/system/workplace/resources/commons/help.gif"));
-            result.append("\" border=\"0\" onmouseout=\"hideMenuHelp('");
-            result.append(locKey);
-            result.append("');\" onmouseover=\"showMenuHelp('");
-            result.append(locKey);
-            result.append("');\">");
-            result.append("</td>");
-            return result.toString();
-        }
-    }
-
-    /**
-     * Implementation for the Administration framework.<p>  
-     * 
-     * @param param the widget parameter
-     * 
-     * @return html code
-     * 
-     * @see org.opencms.widgets.I_CmsWidget#getHelpText(I_CmsWidgetDialog, CmsWidgetDialogParameter)
-     */
-    protected String widgetHelpText(CmsWidgetDialogParameter param) {
-
-        if (!useNewStyle()) {
-            return param.getWidget().getHelpText(this, param);
-        }
-        StringBuffer result = new StringBuffer(128);
-        // calculate the key
-        String locKey = A_CmsWidget.getHelpKey(param);
-        String locValue = ((I_CmsWidgetDialog)this).getMessages().key(locKey, true);
-        if (locValue == null) {
-            // there was no help message found for this key, so return an empty string
-            return "";
-        } else {
-            result.append("<div class=\"help\" name=\"help");
-            result.append(locKey);
-            result.append("\" id=\"help");
-            result.append(locKey);
-            result.append("\" onmouseout=\"hideMenuHelp('");
-            result.append(locKey);
-            result.append("');\" onmouseover=\"showMenuHelp('");
-            result.append(locKey);
-            result.append("');\">");
-            result.append(locValue);
-            result.append("</div>");
-            return result.toString();
-        }
     }
 
     /**

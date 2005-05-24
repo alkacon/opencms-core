@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/05/19 16:35:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/24 11:05:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public abstract class A_CmsWidget implements I_CmsWidget {
@@ -146,6 +146,10 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             // there was no help message found for this key, so return a spacer cell
             return widgetDialog.dialogHorizontalSpacer(16);
         } else {
+            String jsMethodSuffix = "Help";
+            if (widgetDialog.useNewStyle()) {
+                jsMethodSuffix = "MenuHelp";
+            }
             result.append("<td>");
             result.append("<img name=\"img");
             result.append(locKey);
@@ -153,9 +157,9 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             result.append(locKey);
             result.append("\" src=\"");
             result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.gif"));
-            result.append("\" border=\"0\" onmouseout=\"hideHelp('");
+            result.append("\" border=\"0\" onmouseout=\"hide").append(jsMethodSuffix).append("('");
             result.append(locKey);
-            result.append("');\" onmouseover=\"showHelp('");
+            result.append("');\" onmouseover=\"show").append(jsMethodSuffix).append("('");
             result.append(locKey);
             result.append("');\">");
             result.append("</td>");
@@ -168,6 +172,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
      */
     public String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
+        
         StringBuffer result = new StringBuffer(128);
         // calculate the key
         String locKey = getHelpKey(param);
@@ -176,13 +181,18 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             // there was no help message found for this key, so return an empty string
             return "";
         } else {
+            // determine JS Method suffix depending on the displayed dialog style
+            String jsMethodSuffix = "Help";
+            if (widgetDialog.useNewStyle()) {
+                jsMethodSuffix = "MenuHelp";
+            }
             result.append("<div class=\"help\" name=\"help");
             result.append(locKey);
             result.append("\" id=\"help");
             result.append(locKey);
-            result.append("\" onmouseout=\"hideHelp('");
+            result.append("\" onmouseout=\"hide").append(jsMethodSuffix).append("('");
             result.append(locKey);
-            result.append("');\" onmouseover=\"showHelp('");
+            result.append("');\" onmouseover=\"show").append(jsMethodSuffix).append("('");
             result.append(locKey);
             result.append("');\">");
             result.append(locValue);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo3.java,v $
- * Date   : $Date: 2005/05/19 16:08:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/24 11:05:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo3 extends CmsWidgetDialog {
@@ -162,7 +162,7 @@ public class CmsAdminWidgetDemo3 extends CmsWidgetDialog {
                     result.append(": </td>");
                     if (p.getIndex() == 0) {
                         // show help bubble only on first element of each content definition 
-                        result.append(widgetHelpBubble(p));
+                        result.append(p.getWidget().getHelpBubble(getCms(), this, p));
                     } else {
                         // create empty cell for all following elements 
                         result.append(buttonBarSpacer(16));
