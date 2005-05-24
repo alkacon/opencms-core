@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Messages.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/24 15:14:07 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,6 +65,27 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITJOB_ADMIN_TOOL_NAME_0 = "GUI_EDITJOB_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONCLASS_EXAMPLE1_0 = "GUI_EDITOR_CRONCLASS_EXAMPLE1_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONCLASS_EXAMPLE2_0 = "GUI_EDITOR_CRONCLASS_EXAMPLE2_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONJOB_EXAMPLE1_0 = "GUI_EDITOR_CRONJOB_EXAMPLE1_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONJOB_EXAMPLE2_0 = "GUI_EDITOR_CRONJOB_EXAMPLE2_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONJOB_EXAMPLE3_0 = "GUI_EDITOR_CRONJOB_EXAMPLE3_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONJOB_EXAMPLE4_0 = "GUI_EDITOR_CRONJOB_EXAMPLE4_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONJOB_EXAMPLE5_0 = "GUI_EDITOR_CRONJOB_EXAMPLE5_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0 = "GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0";
