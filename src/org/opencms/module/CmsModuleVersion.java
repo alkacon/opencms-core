@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleVersion.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/24 07:57:22 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -215,7 +215,7 @@ public class CmsModuleVersion implements Comparable {
      *
      * @param version the version String to set
      */
-    private void setVersion(String version) {
+    public void setVersion(String version) {
 
         m_number = 0L;
         String[] split = CmsStringUtil.splitAsArray(version, '.');
