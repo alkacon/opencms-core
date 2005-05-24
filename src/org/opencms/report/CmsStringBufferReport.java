@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsStringBufferReport.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/24 08:13:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.report;
 
+import org.opencms.i18n.CmsMessageContainer;
+
 import java.util.Locale;
 
 /**
@@ -41,7 +43,7 @@ import java.util.Locale;
  * report using the {@link #toString()} method.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2005/02/17 12:44:35 $
+ * @version $Revision: 1.5 $ $Date: 2005/05/24 08:13:26 $
  */
 public class CmsStringBufferReport extends A_CmsReport {
 
@@ -80,6 +82,24 @@ public class CmsStringBufferReport extends A_CmsReport {
         return "";
     }
 
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer)
+     */
+    public synchronized void print(CmsMessageContainer container) {
+
+        print(container.key(getLocale()), C_FORMAT_DEFAULT);
+    }
+    
+
+    /**
+     * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer, int)
+     */
+    public synchronized void print(CmsMessageContainer container, int format) {
+
+        print(container.key(getLocale()), format);
+    }
+
     /**
      * @see org.opencms.report.I_CmsReport#print(java.lang.String)
      */
@@ -110,6 +130,23 @@ public class CmsStringBufferReport extends A_CmsReport {
     public void println() {
 
         m_strBuf.append("\n");
+    }
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer)
+     */
+    public synchronized void println(CmsMessageContainer container) {
+
+        println(container.key(getLocale()), C_FORMAT_DEFAULT);
+    }
+    
+
+    /**
+     * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer, int)
+     */
+    public synchronized void println(CmsMessageContainer container, int format) {
+
+        println(container.key(getLocale()), format);
     }
 
     /**
@@ -158,5 +195,4 @@ public class CmsStringBufferReport extends A_CmsReport {
 
         return m_strBuf.toString();
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/05/24 08:13:26 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-      
+     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BACKUP_FILE_HEADER_NOT_FOUND_1 = "ERR_BACKUP_FILE_HEADER_NOT_FOUND_1";
        
@@ -63,10 +63,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_DELETE_BACKUP_VERSIONS_1 = "ERR_DELETE_BACKUP_VERSIONS_1";
     
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DELETE_USED_PROPERTY_1 = "ERR_DELETE_USED_PROPERTY_1";
+    public static final String ERR_DELETE_NONEMTY_FOLDER_2 = "ERR_DELETE_NONEMTY_FOLDER_2";
     
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DELETE_NONEMTY_FOLDER_2 = "ERR_DELETE_NONEMTY_FOLDER_2";
+    public static final String ERR_DELETE_USED_PROPERTY_1 = "ERR_DELETE_USED_PROPERTY_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ERROR_DELETING_PROPERTYDEF_1 = "ERR_ERROR_DELETING_PROPERTYDEF_1";
@@ -141,6 +141,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_PARENT_FOLDER_DELETED_1 = "ERR_PARENT_FOLDER_DELETED_1";
     
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_AGENT_0 = "ERR_READ_AGENT_0";
+    
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_DELETED_FILE_1 = "ERR_READ_DELETED_FILE_1";
     
     /** Message constant for key in the resource bundle. */
@@ -148,9 +151,6 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_FILE_WITH_STRUCTURE_ID_1 = "ERR_READ_FILE_WITH_STRUCTURE_ID_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_AGENT_0 = "ERR_READ_AGENT_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_FOLDER_1 = "ERR_READ_FOLDER_1";
@@ -171,25 +171,25 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_TASK_1 = "ERR_READ_TASK_1";
     
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_TASKS_0 = "ERR_READ_TASKS_0";
-    
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_TASK_LOG_0 = "ERR_READ_TASK_LOG_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_TASK_LOGS_0 = "ERR_READ_TASK_LOGS_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_TASKS_0 = "ERR_READ_TASKS_0";
      
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_USER_0 = "ERR_READING_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READING_USER_WITH_NAME_1 = "ERR_READING_USER_WITH_NAME_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_USERS_0 = "ERR_READING_USERS_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_USERS_OF_GROUP_1 = "ERR_READING_USERS_OF_GROUP_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READING_USER_WITH_NAME_1 = "ERR_READING_USER_WITH_NAME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1 = "ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1";
@@ -310,6 +310,39 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITING_PUBLISHING_HISTORY_1 = "LOG_WRITING_PUBLISHING_HISTORY_1";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_FILE_0 = "RPT_DELETE_FILE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_FOLDER_0 = "RPT_DELETE_FOLDER_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_FOLDERS_BEGIN_0 = "RPT_DELETE_FOLDERS_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_FOLDERS_END_0 = "RPT_DELETE_FOLDERS_END_0";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_FILE_0 = "RPT_PUBLISH_FILE_0";
+     
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_FILES_BEGIN_0 = "RPT_PUBLISH_FILES_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_FILES_END_0 = "RPT_PUBLISH_FILES_END_0";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_FOLDER_0 = "RPT_PUBLISH_FOLDER_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_FOLDERS_BEGIN_0 = "RPT_PUBLISH_FOLDERS_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_FOLDERS_END_0 = "RPT_PUBLISH_FOLDERS_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_STAT_4 = "RPT_PUBLISH_STAT_4";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.generic.messages";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2005/05/13 09:07:23 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/24 08:13:26 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
  
 package org.opencms.report;
 
+import org.opencms.i18n.CmsMessageContainer;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -40,7 +42,7 @@ import java.util.Locale;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public interface I_CmsReport {
         
@@ -65,11 +67,11 @@ public interface I_CmsReport {
     /** Indicates warning formatting. */
     int C_FORMAT_WARNING = 1;
 
-    /** Request parameter value that this report should create a "simple" output. */
-    String REPORT_TYPE_SIMPLE = "simple";
-
     /** Request parameter value that this report should create an "extended" output. */
     String REPORT_TYPE_EXTENDED = "extended";
+
+    /** Request parameter value that this report should create a "simple" output. */
+    String REPORT_TYPE_SIMPLE = "simple";
     
     /**
      * Adds a bundle specified by it's name to the List of resource bundles.<p>
@@ -145,6 +147,24 @@ public interface I_CmsReport {
     String key(String keyName);
 
     /**
+     * Prints a localized message to the report.<p>
+     * 
+     * @param container the String to add
+     */
+    void print(CmsMessageContainer container);
+
+    /**
+     * Prints a localized message to the report, using the indicated formatting.<p>
+     * 
+     * Use the contants starting with <code>C_FORMAT</code> from this interface
+     * to indicate which formatting to use.<p>
+     *
+     * @param container the String to add
+     * @param format the formatting to use for the output
+     */
+    void print(CmsMessageContainer container, int format);  
+
+    /**
      * Prints a String to the report.<p>
      * 
      * @param value the String to add
@@ -161,11 +181,30 @@ public interface I_CmsReport {
      * @param format the formatting to use for the output
      */
     void print(String value, int format);
-        
+    
     /**
      * Adds a line break to the report.<p>
      */
     void println();
+
+
+    /**
+     * Prints a localized message to the report.<p>
+     * 
+     * @param container the String to add
+     */
+    void println(CmsMessageContainer container);
+
+    /**
+     * Prints a localized message to the report, using the indicated formatting.<p>
+     * 
+     * Use the contants starting with <code>C_FORMAT</code> from this interface
+     * to indicate which formatting to use.<p>
+     *
+     * @param container the String to add
+     * @param format the formatting to use for the output
+     */
+    void println(CmsMessageContainer container, int format);  
     
     /**
      * Prints a String with line break to the report.<p>
@@ -184,7 +223,7 @@ public interface I_CmsReport {
      * @param format the formatting to use for the output
      */
     void println(String value, int format);
-
+    
     /**
      * Adds an Exception to the report, ensuring that the Exception content is
      * processed to generate a valid output esp. for HTML pages.<p>

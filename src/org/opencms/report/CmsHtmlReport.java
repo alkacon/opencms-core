@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/05/24 08:13:26 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.report;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
 
@@ -46,7 +47,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsHtmlReport extends A_CmsReport {
 
@@ -156,7 +157,24 @@ public class CmsHtmlReport extends A_CmsReport {
 
         return result.toString();
     }
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer)
+     */
+    public synchronized void print(CmsMessageContainer container) {
 
+        print(container.key(getLocale()), C_FORMAT_DEFAULT);
+    }
+    
+
+    /**
+     * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer, int)
+     */
+    public synchronized void print(CmsMessageContainer container, int format) {
+
+        print(container.key(getLocale()), format);
+    }
+    
     /**
      * @see org.opencms.report.I_CmsReport#print(java.lang.String)
      */
@@ -278,6 +296,23 @@ public class CmsHtmlReport extends A_CmsReport {
     public synchronized void println() {
 
         this.print(getLineBreak());
+    }
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer)
+     */
+    public synchronized void println(CmsMessageContainer container) {
+
+        println(container.key(getLocale()), C_FORMAT_DEFAULT);
+    }
+    
+
+    /**
+     * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer, int)
+     */
+    public synchronized void println(CmsMessageContainer container, int format) {
+
+        println(container.key(getLocale()), format);
     }
 
     /**

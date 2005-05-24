@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/24 08:13:26 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.report;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -42,7 +43,7 @@ import java.util.Locale;
  * This prints all messages in the logfile at INFO level.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsLogReport extends A_CmsReport {
 
@@ -111,6 +112,24 @@ public class CmsLogReport extends A_CmsReport {
 
         return "";
     }
+    
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer)
+     */
+    public synchronized void print(CmsMessageContainer container) {
+
+        print(container.key(getLocale()), C_FORMAT_DEFAULT);
+    }
+    
+
+    /**
+     * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer, int)
+     */
+    public synchronized void print(CmsMessageContainer container, int format) {
+
+        print(container.key(getLocale()), format);
+    }
 
     /**
      * @see org.opencms.report.I_CmsReport#print(java.lang.String)
@@ -159,6 +178,23 @@ public class CmsLogReport extends A_CmsReport {
             OpenCms.getLog(m_clazz).info(m_buffer.toString());
         }
         m_buffer = new StringBuffer();
+    }
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer)
+     */
+    public synchronized void println(CmsMessageContainer container) {
+
+        println(container.key(getLocale()), C_FORMAT_DEFAULT);
+    }
+    
+
+    /**
+     * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer, int)
+     */
+    public synchronized void println(CmsMessageContainer container, int format) {
+
+        println(container.key(getLocale()), format);
     }
 
     /**

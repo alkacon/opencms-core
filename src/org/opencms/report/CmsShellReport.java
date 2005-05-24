@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/24 08:13:26 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.report;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.Locale;
@@ -41,7 +42,7 @@ import java.util.Locale;
  * It stores nothing. It just prints everthing to <code>System.out</code>.
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsShellReport extends A_CmsReport {
 
@@ -75,6 +76,24 @@ public class CmsShellReport extends A_CmsReport {
     public synchronized String getReportUpdate() {
 
         return "";
+    }
+
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer)
+     */
+    public synchronized void print(CmsMessageContainer container) {
+
+        print(container.key(getLocale()), C_FORMAT_DEFAULT);
+    }
+    
+
+    /**
+     * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer, int)
+     */
+    public synchronized void print(CmsMessageContainer container, int format) {
+
+        print(container.key(getLocale()), format);
     }
 
     /**
@@ -126,6 +145,23 @@ public class CmsShellReport extends A_CmsReport {
 
         System.out.println();
     }
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer)
+     */
+    public synchronized void println(CmsMessageContainer container) {
+
+        println(container.key(getLocale()), C_FORMAT_DEFAULT);
+    }
+    
+
+    /**
+     * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer, int)
+     */
+    public synchronized void println(CmsMessageContainer container, int format) {
+
+        println(container.key(getLocale()), format);
+    }
 
     /**
      * @see org.opencms.report.I_CmsReport#println(java.lang.String)
@@ -161,7 +197,7 @@ public class CmsShellReport extends A_CmsReport {
                 System.out.println(value);
         }
     }
-
+    
     /**
      * @see org.opencms.report.I_CmsReport#println(java.lang.Throwable)
      */

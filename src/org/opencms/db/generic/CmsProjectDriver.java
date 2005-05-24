@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/05/20 14:29:15 $
- * Version: $Revision: 1.219 $
+ * Date   : $Date: 2005/05/24 08:13:26 $
+ * Version: $Revision: 1.220 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.219 $
+ * @version $Revision: 1.220 $
  * @since 5.1
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
@@ -597,9 +597,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         List offlineProperties = null;
 
         try {
-            report.print("( " + m + " / " + n + " ) " + report.key("report.deleting.folder"), I_CmsReport.C_FORMAT_NOTE);
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                new Integer(m), new Integer(n)), I_CmsReport.C_FORMAT_NOTE);
+            report.print(Messages.get().container(Messages.RPT_DELETE_FOLDER_0), I_CmsReport.C_FORMAT_NOTE);
             report.print(dbc.removeSiteRoot(currentFolder.getRootPath()));
-            report.print(report.key("report.dots"));
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             try {
                 // write the folder to the backup and publishing history                
@@ -691,7 +693,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 throw e;
             }
 
-            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            report.println(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
 
             if (LOG.isDebugEnabled()) {
                 if (LOG.isDebugEnabled()) {
@@ -743,11 +746,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             if (offlineResource.getState() == I_CmsConstants.C_STATE_DELETED) {
-                report.print(
-                    "( " + m + " / " + n + " ) " + report.key("report.deleting.file"),
-                    I_CmsReport.C_FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                    new Integer(m), new Integer(n)), I_CmsReport.C_FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_DELETE_FILE_0), I_CmsReport.C_FORMAT_NOTE);
                 report.print(dbc.removeSiteRoot(offlineResource.getRootPath()));
-                report.print(report.key("report.dots"));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
                     // read the file header online
@@ -871,18 +874,19 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     }
                     throw e;
                 }
-                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_DEL_FILE_3, dbc.removeSiteRoot(offlineResource.getRootPath()), new Integer(m), new Integer(n)));
                 }
 
             } else if (offlineResource.getState() == I_CmsConstants.C_STATE_CHANGED) {
-                report.print(
-                    "( " + m + " / " + n + " ) " + report.key("report.publishing.file"),
-                    I_CmsReport.C_FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                    new Integer(m), new Integer(n)), I_CmsReport.C_FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_PUBLISH_FILE_0), I_CmsReport.C_FORMAT_NOTE);
                 report.print(dbc.removeSiteRoot(offlineResource.getRootPath()));
-                report.print(report.key("report.dots"));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
                     // read the file header online                   
@@ -1019,7 +1023,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     }
                     throw e;
                 }
-                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_PUBLISHING_FILE_3, 
@@ -1027,11 +1032,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 }
 
             } else if (offlineResource.getState() == I_CmsConstants.C_STATE_NEW) {
-                report.print(
-                    "( " + m + " / " + n + " ) " + report.key("report.publishing.file"),
-                    I_CmsReport.C_FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                    new Integer(m), new Integer(n)), I_CmsReport.C_FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_PUBLISH_FILE_0), I_CmsReport.C_FORMAT_NOTE);
                 report.print(dbc.removeSiteRoot(offlineResource.getRootPath()));
-                report.print(report.key("report.dots"));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
                     // reset the labeled link flag before writing the online file
@@ -1140,7 +1145,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                     throw e;
                 }
-                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
 
                 if (LOG.isDebugEnabled()) {
                     if (LOG.isDebugEnabled()) {
@@ -1235,11 +1241,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         List offlineProperties = null;
 
         try {
-            report.print(
-                "( " + m + " / " + n + " ) " + report.key("report.publishing.folder"),
-                I_CmsReport.C_FORMAT_NOTE);
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                new Integer(m), new Integer(n)), I_CmsReport.C_FORMAT_NOTE);
+            report.print(Messages.get().container(Messages.RPT_PUBLISH_FOLDER_0), I_CmsReport.C_FORMAT_NOTE);
             report.print(dbc.removeSiteRoot(offlineFolder.getRootPath()));
-            report.print(report.key("report.dots"));
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             if (offlineFolder.getState() == I_CmsConstants.C_STATE_NEW) {
 
@@ -1395,7 +1401,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 }
                 throw e;
             }
-            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            report.println(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_PUBLISHING_FOLDER_3, 
@@ -1465,7 +1472,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             i = publishList.getFolderList().iterator();
 
             if (n > 0) {
-                report.println(report.key("report.publish_folders_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                report.println(Messages.get().container(Messages.RPT_PUBLISH_FOLDERS_BEGIN_0).key(
+                    report.getLocale()), I_CmsReport.C_FORMAT_HEADLINE);
+                
             }
 
             while (i.hasNext()) {
@@ -1521,7 +1530,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
 
             if (n > 0) {
-                report.println(report.key("report.publish_folders_end"), I_CmsReport.C_FORMAT_HEADLINE);
+                report.println(Messages.get().container(Messages.RPT_PUBLISH_FOLDERS_END_0).key(
+                    report.getLocale()), I_CmsReport.C_FORMAT_HEADLINE);
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////
@@ -1533,7 +1543,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             i = publishList.getFileList().iterator();
 
             if (n > 0) {
-                report.println(report.key("report.publish_files_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                report.println(Messages.get().container(Messages.RPT_PUBLISH_FILES_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
             }
 
             while (i.hasNext()) {
@@ -1573,7 +1583,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
 
             if (n > 0) {
-                report.println(report.key("report.publish_files_end"), I_CmsReport.C_FORMAT_HEADLINE);
+                report.println(Messages.get().container(Messages.RPT_PUBLISH_FILES_END_0), I_CmsReport.C_FORMAT_HEADLINE);
             }
 
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -1589,7 +1599,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             i = deletedFolders.iterator();
 
             if (n > 0) {
-                report.println(report.key("report.publish_delete_folders_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                report.println(Messages.get().container(
+                    Messages.RPT_DELETE_FOLDERS_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
             }
 
             while (i.hasNext()) {
@@ -1620,7 +1631,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
 
             if (n > 0) {
-                report.println(report.key("report.publish_delete_folders_end"), I_CmsReport.C_FORMAT_HEADLINE);
+                report.println(Messages.get().container(Messages.RPT_DELETE_FOLDERS_END_0), I_CmsReport.C_FORMAT_HEADLINE);
             }
         } catch (OutOfMemoryError o) {
             // clear all caches to reclaim memory
@@ -1635,23 +1646,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         } finally {
 
             currentResource = null;
-
-            StringBuffer stats = new StringBuffer();
-            stats.append(report.key("report.publish_stats"));
-            stats.append(report.key("report.publish_stats_files"));
-            stats.append(publishedFileCount + ",");
-            stats.append(report.key("report.publish_stats_folders"));
-            stats.append(publishedFolderCount + ",");
-            stats.append(report.key("report.publish_stats_deleted_folders"));
-            stats.append(deletedFolderCount + ",");
-            stats.append(report.key("report.publish_stats_duration"));
-            stats.append(report.formatRuntime());
-
+            Object[] msgArgs = new Object[]{new Integer(publishedFileCount), new Integer(publishedFolderCount), 
+                new Integer(deletedFolderCount), report.formatRuntime()};
+            CmsMessageContainer message = Messages.get().container(Messages.RPT_PUBLISH_STAT_4, msgArgs);
             if (LOG.isInfoEnabled()) {
-                LOG.info(stats.toString());
+                LOG.info(message.key());
             }
-
-            report.println(stats.toString());
+            report.println(message);
         }
     }
 
