@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/05/23 13:12:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/24 12:57:12 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.util.CmsStringUtil;
  * Helper class to build easily other admin tool handlers.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.7.3
  */
 public abstract class A_CmsToolHandler implements I_CmsToolHandler {
@@ -275,9 +275,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
      * or uses a default icon if undefined, the name is taken from the 
      * <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_NAVTEXT}</code> property, 
      * or uses the <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_TITLE}</code> property if undefined, 
-     * or an default text, if still undefined, if you want 2 different names, one for the big icon tools and onew for 
-     * the menu entries, use a <code>{@link A_CmsToolHandler#C_VALUE_SEPARATOR}</code> to separate them in the property.
-     * (if you do so, the first one is for big icons and the small one for menu entries). the help text is taken from the 
+     * or an default text, if still undefined. if you want 2 different names, one for the big icon tools and one for 
+     * the menu/navbar entries, use a <code>{@link A_CmsToolHandler#C_VALUE_SEPARATOR}</code> to separate them in the property.
+     * (if you do so, the first one is for big icons and the second one for menu/navbar entries). the help text is taken from the 
      * <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_DESCRIPTION}</code> property or a
      * default text if undefined, if you want to custumize a help text while disabled, use a 
      * <code>{@link A_CmsToolHandler#C_VALUE_SEPARATOR}</code> as a separator in the same property.<p> 

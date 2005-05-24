@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/05/23 13:12:21 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/05/24 12:57:12 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -56,7 +57,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -167,13 +168,11 @@ public class CmsToolManager {
      */
     public String linkForPath(CmsJspActionElement jsp, String toolPath, Map params) {
 
-        StringBuffer link = new StringBuffer(128);
-        link.append(C_VIEW_JSPPAGE_LOCATION);
-        link.append("?");
-        link.append(CmsToolDialog.PARAM_PATH);
-        link.append("=");
-        link.append(toolPath);        
-        return jsp.link(rewriteUrl(link.toString(), params));
+        if (params == null) {
+            params = new HashMap();
+        }
+        params.put(CmsToolDialog.PARAM_PATH, toolPath);
+        return jsp.link(rewriteUrl(C_VIEW_JSPPAGE_LOCATION, params));
     }
     
     /**
@@ -203,7 +202,7 @@ public class CmsToolManager {
         }
         CmsTool adminTool = resolveAdminTool(toolPath);
         String html = A_CmsHtmlIconButton.defaultButtonHtml(CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT, "nav"
-            + adminTool.getId(), adminTool.getHandler().getName(), null, false, null, null);
+            + adminTool.getId(), adminTool.getHandler().getShortName(), null, false, null, null);
         String parent = toolPath;
         while (!parent.equals(getRootToolPath(wp))) {
             parent = getParent(wp, parent);
@@ -445,7 +444,7 @@ public class CmsToolManager {
             Object value = params.get(key);
             if (value instanceof String[]) {
                 for (int j = 0; j < ((String[])value).length; j++) {
-                    String val = ((String[])value)[j];
+                    String val = CmsEncoder.encode(((String[])value)[j]);
                     link.append(sep);
                     link.append(key);
                     link.append("=");
@@ -459,7 +458,7 @@ public class CmsToolManager {
                 link.append(sep);
                 link.append(key);
                 link.append("=");
-                link.append(value);
+                link.append(CmsEncoder.encode(value.toString()));
                 if (first) {
                     sep = "&";
                     first = false;

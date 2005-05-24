@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsToolHandler.java,v $
- * Date   : $Date: 2005/05/23 13:12:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/24 12:57:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.file.CmsObject;
  * <code>{@link org.opencms.workplace.tools.CmsToolManager}</code>.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public interface I_CmsToolHandler {
@@ -53,7 +53,7 @@ public interface I_CmsToolHandler {
     String getName();
 
     /**
-     * Returns the short name for the menu.<p>
+     * Returns the name for the menu or navbar.<p>
      *
      * @return the short name
      */

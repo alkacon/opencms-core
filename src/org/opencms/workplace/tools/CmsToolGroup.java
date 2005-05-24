@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolGroup.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/24 12:57:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.util.CmsIdentifiableObjectContainer;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Iterator;
@@ -42,7 +43,7 @@ import java.util.List;
  * the group structure.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsToolGroup {
@@ -133,13 +134,15 @@ public class CmsToolGroup {
     public String groupHtml(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(2048);
-        html.append(((CmsToolDialog)wp).iconsBlockAreaStart(wp.resolveMacros(getName())));
         Iterator itItem = m_container.elementList().iterator();
         while (itItem.hasNext()) {
             CmsTool item = (CmsTool)itItem.next();
             html.append(item.buttonHtml(wp));
         }
-        html.append(((CmsToolDialog)wp).iconsBlockAreaEnd());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(html.toString())) {
+            html.insert(0, ((CmsToolDialog)wp).iconsBlockAreaStart(wp.resolveMacros(getName())));
+            html.append(((CmsToolDialog)wp).iconsBlockAreaEnd());
+        }
         return html.toString();
     }
 
