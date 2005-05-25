@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2005/04/29 15:54:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/25 09:01:57 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
   
@@ -150,6 +150,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         // update the module
         CmsModule newModule = new CmsModule(
             module.getName(),
+            module.getGroup(),
             module.getDescription(),
             module.getActionClass(),
             module.getDescription(),
@@ -218,6 +219,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         module1 = new CmsModule(
             moduleName,
             "A test module for additionalresources",
+            "ModuleGroup",
             null,
             null,
             new CmsModuleVersion("1.0"),
@@ -246,6 +248,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         module1 = new CmsModule(
             moduleName,
             "A test module for additioanlresources",
+            "ModuleGroup",
             null,
             null,
             new CmsModuleVersion("1.0"),
@@ -281,6 +284,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         module1 = new CmsModule(
             moduleName,
             "A test module for additioanlresources",
+            "ModuleGroup",
             null,
             null,
             new CmsModuleVersion("1.0"),
@@ -329,6 +333,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         CmsModule module = new CmsModule(
             dep.getName(),
             "A test module dependency",
+            "ModuleGroup",
             null,
             null,
             dep.getVersion(),
@@ -581,6 +586,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         CmsModule module = new CmsModule(
             moduleName,
             "A test module for export",
+            "ModuleGroup",
             null,
             "This is the description",
             new CmsModuleVersion("1.0"),

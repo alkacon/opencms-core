@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleProperties.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/25 09:01:57 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -241,6 +241,7 @@ public class CmsAdminModuleProperties extends CmsWorkplaceDefault {
                                 new CmsModule(
                                     oldModule.getName(),
                                     oldModule.getNiceName(),
+                                    oldModule.getGroup(),
                                     oldModule.getActionClass(),
                                     oldModule.getDescription(),
                                     oldModule.getVersion(),

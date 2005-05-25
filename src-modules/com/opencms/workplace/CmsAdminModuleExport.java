@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/25 09:01:57 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -161,7 +161,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
             moduleExportHandler.setAdditionalResources(resourcen);
             moduleExportHandler.setDescription("Module export of " + moduleExportHandler.getModuleName());
             
-            A_CmsReportThread doExport = new CmsExportThread(cms, moduleExportHandler);
+            A_CmsReportThread doExport = new CmsExportThread(cms, moduleExportHandler, true);
             doExport.start();
             session.putValue(C_MODULE_THREAD, doExport);
             xmlTemplateDocument.setData("time", "5");

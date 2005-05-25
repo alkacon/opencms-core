@@ -20,7 +20,8 @@
 
 <!ELEMENT module (
 	name, 
-	nicename?, 
+	nicename?,
+	group?, 
 	class?, 
 	description?,
 	version,
@@ -47,6 +48,11 @@
 # If no nice name is provided, the <name> is used also as nice name.
 -->
 <!ELEMENT nicename (#PCDATA)>
+
+<!--
+# The (optional) group name of the module is used to group modules together
+-->
+<!ELEMENT group (#PCDATA)>
 
 <!--
 # The (optional) module class.

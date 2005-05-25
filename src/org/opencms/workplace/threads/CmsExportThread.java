@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsExportThread.java,v $
- * Date   : $Date: 2005/05/16 17:45:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/25 09:01:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsExportThread extends A_CmsReportThread {
@@ -60,11 +60,16 @@ public class CmsExportThread extends A_CmsReportThread {
      * 
      * @param cms the current OpenCms context object
      * @param handler export handler containing the export data
+     * @param old flag for old report mode
      */
-    public CmsExportThread(CmsObject cms, I_CmsImportExportHandler handler) {
+    public CmsExportThread(CmsObject cms, I_CmsImportExportHandler handler, boolean old) {
         super(cms, "OpenCms: " + handler.getDescription());
         m_handler = handler;
-        initOldHtmlReport(cms.getRequestContext().getLocale());
+        if (old) {
+            initOldHtmlReport(cms.getRequestContext().getLocale());
+        } else {
+            initHtmlReport(cms.getRequestContext().getLocale());
+        }
     }
 
     /**

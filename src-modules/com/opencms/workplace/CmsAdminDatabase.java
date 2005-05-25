@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2005/05/19 08:57:22 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/25 09:01:57 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -256,7 +256,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 vfsExportHandler.setExportUserdata(exportUserdata);
                 vfsExportHandler.setContentAge(contentAge);
                 vfsExportHandler.setDescription("Database VFS export to " + vfsExportHandler.getFileName());
-                A_CmsReportThread doExport = new CmsExportThread(cms, vfsExportHandler);
+                A_CmsReportThread doExport = new CmsExportThread(cms, vfsExportHandler, true);
                                     
                 doExport.start();
                 session.putValue(C_DATABASE_THREAD, doExport);
@@ -291,7 +291,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 cosExportHandler.setExportChannels(exportChannels);
                 cosExportHandler.setExportModules(exportModules);
                 cosExportHandler.setDescription("Database COS export to " + cosExportHandler.getFileName());
-                A_CmsReportThread doExport = new CmsExportThread(cms, cosExportHandler);
+                A_CmsReportThread doExport = new CmsExportThread(cms, cosExportHandler, true);
                                             
                 doExport.start();
                 session.putValue(C_DATABASE_THREAD, doExport);
@@ -311,7 +311,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 if ("go".equals(step) ){
                     // start the thread for: import
                     A_CmsReportThread doImport = new CmsDatabaseImportThread(cms,
-                        OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + existingFile));                   
+                        OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + existingFile), true);                   
                     doImport.start();
                     session.putValue(C_DATABASE_THREAD, doImport);
                     xmlTemplateDocument.setData("time", "10");

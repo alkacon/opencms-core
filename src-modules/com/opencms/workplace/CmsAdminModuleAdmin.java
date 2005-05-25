@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/25 09:01:57 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,6 +64,7 @@ import java.util.Vector;
 public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
     private final String C_FROM = "from";
     private final String C_VERSION = "version";
+    private final String C_GROUP = "group";
     private final String C_MODULENAME = "modulename";
     private final String C_DESCRIPTION = "description";
     private final String C_MAINTENANCE = "maintenance";
@@ -86,6 +87,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
     private void fillHashtable(CmsObject cms, Hashtable table, String module) {
         table.put(C_MODULE_PACKETNAME, module);
         table.put(C_VERSION, getStringValue(OpenCms.getModuleManager().getModule(module).getVersion().toString()));
+        table.put(C_GROUP, getStringValue(OpenCms.getModuleManager().getModule(module).getGroup()));
         table.put(C_MODULENAME, getStringValue(OpenCms.getModuleManager().getModule(module).getNiceName()));
         table.put(C_DESCRIPTION, getStringValue(OpenCms.getModuleManager().getModule(module).getDescription()));
         table.put(C_MAINTENANCE, getStringValue(OpenCms.getModuleManager().getModule(module).getActionClass()));
@@ -317,6 +319,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
         
             // the easy values
             String niceName = (String)table.get(C_MODULENAME);
+            String group = (String)table.get(C_GROUP);
             String description = (String)table.get(C_DESCRIPTION);
             String moduleClass = (String)table.get(C_PUBLISHCLASS);
             String moduleAuthor = (String)table.get(C_AUTHOR);
@@ -360,6 +363,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
                 new CmsModule(
                     name,
                     niceName,
+                    group,
                     moduleClass,
                     description,
                     version,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsModuleReplaceThread.java,v $
- * Date   : $Date: 2005/05/16 17:45:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/25 09:01:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
@@ -46,7 +48,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.10
  */
@@ -67,15 +69,18 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
      * @param cms the current cms context  
      * @param moduleName the name of the module 
      * @param zipName the name of the module ZIP file
+     * @param old flag for report mode
      */
-    public CmsModuleReplaceThread(CmsObject cms, String moduleName, String zipName) {
+    public CmsModuleReplaceThread(CmsObject cms, String moduleName, String zipName, boolean old) {
 
         super(cms, "OpenCms: Module replacement of " + moduleName);
         m_moduleName = moduleName;
         m_zipName = zipName;
 
-        m_deleteThread = new CmsModuleDeleteThread(getCms(), m_moduleName, true);
-        m_importThread = new CmsDatabaseImportThread(getCms(), m_zipName);
+        List modules = new ArrayList();
+        modules.add(m_moduleName);
+        m_deleteThread = new CmsModuleDeleteThread(getCms(), modules, true, old);
+        m_importThread = new CmsDatabaseImportThread(getCms(), m_zipName, old);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_REPLACE_THREAD_CONSTRUCTED_0));
         }  

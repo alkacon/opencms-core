@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2005/05/19 08:57:22 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/05/25 09:01:57 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,6 +65,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
     private final static String C_PACKETNAME = "packetname";
     private final static String C_STEP = "step";
     private final static String C_VERSION = "version";
+    private final static String C_GROUP = "group";
     private final static String C_MODULENAME = "modulename";
     private final static String C_DESCRIPTION = "description";
     private final static String C_VIEW = "view";
@@ -130,6 +131,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                 String moduleType = (String)parameters.get(C_MODULE_TYPE);
                 String exportClasses = (String)parameters.get(C_EXPORTCLASSES);
                 String exportLib = (String)parameters.get(C_EXPORTLIB);
+                String group = "";
 
                 boolean mustExportClasses = ((exportClasses != null) && exportClasses.equals("checked"));
                 boolean mustExportLib = ((exportLib != null) && exportLib.equals("checked"));
@@ -247,6 +249,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                     CmsModule updatedModule = 
                         new CmsModule(
                             modulename,
+                            group,
                             nicename, 
                             publishclass,
                             description,

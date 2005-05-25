@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/25 09:01:57 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.workplace.threads.CmsModuleDeleteThread;
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -149,8 +150,10 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
         }
         // no else here because the value of "step" might have been changed above 
         if ("fromerrorpage".equals(step)) {
-            moduleName = (String)session.getValue(C_SESSION_MODULENAME);            
-            A_CmsReportThread doDelete = new CmsModuleDeleteThread(cms, moduleName, false);
+            moduleName = (String)session.getValue(C_SESSION_MODULENAME);    
+            List modules = new ArrayList();
+            modules.add(moduleName);
+            A_CmsReportThread doDelete = new CmsModuleDeleteThread(cms, modules, false, true);
             doDelete.start();
             session.putValue(C_MODULE_THREAD, doDelete);
             xmlTemplateDocument.setData("time", "5");

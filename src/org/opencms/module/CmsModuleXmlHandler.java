@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/05/03 15:44:14 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/25 09:01:57 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.Log;
@@ -99,6 +100,9 @@ public class CmsModuleXmlHandler {
     /** The node name for the description node. */
     protected static final String N_DESCRIPTION = "description";
 
+    /** The node name for the group node. */
+    protected static final String N_GROUP = "group";
+    
     /** The node name for a module. */
     protected static final String N_MODULE = "module";
 
@@ -147,6 +151,8 @@ public class CmsModuleXmlHandler {
     /** The list of additional resource types. */
     private List m_resourceTypes;
 
+    
+    
     /**
      * Public constructor, will be called by digester during import.<p> 
      */
@@ -172,18 +178,20 @@ public class CmsModuleXmlHandler {
         digester.addSetNext("*/" + N_MODULE, "setModule");
 
         // add rules for base module information
-        digester.addCallMethod("*/" + N_MODULE, "createdModule", 10);
+        digester.addCallMethod("*/" + N_MODULE, "createdModule", 11);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NAME, 0);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NICENAME, 1);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_CLASS, 2);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DESCRIPTION, 3);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_VERSION, 4);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHORNAME, 5);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHOREMAIL, 6);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 7);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 8);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 9);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_GROUP, 2);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_CLASS, 3);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DESCRIPTION, 4);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_VERSION, 5);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHORNAME, 6);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHOREMAIL, 7);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 8);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 9);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 10);
         
+         
         // add rules for module dependencies
         digester.addCallMethod("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, "addDependency", 2);
         digester.addCallParam("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, 0, I_CmsXmlConfiguration.A_NAME);
@@ -236,6 +244,9 @@ public class CmsModuleXmlHandler {
         } else {
             moduleElement.addElement(N_NICENAME);
         }
+        if (CmsStringUtil.isNotEmpty(module.getGroup())) {
+            moduleElement.addElement(N_GROUP).setText(module.getGroup());
+        } 
         if (CmsStringUtil.isNotEmpty(module.getActionClass())) {
             moduleElement.addElement(N_CLASS).setText(module.getActionClass());
         } else {
@@ -297,7 +308,7 @@ public class CmsModuleXmlHandler {
                 .addAttribute(I_CmsXmlConfiguration.A_URI, resource);
         }                       
         Element parametersElement = moduleElement.addElement(N_PARAMETERS);
-        Map parameters = module.getParameters();
+        SortedMap parameters = module.getParameters();
         if (parameters != null) {
             List parameterList = new ArrayList(parameters.keySet());
             Collections.sort(parameterList);
@@ -381,9 +392,9 @@ public class CmsModuleXmlHandler {
         digester.addCallMethod("*/" + N_MODULE + "/author", "setOldModule");
 
         // base module information
-        digester.addCallParam("*/" + N_MODULE + "/author", 5);
-        digester.addCallParam("*/" + N_MODULE + "/email", 6);
-        digester.addCallParam("*/" + N_MODULE + "/creationdate", 7);
+        digester.addCallParam("*/" + N_MODULE + "/author", 6);
+        digester.addCallParam("*/" + N_MODULE + "/email", 7);
+        digester.addCallParam("*/" + N_MODULE + "/creationdate", 8);
 
         // dependencies
         digester.addCallParam("*/" + N_MODULE + "/dependencies/dependency/name", 0);
@@ -495,6 +506,7 @@ public class CmsModuleXmlHandler {
      * 
      * @param name the name of this module, usually looks like a java package name
      * @param niceName the "nice" display name of this module
+     * @param group the group of the module
      * @param actionClass the (optional) module action class name
      * @param description the description of this module
      * @param version the version of this module
@@ -507,6 +519,7 @@ public class CmsModuleXmlHandler {
     public void createdModule(
         String name,
         String niceName,
+        String group,
         String actionClass,
         String description,
         String version,
@@ -517,6 +530,7 @@ public class CmsModuleXmlHandler {
         String dateInstalled) {
 
         String moduleName;
+       
 
         if (!CmsStringUtil.isValidJavaClassName(name)) {
             // ensure backward compatibility with old (5.0) module names
@@ -562,6 +576,7 @@ public class CmsModuleXmlHandler {
         m_module = new CmsModule(
             moduleName,
             niceName,
+            group,
             actionClass,
             description,
             moduleVersion,

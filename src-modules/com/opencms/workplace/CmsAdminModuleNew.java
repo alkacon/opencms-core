@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2005/05/19 08:57:22 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/25 09:01:57 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -272,11 +272,11 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
         }
         	
         if (importNewModule) {
-            A_CmsReportThread doTheImport = new CmsDatabaseImportThread(cms, zipName);
+            A_CmsReportThread doTheImport = new CmsDatabaseImportThread(cms, zipName, true);
             doTheImport.start();
             session.putValue(C_MODULE_THREAD, doTheImport);
         } else {
-            A_CmsReportThread doTheReplace = new CmsModuleReplaceThread(cms, module.getName(), zipName);
+            A_CmsReportThread doTheReplace = new CmsModuleReplaceThread(cms, module.getName(), zipName, true);
             doTheReplace.start();
             session.putValue(C_MODULE_THREAD, doTheReplace);
         }

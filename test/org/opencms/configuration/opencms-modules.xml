@@ -6,7 +6,7 @@
     	<module>
     		<name>org.opencms.configuration.TestModule1</name>
     		<nicename><![CDATA[OpenCms configuration test module]]></nicename>
-    		<class/>
+       		<class/>    		
 			<description><![CDATA[A module to test the OpenCms module configuration]]></description>
 			<version>1.0</version>
 			<authorname><![CDATA[Alexander Kandzior]]></authorname>

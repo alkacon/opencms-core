@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsDatabaseImportThread.java,v $
- * Date   : $Date: 2005/05/16 17:45:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/25 09:01:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.report.A_CmsReportThread;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsDatabaseImportThread extends A_CmsReportThread {
@@ -54,12 +54,17 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
      * 
      * @param cms the current OpenCms context object
      * @param importFile the file to import
+     * @param old flag for report mode
      */
-    public CmsDatabaseImportThread(CmsObject cms, String importFile) {
+    public CmsDatabaseImportThread(CmsObject cms, String importFile, boolean old) {
         super(cms, "OpenCms: Import from " + importFile);
         m_importFile = importFile;
-        initOldHtmlReport(cms.getRequestContext().getLocale());
-    }
+        if (old) {
+            initOldHtmlReport(cms.getRequestContext().getLocale());
+        } else {
+            initHtmlReport(cms.getRequestContext().getLocale());
+        }
+      }
 
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
