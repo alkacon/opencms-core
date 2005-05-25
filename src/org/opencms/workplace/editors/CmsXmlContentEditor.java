@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/05/24 16:13:02 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/05/25 09:43:47 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -517,7 +517,12 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public Locale getElementLocale() {
                
         if (m_elementLocale == null) {
-            m_elementLocale = CmsLocaleManager.getLocale(getParamElementlanguage());
+            if (CmsStringUtil.isNotEmpty(getParamElementlanguage()) && !"null".equals(getParamElementlanguage())) {
+                m_elementLocale = CmsLocaleManager.getLocale(getParamElementlanguage());
+            } else {
+                initElementLanguage();
+                m_elementLocale = CmsLocaleManager.getLocale(getParamElementlanguage());
+            }
         } 
         return m_elementLocale;
     }    
@@ -812,19 +817,25 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     protected void initElementLanguage() {
         
         // get all locales of the content
-        List locales = m_content.getLocales();
-        Locale defaultLocale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getCms().getSitePath(m_file)).get(0);
+        List locales = new ArrayList();
+        if (m_content != null) {
+            locales = m_content.getLocales();
+        }
+        Locale defaultLocale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
         
         if (locales.size() > 0) {
             // locale element present, get the language
             if (locales.contains(defaultLocale)) {
                 // get the element for the default locale
                 setParamElementlanguage(defaultLocale.toString());
+                return;
             } else {
                 // get the first element that can be found
                 setParamElementlanguage(locales.get(0).toString());
+                return;
             }
         }
+        setParamElementlanguage(defaultLocale.toString());
     }
     
     /**

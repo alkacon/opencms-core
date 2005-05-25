@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2005/05/23 09:36:51 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/05/25 09:43:47 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -574,6 +574,11 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      */
     private void processSchemaNode(Element root, String rootPath, Locale locale, CmsXmlContentDefinition definition) {
 
+        // TODO: XMLContents with only optional elements and no element set have no Locales set.
+        // Example: Template one config file configuration_links with node <TemplateOneLink language="en"/>.
+        // After fixing that, check CmsXmlContentEditor methods getElementLocale(), initElementLanguage().
+        int todo = 1;
+        
         int count = 1;
         String previousName = null;
 
@@ -590,7 +595,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // iterate all elements again
         for (Iterator i = root.content().iterator(); i.hasNext();) {
 
-            // node must be an element since all non-elements where removed
+            // node must be an element since all non-elements were removed
             Element element = (Element)i.next();
 
             // check if this is a new node, if so reset the node counter
