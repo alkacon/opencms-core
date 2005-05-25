@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/05/18 12:48:14 $
- * Version: $Revision: 1.187 $
+ * Date   : $Date: 2005/05/25 10:56:53 $
+ * Version: $Revision: 1.188 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexCacheConfiguration;
@@ -78,6 +77,7 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsPropertyUtils;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -127,20 +127,20 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.187 $
+ * @version $Revision: 1.188 $
  * @since 5.1
  */
 public final class OpenCmsCore {
 
     /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
     public static final String HTML_MESSAGE_FILE = "org/opencms/main/htmlmsg.properties";
-    
+
     /** Required as template for event list generation. */
     private static final I_CmsEventListener[] EVENT_LIST = new I_CmsEventListener[0];
 
     /** Lock object for synchronization. */
     private static final Object LOCK = new Object();
-    
+
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(OpenCmsCore.class);
 
@@ -230,7 +230,7 @@ public final class OpenCmsCore {
 
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
-    
+
     /**
      * Protected constructor that will initialize the singleton OpenCms instance 
      * with runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT}.<p>
@@ -506,7 +506,7 @@ public final class OpenCmsCore {
 
         return m_resourceManager;
     }
-    
+
     /** 
      * Returns the runlevel of this OpenCmsCore object instance.<p>
      * 
@@ -674,14 +674,15 @@ public final class OpenCmsCore {
      * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
      * @see #initCmsObject(String)
      */
-    protected CmsObject initCmsObject(CmsObject adminCms, CmsContextInfo contextInfo) throws CmsRoleViolationException, CmsException {
+    protected CmsObject initCmsObject(CmsObject adminCms, CmsContextInfo contextInfo)
+    throws CmsRoleViolationException, CmsException {
 
         String userName = contextInfo.getUserName();
 
         if (adminCms == null || !adminCms.hasRole(CmsRole.ADMINISTRATOR)) {
             if (!userName.equals(getDefaultUsers().getUserGuest())
                 && !userName.equals(getDefaultUsers().getUserExport())) {
-                
+
                 // if no admin object is provided, only "Guest" or "Export" user can be generated
                 CmsMessageContainer message = Messages.get().container(
                     Messages.ERR_INVALID_INIT_USER_2,
@@ -847,7 +848,7 @@ public final class OpenCmsCore {
                 Messages.get().container(Messages.ERR_CRITICAL_INIT_GENERIC_1, e.getMessage()),
                 e);
         }
-        
+
         // get Site Manager
         m_siteManager = systemConfiguration.getSiteManager();
 
@@ -968,7 +969,7 @@ public final class OpenCmsCore {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
     }
-    
+
     /**
      * Initialization of the OpenCms runtime environment.<p>
      *
@@ -1169,7 +1170,9 @@ public final class OpenCmsCore {
         if (resource != null) {
             // test if this file is only available for internal access operations
             if ((resource.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
-                throw new CmsException(Messages.get().container(Messages.ERR_READ_INTERNAL_RESOURCE_1, cms.getRequestContext().getUri()));
+                throw new CmsException(Messages.get().container(
+                    Messages.ERR_READ_INTERNAL_RESOURCE_1,
+                    cms.getRequestContext().getUri()));
             }
         }
 
@@ -1341,7 +1344,7 @@ public final class OpenCmsCore {
                     // log exception to see which method did call the shutdown
                     LOG.debug(Messages.get().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
                 }
-                
+
                 try {
                     if (m_staticExportManager != null) {
                         m_staticExportManager.shutDown();
@@ -1568,7 +1571,7 @@ public final class OpenCmsCore {
 
         int todo = 0;
         // this method needs to be fully rewritten using new Messages and the MacroResolver
-        
+
         // load the property file that contains the html fragments for the dialog
         Properties htmlProps = new Properties();
         try {
@@ -1678,7 +1681,7 @@ public final class OpenCmsCore {
             isNotGuest = true;
         } else if (t instanceof CmsVfsResourceNotFoundException) {
             // file not found - display 404 error.
-            status = HttpServletResponse.SC_NOT_FOUND;  
+            status = HttpServletResponse.SC_NOT_FOUND;
         } else if (t instanceof CmsException) {
             if (t.getCause() != null) {
                 t = t.getCause();
@@ -1722,7 +1725,7 @@ public final class OpenCmsCore {
             }
         }
     }
-    
+
     /**
      * Fires the specified event to a list of event listeners.<p>
      * 
@@ -1806,7 +1809,7 @@ public final class OpenCmsCore {
         HttpServletRequest req, 
         HttpServletResponse res
     ) throws IOException, CmsException {
-        
+
         CmsObject cms;
 
         // try to get the current session
@@ -1881,7 +1884,7 @@ public final class OpenCmsCore {
         String user,
         String password
     ) throws CmsException {
-        
+
         String siteroot = null;
         // gather information from request / response if provided
         if ((req != null) && (res != null)) {
@@ -1918,7 +1921,7 @@ public final class OpenCmsCore {
         String currentSite, 
         int projectId
     ) throws CmsException {
-        
+
         CmsUser user = m_securityManager.readUser(userName);
         CmsProject project = m_securityManager.readProject(projectId);
 
@@ -2015,21 +2018,30 @@ public final class OpenCmsCore {
                     path), t);
             }
         }
-        
-        CmsHttpAuthenticationSettings httpAuthenticationSettings = getSystemInfo().getHttpAuthenticationSettings();        
+
+        CmsHttpAuthenticationSettings httpAuthenticationSettings = getSystemInfo().getHttpAuthenticationSettings();
+        String pathWithParams = CmsRequestUtil.encodeParamsWithUri(path, req);
         if (propertyLoginForm != null
             && propertyLoginForm != CmsProperty.getNullProperty()
             && CmsStringUtil.isNotEmpty(propertyLoginForm.getValue())) {
             // login form property value was found            
             // build a redirect URL using the value of the property
             // "__loginform" is a dummy request parameter that could be used in a JSP template to trigger
-            // if the template should display a login formular or not                       
-            redirectURL = propertyLoginForm.getValue() + "?__loginform=true&requestedResource=" + path;
+            // if the template should display a login formular or not  
+            redirectURL = propertyLoginForm.getValue()
+                + "?__loginform=true&"
+                + CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE
+                + "="
+                + pathWithParams;
         } else if (!httpAuthenticationSettings.useBrowserBasedHttpAuthentication()
             && CmsStringUtil.isNotEmpty(httpAuthenticationSettings.getFormBasedHttpAuthenticationUri())) {
             // login form property value not set, but form login set in configuration
             // build a redirect URL to the default login form URI configured in opencms.properties
-            redirectURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri() + "?requestedResource=" + path;
+            redirectURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri()
+                + "?"
+                + CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE
+                + "="
+                + pathWithParams;
         }
 
         if (redirectURL == null) {

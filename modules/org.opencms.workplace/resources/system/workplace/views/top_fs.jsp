@@ -7,6 +7,10 @@
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	CmsFrameset wp = new CmsFrameset(cms);
 
+if (wp.isReloadRequired()) {
+	response.sendRedirect(cms.link(cms.getRequestContext().getUri()));
+} else {
+
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 
@@ -89,8 +93,11 @@ initHist();
 
 <frameset rows="24,*,24" border="0" frameborder="0" framespacing="0">
     <frame <%= wp.getFrameSource("head", cms.link("top_head.jsp")) %> noresize scrolling="no">
-    <frame <%= wp.getFrameSource("body", wp.getSettings().getViewUri()) %> noresize scrolling="no">
+    <frame <%= wp.getFrameSource("body", wp.getStartupUri()) %> noresize scrolling="no">
     <frame <%= wp.getFrameSource("foot", cms.link("top_foot.jsp")) %> noresize scrolling="no">
 </frameset>
 
 </html>
+<%
+}
+%>

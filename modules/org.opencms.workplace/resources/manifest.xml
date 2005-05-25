@@ -2260,6 +2260,23 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/views/workplace.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>9c0a79be-f058-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Wed, 18 Aug 2004 11:58:51 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 16:20:37 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Top Frameset Definition]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/views/top_head.jsp</source>
 			<destination>system/workplace/views/top_head.jsp</destination>
 			<type>jsp</type>

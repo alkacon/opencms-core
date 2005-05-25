@@ -31,6 +31,10 @@
     function openHelp() {
 		openwin(localePrefix + helpUrl, "<%= wp.key("button.help") %>", 600, 450);    
     }
+
+    function doReload() {
+		document.location.href = "<%= cms.link("reload.jsp") %>";
+    }
     
     function openwin(url, name, w, h) {
         window.open(url, name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width='+w+',height='+h);
@@ -38,7 +42,7 @@
 </script>
 </head>
 
-<body class="buttons-head" unselectable="on" onload="loadBody();">
+<body class="buttons-head" unselectable="on"<%= wp.isReloadRequired()?" onload=\"loadBody();\"":"" %>>
 
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 0) %>

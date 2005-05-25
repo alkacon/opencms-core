@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/05/23 12:37:17 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2005/05/25 10:56:53 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,18 +89,24 @@ import org.apache.commons.logging.Log;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 5.3.1
  */
 public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsWorkplaceManager.class);  
-    
     /** The default encoding for the workplace (UTF-8). */
     // TODO: Encoding feature of the workplace is not active 
     public static final String C_DEFAULT_WORKPLACE_ENCODING = "UTF-8";
+
+    /** Key name for the session workplace settings. */
+    public static final String C_SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
+
+    /** The id of the "requestedResource" parameter for the OpenCms login form. */
+    public static final String PARAM_LOGIN_REQUESTED_RESOURCE = "requestedResource";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWorkplaceManager.class);
 
     /** Indicates if auto-locking of resources is enabled or disabled. */
     private boolean m_autoLockResources;
@@ -177,9 +183,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** The configured workplace views. */
     private List m_views;
 
-    /** Key name for the session workplace settings. */
-    public static final String C_SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
-
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
      */
@@ -209,6 +212,23 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /**
+     * Returns true if the provided request was done by a Workplace user.<p>
+     * 
+     * @param req the request to check
+     * @return true if the provided request was done by a Workplace user
+     */
+    public static boolean isWorkplaceUser(HttpServletRequest req) {
+
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            // if a session is available, check for a workplace configuration
+            return null != session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+        }
+        // no session means no workplace use
+        return false;
+    }
+
+    /**
      * Adds a dialog handler instance to the list of configured dialog handlers.<p>
      * 
      * @param clazz the instanciated dialog handler to add
@@ -217,7 +237,10 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         m_dialogHandler.put(clazz.getDialogHandler(), clazz);
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_DIALOG_HANDLER_2, clazz.getDialogHandler(), clazz.getClass().getName()));
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_ADD_DIALOG_HANDLER_2,
+                clazz.getDialogHandler(),
+                clazz.getClass().getName()));
         }
     }
 
@@ -277,7 +300,10 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         CmsExportPoint point = new CmsExportPoint(uri, destination);
         m_exportPoints.add(point);
         if (CmsLog.LOG.isInfoEnabled() && (point.getDestinationPath() != null)) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_EXPORT_POINT_2, point.getUri(), point.getDestinationPath()));
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_ADD_EXPORT_POINT_2,
+                point.getUri(),
+                point.getDestinationPath()));
         }
     }
 
@@ -470,6 +496,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /**
+     * Returns a collection of all gallery class names.<p>
+     * 
+     * @return a collection of all gallery class names
+     */
+    public Map getGalleries() {
+
+        return m_galleries;
+    }
+
+    /**
      * Returns the configured class name for the given gallery type name.<p>
      * 
      * If no gallery type of the given name is configured, <code>null</code> is returned.<p>
@@ -481,16 +517,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public String getGalleryClassName(String galleryTypeName) {
 
         return ((CmsResourceTypeFolderExtended)m_galleries.get(galleryTypeName)).getFolderClassName();
-    }
-
-    /**
-     * Returns a collection of all gallery class names.<p>
-     * 
-     * @return a collection of all gallery class names
-     */
-    public Map getGalleries() {
-
-        return m_galleries;
     }
 
     /**
@@ -511,8 +537,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             // read workplace settings
             HttpSession session = req.getSession(false);
             if (session != null) {
-                CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session
-                    .getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+                CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
                 if (settings != null) {
                     locale = settings.getUserSettings().getLocale();
                 }
@@ -528,8 +553,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
             }
             if (req != null) {
-                List acceptedLocales = (new CmsAcceptLanguageHeaderParser(req, getDefaultLocale()))
-                    .getAcceptedLocales();
+                List acceptedLocales = (new CmsAcceptLanguageHeaderParser(req, getDefaultLocale())).getAcceptedLocales();
                 if ((locale != null) && (!acceptedLocales.contains(locale))) {
                     acceptedLocales.add(0, locale);
                 }
@@ -802,8 +826,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         m_autoLockResources = Boolean.valueOf(value).booleanValue();
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(m_autoLockResources 
-                ? Messages.INIT_AUTO_LOCK_ENABLED_0 : Messages.INIT_AUTO_LOCK_DISABLED_0));
+            CmsLog.LOG.info(Messages.get().key(
+                m_autoLockResources ? Messages.INIT_AUTO_LOCK_ENABLED_0 : Messages.INIT_AUTO_LOCK_DISABLED_0));
         }
     }
 
@@ -845,8 +869,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         m_defaultPropertiesOnStructure = Boolean.valueOf(defaultPropertiesOnStructure).booleanValue();
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(m_defaultPropertiesOnStructure  
-                ? Messages.INIT_PROP_ON_STRUCT_TRUE_0 : Messages.INIT_PROP_ON_STRUCT_FALSE_0));
+            CmsLog.LOG.info(Messages.get().key(
+                m_defaultPropertiesOnStructure ? Messages.INIT_PROP_ON_STRUCT_TRUE_0
+                : Messages.INIT_PROP_ON_STRUCT_FALSE_0));
         }
     }
 
@@ -900,7 +925,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_editorHandler = clazz;
         if (CmsLog.LOG.isInfoEnabled()) {
             CmsLog.LOG.info(Messages.get().key(
-                Messages.INIT_EDITOR_HANDLER_CLASS_1, m_editorHandler.getClass().getName()));
+                Messages.INIT_EDITOR_HANDLER_CLASS_1,
+                m_editorHandler.getClass().getName()));
         }
     }
 
@@ -914,7 +940,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_enableAdvancedPropertyTabs = Boolean.valueOf(enableAdvancedPropertyTabs).booleanValue();
         if (CmsLog.LOG.isInfoEnabled()) {
             CmsLog.LOG.info(Messages.get().key(
-                m_enableAdvancedPropertyTabs ? Messages.INIT_ADV_PROP_DIALOG_SHOW_TABS_0 : Messages.INIT_ADV_PROP_DIALOG_HIDE_TABS_0));
+                m_enableAdvancedPropertyTabs ? Messages.INIT_ADV_PROP_DIALOG_SHOW_TABS_0
+                : Messages.INIT_ADV_PROP_DIALOG_HIDE_TABS_0));
         }
     }
 
@@ -936,10 +963,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         }
         if (CmsLog.LOG.isInfoEnabled()) {
             if (m_fileMaxUploadSize > 0) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_MAX_FILE_UPLOAD_SIZE_1, new Integer(m_fileMaxUploadSize)));
+                CmsLog.LOG.info(Messages.get().key(
+                    Messages.INIT_MAX_FILE_UPLOAD_SIZE_1,
+                    new Integer(m_fileMaxUploadSize)));
             } else {
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_MAX_FILE_UPLOAD_SIZE_UNLIMITED_0));
-            }    
+            }
 
         }
     }
@@ -953,7 +982,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         m_showUserGroupIcon = Boolean.valueOf(value).booleanValue();
         if (CmsLog.LOG.isInfoEnabled()) {
-            if (m_showUserGroupIcon) {   
+            if (m_showUserGroupIcon) {
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_USER_MANAGEMENT_ICON_ENABLED_0));
             } else {
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_USER_MANAGEMENT_ICON_DISABLED_0));
@@ -1029,7 +1058,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             viewFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_VIEWS);
         } catch (CmsException e) {
             if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING && LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, I_CmsWpConstants.C_VFS_PATH_VIEWS), e);
+                LOG.error(
+                    Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, I_CmsWpConstants.C_VFS_PATH_VIEWS),
+                    e);
             }
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             viewFolders = new ArrayList();
@@ -1043,8 +1074,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 // get view information from folder properties
                 String order = cms.readPropertyObject(folderPath, I_CmsConstants.C_PROPERTY_NAVPOS, false).getValue();
                 String key = cms.readPropertyObject(folderPath, I_CmsConstants.C_PROPERTY_NAVTEXT, false).getValue();
-                String viewUri = cms.readPropertyObject(folderPath, I_CmsConstants.C_PROPERTY_DEFAULT_FILE, false)
-                    .getValue();
+                String viewUri = cms.readPropertyObject(folderPath, I_CmsConstants.C_PROPERTY_DEFAULT_FILE, false).getValue();
                 if (viewUri == null) {
                     // no view URI found
                     viewUri = folderPath;
@@ -1085,22 +1115,5 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         // sort the views by their order number
         Collections.sort(m_views);
         return m_views;
-    }
-
-    /**
-     * Returns true if the provided request was done by a Workplace user.<p>
-     * 
-     * @param req the request to check
-     * @return true if the provided request was done by a Workplace user
-     */
-    public static boolean isWorkplaceUser(HttpServletRequest req) {
-    
-        HttpSession session = req.getSession(false);
-        if (session != null) {
-            // if a session is available, check for a workplace configuration
-            return null != session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
-        }
-        // no session means no workplace use
-        return false;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2005/05/02 16:42:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/25 10:56:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3
  */
@@ -157,10 +157,8 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      * 
      * @param username the users name
      * @param password the password
-     * 
-     * @throws IOException in case redirect after login was not successful
      */
-    public void login(String username, String password) throws IOException {
+    public void login(String username, String password) {
 
         login(username, password, null);
     }
@@ -171,25 +169,8 @@ public class CmsJspLoginBean extends CmsJspActionElement {
      * @param username the users name
      * @param password the password
      * @param login_project the project to switch to after login (if null project is not switched)
-     * 
-     * @throws IOException in case redirect after login was not successful
      */
-    public void login(String username, String password, String login_project) throws IOException {
-
-        login(username, password, login_project, null);
-    }
-
-    /**
-     * Logs a system user in to OpenCms.<p>
-     * 
-     * @param username the users name
-     * @param password the password
-     * @param login_project the project to switch to after login (if null project is not switched)
-     * @param login_redirect the URI to redirect to after login (if null the current URI is used)
-     * 
-     * @throws IOException in case redirect after login was not successful
-     */
-    public void login(String username, String password, String login_project, String login_redirect) throws IOException {
+    public void login(String username, String password, String login_project) {
 
         HttpSession session = null;
         m_loginException = null;
@@ -224,11 +205,6 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                     username,
                     getRequestContext().addSiteRoot(getRequestContext().getUri())));
             }
-            if (login_redirect != null) {
-                getResponse().sendRedirect(link(login_redirect));
-            } else {
-                getResponse().sendRedirect(getFormLink());
-            }
         } else {
             // login was not successful
             if (LOG.isWarnEnabled()) {
@@ -236,6 +212,28 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                     Messages.LOG_LOGIN_FAILED_2,
                     username,
                     getRequestContext().addSiteRoot(getRequestContext().getUri())));
+            }
+        }
+    }
+
+    /**
+     * Logs a system user in to OpenCms.<p>
+     * 
+     * @param username the users name
+     * @param password the password
+     * @param login_project the project to switch to after login (if null project is not switched)
+     * @param login_redirect the URI to redirect to after login (if null the current URI is used)
+     * 
+     * @throws IOException in case redirect after login was not successful
+     */
+    public void login(String username, String password, String login_project, String login_redirect) throws IOException {
+
+        login(username, password, login_project);
+        if (m_loginException == null) {
+            if (login_redirect != null) {
+                getResponse().sendRedirect(link(login_redirect));
+            } else {
+                getResponse().sendRedirect(getFormLink());
             }
         }
     }

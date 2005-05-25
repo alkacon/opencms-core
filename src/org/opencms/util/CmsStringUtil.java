@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/05/25 10:56:53 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 import org.apache.commons.logging.Log;
 import org.apache.oro.text.perl.MalformedPerl5PatternException;
 import org.apache.oro.text.perl.Perl5Util;
@@ -52,7 +53,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -111,6 +112,24 @@ public final class CmsStringUtil {
     private CmsStringUtil() {
 
         // empty
+    }
+
+    /**
+     * Changes the filename suffix. 
+     * 
+     * @param filename the filename to be changed
+     * @param suffix the new suffix of the file
+     * @return the filename with the replaced suffix
+     */
+    public static String changeFileNameSuffixTo(String filename, String suffix) {
+
+        int dotPos = filename.lastIndexOf('.');
+        if (dotPos != -1) {
+            return filename.substring(0, dotPos + 1) + suffix;
+        } else {
+            // the string has no suffix
+            return filename;
+        }
     }
 
     /**
@@ -689,27 +708,9 @@ public final class CmsStringUtil {
         } catch (MalformedPerl5PatternException e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, translationRule), e);
-            }    
+            }
         }
         return content;
-    }
-
-    /**
-     * Changes the filename suffix. 
-     * 
-     * @param filename the filename to be changed
-     * @param suffix the new suffix of the file
-     * @return the filename with the replaced suffix
-     */
-    public static String changeFileNameSuffixTo(String filename, String suffix) {
-
-        int dotPos = filename.lastIndexOf('.');
-        if (dotPos != -1) {
-            return filename.substring(0, dotPos + 1) + suffix;
-        } else {
-            // the string has no suffix
-            return filename;
-        }
     }
 
     /**

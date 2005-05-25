@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/05/25 10:56:52 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -77,6 +77,7 @@ public class CmsWorkplaceSettings {
     private Map m_treeType;
     private CmsUser m_user;
     private CmsUserSettings m_userSettings;
+    private String m_viewStartup;
     private String m_viewUri;
 
     /**
@@ -354,6 +355,19 @@ public class CmsWorkplaceSettings {
     public CmsUserSettings getUserSettings() {
 
         return m_userSettings;
+    }
+
+    /**
+     * Returns the view startup page.<p>
+     *
+     * The view startup page can be used to directly load a specific workplace dialog or other workplace resource in the 
+     * OpenCms workplace base frameset after the user logs in.<p>
+     *
+     * @return the view startup page
+     */
+    public String getViewStartup() {
+
+        return m_viewStartup;
     }
 
     /**
@@ -656,6 +670,19 @@ public class CmsWorkplaceSettings {
     public synchronized void setUserSettings(CmsUserSettings userSettings) {
 
         m_userSettings = userSettings;
+    }
+
+    /**
+     * Sets the view startup page.<p>
+     *
+     * The view startup page can be used to directly load a specific workplace dialog or other workplace resource in the 
+     * OpenCms workplace base frameset after the user logs in.<p>
+     *
+     * @param viewStartup the view startup page to set
+     */
+    public void setViewStartup(String viewStartup) {
+
+        m_viewStartup = viewStartup;
     }
 
     /**

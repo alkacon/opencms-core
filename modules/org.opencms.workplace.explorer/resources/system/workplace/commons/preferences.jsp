@@ -20,7 +20,7 @@ case CmsPreferences.ACTION_RELOAD:
 %>
 <html>
 <head></head>
-<body onload="window.top.location.reload(true);"></body>
+<body onload="window.top.head.doReload();"></body>
 </html>
 <%
 	

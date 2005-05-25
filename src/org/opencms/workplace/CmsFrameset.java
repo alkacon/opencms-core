@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2005/05/25 10:56:53 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace;
 
 import org.opencms.db.CmsUserSettings;
@@ -43,6 +44,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
@@ -67,60 +70,51 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  * 
  * @since 5.1
  */
 public class CmsFrameset extends CmsWorkplace {
-    
+
+    /** The request parameter for the workplace project selection. */
+    public static final String PARAM_WP_PROJECT = "wpProject";
+
+    /** The request parameter for the workplace site selection. */
+    public static final String PARAM_WP_SITE = "wpSite";
+
+    /** The request parameter for the workplace start selection. */
+    public static final String PARAM_WP_START = "wpStart";
+
+    /** The request parameter for the workplace view selection. */
+    public static final String PARAM_WP_VIEW = "wpView";
+
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFrameset.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsFrameset.class);
+
+    /** Indicates if a reload of the main body frame is required. */
+    private boolean m_reloadRequired;
+
     /**
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsFrameset(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // check if the user requested a project change
-        String newProject = request.getParameter("wpProject");
-        if (newProject != null) {
-            settings.setProject(Integer.parseInt(newProject));
-        }                   
 
-        // check if the user requested a view change
-        String newView = request.getParameter("wpView");
-        if (newView != null) {
-            settings.setViewUri(newView);
-            // TODO: This is a workaround to make dialogs work in the legacy XMLTemplate views
-            settings.getFrameUris().put("body", newView);
-            settings.getFrameUris().put("admin_content", "/system/workplace/action/administration_content_top.html");
-        }
-        
-        // check if the user requested a site change
-        String newSite = request.getParameter("wpSite");
-        if (newSite != null) {
-            settings.setSite(newSite);
-        }        
-    } 
-    
     /**
      * Builds the Javascript for the Workplace context menus.<p>
      * 
      * @return the Javascript for the Workplace context menus
      */
     public String buildContextMenues() {
-        StringBuffer result = new StringBuffer();  
+
+        StringBuffer result = new StringBuffer();
         // get all available resource types
         List allResTypes = OpenCms.getResourceManager().getResourceTypes();
-        for (int i=0; i<allResTypes.size(); i++) {
+        for (int i = 0; i < allResTypes.size(); i++) {
             // loop through all types
             I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
             int resTypeId = type.getTypeId();
@@ -128,29 +122,34 @@ public class CmsFrameset extends CmsWorkplace {
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
             if (settings != null) {
                 // append the context menu of the current resource type 
-                result.append(settings.getContextMenu().getJSEntries(getCms(), settings, resTypeId, getSettings().getUserSettings().getLocale()));
+                result.append(settings.getContextMenu().getJSEntries(
+                    getCms(),
+                    settings,
+                    resTypeId,
+                    getSettings().getUserSettings().getLocale()));
             }
-        }         
-        return result.toString();      
+        }
+        return result.toString();
     }
-    
+
     /**
      * Returns the javascript code for the broadcast message alert in the foot of the workplace.<p>
      * 
      * @return javascript code showing an alert box when the foot load
      */
     public String getBroadcastMessage() {
+
         StringBuffer result = new StringBuffer(512);
         String sessionId = getSession().getId();
-        
+
         Buffer messageQueue = OpenCms.getSessionManager().getBroadcastQueue(sessionId);
-        if (! messageQueue.isEmpty()) {
+        if (!messageQueue.isEmpty()) {
             // create a javascript alert for the message 
             result.append("\n<script type=\"text/javascript\">\n<!--\n");
             // the timeout gives the frameset enough time to load before the alert is shown
-            result.append("setTimeout(\"alert(unescape('");            
+            result.append("setTimeout(\"alert(unescape('");
             // the user has pending messages, display them all
-            while (! messageQueue.isEmpty()) {
+            while (!messageQueue.isEmpty()) {
                 CmsBroadcast message = (CmsBroadcast)messageQueue.remove();
                 StringBuffer msg = new StringBuffer(256);
                 msg.append('[');
@@ -164,158 +163,31 @@ public class CmsFrameset extends CmsWorkplace {
                 msg.append("\n\n");
                 result.append(CmsEncoder.escape(msg.toString(), getEncoding()));
             }
-            result.append("'));\", 2000);");   
-            result.append("\n//-->\n</script>");            
+            result.append("'));\", 2000);");
+            result.append("\n//-->\n</script>");
         }
         return result.toString();
     }
-    
+
     /**
      * Returns the file settings for the Workplace explorer view.<p>
      * 
      * @return the file settings for the Workplace explorer view
      */
     public int getExplorerSettings() {
+
         CmsUserSettings settings = new CmsUserSettings(getCms().getRequestContext().currentUser());
         int value = settings.getExplorerSettings();
         return value;
     }
-    
-    /**
-     * Returns a html select box filled with the current users accessible sites.<p>
-     * 
-     * @param htmlAttributes attributes that will be inserted into the generated html 
-     * @return a html select box filled with the current users accessible sites
-     */
-    public String getSiteSelect(String htmlAttributes) {
 
-        List options = new ArrayList();
-        List values = new ArrayList();    
-        int selectedIndex = 0;                   
-
-        List sites = CmsSiteManager.getAvailableSites(getCms(), true);
- 
-        Iterator i = sites.iterator();
-        int pos = 0;
-        while (i.hasNext()) {
-            CmsSite site = (CmsSite)i.next();
-            values.add(site.getSiteRoot());
-            options.add(site.getTitle());
-            if (site.getSiteRoot().equals(getSettings().getSite())) { 
-                // this is the user's current site
-                selectedIndex = pos;
-            }
-            pos++;
-        }
-        
-        return buildSelect(htmlAttributes, options, values, selectedIndex);    
-    }    
-    
-    /**
-     * Returns a html select box filled with the current users accessible projects.<p>
-     * 
-     * @param htmlAttributes attributes that will be inserted into the generated html 
-     * @param htmlWidth additional "width" html attributes
-     * @return a html select box filled with the current users accessible projects
-     */
-    public String getProjectSelect(String htmlAttributes, String htmlWidth) {
-        // get all project information
-        List allProjects;
-        try {
-            allProjects = getCms().getAllAccessibleProjects();
-        } catch (CmsException e) {
-            // should usually never happen
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
-            }            
-            allProjects = Collections.EMPTY_LIST;
-        }
-
-        List options = new ArrayList();
-        List values = new ArrayList();
-        int selectedIndex = 0;        
-        int maxNameLength = 0;
-        
-        // now loop through all projects and fill the result vectors
-        for (int i = 0, n = allProjects.size(); i < n; i++) {
-            CmsProject loopProject = (CmsProject)allProjects.get(i);
-            String loopProjectName = loopProject.getName();
-            String loopProjectId = Integer.toString(loopProject.getId());
-            
-            values.add(loopProjectId);
-            options.add(loopProjectName);
-            
-            if (loopProject.getId() == getSettings().getProject()) {
-                // this is the user's current project
-                selectedIndex = i;
-            }            
-            // check the length of the project name, to optionallly adjust the size of the selector
-            maxNameLength = Math.max(loopProjectName.length(), maxNameLength);
-        }        
-        if (maxNameLength <= 20) {
-            StringBuffer buf = new StringBuffer(htmlAttributes.length() + htmlWidth.length() + 5);
-            buf.append(htmlAttributes);
-            buf.append(" ");
-            buf.append(htmlWidth);
-            htmlAttributes = buf.toString();
-        }
-         
-        return buildSelect(htmlAttributes, options, values, selectedIndex);
-    }    
-        
-    /**
-     * Returns a html select box filled with the views accessible by the current user.<p>
-     * 
-     * @param htmlAttributes attributes that will be inserted into the generated html 
-     * @return a html select box filled with the views accessible by the current user
-     */    
-    public String getViewSelect(String htmlAttributes) {
-        
-        List options = new ArrayList();
-        List values = new ArrayList();
-        int selectedIndex = 0;                
-        
-        // loop through the vectors and fill the result vectors
-        Iterator i = OpenCms.getWorkplaceManager().getViews().iterator();    
-        int count = -1;
-        while (i.hasNext()) {
-            count++;
-            CmsWorkplaceView view = (CmsWorkplaceView)i.next();
-            String viewKey = view.getKey();
-            String viewUri = view.getUri();
-            
-            boolean visible = true;
-            try {
-                getCms().readResource(viewUri);
-            } catch (CmsException e) {
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
-                }                
-                visible = false;
-            }
-            if (visible) {
-                String loopLink = getJsp().link(viewUri);
-                String localizedKey = key(viewKey, viewKey);
-                options.add(localizedKey);
-                values.add(loopLink);
-
-                if (loopLink.equals(getSettings().getViewUri())) {
-                    selectedIndex = count;
-                }
-            }
-        }        
-  
-        return buildSelect(htmlAttributes, options, values, selectedIndex);        
-    }
-    
     /**
      * Returns a html select box filled with groups of the current user.<p>
      * 
      * @param htmlAttributes attributes that will be inserted into the generated html 
      * @return a html select box filled with groups of the current user
-     */    
-    public String getGroupSelect(String htmlAttributes) {    
+     */
+    public String getGroupSelect(String htmlAttributes) {
 
         // get the users groups from the request context
         List allGroups = new Vector();
@@ -329,27 +201,18 @@ public class CmsFrameset extends CmsWorkplace {
         }
 
         List options = new ArrayList();
-        List values = new ArrayList();        
-        
+        List values = new ArrayList();
+
         // loop through all groups and build the result vectors
         int numGroups = allGroups.size();
-        for (int i = 0; i<numGroups; i++) {
+        for (int i = 0; i < numGroups; i++) {
             CmsGroup loopGroup = (CmsGroup)allGroups.get(i);
             String loopGroupName = loopGroup.getName();
             values.add(loopGroupName);
             options.add(loopGroupName);
         }
 
-        return buildSelect(htmlAttributes, options, values, 0);                             
-    }
-    
-    /**
-     * Returns the last login time of the current user in localized format.<p>
-     *
-     * @return the last login time of the current user in localized format
-     */
-    public String getLoginTime() {
-        return getMessages().getDateTime(getSettings().getUser().getLastlogin());
+        return buildSelect(htmlAttributes, options, values, 0);
     }
 
     /**
@@ -358,55 +221,271 @@ public class CmsFrameset extends CmsWorkplace {
      * @return the remote ip address of the current user
      */
     public String getLoginAddress() {
+
         return getCms().getRequestContext().getRemoteAddress();
     }
-    
+
     /**
-     * Returns true if the user has publish permissions for the current project.<p>
-     * 
-     * @return true if the user has publish permissions for the current project
+     * Returns the last login time of the current user in localized format.<p>
+     *
+     * @return the last login time of the current user in localized format
      */
-    public boolean isPublishEnabled() {
-        
-        return getCms().isManagerOfProject();  
+    public String getLoginTime() {
+
+        return getMessages().getDateTime(getSettings().getUser().getLastlogin());
     }
-    
+
     /**
-     * Returns true if the user has enabled synchronization.<p>
+     * Returns a html select box filled with the current users accessible projects.<p>
      * 
-     * @return true if the user has enabled synchronization
+     * @param htmlAttributes attributes that will be inserted into the generated html 
+     * @param htmlWidth additional "width" html attributes
+     * @return a html select box filled with the current users accessible projects
      */
-    public boolean isSyncEnabled() {
-        return OpenCms.getSystemInfo().getSynchronizeSettings().isSyncEnabled();
+    public String getProjectSelect(String htmlAttributes, String htmlWidth) {
+
+        // get all project information
+        List allProjects;
+        try {
+            allProjects = getCms().getAllAccessibleProjects();
+        } catch (CmsException e) {
+            // should usually never happen
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
+            }
+            allProjects = Collections.EMPTY_LIST;
+        }
+
+        List options = new ArrayList();
+        List values = new ArrayList();
+        int selectedIndex = 0;
+        int maxNameLength = 0;
+
+        // now loop through all projects and fill the result vectors
+        for (int i = 0, n = allProjects.size(); i < n; i++) {
+            CmsProject loopProject = (CmsProject)allProjects.get(i);
+            String loopProjectName = loopProject.getName();
+            String loopProjectId = Integer.toString(loopProject.getId());
+
+            values.add(loopProjectId);
+            options.add(loopProjectName);
+
+            if (loopProject.getId() == getSettings().getProject()) {
+                // this is the user's current project
+                selectedIndex = i;
+            }
+            // check the length of the project name, to optionallly adjust the size of the selector
+            maxNameLength = Math.max(loopProjectName.length(), maxNameLength);
+        }
+        if (maxNameLength <= 20) {
+            StringBuffer buf = new StringBuffer(htmlAttributes.length() + htmlWidth.length() + 5);
+            buf.append(htmlAttributes);
+            buf.append(" ");
+            buf.append(htmlWidth);
+            htmlAttributes = buf.toString();
+        }
+
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+
+    /**
+     * Returns a html select box filled with the current users accessible sites.<p>
+     * 
+     * @param htmlAttributes attributes that will be inserted into the generated html 
+     * @return a html select box filled with the current users accessible sites
+     */
+    public String getSiteSelect(String htmlAttributes) {
+
+        List options = new ArrayList();
+        List values = new ArrayList();
+        int selectedIndex = 0;
+
+        List sites = CmsSiteManager.getAvailableSites(getCms(), true);
+
+        Iterator i = sites.iterator();
+        int pos = 0;
+        while (i.hasNext()) {
+            CmsSite site = (CmsSite)i.next();
+            values.add(site.getSiteRoot());
+            options.add(site.getTitle());
+            if (site.getSiteRoot().equals(getSettings().getSite())) {
+                // this is the user's current site
+                selectedIndex = pos;
+            }
+            pos++;
+        }
+
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+
+    /**
+     * Returns the startup URI for display in the main body frame, this can 
+     * eihter be the user default view, or (if set) a sepcific startup resource.<p> 
+     * 
+     * @return the startup URI for display in the main body frame
+     */
+    public String getStartupUri() {
+
+        String result = getSettings().getViewStartup();
+        if (result == null) {
+            // no specific startup URI is set, use view from user settings
+            result = getSettings().getViewUri();
+        } else {
+            // reset the startup URI, so that it is not displayed again on reload of the frameset
+            getSettings().setViewStartup(null);
+        }
+        return result;
+    }
+
+    /**
+     * Returns a html select box filled with the views accessible by the current user.<p>
+     * 
+     * @param htmlAttributes attributes that will be inserted into the generated html 
+     * @return a html select box filled with the views accessible by the current user
+     */
+    public String getViewSelect(String htmlAttributes) {
+
+        List options = new ArrayList();
+        List values = new ArrayList();
+        int selectedIndex = 0;
+
+        // loop through the vectors and fill the result vectors
+        Iterator i = OpenCms.getWorkplaceManager().getViews().iterator();
+        int count = -1;
+        String currentView = getSettings().getViewUri();
+        if (CmsStringUtil.isNotEmpty(currentView)) {
+            // remove possible parameters from current view
+            int pos = currentView.indexOf('?');
+            if (pos >= 0) {
+                currentView = currentView.substring(0, pos);
+            }
+        }
+        while (i.hasNext()) {
+            count++;
+            CmsWorkplaceView view = (CmsWorkplaceView)i.next();
+            String viewKey = view.getKey();
+            String viewUri = view.getUri();
+
+            if (getCms().existsResource(viewUri, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                // ensure the current user has +v+r permissions on the view
+                String loopLink = getJsp().link(viewUri);
+                String localizedKey = key(viewKey, viewKey);
+                options.add(localizedKey);
+                values.add(loopLink);
+
+                if (loopLink.equals(currentView)) {
+                    selectedIndex = count;
+                }
+            }
+        }
+
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
 
     /**
      * Returns true if the online help for the users current language is installed.<p>
      * 
      * @return true if the online help for the users current language is installed
-     */    
+     */
     public boolean isHelpEnabled() {
+
         try {
-            getCms().readFolder(I_CmsWpConstants.C_VFS_PATH_HELP + getLocale() + "/", CmsResourceFilter.IGNORE_EXPIRATION);
+            getCms().readFolder(
+                I_CmsWpConstants.C_VFS_PATH_HELP + getLocale() + "/",
+                CmsResourceFilter.IGNORE_EXPIRATION);
             return true;
-        } catch (CmsException e) {          
+        } catch (CmsException e) {
             return false;
-        }        
+        }
     }
-    
+
+    /**
+     * Returns true if the user has publish permissions for the current project.<p>
+     * 
+     * @return true if the user has publish permissions for the current project
+     */
+    public boolean isPublishEnabled() {
+
+        return getCms().isManagerOfProject();
+    }
+
+    /**
+     * Returns <code>true</code> if a reload of the main body frame is required.<p>
+     * 
+     * This value is modified with the select options (project, site or view) in the head frame of 
+     * the Workplace. If a user changes one of these select values, the head frame is posted 
+     * "against itself". The posted values will be processed by this class, causing
+     * the internal Workplace settings to change. After these settings have been changed,
+     * a reload of the main body frame is required in order to update it with the new values.
+     * A JavaScript in the Workplace head frame will be executed in this case.<p>
+     * 
+     * @return <code>true</code> if a reload of the main body frame is required
+     */
+    public boolean isReloadRequired() {
+
+        return m_reloadRequired;
+    }
+
+    /**
+     * Returns true if the user has enabled synchronization.<p>
+     * 
+     * @return true if the user has enabled synchronization
+     */
+    public boolean isSyncEnabled() {
+
+        return OpenCms.getSystemInfo().getSynchronizeSettings().isSyncEnabled();
+    }
+
     /**
      * Indicates if the site selector should be shown in the top frame depending on the count of accessible sites.<p>
      * 
      * @return true if site selector should be shown, otherwise false
      */
     public boolean showSiteSelector() {
+
         if (getSettings().getUserSettings().getRestrictExplorerView()) {
             // restricted explorer view to site and folder, do not show site selector
-            return false;    
+            return false;
         }
         // count available sites
         int siteCount = CmsSiteManager.getAvailableSites(getCms(), true).size();
-        return (siteCount > 1);    
+        return (siteCount > 1);
     }
-    
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // check if the user requested a project change
+        String project = request.getParameter(PARAM_WP_PROJECT);
+        if (project != null) {
+            m_reloadRequired = true;
+            settings.setProject(Integer.parseInt(project));
+        }
+
+        // check if the user requested a view change
+        String view = request.getParameter(PARAM_WP_VIEW);
+        if (view != null) {
+            m_reloadRequired = true;
+            settings.setViewUri(view);
+            // TODO: This is a workaround to make dialogs work in the legacy XMLTemplate views
+            settings.getFrameUris().put("body", view);
+            settings.getFrameUris().put("admin_content", "/system/workplace/action/administration_content_top.html");
+        }
+
+        // check if the user requested a site change
+        String site = request.getParameter(PARAM_WP_SITE);
+        if (site != null) {
+            m_reloadRequired = true;
+            settings.setSite(site);
+        }
+
+        // check if a startup page has been set
+        String startup = CmsRequestUtil.getParameter(request, PARAM_WP_START);
+        if (startup != null) {
+            m_reloadRequired = true;
+            settings.setViewStartup(startup);
+        }
+    }
 }

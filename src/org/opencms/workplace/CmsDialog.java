@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/05/23 13:12:21 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2005/05/25 10:56:52 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  * 
  * @since 5.1
  */
@@ -312,6 +312,7 @@ public class CmsDialog extends CmsToolDialog {
                     frameUri = frameUri.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
                 if (frameUri.endsWith("administration_content_top.html")) {
+                    int todo = 0;
                     // TODO: remove this workaround for legacy backoffice
                     String wpClass = this.getClass().getName();
                     String wpPackage = this.getClass().getPackage().getName();
@@ -715,10 +716,6 @@ public class CmsDialog extends CmsToolDialog {
         result.append("\tif (actionValue == \"" + DIALOG_OK + "\") {\n");
         result.append("\t\treturn true;\n");
         result.append("\t}\n");
-
-        int todo = 0;
-        // TODO: Check logic change here...
-
         result.append("\ttheForm." + PARAM_ACTION + ".value = actionValue;\n");
         result.append("\ttheForm.submit();\n");
         result.append("\treturn false;\n");

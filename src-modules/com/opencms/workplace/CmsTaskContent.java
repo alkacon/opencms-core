@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskContent.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/25 10:56:53 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/25 10:56:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -228,5 +228,24 @@ public class CmsTaskContent extends CmsWorkplaceDefault {
         else {
             return retValue;
         }
+    }    
+    
+    /**
+     * @see com.opencms.workplace.CmsWorkplaceDefault#startProcessing(org.opencms.file.CmsObject, com.opencms.template.CmsXmlTemplateFile, java.lang.String, java.util.Hashtable, java.lang.String)
+     */
+    protected byte[] startProcessing(
+        CmsObject cms,
+        CmsXmlTemplateFile xmlTemplateDocument,
+        String elementName,
+        Hashtable parameters,
+        String templateSelector) throws CmsException {
+
+        // workaround to display the task id
+        if ((parameters != null) && (parameters.size() > 0) && (parameters.containsKey("taskid"))) {
+            I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
+            session.putValue(C_PARA_STARTTASKID, parameters.get("taskid"));
+        }
+     
+        return super.startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }
 }

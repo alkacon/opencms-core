@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/Messages.java,v $
- * Date   : $Date: 2005/05/09 15:15:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/25 10:56:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workflow;
 
 import org.opencms.file.CmsRequestContext;
 import org.opencms.i18n.A_CmsMessageBundle;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.main.I_CmsConstants;
 
@@ -99,7 +100,7 @@ public final class Messages extends A_CmsMessageBundle {
     }
 
     /**
-     * Small utility-method that allows output of task states in default locale. <p>
+     * Small utility-method that allows output of task states in the OpenCms default locale. <p>
      * 
      * @param taskType One of 
      * <ul>
@@ -120,7 +121,7 @@ public final class Messages extends A_CmsMessageBundle {
      */
     public static String toTaskTypeString(int taskType) {
 
-        return toTaskTypeString(taskType, Locale.getDefault());
+        return toTaskTypeString(taskType, CmsLocaleManager.getDefaultLocale());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/05/20 15:12:41 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/25 10:56:53 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,25 +64,24 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
 
+    /** Runtime property name for locale handler. */
+    public static final String C_LOCALE_HANDLER = "class_locale_handler";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLocaleManager.class);
 
-    /** Runtime property name for locale handler. */
-    public static final String C_LOCALE_HANDLER = "class_locale_handler";
+    /** The default locale, this is the first configured locale. */
+    private static Locale m_defaultLocale = Locale.getDefault();
 
     /** A cache for accelerated locale lookup, this should never get so large to require a "real" cache. */
     private static Map m_localeCache;
 
     /** The set of available locale names. */
     private List m_availableLocales;
-
-    /** The default locale, this is the first configured locale. */
-    private static Locale m_defaultLocale;
 
     /** The default locale names (must be a subset of the available locale names). */
     private List m_defaultLocales;
@@ -137,6 +136,18 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the default locale configured in <code>opencms.properties</code>.<p>
+     *
+     * The default locale is the first locale int the list of configured default locales.
+     *
+     * @return the default locale
+     */
+    public static Locale getDefaultLocale() {
+
+        return m_defaultLocale;
+    }
+
+    /**
      * Returns a locale created from the given full name.<p>
      * 
      * The full name must consist of language code, 
@@ -165,9 +176,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
                         (localeNames.length > 1) ? localeNames[1] : "",
                         (localeNames.length > 2) ? localeNames[2] : "");
                 } catch (Throwable t) {
-                    LOG.debug(
-                        Messages.get().key(Messages.LOG_CREATE_LOCALE_FAILED_1, localeName),
-                        t);
+                    LOG.debug(Messages.get().key(Messages.LOG_CREATE_LOCALE_FAILED_1, localeName), t);
                     // map this error to the default locale
                     locale = getDefaultLocale();
                 }
@@ -255,7 +264,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
                         Messages.INIT_I18N_CONFIG_DEFAULT_LOCALE_2,
                         new Integer(m_defaultLocales.size()),
                         locale));
-                
+
             }
         }
     }
@@ -299,10 +308,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         String availableNames = null;
         try {
-            availableNames = cms.readPropertyObject(
-                resourceName, 
-                I_CmsConstants.C_PROPERTY_AVAILABLE_LOCALES, 
-                true).getValue();
+            availableNames = cms.readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_AVAILABLE_LOCALES, true).getValue();
         } catch (CmsException exc) {
             // noop
         }
@@ -376,18 +382,6 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         return new Locale(result.getLanguage(), (max > 1) ? result.getCountry() : "", (max > 2) ? result.getVariant()
         : "");
-    }
-
-    /**
-     * Returns the default locale configured in <code>opencms.properties</code>.<p>
-     *
-     * The default locale is the first locale int the list of configured default locales.
-     *
-     * @return the default locale
-     */
-    public static Locale getDefaultLocale() {
-
-        return m_defaultLocale;
     }
 
     /**
@@ -472,7 +466,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // no match
         return null;
     }
-    
+
     /**
      * Returns the the appropriate locale/encoding for a request,
      * using the "right" locale handler for the given resource.<p>
@@ -493,8 +487,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         /** The list of configured localized workplace folders. */
         List wpLocalizedFolders = OpenCms.getWorkplaceManager().getLocalizedFolders();
-        
-        CmsI18nInfo i18nInfo = null;        
+
+        CmsI18nInfo i18nInfo = null;
         for (int i = wpLocalizedFolders.size() - 1; i >= 0; i--) {
             if (resource.startsWith((String)wpLocalizedFolders.get(i))) {
                 // use the workplace locale handler for this resource
@@ -506,10 +500,10 @@ public class CmsLocaleManager implements I_CmsEventListener {
             // use default locale handler
             i18nInfo = m_localeHandler.getI18nInfo(req, user, project, resource);
         }
-        
+
         // check the request for special parameters overriding the locale handler
         Locale locale = null;
-        String encoding = null;        
+        String encoding = null;
         if (req != null) {
             String localeParam;
             // check request for parameters
@@ -519,8 +513,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
             }
             // check for "__encoding" parameter in request
             encoding = req.getParameter(I_CmsConstants.C_PARAMETER_ENCODING);
-        }            
-        
+        }
+
         // merge values from request with values from locale handler
         if (locale == null) {
             locale = i18nInfo.getLocale();
@@ -528,7 +522,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
         if (encoding == null) {
             encoding = i18nInfo.getEncoding();
         }
-        
+
         // still some values might be "null"
         if (locale == null) {
             locale = getDefaultLocale();
@@ -541,8 +535,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_ENCODING_NOT_FOUND_1, encoding));
             }
-        }      
-        
+        }
+
         // return the merged values
         return new CmsI18nInfo(locale, encoding);
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2005/05/19 08:57:22 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/25 10:56:53 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,6 +42,8 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 import org.opencms.workflow.CmsTaskService;
+import org.opencms.workplace.CmsFrameset;
+import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.legacy.CmsLegacyException;
@@ -63,7 +65,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2005/05/19 08:57:22 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/25 10:56:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -877,15 +879,11 @@ public class CmsTaskAction implements I_CmsWpConstants {
         }
     }
 
-    public static String getTaskUrl(CmsObject cms, int taskid, int projectid) throws CmsException {
-        String servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
-        String serverName = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getServerName();
-        String scheme =  ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getScheme();
-        int serverPort = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getServerPort();
-        if(serverPort != 80) {
-            serverName += ":" + serverPort;
-        }
-        return scheme + "://" + serverName + servletPath + C_VFS_PATH_SYSTEM + "login/index.html?startTaskId="
-                    + taskid + "&startProjectId=" + projectid;
+    public static String getTaskUrl(CmsObject cms, int taskid, int projectid) {
+
+       String frameLink = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+       String taskViewLink = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_PATH_XML_WORKPLACE + "tasks.html") + "%3Ftaskid%3D" + taskid;
+        
+       return OpenCms.getSiteManager().getWorkplaceSiteMatcher().toString() + frameLink + "?" + CmsFrameset.PARAM_WP_VIEW + "=" + taskViewLink; 
     }
 }
