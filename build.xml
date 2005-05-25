@@ -2,7 +2,7 @@
 
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property name="version.number"             		value="6.0 beta 3" />    
+    <property name="version.number"             		value="6.0 RC 1" />    
     <property name="version.name"               		value="Corrin" />
     
 	<property name="app.name" 							value="opencms" />
