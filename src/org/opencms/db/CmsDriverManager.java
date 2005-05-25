@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/25 13:19:07 $
- * Version: $Revision: 1.508 $
+ * Date   : $Date: 2005/05/25 13:32:03 $
+ * Version: $Revision: 1.509 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.508 $
+ * @version $Revision: 1.509 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1493,7 +1493,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     if (!importCase) {
                         // direct "overwrite" of a resource is possible only during import, 
                         // or if the resource has been deleted
-                        throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
+                        throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
                             org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
                             dbc.removeSiteRoot(resource.getRootPath())));
                     }
