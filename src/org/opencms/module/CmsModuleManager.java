@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/25 09:29:47 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -290,7 +290,8 @@ public class CmsModuleManager {
                 // delete the resource
                 cms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
                 // update the report
-                report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
+                
+                report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.C_FORMAT_NOTE);
                 report.println(currentResource);
                 // unlock the resource (so it gets deleted with next publish)
                 cms.unlockResource(currentResource);

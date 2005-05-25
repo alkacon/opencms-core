@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/05/24 07:45:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/25 09:29:47 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2005/05/24 07:45:06 $
+ * @version $Revision: 1.13 $ $Date: 2005/05/25 09:29:47 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
@@ -187,14 +187,17 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         
         // check if the user has the required permissions
         cms.checkRole(CmsRole.MODULE_MANAGER);
-        
-        report.print(report.key("report.export_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-        if (report instanceof CmsHtmlReport) {
-            report.println(" <i>" + getModuleName() + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
-        } else {
-            report.println(" " + getModuleName(), I_CmsReport.C_FORMAT_HEADLINE);
-        }
                         
+        report.print(Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+        if (report instanceof CmsHtmlReport) {
+            report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_ARGUMENT_1, getModuleName()));
+        } else {
+            report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_ARGUMENT_1, "<i>" + getModuleName() + "</i>"));
+        }
+        report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+        
         if (! OpenCms.getModuleManager().hasModule(getModuleName())) {
             // module not available
             throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_MOD_FOR_EXPORT_1, getModuleName()));
@@ -213,7 +216,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         // export the module using the standard export        
         new CmsExport(cms, getFileName(), getAdditionalResources(), false, false, moduleElement, false, 0, report);
         
-        report.println(report.key("report.export_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_EXPORT_MODULE_END_0), I_CmsReport.C_FORMAT_HEADLINE);
     }
 
     /**
@@ -304,22 +307,25 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                 modulePackageName = moduleZipName;
             }
             
-            report.print(report.key("report.import_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            report.print(Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
             if (report instanceof CmsHtmlReport) {
-                report.println(" <i>" + modulePackageName + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1, modulePackageName));
             } else {
-                report.println(" " + modulePackageName, I_CmsReport.C_FORMAT_HEADLINE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1, "<i>" + modulePackageName + "</i>"));
             }
-
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+            
             importModule(cms, importFile, report);
-
-            report.println(report.key("report.publish_project_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            
+            report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
             // now unlock and publish the project
             cms.unlockProject(importProject.getId());
             cms.publishProject(report);
 
-            report.println(report.key("report.publish_project_end"), I_CmsReport.C_FORMAT_HEADLINE);
-            report.println(report.key("report.import_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
+            report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+            report.println(Messages.get().container(Messages.RPT_IMPORT_MODULE_END_0), I_CmsReport.C_FORMAT_HEADLINE);
         } catch (CmsXmlException e) {
             
             throw e;

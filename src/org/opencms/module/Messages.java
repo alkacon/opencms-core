@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/Messages.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/25 09:29:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -203,6 +203,27 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_PROJECT_1 = "LOG_PUBLISH_PROJECT_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_0 = "RPT_DELETE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXPORT_MODULE_BEGIN_0 = "RPT_EXPORT_MODULE_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXPORT_MODULE_END_0 = "RPT_EXPORT_MODULE_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMPORT_MODULE_BEGIN_0 = "RPT_IMPORT_MODULE_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMPORT_MODULE_END_0 = "RPT_IMPORT_MODULE_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_PROJECT_BEGIN_0 = "RPT_PUBLISH_PROJECT_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_PROJECT_END_0 = "RPT_PUBLISH_PROJECT_END_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.module.messages";
