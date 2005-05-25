@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/20 11:57:31 $
- * Version: $Revision: 1.505 $
+ * Date   : $Date: 2005/05/25 09:22:50 $
+ * Version: $Revision: 1.506 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.505 $
+ * @version $Revision: 1.506 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2118,10 +2118,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         while (i.hasNext()) {
             // now check get a single backup resource
             CmsBackupResource res = (CmsBackupResource)i.next();
-
-            report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_NOTE);
-            report.print(report.key("report.history.checking"), I_CmsReport.C_FORMAT_NOTE);
-            report.print(res.getRootPath() + " ");
+            
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                new Integer(counter), new Integer(size)), I_CmsReport.C_FORMAT_NOTE);
+            report.print(Messages.get().container(Messages.RPT_CHECKING_0), I_CmsReport.C_FORMAT_NOTE);
+            report.print(res.getRootPath());
+            
+            //report.printItem(counter, size, Messages.get().container(Messages.RPT_CHECKING_0), res.getRootPath());
 
             // now delete all versions of this resource that have more than the maximun number
             // of allowed versions and which are older then the maximum backup date
@@ -2130,12 +2133,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
             // now we know which backup versions must be deleted, so remove them now
             if (versionsToDelete > 0) {
-                report.print(report.key("report.history.deleting") + report.key("report.dots"));
+                report.print(Messages.get().container(Messages.RPT_DELETE_VERSIONS_0), I_CmsReport.C_FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                 m_backupDriver.deleteBackup(dbc, res, maxTag, versionsToDelete);
             } else {
-                report.print(report.key("report.history.nothing") + report.key("report.dots"));
+                report.print(Messages.get().container(Messages.RPT_DELETE_NOTHING_0), I_CmsReport.C_FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             }
-            report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            
+            report.println(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
             counter++;
 
             // TODO: delete the old backup projects as well
@@ -4197,8 +4204,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                         I_CmsConstants.C_PROJECT_ONLINE_ID,
                         CmsResource.getParentFolder(publishList.getDirectPublishResource().getRootPath()));
                 } catch (CmsException e) {
-                    report.println("Parent folder not published for resource "
-                        + publishList.getDirectPublishResource().getRootPath(), I_CmsReport.C_FORMAT_ERROR);
+                    report.println(Messages.get().container(
+                        Messages.RPT_PARENT_FOLDER_NOT_PUBLISHED_1, publishList.getDirectPublishResource().getRootPath()), I_CmsReport.C_FORMAT_ERROR);
                     return;
                 }
             }
@@ -6790,7 +6797,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
                 if (currentExportPoint != null) {
                     if (!printReportHeaders) {
-                        report.println(report.key("report.export_points_write_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                        report.println(Messages.get().container(
+                            Messages.RPT_EXPORT_POINTS_WRITE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
                         printReportHeaders = true;
                     }
 
@@ -6818,15 +6826,19 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
                     // print some report messages
                     if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
-                        report.print(report.key("report.export_points_delete"), I_CmsReport.C_FORMAT_NOTE);
+                        
+                        report.print(Messages.get().container(Messages.RPT_EXPORT_POINTS_DELETE_0), I_CmsReport.C_FORMAT_NOTE);
                         report.print(currentPublishedResource.getRootPath());
-                        report.print(report.key("report.dots"));
-                        report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                        report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                        report.println(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                     } else {
-                        report.print(report.key("report.export_points_write"), I_CmsReport.C_FORMAT_NOTE);
+                        
+                        report.print(Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_0), I_CmsReport.C_FORMAT_NOTE);
                         report.print(currentPublishedResource.getRootPath());
-                        report.print(report.key("report.dots"));
-                        report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                        report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                        report.println(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                     }
                 }
             }
@@ -6836,7 +6848,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
         } finally {
             if (printReportHeaders) {
-                report.println(report.key("report.export_points_write_end"), I_CmsReport.C_FORMAT_HEADLINE);
+                report.println(Messages.get().container(
+                    Messages.RPT_EXPORT_POINTS_WRITE_END_0), I_CmsReport.C_FORMAT_HEADLINE);
             }
         }
     }

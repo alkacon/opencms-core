@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2005/05/13 09:25:48 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/05/25 09:19:22 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.27 $ $Date: 2005/05/13 09:25:48 $
+ * @version $Revision: 1.28 $ $Date: 2005/05/25 09:19:22 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator {
@@ -132,7 +132,7 @@ public class CmsHtmlLinkValidator {
         I_CmsResourceType resourceType = null;
         boolean foundBrokenLinks = false;
 
-        report.println(report.key("report.htmllink_validator.begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
 
         // populate a lookup map with the offline resources that 
         // actually get published keyed by their resource names.
@@ -162,10 +162,12 @@ public class CmsHtmlLinkValidator {
                 resource = (CmsResource) validatableResources.get(i);
                 resourceName = resource.getRootPath();
                 resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-
-                report.print("( " + (i + 1) + " / " + j + " ) " + report.key("report.htmllink_validator.validating"), I_CmsReport.C_FORMAT_NOTE);
+                
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                    new Integer(i + 1), new Integer(j)), I_CmsReport.C_FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATING_0), I_CmsReport.C_FORMAT_NOTE);
                 report.print(cms.getRequestContext().removeSiteRoot(resourceName));
-                report.print(report.key("report.dots"));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 links = ((I_CmsHtmlLinkValidatable) resourceType).findLinks(cms, resource);
 
@@ -177,10 +179,11 @@ public class CmsHtmlLinkValidator {
                     // the resource contains broken links
                     invalidResources.put(resourceName, brokenLinks);
                     foundBrokenLinks = true;
-                    report.println(report.key("report.htmllink_validator.found_broken_links"), I_CmsReport.C_FORMAT_WARNING);
+                    report.println(Messages.get().container(Messages.RPT_HTMLLINK_FOUND_BROKEN_LINKS_0), I_CmsReport.C_FORMAT_WARNING);
                 } else {
                     // the resource contains *NO* broken links
-                    report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                 }
             } catch (CmsException e) {
                 LOG.error(Messages.get().key(Messages.LOG_LINK_SEARCH_1, resourceName), e);
@@ -189,15 +192,15 @@ public class CmsHtmlLinkValidator {
 
         if (foundBrokenLinks) {
             // print a summary if we found broken links in the validated resources
-            report.println(report.key("report.htmllink_validator.summary.begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            report.println(Messages.get().container(Messages.RPT_BROKEN_LINKS_SUMMARY_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
 
             Iterator outer = invalidResources.keySet().iterator();
             while (outer.hasNext()) {
                 resourceName = (String) outer.next();
                 brokenLinks = (List) invalidResources.get(resourceName);
 
-                report.print(report.key("report.htmllink_validator.summary.broken_links_in"), I_CmsReport.C_FORMAT_NOTE);
-                report.print(resourceName);
+                report.print(Messages.get().container(Messages.RPT_BROKEN_LINKS_IN_0), I_CmsReport.C_FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, resourceName));
                 report.println("\u0020:");
                 Iterator inner = brokenLinks.iterator();
                 while (inner.hasNext()) {
@@ -205,11 +208,11 @@ public class CmsHtmlLinkValidator {
                 }
             }
 
-            report.println(report.key("report.htmllink_validator.summary.end"), I_CmsReport.C_FORMAT_HEADLINE);
-            report.println(report.key("report.htmllink_validator.error"), I_CmsReport.C_FORMAT_ERROR);
+            report.println(Messages.get().container(Messages.RPT_BROKEN_LINKS_SUMMARY_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+            report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_ERROR_0), I_CmsReport.C_FORMAT_ERROR);
         }
 
-        report.println(report.key("report.htmllink_validator.end"), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_END_0), I_CmsReport.C_FORMAT_HEADLINE);
 
         return invalidResources;
     }

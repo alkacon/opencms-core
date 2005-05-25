@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportJob.java,v $
- * Date   : $Date: 2005/03/15 18:05:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/25 09:16:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.ServletException;
  * </pre>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsStaticExportJob implements I_CmsScheduledJob {
     
@@ -76,12 +76,11 @@ public class CmsStaticExportJob implements I_CmsScheduledJob {
             report.println(e);
         }  finally {
             // append runtime statistics to the report
-            StringBuffer stats = new StringBuffer();
-            stats.append(report.key("report.publish_stats"));
-            stats.append(report.key("report.publish_stats_duration"));
-            stats.append(report.formatRuntime());
-            report.println(stats.toString());        
-            report.println(report.key("report.staticexport_end"), I_CmsReport.C_FORMAT_HEADLINE);            
+            report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_STAT_0));
+            report.println(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_STAT_DURATION_1, report.formatRuntime()));      
+            report.println(Messages.get().container(Messages.RPT_STATICEXPORT_END_0), I_CmsReport.C_FORMAT_HEADLINE);            
         }
         
         return null;

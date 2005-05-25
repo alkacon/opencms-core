@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/20 15:12:41 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/05/25 09:22:50 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -686,6 +686,30 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_EXPORT_POINTS_ERROR_0 = "LOG_WRITE_EXPORT_POINTS_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CHECKING_0 = "RPT_CHECKING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_NOTHING_0 = "RPT_DELETE_NOTHING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_VERSIONS_0 = "RPT_DELETE_VERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXPORT_POINTS_DELETE_0 = "RPT_EXPORT_POINTS_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXPORT_POINTS_WRITE_0 = "RPT_EXPORT_POINTS_WRITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXPORT_POINTS_WRITE_BEGIN_0 = "RPT_EXPORT_POINTS_WRITE_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXPORT_POINTS_WRITE_END_0 = "RPT_EXPORT_POINTS_WRITE_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PARENT_FOLDER_NOT_PUBLISHED_1 = "RPT_PARENT_FOLDER_NOT_PUBLISHED_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.db.messages";

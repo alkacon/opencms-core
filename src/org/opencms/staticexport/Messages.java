@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Messages.java,v $
- * Date   : $Date: 2005/05/02 13:33:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/25 09:16:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_FOLDER_1 = "ERR_CREATE_FOLDER_1";
 
@@ -229,22 +229,51 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_TEST_RESOURCE_NOT_EXISTANT_0 = "LOG_TEST_RESOURCE_NOT_EXISTANT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_UPDATE_EXPORTNAME_PROP_START_0 = "LOG_UPDATE_EXPORTNAME_PROP_START_0";
+    public static final String LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0 = "LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0 = "LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0";
+    public static final String LOG_UPDATE_EXPORTNAME_PROP_START_0 = "LOG_UPDATE_EXPORTNAME_PROP_START_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WAITING_STATIC_EXPORT_3 = "LOG_WAITING_STATIC_EXPORT_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_FAILED_1 = "LOG_WRITE_FAILED_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXPORTING_0 = "RPT_EXPORTING_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_STATICEXPORT_BEGIN_0 = "RPT_STATICEXPORT_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_STATICEXPORT_END_0 = "RPT_STATICEXPORT_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_BEGIN_0 = "RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_END_0 = "RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_STATICEXPORT_TEMPLATE_RESOURCES_BEGIN_0 = "RPT_STATICEXPORT_TEMPLATE_RESOURCES_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_STATICEXPORT_TEMPLATE_RESOURCES_END_0 = "RPT_STATICEXPORT_TEMPLATE_RESOURCES_END_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.staticexport.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
+    }
 
     /**
      * Returns an instance of this localized message accessor.<p>
@@ -254,14 +283,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static I_CmsMessageBundle get() {
 
         return INSTANCE;
-    }
-
-    /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
     }
 
     /**

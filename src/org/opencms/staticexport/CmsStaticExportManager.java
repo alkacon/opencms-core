@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/05/24 07:45:07 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2005/05/25 09:16:24 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.100 $
+ * @version $Revision: 1.101 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -515,8 +515,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         boolean templatesFound = false;
 
         int count = 1;
-
-        report.println(report.key("report.staticexport.nontemplateresources_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        
+        report.println(Messages.get().container(Messages.RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
 
         // loop through all resources
         Iterator i = publishedResources.iterator();
@@ -577,15 +577,18 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     exportData.getRfsName()));
             }
 
-            report.print("(" + count++ + " / " + size + ") ", I_CmsReport.C_FORMAT_NOTE);
-            report.print(report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                new Integer(count++), new Integer(size)), I_CmsReport.C_FORMAT_NOTE);
+            report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.C_FORMAT_NOTE);
             report.print(exportData.getVfsName());
-            report.print(report.key("report.dots"));
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             int status = export(null, null, cms, exportData);
             if (status == HttpServletResponse.SC_OK) {
-                report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
             } else {
-                report.println(report.key("report.ignored"), I_CmsReport.C_FORMAT_NOTE);
+                report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_IGNORED_0), I_CmsReport.C_FORMAT_NOTE);
             }
 
             if (LOG.isInfoEnabled()) {
@@ -599,7 +602,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         resourcesToExport = null;
 
-        report.println(report.key("report.staticexport.nontemplateresources_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_END_0), I_CmsReport.C_FORMAT_HEADLINE);
 
         return templatesFound;
 
@@ -619,7 +622,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_EXPORT_TEMPLATES_1, new Integer(size)));
         }
-        report.println(report.key("report.staticexport.templateresources_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_STATICEXPORT_TEMPLATE_RESOURCES_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
 
         // now loop through all of them and request them from the server
         Iterator i = publishedTemplateResources.iterator();
@@ -627,10 +630,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         while (i.hasNext()) {
             String rfsName = (String)i.next();
 
-            report.print("(" + count++ + " / " + size + ") ", I_CmsReport.C_FORMAT_NOTE);
-            report.print(report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
-            report.print(rfsName);
-            report.print(report.key("report.dots"));
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                new Integer(count++), new Integer(size)), I_CmsReport.C_FORMAT_NOTE);
+            report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.C_FORMAT_NOTE);
+            report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_ARGUMENT_1, rfsName));
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             String exportUrlStr = getExportUrl() + getRfsPrefix() + rfsName;
 
@@ -687,19 +692,23 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
                 // write the report
                 if (status == HttpServletResponse.SC_OK) {
-                    report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                 } else if (status == HttpServletResponse.SC_NOT_MODIFIED) {
-                    report.println(report.key("report.skipped"), I_CmsReport.C_FORMAT_NOTE);
+                    report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SKIPPED_0), I_CmsReport.C_FORMAT_NOTE);
                 } else if (status == HttpServletResponse.SC_SEE_OTHER) {
-                    report.println(report.key("report.ignored"), I_CmsReport.C_FORMAT_NOTE);
+                    report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_IGNORED_0), I_CmsReport.C_FORMAT_NOTE);
                 } else {
-                    report.println(String.valueOf(status), I_CmsReport.C_FORMAT_OK);
+                    report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1, new Integer(status)), I_CmsReport.C_FORMAT_OK);
                 }
             } catch (IOException e) {
                 report.println(e);
             }
         }
-        report.println(report.key("report.staticexport.templateresources_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_STATICEXPORT_TEMPLATE_RESOURCES_END_0), I_CmsReport.C_FORMAT_HEADLINE);
 
     }
 

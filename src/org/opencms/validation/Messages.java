@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/Messages.java,v $
- * Date   : $Date: 2005/04/28 08:22:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/25 09:19:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,18 +41,50 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_SEARCH_1 = "LOG_LINK_SEARCH_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RETRIEVAL_RESOURCE_1 = "LOG_RETRIEVAL_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_BROKEN_LINKS_IN_0 = "RPT_BROKEN_LINKS_IN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_BROKEN_LINKS_SUMMARY_BEGIN_0 = "RPT_BROKEN_LINKS_SUMMARY_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_BROKEN_LINKS_SUMMARY_END_0 = "RPT_BROKEN_LINKS_SUMMARY_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_HTMLLINK_FOUND_BROKEN_LINKS_0 = "RPT_HTMLLINK_FOUND_BROKEN_LINKS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_HTMLLINK_VALIDATING_0 = "RPT_HTMLLINK_VALIDATING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_HTMLLINK_VALIDATOR_BEGIN_0 = "RPT_HTMLLINK_VALIDATOR_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_HTMLLINK_VALIDATOR_END_0 = "RPT_HTMLLINK_VALIDATOR_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_HTMLLINK_VALIDATOR_ERROR_0 = "RPT_HTMLLINK_VALIDATOR_ERROR_0";
     
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.validation.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
+    }
 
     /**
      * Returns an instance of this localized message accessor.<p>
@@ -62,14 +94,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static I_CmsMessageBundle get() {
 
         return INSTANCE;
-    }
-
-    /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
     }
 
     /**
