@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/05/25 09:58:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/25 10:06:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,22 @@ package org.opencms.workplace.tools.modules;
 
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleDependency;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.workplace.list.*;
+import org.opencms.workplace.list.A_CmsListDialog;
+import org.opencms.workplace.list.CmsListColumnAlignEnum;
+import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDefaultAction;
+import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemDetails;
+import org.opencms.workplace.list.CmsListItemDetailsFormatter;
+import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.CmsListSearchAction;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Main module management view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsModulesList extends A_CmsListDialog {
@@ -138,6 +149,7 @@ public class CmsModulesList extends A_CmsListDialog {
     public void executeListMultiActions() {
 
         if (getParamListAction().equals(LIST_ACTION_MDELETE)) {
+            String moduleList = "";
             try {
                 // execute the delete multiaction
                 Iterator itItems = getSelectedItems().iterator();
@@ -147,7 +159,7 @@ public class CmsModulesList extends A_CmsListDialog {
                     modules.append(listItem.getId());
                     modules.append(",");
                 }
-                String moduleList = new String(modules);
+                moduleList = new String(modules);
                 moduleList = moduleList.substring(0, moduleList.length() - 1);
                 Map params = new HashMap();
                 params.put(PARAM_MODULE, moduleList);
@@ -156,7 +168,9 @@ public class CmsModulesList extends A_CmsListDialog {
                 getToolManager().jspRedirectPage(this, "/system/workplace/admin/modules/reports/delete.html", params);
             } catch (IOException e) {
                 // should never happen
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_ACTION_MODULES_DELETE_1,
+                    moduleList), e);
             }
         }
         listSave();
@@ -180,7 +194,9 @@ public class CmsModulesList extends A_CmsListDialog {
                 getToolManager().jspRedirectTool(this, "/modules/edit", params);
             } catch (IOException e) {
                 // should never happen
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_ACTION_MODULE_EDIT_1,
+                    module), e);
             }
         } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
             try {
@@ -190,7 +206,9 @@ public class CmsModulesList extends A_CmsListDialog {
                 getToolManager().jspRedirectPage(this, "/system/workplace/admin/modules/reports/delete.html", params);
             } catch (IOException e) {
                 // should never happen
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_ACTION_MODULE_DELETE_1,
+                    module), e);
             }
         } else if (getParamListAction().equals(LIST_ACTION_EXPORT)) {
             try {
@@ -200,7 +218,9 @@ public class CmsModulesList extends A_CmsListDialog {
                 getToolManager().jspRedirectPage(this, "/system/workplace/admin/modules/reports/export.html", params);
             } catch (IOException e) {
                 // should never happen
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_ACTION_MODULE_EXPORT_1,
+                    module), e);
             }
         }
         listSave();

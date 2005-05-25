@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2005/05/25 09:01:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/25 10:06:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.modules;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleImportExportHandler;
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsModulesUploadFromServer extends CmsWidgetDialog {
@@ -129,9 +130,13 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
                 getToolManager().jspRedirectPage(this, IMPORT_ACTION_REPORT, param);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_ACTION_MODULE_UPLOAD_1,
+                m_moduleupload), e);
         } catch (CmsConfigurationException e) {
-            throw new RuntimeException(e);
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_ACTION_MODULE_UPLOAD_1,
+                m_moduleupload), e);
         }
         // set the list of errors to display when saving failed
         setCommitErrors(errors);

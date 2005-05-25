@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/Messages.java,v $
- * Date   : $Date: 2005/05/25 09:01:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/25 10:06:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,24 +41,30 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-
+    
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITMODULE_ADMIN_TOOL_GROUP_0 = "GUI_EDITMODULE_ADMIN_TOOL_GROUP_0";
-
+    public static final String ERR_ACTION_MODULE_DELETE_1 = "ERR_ACTION_MODULE_DELETE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ACTION_MODULE_EDIT_1 = "ERR_ACTION_MODULE_EDIT_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ACTION_MODULE_EXPORT_1 = "ERR_ACTION_MODULE_EXPORT_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ACTION_MODULE_UPLOAD_1 = "ERR_ACTION_MODULE_UPLOAD_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ACTION_MODULES_DELETE_1 = "ERR_ACTION_MODULES_DELETE_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITMODULE_ADMIN_TOOL_HELP_0 = "GUI_EDITMODULE_ADMIN_TOOL_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITMODULE_ADMIN_TOOL_NAME_0 = "GUI_EDITMODULE_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_ADMIN_TOOL_GROUP_0 = "GUI_MODULES_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_ADMIN_TOOL_HELP_0 = "GUI_MODULES_ADMIN_TOOL_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_ADMIN_TOOL_NAME_0 = "GUI_MODULES_ADMIN_TOOLNAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_DETAIL_HIDE_AUTHORINFO_HELP_0 = "GUI_MODULES_DETAIL_HIDE_AUTHORINFO_HELP_0";
