@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2005/05/25 09:28:36 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/05/25 11:01:45 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implementation for an indexer indexing VFS Cms resources.<p>
  * 
- * @version $Revision: 1.20 $ $Date: 2005/05/25 09:28:36 $
+ * @version $Revision: 1.21 $ $Date: 2005/05/25 11:01:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -145,7 +145,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                         m_report.print(
                             org.opencms.report.Messages.get().container(
                                 org.opencms.report.Messages.RPT_SUCCESSION_1,
-                                new Integer(m_threadManager.getCounter() + 1)),
+                                String.valueOf(m_threadManager.getCounter() + 1)),
                             I_CmsReport.C_FORMAT_NOTE);
                         m_report.print(Messages.get().container(
                             Messages.RPT_SEARCH_INDEXING_FILE_BEGIN_0), I_CmsReport.C_FORMAT_NOTE);
