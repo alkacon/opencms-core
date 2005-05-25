@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/05/25 13:15:44 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2005/05/25 13:22:45 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -669,7 +669,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
                         if (OpenCms.getLog(this).isInfoEnabled()) {
                             OpenCms.getLog(this).info(
-                                " ( "
+                                "( "
                                     + (i + 1)
                                     + " / "
                                     + importSize
