@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/05/24 15:14:07 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/25 10:57:50 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.9.1
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
@@ -289,11 +289,11 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         StringBuffer result = new StringBuffer(8);
         result.append(CmsMemoryMonitor.class.getName());
         result.append(":");
-        result.append(Messages.get().key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE1_0));
+        result.append(key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE1_0));
         result.append("|");
         result.append(CmsSearchManager.class.getName());
         result.append(":");
-        result.append(Messages.get().key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE2_0));
+        result.append(key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE2_0));
         
         
         return result.toString();
@@ -310,19 +310,19 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         
         // 0 0 3 * * ? (daily at 3 am)
         result.append("0 0 3 * * ?:");
-        result.append(Messages.get().key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE1_0));
+        result.append(key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE1_0));
         // 0 0/30 * * * ? (daily every thirty minutes) 
         result.append("|0 0/30 * * * ?:");
-        result.append(Messages.get().key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE2_0));
+        result.append(key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE2_0));
         // 0 30 8 ? * 4 (every Wednesday at 8:30 am)
         result.append("|0 30 8 ? * 4:");
-        result.append(Messages.get().key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE3_0));
+        result.append(key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE3_0));
         // 0 15 18 15 * ? (on the 15th day of the month at 6:15 pm)
         result.append("|0 15 18 15 * ?:");
-        result.append(Messages.get().key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE4_0));
+        result.append(key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE4_0));
         // 0 45 15 ? * 1 2005-2006 (every Sunday from the year 2005 to 2006 at 3:45 pm)
         result.append("|0 45 15 ? * 1 2005-2006:");
-        result.append(Messages.get().key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE5_0));
+        result.append(key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE5_0));
         return result.toString();
     }
 
