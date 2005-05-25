@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/05/25 11:03:32 $
- * Version: $Revision: 1.640 $
+ * Date   : $Date: 2005/05/25 13:20:47 $
+ * Version: $Revision: 1.641 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,9 @@ OpenCms 5.9.1 Corrin (aka 6.0 RC 1) - May 25, 2005
 ! New Administration module for module management available (work in progess)
 - Improvements to the new localization mechanism regarding Multi-Bundles
 - Refactored all Exceptions and Log messages to use localized output
+! Added documentation module to Alkacon Documentation about how to upgrade from version 5.0
+! New "combo box" HTML input (selection) widget added
+! Widgets do now have a new configuration attribute (e.g. to add options to a select widget)
 
 OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April 28, 2005
 ! Added "search in search result" functionality
