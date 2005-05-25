@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/05/25 09:29:47 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/25 10:25:08 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2005/05/25 09:29:47 $
+ * @version $Revision: 1.14 $ $Date: 2005/05/25 10:25:08 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
@@ -191,10 +191,11 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         report.print(Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
         if (report instanceof CmsHtmlReport) {
             report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1, getModuleName()));
+                org.opencms.report.Messages.RPT_ARGUMENT_1, "<i>" + getModuleName() + "</i>"));
+
         } else {
             report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1, "<i>" + getModuleName() + "</i>"));
+                org.opencms.report.Messages.RPT_ARGUMENT_1, getModuleName()));
         }
         report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
         
@@ -310,10 +311,10 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             report.print(Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
             if (report instanceof CmsHtmlReport) {
                 report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1, modulePackageName));
+                    org.opencms.report.Messages.RPT_ARGUMENT_1, "<i>" + modulePackageName + "</i>"));   
             } else {
                 report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1, "<i>" + modulePackageName + "</i>"));
+                    org.opencms.report.Messages.RPT_ARGUMENT_1, modulePackageName));
             }
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             
