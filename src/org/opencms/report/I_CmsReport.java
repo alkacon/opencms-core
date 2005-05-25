@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2005/05/24 08:13:26 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/05/25 07:29:32 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Locale;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public interface I_CmsReport {
         
@@ -167,7 +167,7 @@ public interface I_CmsReport {
     /**
      * Prints a String to the report.<p>
      * 
-     * @param value the String to add
+     * @param value the message container to add
      */
     void print(String value);
 
@@ -177,7 +177,7 @@ public interface I_CmsReport {
      * Use the contants starting with <code>C_FORMAT</code> from this interface
      * to indicate which formatting to use.<p>
      *
-     * @param value the String to add
+     * @param value the message container to add
      * @param format the formatting to use for the output
      */
     void print(String value, int format);
@@ -186,12 +186,11 @@ public interface I_CmsReport {
      * Adds a line break to the report.<p>
      */
     void println();
-
-
+    
     /**
      * Prints a localized message to the report.<p>
      * 
-     * @param container the String to add
+     * @param container the message container to add
      */
     void println(CmsMessageContainer container);
 
@@ -201,7 +200,7 @@ public interface I_CmsReport {
      * Use the contants starting with <code>C_FORMAT</code> from this interface
      * to indicate which formatting to use.<p>
      *
-     * @param container the String to add
+     * @param container the message container to add
      * @param format the formatting to use for the output
      */
     void println(CmsMessageContainer container, int format);  
