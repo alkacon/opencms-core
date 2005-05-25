@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/05/25 10:25:08 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/25 10:35:40 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2005/05/25 10:25:08 $
+ * @version $Revision: 1.15 $ $Date: 2005/05/25 10:35:40 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
@@ -308,7 +308,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                 modulePackageName = moduleZipName;
             }
             
-            report.print(Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+            report.print(Messages.get().container(Messages.RPT_IMPORT_MODULE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
             if (report instanceof CmsHtmlReport) {
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1, "<i>" + modulePackageName + "</i>"));   
