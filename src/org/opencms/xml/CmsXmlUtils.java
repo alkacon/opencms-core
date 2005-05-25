@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2005/05/19 12:57:48 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/25 12:27:00 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.3.5
  */
 public final class CmsXmlUtils {
@@ -635,12 +635,9 @@ public final class CmsXmlUtils {
                 }
             }
             // generate String from XML for display of document in error message
-            String content = CmsEncoder.createString(xmlData, encoding);
-            out.write("\n\nThe verified XML content was:");
-            out.write("\n-------------------------------------------------------------------\n");
-            out.write(content);
-            out.write("\n-------------------------------------------------------------------\n");
-            throw new CmsXmlException(Messages.get().container(Messages.ERR_XML_VALIDATION_1, out.toString()));
+            throw new CmsXmlException(Messages.get().container(
+                Messages.ERR_XML_VALIDATION_0,
+                out.toString()));
         }
     }
 
