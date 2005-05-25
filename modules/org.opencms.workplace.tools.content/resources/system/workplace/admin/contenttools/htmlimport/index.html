@@ -42,12 +42,7 @@ case CmsDialog.ACTION_REPORT_END:
 	
 	boolean isValid = true;															
 	if (wp.getAction() == CmsDialog.ACTION_CONFIRMED) {
-		try {				
-			imp.checkParameters();
-		} catch (CmsParameterValidationException e) {
-			isValid = false;
-			errorMessage = e.getMessage();
-		}
+		imp.checkParameters();
 	}
 	if (isValid) {
 		wp.setHtmlImport(imp);
