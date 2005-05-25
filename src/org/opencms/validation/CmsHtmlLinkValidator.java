@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2005/05/25 09:19:22 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/25 11:38:39 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.28 $ $Date: 2005/05/25 09:19:22 $
+ * @version $Revision: 1.29 $ $Date: 2005/05/25 11:38:39 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator {
@@ -166,7 +166,8 @@ public class CmsHtmlLinkValidator {
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
                     new Integer(i + 1), new Integer(j)), I_CmsReport.C_FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATING_0), I_CmsReport.C_FORMAT_NOTE);
-                report.print(cms.getRequestContext().removeSiteRoot(resourceName));
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1, cms.getRequestContext().removeSiteRoot(resourceName)));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 links = ((I_CmsHtmlLinkValidatable) resourceType).findLinks(cms, resource);

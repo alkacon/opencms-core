@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/05/25 11:28:13 $
- * Version: $Revision: 1.221 $
+ * Date   : $Date: 2005/05/25 11:38:39 $
+ * Version: $Revision: 1.222 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.221 $
+ * @version $Revision: 1.222 $
  * @since 5.1
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
@@ -600,7 +600,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
                 new Integer(m), new Integer(n)), I_CmsReport.C_FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_DELETE_FOLDER_0), I_CmsReport.C_FORMAT_NOTE);
-            report.print(dbc.removeSiteRoot(currentFolder.getRootPath()));
+            report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_ARGUMENT_1, currentFolder.getRootPath()));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             try {
@@ -749,7 +750,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
                     new Integer(m), new Integer(n)), I_CmsReport.C_FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_DELETE_FILE_0), I_CmsReport.C_FORMAT_NOTE);
-                report.print(dbc.removeSiteRoot(offlineResource.getRootPath()));
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1, offlineResource.getRootPath()));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
@@ -1245,7 +1247,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
                 new Integer(m), new Integer(n)), I_CmsReport.C_FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_PUBLISH_FOLDER_0), I_CmsReport.C_FORMAT_NOTE);
-            report.print(dbc.removeSiteRoot(offlineFolder.getRootPath()));
+            report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_ARGUMENT_1, dbc.removeSiteRoot(offlineFolder.getRootPath())));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             if (offlineFolder.getState() == I_CmsConstants.C_STATE_NEW) {

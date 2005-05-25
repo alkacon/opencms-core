@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/25 09:22:50 $
- * Version: $Revision: 1.506 $
+ * Date   : $Date: 2005/05/25 11:38:39 $
+ * Version: $Revision: 1.507 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.506 $
+ * @version $Revision: 1.507 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6828,14 +6828,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
                         
                         report.print(Messages.get().container(Messages.RPT_EXPORT_POINTS_DELETE_0), I_CmsReport.C_FORMAT_NOTE);
-                        report.print(currentPublishedResource.getRootPath());
+                        report.print(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1, currentPublishedResource.getRootPath()));
                         report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                         report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                     } else {
                         
                         report.print(Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_0), I_CmsReport.C_FORMAT_NOTE);
-                        report.print(currentPublishedResource.getRootPath());
+                        report.print(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1, currentPublishedResource.getRootPath()));
                         report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                         report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);

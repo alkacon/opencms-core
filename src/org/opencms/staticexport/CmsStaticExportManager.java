@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/05/25 09:16:24 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2005/05/25 11:38:39 $
+ * Version: $Revision: 1.102 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.101 $
+ * @version $Revision: 1.102 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -580,7 +580,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
                 new Integer(count++), new Integer(size)), I_CmsReport.C_FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.C_FORMAT_NOTE);
-            report.print(exportData.getVfsName());
+            report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_ARGUMENT_1, exportData.getVfsName()));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             int status = export(null, null, cms, exportData);
             if (status == HttpServletResponse.SC_OK) {
