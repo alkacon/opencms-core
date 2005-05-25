@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/Messages.java,v $
- * Date   : $Date: 2005/05/25 10:06:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/25 10:19:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,33 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMPORTMODULE_ADMIN_TOOL_NAME_0 = "GUI_IMPORTMODULE_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMPORTMODULE_ADMIN_TOOL_HELP_0 = "GUI_IMPORTMODULE_ADMIN_TOOL_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_ADMIN_TOOL_NAME_0 = "GUI_MODULES_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMPORTMODULESERVER_ADMIN_TOOL_NAME_0 = "GUI_IMPORTMODULESERVER_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMPORTMODULESERVER_ADMIN_TOOL_HELP_0 = "GUI_IMPORTMODULESERVER_ADMIN_TOOL_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULE_ADMIN_TOOL_GROUP_0 = "GUI_MODULE_ADMIN_TOOL_GROUP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITMODULE_ADMIN_TOOL_NAME_0 = "GUI_EDITMODULE_ADMIN_TOOL_NAME_0";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWMODULE_ADMIN_TOOL_NAME_0 = "GUI_NEWMODULE_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWMODULE_ADMIN_TOOL_HELP_0 = "GUI_NEWMODULE_ADMIN_TOOL_HELP_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_MODULE_DELETE_1 = "ERR_ACTION_MODULE_DELETE_1";
