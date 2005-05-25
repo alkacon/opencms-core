@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/25 13:32:03 $
- * Version: $Revision: 1.509 $
+ * Date   : $Date: 2005/05/25 13:38:11 $
+ * Version: $Revision: 1.510 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.509 $
+ * @version $Revision: 1.510 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6830,8 +6830,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                         report.print(Messages.get().container(Messages.RPT_EXPORT_POINTS_DELETE_0), I_CmsReport.C_FORMAT_NOTE);
                         report.print(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1, currentPublishedResource.getRootPath()));
-                        report.print(" ");
                         report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                        report.print(" ");
                         report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                     } else {
@@ -6839,8 +6839,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                         report.print(Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_0), I_CmsReport.C_FORMAT_NOTE);
                         report.print(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1, currentPublishedResource.getRootPath()));
-                        report.print(" ");
                         report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                        report.print(" ");
                         report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                     }
