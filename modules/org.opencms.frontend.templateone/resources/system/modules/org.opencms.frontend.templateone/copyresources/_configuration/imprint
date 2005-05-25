@@ -29,7 +29,7 @@ This OpenCms 6.0 demonstration was developed by Alkacon Softare.</span><br />
         </link>
       </links>
       <content><![CDATA[
-Alkacon Software is the main contributor for the OpenCms core system, as well as this &quot;templateone&quot; demo. We offer support, training and consulting for OpenCms based projects. <br /><br />Please visist our website <a href="${link0}">http://www.alkacon.com</a> for more details about our OpenCms service offerings.<br /><br /><span style="font-style: italic;">Alkacon Software makes more then 75% of it's work results available as Open Source. As an example many features in this &quot;templateone&quot; demo where developed in the couse of customer projects. By working with Alkacon Software, you ensure the continued success of OpenCms as an Open Source project.</span><br />]]></content>
+Alkacon Software is the main contributor for the OpenCms core system, as well as this &quot;templateone&quot; demo. We offer support, training and consulting for OpenCms based projects. <br /><br />Please visit our website <a href="${link0}">http://www.alkacon.com</a> for more details about our OpenCms service offerings.<br /><br /><span style="font-style: italic;">Alkacon Software makes more then 75% of it's work results available as Open Source. As an example many features in this &quot;templateone&quot; demo where developed in the couse of customer projects. By working with Alkacon Software, you ensure the continued success of OpenCms as an Open Source project.</span><br />]]></content>
     </text.foot>
   </imprint>
   <imprint language="de">
