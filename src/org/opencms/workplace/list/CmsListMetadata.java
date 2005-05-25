@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/05/20 16:55:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/25 11:03:55 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
@@ -453,7 +453,7 @@ public class CmsListMetadata {
         html.append("\t<div>\n");
         html.append("\t\t<input type='text' name='");
         html.append(listId);
-        html.append("Filter' value='' size='20' maxlength='245'>\n");
+        html.append("Filter' value='' size='20' maxlength='245' style='vertical-align: bottom;'>\n");
         html.append(m_searchAction.buttonHtml(wp));
         I_CmsListAction showAllAction = m_searchAction.getShowAllAction();
         if (showAllAction != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/20 16:55:03 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/05/25 11:03:55 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -838,7 +838,7 @@ public class CmsHtmlList {
             return "";
         }
         StringBuffer html = new StringBuffer(1024);
-        html.append("<table width='100%' cellspacing='0' class='buttons'>\n");
+        html.append("<table width='100%' cellspacing='0'>\n");
         html.append("\t<tr>\n");
         html.append("\t\t<td class='main'>\n");
         // prev button
@@ -927,7 +927,7 @@ public class CmsHtmlList {
     private String htmlTitle(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
-        html.append("<table width='100%' cellspacing='0' class='buttons'>");
+        html.append("<table width='100%' cellspacing='0'>");
         html.append("\t<tr>\n");
         html.append("\t\t<td>\n");
         html.append("\t\t\t");
@@ -971,7 +971,7 @@ public class CmsHtmlList {
     private String htmlToolBar(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
-        html.append("<table width='100%' cellspacing='0' class='buttons'>\n");
+        html.append("<table width='100%' cellspacing='0' style='margin-bottom: 5px'>\n");
         html.append("\t<tr>\n");
         html.append(m_metadata.htmlSearchBar(getId(), wp));
         html.append(m_metadata.htmlMultiActionBar(wp));
