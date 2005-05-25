@@ -11,12 +11,13 @@
 	<module>
 		<name>org.opencms.workplace.tools.widgetdemo</name>
 		<nicename><![CDATA[OpenCms 6.0 Demos for the OpenCms 6 Administration Framework]]></nicename>
+		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[
 <p>This module several demos for using widgets in the OpenCms 6 Administrationn Framework.<p>
 <p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.4</version>
+		<version>0.9.6</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Fri, 13 May 2005 14:05:46 GMT</datecreated>

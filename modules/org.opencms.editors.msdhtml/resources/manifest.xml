@@ -11,13 +11,14 @@
 	<module>
 		<name>org.opencms.editors.msdhtml</name>
 		<nicename><![CDATA[OpenCms 6.0 Microsoft DHtml Editor]]></nicename>
+		<group>OpenCms Editors</group>
 		<class/>
 		<description><![CDATA[
 <p>This module adds the Microsoft DHTML editor to the OpenCms Workplace.</p>
 <p>Install this module if you want a WYSIWYG editor for IE5+ based browsers.</p>
 <p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.1</version>
+		<version>0.9.2</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 14 Feb 2005 17:32:33 GMT</datecreated>

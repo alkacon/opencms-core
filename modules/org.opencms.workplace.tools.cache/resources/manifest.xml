@@ -11,13 +11,14 @@
 	<module>
 		<name>org.opencms.workplace.tools.cache</name>
 		<nicename><![CDATA[OpenCms 6.0 Cache administration tools]]></nicename>
+		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[
 <p>This module contains the OpenCms administration tools for managing the different internal caches.</p>
 <p>Its includes the flex-cache managing tool and the workplace re-initialization tool.<p>
 <p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.0</version>
+		<version>0.9.6</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 14 Feb 2005 17:32:33 GMT</datecreated>

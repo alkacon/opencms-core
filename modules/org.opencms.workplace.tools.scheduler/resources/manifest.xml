@@ -11,10 +11,11 @@
 	<module>
 		<name>org.opencms.workplace.tools.scheduler</name>
 		<nicename><![CDATA[OpenCms 6.0 Scheduled Jobs Management]]></nicename>
+		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing scheduled jobs.</p>
 <p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>]]></description>
-		<version>0.9.2</version>
+		<version>0.9.6</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 14 Feb 2005 23:00:00 GMT</datecreated>

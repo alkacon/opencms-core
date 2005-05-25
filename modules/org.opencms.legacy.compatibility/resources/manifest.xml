@@ -11,6 +11,7 @@
 	<module>
 		<name>org.opencms.legacy.compatibility</name>
 		<nicename><![CDATA[OpenCms 6.0 Compatibility settings for old modules]]></nicename>
+		<group>OpenCms Legacy Support</group>
 		<class>com.opencms.legacy.CmsLegacyModuleAction</class>
 		<description><![CDATA[
 <p>This module contains OpenCms compatibility settings to use version 5.0 modules with OpenCms 6.0.</p>
@@ -19,7 +20,7 @@
 <p><strong>Note:</strong> For Oracle setup, please specify the index tablespace as module parameter if you are not using the default "users" tablespace.</p>
 <p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.1</version>
+		<version>0.9.2</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 20 Sep 2004 18:00:00 CEST</datecreated>

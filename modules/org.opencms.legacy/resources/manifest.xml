@@ -11,13 +11,14 @@
 	<module>
 		<name>org.opencms.legacy</name>
 		<nicename><![CDATA[OpenCms 6.0 Legacy Module]]></nicename>
+		<group>OpenCms Legacy Support</group>
 		<class/>
 		<description><![CDATA[
 <p>This module contains the OpenCms Legacy Module for OpenCms 5 backwards compatibility.</p>
 <p>It mainly includes the OpenCms5 Administration Framework and tools, the Workflow View, and the XMLTemplate resource type support.<p>
 <p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.1</version>
+		<version>0.9.2</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 14 Feb 2005 17:32:33 GMT</datecreated>

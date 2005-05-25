@@ -11,13 +11,14 @@
 	<module>
 		<name>org.opencms.workplace</name>
 		<nicename><![CDATA[OpenCms 6.0 Workplace Base]]></nicename>
+		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[
 <p>This module contains the OpenCms Workplace base files.</p>
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
 <p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.1</version>
+		<version>0.9.6</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 14 Feb 2005 17:32:33 GMT</datecreated>

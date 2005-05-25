@@ -11,12 +11,13 @@
 	<module>
 		<name>org.opencms.workplace.tools.staticexport</name>
 		<nicename><![CDATA[OpenCms 6.0 Static export administration tool]]></nicename>
+		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[
 <p>This module contains a one-click Static Export Tool.</p>
 <p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.0</version>
+		<version>0.9.6</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 14 Feb 2005 23:00:00 GMT</datecreated>

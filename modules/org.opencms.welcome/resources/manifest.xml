@@ -11,6 +11,7 @@
 	<module>
 		<name>org.opencms.welcome</name>
 		<nicename><![CDATA[OpenCms 6.0 Welcome page and release notes]]></nicename>
+		<group>OpenCms Release Notes</group>
 		<class/>
 		<description><![CDATA[
 <p>This module contains the OpenCms welcome page and release notes.</p>
@@ -19,7 +20,7 @@
 It will also remove the "default" template.</p>
 <p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>3.9.3</version>
+		<version>3.9.4</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 20 Sep 2004 16:00:00 GMT</datecreated>
