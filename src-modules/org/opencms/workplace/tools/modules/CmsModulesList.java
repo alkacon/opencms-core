@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/05/25 09:01:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/25 09:58:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * Main module management view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsModulesList extends A_CmsListDialog {
@@ -375,6 +375,8 @@ public class CmsModulesList extends A_CmsListDialog {
         groupCol.setName(Messages.get().container(Messages.GUI_MODULES_LIST_COLS_GROUP_0));
         groupCol.setWidth("10%");
         groupCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        CmsModulesListGroupFormatter groupFormatter = new CmsModulesListGroupFormatter();
+        groupCol.setFormatter(groupFormatter);
         metadata.addColumn(groupCol);
 
         // add column for version
