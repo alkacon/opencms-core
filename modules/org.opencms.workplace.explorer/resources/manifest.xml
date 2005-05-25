@@ -1227,6 +1227,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/commons/group_sm.gif</source>
+			<destination>system/workplace/resources/commons/group_sm.gif</destination>
+			<type>image</type>
+			<uuidresource>643e79fc-cd1a-11d9-ae53-df98a8463eee</uuidresource>
+			<datelastmodified>Wed, 25 May 2005 12:42:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 25 May 2005 12:42:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/commons/tree.js</source>
 			<destination>system/workplace/resources/commons/tree.js</destination>
 			<type>plain</type>
@@ -1242,6 +1255,19 @@
 					<value><![CDATA[Explorer tree - JavaScript]]></value>
 				</property>
 			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/user_sm.gif</source>
+			<destination>system/workplace/resources/commons/user_sm.gif</destination>
+			<type>image</type>
+			<uuidresource>6444947f-cd1a-11d9-ae53-df98a8463eee</uuidresource>
+			<datelastmodified>Wed, 25 May 2005 12:42:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 25 May 2005 12:42:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>

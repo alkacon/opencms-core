@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/25 12:50:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -214,7 +214,7 @@ public class CmsChaccBrowser extends CmsDialog {
         retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\"" 
             + " onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"top.selectForm('0','"
             + group.getName() + "');\">");
-        retValue.append("<img src=\""+getSkinUri()+"buttons/group_sm.gif\">&nbsp;");
+        retValue.append("<img src=\""+getSkinUri()+"commons/group_sm.gif\">&nbsp;");
         retValue.append(group.getName());
         retValue.append("</span>");
         return retValue;
@@ -231,7 +231,7 @@ public class CmsChaccBrowser extends CmsDialog {
         retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\"" 
             + " onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"top.selectForm('1','"
             + user.getName() + "');\">");
-        retValue.append("<img src=\""+getSkinUri()+"buttons/user_sm.gif\">&nbsp;");
+        retValue.append("<img src=\""+getSkinUri()+"commons/user_sm.gif\">&nbsp;");
         retValue.append(user.getName());
         if (!"".equals(user.getFirstname()) || !"".equals(user.getLastname())) {
             retValue.append(" ("+user.getFirstname()+" "+user.getLastname()+")");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/25 12:50:08 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -1141,7 +1141,7 @@ public class CmsChacc extends CmsDialog {
             result.append("<a href=\"javascript:toggleDetail('").append(idValue).append("');\">");
             result.append("<img src=\"").append(getSkinUri()).append("buttons/plus.gif\" class=\"noborder\" id=\"ic-").append(idValue).append("\"></a>");
         }
-        result.append("<img src=\"").append(getSkinUri()).append("buttons/");
+        result.append("<img src=\"").append(getSkinUri()).append("commons/");
         result.append(typeImg);
         result.append("_sm.gif\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"");       
         result.append(typeLocalized);
