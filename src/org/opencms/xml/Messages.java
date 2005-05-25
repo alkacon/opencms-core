@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/Messages.java,v $
- * Date   : $Date: 2005/05/25 12:27:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/25 12:48:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -125,7 +125,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_WRITE_XML_DOC_TO_STRING_0 = "ERR_WRITE_XML_DOC_TO_STRING_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_XML_VALIDATION_0 = "ERR_XML_VALIDATION_0";
+    public static final String ERR_XML_VALIDATION_1 = "ERR_XML_VALIDATION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_ST_USING_WIDGET_2 = "INIT_ADD_ST_USING_WIDGET_2";
