@@ -11,13 +11,14 @@
 	<module>
 		<name>org.opencms.frontend.templateone</name>
 		<nicename><![CDATA[OpenCms 6.0 'templateone' frontend]]></nicename>
+		<group>Template One</group>
 		<class/>
 		<description><![CDATA[
 <p>This module contains the highly configurable OpenCms frontend template one. </p>
 <p>This template can easily be used to display website contents.</p>
 <p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.7</version>
+		<version>0.9.12</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Tue, 26 Oct 2004 15:12:52 GMT</datecreated>

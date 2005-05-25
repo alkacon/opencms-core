@@ -11,12 +11,13 @@
 	<module>
 		<name>org.opencms.frontend.templateone.xmlcontentdemo</name>
 		<nicename><![CDATA[OpenCms 6.0 'templateone' XML content demo]]></nicename>
+		<group>Template One</group>
 		<class/>
 		<description><![CDATA[
 <p>This module contains demo resources for OpenCms 6.0 XML content.</p>
 <p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.11</version>
+		<version>0.9.12</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Wed, 15 Dec 2004 16:50:42 GMT</datecreated>

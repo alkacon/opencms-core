@@ -11,13 +11,14 @@
 	<module>
 		<name>org.opencms.frontend.templateone.form</name>
 		<nicename><![CDATA[OpenCms 6.0 'templateone' online input form]]></nicename>
+		<group>Template One</group>
 		<class/>
 		<description><![CDATA[
 <p>This module contains online form functionality for the OpenCms frontend template one.</p>
 <p>This module can easily be used to create online input forms.</p>
 <p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.8</version>
+		<version>0.9.12</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Wed, 19 Jan 2005 12:52:20 GMT+01:00</datecreated>
