@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/25 11:03:55 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/05/25 13:31:51 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -838,7 +838,7 @@ public class CmsHtmlList {
             return "";
         }
         StringBuffer html = new StringBuffer(1024);
-        html.append("<table width='100%' cellspacing='0'>\n");
+        html.append("<table width='100%' cellspacing='0' style='margin-top: 5px;'>\n");
         html.append("\t<tr>\n");
         html.append("\t\t<td class='main'>\n");
         // prev button
@@ -880,11 +880,12 @@ public class CmsHtmlList {
             onClic));
         html.append("\n");
         // page selection list
+        html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
         html.append("\t\t\t<select name='");
         html.append(m_id);
         html.append("PageSet' id='id-page_set' onChange ='");
         html.append(m_id);
-        html.append("ListSetPage(this.value);'>\n");
+        html.append("ListSetPage(this.value);' style='vertical-align: bottom;'>\n");
         for (int i = 0; i < getNumberOfPages(); i++) {
             int displayedFrom = i * getMaxItemsPerPage() + 1;
             int displayedTo = (i + 1) * getMaxItemsPerPage() < getSize() ? (i + 1) * getMaxItemsPerPage() : getSize();
@@ -899,7 +900,7 @@ public class CmsHtmlList {
             html.append("</option>\n");
         }
         html.append("\t\t\t</select>\n");
-        html.append("\t\t\t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
         if (m_filteredItems == null) {
             html.append(Messages.get().key(
                 locale,
