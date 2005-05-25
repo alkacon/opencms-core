@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/05/24 07:45:07 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2005/05/25 13:15:44 $
+ * Version: $Revision: 1.98 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -531,7 +531,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             // walk through all files in manifest
             for (int i = 0; i < importSize; i++) {
 
-                m_report.print(" ( " + (i + 1) + " / " + importSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
+                m_report.print("( " + (i + 1) + " / " + importSize + " ) ", I_CmsReport.C_FORMAT_NOTE);
                 currentElement = (Element)fileNodes.get(i);
 
                 // get all information for a file-import
