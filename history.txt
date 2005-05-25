@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/05/18 12:31:19 $
- * Version: $Revision: 1.639 $
+ * Date   : $Date: 2005/05/25 11:03:32 $
+ * Version: $Revision: 1.640 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.9.1 Corrin (aka 6.0 rc 1) - May 27, 2005
+OpenCms 5.9.1 Corrin (aka 6.0 RC 1) - May 25, 2005
 * Fixed issue with static export suffix on a JSP with parameters always being set to ".html"
 ! XML content resource collectors can now get the name of the resource type to collect in the parameter
 ! Better error reporting during validation of the XML content definition
@@ -28,9 +28,15 @@ OpenCms 5.9.1 Corrin (aka 6.0 rc 1) - May 27, 2005
 ! When creating a new page the name entered is automatically corrected for invalid chars,
   moreover the originally entered name can optional be set as Title and/or NavText
 - Refactored the HTML widgets so that they can be used on "normal" dialogs (i.e. without XML content)
+! Created "WidgetDialog" for the Workplace that can map widgets to JavaBean properties
 * Improved error handling when moving a folder to the same name with just different case
 - The legacy com.opencms.* packages have been moved to a separate module
 - The legacy Workplace implementation has been moved to a separate module
+- The Workplace editors have been moved to separate modules
+! New Administration module for scheduled jobs available
+! New Administration module for module management available (work in progess)
+- Improvements to the new localization mechanism regarding Multi-Bundles
+- Refactored all Exceptions and Log messages to use localized output
 
 OpenCms 5.7.3 Corrin (aka 6.0 beta 3) - April 28, 2005
 ! Added "search in search result" functionality
