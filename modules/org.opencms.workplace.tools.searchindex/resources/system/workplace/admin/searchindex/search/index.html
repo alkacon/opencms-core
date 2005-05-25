@@ -21,6 +21,11 @@
     // initialize the workplace class
     CmsDialog wp = new CmsDialog(pageContext, request, response);
     
+    if (wp.getAction()==CmsDialog.ACTION_CANCEL) {
+    	wp.actionCloseDialog();
+    	return;
+    }
+
     // Create a JSP action element
     CmsJspActionElement cms = wp.getJsp();
     
