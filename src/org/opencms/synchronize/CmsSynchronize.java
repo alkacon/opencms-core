@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/05/25 11:01:45 $
- * Version: $Revision: 1.46 $
- * Date   : $Date: 2005/05/25 11:01:45 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/05/25 11:03:13 $
+ * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/05/25 11:03:13 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.46 $ $Date: 2005/05/25 11:01:45 $
+ * @version $Revision: 1.47 $ $Date: 2005/05/25 11:03:13 $
  */
 public class CmsSynchronize {
 
@@ -265,25 +265,19 @@ public class CmsSynchronize {
             // there is an entry, so delete the resource
             if (sync != null) {
                 
-                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_1, 
-                    String.valueOf(m_count++)), I_CmsReport.C_FORMAT_NOTE);
-                
-                
-                
                 m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
                 if (res[i].isFile()) {
-                    m_report.print(Messages.get().container(Messages.RPT_DELETE_RFS_FILE_0), I_CmsReport.C_FORMAT_NOTE);
-                } else {  
-                    m_report.print(Messages.get().container(Messages.RPT_DELETE_RFS_FOLDER_0), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(m_report.key("report.sync_deleting_rfs_file"), I_CmsReport.C_FORMAT_NOTE);
+                } else {     
+                    m_report.print(m_report.key("report.sync_deleting_rfs_folder"), I_CmsReport.C_FORMAT_NOTE);
                 }     
-                m_report.print(res[i].getAbsolutePath().replace('\\', '/'));
-                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                m_report.print(res[i].getAbsolutePath().replace('\\', '/'));               
+                m_report.print(m_report.key("report.dots"));   
                 
                 res[i].delete();
                 m_syncList.remove(translate(vfsFile));
                 
-                m_report.println(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
             }
         }
         // free mem
@@ -333,8 +327,7 @@ public class CmsSynchronize {
             CmsSynchronizeList sync = new CmsSynchronizeList(folder, resourcename, newFolder.getDateLastModified(), fsFile.lastModified());
             m_newSyncList.put(resourcename, sync);
             
-            m_report.println(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
         }
         // since the check has been done on folder basis, this must be a folder
         if (fsFile.isDirectory()) {
@@ -434,8 +427,7 @@ public class CmsSynchronize {
         // .. and remove it from the old one
         m_syncList.remove(translate(resname));
         // update the report
-        m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_1, 
-            String.valueOf(m_count++)), I_CmsReport.C_FORMAT_NOTE);
+        m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
         m_report.print(m_report.key("report.sync_skipping"), I_CmsReport.C_FORMAT_NOTE);     
         m_report.println(resname);         
     }
