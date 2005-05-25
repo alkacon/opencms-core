@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/05/25 09:28:36 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.lucene.search.Similarity;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.37 $ $Date: 2005/04/30 11:15:38 $
+ * @version $Revision: 1.38 $ $Date: 2005/05/25 09:28:36 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -575,9 +575,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         if (report != null) {
-            report.print(report.key("search.indexing_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            
+            report.print(
+                Messages.get().container(Messages.RPT_SEARCH_INDEXING_BEGIN_0),
+                I_CmsReport.C_FORMAT_HEADLINE);
             report.print(indexName, I_CmsReport.C_FORMAT_HEADLINE);
-            report.println(report.key("search.dots"), I_CmsReport.C_FORMAT_HEADLINE);
+            report.println(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_DOTS_0), I_CmsReport.C_FORMAT_HEADLINE);
         }
 
         // get the search index by name
@@ -630,10 +634,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 threadManager.reportStatistics();
             } catch (Exception e) {
                 if (report != null) {
-                    report.println(report.key("search.indexing_failed"), I_CmsReport.C_FORMAT_WARNING);
+                    report.println(
+                        Messages.get().container(Messages.RPT_SEARCH_INDEXING_FAILED_0),
+                        I_CmsReport.C_FORMAT_WARNING);
                 }
 
-                LOG.error(Messages.get().key(Messages.LOG_REBUILD_INDEX_FAILED_1, index.getName()), e);
+                LOG.error(
+                    Messages.get().key(Messages.LOG_REBUILD_INDEX_FAILED_1, index.getName()),
+                    e);
                 
                 
             } finally {
@@ -642,7 +650,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         writer.close();
                     } catch (IOException e) {
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().key(Messages.LOG_CLOSE_INDEX_WRITER_FAILED_0), e);
+                            LOG.debug(
+                                Messages.get().key(Messages.LOG_CLOSE_INDEX_WRITER_FAILED_0),
+                                e);
                         }   
                     }
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2005/04/28 08:28:48 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/05/25 09:28:36 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implementation for an indexer indexing VFS Cms resources.<p>
  * 
- * @version $Revision: 1.19 $ $Date: 2005/04/28 08:28:48 $
+ * @version $Revision: 1.20 $ $Date: 2005/05/25 09:28:36 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -136,16 +136,22 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     }
 
                     if (m_report != null && !folderReported) {
-                        m_report.print(m_report.key("search.indexing_folder"), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(Messages.get().container(Messages.RPT_SEARCH_INDEXING_FOLDER_0), I_CmsReport.C_FORMAT_NOTE);
                         m_report.println(path, I_CmsReport.C_FORMAT_DEFAULT);
                         folderReported = true;
                     }
 
                     if (m_report != null) {
-                        m_report.print("( " + (m_threadManager.getCounter() + 1) + " ) ", I_CmsReport.C_FORMAT_NOTE);
-                        m_report.print(m_report.key("search.indexing_file_begin"), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(
+                            org.opencms.report.Messages.get().container(
+                                org.opencms.report.Messages.RPT_SUCCESSION_1,
+                                new Integer(m_threadManager.getCounter() + 1)),
+                            I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(Messages.get().container(
+                            Messages.RPT_SEARCH_INDEXING_FILE_BEGIN_0), I_CmsReport.C_FORMAT_NOTE);
                         m_report.print(res.getName(), I_CmsReport.C_FORMAT_DEFAULT);
-                        m_report.print(m_report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);
+                        m_report.print(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_DOTS_0), I_CmsReport.C_FORMAT_DEFAULT);
                     }
 
                     A_CmsIndexResource ires = new CmsVfsIndexResource(res);
@@ -157,9 +163,8 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
             if (m_report != null) {
                 m_report.println();
-                m_report.println(
-                    m_report.key("search.indexing_file_failed") + " : " + exc.getMessage(),
-                    I_CmsReport.C_FORMAT_WARNING);
+                m_report.print(Messages.get().container(Messages.RPT_SEARCH_INDEXING_FILE_FAILED_0));
+                m_report.println(exc);
             }
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().key(Messages.LOG_INDEXING_PATH_FAILED_1, path), exc);
@@ -168,11 +173,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         } catch (CmsException exc) {
 
             if (m_report != null) {
-                m_report.println(m_report.key("search.indexing_folder")
-                    + path
-                    + m_report.key("search.indexing_folder_failed")
-                    + " : "
-                    + exc.getMessage(), I_CmsReport.C_FORMAT_WARNING);
+                m_report.println(Messages.get().container(
+                    Messages.RPT_SEARCH_INDEXING_FOLDER_FAILED_2,
+                    path,
+                    exc.getLocalizedMessage()), I_CmsReport.C_FORMAT_WARNING);
             }
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().key(Messages.LOG_INDEXING_PATH_FAILED_1, path), exc);
@@ -181,7 +185,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         } catch (Exception exc) {
 
             if (m_report != null) {
-                m_report.println(m_report.key("search.indexing_folder_failed"), I_CmsReport.C_FORMAT_WARNING);
+                m_report.println(
+                    Messages.get().container(Messages.RPT_SEARCH_INDEXING_FOLDER_0),
+                    I_CmsReport.C_FORMAT_WARNING);
             }
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().key(Messages.LOG_INDEXING_PATH_FAILED_1, path), exc);

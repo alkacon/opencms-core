@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2005/04/28 08:28:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/25 09:28:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -191,6 +191,39 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITING_INDEX_TO_WRITER_1 = "LOG_WRITING_INDEX_TO_WRITER_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_BEGIN_0 = "RPT_SEARCH_INDEXING_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_END_0 = "RPT_SEARCH_INDEXING_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_FAILED_0 = "RPT_SEARCH_INDEXING_FAILED_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_FILE_BEGIN_0 = "RPT_SEARCH_INDEXING_FILE_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_FILE_END_0 = "RPT_SEARCH_INDEXING_FILE_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_FILE_FAILED_0 = "RPT_SEARCH_INDEXING_FILE_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_FILE_SKIPPED_0 = "RPT_SEARCH_INDEXING_FILE_SKIPPED_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_FOLDER_0 = "RPT_SEARCH_INDEXING_FOLDER_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_FOLDER_FAILED_2 = "RPT_SEARCH_INDEXING_FOLDER_FAILED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_STATS_4 = "RPT_SEARCH_INDEXING_STATS_4";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_TIMEOUT_1 = "RPT_SEARCH_INDEXING_TIMEOUT_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.search.messages";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2005/04/28 08:28:48 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/25 09:28:36 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.lucene.index.IndexWriter;
  * The indexing of a single resource was wrapped into a single thread
  * in order to prevent the indexer from hanging.<p>
  *  
- * @version $Revision: 1.14 $ $Date: 2005/04/28 08:28:48 $
+ * @version $Revision: 1.15 $ $Date: 2005/05/25 09:28:36 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -147,7 +147,8 @@ public class CmsIndexingThread extends Thread {
                 }
 
                 if (m_report != null && !isInterrupted()) {
-                    m_report.println(m_report.key("search.indexing_file_end"), I_CmsReport.C_FORMAT_OK);
+                    m_report.println(Messages.get().container(
+                        Messages.RPT_SEARCH_INDEXING_FILE_END_0), I_CmsReport.C_FORMAT_OK);
                     if (DEBUG && LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(Messages.LOG_WRITE_SUCCESS_0));
                     }
@@ -161,9 +162,10 @@ public class CmsIndexingThread extends Thread {
 
                 if (m_report != null) {
                     m_report.println();
-                    m_report.println(
-                        m_report.key("search.indexing_file_failed") + " : " + exc.getMessage(),
-                        I_CmsReport.C_FORMAT_WARNING);
+                    m_report.print(Messages.get().container(
+                        Messages.RPT_SEARCH_INDEXING_FILE_FAILED_0), I_CmsReport.C_FORMAT_WARNING);
+                    m_report.println(exc);
+                    
                 }
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().key(Messages.LOG_INDEX_FAILED_1, m_res.getRootPath()), exc);
@@ -172,7 +174,8 @@ public class CmsIndexingThread extends Thread {
         } else {
 
             if (m_report != null) {
-                m_report.println(m_report.key("search.indexing_file_skipped"), I_CmsReport.C_FORMAT_NOTE);
+                m_report.println(Messages.get().container(
+                    Messages.RPT_SEARCH_INDEXING_FILE_SKIPPED_0), I_CmsReport.C_FORMAT_NOTE);
             }
 
             if (LOG.isDebugEnabled()) {
