@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/26 09:36:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
   
@@ -76,6 +76,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         suite.addTest(new TestMoveRename("testMoveSingleNewResource"));
         suite.addTest(new TestMoveRename("testMultipleMoveResource"));
         suite.addTest(new TestMoveRename("testRenameNewFolder"));
+        suite.addTest(new TestMoveRename("testMoveFolderToOwnSubfolder"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -290,4 +291,34 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.undoChanges(source, false);
     }
     
+    /**
+     * Tests to move a folder in its own subfolder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testMoveFolderToOwnSubfolder() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to move a folder in its own subfolder");
+
+        // Creating paths
+        String source = "/folder1/";
+        String destination = "/folder1/subfolder11/folder1/";
+
+        storeResources(cms, source);
+
+        cms.lockResource(source);
+        CmsVfsException error = null;
+        try {
+            // moving a folder to it's own subfolder must cause an exception
+            cms.moveResource(source, destination);
+        } catch (CmsVfsException e) {
+            error = e;
+        }
+        
+        // an exception must have been thrown
+        assertNotNull(error);
+        // check for the right error message
+        assertSame(error.getMessageContainer().getKey(), Messages.ERR_MOVE_SAME_FOLDER_1);
+    }    
 }

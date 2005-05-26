@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2005/05/19 15:24:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/26 09:34:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
@@ -259,6 +259,12 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // move to target with same name is not allowed
             throw new CmsVfsException(org.opencms.file.Messages.get().container(org.opencms.file.Messages.ERR_MOVE_SAME_NAME_1, destination));
         }   
+        if (dest.startsWith(resource.getRootPath())) {
+            // move of folder inside itself is not allowed
+            throw new CmsVfsException(org.opencms.file.Messages.get().container(org.opencms.file.Messages.ERR_MOVE_SAME_FOLDER_1,
+                cms.getSitePath(resource),
+                destination));
+        }
 
         // check if the user has write access and if resource is locked
         // done here since copy is ok without lock, but delete is not

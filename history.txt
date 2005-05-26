@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/05/26 09:34:29 $
- * Version: $Revision: 1.642 $
+ * Date   : $Date: 2005/05/26 09:36:35 $
+ * Version: $Revision: 1.643 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.9.3 Corrin (aka 6.0 RC 2) - June 17, 2005
+OpenCms 5.9.2 Corrin (aka 6.0 RC 2) - June 17, 2005
 * Fixed issue with folders when moving a folder to it's own subfolder
 
 OpenCms 5.9.1 Corrin (aka 6.0 RC 1) - May 25, 2005
