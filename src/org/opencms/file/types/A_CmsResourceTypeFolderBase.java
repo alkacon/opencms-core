@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2005/05/26 09:34:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/26 10:16:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
@@ -261,7 +261,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         }   
         if (dest.startsWith(resource.getRootPath())) {
             // move of folder inside itself is not allowed
-            throw new CmsVfsException(org.opencms.file.Messages.get().container(org.opencms.file.Messages.ERR_MOVE_SAME_FOLDER_1,
+            throw new CmsVfsException(org.opencms.file.Messages.get().container(org.opencms.file.Messages.ERR_MOVE_SAME_FOLDER_2,
                 cms.getSitePath(resource),
                 destination));
         }

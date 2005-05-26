@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2005/05/26 09:36:35 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/26 10:16:29 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
   
@@ -319,6 +319,6 @@ public class TestMoveRename extends OpenCmsTestCase {
         // an exception must have been thrown
         assertNotNull(error);
         // check for the right error message
-        assertSame(error.getMessageContainer().getKey(), Messages.ERR_MOVE_SAME_FOLDER_1);
+        assertSame(error.getMessageContainer().getKey(), Messages.ERR_MOVE_SAME_FOLDER_2);
     }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Messages.java,v $
- * Date   : $Date: 2005/05/26 09:36:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/26 10:16:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EMPTY_SITEROOT_0 = "ERR_EMPTY_SITEROOT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_MOVE_SAME_FOLDER_1 = "ERR_MOVE_SAME_FOLDER_1";
+    public static final String ERR_MOVE_SAME_FOLDER_2 = "ERR_MOVE_SAME_FOLDER_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_SAME_NAME_1 = "ERR_MOVE_SAME_NAME_1";
