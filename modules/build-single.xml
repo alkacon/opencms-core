@@ -391,56 +391,15 @@
 		<if>
 			<available file="${module.output.jar}" />
 			<then>
-		    	<if>
-		    		<equals arg1="${module.name}" arg2="org.opencms.legacy" />
-		    		<then>
-		    			<copy 
-		    				file="${opencms.input}/modules/org.opencms.legacy/resources/system/login/version.js" 
-		    				tofile="${opencms.build}/version.js" overwrite="true">			
-		    	    		<filterset>
-		    	      			<filter token="OPENCMS_VERSION" value="${version.number} ${version.name}"/>
-		    	    		</filterset>			
-		    			</copy>
-		                <zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
-		                    <zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="*.jar" />    		
-		                    <zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" >
-				       			<exclude name="system/login/version.js" />
-							</zipfileset>		                    	
-			      			<zipfileset dir="${opencms.build}" prefix="system/login" includes="version.js" />	    			    			
-		                </zip>        
-		    		</then>
-		    		<else>
-		                <zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
-		                    <zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="*.jar" />    		
-		                    <zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
-		                </zip>        
-		    		</else>
-		    	</if>
+		    	<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
+		        		<zipfileset dir="${module.output.jar}" prefix="system/modules/${module.name}/lib/" includes="*.jar" />    		
+		               	<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+		    	</zip>        
 			</then>		
             <else>
-		    	<if>
-		    		<equals arg1="${module.name}" arg2="org.opencms.legacy" />
-		    		<then>
-		    			<copy 
-		    				file="${opencms.input}/modules/org.opencms.legacy/resources/system/login/version.js" 
-		    				tofile="${opencms.build}/version.js" overwrite="true">			
-		    	    		<filterset>
-		    	      			<filter token="OPENCMS_VERSION" value="${version.number} ${version.name}"/>
-		    	    		</filterset>			
-		    			</copy>
-		                <zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
-		                    <zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" >
-				       			<exclude name="system/login/version.js" />
-							</zipfileset>		                    	
-			      			<zipfileset dir="${opencms.build}" prefix="system/login" includes="version.js" />	    			    			
-		                </zip>        
-		    		</then>
-		    		<else>
-		                <zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
-		                    <zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
-		                </zip>        
-		    		</else>
-		    	</if>
+		    	<zip destfile="${module.output.zip}/${module.name}_${module.version}.zip" >
+		        	<zipfileset dir="${module.input.res}" prefix="" excludes="${zip.excludes}" />
+		    	</zip>        
             </else>
 		</if>
                 

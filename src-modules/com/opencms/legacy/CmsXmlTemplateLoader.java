@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/05/20 14:32:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.CmsJspTagInclude;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.I_CmsLoaderIncludeExtension;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
@@ -89,7 +88,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

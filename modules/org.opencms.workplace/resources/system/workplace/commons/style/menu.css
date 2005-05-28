@@ -855,6 +855,29 @@ body.report {
 }
 <% } %>
 
+/* style definitions for WORKPLACE only */
+<% } if(style == WORKPLACE) { %>
+
+/* classes used only on the login screen */
+table.logindialog {
+    margin: 20px auto;
+	width: 550px;
+	border-left: 1px solid ThreeDLightShadow;
+	border-top: 1px solid ThreeDLightShadow;
+	border-right: 1px solid ThreedDarkShadow;
+	border-bottom: 1px solid ThreedDarkShadow;
+}
+
+input.loginbutton {
+	font-family: verdana, sans-serif;
+	font-size: 11px;
+	width: 150px;
+	height: 20px;
+	padding: 0 5px;
+	margin: 0px;
+	overflow: visible;
+}
+
 /* style definitions for WORKPLACE and NEW_ADMIN style */
 <% } if(style == WORKPLACE || style == NEW_ADMIN) { %>
 

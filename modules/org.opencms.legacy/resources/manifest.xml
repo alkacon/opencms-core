@@ -29,7 +29,6 @@
 		</dependencies>
 		<exportpoints/>
 		<resources>
-			<resource uri="/system/login/"/>
 			<resource uri="/system/shared/"/>
 			<resource uri="/system/workplace/action/"/>
 			<resource uri="/system/workplace/administration/"/>
@@ -37,9 +36,7 @@
 			<resource uri="/system/workplace/scripts/"/>
 			<resource uri="/system/workplace/templates/"/>
 		</resources>
-		<parameters>
-			<param name="additionalresources">/system/login/;/system/shared/;/system/workplace/action/;/system/workplace/administration/;/system/workplace/resources/;/system/workplace/scripts/;/system/workplace/templates/</param>
-		</parameters>
+		<parameters/>
 	</module>
 	<files>
 		<file>
@@ -61,80 +58,6 @@
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
-		</file>
-		<file>
-			<destination>system/login</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 08 Aug 2003 13:07:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/login/index</source>
-			<destination>system/login/index</destination>
-			<type>plain</type>
-			<uuidresource>17a5cb01-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/login/index.html</source>
-			<destination>system/login/index.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>17af67f7-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms Login]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/login/login_logo.gif</source>
-			<destination>system/login/login_logo.gif</destination>
-			<type>image</type>
-			<uuidresource>17b66cdd-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/login/version.js</source>
-			<destination>system/login/version.js</destination>
-			<type>plain</type>
-			<uuidresource>17bd98d3-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<uuidcontent>17bd98d2-c0f9-11d7-8d80-80884c2772a5</uuidcontent>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/shared</destination>

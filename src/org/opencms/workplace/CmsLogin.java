@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/05/25 10:56:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,28 +34,47 @@ package org.opencms.workplace;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspLoginBean;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Handles the login of Users to the OpenCms workplace.<p> 
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  */
 public class CmsLogin extends CmsJspLoginBean {
+
+    /** Action constant: Default action, display the dialog. */
+    private static final int ACTION_DISPLAY = 0;
+
+    /** Action constant: Login sucessful. */
+    private static final int ACTION_LOGIN = 1;
+
+    /** Action constant: Logout. */
+    private static final int ACTION_LOGOUT = 2;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLogin.class);
 
     /** The parameter name for the "login" action. */
     private static final String PARAM_ACTION_LOGIN = "login";
@@ -72,14 +91,20 @@ public class CmsLogin extends CmsJspLoginBean {
     /** The parameter name for the user name. */
     private static final String PARAM_USERNAME = "ocUname";
 
+    /** The action to perform. */
+    private int m_action;
+
     /** The value of the "login" action parameter. */
     private String m_actionLogin;
 
     /** The value of the "logout" action parameter. */
     private String m_actionLogout;
 
+    /** The locale to use for display, this will not be the workplace locale, but the browser locale. */
+    private Locale m_locale;
+
     /** The message to display with the dialog in a JavaScrip alert. */
-    private String m_message;
+    private CmsMessageContainer m_message;
 
     /** The value of the password parameter. */
     private String m_password;
@@ -105,49 +130,86 @@ public class CmsLogin extends CmsJspLoginBean {
         res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
         res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MAX_AGE + "0");
         res.addHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
+
+        // divine the best locale from the users browser settings
+        CmsAcceptLanguageHeaderParser parser = new CmsAcceptLanguageHeaderParser(
+            req,
+            OpenCms.getWorkplaceManager().getDefaultLocale());
+        List acceptedLocales = parser.getAcceptedLocales();
+        List workplaceLocales = OpenCms.getWorkplaceManager().getLocales();
+        m_locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, workplaceLocales);
+        if (m_locale == null) {
+            // no match found - use OpenCms default locale
+            m_locale = OpenCms.getWorkplaceManager().getDefaultLocale();
+        }
     }
 
     /**
      * Returns the HTML for the login dialog in it's current state.<p>
      * 
      * @return the HTML for the login dialog
+     * 
+     * @throws IOException in case a redirect fails
      */
-    public String displayDialog() {
+    public String displayDialog() throws IOException {
+
+        if (!OpenCms.getSiteManager().isWorkplaceRequest(getRequest())) {
+            // this is not a request to the configured Workplace site
+            StringBuffer loginLink = new StringBuffer();
+            loginLink.append(OpenCms.getSiteManager().getWorkplaceSiteMatcher().toString());
+            loginLink.append(getFormLink());
+            // send a redirect to the workplace site
+            getResponse().sendRedirect(loginLink.toString());
+            return null;
+        }
 
         CmsObject cms = getCmsObject();
 
-        m_username = CmsRequestUtil.getParameter(getRequest(), PARAM_USERNAME);
-        m_password = CmsRequestUtil.getParameter(getRequest(), PARAM_PASSWORD);
-        m_actionLogin = CmsRequestUtil.getParameter(getRequest(), PARAM_ACTION_LOGIN);
-        m_actionLogout = CmsRequestUtil.getParameter(getRequest(), PARAM_ACTION_LOGOUT);
-        m_requestedResource = CmsRequestUtil.getParameter(
+        m_message = null;
+        m_requestedResource = CmsRequestUtil.getNotEmptyDecodedParameter(
             getRequest(),
             CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
+        if (m_requestedResource == null) {
+            // no resource was requested, use default workplace URI
+            m_requestedResource = CmsWorkplaceAction.C_JSP_WORKPLACE_URI;
+        }
 
-        m_message = null;
+        if (cms.getRequestContext().currentUser().isGuestUser()) {
+
+            // user is not currently logged in
+            m_action = ACTION_DISPLAY;
+            m_username = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_USERNAME);
+            if (m_username != null) {
+                // remove white spaces, can only lead to confusion on user name
+                m_username = m_username.trim();
+            }
+            m_password = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_PASSWORD);
+            m_actionLogin = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_ACTION_LOGIN);
+
+        } else {
+
+            // user is already logged in
+            m_action = ACTION_LOGIN;
+            m_actionLogout = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_ACTION_LOGOUT);
+        }
 
         if (Boolean.valueOf(m_actionLogin).booleanValue()) {
 
             // login was requested
             if ((m_username == null) && (m_password == null)) {
-                m_message = "Please enter a user name and a password!";
+                m_message = Messages.get().container(Messages.GUI_LOGIN_NO_DATA_0);
             } else if (m_username == null) {
-                m_message = "Please enter a user name!";
+                m_message = Messages.get().container(Messages.GUI_LOGIN_NO_NAME_0);
             } else if (m_password == null) {
-                m_message = "Please enter a password!";
+                m_message = Messages.get().container(Messages.GUI_LOGIN_NO_PASSWORD_0);
             } else if ((m_username != null) && (m_password != null)) {
-
-                // all required parameters available
-                if (m_requestedResource == null) {
-                    // no resource was requested, use default workplace URI
-                    m_requestedResource = CmsWorkplaceAction.C_JSP_WORKPLACE_URI;
-                }
 
                 // try to login with the given user information
                 login(m_username, m_password);
 
                 if (getLoginException() == null) {
                     // the login was successfull
+                    m_action = ACTION_LOGIN;
 
                     // set the default project of the user
                     CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
@@ -158,61 +220,82 @@ public class CmsLogin extends CmsJspLoginBean {
                             cms.getRequestContext().setCurrentProject(project);
                         }
                     } catch (Exception e) {
-                        // the project does not exist, maybe it was deleted
-                        int todo = 0;
-                        // TODO: just log this error
-                        e.printStackTrace();
+                        // unable to set the startup project, bad but not critical
+                        LOG.warn(Messages.get().key(
+                            Messages.LOG_LOGIN_NO_STARTUP_PROJECT_2,
+                            m_username,
+                            settings.getStartProject()), e);
                     }
-                    return createWorkplaceOpenerScript();
                 } else {
-                    m_message = "Login has failed!";
+                    m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_0);
                 }
             }
 
         } else if (Boolean.valueOf(m_actionLogout).booleanValue()) {
 
-            // logout was requested
-            try {
-                // this will automatically redirect to the login form
-                logout();
-                return null;
-            } catch (IOException e) {
-                // redirect failed - nothing we can do about this
-                int todo = 0;
-                // TODO: just log this error
-                e.printStackTrace();
-            }
+            m_action = ACTION_LOGOUT;
+            // after logout this will automatically redirect to the login form again
+            logout();
+            return null;
         }
 
         return displayLoginForm();
     }
 
     /**
-     * Returns the HTML/JavaScript that opens the Workplace window after a successful login.<p>
+     * Appends the JavaScript for the login screen
+     * to the given HTML buffer.<p>
      * 
-     * @return the HTML/JavaScript that opens the Workplace window after a successful login
+     * @param html the html buffer to append the script to
+     * @param message the message to display after an unsuccessful login
      */
-    protected String createWorkplaceOpenerScript() {
+    protected void appendDefaultLoginScript(StringBuffer html, CmsMessageContainer message) {
 
-        StringBuffer html = new StringBuffer();
+        html.append("<script type=\"text/javascript\">\n");
 
-        html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n");
-        html.append("<html><head>\n");
-        html.append("<title>");
+        if (message != null) {
+            html.append("function showAlert() {\n");
+            html.append("\talert(\"");
+            html.append(CmsStringUtil.escapeJavaScript(message.key(m_locale)));
+            html.append("\");\n");
+            html.append("}\n");
+        }
 
-        html.append("Login to OpenCms " + OpenCms.getSystemInfo().getVersionNumber());
+        html.append("function doOnload() {\n");
+        html.append("\tdocument.");
+        html.append(PARAM_FORM);
+        html.append(".");
+        html.append(PARAM_USERNAME);
+        html.append(".select();\n");
+        html.append("\tdocument.");
+        html.append(PARAM_FORM);
+        html.append(".");
+        html.append(PARAM_USERNAME);
+        html.append(".focus();\n");
+        if (message != null) {
+            html.append("\tshowAlert();\n");
+        }
+        html.append("}\n");
 
-        html.append("</title>\n");
-        html.append("<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=");
-        html.append(getRequestContext().getEncoding());
-        html.append("\">\n");
+        html.append("</script>\n");
+    }
 
-        html.append("<script language=\"javascript\" type=\"text/javascript\">\n");
+    /**
+     * Appends the JavaScript that opens the Workplace window after a successful login
+     * to the given HTML buffer.<p>
+     * 
+     * @param html the html buffer to append the script to
+     * @param requestedResource the requested resource to open in a new window
+     */
+    protected void appendWorkplaceOpenerScript(StringBuffer html, String requestedResource) {
 
         String winId = "OpenCms" + System.currentTimeMillis();
-        html.append("function doLogin() {\n");
+
+        html.append("<script type=\"text/javascript\">\n");
+
+        html.append("function doOnload() {\n");
         html.append("\tvar openUri = \"");
-        html.append(link(m_requestedResource));
+        html.append(link(requestedResource));
         html.append("\";\n");
         html.append("\tvar workplaceWin = openWorkplace(openUri, \"");
         html.append(winId);
@@ -226,20 +309,30 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("}\n");
 
         html.append("function openWorkplace(url, name) {\n");
+        html.append("\tvar isInWin = (window.name.match(/^OpenCms\\d+$/) != null);\n");
         html.append("\tif (window.innerHeight) {\n");
+        // Mozilla
         html.append("\t\tvar winHeight = window.innerHeight;\n");
         html.append("\t\tvar winWidth = window.innerWidth;\n");
         html.append("\t} else if (document.documentElement && document.documentElement.clientHeight) {\n");
+        // IE 6 "strict" mode
         html.append("\t\tvar winHeight = document.documentElement.clientHeight;\n");
         html.append("\t\tvar winWidth = document.documentElement.clientWidth;\n");
         html.append("\t} else if (document.body && document.body.clientHeight) {\n");
+        // IE 5, IE 6 "relaxed" mode
         html.append("\t\tvar winHeight = document.body.clientWidth;\n");
         html.append("\t\tvar winWidth = document.body.clientHeight;\n");
         html.append("\t}\n");
         html.append("\tif (window.screenY) {\n");
+        // Mozilla
         html.append("\t\tvar winTop = window.screenY;\n");
         html.append("\t\tvar winLeft = window.screenX;\n");
+        html.append("\t\tif (! isInWin) {\n");
+        html.append("\t\t\twinTop += 25;\n");
+        html.append("\t\t\twinLeft += 25;\n");
+        html.append("\t\t}\n");
         html.append("\t} else if (window.screenTop) {\n");
+        // IE
         html.append("\t\tvar winTop = window.screenTop;\n");
         html.append("\t\tvar winLeft = window.screenLeft;\n");
         html.append("\t}\n");
@@ -258,17 +351,6 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("}\n");
 
         html.append("</script>\n");
-        html.append("</head>\n");
-
-        html.append("<body onload=\"doLogin();\">");
-        html.append("<h3>");
-        html.append("OpenCms Login page: Please close this window!");
-        html.append("</h3>");
-        html.append("</body>");
-
-        html.append("</html>\n");
-
-        return html.toString();
     }
 
     /**
@@ -284,127 +366,178 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("<html><head>\n");
         html.append("<title>");
 
-        html.append("Login to OpenCms " + OpenCms.getSystemInfo().getVersionNumber());
+        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_TITLE_0));
+        html.append("OpenCms " + OpenCms.getSystemInfo().getVersionNumber());
 
         html.append("</title>\n");
 
         String encoding = getRequestContext().getEncoding();
-
         html.append("<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=");
         html.append(encoding);
         html.append("\">\n");
 
-        html.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/opencms/export/system/workplace/commons/style/workplace.css\">\n");
+        html.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+        html.append(CmsWorkplace.getStyleUri(this, "workplace.css"));
+        html.append("\">\n");
 
-        html.append("<script language=\"javascript\" type=\"text/javascript\">\n");
-
-        if (m_message != null) {
-            html.append("function showAlert() {\n");
-            html.append("\talert(\"");
-            html.append(m_message);
-            html.append("\");\n");
-            html.append("}\n");
+        if (m_action == ACTION_DISPLAY) {
+            // append default script
+            appendDefaultLoginScript(html, m_message);
+        } else if (m_action == ACTION_LOGIN) {
+            // append window opener script
+            appendWorkplaceOpenerScript(html, m_requestedResource);
         }
 
-        html.append("function setFocus() {\n");
-        html.append("\tdocument.");
-        html.append(PARAM_FORM);
-        html.append(".");
-        html.append(PARAM_USERNAME);
-        html.append(".select();\n");
-        html.append("\tdocument.");
-        html.append(PARAM_FORM);
-        html.append(".");
-        html.append(PARAM_USERNAME);
-        html.append(".focus();\n");
-
-        if (m_message != null) {
-            html.append("showAlert();\n");
-        }
-        html.append("}\n");
-
-        html.append("</script>\n");
         html.append("</head>\n");
 
-        html.append("<body class=\"dialog\" onload=\"setFocus();\">");
+        html.append("<body class=\"dialog\" onload=\"doOnload();\">\n");
 
-        html.append("<table class=\"dialog\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n");
+        html.append("<div style=\"text-align: center; padding-top: 50px;\">");
+        html.append("<img src=\"");
+        html.append(CmsWorkplace.getResourceUri("commons/login_logo.png"));
+        html.append("\">");
+        html.append("</div>\n");
+
+        html.append("<table class=\"logindialog\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n");
         html.append("<table class=\"dialogbox\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n");
         html.append("<div class=\"dialoghead\">");
 
-        html.append("Login to OpenCms");
+        if (m_action == ACTION_DISPLAY) {
+            html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_HEADLINE_0));
+        } else if (m_action == ACTION_LOGIN) {
+            html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_HEADLINE_ALREADY_IN_0));
+        }
 
-        html.append("</div><div class=\"dialogcontent\">");
+        html.append("</div>\n<div class=\"dialogcontent\">");
 
         html.append("<table border=\"0\">\n");
 
-        html.append("<form action=\"");
-        html.append(getFormLink());
-        html.append("\"");
-        appendId(html, PARAM_FORM);
-        html.append("method=\"POST\">\n");
-
-        html.append("<tr>");
-        html.append("<td style=\"white-space: nowrap;\">");
-
-        html.append("Username");
-
-        html.append(":</td>");
-        html.append("<td style=\"width: 300px; white-space: nowrap;\">");
-        html.append("<input class=\"maxwidth\" type=\"text\"");
-        appendId(html, PARAM_USERNAME);
-        html.append("value=\"");
-        html.append(CmsStringUtil.isEmptyOrWhitespaceOnly(m_username) ? "" : m_username.trim());
-        html.append("\">");
-        html.append("</td>");
-        html.append("</tr>\n");
-
-        html.append("<tr>");
-        html.append("<td style=\"white-space: nowrap;\">");
-
-        html.append("Password");
-
-        html.append(":</td>");
-        html.append("<td style=\"width: 300px; white-space: nowrap;\">");
-        html.append("<input class=\"maxwidth\" type=\"password\"");
-        appendId(html, PARAM_PASSWORD);
-        html.append(">");
-        html.append("</td>");
-        html.append("</tr>\n");
-
-        html.append("<tr>");
-        html.append("<td></td><td style=\"white-space: nowrap;\">\n");
-        html.append("<input type=\"hidden\"");
-        appendId(html, PARAM_ACTION_LOGIN);
-        html.append("value=\"true\">\n");
-        
-        if (m_requestedResource != null) {
-            html.append("<input type=\"hidden\"");
-            appendId(html, CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
-            html.append("value=\"");
-            html.append(CmsEncoder.encode(m_requestedResource));
-            html.append("\">\n");
+        if (m_action == ACTION_DISPLAY) {
+            // start form
+            html.append("<form action=\"");
+            html.append(getFormLink());
+            html.append("\"");
+            appendId(html, PARAM_FORM);
+            html.append("method=\"POST\">\n");
         }
 
-        html.append("<input type=\"submit\" value=\"");
-        html.append("Login");
-        html.append("\">\n");
+        html.append("<tr>\n");
+        html.append("<td></td>\n<td colspan=\"2\" style=\"white-space: nowrap;\">\n");
+        html.append("<div style=\"padding-bottom: 10px;\">");
 
-        html.append("</td>");
+        if (m_action == ACTION_DISPLAY) {
+            html.append(CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_MESSAGE_0)));
+        } else if (m_action == ACTION_LOGIN) {
+            html.append(CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(
+                Messages.GUI_LOGIN_MESSAGE_ALREADY_IN_0)));
+        }
+
+        html.append("</div>\n");
+        html.append("</td>\n");
         html.append("</tr>\n");
 
-        html.append("</form>\n");
+        html.append("<tr>\n");
+
+        html.append("<td width=\"60\" rowspan=\"3\" align=\"center\" valign=\"top\">");
+        html.append("<img src=\"");
+        html.append(CmsWorkplace.getResourceUri("commons/login.png"));
+        html.append("\" height=\"48\" width=\"48\">");
+        html.append("</td>\n");
+
+        html.append("<td style=\"white-space: nowrap;\"><b>");
+        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_USERNAME_0));
+        html.append("</b>&nbsp;&nbsp;</td>\n");
+        html.append("<td style=\"width: 300px; white-space: nowrap;\">");
+
+        if (m_action == ACTION_DISPLAY) {
+            // append input for user name
+            html.append("<input style=\"width: 100%\" type=\"text\"");
+            appendId(html, PARAM_USERNAME);
+            html.append("value=\"");
+            html.append(CmsStringUtil.isEmpty(m_username) ? "" : m_username);
+            html.append("\">");
+        } else if (m_action == ACTION_LOGIN) {
+            // append name of user that has been logged in
+            html.append(getRequestContext().currentUser().getFullName());
+        }
+
+        html.append("</td>\n");
+        html.append("</tr>\n");
+
+        if (m_action == ACTION_DISPLAY) {
+            // append 2 rows: input for user name and login button
+            html.append("<tr>\n");
+            html.append("<td style=\"white-space: nowrap;\"><b>");
+            html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_PASSWORD_0));
+            html.append("</b>&nbsp;&nbsp;</td>\n");
+            html.append("<td style=\"width: 300px; white-space: nowrap;\">");
+            html.append("<input style=\"width: 100%\" type=\"password\"");
+            appendId(html, PARAM_PASSWORD);
+            html.append(">");
+            html.append("</td>\n");
+            html.append("</tr>\n");
+
+            html.append("<tr>\n");
+            html.append("<td></td>\n<td style=\"white-space: nowrap;\">\n");
+            html.append("<input type=\"hidden\"");
+            appendId(html, PARAM_ACTION_LOGIN);
+            html.append("value=\"true\">\n");
+
+            if (m_requestedResource != null) {
+                html.append("<input type=\"hidden\"");
+                appendId(html, CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
+                html.append("value=\"");
+                html.append(CmsEncoder.encode(m_requestedResource));
+                html.append("\">\n");
+            }
+
+            html.append("<input class=\"loginbutton\" type=\"submit\" value=\"");
+            html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_BUTTON_0));
+            html.append("\">\n");
+
+            html.append("</td>\n");
+            html.append("</tr>\n");
+        } else if (m_action == ACTION_LOGIN) {
+            // append 2 rows: one empty, other for button with re-open window script
+            html.append("<tr><td></td><td></td></tr>\n");
+
+            html.append("<tr>\n");
+            html.append("<td></td>\n");
+            html.append("<td style=\"width:100%; white-space: nowrap;\">\n");
+            html.append("<input class=\"loginbutton\" type=\"button\" value=\"");
+            html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_BUTTON_ALREADY_IN_0));
+            html.append("\" onclick=\"doOnload()\">\n");
+            html.append("</td>\n");
+            html.append("</tr>\n");
+        }
+
+        if (m_action == ACTION_DISPLAY) {
+            // end form
+            html.append("</form>\n");
+        }
+
         html.append("</table>\n");
 
         html.append("</div></td></tr></table>\n");
         html.append("</td></tr></table>\n");
 
-        html.append("<div style=\"text-align: center; white-space: nowrap;\">");
-        html.append("&copy; 2005 Alkacon Software GmbH. All rights reserved.");
+        html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
+        html.append("<a href=\"http://www.opencms.org\" target=\"_blank\">OpenCms</a> ");
+        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0));
         html.append("</div>\n");
-        html.append("<div style=\"text-align: center; white-space: nowrap;\">");
-        html.append("<a href=\"http://www.opencms.org\" target=\"_blank\">OpenCms</a> is free software available under the GNU LGPL license.");
+        html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
+        html.append("&copy; 2005 Alkacon Software GmbH. ");
+        html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_RIGHTS_RESERVED_0));
         html.append("</div>\n");
+
+        html.append("<noscript>\n");
+        html.append("<div style=\"text-align: center; font-size: 14px; border: 2px solid black; margin: 50px; padding: 20px; background-color: red; color: white; white-space: nowrap;\"><b>");
+        html.append(CmsStringUtil.escapeHtml(Messages.get().key(
+            m_locale,
+            Messages.GUI_LOGIN_NOSCRIPT_1,
+            new Object[] {OpenCms.getSiteManager().getWorkplaceSiteMatcher()})));
+        html.append("</b></div>\n");
+        html.append("</noscript>\n");
 
         html.append("</body></html>");
 

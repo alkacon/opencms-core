@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacySecurityException.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,12 +46,11 @@ import java.util.Locale;
  * but that the current user who attemted it does not have the required permissions at the current time.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1.4
  */
 public class CmsLegacySecurityException extends CmsSecurityException {
     
-
     /** Stores the error code of the CmsLegacyException. */
     protected int m_type;
     

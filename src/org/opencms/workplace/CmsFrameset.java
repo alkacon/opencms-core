@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/05/25 10:56:53 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -70,11 +71,20 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  * 
  * @since 5.1
  */
 public class CmsFrameset extends CmsWorkplace {
+
+    /** The names of the supported frames. */
+    public static final String[] FRAMES = {"top", "head", "body", "foot"};
+
+    /** The names of the supported frames in a list. */
+    public static final List FRAMES_LIST = Arrays.asList(FRAMES);
+
+    /** The request parameter for the selection of the frame. */
+    public static final String PARAM_WP_FRAME = "wpFrame";
 
     /** The request parameter for the workplace project selection. */
     public static final String PARAM_WP_PROJECT = "wpProject";
@@ -334,7 +344,7 @@ public class CmsFrameset extends CmsWorkplace {
             // reset the startup URI, so that it is not displayed again on reload of the frameset
             getSettings().setViewStartup(null);
         }
-        return result;
+        return CmsRequestUtil.appendParameter(result, PARAM_WP_FRAME, FRAMES[2]);
     }
 
     /**
@@ -380,6 +390,16 @@ public class CmsFrameset extends CmsWorkplace {
         }
 
         return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+
+    /**
+     * Returns the reload URI for the OpenCms workplace.<p>
+     * 
+     * @return the reload URI for the OpenCms workplace
+     */
+    public String getWorkplaceReloadUri() {
+
+        return getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
     }
 
     /**
@@ -457,6 +477,18 @@ public class CmsFrameset extends CmsWorkplace {
      */
     protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
+        // check if a startup page has been set
+        String frame = CmsRequestUtil.getNotEmptyDecodedParameter(request, PARAM_WP_FRAME);
+        if ((frame == null) || (FRAMES_LIST.indexOf(frame) < 0)) {
+            // illegal or no frame selected, assume the "top" frame
+            frame = FRAMES[0];
+        }
+
+        if (FRAMES[0].equals(frame)) {
+            // top frame requested - execute special reload actions
+            topFrameReload(settings);
+        }
+
         // check if the user requested a project change
         String project = request.getParameter(PARAM_WP_PROJECT);
         if (project != null) {
@@ -482,10 +514,21 @@ public class CmsFrameset extends CmsWorkplace {
         }
 
         // check if a startup page has been set
-        String startup = CmsRequestUtil.getParameter(request, PARAM_WP_START);
+        String startup = CmsRequestUtil.getNotEmptyDecodedParameter(request, PARAM_WP_START);
         if (startup != null) {
             m_reloadRequired = true;
             settings.setViewStartup(startup);
         }
+    }
+
+    /**
+     * Performs certain clear cache actions if the top frame is reloaded.<p>
+     * 
+     * @param settings the current users workplace settings
+     */
+    protected void topFrameReload(CmsWorkplaceSettings settings) {
+
+        // reset the HTML list in order to force a full reload
+        settings.setHtmlList(null);
     }
 }

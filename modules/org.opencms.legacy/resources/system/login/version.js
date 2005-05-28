@@ -1,1 +1,0 @@
-var version = '@OPENCMS_VERSION@';

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/05/25 10:56:53 $
- * Version: $Revision: 1.117 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.118 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.117 $
+ * @version $Revision: 1.118 $
  * 
  * @since 5.1
  */
@@ -152,6 +152,13 @@ public abstract class CmsWorkplace {
     /** The URI to the stylesheet resources (cached for performance reasons). */
     private static String m_styleUri;
 
+    /** 
+     * Temporary variable for easily adding new resource bundles.      
+     * @see #initMessages()
+     * @see #addMessages(String)
+     */
+    private List m_bundles = new ArrayList();
+
     /** The current users OpenCms context. */
     private CmsObject m_cms;
 
@@ -181,13 +188,6 @@ public abstract class CmsWorkplace {
 
     /** The current OpenCms users workplace settings. */
     private CmsWorkplaceSettings m_settings;
-
-    /** 
-     * Temporary variable for easily adding new resource bundles.      
-     * @see #initMessages()
-     * @see #addMessages(String)
-     */
-    private List m_bundles = new ArrayList();
 
     /**
      * Public constructor.<p>
@@ -303,6 +303,21 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Returns the full Workplace resource path to the selected resource.<p>
+     * 
+     * @param resourceName the name of the resource to get the resource path for
+     * 
+     * @return the full Workplace resource path to the selected resource
+     */
+    public static String getResourceUri(String resourceName) {
+
+        StringBuffer result = new StringBuffer(256);
+        result.append(getSkinUri());
+        result.append(resourceName);
+        return result.toString();
+    }
+
+    /**
      * Returns the path to the skin resources.<p>
      * 
      * @return the path to the skin resources
@@ -404,8 +419,7 @@ public abstract class CmsWorkplace {
         settings.setProject(cms.getRequestContext().currentProject().getId());
 
         // initialize messages and also store them in settings
-        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(
-            settings.getUserSettings().getLocale());
+        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(settings.getUserSettings().getLocale());
         settings.setMessages(messages);
 
         // switch to users preferred site      
@@ -1278,19 +1292,7 @@ public abstract class CmsWorkplace {
 
         return m_messages;
     }
-    
-    /**
-     * Auxiliary method for initialization of messages.<p>
-     * 
-     * @param bundleName the bundle name to instanciate
-     * 
-     * @see #initMessages()
-     */
-    protected void addMessages(String bundleName) {
-        
-        m_bundles.add(new CmsMessages(bundleName, getLocale()));
-    }
-    
+
     /**
      * Returns a list of FileItem instances parsed from the request, in the order that they were transmitted.<p>
      * 
@@ -1680,6 +1682,18 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Auxiliary method for initialization of messages.<p>
+     * 
+     * @param bundleName the bundle name to instanciate
+     * 
+     * @see #initMessages()
+     */
+    protected void addMessages(String bundleName) {
+
+        m_bundles.add(new CmsMessages(bundleName, getLocale()));
+    }
+
+    /**
      * Returns the values of all parameter methods of this workplace class instance.<p>
      * 
      * @return the values of all parameter methods of this workplace class instance
@@ -1824,7 +1838,7 @@ public abstract class CmsWorkplace {
 
             // set cms context accordingly
             initWorkplaceCmsContext(m_settings, m_cms);
-            
+
         }
     }
 

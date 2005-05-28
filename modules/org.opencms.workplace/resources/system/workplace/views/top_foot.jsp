@@ -12,11 +12,17 @@
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
 <link rel="stylesheet" type="text/css" href="<%= wp.getStyleUri(wp.getJsp(),"workplace.css")%>">
 
+<script type="text/javascript"> 
+function doReloadFoot() {
+	document.location.href="<%= cms.link("top_foot.jsp?wpFrame=foot") %>";
+}
+</script>
+
 <%--
 --%><%= wp.getBroadcastMessage() %>
 </head>
 
-<body class="buttons-foot" unselectable="on" onload="setTimeout('location.reload();', 300000);">
+<body class="buttons-foot" unselectable="on" onload="setTimeout('doReloadFoot()', 300000);">
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 0) %>
 <%= wp.buttonBarLabel("label.user") %><td><%= wp.getSettings().getUser().getName() %></td>

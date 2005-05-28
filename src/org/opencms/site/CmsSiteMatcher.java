@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2005/03/11 15:51:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,22 +36,28 @@ package org.opencms.site;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.1
  */
 public final class CmsSiteMatcher implements Cloneable {
 
+    /** Constant for the "http" port. */
+    private static final int PORT_HTTP = 80;
+
+    /** Constant for the "https" port. */
+    private static final int PORT_HTTPS = 443;
+
+    /** Constant for the "http" scheme. */
+    private static final String SCHEME_HTTP = "http";
+
+    /** Constant for the "https" scheme. */
+    private static final String SCHEME_HTTPS = "https";
+
     /** Wildcard for string matching. */
-    private static final String C_WILDCARD = "*";
+    private static final String WILDCARD = "*";
     
     /** Default matcher that always matches all other Site matchers. */
-    public static final CmsSiteMatcher C_DEFAULT_MATCHER = new CmsSiteMatcher(C_WILDCARD, C_WILDCARD, 0);
-
-    /** Constant for "http" scheme. */
-    private static final String C_SCHEME_HTTP = "http";
-
-    /** Constant for "https" scheme. */
-    private static final String C_SCHEME_HTTPS = "https";
+    public static final CmsSiteMatcher DEFAULT_MATCHER = new CmsSiteMatcher(WILDCARD, WILDCARD, 0);
 
     /** Hashcode buffer to save multiple calculations. */
     private Integer m_hashCode;
@@ -76,7 +82,7 @@ public final class CmsSiteMatcher implements Cloneable {
     public CmsSiteMatcher(String serverString) {
 
         if (serverString == null) {
-            init(C_WILDCARD, C_WILDCARD, 0);
+            init(WILDCARD, WILDCARD, 0);
             return;
         }
         // remove whitespace
@@ -93,7 +99,7 @@ public final class CmsSiteMatcher implements Cloneable {
             serverProtocol = serverString.substring(0, pos);
             serverString = serverString.substring(pos + 3);
         } else {
-            serverProtocol = C_SCHEME_HTTP;
+            serverProtocol = SCHEME_HTTP;
         }
         // check for server name and port
         pos = serverString.indexOf(":");
@@ -107,14 +113,14 @@ public final class CmsSiteMatcher implements Cloneable {
                 }
                 serverPort = Integer.valueOf(port).intValue();
             } catch (NumberFormatException e) {
-                serverPort = 80;
+                serverPort = PORT_HTTP;
             }
         } else {
             serverName = serverString;
-            if (C_SCHEME_HTTPS.equals(serverProtocol)) {
-                serverPort = 443;
+            if (SCHEME_HTTPS.equals(serverProtocol)) {
+                serverPort = PORT_HTTPS;
             } else {
-                serverPort = 80;
+                serverPort = PORT_HTTP;
             }
         }
 
@@ -155,11 +161,11 @@ public final class CmsSiteMatcher implements Cloneable {
      */
     public boolean equals(Object o) {
 
-        if ((o == null) || !(o instanceof CmsSiteMatcher)) {
+        if (!(o instanceof CmsSiteMatcher)) {
             return false;
         }
         // if one of the object is the default matcher the result is true
-        if ((this == C_DEFAULT_MATCHER) || (o == C_DEFAULT_MATCHER)) {
+        if ((this == DEFAULT_MATCHER) || (o == DEFAULT_MATCHER)) {
             return true;
         }
         if (o == this) {
@@ -219,7 +225,7 @@ public final class CmsSiteMatcher implements Cloneable {
         return m_serverProtocol
             + "://"
             + m_serverName
-            + ((m_serverPort != 80 && m_serverPort != 443) ? ":" + m_serverPort : "");
+            + (((m_serverPort != PORT_HTTP) && (m_serverPort != PORT_HTTPS)) ? ":" + m_serverPort : "");
     }
 
     /**
@@ -239,14 +245,14 @@ public final class CmsSiteMatcher implements Cloneable {
     public String toString() {
 
         StringBuffer result = new StringBuffer(32);
-        if ((m_serverProtocol != null) && !(C_WILDCARD.equals(m_serverProtocol))) {
+        if ((m_serverProtocol != null) && !(WILDCARD.equals(m_serverProtocol))) {
             result.append(m_serverProtocol);
             result.append("://");
         }
         result.append(m_serverName);
         if ((m_serverPort > 0)
-            && (!(C_SCHEME_HTTP.equals(m_serverProtocol) && (m_serverPort == 80)))
-            && (!(C_SCHEME_HTTPS.equals(m_serverProtocol) && (m_serverPort == 443)))) {
+            && (!(SCHEME_HTTP.equals(m_serverProtocol) && (m_serverPort == PORT_HTTP)))
+            && (!(SCHEME_HTTPS.equals(m_serverProtocol) && (m_serverPort == PORT_HTTPS)))) {
             result.append(":");
             result.append(m_serverPort);
         }
@@ -262,8 +268,8 @@ public final class CmsSiteMatcher implements Cloneable {
      */
     protected void setServerName(String serverName) {
 
-        if ((serverName == null) || ("".equals(serverName)) || (C_WILDCARD.equals(serverName))) {
-            m_serverName = C_WILDCARD;
+        if ((serverName == null) || ("".equals(serverName)) || (WILDCARD.equals(serverName))) {
+            m_serverName = WILDCARD;
         } else {
             m_serverName = serverName.trim();
         }
@@ -294,8 +300,8 @@ public final class CmsSiteMatcher implements Cloneable {
     protected void setServerProtocol(String serverProtocol) {
 
         int pos;
-        if ((serverProtocol == null) || ("".equals(serverProtocol)) || (C_WILDCARD.equals(serverProtocol))) {
-            m_serverProtocol = C_WILDCARD;
+        if ((serverProtocol == null) || ("".equals(serverProtocol)) || (WILDCARD.equals(serverProtocol))) {
+            m_serverProtocol = WILDCARD;
         } else if ((pos = serverProtocol.indexOf("/")) > 0) {
             m_serverProtocol = serverProtocol.substring(0, pos).toLowerCase();
         } else {

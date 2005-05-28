@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2005/05/24 08:13:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -136,8 +136,13 @@ public class TestCmsMessageBundles extends TestCase {
         Enumeration bundleKeys = messages.m_resourceBundle.getKeys();
         while (bundleKeys.hasMoreElements()) {
             String bundleKey  = (String)bundleKeys.nextElement();
-            if (! keys.contains(bundleKey)) {
-                fail("Bundle " + bundle.getBundleName() + " contains unreferenced message " + bundleKey);
+            if (bundleKey.toUpperCase().equals(bundleKey)) {
+                // only check keys which are all upper case
+                if (! keys.contains(bundleKey)) {
+                    fail("Bundle " + bundle.getBundleName() + " contains unreferenced message " + bundleKey);
+                }
+            } else {
+                System.out.println("Additional key in bundle '" + bundleKey + "'");  
             }
         }
     }

@@ -92,9 +92,9 @@ initHist();
 </head>
 
 <frameset rows="24,*,24" border="0" frameborder="0" framespacing="0">
-    <frame <%= wp.getFrameSource("head", cms.link("top_head.jsp")) %> noresize scrolling="no">
+    <frame <%= wp.getFrameSource("head", cms.link("top_head.jsp?wpFrame=head")) %> noresize scrolling="no">
     <frame <%= wp.getFrameSource("body", wp.getStartupUri()) %> noresize scrolling="no">
-    <frame <%= wp.getFrameSource("foot", cms.link("top_foot.jsp")) %> noresize scrolling="no">
+    <frame <%= wp.getFrameSource("foot", cms.link("top_foot.jsp?wpFrame=foot")) %> noresize scrolling="no">
 </frameset>
 
 </html>

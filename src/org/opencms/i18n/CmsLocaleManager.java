@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/05/25 10:56:53 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
 
@@ -485,15 +485,18 @@ public class CmsLocaleManager implements I_CmsEventListener {
      */
     public CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resource) {
 
-        /** The list of configured localized workplace folders. */
-        List wpLocalizedFolders = OpenCms.getWorkplaceManager().getLocalizedFolders();
-
         CmsI18nInfo i18nInfo = null;
-        for (int i = wpLocalizedFolders.size() - 1; i >= 0; i--) {
-            if (resource.startsWith((String)wpLocalizedFolders.get(i))) {
-                // use the workplace locale handler for this resource
-                i18nInfo = OpenCms.getWorkplaceManager().getI18nInfo(req, user, project, resource);
-                break;
+
+        // check if this is a request against a Workplace folder
+        if (OpenCms.getSiteManager().isWorkplaceRequest(req)) {
+            // The list of configured localized workplace folders
+            List wpLocalizedFolders = OpenCms.getWorkplaceManager().getLocalizedFolders();
+            for (int i = wpLocalizedFolders.size() - 1; i >= 0; i--) {
+                if (resource.startsWith((String)wpLocalizedFolders.get(i))) {
+                    // use the workplace locale handler for this resource
+                    i18nInfo = OpenCms.getWorkplaceManager().getI18nInfo(req, user, project, resource);
+                    break;
+                }
             }
         }
         if (i18nInfo == null) {

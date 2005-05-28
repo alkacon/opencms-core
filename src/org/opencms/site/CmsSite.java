@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2005/04/28 08:26:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,13 +42,19 @@ import java.util.ArrayList;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
  *
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.1
  */
 public final class CmsSite implements Cloneable {
 
     /** Name of the property to use for defining directories as site roots. */
     public static final String C_PROPERTY_SITE = "siteroot";
+
+    /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
+    private List m_aliases;
+
+    /** The Url of the secure server. */
+    private CmsSiteMatcher m_secureServer;
 
     /** The site matcher that describes the site. */
     private CmsSiteMatcher m_siteMatcher;
@@ -61,12 +67,6 @@ public final class CmsSite implements Cloneable {
 
     /** Display title of this site. */
     private String m_title;
-
-    /** The Url of the secure server. */
-    private CmsSiteMatcher m_secureServer;
-
-    /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
-    private List m_aliases;
 
     /**
      * Constructs a new site object without title and id information,
@@ -90,7 +90,7 @@ public final class CmsSite implements Cloneable {
      */
     public CmsSite(String siteRoot, CmsUUID siteRootUUID, String title) {
 
-        this(siteRoot, siteRootUUID, title, CmsSiteMatcher.C_DEFAULT_MATCHER);
+        this(siteRoot, siteRootUUID, title, CmsSiteMatcher.DEFAULT_MATCHER);
     }
 
     /**
@@ -144,6 +144,26 @@ public final class CmsSite implements Cloneable {
     }
 
     /**
+     * Returns the aliases for this site.<p>
+     * 
+     * @return a ArrayList with the aliases
+     */
+    public List getAliases() {
+
+        return m_aliases;
+    }
+
+    /**
+     * Returns the secure server url of this site root.<p>
+     * 
+     * @return the secure server url
+     */
+    public String getSecureUrl() {
+
+        return m_secureServer.getUrl();
+    }
+
+    /**
      * Returns the site matcher that describes the URL of this site.<p>
      * 
      * @return the site matcher that describes the URL of this site
@@ -194,23 +214,11 @@ public final class CmsSite implements Cloneable {
     }
 
     /**
-     * Returns the secure server url of this site root.<p>
-     * 
-     * @return the secure server url
+     * @see java.lang.Object#hashCode()
      */
-    public String getSecureUrl() {
+    public int hashCode() {
 
-        return m_secureServer.getUrl();
-    }
-
-    /**
-     * Returns the aliases for this site.<p>
-     * 
-     * @return a ArrayList with the aliases
-     */
-    public List getAliases() {
-
-        return m_aliases;
+        return m_siteRootUUID.hashCode();
     }
 
     /**
@@ -221,14 +229,6 @@ public final class CmsSite implements Cloneable {
     public boolean hasSecureServer() {
 
         return m_secureServer != null;
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-
-        return m_siteRootUUID.hashCode();
     }
 
     /**
@@ -244,6 +244,36 @@ public final class CmsSite implements Cloneable {
         result.append(" title: ");
         result.append(m_title);
         return result.toString();
+    }
+
+    /**
+     * Adds an alias for the site.<p>
+     *      
+     * @param aliasServer the sitematcher for the alias
+     */
+    protected void addAlias(CmsSiteMatcher aliasServer) {
+
+        m_aliases.add(aliasServer);
+    }
+
+    /**
+     * Sets the aliases for the site.<p>
+     *      
+     * @param aliases the aliases for the site
+     */
+    protected void setAliases(List aliases) {
+
+        m_aliases = aliases;
+    }
+
+    /**
+     * Sets the secure server.<p>
+     * 
+     * @param secureServer the sitematcher of the secure server
+     */
+    protected void setSecureServer(CmsSiteMatcher secureServer) {
+
+        m_secureServer = secureServer;
     }
 
     /**
@@ -272,36 +302,6 @@ public final class CmsSite implements Cloneable {
     }
 
     /**
-     * Adds an alias for the site.<p>
-     *      
-     * @param aliasServer the sitematcher for the alias
-     */
-    protected void addAlias(CmsSiteMatcher aliasServer) {
-
-        m_aliases.add(aliasServer);
-    }
-
-    /**
-     * Sets the aliases for the site.<p>
-     *      
-     * @param aliases the aliases for the site
-     */
-    protected void setAliases(List aliases) {
-
-        m_aliases = aliases;
-    }
-    
-    /**
-     * Sets the secure server.<p>
-     * 
-     * @param secureServer the sitematcher of the secure server
-     */
-    protected void setSecureServer(CmsSiteMatcher secureServer) {
-
-        m_secureServer = secureServer;
-    }
-
-    /**
      * Sets the UUID of this site's root directory in the OpenCms VFS.<p>
      * 
      * @param siteRootUUID the UUID of this site's root directory in the OpenCms VFS
@@ -320,5 +320,4 @@ public final class CmsSite implements Cloneable {
 
         m_title = name;
     }
-
 }

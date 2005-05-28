@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2005/05/17 15:29:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,13 +52,13 @@ import javax.servlet.jsp.PageContext;
  * 
  * The <code>javax.servlet.jsp.tagext.TagSupport</code> API constraint only allows 
  * to throw certain <code>Exception</code> types which forbids to use {@link org.opencms.main.CmsException} 
- * which will be localized with the current user's locale at the time the request is evaluated. <p>
+ * which will be localized with the current user's locale at the time the request is evaluated.<p>
  * 
  * At the same time <code>TagSupport</code> implementations may use their member <code>pageContext</code> 
- * to get the <code>CmsObject</code> and therefore the user request's locale. <p>
+ * to get the <code>CmsObject</code> and therefore the user request's locale.<p>
  * 
  * These methods provided here factor out the localization of exception messages and return Strings 
- * for the <code>org.opencms.jsp</code> pacakge. <p>
+ * for the <code>org.opencms.jsp</code> pacakge.<p>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * @since 5.7.3
@@ -162,13 +162,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERR_PROCESS_CONTENTINFO_0 = "LOG_ERR_PROCESS_CONTENTINFO_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_LOGIN_FAILED_2 = "LOG_LOGIN_FAILED_2";
+    public static final String LOG_LOGIN_FAILED_3 = "LOG_LOGIN_FAILED_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LOGIN_SUCCESSFUL_2 = "LOG_LOGIN_SUCCESSFUL_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_LOGOUT_FAILED_2 = "LOG_LOGOUT_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LOGOUT_SUCCESFUL_2 = "LOG_LOGOUT_SUCCESFUL_2";
@@ -198,64 +195,17 @@ public final class Messages extends A_CmsMessageBundle {
     }
 
     /**
-     * Returns the bundle name for this OpenCms package.<p>
-     * 
-     * @return the bundle name for this OpenCms package
-     */
-    public String getBundleName() {
-
-        return BUNDLE_NAME;
-    }
-
-    /**
      * Returns the String for the given CmsMessageContainer localized to the 
-     * current user's locale if available or to the default locale else. <p>
+     * current user's locale if available or to the default locale else.<p>
      * 
      * This method is needed for localization of non- {@link org.opencms.main.CmsException} instances 
-     * that have to be thrown here due to API constraints (javax.servlet.jsp). <p>
-     * 
-     * @param container A CmsMessageContainer containing the message to localize. 
-     * @param context The page context that is known to any calling {@link javax.servlet.jsp.tagext.TagSupport} instance (member <code>pageContext</code>). 
-     * @return the String for the given CmsMessageContainer localized to the 
-     *         current user's locale if available or to the default locale else. <p>
-     */
-    public static String getLocalizedMessage(CmsMessageContainer container, PageContext context) {
-
-        return Messages.getLocalizedMessage(container, context.getRequest());
-    }
-
-    /**
-     * Returns the String for the given CmsMessageContainer localized to the 
-     * current user's locale if available or to the default locale else. <p>
-     * 
-     * This method allows a static method ({@link CmsJspTagInfo#infoTagAction(String, javax.servlet.http.HttpServletRequest)}) 
-     * that has no <code>pageContext</code> in scope to lookup the locale at request time. <p>
-     *  
-     * @see #getLocalizedMessage(CmsMessageContainer, PageContext)
-     * @param container A CmsMessageContainer containing the message to localize. 
-     * @param request The current request. 
-     * @return the String for the given CmsMessageContainer localized to the 
-     *         current user's locale if available or to the default locale else. <p>
-     */
-    public static String getLocalizedMessage(CmsMessageContainer container, ServletRequest request) {
-
-        CmsObject cms = CmsFlexController.getCmsObject(request);
-        return getLocalizedMessage(container, cms);
-
-    }
-
-    /**
-     * Returns the String for the given CmsMessageContainer localized to the 
-     * current user's locale if available or to the default locale else. <p>
-     * 
-     * This method is needed for localization of non- {@link org.opencms.main.CmsException} instances 
-     * that have to be thrown here due to API constraints (javax.servlet.jsp). <p>
+     * that have to be thrown here due to API constraints (javax.servlet.jsp).<p>
      * 
      * @param container A CmsMessageContainer containing the message to localize. 
      * @param cms the <code>CmsObject</code> belonging to the current user (e.g. obtained with 
      *        <code>CmsFlexController.getCmsObject(ServletRequest)</code>). 
      * @return the String for the given CmsMessageContainer localized to the 
-     *         current user's locale if available or to the default locale else. <p>
+     *         current user's locale if available or to the default locale else.<p>
      */
     public static String getLocalizedMessage(CmsMessageContainer container, CmsObject cms) {
 
@@ -267,6 +217,53 @@ public final class Messages extends A_CmsMessageBundle {
             locale = Locale.getDefault();
         }
         return container.key(locale);
+    }
+
+    /**
+     * Returns the String for the given CmsMessageContainer localized to the 
+     * current user's locale if available or to the default locale else.<p>
+     * 
+     * This method is needed for localization of non- {@link org.opencms.main.CmsException} instances 
+     * that have to be thrown here due to API constraints (javax.servlet.jsp).<p>
+     * 
+     * @param container A CmsMessageContainer containing the message to localize. 
+     * @param context The page context that is known to any calling {@link javax.servlet.jsp.tagext.TagSupport} instance (member <code>pageContext</code>). 
+     * @return the String for the given CmsMessageContainer localized to the 
+     *         current user's locale if available or to the default locale else.<p>
+     */
+    public static String getLocalizedMessage(CmsMessageContainer container, PageContext context) {
+
+        return Messages.getLocalizedMessage(container, context.getRequest());
+    }
+
+    /**
+     * Returns the String for the given CmsMessageContainer localized to the 
+     * current user's locale if available or to the default locale else.<p>
+     * 
+     * This method allows a static method ({@link CmsJspTagInfo#infoTagAction(String, javax.servlet.http.HttpServletRequest)}) 
+     * that has no <code>pageContext</code> in scope to lookup the locale at request time.<p>
+     *  
+     * @see #getLocalizedMessage(CmsMessageContainer, PageContext)
+     * @param container A CmsMessageContainer containing the message to localize. 
+     * @param request The current request. 
+     * @return the String for the given CmsMessageContainer localized to the 
+     *         current user's locale if available or to the default locale else.<p>
+     */
+    public static String getLocalizedMessage(CmsMessageContainer container, ServletRequest request) {
+
+        CmsObject cms = CmsFlexController.getCmsObject(request);
+        return getLocalizedMessage(container, cms);
+
+    }
+
+    /**
+     * Returns the bundle name for this OpenCms package.<p>
+     * 
+     * @return the bundle name for this OpenCms package
+     */
+    public String getBundleName() {
+
+        return BUNDLE_NAME;
     }
 
 }

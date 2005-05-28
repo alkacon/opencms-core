@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/05/25 10:56:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  */
@@ -56,6 +56,40 @@ public final class CmsRequestUtil {
     private CmsRequestUtil() {
 
         // empty
+    }
+
+    /**
+     * Appends a request parameter to the given URL.<p>
+     * 
+     * This method takes care about the adding the parameter as an additional 
+     * parameter (appending <code>&param=value</code>) or as the first parameter
+     * (appending <code>?param=value</code>).<p>
+     * 
+     * @param url the URL where to append the parameter to
+     * @param paramName the paramter name to append
+     * @param paramValue the parameter value to append
+     * 
+     * @return the URL with the given parameter appended
+     */
+    public static String appendParameter(String url, String paramName, String paramValue) {
+
+        if (CmsStringUtil.isEmpty(url)) {
+            return null;
+        }
+        int pos = url.indexOf('?');
+        StringBuffer result = new StringBuffer(256);
+        result.append(url);
+        if (pos >= 0) {
+            // url already has parameters
+            result.append('&');
+        } else {
+            // url does not have parameters
+            result.append('?');
+        }
+        result.append(paramName);
+        result.append('=');
+        result.append(paramValue);
+        return result.toString();
     }
 
     /**
@@ -116,7 +150,7 @@ public final class CmsRequestUtil {
      * Reads value from the request parameters,
      * will return <code>null</code> if the value is not available or only white space.<p>
      * 
-     * The value of the request will be decoded using <code>{@link CmsEncoder#decode(String)}</code>
+     * The value of the request will also be decoded using <code>{@link CmsEncoder#decode(String)}</code>
      * and also trimmed using <code>{@link String#trim()}</code>.<p>
      * 
      * @param request the request to read the parameter from
@@ -124,12 +158,28 @@ public final class CmsRequestUtil {
      * 
      * @return the request parameter value for the given parameter
      */
-    public static String getParameter(HttpServletRequest request, String paramName) {
+    public static String getNotEmptyDecodedParameter(HttpServletRequest request, String paramName) {
+
+        String result = getNotEmptyParameter(request, paramName);
+        if (result != null) {
+            result = CmsEncoder.decode(result.trim());
+        }
+        return result;
+    }
+
+    /**
+     * Reads value from the request parameters,
+     * will return <code>null</code> if the value is not available or only white space.<p>
+     * 
+     * @param request the request to read the parameter from
+     * @param paramName the parameter name to read
+     * 
+     * @return the request parameter value for the given parameter
+     */
+    public static String getNotEmptyParameter(HttpServletRequest request, String paramName) {
 
         String result = request.getParameter(paramName);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
-            result = CmsEncoder.decode(result.trim());
-        } else {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
             result = null;
         }
         return result;

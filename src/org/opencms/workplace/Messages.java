@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2005/05/23 12:37:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,57 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.9.1
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INITIALIZE_WORKPLACE_0 = "ERR_INITIALIZE_WORKPLACE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_BUTTON_0 = "GUI_LOGIN_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_BUTTON_ALREADY_IN_0 = "GUI_LOGIN_BUTTON_ALREADY_IN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_FAILED_0 = "GUI_LOGIN_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_HEADLINE_0 = "GUI_LOGIN_HEADLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_HEADLINE_ALREADY_IN_0 = "GUI_LOGIN_HEADLINE_ALREADY_IN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_MESSAGE_0 = "GUI_LOGIN_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_MESSAGE_ALREADY_IN_0 = "GUI_LOGIN_MESSAGE_ALREADY_IN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_NO_DATA_0 = "GUI_LOGIN_NO_DATA_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_NO_NAME_0 = "GUI_LOGIN_NO_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_NO_PASSWORD_0 = "GUI_LOGIN_NO_PASSWORD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_NOSCRIPT_1 = "GUI_LOGIN_NOSCRIPT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0 = "GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_PASSWORD_0 = "GUI_LOGIN_PASSWORD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_RIGHTS_RESERVED_0 = "GUI_LOGIN_RIGHTS_RESERVED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_TITLE_0 = "GUI_LOGIN_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_USERNAME_0 = "GUI_LOGIN_USERNAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_DIALOG_HANDLER_2 = "INIT_ADD_DIALOG_HANDLER_2";
@@ -131,7 +179,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INCLUDE_ERRORPAGE_FAILED_0 = "LOG_INCLUDE_ERRORPAGE_FAILED_0";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LOGIN_NO_STARTUP_PROJECT_2 = "LOG_LOGIN_NO_STARTUP_PROJECT_2";
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_TEMP_FILE_PROJECT_0 = "LOG_NO_TEMP_FILE_PROJECT_0";
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -180,7 +180,6 @@ public final class CmsSiteManager implements Cloneable {
             }
         } catch (Throwable t) {
             LOG.error(Messages.get().key(Messages.LOG_READ_SITE_PROP_FAILED_0), t);
-            
         } finally {
             // restore the user's current context 
             cms.getRequestContext().restoreSiteRoot();
@@ -377,7 +376,9 @@ public final class CmsSiteManager implements Cloneable {
     public void initialize(CmsObject cms) {
 
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_NUM_SITE_ROOTS_CONFIGURED_1, new Integer((m_sites.size() + ((m_defaultUri != null) ? 1 : 0)))));
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_NUM_SITE_ROOTS_CONFIGURED_1,
+                new Integer((m_sites.size() + ((m_defaultUri != null) ? 1 : 0)))));
         }
 
         // check the presence of sites in VFS
@@ -399,7 +400,7 @@ public final class CmsSiteManager implements Cloneable {
         if ((m_defaultUri == null) || "".equals(m_defaultUri.trim())) {
             m_defaultSite = null;
         } else {
-            m_defaultSite = new CmsSite(m_defaultUri, CmsSiteMatcher.C_DEFAULT_MATCHER);
+            m_defaultSite = new CmsSite(m_defaultUri, CmsSiteMatcher.DEFAULT_MATCHER);
             try {
                 cms.readResource(m_defaultSite.getSiteRoot());
             } catch (Throwable t) {
@@ -409,14 +410,18 @@ public final class CmsSiteManager implements Cloneable {
             }
         }
         if (m_defaultSite == null) {
-            m_defaultSite = new CmsSite("/", CmsSiteMatcher.C_DEFAULT_MATCHER);
+            m_defaultSite = new CmsSite("/", CmsSiteMatcher.DEFAULT_MATCHER);
         }
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DEFAULT_SITE_ROOT_1, (m_defaultSite != null ? "" + m_defaultSite : "(not configured)")));
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_DEFAULT_SITE_ROOT_1,
+                (m_defaultSite != null ? "" + m_defaultSite : "(not configured)")));
         }
         m_workplaceSiteMatcher = new CmsSiteMatcher(m_workplaceServer);
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_SITE_1, (m_workplaceSiteMatcher != null ? "" + m_workplaceSiteMatcher : "(not configured)")));
+            CmsLog.LOG.info(Messages.get().key(
+                Messages.INIT_WORKPLACE_SITE_1,
+                (m_workplaceSiteMatcher != null ? "" + m_workplaceSiteMatcher : "(not configured)")));
         }
 
         // set site lists to unmodifiable 
@@ -448,6 +453,22 @@ public final class CmsSiteManager implements Cloneable {
     public boolean isMatchingCurrentSite(CmsObject cms, CmsSiteMatcher matcher) {
 
         return m_sites.get(matcher) == getCurrentSite(cms);
+    }
+
+    /**
+     * Returns <code>true</code> if the given request is against the configured OpenCms workplace.<p> 
+     * 
+     * @param req the request to match 
+     * @return <code>true</code> if the given request is against the configured OpenCms workplace
+     */
+    public boolean isWorkplaceRequest(HttpServletRequest req) {
+
+        if (req == null) {
+            // this may be true inside a static export test case scenario
+            return false;
+        }
+        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
+        return m_workplaceSiteMatcher.equals(matcher);
     }
 
     /**
@@ -530,7 +551,9 @@ public final class CmsSiteManager implements Cloneable {
     private void addServer(CmsSiteMatcher server, CmsSite site) throws CmsConfigurationException {
 
         if (m_sites.containsKey(server)) {
-            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_DUPLICATE_SERVER_NAME_1, server.getUrl()));
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_DUPLICATE_SERVER_NAME_1,
+                server.getUrl()));
         }
         m_sites.put(server, site);
     }

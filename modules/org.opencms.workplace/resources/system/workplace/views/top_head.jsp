@@ -33,7 +33,7 @@
     }
 
     function doReload() {
-		document.location.href = "<%= cms.link("reload.jsp") %>";
+		window.top.location.href = "<%= wp.getWorkplaceReloadUri() %>";
     }
     
     function openwin(url, name, w, h) {
@@ -54,6 +54,7 @@
 	wp.getProjectSelect("name=\"wpProject\" onchange=\"document.forms.wpProjectSelect.submit()\"", "style=\"width:150px\"")
         
 %></td>
+<input type="hidden" id="<%= wp.PARAM_WP_FRAME %>" name="<%= wp.PARAM_WP_FRAME %>" value="head">
 </form>
 
 <% 
@@ -74,6 +75,7 @@ if (wp.showSiteSelector()) {
 	wp.getSiteSelect("name=\"wpSite\" style=\"width:150px\" onchange=\"document.forms.wpSiteSelect.submit()\"")
         
 %></td>
+<input type="hidden" id="<%= wp.PARAM_WP_FRAME %>" name="<%= wp.PARAM_WP_FRAME %>" value="head">
 </form>
 <% } %>
 
@@ -86,10 +88,11 @@ if (wp.showSiteSelector()) {
 	wp.getViewSelect("name=\"wpView\" style=\"width:150px\" onchange=\"document.forms.wpViewSelect.submit()\"")
         
 %></td>
+<input type="hidden" id="<%= wp.PARAM_WP_FRAME %>" name="<%= wp.PARAM_WP_FRAME %>" value="head">
 </form>
 
 <%= wp.buttonBarSeparator(5, 0) %>        
-<%= wp.button("reload.jsp", null, "reload", "button.reload", buttonStyle) %>
+<%= wp.button("javascript:doReload()", null, "reload", "button.reload", buttonStyle) %>
 <%= wp.button("../commons/preferences.jsp", "body", "preferences", "button.preferences", buttonStyle) %>
 
 <% 

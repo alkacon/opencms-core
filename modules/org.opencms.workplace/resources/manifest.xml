@@ -29,6 +29,7 @@
 		<resources>
 			<resource uri="/system/bodies/"/>
 			<resource uri="/system/galleries/"/>
+			<resource uri="/system/login/"/>
 			<resource uri="/system/lost-found/"/>
 			<resource uri="/system/modules/"/>
 			<resource uri="/system/workplace/commons/includes/"/>
@@ -142,6 +143,48 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/login</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Aug 2003 15:07:10 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/login/index.html</source>
+			<destination>system/login/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>68a38133-f052-11d8-ba65-db38cc8f19d8</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:36:14 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms login page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/lost-found</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
@@ -180,6 +223,10 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
 				</property>
 			</properties>
 			<accesscontrol>
@@ -1143,6 +1190,32 @@
 			<destination>system/workplace/resources/commons/help.gif</destination>
 			<type>image</type>
 			<uuidresource>4a97a871-20e6-11d9-8f52-9f91734fb765</uuidresource>
+			<datelastmodified>Mon, 18 Oct 2004 11:15:45 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Oct 2004 11:15:45 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/login.png</source>
+			<destination>system/workplace/resources/commons/login.png</destination>
+			<type>image</type>
+			<uuidresource>4a97a871-20e6-11d9-8f52-9f91734fb766</uuidresource>
+			<datelastmodified>Mon, 18 Oct 2004 11:15:45 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Oct 2004 11:15:45 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/login_logo.png</source>
+			<destination>system/workplace/resources/commons/login_logo.png</destination>
+			<type>image</type>
+			<uuidresource>4a97a871-20e6-11d9-8f52-9f91734fb767</uuidresource>
 			<datelastmodified>Mon, 18 Oct 2004 11:15:45 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 18 Oct 2004 11:15:45 CEST</datecreated>
@@ -2299,27 +2372,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Top Frameset - Head Frame]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/views/reload.jsp</source>
-			<destination>system/workplace/views/reload.jsp</destination>
-			<type>jsp</type>
-			<datelastmodified>Wed, 18 Aug 2004 10:46:32 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 Aug 2004 16:20:43 CEST</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Top Frameset - Reload page]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

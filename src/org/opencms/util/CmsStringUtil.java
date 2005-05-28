@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/05/25 10:56:53 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.oro.text.perl.MalformedPerl5PatternException;
 import org.apache.oro.text.perl.Perl5Util;
@@ -53,7 +52,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -130,6 +129,22 @@ public final class CmsStringUtil {
             // the string has no suffix
             return filename;
         }
+    }
+
+    /**
+     * Replaces occurences of special control characters in the given input with 
+     * a HTML representation.<p>
+     * 
+     * This method currrently replaces line breaks.<p>
+     * 
+     * @param source the String to escape
+     * @return the escaped String
+     */
+    public static String escapeHtml(String source) {
+
+        source = CmsStringUtil.substitute(source, "\r", "");
+        source = CmsStringUtil.substitute(source, "\n", "<br/>\n");
+        return source;
     }
 
     /**

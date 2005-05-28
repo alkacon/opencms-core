@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2005/05/25 10:56:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/28 09:35:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,11 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 
 import java.io.IOException;
 
@@ -56,7 +58,7 @@ import org.apache.commons.logging.Log;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3
  */
@@ -207,11 +209,16 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             }
         } else {
             // login was not successful
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(
-                    Messages.LOG_LOGIN_FAILED_2,
-                    username,
-                    getRequestContext().addSiteRoot(getRequestContext().getUri())));
+            CmsMessageContainer message = Messages.get().container(
+                Messages.LOG_LOGIN_FAILED_3,
+                username,
+                getRequestContext().addSiteRoot(getRequestContext().getUri()),
+                getRequestContext().getRemoteAddress());
+            if (username.equalsIgnoreCase(OpenCms.getDefaultUsers().getUserAdmin())) {
+                // someone tried to log in as "Admin"
+                LOG.error(message.key());
+            } else {
+                LOG.info(message.key());
             }
         }
     }
@@ -252,9 +259,10 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             session.invalidate();
         }
         // logout was successful
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().key(
                 Messages.LOG_LOGOUT_SUCCESFUL_2,
+                getRequestContext().currentUser().getName(),
                 getRequestContext().addSiteRoot(getRequestContext().getUri())));
         }
         getResponse().sendRedirect(getFormLink());
