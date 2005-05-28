@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/05/25 10:56:53 $
- * Version: $Revision: 1.188 $
+ * Date   : $Date: 2005/05/28 17:17:17 $
+ * Version: $Revision: 1.189 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -127,7 +127,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.188 $
+ * @version $Revision: 1.189 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1548,7 +1548,7 @@ public final class OpenCmsCore {
                     }
                     // authentification was successful create a session
                     req.getSession(true);
-                } catch (CmsSecurityException e) {
+                } catch (CmsException e) {
                     // authentification failed, so display a login screen
                     requestAuthorization(req, res);
                 }

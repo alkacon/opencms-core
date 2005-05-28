@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2005/05/28 09:35:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/28 17:17:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsAuthentificationException;
 
 import java.io.IOException;
 
@@ -58,7 +59,7 @@ import org.apache.commons.logging.Log;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3
  */
@@ -193,11 +194,8 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                 getCmsObject().getRequestContext().setCurrentProject(getCmsObject().readProject(login_project));
             }
         } catch (CmsException e) {
-            // any exception here indicates that the login has failed
+            // the login has failed
             m_loginException = e;
-            if (session != null) {
-                session.invalidate();
-            }
         }
         if (m_loginException == null) {
             // login was successful
@@ -209,16 +207,57 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             }
         } else {
             // login was not successful
-            CmsMessageContainer message = Messages.get().container(
-                Messages.LOG_LOGIN_FAILED_3,
-                username,
-                getRequestContext().addSiteRoot(getRequestContext().getUri()),
-                getRequestContext().getRemoteAddress());
-            if (username.equalsIgnoreCase(OpenCms.getDefaultUsers().getUserAdmin())) {
-                // someone tried to log in as "Admin"
-                LOG.error(message.key());
+            if (session != null) {
+                session.invalidate();
+            }
+
+            if (m_loginException instanceof CmsAuthentificationException) {
+                if (org.opencms.db.Messages.ERR_LOGIN_USER_DISABLED_1 == m_loginException.getMessageContainer().getKey()) {
+                    // the user has been disabled
+                    LOG.info(Messages.get().key(
+                        Messages.LOG_LOGIN_FAILED_DISABLED_3,
+                        username,
+                        getRequestContext().addSiteRoot(getRequestContext().getUri()),
+                        getRequestContext().getRemoteAddress()));
+                } else {
+                    // check if the user that tried to log in exists at all
+                    boolean userExists = true;
+                    try {
+                        getCmsObject().readUser(username);
+                    } catch (CmsException e) {
+                        // apparently this user does not exist
+                        userExists = false;
+                    }
+
+                    if (userExists) {
+                        // user exists, so the password must have been wrong
+                        CmsMessageContainer message = Messages.get().container(
+                            Messages.LOG_LOGIN_FAILED_3,
+                            username,
+                            getRequestContext().addSiteRoot(getRequestContext().getUri()),
+                            getRequestContext().getRemoteAddress());
+                        if (username.equalsIgnoreCase(OpenCms.getDefaultUsers().getUserAdmin())) {
+                            // someone tried to log in as "Admin"
+                            LOG.error(message.key());
+                        } else {
+                            LOG.info(message.key());
+                        }
+                    } else {
+                        // the requested user does not exist in the database
+                        LOG.info(Messages.get().key(
+                            Messages.LOG_LOGIN_FAILED_NO_USER_3,
+                            username,
+                            getRequestContext().addSiteRoot(getRequestContext().getUri()),
+                            getRequestContext().getRemoteAddress()));
+                    }
+                }
             } else {
-                LOG.info(message.key());
+                // the error was database related, write the exception to the log as well
+                LOG.error(Messages.get().key(
+                    Messages.LOG_LOGIN_FAILED_DB_REASON_3,
+                    username,
+                    getRequestContext().addSiteRoot(getRequestContext().getUri()),
+                    getRequestContext().getRemoteAddress()), m_loginException);
             }
         }
     }

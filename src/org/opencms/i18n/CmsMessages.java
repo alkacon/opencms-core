@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/05/20 15:12:41 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/28 17:17:17 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.0 beta 2
  */
@@ -69,6 +69,9 @@ public class CmsMessages {
 
     /** The resource bundle this message object was initialized with. */
     protected ResourceBundle m_resourceBundle;
+    
+    /** The resource bundle base name this object was initialized with. */
+    protected String m_baseName;
 
     /**
      * Constructor for the messages with an initialized <code>java.util.Locale</code>.
@@ -80,6 +83,7 @@ public class CmsMessages {
 
         try {
             m_locale = locale;
+            m_baseName = baseName;
             m_resourceBundle = ResourceBundle.getBundle(baseName, m_locale);
         } catch (MissingResourceException e) {
             m_resourceBundle = null;
@@ -462,5 +466,23 @@ public class CmsMessages {
             System.arraycopy(values, 1, params, 0, params.length);
             return key(cutKeyName, params);
         }
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        StringBuffer result = new StringBuffer();
+
+        result.append('[');
+        result.append(this.getClass().getName());
+        result.append(", baseName: ");
+        result.append(m_baseName);
+        result.append(", locale: ");
+        result.append(getLocale());
+        result.append(']');
+
+        return result.toString();
     }
 }

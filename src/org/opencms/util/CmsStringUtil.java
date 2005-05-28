@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/05/28 09:35:34 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/05/28 17:17:17 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.util;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -52,7 +53,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -135,13 +136,18 @@ public final class CmsStringUtil {
      * Replaces occurences of special control characters in the given input with 
      * a HTML representation.<p>
      * 
-     * This method currrently replaces line breaks.<p>
+     * This method currrently replaces line breaks to <code>&lt;br/&gt;</code> and special HTML chars 
+     * like <code>&lt; &gt; &amp; &quot;</code> with their HTML entity representation.<p>
      * 
      * @param source the String to escape
      * @return the escaped String
      */
     public static String escapeHtml(String source) {
 
+        if (source == null) {
+            return null;
+        }
+        source = CmsEncoder.escapeXml(source);
         source = CmsStringUtil.substitute(source, "\r", "");
         source = CmsStringUtil.substitute(source, "\n", "<br/>\n");
         return source;

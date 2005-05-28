@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/24 07:45:07 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2005/05/28 17:17:17 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -2652,14 +2652,14 @@ public final class CmsSecurityManager {
      * 
      * @return the logged in user
      *
-     * @throws CmsSecurityException if login was not succesful
+     * @throws CmsException if the login was not succesful
      */
     public CmsUser loginUser(
         CmsRequestContext context,
         String username,
         String password,
         String remoteAddress,
-        int userType) throws CmsSecurityException {
+        int userType) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsUser result = null;
@@ -2744,7 +2744,6 @@ public final class CmsSecurityManager {
             result = m_driverManager.moveToLostAndFound(dbc, resourcename, returnNameOnly);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_MOVE_TO_LOST_AND_FOUND_1, resourcename), e);
-
         } finally {
             dbc.clear();
         }

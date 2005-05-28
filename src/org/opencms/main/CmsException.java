@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/05/23 15:54:03 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/28 17:17:17 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsException extends Exception implements I_CmsThrowable {
 
@@ -74,19 +74,6 @@ public class CmsException extends Exception implements I_CmsThrowable {
         super(message.getKey(), cause);
         m_message = message;
     }
-    
-    /**
-     * Creates a copied instance of this localized exception.<p>
-     * 
-     * @param container the message container
-     * @param cause the root cause
-     * 
-     * @return a copied instance of this localized exception
-     */
-    public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
-        return new CmsException(container, cause);
-    }
 
     /**
      * Returns the stack trace (including the message) of an exception as a String.<p>
@@ -102,6 +89,19 @@ public class CmsException extends Exception implements I_CmsThrowable {
         StringWriter stringWriter = new StringWriter();
         e.printStackTrace(new PrintWriter(stringWriter));
         return stringWriter.toString();
+    }
+
+    /**
+     * Creates a copied instance of this localized exception.<p>
+     * 
+     * @param container the message container
+     * @param cause the root cause
+     * 
+     * @return a copied instance of this localized exception
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+
+        return new CmsException(container, cause);
     }
 
     /**
@@ -138,5 +138,4 @@ public class CmsException extends Exception implements I_CmsThrowable {
 
         return m_message;
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/25 13:38:11 $
- * Version: $Revision: 1.510 $
+ * Date   : $Date: 2005/05/28 17:17:17 $
+ * Version: $Revision: 1.511 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,6 +71,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsAuthentificationException;
+import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsRole;
@@ -108,7 +109,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.510 $
+ * @version $Revision: 1.511 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3833,21 +3834,24 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @return the logged in user
      *
-     * @throws CmsSecurityException if login was not succesful
+     * @throws CmsAuthentificationException if the login was not successful
+     * @throws CmsDataAccessException in case of errors accessing the database
+     * @throws CmsPasswordEncryptionException in case of errors encrypting the users password
      */
     public CmsUser loginUser(CmsDbContext dbc, String username, String password, String remoteAddress, int userType)
-    throws CmsSecurityException {
+    throws CmsAuthentificationException, CmsDataAccessException, CmsPasswordEncryptionException {
 
         CmsUser newUser;
 
         try {
             // read the user from the driver to avoid the cache
             newUser = m_userDriver.readUser(dbc, username, password, remoteAddress, userType);
-        } catch (Throwable t) {
-            // any error here: throw a security exception
-            throw new CmsSecurityException(Messages.get().container(
+        } catch (CmsDbEntryNotFoundException e) {
+            // this incicates that the username / password combination does not exist
+            // any other exception indicates database issues, these are not catched
+            throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                 org.opencms.security.Messages.ERR_SECURITY_LOGIN_FAILED_1,
-                username), t);
+                username), e);
         }
 
         // check if the "enabled" flag is set for the user
@@ -3861,13 +3865,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // set the last login time to the current time
         newUser.setLastlogin(System.currentTimeMillis());
 
-        try {
-            // write the changed user object back to the user driver
-            m_userDriver.writeUser(dbc, newUser);
-        } catch (Throwable t) {
-            // any error here: throw a security exception
-            throw new CmsSecurityException(org.opencms.file.Messages.get().container(org.opencms.file.Messages.ERR_SECURITY_LOGIN_FAILED_1, username), t);
-        }
+        // write the changed user object back to the user driver
+        m_userDriver.writeUser(dbc, newUser);
 
         // update cache
         putUserInCache(newUser);

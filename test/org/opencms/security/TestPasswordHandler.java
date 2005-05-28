@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/Attic/TestPasswordHandler.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/28 17:17:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
  
 package org.opencms.security;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
@@ -66,6 +68,7 @@ public class TestPasswordHandler extends OpenCmsTestCase {
         suite.setName(TestPasswordHandler.class.getName());
 
         suite.addTest(new TestPasswordHandler("testPasswordValidation"));
+        suite.addTest(new TestPasswordHandler("testLoginUser"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -82,13 +85,51 @@ public class TestPasswordHandler extends OpenCmsTestCase {
     } 
     
     /**
+     * Tests logging in as a user (checking for different kind of exceptions).<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testLoginUser() throws Exception {
+        
+        echo("Testing Exception behaviour during login");        
+        
+        // this will be initialized as "Admin"
+        CmsObject cms = getCmsObject();
+        
+        String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
+        
+        // stupid test to just make sure everything is set up correctly
+        cms.loginUser(adminUser, "admin");
+        
+        CmsException error = null;
+        try {
+            // try to login with a valid username but a wrong password
+            cms.loginUser(adminUser, "imamwrong");
+        } catch (CmsSecurityException e) {
+            error = e;
+        }        
+        assertNotNull(error);
+        assertSame(Messages.ERR_SECURITY_LOGIN_FAILED_1, error.getMessageContainer().getKey());
+        
+        error = null;
+        try {
+            // try to login with an invlaid username
+            cms.loginUser("idontexist", "imnotimportant");
+        } catch (CmsSecurityException e) {
+            error = e;
+        }        
+        assertNotNull(error);        
+        assertSame(Messages.ERR_SECURITY_LOGIN_FAILED_1, error.getMessageContainer().getKey());
+    }
+    
+    /**
      * Tests the static "validatePassword" method of the password handler.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testPasswordValidation() throws Throwable {
         
-        echo("Testing testPasswordValidation");
+        echo("Testing password validation handler");
         
         I_CmsPasswordHandler passwordHandler = OpenCms.getPasswordHandler();
         boolean failure = false;

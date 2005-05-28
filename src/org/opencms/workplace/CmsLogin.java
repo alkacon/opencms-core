@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/05/28 09:35:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/28 17:17:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * Handles the login of Users to the OpenCms workplace.<p> 
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  */
@@ -208,7 +208,7 @@ public class CmsLogin extends CmsJspLoginBean {
                 login(m_username, m_password);
 
                 if (getLoginException() == null) {
-                    // the login was successfull
+                    // the login was successful
                     m_action = ACTION_LOGIN;
 
                     // set the default project of the user
@@ -227,7 +227,15 @@ public class CmsLogin extends CmsJspLoginBean {
                             settings.getStartProject()), e);
                     }
                 } else {
-                    m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_0);
+                    // there was an error during login
+
+                    if (org.opencms.db.Messages.ERR_LOGIN_USER_DISABLED_1 == getLoginException().getMessageContainer().getKey()) {
+                        // the user account is currently disabled
+                        m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_DISABLED_0);
+                    } else {
+                        // any other error - display default message
+                        m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_0);
+                    }
                 }
             }
 
