@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2005/05/28 17:17:17 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/29 09:28:23 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3
  */
@@ -158,41 +158,48 @@ public class CmsJspLoginBean extends CmsJspActionElement {
     /**
      * Logs a system user in to OpenCms.<p>
      * 
-     * @param username the users name
+     * @param userName the users name
      * @param password the password
      */
-    public void login(String username, String password) {
+    public void login(String userName, String password) {
 
-        login(username, password, null);
+        login(userName, password, null);
     }
 
     /**
-     * Logs a system user in to OpenCms.<p>
+     * Logs a system user into OpenCms.<p>
      * 
-     * @param username the users name
+     * Note that if a login project name is provided, this project must exist,
+     * otherwise the login is regarded as a failure even if the user data was correct.<p>
+     * 
+     * @param userName the users name
      * @param password the password
-     * @param login_project the project to switch to after login (if null project is not switched)
+     * @param projectName the project to switch to after login (if null project is not switched)
      */
-    public void login(String username, String password, String login_project) {
+    public void login(String userName, String password, String projectName) {
 
         HttpSession session = null;
         m_loginException = null;
         try {
+
             // login the user and create a new session
             getCmsObject().loginUser(
-                username,
+                userName,
                 password,
                 getRequestContext().getRemoteAddress(),
                 I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+
             // make sure we have a new session after login for security reasons
             session = getRequest().getSession(false);
             if (session != null) {
                 session.invalidate();
             }
             session = getRequest().getSession(true);
-            if (login_project != null) {
-                getCmsObject().getRequestContext().setCurrentProject(getCmsObject().readProject(login_project));
+            if (projectName != null) {
+                // if this fails, the login is regarded as a failure as well
+                getCmsObject().getRequestContext().setCurrentProject(getCmsObject().readProject(projectName));
             }
+
         } catch (CmsException e) {
             // the login has failed
             m_loginException = e;
@@ -201,9 +208,10 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             // login was successful
             if (LOG.isInfoEnabled()) {
                 LOG.info(Messages.get().key(
-                    Messages.LOG_LOGIN_SUCCESSFUL_2,
-                    username,
-                    getRequestContext().addSiteRoot(getRequestContext().getUri())));
+                    Messages.LOG_LOGIN_SUCCESSFUL_3,
+                    userName,
+                    getRequestContext().addSiteRoot(getRequestContext().getUri()),
+                    getRequestContext().getRemoteAddress()));
             }
         } else {
             // login was not successful
@@ -212,50 +220,47 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             }
 
             if (m_loginException instanceof CmsAuthentificationException) {
-                if (org.opencms.db.Messages.ERR_LOGIN_USER_DISABLED_1 == m_loginException.getMessageContainer().getKey()) {
+                // the authentification of the user failed
+
+                if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_3 == m_loginException.getMessageContainer().getKey()) {
+
                     // the user has been disabled
-                    LOG.info(Messages.get().key(
+                    LOG.warn(Messages.get().key(
                         Messages.LOG_LOGIN_FAILED_DISABLED_3,
-                        username,
+                        userName,
                         getRequestContext().addSiteRoot(getRequestContext().getUri()),
                         getRequestContext().getRemoteAddress()));
-                } else {
-                    // check if the user that tried to log in exists at all
-                    boolean userExists = true;
-                    try {
-                        getCmsObject().readUser(username);
-                    } catch (CmsException e) {
-                        // apparently this user does not exist
-                        userExists = false;
-                    }
 
-                    if (userExists) {
-                        // user exists, so the password must have been wrong
-                        CmsMessageContainer message = Messages.get().container(
-                            Messages.LOG_LOGIN_FAILED_3,
-                            username,
-                            getRequestContext().addSiteRoot(getRequestContext().getUri()),
-                            getRequestContext().getRemoteAddress());
-                        if (username.equalsIgnoreCase(OpenCms.getDefaultUsers().getUserAdmin())) {
-                            // someone tried to log in as "Admin"
-                            LOG.error(message.key());
-                        } else {
-                            LOG.info(message.key());
-                        }
+                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_3 == m_loginException.getMessageContainer().getKey()) {
+
+                    // the requested user does not exist in the database
+                    LOG.warn(Messages.get().key(
+                        Messages.LOG_LOGIN_FAILED_NO_USER_3,
+                        userName,
+                        getRequestContext().addSiteRoot(getRequestContext().getUri()),
+                        getRequestContext().getRemoteAddress()));
+
+                } else {
+
+                    // the user exists, so the password must have been wrong
+                    CmsMessageContainer message = Messages.get().container(
+                        Messages.LOG_LOGIN_FAILED_3,
+                        userName,
+                        getRequestContext().addSiteRoot(getRequestContext().getUri()),
+                        getRequestContext().getRemoteAddress());
+                    if (userName.equalsIgnoreCase(OpenCms.getDefaultUsers().getUserAdmin())) {
+                        // someone tried to log in as "Admin", log this in a higher channel
+                        LOG.error(message.key());
                     } else {
-                        // the requested user does not exist in the database
-                        LOG.info(Messages.get().key(
-                            Messages.LOG_LOGIN_FAILED_NO_USER_3,
-                            username,
-                            getRequestContext().addSiteRoot(getRequestContext().getUri()),
-                            getRequestContext().getRemoteAddress()));
+                        LOG.warn(message.key());
                     }
                 }
             } else {
-                // the error was database related, write the exception to the log as well
+                // the error was database related, there may be an issue with the setup 
+                // write the exception to the log as well
                 LOG.error(Messages.get().key(
                     Messages.LOG_LOGIN_FAILED_DB_REASON_3,
-                    username,
+                    userName,
                     getRequestContext().addSiteRoot(getRequestContext().getUri()),
                     getRequestContext().getRemoteAddress()), m_loginException);
             }
@@ -265,19 +270,22 @@ public class CmsJspLoginBean extends CmsJspActionElement {
     /**
      * Logs a system user in to OpenCms.<p>
      * 
-     * @param username the users name
+     * Note that if a login project name is provided, this project must exist,
+     * otherwise the login is regarded as a failure even if the user data was correct.<p>
+     * 
+     * @param userName the users name
      * @param password the password
-     * @param login_project the project to switch to after login (if null project is not switched)
-     * @param login_redirect the URI to redirect to after login (if null the current URI is used)
+     * @param projectName the project to switch to after login (if null project is not switched)
+     * @param redirectUri the URI to redirect to after login (if null the current URI is used)
      * 
      * @throws IOException in case redirect after login was not successful
      */
-    public void login(String username, String password, String login_project, String login_redirect) throws IOException {
+    public void login(String userName, String password, String projectName, String redirectUri) throws IOException {
 
-        login(username, password, login_project);
+        login(userName, password, projectName);
         if (m_loginException == null) {
-            if (login_redirect != null) {
-                getResponse().sendRedirect(link(login_redirect));
+            if (redirectUri != null) {
+                getResponse().sendRedirect(link(redirectUri));
             } else {
                 getResponse().sendRedirect(getFormLink());
             }
@@ -300,9 +308,10 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         // logout was successful
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(
-                Messages.LOG_LOGOUT_SUCCESFUL_2,
+                Messages.LOG_LOGOUT_SUCCESFUL_3,
                 getRequestContext().currentUser().getName(),
-                getRequestContext().addSiteRoot(getRequestContext().getUri())));
+                getRequestContext().addSiteRoot(getRequestContext().getUri()),
+                getRequestContext().getRemoteAddress()));
         }
         getResponse().sendRedirect(getFormLink());
     }

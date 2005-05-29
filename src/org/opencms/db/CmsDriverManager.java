@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/28 17:17:17 $
- * Version: $Revision: 1.511 $
+ * Date   : $Date: 2005/05/29 09:28:23 $
+ * Version: $Revision: 1.512 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -109,7 +109,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.511 $
+ * @version $Revision: 1.512 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3848,18 +3848,34 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             newUser = m_userDriver.readUser(dbc, username, password, remoteAddress, userType);
         } catch (CmsDbEntryNotFoundException e) {
             // this incicates that the username / password combination does not exist
-            // any other exception indicates database issues, these are not catched
-            throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
-                org.opencms.security.Messages.ERR_SECURITY_LOGIN_FAILED_1,
-                username), e);
+            // any other exception indicates database issues, these are not catched here
+            
+            // check if a user with this name exists at all 
+            boolean userExists = true;
+            try {
+                readUser(dbc, username, userType);
+            } catch (CmsDataAccessException e2) {
+                // apparently this user does not exist in the database
+                userExists = false;
+            }
+
+            if (userExists) {
+                throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
+                    org.opencms.security.Messages.ERR_LOGIN_FAILED_3,
+                    username, new Integer(userType), remoteAddress), e);
+            } else {
+                throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
+                    org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_3,
+                    username, new Integer(userType), remoteAddress), e);
+            }
         }
 
         // check if the "enabled" flag is set for the user
         if (newUser.getFlags() != I_CmsConstants.C_FLAG_ENABLED) {
             // user is disabled, throw a securiy exception
-            throw new CmsAuthentificationException(Messages.get().container(
-                Messages.ERR_LOGIN_USER_DISABLED_1,
-                username));
+            throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
+                org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_3,
+                username, new Integer(userType), remoteAddress));
         }
 
         // set the last login time to the current time

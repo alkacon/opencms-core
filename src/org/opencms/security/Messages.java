@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/29 09:28:23 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,13 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_LOGIN_FAILED_1 = "ERR_LOGIN_FAILED_1";
+    public static final String ERR_LOGIN_FAILED_3 = "ERR_LOGIN_FAILED_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOGIN_FAILED_DISABLED_3 = "ERR_LOGIN_FAILED_DISABLED_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOGIN_FAILED_NO_USER_3 = "ERR_LOGIN_FAILED_NO_USER_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_PERMISSION_OPERATION_2 = "ERR_NO_PERMISSION_OPERATION_2";
@@ -65,9 +71,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ROLE_VIOLATION_1 = "ERR_ROLE_VIOLATION_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_SECURITY_LOGIN_FAILED_1 = "ERR_SECURITY_LOGIN_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_STARTUP_FINISHED_0 = "ERR_STARTUP_FINISHED_0";
