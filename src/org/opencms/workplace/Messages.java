@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2005/05/28 17:17:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/29 11:44:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,9 +53,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_FAILED_0 = "GUI_LOGIN_FAILED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_FAILED_DISABLED_0 = "GUI_LOGIN_FAILED_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_FAILED_TEMP_DISABLED_0 = "GUI_LOGIN_FAILED_TEMP_DISABLED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_HEADLINE_0 = "GUI_LOGIN_HEADLINE_0";

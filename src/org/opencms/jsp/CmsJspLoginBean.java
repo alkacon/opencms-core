@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2005/05/29 09:28:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/29 11:44:46 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.3
  */
@@ -230,6 +230,18 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                         userName,
                         getRequestContext().addSiteRoot(getRequestContext().getUri()),
                         getRequestContext().getRemoteAddress()));
+
+                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_5 == m_loginException.getMessageContainer().getKey()) {
+
+                    // the user has been disabled
+                    LOG.warn(Messages.get().key(
+                        Messages.LOG_LOGIN_FAILED_TEMP_DISABLED_5,
+                        new Object[] {
+                            userName,
+                            getRequestContext().addSiteRoot(getRequestContext().getUri()),
+                            getRequestContext().getRemoteAddress(),
+                            m_loginException.getMessageContainer().getArgs()[3],
+                            m_loginException.getMessageContainer().getArgs()[4]}));
 
                 } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_3 == m_loginException.getMessageContainer().getKey()) {
 

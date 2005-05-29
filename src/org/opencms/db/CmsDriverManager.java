@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/29 09:28:23 $
- * Version: $Revision: 1.512 $
+ * Date   : $Date: 2005/05/29 11:44:46 $
+ * Version: $Revision: 1.513 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,6 +71,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsAuthentificationException;
+import org.opencms.security.CmsInvalidLoginStorage;
 import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
@@ -109,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.512 $
+ * @version $Revision: 1.513 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -271,7 +272,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /** The backup driver. */
     private I_CmsBackupDriver m_backupDriver;
-
+    
     /** The configuration of the property-file. */
     private Map m_configuration;
 
@@ -283,6 +284,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /** The HTML link validator. */
     private CmsHtmlLinkValidator m_htmlLinkValidator;
+
+    /** The storage for invalid logins. */
+    private CmsInvalidLoginStorage m_invalidLoginStorage;
 
     /** The class used for cache key generation. */
     private I_CmsCacheKey m_keyGenerator;
@@ -2147,6 +2151,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             counter++;
 
             // TODO: delete the old backup projects as well
+            int todo = 0;
             m_projectDriver.deletePublishHistory(dbc, dbc.currentProject().getId(), maxTag);
         }
     }
@@ -3593,6 +3598,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // initialize the HTML link validator
         m_htmlLinkValidator = new CmsHtmlLinkValidator(this);
+        
+        // initialize the invalid login storage
+        int todo = 0;
+        // TODO: use values from configuration file
+        m_invalidLoginStorage = new CmsInvalidLoginStorage(15, 5);
     }
 
     /**
@@ -3827,7 +3837,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Attempts to authenticate a user into OpenCms with the given password.<p>
      * 
      * @param dbc the current database context
-     * @param username the name of the user to be logged in
+     * @param userName the name of the user to be logged in
      * @param password the password of the user
      * @param remoteAddress the ip address of the request
      * @param userType the user type to log in (System user or Web user)
@@ -3838,44 +3848,60 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @throws CmsDataAccessException in case of errors accessing the database
      * @throws CmsPasswordEncryptionException in case of errors encrypting the users password
      */
-    public CmsUser loginUser(CmsDbContext dbc, String username, String password, String remoteAddress, int userType)
+    public CmsUser loginUser(CmsDbContext dbc, String userName, String password, String remoteAddress, int userType)
     throws CmsAuthentificationException, CmsDataAccessException, CmsPasswordEncryptionException {
 
         CmsUser newUser;
-
         try {
             // read the user from the driver to avoid the cache
-            newUser = m_userDriver.readUser(dbc, username, password, remoteAddress, userType);
+            newUser = m_userDriver.readUser(dbc, userName, password, remoteAddress, userType);
         } catch (CmsDbEntryNotFoundException e) {
             // this incicates that the username / password combination does not exist
             // any other exception indicates database issues, these are not catched here
-            
+
             // check if a user with this name exists at all 
             boolean userExists = true;
             try {
-                readUser(dbc, username, userType);
+                readUser(dbc, userName, userType);
             } catch (CmsDataAccessException e2) {
                 // apparently this user does not exist in the database
                 userExists = false;
             }
 
             if (userExists) {
+                if (dbc.currentUser().isGuestUser()) {
+                    // add an invalid login attempt for this user to the storage
+                    m_invalidLoginStorage.addInvalidLogin(userName, userType, remoteAddress);                    
+                }
                 throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                     org.opencms.security.Messages.ERR_LOGIN_FAILED_3,
-                    username, new Integer(userType), remoteAddress), e);
+                    userName,
+                    new Integer(userType),
+                    remoteAddress), e);
             } else {
                 throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                     org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_3,
-                    username, new Integer(userType), remoteAddress), e);
+                    userName,
+                    new Integer(userType),
+                    remoteAddress), e);
             }
         }
-
         // check if the "enabled" flag is set for the user
         if (newUser.getFlags() != I_CmsConstants.C_FLAG_ENABLED) {
             // user is disabled, throw a securiy exception
             throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                 org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_3,
-                username, new Integer(userType), remoteAddress));
+                userName,
+                new Integer(userType),
+                remoteAddress));
+        }
+
+        if (dbc.currentUser().isGuestUser()) {
+            // check if this account is temporarily disabled because of too many invalid login attempts
+            // this will throw an exception if the test fails
+            m_invalidLoginStorage.checkInvalidLogins(userName, userType, remoteAddress);
+            // test successful, remove all previous invalid login attempts for this user from the storage
+            m_invalidLoginStorage.removeInvalidLogins(userName, userType, remoteAddress);
         }
 
         // set the last login time to the current time
