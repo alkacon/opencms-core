@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/AllTests.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/29 09:28:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,12 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- *  Tests for package <code>org.opencms.search.extractors</code>.<p>
+ * Main test suite for the package <code>{@link org.opencms.search.extractors}</code>.<p>
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.2 $
+ * 
+ * @since 6.0
  */
 public final class AllTests {
 
@@ -45,6 +50,7 @@ public final class AllTests {
      * Hide constructor to prevent generation of class instances.<p>
      */
     private AllTests() {
+
         // empty
     }
 
@@ -54,9 +60,9 @@ public final class AllTests {
      * @return the JUnit test suite for this package
      */
     public static Test suite() {
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
-        TestSuite suite = new TestSuite("Tests for package org.opencms.search.extractors");
+        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(TestHtmllExtraction.class));
         suite.addTest(new TestSuite(TestMsPowerPointExtraction.class));

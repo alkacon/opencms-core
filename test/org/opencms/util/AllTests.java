@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/AllTests.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/05/29 09:28:57 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,12 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * Main test suite for the package <code>{@link org.opencms.util}</code>.<p>
  * 
- * @since 5.0
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.13 $
+ * 
+ * @since 6.0
  */
 public final class AllTests {
 
@@ -48,17 +50,19 @@ public final class AllTests {
      * Hide constructor to prevent generation of class instances.<p>
      */
     private AllTests() {
+
         // empty
     }
-    
+
     /**
      * Returns the JUnit test suite for this package.<p>
      * 
      * @return the JUnit test suite for this package
-     */        
+     */
     public static Test suite() {
+
+        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        TestSuite suite = new TestSuite("Tests for package org.opencms.util");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(TestCmsResourceTranslator.class));
         suite.addTest(new TestSuite(TestCmsStringUtil.class));
@@ -66,7 +70,7 @@ public final class AllTests {
         suite.addTest(new TestSuite(TestCmsDateUtil.class));
         suite.addTest(new TestSuite(TestCmsBrowserMatcher.class));
         suite.addTest(new TestSuite(TestCmsUUID.class));
-        suite.addTest(new TestSuite(TestCmsExportFolderMatcher.class)); 
+        suite.addTest(new TestSuite(TestCmsExportFolderMatcher.class));
         suite.addTest(new TestSuite(TestValidFilename.class));
         suite.addTest(new TestSuite(TestCmsHtmlConverter.class));
         //$JUnit-END$

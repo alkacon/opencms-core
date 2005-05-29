@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/monitor/AllTests.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/29 09:28:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.monitor; 
+package org.opencms.monitor;
 
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -37,26 +37,32 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
+ * Main test suite for the package <code>{@link org.opencms.monitor}</code>.<p>
+ * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
+ * 
+ * @since 6.0
  */
 public final class AllTests {
 
     /**
      * Hide constructor to prevent generation of class instances.<p>
      */
-    private AllTests() { 
+    private AllTests() {
+
         // empty
     }
-    
+
     /**
      * Returns the JUnit test suite for this package.<p>
      * 
      * @return the JUnit test suite for this package
-     */        
+     */
     public static Test suite() {
+
+        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        TestSuite suite = new TestSuite("Tests for package org.opencms.monitor");
         //$JUnit-BEGIN$
         suite.addTest(TestMemoryMonitor.suite());
         //$JUnit-END$

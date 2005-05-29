@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/Attic/TestPasswordHandler.java,v $
- * Date   : $Date: 2005/05/28 17:17:17 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestLoginAndPasswordHandler.java,v $
+ * Date   : $Date: 2005/05/29 09:28:57 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.security;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestProperties;
@@ -41,17 +42,22 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/**
- * Comment for <code>TestPasswordHandler</code>.<p>
+/** 
+ * Tests login and password related functions.<p>
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.1 $
+ * 
+ * @since 6.0
  */
-public class TestPasswordHandler extends OpenCmsTestCase {
+public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */    
-    public TestPasswordHandler(String arg0) {
+    public TestLoginAndPasswordHandler(String arg0) {
         super(arg0);
     }
     
@@ -65,15 +71,16 @@ public class TestPasswordHandler extends OpenCmsTestCase {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         
         TestSuite suite = new TestSuite();
-        suite.setName(TestPasswordHandler.class.getName());
+        suite.setName(TestLoginAndPasswordHandler.class.getName());
 
-        suite.addTest(new TestPasswordHandler("testPasswordValidation"));
-        suite.addTest(new TestPasswordHandler("testLoginUser"));
+        suite.addTest(new TestLoginAndPasswordHandler("testLoginUser"));
+        suite.addTest(new TestLoginAndPasswordHandler("testPasswordValidation"));
+        suite.addTest(new TestLoginAndPasswordHandler("testSetResetPassword"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
             protected void setUp() {
-                setupOpenCms(null, null, false);
+                setupOpenCms("simpletest", "/sites/default/");
             }
             
             protected void tearDown() {
@@ -100,26 +107,59 @@ public class TestPasswordHandler extends OpenCmsTestCase {
         
         // stupid test to just make sure everything is set up correctly
         cms.loginUser(adminUser, "admin");
+        assertEquals(adminUser, cms.getRequestContext().currentUser().getName());
         
         CmsException error = null;
         try {
             // try to login with a valid username but a wrong password
             cms.loginUser(adminUser, "imamwrong");
-        } catch (CmsSecurityException e) {
+        } catch (CmsAuthentificationException e) {
             error = e;
         }        
         assertNotNull(error);
-        assertSame(Messages.ERR_SECURITY_LOGIN_FAILED_1, error.getMessageContainer().getKey());
+        assertSame(Messages.ERR_LOGIN_FAILED_3, error.getMessageContainer().getKey());
         
         error = null;
         try {
             // try to login with an invlaid username
             cms.loginUser("idontexist", "imnotimportant");
-        } catch (CmsSecurityException e) {
+        } catch (CmsAuthentificationException e) {
             error = e;
         }        
         assertNotNull(error);        
-        assertSame(Messages.ERR_SECURITY_LOGIN_FAILED_1, error.getMessageContainer().getKey());
+        assertSame(Messages.ERR_LOGIN_FAILED_NO_USER_3, error.getMessageContainer().getKey());
+        
+        String test1User = "test1";
+        // now try a different user
+        cms.loginUser(test1User, "test1");
+        assertEquals(test1User, cms.getRequestContext().currentUser().getName());
+        
+        // back to admin (to change the test1 user)
+        cms.loginUser(adminUser, "admin");
+        assertEquals(adminUser, cms.getRequestContext().currentUser().getName());
+        
+        // disable the test1 user
+        CmsUser test1 = cms.readUser(test1User);
+        test1.setDisabled();
+        cms.writeUser(test1);
+        
+        error = null;
+        try {
+            // try to login with an invlaid username
+            cms.loginUser(test1User, "test1");
+        } catch (CmsAuthentificationException e) {
+            error = e;
+        }        
+        assertNotNull(error);        
+        assertSame(Messages.ERR_LOGIN_FAILED_DISABLED_3, error.getMessageContainer().getKey());
+        
+        // enable the test1 user again
+        test1.setEnabled();
+        cms.writeUser(test1);
+        
+        // try again to login
+        cms.loginUser(test1User, "test1");
+        assertEquals(test1User, cms.getRequestContext().currentUser().getName());        
     }
     
     /**
@@ -170,5 +210,34 @@ public class TestPasswordHandler extends OpenCmsTestCase {
         } catch (Exception exc) {
             echo ("ulary invalid:" + exc.getMessage());
         }
-    }    
+    }
+    
+    /**
+     * Tests the setPassword and resetPassword methods.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSetResetPassword() throws Throwable {
+        
+        echo("Testing setting the password as admin");
+        CmsObject cms = getCmsObject();     
+        
+        // change password of admin
+        cms.setPassword("Admin", "admin", "password1");
+        
+        // login with the new password
+        cms.loginUser("Admin", "password1");
+        
+        // change password again        
+        cms.setPassword("Admin", "password2");
+        
+        // login with the new password
+        cms.loginUser("Admin", "password2");
+        
+        // change password again, this time with the old password        
+        cms.setPassword("Admin", "password2", "admin");
+        
+        // check if the password was changed
+        cms.loginUser("Admin", "admin");           
+    }
 }

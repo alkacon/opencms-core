@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/AllTests.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/29 09:28:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,13 +37,12 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Test cases for modules.<p> 
+ * Main test suite for the package <code>{@link org.opencms.module}</code>.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.7 $
  * 
- * @version $Revision: 1.6 $
- * 
- * @since 5.0
+ * @since 6.0
  */
 public final class AllTests {
 
@@ -51,22 +50,24 @@ public final class AllTests {
      * Hide constructor to prevent generation of class instances.<p>
      */
     private AllTests() {
+
         // empty
     }
-    
+
     /**
      * Returns the JUnit test suite for this package.<p>
      * 
      * @return the JUnit test suite for this package
-     */        
+     */
     public static Test suite() {
+
+        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        TestSuite suite = new TestSuite("Tests for package org.opencms.module");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(TestCmsModuleNameGeneration.class));
         suite.addTest(new TestSuite(TestCmsModuleVersion.class));
         suite.addTest(TestModuleOperations.suite());
-        suite.addTest(TestModuleIssues.suite());  
+        suite.addTest(TestModuleIssues.suite());
         suite.addTest(TestModuleLegacy.suite());
         //$JUnit-END$
         return suite;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/AllTests.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/29 09:28:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,12 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * Main test suite for the package <code>{@link org.opencms.main}</code>.<p>
  * 
- * @since 5.0
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.7 $
+ * 
+ * @since 6.0
  */
 public final class AllTests {
 
@@ -48,17 +50,19 @@ public final class AllTests {
      * Hide constructor to prevent generation of class instances.<p>
      */
     private AllTests() {
+
         // empty
     }
-    
+
     /**
      * Returns the JUnit test suite for this package.<p>
      * 
      * @return the JUnit test suite for this package
-     */        
+     */
     public static Test suite() {
+
+        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        TestSuite suite = new TestSuite("Tests for package org.opencms.main");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(TestCmsShell.class));
         suite.addTest(TestOpenCmsSingleton.suite());
