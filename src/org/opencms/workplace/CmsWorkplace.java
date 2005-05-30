@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/05/28 09:35:34 $
- * Version: $Revision: 1.118 $
+ * Date   : $Date: 2005/05/30 14:24:54 $
+ * Version: $Revision: 1.119 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.118 $
+ * @version $Revision: 1.119 $
  * 
  * @since 5.1
  */
@@ -1799,7 +1799,10 @@ public abstract class CmsWorkplace {
      */
     protected void initMessages() {
 
-        m_messages = m_settings.getMessages();
+        //m_messages = m_settings.getMessages();
+        // manually add the initialized workplace messages for the current user
+        m_bundles.add(m_settings.getMessages());
+        addMessages(Messages.get().getBundleName());
     }
 
     /**

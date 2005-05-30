@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2005/05/29 11:44:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/30 14:24:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,55 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INITIALIZE_WORKPLACE_0 = "ERR_INITIALIZE_WORKPLACE_0";
-
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_ADDNEW_0 = "GUI_DIALOG_BUTTON_ADDNEW_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_ADVANCED_0 = "GUI_DIALOG_BUTTON_ADVANCED_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_BACK_0 = "GUI_DIALOG_BUTTON_BACK_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_CANCEL_0 = "GUI_DIALOG_BUTTON_CANCEL_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_CLOSE_0 = "GUI_DIALOG_BUTTON_CLOSE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_CONTINUE_0 = "GUI_DIALOG_BUTTON_CONTINUE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_DELETE_0 = "GUI_DIALOG_BUTTON_DELETE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_DETAIL_0 = "GUI_DIALOG_BUTTON_DETAIL_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_DISCARD_0 = "GUI_DIALOG_BUTTON_DISCARD_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_EDIT_0 = "GUI_DIALOG_BUTTON_EDIT_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_OK_0 = "GUI_DIALOG_BUTTON_OK_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_SET_0 = "GUI_DIALOG_BUTTON_SET_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_WIDGET_OPTIONALELEMENT_0 = "GUI_EDITOR_WIDGET_OPTIONALELEMENT_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_WIDGET_VALIDATION_ERROR_2 = "GUI_EDITOR_WIDGET_VALIDATION_ERROR_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_WIDGET_VALIDATION_ERROR_TITLE_0 = "GUI_EDITOR_WIDGET_VALIDATION_ERROR_TITLE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_WIDGET_VALIDATION_WARNING_2 = "GUI_EDITOR_WIDGET_VALIDATION_WARNING_2";
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_BUTTON_0 = "GUI_LOGIN_BUTTON_0";
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/24 11:05:56 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/05/30 14:24:54 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -306,7 +306,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             href.append("', ");
             href.append(insertAfter);
             href.append(");");
-            return button(href.toString(), null, "new", "button.addnew", 0);
+            return button(href.toString(), null, "new", Messages.GUI_DIALOG_BUTTON_ADDNEW_0, 0);
         } else {
             return "";
         }
@@ -340,7 +340,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             href.append("', ");
             href.append(index);
             href.append(");");
-            return button(href.toString(), null, "deletecontent", "button.delete", 0);
+            return button(href.toString(), null, "deletecontent", Messages.GUI_DIALOG_BUTTON_DELETE_0, 0);
         } else {
             return "";
         }
@@ -921,7 +921,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             } else {
                 // disabled element, show message for optional element
                 result.append("<td class=\"xmlTdDisabled maxwidth\">");
-                result.append(key("editor.widget.optionalelement"));
+                result.append(key(Messages.GUI_EDITOR_WIDGET_OPTIONALELEMENT_0));
                 result.append("</td>");
             }
 
@@ -985,7 +985,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");
             result.append("<tr><td colspan=\"2\">&nbsp;</td>");
             result.append("<td class=\"xmlTdErrorHeader\">");
-            result.append(key("editor.widget.validation.error.title"));
+            result.append(key(Messages.GUI_EDITOR_WIDGET_VALIDATION_ERROR_TITLE_0));
             result.append("</td><td colspan=\"2\">&nbsp;");
             result.append("</td></tr>\n");
             result.append("<tr><td colspan=\"5\">&nbsp;</td></tr>\n");

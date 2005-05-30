@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/05/25 10:56:52 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2005/05/30 14:24:54 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.74 $
+ * @version $Revision: 1.75 $
  * 
  * @since 5.1
  */
@@ -210,11 +210,9 @@ public class CmsDialog extends CmsToolDialog {
     private String m_paramAction;
     private String m_paramCloseLink;
     private String m_paramDialogtype;
-    private String m_paramErrorstack;
     private String m_paramFrameName;
     private String m_paramIsPopup;
     private String m_paramMessage;
-    private String m_paramReasonSuggestion;
     private String m_paramResource;
     private String m_paramTitle;
 
@@ -1255,7 +1253,7 @@ public class CmsDialog extends CmsToolDialog {
         switch (button) {
             case BUTTON_OK:
                 result.append("<input name=\"ok\" value=\"");
-                result.append(key("button.ok") + "\"");
+                result.append(key(Messages.GUI_DIALOG_BUTTON_OK_0) + "\"");
                 if (attribute.toLowerCase().indexOf("onclick") == -1) {
                     result.append(" type=\"submit\"");
                 } else {
@@ -1267,7 +1265,7 @@ public class CmsDialog extends CmsToolDialog {
                 break;
             case BUTTON_CANCEL:
                 result.append("<input name=\"cancel\" type=\"button\" value=\"");
-                result.append(key("button.cancel") + "\"");
+                result.append(key(Messages.GUI_DIALOG_BUTTON_CANCEL_0) + "\"");
                 if (attribute.toLowerCase().indexOf("onclick") == -1) {
                     result.append(" onclick=\"submitAction('" + DIALOG_CANCEL + "', form);\"");
                 }
@@ -1277,7 +1275,7 @@ public class CmsDialog extends CmsToolDialog {
                 break;
             case BUTTON_EDIT:
                 result.append("<input name=\"ok\" value=\"");
-                result.append(key("button.edit") + "\"");
+                result.append(key(Messages.GUI_DIALOG_BUTTON_EDIT_0) + "\"");
                 if (attribute.toLowerCase().indexOf("onclick") == -1) {
                     result.append(" type=\"submit\"");
                 } else {
@@ -1289,7 +1287,7 @@ public class CmsDialog extends CmsToolDialog {
                 break;
             case BUTTON_DISCARD:
                 result.append("<input name=\"cancel\" type=\"button\" value=\"");
-                result.append(key("button.discard") + "\"");
+                result.append(key(Messages.GUI_DIALOG_BUTTON_DISCARD_0) + "\"");
                 if (attribute.toLowerCase().indexOf("onclick") == -1) {
                     result.append(" onclick=\"submitAction('" + DIALOG_CANCEL + "', form);\"");
                 }
@@ -1299,7 +1297,7 @@ public class CmsDialog extends CmsToolDialog {
                 break;
             case BUTTON_CLOSE:
                 result.append("<input name=\"close\" type=\"button\" value=\"");
-                result.append(key("button.close") + "\"");
+                result.append(key(Messages.GUI_DIALOG_BUTTON_CLOSE_0) + "\"");
                 if (attribute.toLowerCase().indexOf("onclick") == -1) {
                     result.append(" onclick=\"submitAction('" + DIALOG_CANCEL + "', form);\"");
                 }
@@ -1309,14 +1307,14 @@ public class CmsDialog extends CmsToolDialog {
                 break;
             case BUTTON_ADVANCED:
                 result.append("<input name=\"advanced\" type=\"button\" value=\"");
-                result.append(key("button.advanced") + "\"");
+                result.append(key(Messages.GUI_DIALOG_BUTTON_ADVANCED_0) + "\"");
                 result.append(" class=\"dialogbutton\"");
                 result.append(attribute);
                 result.append(">\n");
                 break;
             case BUTTON_SET:
                 result.append("<input name=\"set\" type=\"button\" value=\"");
-                result.append(key("button.submit") + "\"");
+                result.append(key(Messages.GUI_DIALOG_BUTTON_SET_0) + "\"");
                 if (attribute.toLowerCase().indexOf("onclick") == -1) {
                     result.append(" onclick=\"submitAction('" + DIALOG_SET + "', form);\"");
                 }
@@ -1326,7 +1324,7 @@ public class CmsDialog extends CmsToolDialog {
                 break;
             case BUTTON_BACK:
                 result.append("<input name=\"set\" type=\"button\" value=\"");
-                result.append(key("button.back") + "\"");
+                result.append(key(Messages.GUI_DIALOG_BUTTON_BACK_0) + "\"");
                 if (attribute.toLowerCase().indexOf("onclick") == -1) {
                     result.append(" onclick=\"submitAction('" + DIALOG_BACK + "', form);\"");
                 }
@@ -1336,7 +1334,7 @@ public class CmsDialog extends CmsToolDialog {
                 break;
             case BUTTON_CONTINUE:
                 result.append("<input name=\"set\" type=\"button\" value=\"");
-                result.append(key("button.continue") + "\"");
+                result.append(key(Messages.GUI_DIALOG_BUTTON_CONTINUE_0) + "\"");
                 if (attribute.toLowerCase().indexOf("onclick") == -1) {
                     result.append(" onclick=\"submitAction('" + DIALOG_CONTINUE + "', form);\"");
                 }
@@ -1346,7 +1344,7 @@ public class CmsDialog extends CmsToolDialog {
                 break;
             case BUTTON_DETAILS:
                 result.append("<input name=\"details\" type=\"button\" value=\"");
-                result.append(key("button.detail") + "\"");
+                result.append(key(Messages.GUI_DIALOG_BUTTON_DETAIL_0) + "\"");
                 result.append(" class=\"dialogbutton\"");
                 result.append(attribute);
                 result.append(">\n");
