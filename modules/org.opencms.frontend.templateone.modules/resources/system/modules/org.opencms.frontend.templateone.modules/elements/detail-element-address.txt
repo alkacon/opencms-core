@@ -8,9 +8,9 @@
 <cms:contentcheck ifexists="City"><cms:contentshow element="City" /></cms:contentcheck>
 <cms:contentcheck ifexistsone="ZIP,City"><br></cms:contentcheck>
 <cms:contentloop element="Country"><cms:contentshow /><br></cms:contentloop>
-<cms:contentloop element="Phone">Phone: <cms:contentshow /><br></cms:contentloop>
-<cms:contentloop element="Fax">Fax: <cms:contentshow /><br></cms:contentloop>
-<cms:contentloop element="Email">Email: <a href="mailto:<cms:contentshow />"><cms:contentshow /></a><br></cms:contentloop>
+<cms:contentloop element="Phone"><fmt:message key="editor.label.Address.Phone" />: <cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Fax"><fmt:message key="editor.label.Address.Fax" />: <cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Email"><fmt:message key="editor.label.Address.Email" />: <a href="mailto:<cms:contentshow />"><cms:contentshow /></a><br></cms:contentloop>
 <cms:contentloop element="ContactData"><cms:contentshow /><br></cms:contentloop>
 <cms:contentloop element="Link"><a href="<cms:contentshow />"><cms:contentshow /></a><br></cms:contentloop>
 </p>

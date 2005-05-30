@@ -181,7 +181,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin event location --%>
 <cms:contentcheck ifexists="Extended/EventLocation">
-<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.EventAddress.EventLocation" />:&nbsp;</td><td>
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="detail.label.EventArticle.EventLocation" />:&nbsp;</td><td>
 <cms:contentloop element="Extended/EventLocation">
 <%@ include file="../elements/detail-element-eventaddress.txt" %>
 </cms:contentloop>
@@ -192,7 +192,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin event director --%>
 <cms:contentcheck ifexists="Extended/EventDirector">
-<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.EventAddress.EventDirector" />:&nbsp;</td><td>
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="detail.label.EventArticle.EventDirector" />:&nbsp;</td><td>
 <cms:contentloop element="Extended/EventDirector">
 <%@ include file="../elements/detail-element-eventaddress.txt" %>
 </cms:contentloop>
