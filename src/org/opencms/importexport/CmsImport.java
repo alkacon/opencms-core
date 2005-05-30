@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2005/05/24 07:45:07 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/05/30 15:17:51 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,15 +76,15 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.31 $ $Date: 2005/05/24 07:45:07 $
+ * @version $Revision: 1.32 $ $Date: 2005/05/30 15:17:51 $
  */
 public class CmsImport implements Serializable {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsImport.class);
 
     /** The algorithm for the message digest. */
     public static final String C_IMPORT_DIGEST = "MD5";
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsImport.class);
 
     /** The cms context to do the operations with. */
     protected CmsObject m_cms;
@@ -346,7 +346,9 @@ public class CmsImport implements Serializable {
         // initialize the import
         boolean run = false;
         openImportFile();
-        m_report.println("Import Version " + m_importVersion, I_CmsReport.C_FORMAT_NOTE);
+        m_report.println(Messages.get().container(
+            Messages.RPT_IMPORT_VERSION_1,
+            String.valueOf(m_importVersion)), I_CmsReport.C_FORMAT_NOTE);
         try {
             // now find the correct import implementation         
             Iterator i = m_importImplementations.iterator();
@@ -372,7 +374,9 @@ public class CmsImport implements Serializable {
                 }
             }
             if (!run) {
-                m_report.println(m_report.key("report.import_db_noclass"), I_CmsReport.C_FORMAT_WARNING);
+                m_report.println(
+                    Messages.get().container(Messages.RPT_IMPORT_DB_NO_CLASS_0),
+                    I_CmsReport.C_FORMAT_WARNING);
             }
         } finally {
             // close the import file

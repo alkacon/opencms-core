@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/05/24 07:45:07 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2005/05/30 15:17:51 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -264,7 +264,10 @@ public class CmsImportVersion3 extends A_CmsImport {
             int importSize = fileNodes.size();
             // walk through all files in manifest
             for (int i = 0; i < fileNodes.size(); i++) {
-                m_report.print(" ( " + (i + 1) + " / " + importSize + " ) ");
+                m_report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(i + 1),
+                    String.valueOf(importSize)));
                 currentElement = (Element)fileNodes.get(i);
                 // get all information for a file-import
                 // <source>
@@ -322,9 +325,14 @@ public class CmsImportVersion3 extends A_CmsImport {
                 // if the resource is not immutable and not on the exclude list, import it
                 if (resourceNotImmutable && (!excludeList.contains(translatedName))) {
                     // print out the information to the report
-                    m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(translatedName);
-                    m_report.print(m_report.key("report.dots"));
+                    m_report.print(
+                        Messages.get().container(Messages.RPT_IMPORTING_0),
+                        I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        translatedName));
+                    m_report.print(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_OK_0));
                     // get all properties
                     properties = readPropertiesFromManifest(
                         currentElement,
@@ -378,13 +386,21 @@ public class CmsImportVersion3 extends A_CmsImport {
 
                     } else {
                         // resource import failed, since no CmsResource was created
-                        m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
-                        m_report.println(translatedName);
+                        m_report.print(
+                            Messages.get().container(Messages.RPT_SKIPPING_0),
+                            I_CmsReport.C_FORMAT_NOTE);
+                        m_report.println(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            translatedName));
                     }
                 } else {
                     // skip the file import, just print out the information to the report
-                    m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
-                    m_report.println(translatedName);
+                    m_report.print(
+                        Messages.get().container(Messages.RPT_SKIPPING_0),
+                        I_CmsReport.C_FORMAT_NOTE);
+                    m_report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        translatedName));
                 }
             }
 
@@ -545,7 +561,9 @@ public class CmsImportVersion3 extends A_CmsImport {
             // import this resource in the VFS   
             res = m_cms.importResource(m_importPath + destination, resource, content, properties);
 
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            m_report.println(
+                org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
         } catch (Exception exc) {
             // an error while importing the file
             success = false;

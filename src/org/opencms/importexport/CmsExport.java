@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/05/24 07:45:07 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2005/05/30 15:17:51 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,9 +93,10 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.62 $ $Date: 2005/05/24 07:45:07 $
+ * @version $Revision: 1.63 $ $Date: 2005/05/30 15:17:51 $
  */
 public class CmsExport implements Serializable {
+    
     
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExport.class);
@@ -218,7 +219,7 @@ public class CmsExport implements Serializable {
         m_exportCount = 0;
 
         // clear all caches
-        report.println(report.key("report.clearcache"), I_CmsReport.C_FORMAT_NOTE);
+        report.println(Messages.get().container(Messages.RPT_CLEARCACHE_0), I_CmsReport.C_FORMAT_NOTE);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
 
         try {
@@ -838,22 +839,28 @@ public class CmsExport implements Serializable {
                     fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_SOURCE).addText(fileName);
                 }
             } else {
+                I_CmsReport report = getReport();
                 // output something to the report for the folder
-                getReport().print(" ( " + ++m_exportCount + " ) ", I_CmsReport.C_FORMAT_NOTE);
-                getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
-                getReport().print(getCms().getSitePath(resource));
-                getReport().print(getReport().key("report.dots"));
-                getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_1,
+                    new Integer(1)), I_CmsReport.C_FORMAT_NOTE);
+                report.print(
+                    Messages.get().container(Messages.RPT_EXPORTING_0),
+                    I_CmsReport.C_FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    getCms().getSitePath(resource)));
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_DOTS_0));
+                report.println(
+                    org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
     
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info(
-                        "( "
-                            + m_exportCount
-                            + " ) "
-                            + m_report.key("report.exporting")
-                            + getCms().getSitePath(resource)
-                            + m_report.key("report.dots")
-                            + m_report.key("report.ok"));
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().key(
+                        Messages.LOG_EXPORTING_OK_2,
+                        String.valueOf(m_exportCount),
+                        getCms().getSitePath(resource)));
                 }
             }
     
@@ -999,12 +1006,16 @@ public class CmsExport implements Serializable {
      * @throws IOException if the ZIP entry for the file could be appended to the ZIP archive
      */
     private void exportFile(CmsFile file) throws CmsImportExportException, SAXException, CmsLoaderException, IOException {
-
         String source = trimResourceName(getCms().getSitePath(file));
-        getReport().print(" ( " + ++m_exportCount + " ) ", I_CmsReport.C_FORMAT_NOTE);
-        getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
-        getReport().print(getCms().getSitePath(file));
-        getReport().print(getReport().key("report.dots"));
+        I_CmsReport report = getReport();
+        report.print(org.opencms.report.Messages.get().container(
+            org.opencms.report.Messages.RPT_SUCCESSION_1,
+            String.valueOf(++m_exportCount)), I_CmsReport.C_FORMAT_NOTE);
+        report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.C_FORMAT_NOTE);
+        report.print(org.opencms.report.Messages.get().container(
+            org.opencms.report.Messages.RPT_ARGUMENT_1,
+            getCms().getSitePath(file)));
+        report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
         // store content in zip-file
         // check if the content of this resource was not already exported
@@ -1028,17 +1039,14 @@ public class CmsExport implements Serializable {
             m_exportedPageFiles.add("/" + source);
         }
 
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info(
-                "( "
-                    + m_exportCount
-                    + " ) "
-                    + m_report.key("report.exporting")
-                    + source
-                    + m_report.key("report.dots")
-                    + m_report.key("report.ok"));
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().key(
+                Messages.LOG_EXPORTING_OK_2,
+                String.valueOf(m_exportCount),
+                source));
         }
-        getReport().println(" " + getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
+        getReport().println(
+            Messages.get().container(Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
     }
 
     /**
@@ -1088,15 +1096,25 @@ public class CmsExport implements Serializable {
     private void exportGroups(Element parent) throws CmsImportExportException, SAXException {
 
         try {
+            I_CmsReport report = getReport();
             List allGroups = getCms().getGroups();
             for (int i = 0, l = allGroups.size(); i < l; i++) {
                 CmsGroup group = (CmsGroup)allGroups.get(i);
-                getReport().print(" ( " + (i + 1) + " / " + l + " ) ", I_CmsReport.C_FORMAT_NOTE);
-                getReport().print(getReport().key("report.exporting_group"), I_CmsReport.C_FORMAT_NOTE);
-                getReport().print(group.getName());
-                getReport().print(getReport().key("report.dots"));
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(i + 1),
+                    String.valueOf(l)), I_CmsReport.C_FORMAT_NOTE);
+                report.print(
+                    Messages.get().container(Messages.RPT_EXPORTING_GROUP_0),
+                    I_CmsReport.C_FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    group.getName()));
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_DOTS_0));
                 exportGroup(parent, group);
-                getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
             }
         } catch (CmsImportExportException e) {
             
@@ -1189,15 +1207,25 @@ public class CmsExport implements Serializable {
     private void exportUsers(Element parent) throws CmsImportExportException, SAXException {
 
         try {
+            I_CmsReport report = getReport();
             List allUsers = getCms().getUsers();
             for (int i = 0, l = allUsers.size(); i < l; i++) {
                 CmsUser user = (CmsUser)allUsers.get(i);
-                getReport().print(" ( " + (i + 1) + " / " + l + " ) ", I_CmsReport.C_FORMAT_NOTE);
-                getReport().print(getReport().key("report.exporting_user"), I_CmsReport.C_FORMAT_NOTE);
-                getReport().print(user.getName());
-                getReport().print(getReport().key("report.dots"));
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(i + 1),
+                    String.valueOf(l)), I_CmsReport.C_FORMAT_NOTE);
+                report.print(
+                    Messages.get().container(Messages.RPT_EXPORTING_USER_0),
+                    I_CmsReport.C_FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    user.getName()));
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_DOTS_0));
                 exportUser(parent, user);
-                getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
             }
         } catch (CmsImportExportException e) {
             
