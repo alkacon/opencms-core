@@ -314,11 +314,12 @@ body, form {
   padding: 0;
 }
 
-td {
+.list td {
+  white-space: nowrap;
   vertical-align: middle;
 }
 
-th {
+.list th {
   vertical-align: middle;
   text-align: center;
   white-space: nowrap;
