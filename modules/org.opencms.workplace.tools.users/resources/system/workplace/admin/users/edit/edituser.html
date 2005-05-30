@@ -1,65 +1,10 @@
 <%@ page buffer="none" import="
-
-	org.opencms.jsp.*,
-	org.opencms.workplace.*,
 	org.opencms.workplace.tools.users.*
-
 "%><%	
 
 	// initialize the workplace class
-	CmsEditUserDialog wp = new CmsEditUserDialog(new CmsJspActionElement(pageContext, request, response));
-	if (request.getParameter("usrName")==null) {
-		wp.getToolManager().jspRedirectTool(wp, "/users", null);
-		return;
-	}
-//////////////////// start of switch statement 
-
+	CmsEditUserDialog wp = new CmsEditUserDialog(pageContext, request, response);
 	
-switch (wp.getAction()) {
-
-case CmsDialog.ACTION_CANCEL:
-//////////////////// ACTION: cancel button pressed
-
-	wp.actionCloseDialog();
-
-break;
-
-
-//////////////////// ACTION: other actions handled outside of this JSP
-case CmsDialog.ACTION_CONFIRMED:
-
-	wp.actionCloseDialog();
-
-break;
-//////////////////// ACTION: show start dialog
-case CmsDialog.ACTION_DEFAULT:
-default:
-
-	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
-
-%><%= wp.htmlStart() %>
-
-<%= wp.bodyStart("dialog", null) %>
-
-<%= wp.dialogStart() %>
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
-
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
-<%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
-
-do so as were you editing the selected user: <br>
-<%= wp.getCms().readUser(request.getParameter("usrName")).toString() %>
-
-<%= wp.dialogContentEnd() %>
-<%= wp.dialogButtonsOkCancel() %>
-
-</form>
-
-<%= wp.dialogEnd() %>
-<%= wp.bodyEnd() %>
-<%= wp.htmlEnd() %>
-<%
-} 
-//////////////////// end of switch statement 
+	// perform the dialog action	
+	wp.actionDialog();
 %>

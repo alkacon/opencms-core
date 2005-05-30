@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/05/28 17:17:17 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/30 15:50:45 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -734,6 +734,25 @@ public final class CmsStringUtil {
         return content;
     }
 
+    /**
+     * Validates a value against a regular expression.<p>
+     * 
+     * @param value the value to test
+     * @param regex the regular expression
+     * @param allowEmpty if an empty value is allowed
+     * 
+     * @return <code>true</code> if the value satisfies the validation
+     */
+    public static boolean validateRegex(String value, String regex, boolean allowEmpty) {
+        
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            return allowEmpty;
+        }
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(value);
+        return matcher.matches();
+    }
+    
     /**
      * Checks if the provided name is a valid resource name, that is contains only
      * valid characters.<p>

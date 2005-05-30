@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/30 15:50:45 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,15 @@
 
 package org.opencms.file;
 
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -44,7 +48,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -91,6 +95,27 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * C_USER_TYPE_WEBUSER for webuser.
      */
     private int m_type;
+
+    /**
+     * Creates a new empty CmsUser object.<p>
+     *
+     * Only intented to be used with the org.opencms.workplace.tools.users.CmsEditUserDialog.<p>
+     */
+    public CmsUser() {
+
+        m_name = "";
+        m_description = "";
+        m_additionalInfo = new HashMap();
+        m_address = "";
+        m_email = "";
+        m_firstname = "";
+        m_flags = I_CmsConstants.C_FLAG_ENABLED;
+        m_lastlogin = I_CmsConstants.C_UNKNOWN_LONG;
+        m_lastname = "";
+        m_password = "";
+        m_type = I_CmsConstants.C_UNKNOWN_INT;
+        m_isTouched = false;
+    }
 
     /**
      * Creates a new Cms user object.<p>
@@ -199,6 +224,48 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * Validates a login.<p>
+     * 
+     * That means, the parameter should only be composed by digits and standard english letters, points, minus and underscores.<p>
+     * 
+     * @param login the login to validate
+     */
+    public static void validateLogin(String login) {
+
+        if (!CmsStringUtil.validateRegex(login, "[\\w\\.-~_]*", false)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LOGIN_VALIDATION_1, login));
+        }
+    }
+
+    /**
+     * Validates an email address.<p>
+     * 
+     * That means, the parameter should only be composed by digits and standard english letters, points, underscores and exact one "At" symbol.<p>
+     * 
+     * @param email the email to validate
+     */
+    public static void validateEmail(String email) {
+
+        if (!CmsStringUtil.validateRegex(email, "[\\w\\.~_]*@[\\w\\.~_]*\\.[\\w]*", false)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMAIL_VALIDATION_1, email));
+        }
+    }
+
+    /**
+     * Validates a zip code.<p>
+     * 
+     * That means, the parameter should only be composed by digits and standard english letters.<p>
+     * 
+     * @param zipcode the zipcode to validate
+     */
+    public static void validateZipCode(String zipcode) {
+
+        if (!CmsStringUtil.validateRegex(zipcode, "[\\w]*", false)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_ZIPCODE_VALIDATION_1, zipcode));
+        }
+    }
+
+    /**
      * Returns a clone of this Objects instance.<p>
      * 
      * @return a clone of this instance
@@ -280,6 +347,26 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     public String getAddress() {
 
         return m_address;
+    }
+
+    /**
+     * Returns the city of the address of the user.<p>
+     * 
+     * @return the city
+     */
+    public String getCity() {
+
+        return (String)getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
+    }
+
+    /**
+     * Returns the country of the address of the user.<p>
+     * 
+     * @return the country
+     */
+    public String getCountry() {
+
+        return (String)getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_COUNTRY);
     }
 
     /**
@@ -423,6 +510,16 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * Returns the zip code of the address of the user.<p>
+     * 
+     * @return the zip code 
+     */
+    public String getZipcode() {
+
+        return (String)getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -498,6 +595,26 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * Sets the city of the address of the user.<p>
+     * 
+     * @param city the city
+     */
+    public void setCity(String city) {
+
+        setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN, city);
+    }
+
+    /**
+     * Sets the country of the address of the user.<p>
+     * 
+     * @param country the country
+     */
+    public void setCountry(String country) {
+
+        setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_COUNTRY, country);
+    }
+
+    /**
      * Sets the description of this user.<p>
      *
      * @param value the description of this user
@@ -522,6 +639,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setEmail(String value) {
 
+        validateEmail(value);
         m_email = value;
     }
 
@@ -540,6 +658,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setFirstname(String firstname) {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(firstname)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_FIRSTNAME_EMPTY_0));
+        }
         m_firstname = firstname;
     }
 
@@ -561,7 +682,21 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setLastname(String lastname) {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(lastname)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LASTNAME_EMPTY_0));
+        }
         m_lastname = lastname;
+    }
+
+    /**
+     * Sets the name (login).<p>
+     *
+     * @param name the name (login) to set
+     */
+    public void setName(String name) {
+
+        validateLogin(name);
+        m_name = name;
     }
 
     /**
@@ -571,7 +706,24 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setPassword(String value) {
 
+        try {
+            OpenCms.getPasswordHandler().validatePassword(value);
+        } catch (CmsSecurityException e) {
+            throw new CmsIllegalArgumentException(e.getMessageContainer());
+        }
         m_password = value;
+    }
+
+    /**
+     * Sets the zip code of the address of the user.<p>
+     * 
+     * @param zipcode the zip code 
+     */
+    public void setZipcode(String zipcode) {
+
+        validateZipCode(zipcode);
+        zipcode = zipcode.toUpperCase();
+        setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE, zipcode);
     }
 
     /**

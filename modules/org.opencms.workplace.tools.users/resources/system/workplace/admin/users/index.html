@@ -2,12 +2,12 @@
                  org.opencms.main.*,
                  org.opencms.file.*,
                  org.opencms.workplace.list.*,
-                 org.opencms.workplace.tools.users.CmsUsersAdminTool,
+                 org.opencms.workplace.tools.users.CmsUsersList,
                  java.util.*" 
          buffer="none" %>
 <% 
 
-    CmsUsersAdminTool wp = new CmsUsersAdminTool(pageContext, request, response);
+    CmsUsersList wp = new CmsUsersList(pageContext, request, response);
 
 //////////////////// start of switch statement 
 switch (wp.getAction()) {
@@ -26,7 +26,7 @@ switch (wp.getAction()) {
     //////////////////// ACTION: execute single list action
     case A_CmsListDialog.ACTION_LIST_SINGLE_ACTION:
          wp.executeListSingleActions();
-         if (wp.getParamListAction().equals(CmsUsersAdminTool.LIST_ACTION_EDIT)) {
+         if (!wp.getParamListAction().equals(CmsUsersList.LIST_ACTION_ACTIVATE) && !wp.getParamListAction().equals(CmsUsersList.LIST_ACTION_DEACTIVATE) && !wp.getParamListAction().equals(CmsUsersList.LIST_ACTION_DELETE)) {
              // due to a redirect
              return;
          }

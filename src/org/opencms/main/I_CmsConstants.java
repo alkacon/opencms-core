@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2005/04/21 16:31:52 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/05/30 15:50:45 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  */
 public interface I_CmsConstants {
 
@@ -167,6 +167,11 @@ public interface I_CmsConstants {
 
     /** Key for additional info task settings. */
     String C_ADDITIONAL_INFO_TASKSETTINGS = "USER_TASKSETTINGS";
+
+    /**
+     * Key for additional info address.
+     */
+    String C_ADDITIONAL_INFO_COUNTRY = "USER_COUNTRY";
 
     /**
      * Key for additional info address.

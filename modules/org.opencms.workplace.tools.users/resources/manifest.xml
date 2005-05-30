@@ -237,10 +237,9 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/users/new/newuser.html</source>
 			<destination>system/workplace/admin/users/new/newuser.html</destination>
 			<type>jsp</type>
-			<uuidresource>d6a7cdcd-ac2c-11d9-82cf-733e319ca5ea</uuidresource>
+			<uuidresource>44347be5-ac0e-11d9-80b4-733e319ca5ea</uuidresource>
 			<datelastmodified>Wed, 13 Apr 2005 15:12:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 13 Apr 2005 15:00:56 GMT</datecreated>
@@ -373,30 +372,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/users/buttons/activate.gif</source>
-			<destination>system/workplace/resources/tools/users/buttons/activate.gif</destination>
-			<type>image</type>
-			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/tools/users/buttons/deactivate.gif</source>
-			<destination>system/workplace/resources/tools/users/buttons/deactivate.gif</destination>
-			<type>image</type>
-			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Jan 2005 10:30:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/tools/users/buttons/deactivate_disabled.gif</source>
 			<destination>system/workplace/resources/tools/users/buttons/deactivate_disabled.gif</destination>
 			<type>image</type>
@@ -409,8 +384,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/users/buttons/address.gif</source>
-			<destination>system/workplace/resources/tools/users/buttons/address.gif</destination>
+			<source>system/workplace/resources/tools/users/buttons/edit.png</source>
+			<destination>system/workplace/resources/tools/users/buttons/edit.png</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -421,8 +396,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/users/buttons/groups.gif</source>
-			<destination>system/workplace/resources/tools/users/buttons/groups.gif</destination>
+			<source>system/workplace/resources/tools/users/buttons/groups.png</source>
+			<destination>system/workplace/resources/tools/users/buttons/groups.png</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -433,8 +408,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/users/buttons/multi_activate.gif</source>
-			<destination>system/workplace/resources/tools/users/buttons/multi_activate.gif</destination>
+			<source>system/workplace/resources/tools/users/buttons/roles.png</source>
+			<destination>system/workplace/resources/tools/users/buttons/roles.png</destination>
 			<type>image</type>
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/05/24 12:57:12 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/05/30 15:50:45 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -491,6 +491,9 @@ public class CmsToolManager {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(currentToolPath) || currentToolPath.trim().equals("null")) {
             return;
+        }
+        while (!validatePath(currentToolPath)) {            
+            currentToolPath = getParent(wp, currentToolPath);
         }
         CmsToolUserData userData = getUserData(wp);
         userData.setCurrentToolPath(currentToolPath);

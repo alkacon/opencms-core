@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUserActivateDeactivateAction.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.9 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUserActivateAction.java,v $
+ * Date   : $Date: 2005/05/30 15:50:45 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,10 +45,10 @@ import org.opencms.workplace.list.I_CmsListDirectAction;
  * Activate/deactivate action for a html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsUserActivateDeactivateAction extends A_CmsListTwoStatesAction {
+public class CmsUserActivateAction extends A_CmsListTwoStatesAction {
 
     /**
      * Default Constructor.<p>
@@ -57,7 +57,7 @@ public class CmsUserActivateDeactivateAction extends A_CmsListTwoStatesAction {
      * @param id unique id
      * @param cms the cms context
      */
-    protected CmsUserActivateDeactivateAction(String listId, String id, CmsObject cms) {
+    protected CmsUserActivateAction(String listId, String id, CmsObject cms) {
 
         super(listId, id, cms);
     }
@@ -71,7 +71,7 @@ public class CmsUserActivateDeactivateAction extends A_CmsListTwoStatesAction {
      * @param actAction the first action
      * @param deactAction the second action
      */
-    protected CmsUserActivateDeactivateAction(
+    protected CmsUserActivateAction(
         String listId,
         String id,
         CmsObject cms,
@@ -119,12 +119,12 @@ public class CmsUserActivateDeactivateAction extends A_CmsListTwoStatesAction {
     public boolean isEnabled() {
 
         if (getItem() != null) {
+            String usrName = (String)getItem().get(CmsUsersList.LIST_COLUMN_LOGIN);
             try {
-                String usrName = getCms().readUser(new CmsUUID(getItem().getId())).getName();
                 return !getCms().userInGroup(usrName, OpenCms.getDefaultUsers().getGroupAdministrators());
             } catch (Exception e) {
                 throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_IS_ENABLED_USER_0), e);
+                    Messages.ERR_IS_ENABLED_USER_1, usrName), e);
             }
         }
         return super.isEnabled();

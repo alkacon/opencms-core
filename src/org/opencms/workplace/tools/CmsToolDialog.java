@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/05/23 13:12:21 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/05/30 15:50:45 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -297,12 +297,16 @@ public class CmsToolDialog extends CmsWorkplace {
             setParamStyle("new");
         }
 
-        // load parent if not enabled
-        if (!getAdminTool().getHandler().isEnabled(getCms())) {
-            params.put(PARAM_PATH, getParentPath());
-            setParamPath(getParentPath());
+        try {
+            // load parent if not enabled
+            if (!getAdminTool().getHandler().isEnabled(getCms())) {
+                params.put(PARAM_PATH, getParentPath());
+                setParamPath(getParentPath());
+            }
+        } catch (Exception e) {
+            // ignore
         }
-
+        
         try {
             // a dialog just for the close link param accessors
             CmsDialog wp = (CmsDialog)this;
