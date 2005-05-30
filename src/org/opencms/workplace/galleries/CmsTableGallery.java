@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsTableGallery.java,v $
- * Date   : $Date: 2005/04/22 13:22:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/30 15:20:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.galleries;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -41,13 +42,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Generates the html gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsTableGallery extends CmsHtmlGallery {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTableGallery.class);
 
     /**
      * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
@@ -80,21 +86,6 @@ public class CmsTableGallery extends CmsHtmlGallery {
     }
 
     /**
-     * Builds the HTML for the wizard button.<p>
-     * 
-     * @return the HTML for the wizard button
-     */
-    public String wizardButton() {
-
-        StringBuffer uploadUrl = new StringBuffer(512);
-        uploadUrl.append(getJsp().link(C_PATH_DIALOGS + OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri()).replaceFirst("newresource", "newcsvfile"));
-        uploadUrl.append("?redirecturl=/system/workplace/galleries/gallery_list.jsp&targetframe=gallery_list&currentfolder=");
-        uploadUrl.append(getParamGalleryPath());
-        return button(uploadUrl.toString(), "gallery_fs", "wizard", OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload")
-            .getKey(), 0);
-    }
-
-    /**
      * Builds the html String for the preview frame.<p>
      * 
      * @return the html String for the preview frame
@@ -107,8 +98,8 @@ public class CmsTableGallery extends CmsHtmlGallery {
                 getCms().readPropertyObject(getParamResourcePath(), I_CmsConstants.C_PROPERTY_STYLESHEET, true)
                     .getValue());
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e);
             }
         }
         StringBuffer result = new StringBuffer();
@@ -128,5 +119,20 @@ public class CmsTableGallery extends CmsHtmlGallery {
 
         return "440";
     }    
+
+    /**
+     * Builds the HTML for the wizard button.<p>
+     * 
+     * @return the HTML for the wizard button
+     */
+    public String wizardButton() {
+
+        StringBuffer uploadUrl = new StringBuffer(512);
+        uploadUrl.append(getJsp().link(C_PATH_DIALOGS + OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri()).replaceFirst("newresource", "newcsvfile"));
+        uploadUrl.append("?redirecturl=/system/workplace/galleries/gallery_list.jsp&targetframe=gallery_list&currentfolder=");
+        uploadUrl.append(getParamGalleryPath());
+        return button(uploadUrl.toString(), "gallery_fs", "wizard", OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload")
+            .getKey(), 0);
+    }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2005/05/19 16:27:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/30 15:20:41 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLink;
@@ -56,15 +57,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Resource type descriptor for the type "xmlpage".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlPage.class);
 
     /** The type id of this resource type. */
     private static final int C_RESOURCE_TYPE_ID = 6;
@@ -125,8 +131,10 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
         try {
             file = cms.readFile(cms.getRequestContext().removeSiteRoot(resource.getRootPath()), CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error reading file content of " + resource.getRootPath(), e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(org.opencms.db.Messages.get().container(
+                    org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                    cms.getSitePath(resource)), e);
             }
 
             return Collections.EMPTY_LIST;
@@ -161,8 +169,10 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
                 }
             }
         } catch (CmsXmlException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error processing HTML content of " + resource.getRootPath(), e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().container(
+                    Messages.ERR_PROCESS_HTML_CONTENT_1,
+                    cms.getSitePath(resource)), e);
             }
 
             return Collections.EMPTY_LIST;

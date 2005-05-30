@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Messages.java,v $
- * Date   : $Date: 2005/05/19 16:27:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/30 15:20:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,21 +41,27 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHTYPE_FOLDER_1 = "ERR_CHTYPE_FOLDER_1";
 
+    /** Constant for message ERR_CONFIGURATION_FROZEN_3. */
+    public static final String ERR_CONFIG_FROZEN_3 = "ERR_CONFIG_FROZEN_3";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_RESTYPE_CONFIG_3 = "ERR_INVALID_RESTYPE_CONFIG_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_RESTYPE_CONFIG_NAME_3 = "ERR_INVALID_RESTYPE_CONFIG_NAME_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PROCESS_HTML_CONTENT_1 = "ERR_PROCESS_HTML_CONTENT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REPLACE_RESOURCE_FOLDER_1 = "ERR_REPLACE_RESOURCE_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESTORE_FOLDERS_1 = "ERR_RESTORE_FOLDERS_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_INVALID_RESTYPE_CONFIG_NAME_3 = "ERR_INVALID_RESTYPE_CONFIG_NAME_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_FILE_IS_FOLDER_1 = "ERR_WRITE_FILE_IS_FOLDER_1";
@@ -89,9 +95,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /** Constant for message ERR_CONFIGURATION_FROZEN_3. */
-    public static final String ERR_CONFIG_FROZEN_3 = "ERR_CONFIG_FROZEN_3";
 
     /**
      * Hides the public constructor for this utility class.<p>

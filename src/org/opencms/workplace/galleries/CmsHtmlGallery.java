@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2005/05/12 09:21:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/30 15:20:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,23 +38,27 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Generates the html gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.5.2
  */
 public class CmsHtmlGallery extends A_CmsGallery {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHtmlGallery.class);
 
     /** URI of the image gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "html_fs.jsp";
@@ -110,8 +114,10 @@ public class CmsHtmlGallery extends A_CmsGallery {
                 content = CmsStringUtil.escapeJavaScript(content);
             } catch (CmsException e) {
                 // this should never happen
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(org.opencms.db.Messages.get().key(
+                        org.opencms.db.Messages.ERR_READ_RESOURCE_1,
+                        getParamResourcePath()));
                 }
             }
             content = CmsEncoder.escapeXml(content);
@@ -142,7 +148,7 @@ public class CmsHtmlGallery extends A_CmsGallery {
             }
         } catch (CmsException e) {
             // reading the resource failed
-            CmsLog.getLog(CmsHtmlGallery.class).error(e);
+            LOG.error(e);
         }
         return html.toString();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2005/05/20 14:31:37 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/30 15:20:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -59,7 +58,7 @@ import org.dom4j.Element;
  * Provides methods to get the editor information for the editor manager.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.1
  */
@@ -314,11 +313,14 @@ public class CmsWorkplaceEditorConfiguration {
      */
     private void logConfigurationError(String message, Throwable t) {
         setValidConfiguration(false);
-        if (OpenCms.getLog(this).isErrorEnabled()) {
+        if (LOG.isErrorEnabled()) {
             if (t == null) {
-                OpenCms.getLog(this).error("Error in editor configuration: " + message);
+               LOG.error(
+                    Messages.get().key(Messages.LOG_EDITOR_CONFIG_ERROR_1, message));
             } else {
-                OpenCms.getLog(this).error("Error in editor configuration: " + message, t);
+                LOG.error(
+                    Messages.get().key(Messages.LOG_EDITOR_CONFIG_ERROR_1, message),
+                    t);
             }
         }
     }
