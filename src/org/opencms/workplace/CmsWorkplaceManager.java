@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/05/25 10:56:53 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2005/05/30 11:39:40 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  * 
  * @since 5.3.1
  */
@@ -147,6 +147,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** The explorer type settings. */
     private List m_explorerTypeSettings;
 
+    /** The explorer type settings from the configured modules. */
+    private List m_explorerTypeSettingsFromModules;
+
+    /** The explorer type settings from the XML configuration. */
+    private List m_explorerTypeSettingsFromXml;
+
     /** The explorer type settings as Map with resource type name as key. */
     private Map m_explorerTypeSettingsMap;
 
@@ -201,14 +207,17 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_exportPoints = new HashSet();
         m_editorHandler = new CmsEditorHandler();
         m_fileMaxUploadSize = -1;
-        m_explorerTypeSettings = new ArrayList();
-        m_explorerTypeSettingsMap = new HashMap();
+        m_explorerTypeSettingsFromXml = new ArrayList();
+        m_explorerTypeSettingsFromModules = new ArrayList();
         m_defaultPropertiesOnStructure = true;
         m_enableAdvancedPropertyTabs = true;
         m_defaultUserSettings = new CmsDefaultUserSettings();
         m_defaultAccess = new CmsExplorerTypeAccess();
         m_galleries = new HashMap();
         m_messages = new HashMap();
+
+        // important to set this to null to avoid unneccessary overhead during configuration phase
+        m_explorerTypeSettings = null;
     }
 
     /**
@@ -247,45 +256,39 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** 
      * Adds an explorer type setting object to the list of type settings.<p>
      * 
-     * Adds the type setting as well to a map with the resource type name as key.
-     * This map is handy to get the settings for a known resource type.<p>
-     * 
      * @param settings the explorer type settings
      */
     public void addExplorerTypeSetting(CmsExplorerTypeSettings settings) {
 
-        m_explorerTypeSettings.add(settings);
-        m_explorerTypeSettingsMap.put(settings.getName(), settings);
+        m_explorerTypeSettingsFromXml.add(settings);
         if (CmsLog.LOG.isInfoEnabled()) {
             CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_1, settings.getName()));
+        }
+        if (m_explorerTypeSettings != null) {
+            // reset the list of all explorer type settings, but not during startup
+            initExplorerTypeSettings();
         }
     }
 
     /** 
-     * Adds a list of explorer type settings to the list of all type settings.<p>
+     * Adds the list of explorer type settings from the given module.<p>
      * 
-     * Removes the type settings as well to a map with the resource type name as key.
-     * 
-     * @param cms the current CmsObject
-     * @param explorerTypes the list of explorer type settings to be added
+     * @param module the module witch contains the explorer type settings to add
      */
-    public void addExplorerTypeSettings(CmsObject cms, List explorerTypes) {
+    public void addExplorerTypeSettings(CmsModule module) {
 
-        Iterator i = explorerTypes.iterator();
-        while (i.hasNext()) {
-            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
-            try {
-                m_explorerTypeSettings.add(settings);
-                m_explorerTypeSettingsMap.put(settings.getName(), settings);
-                settings.getAccess().createAccessControlList(cms);
+        List explorerTypes = module.getExplorerTypes();
+        if ((explorerTypes != null) && (explorerTypes.size() > 0)) {
+            Iterator i = explorerTypes.iterator();
+            while (i.hasNext()) {
+                CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
+                m_explorerTypeSettingsFromModules.add(settings);
                 if (CmsLog.LOG.isInfoEnabled()) {
                     CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_1, settings.getName()));
                 }
-            } catch (CmsException e) {
-                if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_FAILED_1, settings.getName()), e);
-                }
             }
+            // reset the list of all explorer type settings
+            initExplorerTypeSettings();
         }
     }
 
@@ -443,7 +446,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public CmsExplorerTypeSettings getExplorerTypeSetting(String type) {
 
         return (CmsExplorerTypeSettings)m_explorerTypeSettingsMap.get(type);
-
     }
 
     /**
@@ -704,32 +706,23 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             // set the workplace encoding
             m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
 
-            // add the additional explorer types found in the modules
+            // throw away all currently configured module explorer types
+            m_explorerTypeSettingsFromModules.clear();
+            // now add the additional explorer types found in the modules
             CmsModuleManager moduleManager = OpenCms.getModuleManager();
             Iterator j = moduleManager.getModuleNames().iterator();
             while (j.hasNext()) {
                 CmsModule module = moduleManager.getModule((String)j.next());
-                List explorerTypes = module.getExplorerTypes();
-                Iterator l = explorerTypes.iterator();
-                while (l.hasNext()) {
-                    CmsExplorerTypeSettings explorerType = (CmsExplorerTypeSettings)l.next();
-                    addExplorerTypeSetting(explorerType);
-                }
+                addExplorerTypeSettings(module);
             }
+            // initialize the explorer type settings
+            initExplorerTypeSettings();
             // initialize the workplace views
             initWorkplaceViews(cms);
             // initialize the workplace editor manager
             m_editorManager = new CmsWorkplaceEditorManager(cms);
             // initialize the locale handler
             initHandler(cms);
-            // sort the explorer type settings
-            Collections.sort(m_explorerTypeSettings);
-            // create the access control lists for each explorer type
-            Iterator i = m_explorerTypeSettings.iterator();
-            while (i.hasNext()) {
-                CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
-                settings.getAccess().createAccessControlList(cms);
-            }
 
             if (CmsLog.LOG.isInfoEnabled()) {
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_VFS_ACCESS_INITIALIZED_0));
@@ -743,6 +736,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             }
             // create an instance of editor display options
             m_editorDisplayOptions = new CmsEditorDisplayOptions();
+
+            // throw away all current gallery settings
+            m_galleries.clear();
             // read out the configured gallery classes
             j = OpenCms.getResourceManager().getResourceTypes().iterator();
             while (j.hasNext()) {
@@ -765,7 +761,10 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                     }
                 }
             }
+
+            // create a new tool manager
             m_toolManager = new CmsToolManager(cms);
+
             // throw away all cached message objects
             m_messages.clear();
         } catch (CmsException e) {
@@ -794,26 +793,28 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /** 
-     * Removes a list of explorer type settings from the list of all type settings.<p>
+     * Removes the list of explorer type settings from the given module.<p>
      * 
-     * Removes the type settings as well from a map with the resource type name as key.
-     * 
-     * @param explorerTypes the list of explorer type settings to be removed
+     * @param module the module witch contains the explorer type settings to remove
      */
-    public void removeExplorerTypeSettings(List explorerTypes) {
+    public void removeExplorerTypeSettings(CmsModule module) {
 
-        Iterator i = explorerTypes.iterator();
-        while (i.hasNext()) {
-            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
-            if (m_explorerTypeSettings.contains(settings)) {
-                m_explorerTypeSettings.remove(settings);
-                if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_REMOVE_EXPLORER_TYPE_SETTING_1, settings.getName()));
+        List explorerTypes = module.getExplorerTypes();
+        if ((explorerTypes != null) && (explorerTypes.size() > 0)) {
+            Iterator i = explorerTypes.iterator();
+            while (i.hasNext()) {
+                CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
+                if (m_explorerTypeSettingsFromModules.contains(settings)) {
+                    m_explorerTypeSettingsFromModules.remove(settings);
+                    if (CmsLog.LOG.isInfoEnabled()) {
+                        CmsLog.LOG.info(Messages.get().key(
+                            Messages.INIT_REMOVE_EXPLORER_TYPE_SETTING_1,
+                            settings.getName()));
+                    }
                 }
             }
-            if (m_explorerTypeSettingsMap.containsKey(settings.getName())) {
-                m_explorerTypeSettingsMap.remove(settings.getName());
-            }
+            // reset the list of all explorer type settings
+            initExplorerTypeSettings();
         }
     }
 
@@ -998,6 +999,37 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public boolean showUserGroupIcon() {
 
         return m_showUserGroupIcon;
+    }
+
+    /**
+     * Inintializes the configured explorer type settings.<p>
+     */
+    private synchronized void initExplorerTypeSettings() {
+
+        Map explorerTypeSettingsMap = new HashMap();
+        List explorerTypeSettings = new ArrayList();
+
+        explorerTypeSettings.addAll(m_explorerTypeSettingsFromXml);
+        explorerTypeSettings.addAll(m_explorerTypeSettingsFromModules);
+
+        for (int i = 0; i < explorerTypeSettings.size(); i++) {
+            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)explorerTypeSettings.get(i);
+            // put the settings in the lookup map
+            explorerTypeSettingsMap.put(settings.getName(), settings);
+            try {
+                // initialize the access control configuration of the explorer type
+                settings.getAccess().createAccessControlList();
+            } catch (CmsException e) {
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_FAILED_1, settings.getName()), e);
+                }
+            }
+        }
+        // sort the explorer type settings
+        Collections.sort(explorerTypeSettings);
+        // make the settings unmodifiable and store them in the golbal variables
+        m_explorerTypeSettings = Collections.unmodifiableList(explorerTypeSettings);
+        m_explorerTypeSettingsMap = Collections.unmodifiableMap(explorerTypeSettingsMap);
     }
 
     /**

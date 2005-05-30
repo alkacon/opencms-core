@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/05/29 09:28:23 $
- * Version: $Revision: 1.124 $
+ * Date   : $Date: 2005/05/30 11:39:40 $
+ * Version: $Revision: 1.125 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.124 $
+ * @version $Revision: 1.125 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -2164,7 +2164,7 @@ public class CmsObject {
      */
     public CmsGroup readGroup(String groupName) throws CmsException {
 
-        return (m_securityManager.readGroup(m_context, groupName));
+        return m_securityManager.readGroup(m_context, groupName);
     }
 
     /**

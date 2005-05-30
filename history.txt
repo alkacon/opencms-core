@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/05/29 11:44:46 $
- * Version: $Revision: 1.645 $
+ * Date   : $Date: 2005/05/30 11:39:40 $
+ * Version: $Revision: 1.646 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,6 +23,7 @@ OpenCms 5.9.2 Corrin (aka 6.0 RC 2) - June 17, 2005
 * Fixed issue with folders when moving a folder to it's own subfolder
 ! New JSP based login dialog
 ! A user account is now temporarily disabled for login after a configurable number of failed login attempts
+* Fixed issue with duplicate types showing in "new" dialog after the Workplace was re-initialized
 
 OpenCms 5.9.1 Corrin (aka 6.0 RC 1) - May 25, 2005
 * Fixed issue with static export suffix on a JSP with parameters always being set to ".html"

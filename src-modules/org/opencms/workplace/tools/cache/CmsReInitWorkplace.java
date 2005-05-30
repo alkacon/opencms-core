@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/cache/Attic/CmsReInitWorkplace.java,v $
- * Date   : $Date: 2005/05/23 12:39:25 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/30 11:39:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.cache;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.tools.staticexport.CmsStaticExportThread;
@@ -47,11 +48,11 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for re-initialization of the OpenCms Workplace.<p> 
  *
  * @author  Michael Emmerich(m.emmerich@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.10
  */
-public class CmsReInitWorkplace extends CmsReport {
+public class CmsReInitWorkplace extends CmsDialog {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "reinitworkplace";
@@ -92,11 +93,6 @@ public class CmsReInitWorkplace extends CmsReport {
             default:
                 try {
                     OpenCms.getWorkplaceManager().initialize(getCms());
-                    CmsStaticExportThread thread = new CmsStaticExportThread(getCms());
-                    setParamAction(DIALOG_CANCEL);
-                    setParamThread(thread.getUUID().toString());
-                    //getJsp().include(C_FILE_REPORT_OUTPUT);
-                    // after successful re-initialization, close dialog
                     actionCloseDialog();
                 } catch (CmsException e) {
                     // create a new Exception with custom message

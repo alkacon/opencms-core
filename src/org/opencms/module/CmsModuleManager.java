@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/05/25 09:29:47 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/05/30 11:39:40 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -250,7 +250,7 @@ public class CmsModuleManager {
                 removeResourceTypes = true;
             }
             if (module.getExplorerTypes() != Collections.EMPTY_LIST) {
-                OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module.getExplorerTypes());
+                OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module);
             }
 
             // perform dependency check
