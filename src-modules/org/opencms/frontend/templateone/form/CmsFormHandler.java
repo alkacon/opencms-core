@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/05/17 13:50:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/30 15:35:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * output formats of a submitted form.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsFormHandler extends CmsJspActionElement {
 
@@ -354,7 +354,8 @@ public class CmsFormHandler extends CmsJspActionElement {
                 theMail.setFrom(getFormConfiguration().getMailFrom());
             }
             theMail.setTo(createInternetAddresses(mailTo));
-            theMail.setSubject(getFormConfiguration().getConfirmationMailSubject());
+            theMail.setSubject(getFormConfiguration().getMailSubjectPrefix() 
+                + getFormConfiguration().getConfirmationMailSubject());
             theMail.setHtmlMsg(createMailTextFromFields(true, true));
             theMail.setTextMsg(createMailTextFromFields(false, true));
             // send the mail
@@ -367,7 +368,8 @@ public class CmsFormHandler extends CmsJspActionElement {
                 theMail.setFrom(getFormConfiguration().getMailFrom());
             }
             theMail.setTo(createInternetAddresses(mailTo));
-            theMail.setSubject(getFormConfiguration().getConfirmationMailSubject());
+            theMail.setSubject(getFormConfiguration().getMailSubjectPrefix()
+                + getFormConfiguration().getConfirmationMailSubject());
             theMail.setMsg(createMailTextFromFields(false, true));
             // send the mail
             theMail.send();
