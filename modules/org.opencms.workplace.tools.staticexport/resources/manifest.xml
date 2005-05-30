@@ -115,7 +115,7 @@
 			<source>system/workplace/admin/staticexport/index.html</source>
 			<destination>system/workplace/admin/staticexport/index.html</destination>
 			<type>jsp</type>
-
+			<uuidresource>83ef5a5e-d0e5-11d9-ac67-b920ebfd9bc1</uuidresource>
 			<datelastmodified>Thu, 10 Feb 2005 08:29:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
