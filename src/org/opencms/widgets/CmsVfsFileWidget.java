@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsFileWidget.java,v $
- * Date   : $Date: 2005/05/19 16:35:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/30 15:47:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.I_CmsWpConstants;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.2
  */
 public class CmsVfsFileWidget extends A_CmsWidget {
@@ -52,6 +52,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     public CmsVfsFileWidget() {
 
         // empty constructor is required for class registration
+        this("");
     }
 
     /**
@@ -61,7 +62,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
      */
     public CmsVfsFileWidget(String configuration) {
 
-        m_configuration = configuration;
+        super(configuration);
     }
 
     /**
@@ -147,6 +148,6 @@ public class CmsVfsFileWidget extends A_CmsWidget {
      */
     public I_CmsWidget newInstance() {
 
-        return new CmsVfsFileWidget(m_configuration);
+        return new CmsVfsFileWidget(getConfiguration());
     }
 }

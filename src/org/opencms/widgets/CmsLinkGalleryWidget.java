@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsLinkGalleryWidget.java,v $
- * Date   : $Date: 2005/05/19 16:35:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/30 15:47:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.3
  */
 public class CmsLinkGalleryWidget extends A_CmsGalleryWidget {
@@ -49,6 +49,7 @@ public class CmsLinkGalleryWidget extends A_CmsGalleryWidget {
     public CmsLinkGalleryWidget() {
 
         // empty constructor is required for class registration
+        this("");
     }
 
     /**
@@ -58,7 +59,7 @@ public class CmsLinkGalleryWidget extends A_CmsGalleryWidget {
      */
     public CmsLinkGalleryWidget(String configuration) {
 
-        m_configuration = configuration;
+        super(configuration);
     }
 
     /**
@@ -82,7 +83,7 @@ public class CmsLinkGalleryWidget extends A_CmsGalleryWidget {
      */
     public I_CmsWidget newInstance() {
 
-        return new CmsLinkGalleryWidget(m_configuration);
+        return new CmsLinkGalleryWidget(getConfiguration());
     }
 
     /**

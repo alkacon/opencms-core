@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidget.java,v $
- * Date   : $Date: 2005/05/19 16:35:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/30 15:47:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.StringTokenizer;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.3
  */
 public class CmsSelectWidget extends A_CmsWidget {
@@ -70,6 +70,7 @@ public class CmsSelectWidget extends A_CmsWidget {
     public CmsSelectWidget() {
 
         // empty constructor is required for class registration
+        this("");
     }
 
     /**
@@ -79,7 +80,7 @@ public class CmsSelectWidget extends A_CmsWidget {
      */
     public CmsSelectWidget(String configuration) {
 
-        m_configuration = configuration;
+        super(configuration);
     }
 
     /**
@@ -166,7 +167,7 @@ public class CmsSelectWidget extends A_CmsWidget {
      */
     public I_CmsWidget newInstance() {
 
-        return new CmsSelectWidget(m_configuration);
+        return new CmsSelectWidget(getConfiguration());
     }
 
     /**
@@ -183,12 +184,12 @@ public class CmsSelectWidget extends A_CmsWidget {
     private String getSelectOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         if (m_selectOptions == null) {
-            if (m_configuration == null) {
+            if (getConfiguration() == null) {
                 // use the default value
                 m_selectOptions = param.getDefault(cms);
             } else {
                 // use the configuration value, with processed macros
-                m_selectOptions = CmsMacroResolver.resolveMacros(m_configuration, cms, widgetDialog.getMessages());
+                m_selectOptions = CmsMacroResolver.resolveMacros(getContentConfiguration(), cms, widgetDialog.getMessages());
             }
         }
         return m_selectOptions;

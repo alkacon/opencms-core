@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsComboWidget.java,v $
- * Date   : $Date: 2005/05/24 11:05:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/30 15:47:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.StringTokenizer;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.3
  */
 public class CmsComboWidget extends A_CmsWidget {
@@ -71,6 +71,7 @@ public class CmsComboWidget extends A_CmsWidget {
     public CmsComboWidget() {
 
         // empty constructor is required for class registration
+        this("");
     }
 
     /**
@@ -80,7 +81,7 @@ public class CmsComboWidget extends A_CmsWidget {
      */
     public CmsComboWidget(String configuration) {
 
-        m_configuration = configuration;
+        super(configuration);
     }
     
     
@@ -231,7 +232,7 @@ public class CmsComboWidget extends A_CmsWidget {
      */
     public I_CmsWidget newInstance() {
 
-        return new CmsComboWidget(m_configuration);
+        return new CmsComboWidget(getConfiguration());
     }
 
     /**
@@ -247,7 +248,7 @@ public class CmsComboWidget extends A_CmsWidget {
 
         if (m_comboOptions == null) {
             // use the configuration value, with processed macros
-            m_comboOptions = CmsMacroResolver.resolveMacros(m_configuration, cms, widgetDialog.getMessages());
+            m_comboOptions = CmsMacroResolver.resolveMacros(getContentConfiguration(), cms, widgetDialog.getMessages());
         }
         if (CmsStringUtil.isEmpty(m_comboOptions)) {
             m_comboOptions = "";

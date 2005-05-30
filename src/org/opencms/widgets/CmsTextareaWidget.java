@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsTextareaWidget.java,v $
- * Date   : $Date: 2005/05/19 16:35:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/30 15:47:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.i18n.CmsEncoder;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.2
  */
 public class CmsTextareaWidget extends A_CmsWidget {
@@ -52,6 +52,7 @@ public class CmsTextareaWidget extends A_CmsWidget {
     public CmsTextareaWidget() {
 
         // empty constructor is required for class registration
+        this("");
     }
 
     /**
@@ -61,7 +62,7 @@ public class CmsTextareaWidget extends A_CmsWidget {
      */
     public CmsTextareaWidget(String configuration) {
 
-        m_configuration = configuration;
+        super(configuration);
     }
 
     /**
@@ -92,7 +93,7 @@ public class CmsTextareaWidget extends A_CmsWidget {
      */
     public I_CmsWidget newInstance() {
 
-        return new CmsTextareaWidget(m_configuration);
+        return new CmsTextareaWidget(getConfiguration());
     }
 
 }

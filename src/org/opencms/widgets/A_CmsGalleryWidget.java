@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
- * Date   : $Date: 2005/05/18 12:31:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/30 15:47:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,17 +42,28 @@ import org.opencms.workplace.galleries.A_CmsGallery;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.3
  */
 public abstract class A_CmsGalleryWidget extends A_CmsWidget {
 
     /**
-     * Creates a new editor widget.<p>
+     * Creates a new gallery widget.<p>
      */
     protected A_CmsGalleryWidget() {
 
         // empty constructor is required for class registration
+        this("");
+    }
+
+    /**
+     * Creates a new gallery widget with the given configuration.<p>
+     * 
+     * @param configuration the configuration to use
+     */
+    protected A_CmsGalleryWidget(String configuration) {
+
+        super(configuration);
     }
 
     /**

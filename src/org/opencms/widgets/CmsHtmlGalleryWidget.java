@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlGalleryWidget.java,v $
- * Date   : $Date: 2005/05/19 16:35:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/30 15:47:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.widgets;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.3
  */
 public class CmsHtmlGalleryWidget extends A_CmsHtmlGalleryWidget {
@@ -47,6 +47,7 @@ public class CmsHtmlGalleryWidget extends A_CmsHtmlGalleryWidget {
     public CmsHtmlGalleryWidget() {
 
         // empty constructor is required for class registration
+        this("");
     }
 
     /**
@@ -56,7 +57,7 @@ public class CmsHtmlGalleryWidget extends A_CmsHtmlGalleryWidget {
      */
     public CmsHtmlGalleryWidget(String configuration) {
 
-        m_configuration = configuration;
+        super(configuration);
     }
 
     /**
@@ -80,7 +81,7 @@ public class CmsHtmlGalleryWidget extends A_CmsHtmlGalleryWidget {
      */
     public I_CmsWidget newInstance() {
 
-        return new CmsHtmlGalleryWidget(m_configuration);
+        return new CmsHtmlGalleryWidget(getConfiguration());
     }
 
 }

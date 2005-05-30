@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsInputWidget.java,v $
- * Date   : $Date: 2005/05/30 15:47:41 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsPasswordWidget.java,v $
+ * Date   : $Date: 2005/05/30 15:47:40 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,30 +35,30 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 
 /**
- * Provides a standard HTML form input widget, for use on a widget dialog.<p>
+ * Provides a standard HTML form password widget, for use on a widget dialog.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * @since 5.5.0
  */
-public class CmsInputWidget extends A_CmsWidget {
+public class CmsPasswordWidget extends A_CmsWidget {
 
     /**
-     * Creates a new input widget.<p>
+     * Creates a new password widget.<p>
      */
-    public CmsInputWidget() {
+    public CmsPasswordWidget() {
 
         // empty constructor is required for class registration
         this("");
     }
 
     /**
-     * Creates a new input widget with the given configuration.<p>
+     * Creates a new password widget with the given configuration.<p>
      * 
      * @param configuration the configuration to use
      */
-    public CmsInputWidget(String configuration) {
+    public CmsPasswordWidget(String configuration) {
 
         super(configuration);
     }
@@ -72,15 +72,11 @@ public class CmsInputWidget extends A_CmsWidget {
 
         StringBuffer result = new StringBuffer(16);
 
-        result.append("<td class=\"xmlTd\"><input class=\"xmlInput textInput");
+        result.append("<td class=\"xmlTd\"><input type=\"password\" class=\"xmlInput textInput");
         if (param.hasError()) {
             result.append(" xmlInputError");
         }
-        result.append("\"");
-        if (isDisabled()) {
-            result.append(" disabled");
-        }
-        result.append(" name=\"");
+        result.append("\" name=\"");
         result.append(id);
         result.append("\" id=\"");
         result.append(id);
@@ -97,6 +93,6 @@ public class CmsInputWidget extends A_CmsWidget {
      */
     public I_CmsWidget newInstance() {
 
-        return new CmsInputWidget(getConfiguration());
+        return new CmsPasswordWidget(getConfiguration());
     }
 }
