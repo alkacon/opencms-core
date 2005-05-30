@@ -34,13 +34,9 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.frontend.templateone.workplace"/>
 			<layouts>
-				<layout element="layout.version" widget="SelectorWidget" />
-				<layout element="headnav.menudepth" widget="SelectorWidget" />
+				<layout element="layout.version" widget="SelectorWidget" configuration="accessible*:${key.layout.version.accessible}|common:${key.layout.version.classic}" />
+				<layout element="headnav.menudepth" widget="SelectorWidget" configuration="1*|2|3|4|5|6|7|8|9|10" />
 			</layouts>
-			<defaults>
-				<default element="layout.version" value="accessible*:${key.layout.version.accessible}|common:${key.layout.version.classic}"/>
-				<default element="headnav.menudepth" value="1*|2|3|4|5|6|7|8|9|10"/>
-			</defaults>
 		</xsd:appinfo>
 	</xsd:annotation>  
 	

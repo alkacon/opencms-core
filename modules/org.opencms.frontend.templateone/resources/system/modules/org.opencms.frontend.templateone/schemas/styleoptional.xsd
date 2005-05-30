@@ -36,13 +36,9 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.frontend.templateone.workplace"/>
 			<layouts>
-				<layout element="headlines.set" widget="SelectorWidget" />
-				<layout element="navleft.font.size" widget="SelectorWidget" />
+				<layout element="headlines.set" widget="SelectorWidget" configuration="13-12-11-10-9-9*:${key.headline.standard} (13Pt - 9Pt)|14-13-12-11-10-10:${key.headline.large} (14Pt - 10Pt)|15-14-13-12-11-11:${key.headline.larger} (15Pt - 11Pt)|16-15-14-13-12-12:${key.headline.verylarge} (16Pt - 12Pt)|17-16-15-14-13-13:${key.headline.largest} (17Pt - 13Pt)" />
+				<layout element="navleft.font.size" widget="SelectorWidget" configuration="9|10|11|12*|13" />
 			</layouts>
-			<defaults>
-				<default element="headlines.set" value="13-12-11-10-9-9*:${key.headline.standard} (13Pt - 9Pt)|14-13-12-11-10-10:${key.headline.large} (14Pt - 10Pt)|15-14-13-12-11-11:${key.headline.larger} (15Pt - 11Pt)|16-15-14-13-12-12:${key.headline.verylarge} (16Pt - 12Pt)|17-16-15-14-13-13:${key.headline.largest} (17Pt - 13Pt)"/>
-				<default element="navleft.font.size" value="9|10|11|12*|13"/>
-			</defaults>
 		</xsd:appinfo>
 	</xsd:annotation>  
  

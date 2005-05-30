@@ -27,11 +27,8 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.frontend.templateone.form.workplace"/>
 			<layouts>
-				<layout element="MailType" widget="SelectorWidget" />
+				<layout element="MailType" widget="SelectorWidget" configuration="html*:${key.form.email.type.html}|text:${key.form.email.type.text}" />
 			</layouts>
-			<defaults>
-				<default element="MailType" value="html*:${key.form.email.type.html}|text:${key.form.email.type.text}"/>
-			</defaults>
 		</xsd:appinfo>
 	</xsd:annotation>  
 
