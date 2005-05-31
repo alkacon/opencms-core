@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyException.java,v $
- * Date   : $Date: 2005/05/28 09:35:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/31 08:12:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,26 +34,63 @@ package com.opencms.legacy;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsThrowable;
-import org.opencms.util.CmsStringUtil;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Locale;
 
 /**
- * Exception to keep the legacy packages com.opencms.*
- * with the old exception handling mechanism using
- * constants running.<p>
+ * Exception to keep the legacy packages com.opencms.* and com.opencms.*
+ * with the old exception handling mechanism running.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsLegacyException extends CmsException implements I_CmsThrowable {
 
+    /** 
+     * 
+     * MessageContainer with string-constructor, to be used only in this class.
+     * CmsLegacyMessageContainers are not localized. <p>
+     */
+    private static class CmsLegacyMessageContainer extends CmsMessageContainer {
+        
+        /**
+         * Creates a new message container with the specified message.<p>
+         * 
+         * @param message the message to use
+         */
+        public CmsLegacyMessageContainer(String message) {
+
+            super(Messages.get(), message);
+        }
+        
+        /**
+         * Returns the message described by this container.<p>
+         * 
+         * @return the message described by this container
+         */
+        public String key() {
+
+            return getKey();
+        }
+
+        /**
+         * Returns the message described by this container. The message is not localized and the locale argument will
+         * not be taken into account.<p>
+         * 
+         * @param locale the locale to use
+         * @return the message described by this container
+         */
+        public String key(Locale locale) {
+
+            return getKey();
+        }
+
+    }
+    
     /**
      * This array provides descriptions for the error codes stored as
      * constants in the CmsLegacyExeption class.
@@ -117,53 +154,27 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     /* 55 */"Resource loader not template enabled",
     /* 56 */"Unknown resource type requested!"};
 
+
+    /** Error code for unknown exception.*/
+    public static final int C_UNKNOWN_EXCEPTION = 0;
+
+    /** Error code for not found exception.*/
+    public static final int C_NOT_FOUND = 2;
+
     /** Error code for bad name exception. */
     public static final int C_BAD_NAME = 3;
 
-    /** Error code for ClassLoader errors. */
-    public static final int C_CLASSLOADER_ERROR = 29;
-    
-    /** Error code for export issues. */
-    public static final int C_EXPORT_ERROR = 42;
+    /** Error code for sql exception.*/
+    public static final int C_SQL_ERROR = 4;
 
-    /** Error code for file exists exception.*/
-    public static final int C_FILE_EXISTS = 12;
+    /** Error code for not empty exception.*/
+    public static final int C_NOT_EMPTY = 5;
 
-    /** Error code for file not found exception. */
-    public static final int C_FILE_NOT_FOUND = 13;
-
-    /** Error code filesystem error. */
-    public static final int C_FILESYSTEM_ERROR = 14;
-
-    /** Error code for Flex loader. */
-    public static final int C_FLEX_LOADER = 40;
-
-    /** Error code for HTTP streaming error. */
-    public static final int C_HTTPS_PAGE_ERROR = 37;
-
-    /** Error code for HTTPS streaming error. */
-    public static final int C_HTTPS_REQUEST_ERROR = 38;
-
-    /** Error code for import issues. */
-    public static final int C_IMPORT_ERROR = 41;
-
-    /** Error code internal file. */
-    public static final int C_INTERNAL_FILE = 15;
+    /** Error code for no admin exception. */
+    public static final int C_NOT_ADMIN = 6;
 
     /** Generic error code for loader errors. */
     public static final int C_LOADER_GENERIC_ERROR = 54;
-
-    /** Non-template loader called through template loader facade. */
-    public static final int C_LOADER_NOT_TEMPLATE_ENABLED = 55;
-
-    /** Unknown resource type. */
-    public static final int C_LOADER_UNKNOWN_RESOURCE_TYPE = 56;
-
-    /** Error code for access denied exception for vfs resources. */
-    public static final int C_NO_ACCESS = 1;
-
-    /** Error code for no default group exception. */
-    public static final int C_NO_DEFAULT_GROUP = 11;
 
     /** Error code for no group exception. */
     public static final int C_NO_GROUP = 8;
@@ -171,80 +182,20 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     /** Error code for no user exception. */
     public static final int C_NO_USER = 10;
 
-    /** Error code for no admin exception. */
-    public static final int C_NOT_ADMIN = 6;
-
-    /** Error code for not empty exception.*/
-    public static final int C_NOT_EMPTY = 5;
-
-    /** Error code for not found exception.*/
-    public static final int C_NOT_FOUND = 2;
-
-    /** Error code for driver manager initialization errors. */
-    public static final int C_RB_INIT_ERROR = 33;
-
-    /** Error code for Registry exception. */
-    public static final int C_REGISTRY_ERROR = 34;
-
-    /** Error code for accessing a deleted resource.*/
-    public static final int C_RESOURCE_DELETED = 32;
-
-    /** A resource is locked by a user different from the current user, but a particular action requires that the resource is locked by the current user. */
-    public static final int C_RESOURCE_LOCKED_BY_OTHER_USER = 47;
-
-    /** A resource has a non-exclusive lock, but a particular action requires an exclusive lock. */
-    public static final int C_RESOURCE_LOCKED_NON_EXCLUSIVE = 46;
-
-    /** A resource is unlocked, but a particular action requires the resource to be locked. */
-    public static final int C_RESOURCE_UNLOCKED = 45;
-
-    /** Administrator privileges required. */
-    public static final int C_SECURITY_ADMIN_PRIVILEGES_REQUIRED = 48;
-
-    /** Invalid password (only for password change and validation of password). */
-    public static final int C_SECURITY_INVALID_PASSWORD = 52;
-
-    /** Login failed. */
-    public static final int C_SECURITY_LOGIN_FAILED = 53;
-
-    /** No read / write access allowed in online project. */
-    public static final int C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT = 50;
-
-    /** No permissions to perform operation. */
-    public static final int C_SECURITY_NO_PERMISSIONS = 51;
-
-    /** Project manager (or Administrator) privileges required. */
-    public static final int C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED = 49;
-
-    /** Error code for serialization exception. */
-    public static final int C_SERIALIZATION = 7;
-
     /** Error code service unavailable. */
     public static final int C_SERVICE_UNAVAILABLE = 17;
 
-    /** Error code for security manager initialization error. */
-    public static final int C_SM_INIT_ERROR = 35;
-
-    /** Error code for sql exception.*/
-    public static final int C_SQL_ERROR = 4;
-
-    /** Error code for unknown exception.*/
-    public static final int C_UNKNOWN_EXCEPTION = 0;
-
-    /** Error code that a user to be created already exists. */
-    public static final int C_USER_ALREADY_EXISTS = 42;
+    /** Error code for unknown XML datablocks. */
+    public static final int C_XML_UNKNOWN_DATA = 18;
 
     /** Error code for corrupt internal structure. */
     public static final int C_XML_CORRUPT_INTERNAL_STRUCTURE = 19;
 
+    /** Error code for wrong XML content type. */
+    public static final int C_XML_WRONG_CONTENT_TYPE = 20;
+
     /** Error code for XML process method not found. */
     public static final int C_XML_NO_PROCESS_METHOD = 24;
-
-    /** Error code for no XML template class. */
-    public static final int C_XML_NO_TEMPLATE_CLASS = 27;
-
-    /** Error code for XML user method not found. */
-    public static final int C_XML_NO_USER_METHOD = 23;
 
     /** Error code for XML parsing error. */
     public static final int C_XML_PARSING_ERROR = 21;
@@ -252,34 +203,38 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     /** Error code for XML processing error. */
     public static final int C_XML_PROCESS_ERROR = 22;
 
+    /** Error code for XML user method not found. */
+    public static final int C_XML_NO_USER_METHOD = 23;
+
     /** Error code for missing XML tag. */
     public static final int C_XML_TAG_MISSING = 25;
-
-    /** Error code for unknown XML datablocks. */
-    public static final int C_XML_UNKNOWN_DATA = 18;
-
-    /** Error code for wrong XML content type. */
-    public static final int C_XML_WRONG_CONTENT_TYPE = 20;
 
     /** Error code for wrong XML template class. */
     public static final int C_XML_WRONG_TEMPLATE_CLASS = 26;
 
-    /** The container for the localized message.  */
-    protected CmsMessageContainer m_message;
+    /** Error code for no XML template class. */
+    public static final int C_XML_NO_TEMPLATE_CLASS = 27;
 
-    /** Stores the error message of the CmsLegacyException.  */
-    protected String m_messageString;
+    /** Error code for ClassLoader errors. */
+    public static final int C_CLASSLOADER_ERROR = 29;
+
+    /** Error code for Registry exception. */
+    public static final int C_REGISTRY_ERROR = 34;
+
+    /** A resource is unlocked, but a particular action requires the resource to be locked. */
+    public static final int C_RESOURCE_UNLOCKED = 45;
+
+    /** A resource has a non-exclusive lock, but a particular action requires an exclusive lock. */
+    public static final int C_RESOURCE_LOCKED_NON_EXCLUSIVE = 46;
+
+    /** A resource is locked by a user different from the current user, but a particular action requires that the resource is locked by the current user. */
+    public static final int C_RESOURCE_LOCKED_BY_OTHER_USER = 47;
+
+    /** Invalid password (only for password change and validation of password). */
+    public static final int C_SECURITY_INVALID_PASSWORD = 52;
 
     /** Stores the error code of the CmsLegacyException. */
     protected int m_type;
-
-    /**
-     * Creates a simple CmsLegacyException.<p>
-     */
-    public CmsLegacyException() {
-
-        super(null);
-    }
 
     /**
      * Creates a new localized Exception.<p>
@@ -310,7 +265,7 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      */
     public CmsLegacyException(int type) {
 
-        super(null);
+        super(new CmsLegacyMessageContainer(CmsLegacyException.getErrorDescription(type)));
         m_type = type;
     }
 
@@ -325,7 +280,7 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      */
     public CmsLegacyException(int type, Throwable cause) {
 
-        super(null);
+        super(new CmsLegacyMessageContainer(CmsLegacyException.getErrorDescription(type)));
         initCause(cause);
         m_type = type;
     }
@@ -337,8 +292,7 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      */
     public CmsLegacyException(String message) {
 
-        super(null);
-        m_messageString = message;
+        super(new CmsLegacyMessageContainer(message));
     }
 
     /**
@@ -349,8 +303,7 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      */
     public CmsLegacyException(String message, int type) {
 
-        super(null);
-        m_messageString = message;
+        super(new CmsLegacyMessageContainer(message));
         m_type = type;
     }
 
@@ -364,9 +317,8 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      */
     public CmsLegacyException(String message, int type, Throwable cause) {
 
-        super(null);
+        super(new CmsLegacyMessageContainer(message));
         initCause(cause);
-        m_messageString = message;
         m_type = type;
     }
 
@@ -379,25 +331,8 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      */
     public CmsLegacyException(String message, Throwable cause) {
 
-        super(null);
+        super(new CmsLegacyMessageContainer(message));
         initCause(cause);
-        m_messageString = message;
-    }
-
-    /**
-     * Returns the stack trace (including the message) of an exception as a String.<p>
-     * 
-     * If the exception is a CmsLegacyException, 
-     * also writes the root cause to the String.<p>
-     * 
-     * @param e the exception to get the stack trace from
-     * @return the stack trace of an exception as a String
-     */
-    public static String getStackTraceAsString(Throwable e) {
-
-        StringWriter stringWriter = new StringWriter();
-        e.printStackTrace(new PrintWriter(stringWriter));
-        return stringWriter.toString();
     }
 
     /**
@@ -411,56 +346,6 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
         return new CmsLegacyException(container, cause);
-    }
-
-    /**
-     * @see org.opencms.main.I_CmsThrowable#getLocalizedMessage()
-     */
-    public String getLocalizedMessage() {
-
-        if (m_message == null) {
-            return super.getLocalizedMessage();
-        }
-        return m_message.key();
-    }
-
-    /**
-     * @see org.opencms.main.I_CmsThrowable#getLocalizedMessage(Locale)
-     */
-    public String getLocalizedMessage(Locale locale) {
-
-        return m_message.key(locale);
-    }
-
-    /**
-     * @see java.lang.Throwable#getMessage()
-     */
-    public String getMessage() {
-
-        if (m_message != null) {
-            // localized message is available
-            return getLocalizedMessage();
-        }
-
-        StringBuffer result = new StringBuffer(256);
-        if (CmsStringUtil.isNotEmpty(m_messageString)) {
-            result.append(m_messageString);
-        }
-
-        if (getType() > 0) {
-            result.append(' ');
-            result.append(getErrorDescription(getType()));
-        }
-
-        return result.toString();
-    }
-
-    /**
-     * @see org.opencms.main.I_CmsThrowable#getMessageContainer()
-     */
-    public CmsMessageContainer getMessageContainer() {
-
-        return m_message;
     }
 
     /**
@@ -480,12 +365,12 @@ public class CmsLegacyException extends CmsException implements I_CmsThrowable {
      * @param type exception error code 
      * @return the description String for the provided CmsLegacyException type
      */
-    protected String getErrorDescription(int type) {
+    protected static String getErrorDescription(int type) {
 
         if ((type < CmsLegacyException.C_ERROR_DESCRIPTION.length) && (type > 0)) {
             return CmsLegacyException.C_ERROR_DESCRIPTION[type];
         } else {
-            return this.getClass().getName();
+            return CmsLegacyException.class.getName();
         }
     }
 }
