@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/05/20 14:35:07 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2005/05/31 14:38:38 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.77 $
  * 
  * @since 5.3.5
  */
@@ -128,14 +128,9 @@ public class OpenCmsTestCase extends TestCase {
         public Node m_node2 = null;
 
         /**
-         * 
-         * @param n1 a Document to compare. 
-         * @param n2 the 2nd Document to compare. 
-         * 
          * @see org.dom4j.util.NodeComparator#compare(org.dom4j.Node, org.dom4j.Node)
-         * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second. See {@link java.util.Comparator#compare(Object,Object)}.
          */
-        public int compare(Document n1, Document n2) {
+        public int compare(Node n1, Node n2) {
 
             int result = super.compare(n1, n2);
             if (result != 0 && m_node1 == null) {
@@ -1426,10 +1421,7 @@ public class OpenCmsTestCase extends TestCase {
                 + d1.getName()
                 + ", "
                 + "path = "
-                + comparator.m_node1.getPath()
-                + ", "
-                + "node = "
-                + comparator.m_node1.toString());
+                + comparator.m_node1.getUniquePath());
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/31 14:38:39 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -248,7 +248,7 @@ public class CmsMove extends CmsDialog {
             // calculate the target name
             target = CmsLinkManager.getAbsoluteUri(target, CmsResource.getParentFolder(getParamResource()));
     
-            if (target.equalsIgnoreCase(source)) {
+            if (target.equals(source)) {
                 throw new CmsVfsException(Messages.get().container(Messages.ERR_MOVE_ONTO_ITSELF_1, target));
             }           
             

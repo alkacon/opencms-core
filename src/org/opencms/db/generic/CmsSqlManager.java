@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/05/20 14:29:15 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/05/31 14:38:38 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.56 $ $Date: 2005/05/20 14:29:15 $
+ * @version $Revision: 1.57 $ $Date: 2005/05/31 14:38:38 $
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
@@ -361,33 +361,43 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      */
     public String readQuery(int projectId, String queryKey) {
 
-        // get the SQL statement from the properties hash
-        String query = readQuery(queryKey);
-
-        // replace control chars.
-        query = CmsStringUtil.substitute(query, "\t", " ");
-        query = CmsStringUtil.substitute(query, "\n", " ");
-
-        if (projectId == 0) {
-            // a project ID = 0 is an internal indicator that a project-independent 
-            // query was requested- further regex operations are not required then!
-            return query;
-        }
-
-        // calculate the key for the map of all cached pre-calculated queries
-        queryKey += (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID || projectId < 0) ? "_ONLINE" : "_OFFLINE";
-
-        if (!m_cachedQueries.containsKey(queryKey)) {
-            // make the statement project dependent
-            query = CmsSqlManager.replaceProjectPattern(projectId, query);
-
-            // to minimize costs, all statements with replaced expressions are cached in a map
-            m_cachedQueries.put(queryKey, query);
+        String key;
+        if (projectId != 0) {
+            // id 0 is special, please see below
+            StringBuffer buffer = new StringBuffer(128);
+            buffer.append(queryKey);
+            if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+                buffer.append("_ONLINE");
+            } else {
+                buffer.append("_OFFLINE");
+            }
+            key = buffer.toString();
         } else {
-            // use the statement where the pattern is already replaced
-            query = (String)m_cachedQueries.get(queryKey);
+            key = queryKey;
         }
-
+        
+        // look up the query in the cache
+        String query = (String)m_cachedQueries.get(key);        
+        
+        if (query == null) {            
+            // the query has not been cached yet
+            // get the SQL statement from the properties hash
+            query = readQuery(queryKey);
+            
+            // replace control chars.
+            query = CmsStringUtil.substitute(query, "\t", " ");
+            query = CmsStringUtil.substitute(query, "\n", " ");  
+            
+            if (projectId != 0) {
+                // a project ID = 0 is an internal indicator that a project-independent 
+                // query was requested - further regex operations are not required then
+                query = CmsSqlManager.replaceProjectPattern(projectId, query);
+            }
+            
+            // to minimize costs, all statements with replaced expressions are cached in a map
+            m_cachedQueries.put(key, query);         
+        }
+        
         return query;
     }
 
@@ -399,13 +409,12 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      */
     public String readQuery(String queryKey) {
 
-        String value = null;
+        String value;
         if ((value = (String)m_queries.get(queryKey)) == null) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().key(Messages.LOG_QUERY_NOT_FOUND_1, queryKey));
             }
         }
-
         return value;
     }
 

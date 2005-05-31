@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2005/05/30 11:39:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/31 14:38:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * Explorer type access object, encapsulates access control entires and lists of a explorer type.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsExplorerTypeAccess {
 
@@ -93,6 +93,11 @@ public class CmsExplorerTypeAccess {
      */
     public void createAccessControlList() throws CmsException {
 
+        if (OpenCms.getRunLevel() < OpenCms.RUNLEVEL_2_INITIALIZING) {
+            // we don't need this for simple test cases
+            return;
+        }
+        
         m_accessControlList = new CmsAccessControlList();
         Iterator i = m_accessControl.keySet().iterator();
         while (i.hasNext()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/05/19 15:24:34 $
- * Version: $Revision: 1.242 $
+ * Date   : $Date: 2005/05/31 14:38:39 $
+ * Version: $Revision: 1.243 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.242 $ 
+ * @version $Revision: 1.243 $ 
  * @since 5.1
  */
 public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
@@ -968,67 +968,54 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         boolean getFolders,
         boolean getFiles) throws CmsDataAccessException {
 
+        List result = new ArrayList();
+        int projectId = currentProject.getId();
+
+        String resourceTypeClause;
+        if (getFolders && getFiles) {
+            resourceTypeClause = null;
+        } else if (getFolders) {
+            resourceTypeClause = m_sqlManager.readQuery(projectId, "C_RESOURCES_GET_SUBRESOURCES_GET_FOLDERS");
+        } else {
+            resourceTypeClause = m_sqlManager.readQuery(projectId, "C_RESOURCES_GET_SUBRESOURCES_GET_FILES");
+        }
+        StringBuffer query = new StringBuffer();
+        query.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_GET_SUBRESOURCES"));
+        if (resourceTypeClause != null) {
+            query.append(' ');
+            query.append(resourceTypeClause);
+        }
+
+        String typeColumn = m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE");
+
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
-        String query = null;
-
-        String resourceTypeClause;
-        List subFolders;
-        List subFiles;
-
-        String orderClause = m_sqlManager.readQuery(currentProject, "C_RESOURCES_GET_SUBRESOURCES_ORDER");
-
-        if (getFolders && getFiles) {
-            resourceTypeClause = "";
-            subFolders = new ArrayList();
-            subFiles = new ArrayList();
-        } else if (getFolders) {
-            resourceTypeClause = " "
-                + m_sqlManager.readQuery(currentProject, "C_RESOURCES_GET_SUBRESOURCES_GET_FOLDERS");
-            subFolders = new ArrayList();
-            subFiles = null;
-        } else {
-            resourceTypeClause = " " + m_sqlManager.readQuery(currentProject, "C_RESOURCES_GET_SUBRESOURCES_GET_FILES");
-            subFolders = null;
-            subFiles = new ArrayList();
-        }
-
         try {
             conn = m_sqlManager.getConnection(dbc, currentProject.getId());
-
-            query = m_sqlManager.readQuery(currentProject, "C_RESOURCES_GET_SUBRESOURCES")
-                + " "
-                + resourceTypeClause
-                + " "
-                + orderClause;
-            stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, query.toString());
             stmt.setString(1, resource.getStructureId().toString());
             res = stmt.executeQuery();
 
             while (res.next()) {
-                int type = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
+                int type = res.getInt(typeColumn);
                 if (CmsFolder.isFolderType(type)) {
-                    subFolders.add(createFolder(res, currentProject.getId(), false));
+                    result.add(createFolder(res, projectId, false));
                 } else {
-                    subFiles.add(createFile(res, currentProject.getId(), false));
+                    result.add(createFile(res, projectId, false));
                 }
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
-        // this is required in order to get the "folders first" sort order 
-        if (getFolders && getFiles) {
-            subFolders.addAll(subFiles);
-            return subFolders;
-        } else if (getFolders) {
-            return subFolders;
-        }
-        return subFiles;
+        // sort result in memory, this is to avoid DB dependencies in the result order
+        Collections.sort(result, CmsResource.COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST);
+        return result;
     }
 
     /**
@@ -1524,7 +1511,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
         if (resource != null && resource.getState() == I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
-            throw new CmsVfsException(Messages.get().container(
+            throw new CmsVfsResourceNotFoundException(Messages.get().container(
                 Messages.ERR_READ_DELETED_RESOURCE_1, dbc.removeSiteRoot(resource.getRootPath())));
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2005/03/18 10:36:28 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/05/31 14:38:38 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Comparator;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -62,10 +62,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
          */
         public int compare(Object o1, Object o2) {
 
-            if (!(o1 instanceof CmsResource)) {
-                return 0;
-            }
-            if (!(o2 instanceof CmsResource)) {
+            if (!(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
                 return 0;
             }
 
@@ -98,10 +95,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
          */
         public int compare(Object o1, Object o2) {
 
-            if (!(o1 instanceof CmsResource)) {
-                return 0;
-            }
-            if (!(o2 instanceof CmsResource)) {
+            if (!(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
                 return 0;
             }
 
@@ -109,6 +103,54 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             CmsResource r2 = (CmsResource)o2;
 
             return r1.getRootPath().compareTo(r2.getRootPath());
+        }
+    };
+
+    /**
+     * A comparator for the root path of 2 resources ignoring case differences.<p>
+     */
+    public static final Comparator COMPARE_ROOT_PATH_IGNORE_CASE = new Comparator() {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(Object o1, Object o2) {
+
+            if (!(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
+                return 0;
+            }
+
+            CmsResource r1 = (CmsResource)o1;
+            CmsResource r2 = (CmsResource)o2;
+
+            return r1.getRootPath().compareToIgnoreCase(r2.getRootPath());
+        }
+    };
+
+    /**
+     * A comparator for the root path of 2 resources ignoring case differences, putting folders before files.<p>
+     */
+    public static final Comparator COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST = new Comparator() {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(Object o1, Object o2) {
+
+            if (!(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
+                return 0;
+            }
+
+            CmsResource r1 = (CmsResource)o1;
+            CmsResource r2 = (CmsResource)o2;
+
+            if (r1.isFolder() && !r2.isFolder()) {
+                return -1;
+            } else if (r2.isFolder() && !r1.isFolder()) {
+                return 1;
+            }
+            // if same type, compare the name of the resource
+            return r1.getRootPath().compareToIgnoreCase(r2.getRootPath());
         }
     };
 
@@ -401,14 +443,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public int compareTo(Object o) {
 
-        if ((o == null) || (!(o instanceof CmsResource))) {
+        if (!(o instanceof CmsResource)) {
             return 0;
         }
 
-        String ownResourceName = getRootPath();
-        String otherResourceName = ((CmsResource)o).getRootPath();
-
-        return ownResourceName.compareTo(otherResourceName);
+        return m_rootPath.compareTo(((CmsResource)o).m_rootPath);
     }
 
     /**

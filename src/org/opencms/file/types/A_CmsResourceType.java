@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/05/20 11:47:11 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/05/31 14:38:39 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -577,8 +577,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         String destination
     ) throws CmsException {
         
-        String dest = cms.getRequestContext().addSiteRoot(destination);
-        if (resource.getRootPath().equalsIgnoreCase(dest)) {
+        String dest = cms.getRequestContext().addSiteRoot(destination);               
+        
+        if (resource.getRootPath().equals(dest)) {
             // move to target with same name is not allowed
             throw new CmsVfsException(org.opencms.file.Messages.get().container(org.opencms.file.Messages.ERR_MOVE_SAME_NAME_1, destination));
         }        

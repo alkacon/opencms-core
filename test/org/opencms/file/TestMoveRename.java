@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2005/05/26 10:16:29 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/31 14:38:38 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
   
@@ -77,7 +77,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         suite.addTest(new TestMoveRename("testMultipleMoveResource"));
         suite.addTest(new TestMoveRename("testRenameNewFolder"));
         suite.addTest(new TestMoveRename("testMoveFolderToOwnSubfolder"));
-        
+        suite.addTest(new TestMoveRename("testRenameFileUpperLowerCase"));
+        suite.addTest(new TestMoveRename("testRenameFolderUpperLowerCase"));
+                
         TestSetup wrapper = new TestSetup(suite) {
             
             protected void setUp() {
@@ -174,8 +176,11 @@ public class TestMoveRename extends OpenCmsTestCase {
         
         cms.lockResource(source);
         cms.moveResource(source, destination);     
+                
+        // source resource must still be available if reading with "include deleted" filter
+        cms.readResource(source, CmsResourceFilter.ALL);
         
-        // source resource:
+        // source resource
         
         // project must be current project
         assertProject(cms, source, cms.getRequestContext().currentProject());
@@ -294,9 +299,9 @@ public class TestMoveRename extends OpenCmsTestCase {
     /**
      * Tests to move a folder in its own subfolder.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @throws Exception if the test fails
      */
-    public void testMoveFolderToOwnSubfolder() throws Throwable {
+    public void testMoveFolderToOwnSubfolder() throws Exception {
 
         CmsObject cms = getCmsObject();
         echo("Testing to move a folder in its own subfolder");
@@ -304,8 +309,6 @@ public class TestMoveRename extends OpenCmsTestCase {
         // Creating paths
         String source = "/folder1/";
         String destination = "/folder1/subfolder11/folder1/";
-
-        storeResources(cms, source);
 
         cms.lockResource(source);
         CmsVfsException error = null;
@@ -321,4 +324,129 @@ public class TestMoveRename extends OpenCmsTestCase {
         // check for the right error message
         assertSame(error.getMessageContainer().getKey(), Messages.ERR_MOVE_SAME_FOLDER_2);
     }    
+    
+    /**
+     * Tests renaming a file to the same name with a different case.<p> 
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testRenameFileUpperLowerCase() throws Exception {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing to rename a file to the same name with a different case");
+        
+        // Creating paths
+        String source = "/folder2/image1.gif";
+        String destination = "/folder2/Image1.GIF";
+        
+        storeResources(cms, source);      
+        
+        // now move from the old to the new name
+        cms.lockResource(source);
+        cms.moveResource(source, destination);
+        
+        // source resource must be gone for default read
+        CmsResource res = null;
+        try {
+            res = cms.readResource(source);
+        } catch (CmsVfsResourceNotFoundException e) {
+            // this is expected
+        }
+        if (res != null) {
+            fail("New resource still available after move operation!");
+        }        
+        
+        // source resource must still be available if reading with "include deleted" filter
+        cms.readResource(source, CmsResourceFilter.ALL);
+        
+        // source resource
+        
+        // project must be current project
+        assertProject(cms, source, cms.getRequestContext().currentProject());
+        // state must be "deelted"
+        assertState(cms, source, I_CmsConstants.C_STATE_DELETED);
+        // assert lock state
+        assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        // "internal" property must have been added
+        assertPropertyNew(cms, source, new CmsProperty(I_CmsConstants.C_PROPERTY_INTERNAL, 
+            String.valueOf(cms.getRequestContext().currentProject().getId()), null));
+        // one sibling must have been added
+        assertSiblingCountIncremented(cms, source, 1);
+        // now assert the filter for the rest of the attributes        
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_MOVE_SOURCE);   
+        
+        // destination resource
+        
+        // project must be current project
+        assertProject(cms, destination, cms.getRequestContext().currentProject());
+        // state must be "new"
+        assertState(cms, destination, I_CmsConstants.C_STATE_NEW);
+        // assert lock state
+        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
+        // set filter mapping
+        setMapping(destination, source);
+        // one sibling must have been added
+        assertSiblingCountIncremented(cms, destination, 1);        
+        // now assert the filter for the rest of the attributes        
+        assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
+    }
+    
+    /**
+     * Tests renaming a folder to the same name with a different case.<p> 
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testRenameFolderUpperLowerCase() throws Exception {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing to rename a folder to the same name with a different case");
+        
+        // Creating paths
+        String source = "/xmlcontent";
+        String destination = "/XMLcontent";
+        
+        storeResources(cms, source);      
+        
+        // now move from the old to the new name
+        cms.lockResource(source);
+        cms.moveResource(source, destination);
+        
+        // source resource must be gone for default read
+        CmsResource res = null;
+        try {
+            res = cms.readResource(source);
+        } catch (CmsVfsResourceNotFoundException e) {
+            // this is expected
+        }
+        if (res != null) {
+            fail("New resource still available after move operation!");
+        }        
+        
+        // source resource must still be available if reading with "include deleted" filter
+        cms.readResource(source, CmsResourceFilter.ALL);
+        // try to read the destination folder
+        cms.readResource(destination);
+                
+        // source resource
+        
+        // project must be current project
+        assertProject(cms, source, cms.getRequestContext().currentProject());
+        // state must be "deelted"
+        assertState(cms, source, I_CmsConstants.C_STATE_DELETED);
+        // assert lock state
+        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
+        // folders don't have siblings
+        assertSiblingCount(cms, source, 1); 
+        
+        // destination resource
+        
+        // project must be current project
+        assertProject(cms, destination, cms.getRequestContext().currentProject());
+        // state must be "new"
+        assertState(cms, destination, I_CmsConstants.C_STATE_NEW);
+        // assert lock state
+        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);   
+        // folders don't have siblings
+        assertSiblingCount(cms, source, 1); 
+    }
 }
