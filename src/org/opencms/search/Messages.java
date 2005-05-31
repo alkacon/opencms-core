@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2005/05/31 15:17:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/31 15:42:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -203,9 +203,6 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_FILE_BEGIN_0 = "RPT_SEARCH_INDEXING_FILE_BEGIN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_SEARCH_INDEXING_FILE_SKIPPED_0 = "RPT_SEARCH_INDEXING_FILE_SKIPPED_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_FOLDER_0 = "RPT_SEARCH_INDEXING_FOLDER_0";
