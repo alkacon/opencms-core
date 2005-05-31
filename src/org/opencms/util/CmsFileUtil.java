@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/04/27 14:29:11 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/31 20:29:38 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.util;
 
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsLog;
 import org.opencms.staticexport.CmsLinkManager;
 
 import java.io.ByteArrayOutputStream;
@@ -43,8 +44,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides File utility functions.<p>
@@ -53,6 +58,9 @@ import java.util.List;
  * @since 5.5.0
  */
 public final class CmsFileUtil {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFileUtil.class);
 
     /**
      * Hides the public constructor.<p> 
@@ -144,20 +152,31 @@ public final class CmsFileUtil {
      * 
      * @return the absolute path name for the given relative 
      *   path name if it was found by the context Classloader of the 
-     *   current Thread
+     *   current Thread or an empty String if it was not found
      * 
      * @see Thread#getContextClassLoader()
      */
     public static String getResourcePathFromClassloader(String fileName) {
 
         boolean isFolder = CmsResource.isFolder(fileName);
-
+        String result = "";
         URL inputUrl = Thread.currentThread().getContextClassLoader().getResource(fileName);
-        String result = inputUrl.getFile();
-        if (isFolder && !CmsResource.isFolder(result)) {
-            result = result + '/';
+        if (inputUrl != null) {
+            result = inputUrl.getFile();
+            if (isFolder && !CmsResource.isFolder(result)) {
+                result = result + '/';
+            }
+        } else {
+           if (LOG.isErrorEnabled()) {
+                try {
+                    URLClassLoader cl = (URLClassLoader)Thread.currentThread().getContextClassLoader();
+                    URL[] paths = cl.getURLs();
+                    LOG.error(Messages.get().key(Messages.ERR_MISSING_CLASSLOADER_RESOURCE_2, fileName, Arrays.asList(paths)));
+                } catch (Throwable t) {
+                    LOG.error(Messages.get().key(Messages.ERR_MISSING_CLASSLOADER_RESOURCE_1, fileName));
+                }
+            }
         }
-
         return result;
     }
 
