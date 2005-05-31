@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
- * Date   : $Date: 2005/05/31 12:52:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 13:11:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 
 /**
- * Provides a standard HTML form input widget, for use on a widget dialog.<p>
+ * Provides a display only widget, for use on a widget dialog.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsDisplayWidget extends A_CmsWidget {
