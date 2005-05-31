@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportExportException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsJspLoader;
@@ -55,7 +56,6 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.File;
@@ -77,6 +77,7 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.logging.Log;
 
 /**
  * This class implements the HTML->OpenCms Template converter for OpenCms 6.x.<p>
@@ -84,14 +85,16 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsHtmlImport {
-
 
     /** filename of the meta.properties file. */
     public static final String C_META_PROPERTIES = "meta.properties";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHtmlImport.class);
+    
     /** the base URL for link modification. */
     private URL m_baseUrl;
 
@@ -167,18 +170,13 @@ public class CmsHtmlImport {
     /** the template use for all pages. */
     private String m_template;
 
-    /** reference to the workplace. */
-
-    private CmsWorkplace m_wp;
-
     /**
      * Creates new HtmlImport Object with http request parameters.<p>
      * 
      * @param cms the current CmsJspActionElement  
      * @param request the http servlet request
-     * @param wp reference to the workplace
      */
-    public CmsHtmlImport(CmsJspActionElement cms, HttpServletRequest request, CmsWorkplace wp) {
+    public CmsHtmlImport(CmsJspActionElement cms, HttpServletRequest request) {
 
         this(
             cms,
@@ -193,8 +191,7 @@ public class CmsHtmlImport {
             request.getParameter("encoding"),
             request.getParameter("startPattern"),
             request.getParameter("endPattern"),
-            request.getParameter("overwrite"),
-            wp);
+            request.getParameter("overwrite"));
     }
 
     /**
@@ -213,7 +210,6 @@ public class CmsHtmlImport {
      * @param startPattern the start pattern definition for content extracting
      * @param endPattern the end pattern definition for content extracting 
      * @param overwrite the overwrite mode
-     * @param wp reference to the workplace
      */
     public CmsHtmlImport(
         CmsJspActionElement cms,
@@ -228,10 +224,8 @@ public class CmsHtmlImport {
         String encoding,
         String startPattern,
         String endPattern,
-        String overwrite,
-        CmsWorkplace wp) {
+        String overwrite) {
 
-        m_wp = wp;
         if (inputDir == null) {
             inputDir = "";
         }
@@ -650,7 +644,8 @@ public class CmsHtmlImport {
 
         try {
             m_report = report;
-            m_report.println(m_wp.key("htmlimport.report.start"), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(Messages.get().container(Messages.RPT_HTML_IMPORT_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+            
             // first build the index of all resources
             buildIndex(m_inputDir);
             // copy and parse all html files first. during the copy process we will collect all 
@@ -660,7 +655,7 @@ public class CmsHtmlImport {
             copyOtherFiles(m_inputDir);
             // finally create all the external links    
             createExternalLinks();
-            m_report.println(m_wp.key("htmlimport.report.end"), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(Messages.get().container(Messages.RPT_HTML_IMPORT_END_0), I_CmsReport.C_FORMAT_HEADLINE);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -754,21 +749,27 @@ public class CmsHtmlImport {
         // now loop through all subresources and add them to the index list
         for (int i = 0; i < subresources.length; i++) {
             try {
+                
                 String relativeFSName = subresources[i].getAbsolutePath().substring(m_inputDir.length() + 1);
                 String absoluteVFSName = getVfsName(relativeFSName, subresources[i].getName(), subresources[i].isFile());
-                m_report.print(m_wp.key("htmlimport.report.createindex") + relativeFSName.replace('\\', '/') , I_CmsReport.C_FORMAT_NOTE);
-                m_report.print(m_report.key("report.dots"));
-                m_report.print("-> " + absoluteVFSName, I_CmsReport.C_FORMAT_NOTE);
-                m_report.print(m_report.key("report.dots"));
+                m_report.print(Messages.get().container(Messages.RPT_CREATE_INDEX_0), I_CmsReport.C_FORMAT_NOTE);
+                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, 
+                    relativeFSName.replace('\\', '/')));
+                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                m_report.print(Messages.get().container(Messages.RPT_ARROW_RIGHT_0), I_CmsReport.C_FORMAT_NOTE);
+                m_report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1, absoluteVFSName));
+                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                 m_fileIndex.put(subresources[i].getAbsolutePath().replace('\\', '/'), absoluteVFSName);
-                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 // if the subresource is a folder, get all subresources of it as well
                 if (subresources[i].isDirectory()) {
                     buildIndex(subresources[i].getAbsolutePath());
                 }
+                m_report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
             } catch (Exception e) {
-                e.printStackTrace();
-                m_report.println(" " + m_report.key("report.error") + e, I_CmsReport.C_FORMAT_ERROR);
+                LOG.error(e);
+                m_report.println(e);
             }
         }
     }
@@ -818,10 +819,7 @@ public class CmsHtmlImport {
                         try {
                             content = parseHtmlFile(subresources[i], properties);
                         } catch (CmsException e) {
-
-                            m_report.println(" " + m_report.key("report.error")+" "+ vfsFileName + " " + e, I_CmsReport.C_FORMAT_ERROR);
-                            m_report.println(" " + e, I_CmsReport.C_FORMAT_ERROR);
-
+                            m_report.println(e);
                         }
                         properties.put("template", m_template);
 
@@ -831,7 +829,7 @@ public class CmsHtmlImport {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e);
         }
     }
 
@@ -860,11 +858,24 @@ public class CmsHtmlImport {
                         // get the file type of the FS file
                         int type = getFileType(vfsFileName);
                         if (CmsResourceTypePlain.getStaticTypeId() != type) {
+                            
                             if (isExternal(vfsFileName)) {
-                                m_report.println(m_wp.key("htmlimport.report.skipexternal") + subresources[i] +" -> "+vfsFileName, I_CmsReport.C_FORMAT_NOTE);
+                                
+                                m_report.print(Messages.get().container(Messages.RPT_SKIP_EXTERNAL_0), I_CmsReport.C_FORMAT_NOTE);
+                                m_report.print(org.opencms.report.Messages.get().container(
+                                    org.opencms.report.Messages.RPT_ARGUMENT_1, subresources[i]));
+                                m_report.print(org.opencms.report.Messages.get().container(
+                                    org.opencms.report.Messages.RPT_DOTS_0));
+                                m_report.print(
+                                    Messages.get().container(Messages.RPT_ARROW_RIGHT_0), I_CmsReport.C_FORMAT_NOTE);
+                                m_report.println(org.opencms.report.Messages.get().container(
+                                    org.opencms.report.Messages.RPT_ARGUMENT_1, vfsFileName));
                             } else {
-                                m_report.print(m_wp.key("htmlimport.report.import")+vfsFileName, I_CmsReport.C_FORMAT_NOTE);
-                                m_report.print(m_report.key("report.dots"));
+                                
+                                m_report.print(Messages.get().container(Messages.RPT_IMPORT_0), I_CmsReport.C_FORMAT_NOTE);
+                                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, vfsFileName));
+                                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                                
                                 // get the content of the FS file
                                 byte[] content = getFileBytes(subresources[i]);
                                 // get the filename from the fileIndex list
@@ -904,17 +915,20 @@ public class CmsHtmlImport {
                                     } finally {
                                         m_cmsObject.createResource(vfsFileName, type, content, properties);
                                     }
-                                    m_report.print(m_wp.key("htmlimport.report.overwrite"), I_CmsReport.C_FORMAT_NOTE);
-                                    m_report.print(m_report.key("report.dots"));
+                                    
+                                    m_report.print(Messages.get().container(Messages.RPT_OVERWRITE_0), I_CmsReport.C_FORMAT_NOTE);
+                                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                                 }
-                                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                                m_report.println(org.opencms.report.Messages.get().container(
+                                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                             }
                         }
                     }
                 }
             }
         } catch (Exception e) {
-            m_report.println(" " + m_report.key("report.error") + e, I_CmsReport.C_FORMAT_ERROR);
+            LOG.error(e);
+            m_report.println(e);
         }
     }
 
@@ -932,8 +946,10 @@ public class CmsHtmlImport {
             filename = m_cmsObject.getRequestContext().getFileTranslator()
                 .translateResource(filename.replace('/', '-'));
 
-            m_report.print(m_wp.key("htmlimport.report.externallink") + filename, I_CmsReport.C_FORMAT_NOTE);
-            m_report.print(m_report.key("report.dots"));
+            m_report.print(Messages.get().container(Messages.RPT_CREATE_EXTERNAL_LINK_0), I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, filename));
+            m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
             List properties = new ArrayList();
             CmsProperty property1 = new CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, "Link to " + linkUrl, "Link to "
                 + linkUrl);
@@ -944,7 +960,8 @@ public class CmsHtmlImport {
             } catch (CmsException e) {
                 // do nothing here, an exception will be thrown if this link already exisits                
             }
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            m_report.println(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
         }
     }
 
@@ -962,8 +979,10 @@ public class CmsHtmlImport {
 
         if (vfsFileName != null) {
             try {
-                m_report.print(m_wp.key("htmlimport.report.createfile") + vfsFileName, I_CmsReport.C_FORMAT_NOTE);
-                m_report.print(m_report.key("report.dots"));
+                
+                m_report.print(Messages.get().container(Messages.RPT_CREATE_FILE_0), I_CmsReport.C_FORMAT_NOTE);
+                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, vfsFileName));
+                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 // check if we have to set the navpos property.
                 if ((properties.get(I_CmsConstants.C_PROPERTY_NAVPOS) == null)
@@ -1015,8 +1034,8 @@ public class CmsHtmlImport {
                         // the file did not exist, so we do not have to delete it                      
                     } finally {
                         // create the new resource
-                        m_report.print(m_wp.key("htmlimport.report.overwrite"), I_CmsReport.C_FORMAT_NOTE);
-                        m_report.print(m_report.key("report.dots"));
+                        m_report.print(Messages.get().container(Messages.RPT_OVERWRITE_0), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                         m_cmsObject.createResource(
                             vfsFileName,
                             CmsResourceTypeXmlPage.getStaticTypeId(),
@@ -1046,10 +1065,11 @@ public class CmsHtmlImport {
                 } catch (CmsException e1) {
                     e1.printStackTrace();
                 }
-                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                m_report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
             } catch (CmsException e) {
-                m_report.println(" " + m_report.key("report.error") + e, I_CmsReport.C_FORMAT_ERROR);
-                e.printStackTrace();
+                m_report.println(e);
+                LOG.error(e);
             }
         }
     }
@@ -1064,9 +1084,10 @@ public class CmsHtmlImport {
     private void createFolder(String foldername, int position, Hashtable properties) {
 
         String vfsFolderName = (String)m_fileIndex.get(foldername.replace('\\', '/'));
-
-        m_report.print(m_wp.key("htmlimport.report.createfolder") + vfsFolderName, I_CmsReport.C_FORMAT_NOTE);
-        m_report.print(m_report.key("report.dots"));
+        
+        m_report.print(Messages.get().container(Messages.RPT_CREATE_FOLDER_0), I_CmsReport.C_FORMAT_NOTE);
+        m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, vfsFolderName));
+        m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
         if (vfsFolderName != null) {
             String path = vfsFolderName.substring(0, vfsFolderName.substring(0, vfsFolderName.length() - 1)
@@ -1149,10 +1170,11 @@ public class CmsHtmlImport {
                 } catch (CmsException e1) {
                     e1.printStackTrace();
                 }
-                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                m_report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
             } catch (CmsException e) {
-                m_report.println(" " + m_report.key("report.error") + e, I_CmsReport.C_FORMAT_ERROR);
-                e.printStackTrace();
+                m_report.println(e);
+                LOG.error(e);
             }
         }
     }
@@ -1381,11 +1403,9 @@ public class CmsHtmlImport {
             // resubstidute the converted HTML code
             parsedHtml = substitute(parsedHtml, "{subst}", "&#");
         } catch (Exception e) {
-            if (CmsLog.LOG.isWarnEnabled()) {
-                CmsLog.LOG.warn(e.getMessage());
-            }
-            e.printStackTrace();
-            throw new CmsImportExportException(Messages.get().container(Messages.ERR_HTMLIMPORT_PARSE_1, file.getAbsolutePath()), e);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_HTMLIMPORT_PARSE_1, file.getAbsolutePath());
+            LOG.error(message.key(), e);
+            throw new CmsImportExportException(message, e);
         }
         return parsedHtml;
     }

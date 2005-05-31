@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2005/05/23 12:39:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/31 13:06:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,22 +38,23 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Achim Westermann (a.westermann@alkacon.com)
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DEL_PROP_RESOURCES_LOCKED_1 = "ERR_DEL_PROP_RESOURCES_LOCKED_1";
-  
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_FILE_BYTES_1 = "ERR_GET_FILE_BYTES_1";
-  
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_HTMLIMPORT_PARSE_1 = "ERR_HTMLIMPORT_PARSE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ELEM_RENAME_VALIDATE_ENTER_NEW_ELEM_0 = "GUI_ELEM_RENAME_VALIDATE_ENTER_NEW_ELEM_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ELEM_RENAME_VALIDATE_ENTER_OLD_ELEM_0 = "GUI_ELEM_RENAME_VALIDATE_ENTER_OLD_ELEM_0";
 
@@ -95,27 +96,147 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_0 = "GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_1 = "GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_1";    
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MERGE_PAGES_VALIDATE_SAME_FOLDER_0 = "GUI_MERGE_PAGES_VALIDATE_SAME_FOLDER_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_0 = "GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_0";        
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1 = "GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_RENAME_LANG_1 = "GUI_RENAME_LANG_1";
+    public static final String GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_1 = "GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MERGE_PAGES_VALIDATE_SAME_FOLDER_0 = "GUI_MERGE_PAGES_VALIDATE_SAME_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_0 = "GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1 = "GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_HTMLIMPORT_CONVERSION_ERROR_0 = "LOG_HTMLIMPORT_CONVERSION_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_HTMLIMPORT_CONVERSION_ERROR_1 = "LOG_HTMLIMPORT_CONVERSION_ERROR_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_ARROW_RIGHT_0 = "RPT_ARROW_RIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_COPY_2 = "RPT_COPY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CREATE_EXTERNAL_LINK_0 = "RPT_CREATE_EXTERNAL_LINK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CREATE_FILE_0 = "RPT_CREATE_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CREATE_FOLDER_0 = "RPT_CREATE_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CREATE_INDEX_0 = "RPT_CREATE_INDEX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_PAGE_1 = "RPT_DELETE_PAGE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DOUBLE_ARROW_0 = "RPT_DOUBLE_ARROW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_ELEM_RENAME_2 = "RPT_ELEM_RENAME_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_FOLDER1_EXCLUSIVE_0 = "RPT_FOLDER1_EXCLUSIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_FOLDER2_EXCLUSIVE_0 = "RPT_FOLDER2_EXCLUSIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_FOLDERS_DIFFERENTTYPES_0 = "RPT_FOLDERS_DIFFERENTTYPES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_FOLDERS_EQUALNAMES_0 = "RPT_FOLDERS_EQUALNAMES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_FOLDERS_SIBLING_0 = "RPT_FOLDERS_SIBLING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_HTML_IMPORT_BEGIN_0 = "RPT_HTML_IMPORT_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_HTML_IMPORT_END_0 = "RPT_HTML_IMPORT_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMPORT_0 = "RPT_IMPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_INVALID_ARGUMENT_1 = "RPT_INVALID_ARGUMENT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_LOCK_FOLDER_0 = "RPT_LOCK_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_MERGE_PAGES_BEGIN_0 = "RPT_MERGE_PAGES_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_MERGE_PAGES_BEGIN_1 = "RPT_MERGE_PAGES_BEGIN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_MERGE_PAGES_END_0 = "RPT_MERGE_PAGES_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_NEW_ELEM_EXISTS_0 = "RPT_NEW_ELEM_EXISTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_NONEXISTANT_ELEM_1 = "RPT_NONEXISTANT_ELEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_NUM_PAGES_1 = "RPT_NUM_PAGES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_OVERWRITE_0 = "RPT_OVERWRITE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PROCESS_0 = "RPT_PROCESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PROCESS_1 = "RPT_PROCESS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PROCESS_TEXT_ELEM_1 = "RPT_PROCESS_TEXT_ELEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PROCESSING_PAGE_0 = "RPT_PROCESSING_PAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_READ_CONTENT_2 = "RPT_READ_CONTENT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_READ_PROPERTIES_1 = "RPT_READ_PROPERTIES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_REMOVE_INVALID_EMPTY_ELEM_1 = "RPT_REMOVE_INVALID_EMPTY_ELEM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RENAME_LANG_1 = "RPT_RENAME_LANG_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_RESORE_PROPERTIES_1 = "RPT_RESORE_PROPERTIES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SCAN_PAGES_IN_FOLDER_BEGIN_2 = "RPT_SCAN_PAGES_IN_FOLDER_BEGIN_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SCAN_PAGES_IN_FOLDER_END_0 = "RPT_SCAN_PAGES_IN_FOLDER_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SCANNING_RESULTS_0 = "RPT_SCANNING_RESULTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SKIP_EXTERNAL_0 = "RPT_SKIP_EXTERNAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_UNLOCK_1 = "RPT_UNLOCK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_WRITE_CONTENT_1 = "RPT_WRITE_CONTENT_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.content.messages";

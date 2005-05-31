@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsMergePages.java,v $
- * Date   : $Date: 2005/05/17 15:29:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/31 13:06:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  */
 public class CmsMergePages extends CmsReport {
@@ -161,7 +161,7 @@ public class CmsMergePages extends CmsReport {
     public void actionMerge(I_CmsReport report) {
 
         m_report = report;
-        m_report.println(m_report.key("report.mergepages.headline"), I_CmsReport.C_FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_MERGE_PAGES_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
         
         try {
             // collect all pages and sort them depending on their state
@@ -195,50 +195,62 @@ public class CmsMergePages extends CmsReport {
     private void mergePages() throws CmsException {
         int size = m_foldersEqualnames.size();
         if (size > 0) {
-            m_report.println(m_report.key("report.mergepages.mergepages") , I_CmsReport.C_FORMAT_HEADLINE);
+            
+            m_report.println(Messages.get().container(Messages.RPT_MERGE_PAGES_BEGIN_1, String.valueOf(size)) , I_CmsReport.C_FORMAT_HEADLINE);
             String defaultLocale = CmsLocaleManager.getDefaultLocale().toString();
             String locale2 = m_cms.readPropertyObject(getParamFolder2(), "locale", true).getValue(defaultLocale);                        
                    
             // lock the source and the target folder
-            m_report.print(m_report.key("report.mergepages.lock") + getParamFolder1() , I_CmsReport.C_FORMAT_NOTE); 
-            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(Messages.get().container(Messages.RPT_LOCK_FOLDER_0), I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_ARGUMENT_1, getParamFolder1()));
+            m_report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_DOTS_0));
             m_cms.lockResource(getParamFolder1());
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            m_report.println(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
     
-            m_report.print(m_report.key("report.mergepages.lock") + getParamFolder2() , I_CmsReport.C_FORMAT_NOTE); 
-            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(Messages.get().container(Messages.RPT_LOCK_FOLDER_0), I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_ARGUMENT_1, getParamFolder2()));
+            m_report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_DOTS_0));
             m_cms.lockResource(getParamFolder2());
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            m_report.println(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
             
             // now loop through all collected resources
-            m_report.print(size + " "+m_report.key("report.mergepages.pages"),  I_CmsReport.C_FORMAT_HEADLINE);
-            m_report.println(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_HEADLINE);
             int count = 1;
             Iterator i = m_foldersEqualnames.iterator();
             while (i.hasNext()) {
                 String resFolder1Name = (String)i.next();
                 try {
                     String resFolder2Name = getResourceNameInOtherFolder(resFolder1Name, getParamFolder1(), getParamFolder2());
-                    m_report.print("( " + count++ + " / " + size + " ) " + m_report.key("report.mergepages.scanning") + " " + resFolder1Name + " <-> " + resFolder2Name , I_CmsReport.C_FORMAT_NOTE);
-                    m_report.println(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                        String.valueOf(count++), String.valueOf(size)), I_CmsReport.C_FORMAT_NOTE);  
+                    m_report.print(Messages.get().container(Messages.RPT_PROCESS_0), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, resFolder1Name));
+                    m_report.print(Messages.get().container(Messages.RPT_DOUBLE_ARROW_0), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, resFolder2Name));
+                    m_report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
  
                     // get the content of the resource in folder1  
-                    String locale = m_cms.readPropertyObject(resFolder1Name, "locale", true).getValue(defaultLocale);                        
-                    m_report.print(m_report.key("report.mergepages.readcontent") + " "+ resFolder1Name + ": Locale = "+locale, I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_NOTE);
+                    String locale = m_cms.readPropertyObject(resFolder1Name, "locale", true).getValue(defaultLocale); 
+                    m_report.print(Messages.get().container(Messages.RPT_READ_CONTENT_2, resFolder1Name, locale), I_CmsReport.C_FORMAT_NOTE);
                     CmsResource resFolder1 = m_cms.readResource(resFolder1Name, CmsResourceFilter.IGNORE_EXPIRATION);
                     CmsFile fileFolder1 = CmsFile.upgrade(resFolder1, m_cms);
                     CmsXmlPage pageFolder1 = CmsXmlPageFactory.unmarshal(m_cms, fileFolder1);            
-                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    m_report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                     
                     // get the content of the resource in folder2
                     locale = m_cms.readPropertyObject(resFolder2Name, "locale", true).getValue(defaultLocale);                                    
-                    m_report.print(m_report.key("report.mergepages.readcontent") + " "+ resFolder2Name + ": Locale = "+locale, I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_READ_CONTENT_2, resFolder2Name, locale), I_CmsReport.C_FORMAT_NOTE);
                     CmsResource resFolder2 = m_cms.readResource(resFolder2Name, CmsResourceFilter.IGNORE_EXPIRATION);
                     CmsFile fileFolder2 = CmsFile.upgrade(resFolder2, m_cms);
                     CmsXmlPage pageFolder2 = CmsXmlPageFactory.unmarshal(m_cms, fileFolder2);            
-                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);    
+                    m_report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);   
                     
                     // now get all the text elements from the resource in folder 2 which match the the locale of folder 2
                     Locale loc = new Locale(locale2);
@@ -246,8 +258,7 @@ public class CmsMergePages extends CmsReport {
                     Iterator j = textElements2.iterator();
                     while (j.hasNext()) {
                         String textElementName = (String) j.next();
-                        m_report.print(m_report.key("report.mergepages.gettextelement") + " "+ textElementName, I_CmsReport.C_FORMAT_NOTE);
-                        m_report.print(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(Messages.get().container(Messages.RPT_PROCESS_TEXT_ELEM_1, textElementName), I_CmsReport.C_FORMAT_NOTE);
                         // get the text element from the resource in folder 2...
                         String textElement = pageFolder2.getValue(textElementName, loc).getStringValue(m_cms);
                         // and set it in the resource in folder 1...
@@ -258,36 +269,38 @@ public class CmsMergePages extends CmsReport {
                         pageFolder1.setStringValue(m_cms, textElementName, loc, textElement);                
                         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);   
                     }
-                    // the resource in folder 1 now has all text elements in both locales, so update it in the vfs          
-                    m_report.print(m_report.key("report.mergepages.writecontent") + " "+ resFolder1Name, I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_NOTE);
+                    // the resource in folder 1 now has all text elements in both locales, so update it in the vfs  
+                    
+                    m_report.print(Messages.get().container(Messages.RPT_WRITE_CONTENT_1, resFolder1Name), I_CmsReport.C_FORMAT_NOTE);
                     fileFolder1.setContents(pageFolder1.marshal());
                     m_cms.writeFile(fileFolder1);
-                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
+                    m_report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                     
                     // save all properties from the resource in folder2
-                    m_report.print(m_report.key("report.mergepages.saveproperties") + " "+ resFolder2Name, I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_READ_PROPERTIES_1, resFolder2Name), I_CmsReport.C_FORMAT_NOTE);
                     List properties = m_cms.readPropertyObjects(resFolder2Name, false);
-                    //m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
+                    m_report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
         
                     // the next thing to do is to delete the old resource in folder 2
-                    m_report.print(m_report.key("report.mergepages.deletefile") + " "+ resFolder2Name, I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_DELETE_PAGE_1, resFolder2Name), I_CmsReport.C_FORMAT_NOTE);
                     m_cms.deleteResource(resFolder2Name, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
+                    m_report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                     
                     // copy a sibling of the resource from folder 1 to folder 2 
-                    m_report.print(m_report.key("report.mergepages.copyfile") + " "+ resFolder1Name + " -> " + resFolder2Name, I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_COPY_2, 
+                        resFolder1Name, resFolder2Name), I_CmsReport.C_FORMAT_NOTE);
                     m_cms.copyResource(resFolder1Name, resFolder2Name, I_CmsConstants.C_COPY_AS_SIBLING);
-                    //m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    m_report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                     
                     // restore the properties at the sibling in folder 2
-                    m_report.print(m_report.key("report.mergepages.restoreproperties") + " "+ resFolder2Name, I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_RESORE_PROPERTIES_1, resFolder2Name), I_CmsReport.C_FORMAT_NOTE);
                     m_cms.writePropertyObjects(resFolder2Name, properties);
-                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    m_report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                     
                     resFolder1 = null;
                     resFolder2 = null;
@@ -302,18 +315,17 @@ public class CmsMergePages extends CmsReport {
               
             }
             // lock the source and the target folder
-            m_report.print(m_report.key("report.mergepages.unlock") + getParamFolder1() , I_CmsReport.C_FORMAT_NOTE); 
-            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(Messages.get().container(Messages.RPT_UNLOCK_1, getParamFolder1()), I_CmsReport.C_FORMAT_NOTE); 
             m_cms.unlockResource(getParamFolder1());
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            m_report.println(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
     
-            m_report.print(m_report.key("report.mergepages.unlock") + getParamFolder2() , I_CmsReport.C_FORMAT_NOTE); 
-            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(Messages.get().container(Messages.RPT_UNLOCK_1, getParamFolder2()), I_CmsReport.C_FORMAT_NOTE); 
             m_cms.unlockResource(getParamFolder2());
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            m_report.println(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
             
-            m_report.print(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_HEADLINE);
-            m_report.println(m_report.key("report.mergepages.done"), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(Messages.get().container(Messages.RPT_MERGE_PAGES_END_0), I_CmsReport.C_FORMAT_HEADLINE);
         }
     }
     
@@ -337,8 +349,10 @@ public class CmsMergePages extends CmsReport {
         String defaultLocale = CmsLocaleManager.getDefaultLocale().toString();
         String locale1 = m_cms.readPropertyObject(getParamFolder1(), "locale", true).getValue(defaultLocale);
         String locale2 = m_cms.readPropertyObject(getParamFolder2(), "locale", true).getValue(defaultLocale);
-        m_report.println(m_report.key("report.mergepages.folder")+ " " + getParamFolder1() + ": Locale = "+locale1);
-        m_report.println(m_report.key("report.mergepages.folder")+ " " + getParamFolder2() + ": Locale = "+locale2);
+        m_report.println(Messages.get().container(Messages.RPT_CREATE_EXTERNAL_LINK_0, 
+            getParamFolder1(), locale1), I_CmsReport.C_FORMAT_NOTE);
+        m_report.println(Messages.get().container(Messages.RPT_CREATE_EXTERNAL_LINK_0, 
+            getParamFolder2(), locale2), I_CmsReport.C_FORMAT_NOTE);
            
         // collect all resources in folder 1
         collectFolder(getParamFolder1(), getParamFolder2(), 1);
@@ -346,16 +360,17 @@ public class CmsMergePages extends CmsReport {
         collectFolder(getParamFolder2(), getParamFolder1(), 2);
         
         // report the results of the collection
-        m_report.println(m_report.key("report.mergepages.collectionresult") , I_CmsReport.C_FORMAT_HEADLINE);        
-        m_report.println(m_report.key("report.mergepages.action0") , I_CmsReport.C_FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_SCANNING_RESULTS_0), I_CmsReport.C_FORMAT_HEADLINE); 
+
+        m_report.println(Messages.get().container(Messages.RPT_FOLDER1_EXCLUSIVE_0), I_CmsReport.C_FORMAT_HEADLINE);
         reportList(m_folder1Exclusive, false);
-        m_report.println(m_report.key("report.mergepages.action1") , I_CmsReport.C_FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_FOLDER2_EXCLUSIVE_0), I_CmsReport.C_FORMAT_HEADLINE);
         reportList(m_folder2Exclusive, false);
-        m_report.println(m_report.key("report.mergepages.action2") , I_CmsReport.C_FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_FOLDERS_SIBLING_0), I_CmsReport.C_FORMAT_HEADLINE);
         reportList(m_foldersSibling, false);
-        m_report.println(m_report.key("report.mergepages.action3") , I_CmsReport.C_FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_FOLDERS_EQUALNAMES_0), I_CmsReport.C_FORMAT_HEADLINE);
         reportList(m_foldersEqualnames, true);  
-        m_report.println(m_report.key("report.mergepages.action4") , I_CmsReport.C_FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_FOLDERS_DIFFERENTTYPES_0), I_CmsReport.C_FORMAT_HEADLINE);
         reportList(m_foldersDifferenttypes, false);
   
     }
@@ -370,24 +385,24 @@ public class CmsMergePages extends CmsReport {
     private void reportList(List collected, boolean doReport) {
         int size = collected.size();
         // now loop through all collected resources
-        m_report.print(size + " "+m_report.key("report.mergepages.pages"),  I_CmsReport.C_FORMAT_HEADLINE);
-        m_report.println(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_NUM_PAGES_1, new Integer(size)),  I_CmsReport.C_FORMAT_HEADLINE);
         if (doReport) {
             int count = 1;
             
             Iterator i = collected.iterator();
             while (i.hasNext()) {
                 String resName = (String)i.next();
-                m_report.println("( " + count++ + " / " + size + " ) " + m_report.key("report.mergepages.scanning") + " " + resName, I_CmsReport.C_FORMAT_NOTE);            
+                m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                    String.valueOf(count++), String.valueOf(size)), I_CmsReport.C_FORMAT_NOTE);
+                m_report.println(Messages.get().container(Messages.RPT_PROCESS_1, resName), I_CmsReport.C_FORMAT_NOTE); 
             }
         }
-        m_report.print(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_HEADLINE);
-        m_report.println(m_report.key("report.mergepages.done"), I_CmsReport.C_FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_MERGE_PAGES_END_0), I_CmsReport.C_FORMAT_HEADLINE);
     }
     
     
     /**
-     * Collect all pages in a folders  and sort them depending on the required action to do.<p>
+     * Collect all pages in a folders and sort them depending on the required action to do.<p>
      * 
      * @param sourceMergeFolder the source merge folder to collect all pages from
      * @param targetMergefolder the target merge folder to compare to
@@ -395,55 +410,60 @@ public class CmsMergePages extends CmsReport {
      * @throws CmsException if something goes wrong
      */
     private void collectFolder(String sourceMergeFolder, String targetMergefolder, int currentFolder) throws CmsException {
-        m_report.println(m_report.key("report.mergepages.scanfolder") + " " + sourceMergeFolder , I_CmsReport.C_FORMAT_HEADLINE);
+        
         //get the list of all resources in the source merge folder
         CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(CmsResourceTypeXmlPage.getStaticTypeId());        
         List folderResources = m_cms.readResources(sourceMergeFolder, filter, true);
         Iterator i = folderResources.iterator();
         int size = folderResources.size();
         // now loop through all resources and check them against those in the target merge folder
-        m_report.print(size + " "+m_report.key("report.mergepages.pages"),  I_CmsReport.C_FORMAT_HEADLINE);
-        m_report.println(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_SCAN_PAGES_IN_FOLDER_BEGIN_2, sourceMergeFolder, new Integer(size)), I_CmsReport.C_FORMAT_HEADLINE);
         int count = 1;
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
             String resName = m_cms.getSitePath(res);
-            m_report.print("( " + count++ + " / " + size + " ) " + m_report.key("report.mergepages.scanning") + " " + resName, I_CmsReport.C_FORMAT_NOTE);
-            m_report.print(m_report.key("report.dots"));
+            
+            m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                String.valueOf(count++), String.valueOf(size)), I_CmsReport.C_FORMAT_NOTE);
+            m_report.println(Messages.get().container(Messages.RPT_PROCESS_1, resName), I_CmsReport.C_FORMAT_NOTE);
+            
             // now analyse the page and calculate the action to do
             int action = analyse(res, sourceMergeFolder, targetMergefolder, currentFolder);
             // add the name of the resource to the correct list
             switch (action) {
                 case C_FOLDER1_EXCLUSIVE:   
                     m_folder1Exclusive.add(resName);
+                    m_report.println(Messages.get().container(Messages.RPT_FOLDER1_EXCLUSIVE_0), I_CmsReport.C_FORMAT_OK);
                     break;
                 case C_FOLDER2_EXCLUSIVE:   
                     m_folder2Exclusive.add(resName);
+                    m_report.println(Messages.get().container(Messages.RPT_FOLDER2_EXCLUSIVE_0), I_CmsReport.C_FORMAT_OK);
                     break;
                 case C_FOLDERS_SIBLING:   
                     if (!m_foldersSibling.contains(getResourceNameInOtherFolder(resName, sourceMergeFolder, targetMergefolder))) {
-                        m_foldersSibling.add(resName);
+                        m_foldersSibling.add(resName); 
                     }
+                    m_report.println(Messages.get().container(Messages.RPT_FOLDERS_SIBLING_0), I_CmsReport.C_FORMAT_OK);
                     break;
                 case C_FOLDERS_EQUALNAMES:   
                     if (!m_foldersEqualnames.contains(getResourceNameInOtherFolder(resName, sourceMergeFolder, targetMergefolder))) {                        
-                        m_foldersEqualnames.add(resName);
+                        m_foldersEqualnames.add(resName);  
                     }
+                    m_report.println(Messages.get().container(Messages.RPT_FOLDERS_EQUALNAMES_0), I_CmsReport.C_FORMAT_OK);
                     break;
                 case C_FOLDERS_DIFFERENTTYPES:  
                     if (!m_foldersDifferenttypes.contains(getResourceNameInOtherFolder(resName, sourceMergeFolder, targetMergefolder))) {                                                
                         m_foldersDifferenttypes.add(resName);
                     }
+                    m_report.println(Messages.get().container(Messages.RPT_FOLDERS_DIFFERENTTYPES_0), I_CmsReport.C_FORMAT_OK);
                     break;                    
                 default:
                     break;
             }                                  
             res=null;
-            m_report.println(m_report.key("report.mergepages.action" + action), I_CmsReport.C_FORMAT_OK);
         }
         folderResources = null;
-        m_report.print(m_report.key("report.dots"),  I_CmsReport.C_FORMAT_HEADLINE);
-        m_report.println(m_report.key("report.mergepages.done"), I_CmsReport.C_FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_SCAN_PAGES_IN_FOLDER_END_0), I_CmsReport.C_FORMAT_HEADLINE);
         
     }
     

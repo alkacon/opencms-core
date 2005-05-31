@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2005/05/17 15:29:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/31 13:06:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.3
  */
@@ -798,15 +798,11 @@ public class CmsElementRename extends CmsReport {
     private void performRenameOperation(List xmlPages, Locale locale) {
 
         // partial localized (stopped due to low prio).
-        Locale userLocale = getLocale();
         boolean removeEmptyElements = Boolean.valueOf(getParamRemoveEmptyElements()).booleanValue();
         boolean validateNewElement = Boolean.valueOf(getParamValidateNewElement()).booleanValue();
         // the list including at least one resource
         if (xmlPages != null && xmlPages.size() > 0) {
-            m_report.println(Messages.get().key(
-                userLocale,
-                Messages.GUI_RENAME_LANG_1,
-                new Object[] {locale.getLanguage()}), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(Messages.get().container(Messages.RPT_RENAME_LANG_1, locale.getLanguage()), I_CmsReport.C_FORMAT_HEADLINE);
             // if user has not selected ALL templates, then retain pages with specified template
             if (!C_ALL.equals(getParamTemplate())) {
                 xmlPages = getRetainedPagesWithTemplate(xmlPages);
@@ -822,10 +818,14 @@ public class CmsElementRename extends CmsReport {
                     // next file from the list
                     CmsResource res = (CmsResource)i.next();
                     CmsFile file;
-                    m_report.print(
-                        "( " + m + " / " + n + " ) " + "processing page " + getCms().getSitePath(res),
-                        I_CmsReport.C_FORMAT_NOTE);
-                    m_report.println(m_report.key("report.dots"));
+                    
+                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                        String.valueOf(m), String.valueOf(n)), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_PROCESSING_PAGE_0), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1, getCms().getSitePath(res)));
+                    m_report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
                     try {
                         file = getCms().readFile(getCms().getSitePath(res), CmsResourceFilter.IGNORE_EXPIRATION);
                     } catch (CmsException e2) {
@@ -845,10 +845,7 @@ public class CmsElementRename extends CmsReport {
 
                     // check if the source element exists in the page
                     if (!page.hasValue(getParamOldElement(), locale)) {
-                        m_report.println(m_report.key("report.dots")
-                            + "element "
-                            + getParamOldElement()
-                            + " does not exist.", I_CmsReport.C_FORMAT_NOTE);
+                        m_report.println(Messages.get().container(Messages.RPT_NONEXISTANT_ELEM_1), I_CmsReport.C_FORMAT_NOTE);
                         continue;
                     }
 
@@ -856,20 +853,15 @@ public class CmsElementRename extends CmsReport {
                     if (page.hasValue(getParamNewElement(), locale)) {
                         // the page contains already the new element with speicific content. 
                         // renaming the old will invalid the xml page
-                        m_report.println(
-                            m_report.key("report.dots")
-                                + "the page contains already the new element that includes content",
-                            I_CmsReport.C_FORMAT_NOTE);
+                        m_report.println(Messages.get().container(Messages.RPT_NEW_ELEM_EXISTS_0), I_CmsReport.C_FORMAT_NOTE);
                         continue;
                     }
 
                     if (validateNewElement) {
                         // check if the target element is valid for the template
                         if (!isValidElement(page, getParamNewElement())) {
-                            m_report.println(m_report.key("report.dots")
-                                + "the new element "
-                                + getParamNewElement()
-                                + " is not valid", I_CmsReport.C_FORMAT_NOTE);
+                              m_report.println(Messages.get().container(Messages.RPT_INVALID_ARGUMENT_1, 
+                                  getParamNewElement()), I_CmsReport.C_FORMAT_NOTE);
                             continue;
                         }
                     }
@@ -926,11 +918,8 @@ public class CmsElementRename extends CmsReport {
                     page.removeValue(currElement, locale);
                     try {
                         writePageAndReport(page, false);
-                        m_report.println(" "
-                            + m_report.key("report.dots")
-                            + "invalid empty element "
-                            + currElement
-                            + " removed", I_CmsReport.C_FORMAT_NOTE);
+                        m_report.println(Messages.get().container(Messages.RPT_REMOVE_INVALID_EMPTY_ELEM_1, 
+                            currElement), I_CmsReport.C_FORMAT_NOTE);
                     } catch (CmsException e) {
                         // ignore
                     }
@@ -961,12 +950,8 @@ public class CmsElementRename extends CmsReport {
             // unlock the page
             getCms().unlockResource(getCms().getSitePath(file));
             if (report) {
-                m_report.print("" + m_report.key("report.dots") + m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                m_report.println(" element "
-                    + getParamOldElement()
-                    + " renamed to "
-                    + getParamNewElement()
-                    + " successfully", I_CmsReport.C_FORMAT_OK);
+                m_report.println(Messages.get().container(Messages.RPT_ELEM_RENAME_2, getParamOldElement(), 
+                    getParamNewElement()), I_CmsReport.C_FORMAT_OK);
             }
         }
     }
