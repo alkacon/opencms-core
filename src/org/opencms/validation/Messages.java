@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/Messages.java,v $
- * Date   : $Date: 2005/05/25 09:19:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/31 08:04:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_RETRIEVAL_RESOURCE_1 = "LOG_RETRIEVAL_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_BROKEN_LINKS_IN_0 = "RPT_BROKEN_LINKS_IN_0";
+    public static final String RPT_BROKEN_LINKS_IN_1 = "RPT_BROKEN_LINKS_IN_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_BROKEN_LINKS_SUMMARY_BEGIN_0 = "RPT_BROKEN_LINKS_SUMMARY_BEGIN_0";

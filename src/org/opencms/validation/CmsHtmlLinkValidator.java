@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2005/05/25 11:38:39 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/05/31 08:04:56 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.29 $ $Date: 2005/05/25 11:38:39 $
+ * @version $Revision: 1.30 $ $Date: 2005/05/31 08:04:56 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator {
@@ -200,12 +200,11 @@ public class CmsHtmlLinkValidator {
                 resourceName = (String) outer.next();
                 brokenLinks = (List) invalidResources.get(resourceName);
 
-                report.print(Messages.get().container(Messages.RPT_BROKEN_LINKS_IN_0), I_CmsReport.C_FORMAT_NOTE);
-                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, resourceName));
-                report.println("\u0020:");
+                report.println(Messages.get().container(Messages.RPT_BROKEN_LINKS_IN_1, resourceName), I_CmsReport.C_FORMAT_NOTE);
                 Iterator inner = brokenLinks.iterator();
                 while (inner.hasNext()) {
-                    report.println("\u0020" + (String) inner.next(), I_CmsReport.C_FORMAT_WARNING);
+                    report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, 
+                        inner.next()), I_CmsReport.C_FORMAT_WARNING);
                 }
             }
 
