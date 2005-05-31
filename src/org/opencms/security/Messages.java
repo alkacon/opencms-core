@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2005/05/29 11:44:46 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/31 11:17:05 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,15 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_NEWPWD_0 = "ERR_INVALID_NEWPWD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_USER_CONTEXT_0 = "ERR_INVALID_USER_CONTEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_USER_PWD_1 = "ERR_INVALID_USER_PWD_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_FAILED_3 = "ERR_LOGIN_FAILED_3";
 
     /** Message constant for key in the resource bundle. */
@@ -53,6 +62,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_FAILED_TEMP_DISABLED_5 = "ERR_LOGIN_FAILED_TEMP_DISABLED_5";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NEWPWD_EMPTY_0 = "ERR_NEWPWD_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NEWPWD_MISMATCH_0 = "ERR_NEWPWD_MISMATCH_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_PERMISSION_OPERATION_2 = "ERR_NO_PERMISSION_OPERATION_2";

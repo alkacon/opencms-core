@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/Messages.java,v $
- * Date   : $Date: 2005/05/30 15:50:45 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/31 11:17:05 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,9 +74,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_IS_ENABLED_USER_1 = "ERR_IS_ENABLED_USER_1";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_PASSWORD_CONFIRMATION_0 = "ERR_PASSWORD_CONFIRMATION_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EDITGROUP_ADMIN_TOOL_GROUP_0 = "GUI_EDITGROUP_ADMIN_TOOL_GROUP_0";

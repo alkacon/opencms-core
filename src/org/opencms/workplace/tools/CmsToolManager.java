@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/05/30 15:50:45 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/05/31 11:17:05 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -269,10 +269,7 @@ public class CmsToolManager {
             return toolPath;
         }
         int pos = toolPath.lastIndexOf(C_TOOLPATH_SEPARATOR);
-        if (pos < 0) {
-            pos = -1;
-        }
-        return pos == 0 ? C_TOOLPATH_SEPARATOR : toolPath.substring(0, pos);
+        return pos <= 0 ? C_TOOLPATH_SEPARATOR : toolPath.substring(0, pos);
     }
 
     /**
@@ -357,7 +354,7 @@ public class CmsToolManager {
      * @param toolPath the current tool path
      * @param rootToolPath the root tool path
      */
-    public synchronized void initParams(CmsWorkplace wp, String toolPath, String rootToolPath) {
+    public synchronized void initParams(CmsToolDialog wp, String toolPath, String rootToolPath) {
 
         setCurrentToolPath(wp, toolPath);
         setRootToolPath(wp, rootToolPath);
@@ -366,7 +363,8 @@ public class CmsToolManager {
         if (!getCurrentToolPath(wp).startsWith(getRootToolPath(wp))) {
             setCurrentToolPath(wp, getRootToolPath(wp));
         }
-
+        wp.setParamPath(toolPath);
+        wp.setParamRoot(rootToolPath);
     }
 
     /**
@@ -489,16 +487,37 @@ public class CmsToolManager {
      */
     public void setCurrentToolPath(CmsWorkplace wp, String currentToolPath) {
 
+        // use last used path if param empty
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(currentToolPath) || currentToolPath.trim().equals("null")) {
-            return;
+            currentToolPath = getCurrentToolPath(wp);
         }
-        while (!validatePath(currentToolPath)) {            
-            currentToolPath = getParent(wp, currentToolPath);
-        }
+        currentToolPath = repairPath(wp, currentToolPath);
+        // use it
         CmsToolUserData userData = getUserData(wp);
         userData.setCurrentToolPath(currentToolPath);
     }
 
+    /**
+     * Given a string a valid and visible tool path is computed.<p>
+     * 
+     * @param wp the workplace object
+     * @param path the path to repair
+     * 
+     * @return a valida and visible tool path
+     */
+    private String repairPath(CmsWorkplace wp, String path) {
+        
+        // navegate until to reach a valid path
+        while (!validatePath(path, true)) {            
+            path = getParent(wp, path);
+        }
+        // navegate until to reach a visible path
+        while (!resolveAdminTool(path).getHandler().isEnabled(wp.getCms())) {
+            path = getParent(wp, path);
+        }
+        return path;
+    }
+    
     /**
      * Sets the root tool path.<p>
      * 
@@ -507,9 +526,12 @@ public class CmsToolManager {
      */
     public void setRootToolPath(CmsWorkplace wp, String rootToolPath) {
 
+        // use last used root if param empty
         if (CmsStringUtil.isEmpty(rootToolPath) || rootToolPath.trim().equals("null")) {
-            return;
+            rootToolPath = getRootToolPath(wp);
         }
+        rootToolPath = repairPath(wp, rootToolPath);
+        // set it
         CmsToolUserData userData = getUserData(wp);
         userData.setRootTool(rootToolPath);
     }
@@ -528,7 +550,7 @@ public class CmsToolManager {
         }
 
         //validate path
-        if (!validatePath(handler.getPath())) {
+        if (!validatePath(handler.getPath(), false)) {
             // log failure
             if (CmsLog.LOG.isWarnEnabled()) {
                 CmsLog.LOG.warn(Messages.get().key(Messages.INIT_TOOLMANAGER_INCONSISTENT_PATH_1, handler.getLink()));
@@ -577,25 +599,26 @@ public class CmsToolManager {
      * Tests if the full tool path is available.<p>
      * 
      * @param toolPath the path
+     * @param full if <code>true</code> the whole path is checked, if not the last part is not checked (for new tools)
      * 
      * @return if valid or not
      */
-    private boolean validatePath(String toolPath) {
+    private boolean validatePath(String toolPath, boolean full) {
 
         if (toolPath.equals(C_TOOLPATH_SEPARATOR)) {
             return true;
         }
-        List folders = CmsStringUtil.splitAsList(toolPath, C_TOOLPATH_SEPARATOR);
-        Iterator itFolder = folders.iterator();
+        List groups = CmsStringUtil.splitAsList(toolPath, C_TOOLPATH_SEPARATOR);
+        Iterator itGroups = groups.iterator();
         String subpath = "";
-        while (itFolder.hasNext()) {
-            String folder = (String)itFolder.next();
+        while (itGroups.hasNext()) {
+            String group = (String)itGroups.next();
             if (subpath.length() != C_TOOLPATH_SEPARATOR.length()) {
-                subpath += C_TOOLPATH_SEPARATOR + folder;
+                subpath += C_TOOLPATH_SEPARATOR + group;
             } else {
-                subpath += folder;
+                subpath += group;
             }
-            if (itFolder.hasNext()) {
+            if (!full && itGroups.hasNext()) {
                 try {
                     // just check if the tool is available
                     resolveAdminTool(subpath).toString();

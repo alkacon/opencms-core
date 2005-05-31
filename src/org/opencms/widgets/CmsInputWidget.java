@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsInputWidget.java,v $
- * Date   : $Date: 2005/05/30 15:47:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/31 11:17:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.CmsEncoder;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsInputWidget extends A_CmsWidget {
@@ -72,21 +72,33 @@ public class CmsInputWidget extends A_CmsWidget {
 
         StringBuffer result = new StringBuffer(16);
 
-        result.append("<td class=\"xmlTd\"><input class=\"xmlInput textInput");
-        if (param.hasError()) {
-            result.append(" xmlInputError");
-        }
-        result.append("\"");
+        result.append("<td class=\"xmlTd\">");
         if (isDisabled()) {
-            result.append(" disabled");
+            result.append("<span class=\"xmlInput textInput\" style=\"border: 0px solid black;\">");
+            result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
+            result.append("</span>");
+            result.append("<input type=\"hidden\"");
+            result.append(" name=\"");
+            result.append(id);
+            result.append("\" id=\"");
+            result.append(id);
+            result.append("\" value=\"");
+            result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
+            result.append("\">");
+        } else {
+            result.append("<input class=\"xmlInput textInput");
+            if (param.hasError()) {
+                result.append(" xmlInputError");
+            }
+            result.append("\"");
+            result.append(" name=\"");
+            result.append(id);
+            result.append("\" id=\"");
+            result.append(id);
+            result.append("\" value=\"");
+            result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
+            result.append("\">");
         }
-        result.append(" name=\"");
-        result.append(id);
-        result.append("\" id=\"");
-        result.append(id);
-        result.append("\" value=\"");
-        result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
-        result.append("\">");
         result.append("</td>");
 
         return result.toString();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/30 14:24:54 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/05/31 11:17:05 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -1253,6 +1253,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             List errors = commitWidgetValues();
             if (errors.size() > 0) {
                 setAction(ACTION_DEFAULT);
+                return;
             }
             setAction(ACTION_SAVE);
         } else if (DIALOG_OK.equals(getParamAction())) {

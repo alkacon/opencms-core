@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsEditUserDialog.java,v $
- * Date   : $Date: 2005/05/30 15:50:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/31 11:17:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,9 @@ package org.opencms.workplace.tools.users;
 
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.security.CmsPasswordInfo;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsPasswordWidget;
@@ -45,7 +45,9 @@ import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.9.1
  */
 public class CmsEditUserDialog extends CmsWidgetDialog {
@@ -70,14 +72,20 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     /** Request parameter name for the user name. */
     public static final String PARAM_USERNAME = "username";
 
+    /** Session parameter name for the pwd info object. */
+    private static final Object C_PWD_OBJECT = "PWD_INFO";
+
+    /** Session parameter name for the user object. */
+    private static final Object C_USER_OBJECT = "USER";
+
     /** Stores the value of the request parameter for the user id. */
     private String m_paramUserid;
 
     /** Stores the value of the request parameter for the user name. */
     private String m_paramUsername;
 
-    /** Stores the value of the password for the user. */
-    private String m_pwd;
+    /** The password information object. */
+    private CmsPasswordInfo m_pwdInfo;
 
     /** The user object that is edited on this dialog. */
     private CmsUser m_user;
@@ -114,14 +122,18 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         try {
             // if new create it first
             if (m_user.getId() == null) {
-                CmsUser newUser = getCms().createUser(m_user.getName(), m_pwd, m_user.getDescription(), m_user.getAdditionalInfo());
+                CmsUser newUser = getCms().createUser(
+                    m_user.getName(),
+                    m_pwdInfo.getNewPwd(),
+                    m_user.getDescription(),
+                    m_user.getAdditionalInfo());
                 newUser.setFirstname(m_user.getFirstname());
                 newUser.setLastname(m_user.getLastname());
                 newUser.setEmail(m_user.getEmail());
                 newUser.setAddress(m_user.getAddress());
                 m_user = newUser;
-            } else if (m_pwd != null) {
-                getCms().setPassword(m_user.getName(), m_pwd);
+            } else if (CmsStringUtil.isNotEmpty(m_pwdInfo.getNewPwd())) {
+                getCms().setPassword(m_user.getName(), m_pwdInfo.getNewPwd());
             }
             // write the edited user
             getCms().writeUser(m_user);
@@ -156,26 +168,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the value of the password.<p>
-     * 
-     * @return the password
-     */
-    public String getPwd() {
-
-        return m_pwd;
-    }
-
-    /**
-     * Returns the value of the password confirmation.<p>
-     *
-     * @return the password confirmation
-     */
-    public String getPwdConf() {
-
-        return m_pwd;
-    }
-
-    /**
      * Sets the user id parameter value.<p>
      * 
      * @param userId the user id parameter value
@@ -193,28 +185,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     public void setParamUsername(String userName) {
 
         m_paramUsername = userName;
-    }
-
-    /**
-     * Sets the value of the password for the user.<p>
-     *
-     * @param pwd the password to set
-     */
-    public void setPwd(String pwd) {
-
-        m_pwd = pwd;
-    }
-
-    /**
-     * Sets the value of the password confirmation for the user.<p>
-     *
-     * @param pwdConf the password confirmation to set
-     */
-    public void setPwdConf(String pwdConf) {
-
-        if (!m_pwd.equals(pwdConf)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_PASSWORD_CONFIRMATION_0));
-        }
     }
 
     /**
@@ -272,7 +242,8 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         if (m_user.getId() == null) {
             addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsInputWidget()));
         } else {
-            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsInputWidget(A_CmsWidget.DISABLED_CONFIGURATION)));
+            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsInputWidget(
+                A_CmsWidget.DISABLED_CONFIGURATION)));
         }
         addWidget(new CmsWidgetDialogParameter(m_user, "description", "", PAGES[0], new CmsInputWidget(), 0, 1));
         addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsInputWidget()));
@@ -282,15 +253,8 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", "", PAGES[0], new CmsInputWidget(), 0, 1));
         addWidget(new CmsWidgetDialogParameter(m_user, "city", "", PAGES[0], new CmsInputWidget(), 0, 1));
         addWidget(new CmsWidgetDialogParameter(m_user, "country", "", PAGES[0], new CmsInputWidget(), 0, 1));
-        if (m_user.getId() == null) {
-            // new user
-            addWidget(new CmsWidgetDialogParameter(this, "pwd", PAGES[0], new CmsPasswordWidget()));
-            addWidget(new CmsWidgetDialogParameter(this, "pwdConf", PAGES[0], new CmsPasswordWidget()));
-        } else {
-            // edit user
-            addWidget(new CmsWidgetDialogParameter(this, "pwd", "", PAGES[0], new CmsPasswordWidget(), 0, 1));
-            addWidget(new CmsWidgetDialogParameter(this, "pwdConf", "", PAGES[0], new CmsPasswordWidget(), 0, 1));
-        }
+        addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", PAGES[0], new CmsPasswordWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "confirmation", PAGES[0], new CmsPasswordWidget()));
     }
 
     /**
@@ -325,28 +289,31 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
 
         Object o = null;
 
-        if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
-            // this is the initial dialog call
-            if (CmsStringUtil.isNotEmpty(getParamUserid())) {
-                try {
+        try {
+            if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
+                // this is the initial dialog call
+                if (CmsStringUtil.isNotEmpty(getParamUserid())) {
                     // edit an existing user, get the user object from db
-                    o = getCms().readUser(getParamUserid());
-                } catch (CmsException e) {
-                    // noop
+                    m_user = getCms().readUser(new CmsUUID(getParamUserid()));
+                    m_pwdInfo = new CmsPasswordInfo();
+                    return;
                 }
+            } else {
+                // this is not the initial call, get the user object from session            
+                o = getDialogObject();
+                Map dialogObject = (Map)o;
+                m_user = (CmsUser)dialogObject.get(C_USER_OBJECT);
+                m_pwdInfo = (CmsPasswordInfo)dialogObject.get(C_PWD_OBJECT);
+                // test
+                m_user.getId();
+                return;
             }
-        } else {
-            // this is not the initial call, get the user object from session
-            o = getDialogObject();
+        } catch (Exception e) {
+            // noop
         }
-
-        if (!(o instanceof CmsUser)) {
-            // create a new user object
-            m_user = new CmsUser();
-        } else {
-            // reuse user object stored in session
-            m_user = (CmsUser)o;
-        }
+        // create a new user object
+        m_user = new CmsUser();
+        m_pwdInfo = new CmsPasswordInfo();
     }
 
     /**
@@ -357,7 +324,10 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         // initialize parameters and dialog actions in super implementation
         super.initWorkplaceRequestValues(settings, request);
 
-        // save the current state of the user (may be changed because of the widget values)
-        setDialogObject(m_user);
+        // save the current state of the user and pwd (may be changed because of the widget values)
+        Map dialogObject = new HashMap();
+        dialogObject.put(C_USER_OBJECT, m_user);
+        dialogObject.put(C_PWD_OBJECT, m_pwdInfo);
+        setDialogObject(dialogObject);
     }
 }

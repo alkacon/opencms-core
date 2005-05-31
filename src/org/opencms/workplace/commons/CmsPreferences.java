@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/31 11:17:05 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsPasswordInfo;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
@@ -77,7 +78,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1.12
  */
@@ -270,21 +271,19 @@ public class CmsPreferences extends CmsTabDialog {
     public void actionChangePassword() throws JspException {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        String oldPwd = getParamOldPassword();
         String newPwd = getParamNewPassword();
+        String oldPwd = getParamOldPassword();
         // set the action parameter, reset the password parameters
         setAction(ACTION_DEFAULT);
         setParamOldPassword(null);
         setParamNewPassword(null);
        
         try {
-            if (newPwd == null || "".equals(newPwd.trim())) {
-                throw new CmsException(Messages.get().container(Messages.ERR_INVALID_NEW_PASS_0));
-            }
-            if (oldPwd == null || "".equals(oldPwd.trim())) {
-                throw new CmsException(Messages.get().container(Messages.ERR_INVALID_OLD_PASS_0));
-            }             
-            getCms().setPassword(getSettings().getUser().getName(), oldPwd, newPwd);
+            CmsPasswordInfo pwdInfo = new CmsPasswordInfo(getCms());
+            pwdInfo.setCurrentPwd(oldPwd);
+            pwdInfo.setNewPwd(newPwd);
+            pwdInfo.setConfirmation(newPwd);
+            pwdInfo.applyChanges();
         } catch (CmsException e) {
             // failed setting the new password, show error dialog
             setAction(ACTION_ERROR);

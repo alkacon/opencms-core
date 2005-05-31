@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/05/30 15:50:45 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/31 11:17:05 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -230,7 +230,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * 
      * @param login the login to validate
      */
-    public static void validateLogin(String login) {
+    public static void checkLogin(String login) {
 
         if (!CmsStringUtil.validateRegex(login, "[\\w\\.-~_]*", false)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LOGIN_VALIDATION_1, login));
@@ -244,7 +244,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * 
      * @param email the email to validate
      */
-    public static void validateEmail(String email) {
+    public static void checkEmail(String email) {
 
         if (!CmsStringUtil.validateRegex(email, "[\\w\\.~_]*@[\\w\\.~_]*\\.[\\w]*", false)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMAIL_VALIDATION_1, email));
@@ -258,7 +258,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * 
      * @param zipcode the zipcode to validate
      */
-    public static void validateZipCode(String zipcode) {
+    public static void checkZipCode(String zipcode) {
 
         if (!CmsStringUtil.validateRegex(zipcode, "[\\w]*", false)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_ZIPCODE_VALIDATION_1, zipcode));
@@ -639,7 +639,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setEmail(String value) {
 
-        validateEmail(value);
+        checkEmail(value);
         m_email = value;
     }
 
@@ -695,7 +695,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setName(String name) {
 
-        validateLogin(name);
+        checkLogin(name);
         m_name = name;
     }
 
@@ -721,7 +721,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setZipcode(String zipcode) {
 
-        validateZipCode(zipcode);
+        checkZipCode(zipcode);
         zipcode = zipcode.toUpperCase();
         setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE, zipcode);
     }

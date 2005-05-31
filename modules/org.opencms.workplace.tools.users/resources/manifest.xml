@@ -165,7 +165,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_EDITUSER_ADMIN_TOOL_NAME_0}]]></value>
+					<value><![CDATA[${key.GUI_EDITUSER_ADMIN_TOOL_NAME_0}:${key.GUI_EDITUSER_ADMIN_TOOL_NAVBARNAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
