@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/05/31 14:38:38 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2005/05/31 18:02:34 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.77 $
+ * @version $Revision: 1.78 $
  * 
  * @since 5.3.5
  */
@@ -138,6 +138,24 @@ public class OpenCmsTestCase extends TestCase {
                 m_node2 = n2;
             }
             return result;
+        }
+        
+        /**
+         * <p>
+         *  Overriden to remove a <em>Java 1.4.1_01</em> compiler bug on <em>Red Hat Linux 7.3 2.96-110</em>. 
+         *  <br>
+         *  <i>
+         *   ...org/opencms/test/OpenCmsTestCase.java:1418: reference to compare is ambiguous, 
+         *   both method compare(org.dom4j.Document,org.dom4j.Document) in org.dom4j.util.NodeComparator 
+         *   and method compare(org.dom4j.Node,org.dom4j.Node) in 
+         *   org.opencms.test.OpenCmsTestCase.InternalNodeComparator match
+         *  </i>
+         * </p>
+         * @see org.dom4j.util.NodeComparator#compare(org.dom4j.Document, org.dom4j.Document)
+         */
+        public int compare(Document d1, Document d2) {
+
+            return compare((Node)d1, (Node)d2);
         }
     }
 
