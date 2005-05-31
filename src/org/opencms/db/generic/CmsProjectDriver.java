@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/05/31 07:41:38 $
- * Version: $Revision: 1.223 $
+ * Date   : $Date: 2005/05/31 15:10:40 $
+ * Version: $Revision: 1.224 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.223 $
+ * @version $Revision: 1.224 $
  * @since 5.1
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
@@ -1477,9 +1477,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             i = publishList.getFolderList().iterator();
 
             if (n > 0) {
-                report.println(Messages.get().container(Messages.RPT_PUBLISH_FOLDERS_BEGIN_0).key(
-                    report.getLocale()), I_CmsReport.C_FORMAT_HEADLINE);
-                
+                report.println(Messages.get().container(Messages.RPT_PUBLISH_FOLDERS_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);  
             }
 
             while (i.hasNext()) {
