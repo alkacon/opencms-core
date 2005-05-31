@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/Messages.java,v $
- * Date   : $Date: 2005/05/19 08:57:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/31 08:04:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,46 +43,90 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_CREATE_DIR_2 = "ERR_CREATE_DIR_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CREATE_FILE_2 = "ERR_CREATE_FILE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_EXISTANT_FILE_2 = "ERR_EXISTANT_FILE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMPORT_1 = "ERR_IMPORT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INIT_SYNC_1 = "ERR_INIT_SYNC_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_IO_WRITE_SYNCLIST_0 = "ERR_IO_WRITE_SYNCLIST_0";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_SYNC_LIST_0 = "ERR_READ_SYNC_LIST_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_FILE_1 = "ERR_READING_FILE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_SYNCHRONIZE_EXPORT_FAILED_1 = "LOG_SYNCHRONIZE_EXPORT_FAILED_1";
+    public static final String ERR_WRITE_FILE_0 = "ERR_WRITE_FILE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_EXTERNAL_TRANSLATION_1 = "LOG_EXTERNAL_TRANSLATION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_SYNCHRONIZE_EXPORT_FAILED_1 = "LOG_SYNCHRONIZE_EXPORT_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_SYNCHRONIZE_UPDATE_FAILED_1 = "LOG_SYNCHRONIZE_UPDATE_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_INIT_SYNC_1 = "ERR_INIT_SYNC_1";    
+    public static final String RPT_DEL_FILE_0 = "RPT_DEL_FILE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMPORT_1 = "ERR_IMPORT_1";    
+    public static final String RPT_DEL_FOLDER_0 = "RPT_DEL_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_CREATE_DIR_2 = "ERR_CREATE_DIR_2";        
+    public static final String RPT_DEL_FS_FILE_0 = "RPT_DEL_FS_FILE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_CREATE_FILE_2 = "ERR_CREATE_FILE_2";            
-  
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_SYNC_LIST_0 = "ERR_READ_SYNC_LIST_0";  
+    public static final String RPT_DEL_FS_FOLDER_0 = "RPT_DEL_FS_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_WRITE_FILE_0 = "ERR_WRITE_FILE_0";      
-        
+    public static final String RPT_EXPORT_FILE_0 = "RPT_EXPORT_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXPORT_FOLDER_0 = "RPT_EXPORT_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_FROM_FS_TO_0 = "RPT_FROM_FS_TO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMPORT_FILE_0 = "RPT_IMPORT_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMPORT_FOLDER_0 = "RPT_IMPORT_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SKIPPING_0 = "RPT_SKIPPING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TO_FS_AS_0 = "RPT_TO_FS_AS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_UPDATE_FILE_0 = "RPT_UPDATE_FILE_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.synchronize.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
+    }
 
     /**
      * Returns an instance of this localized message accessor.<p>
@@ -92,14 +136,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static I_CmsMessageBundle get() {
 
         return INSTANCE;
-    }
-
-    /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
     }
 
     /**
