@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsMergePages.java,v $
- * Date   : $Date: 2005/05/31 13:06:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/31 15:45:07 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  */
 public class CmsMergePages extends CmsReport {
@@ -171,7 +171,7 @@ public class CmsMergePages extends CmsReport {
             // cleanup
             cleanup();
         } catch (CmsException e) {
-            m_report.println(e.toString(), I_CmsReport.C_FORMAT_ERROR);
+            m_report.println(e);
         }
         
     }
@@ -267,7 +267,8 @@ public class CmsMergePages extends CmsReport {
                             pageFolder1.addValue(textElementName, loc);
                         }
                         pageFolder1.setStringValue(m_cms, textElementName, loc, textElement);                
-                        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);   
+                        m_report.println(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                     }
                     // the resource in folder 1 now has all text elements in both locales, so update it in the vfs  
                     
@@ -310,7 +311,7 @@ public class CmsMergePages extends CmsReport {
                     pageFolder2 = null;
                     
                 } catch (CmsException e) {
-                    m_report.println(e.toString(), I_CmsReport.C_FORMAT_ERROR); 
+                    m_report.println(e); 
                 }
               
             }

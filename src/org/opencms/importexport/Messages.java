@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2005/05/31 14:39:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/31 15:44:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
@@ -268,10 +269,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_EXPORT_0 = "RPT_EXPORT_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_EXPORT_BEGIN_0 = "RPT_EXPORT_BEGIN_0";
+    public static final String RPT_EXPORT_DB_BEGIN_0 = "RPT_EXPORT_DB_BEGIN_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_EXPORT_END_0 = "RPT_EXPORT_END_0";
+    public static final String RPT_EXPORT_DB_END_0 = "RPT_EXPORT_DB_END_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String RPT_EXPORT_GROUP_0 = "RPT_EXPORT_GROUP_0";

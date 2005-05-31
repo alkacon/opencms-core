@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Messages.java,v $
- * Date   : $Date: 2005/05/31 15:37:47 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/Messages.java,v $
+ * Date   : $Date: 2005/05/31 15:41:43 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.history;
+package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
@@ -43,22 +43,16 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_INVALID_DATE_1 = "ERR_INVALID_DATE_1";
+    public static final String RPT_REBUILD_SEARCH_INDEXES_BEGIN_0 = "RPT_REBUILD_SEARCH_INDEXES_BEGIN_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_INT_ENTERED_0 = "ERR_NO_INT_ENTERED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_POSITIVE_INT_0 = "ERR_NO_POSITIVE_INT_0";
+    public static final String RPT_REBUILD_SEARCH_INDEXES_END_0 = "RPT_REBUILD_SEARCH_INDEXES_END_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_DELETE_HISTORY_BEGIN_0 = "RPT_DELETE_HISTORY_BEGIN_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_DELETE_HISTORY_END_0 = "RPT_DELETE_HISTORY_END_0";
+    public static final String RPT_SEARCH_CONFIG_NOT_FOUND_0 = "RPT_SEARCH_CONFIG_NOT_FOUND_0";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workplace.tools.history.messages";
+    private static final String BUNDLE_NAME = "org.opencms.workplace.tools.searchindex.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

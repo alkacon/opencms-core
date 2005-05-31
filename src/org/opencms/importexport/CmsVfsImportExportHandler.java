@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2005/05/31 14:39:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/31 15:44:36 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.dom4j.Element;
  * Import/export handler implementation for VFS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2005/05/31 14:39:21 $
+ * @version $Revision: 1.10 $ $Date: 2005/05/31 15:44:36 $
  * @since 5.3
  */
 public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
@@ -98,19 +98,11 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * @see org.opencms.importexport.I_CmsImportExportHandler#exportData(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport)
      */
     public void exportData(CmsObject cms, I_CmsReport report) throws CmsImportExportException, CmsRoleViolationException {
-
-        report.println(Messages.get().container(Messages.RPT_EXPORT_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
-        new CmsExport(
-            cms,
-            getFileName(),
-            getExportPaths(),
-            excludeSystem(),
-            isExcludeUnchanged(),
-            null,
-            isExportUserdata(),
-            getContentAge(),
-            report);
-        report.println(Messages.get().container(Messages.RPT_EXPORT_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+        
+        report.println(Messages.get().container(Messages.RPT_EXPORT_DB_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+        new CmsExport(cms, getFileName(), getExportPaths(), excludeSystem(), isExcludeUnchanged(),
+            null, isExportUserdata(), getContentAge(), report);
+        report.println(Messages.get().container(Messages.RPT_EXPORT_DB_END_0), I_CmsReport.C_FORMAT_HEADLINE);
     }
 
     /**
@@ -169,10 +161,14 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public synchronized void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report)
     throws CmsImportExportException, CmsXmlException, CmsRoleViolationException {
 
-        report.println(Messages.get().container(Messages.RPT_IMPORT_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(
+            Messages.get().container(Messages.RPT_IMPORT_BEGIN_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
         CmsImport vfsImport = new CmsImport(cms, importFile, importPath, report);
         vfsImport.importResources();
-        report.println(Messages.get().container(Messages.RPT_IMPORT_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(
+            Messages.get().container(Messages.RPT_IMPORT_END_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
     }
 
     /**

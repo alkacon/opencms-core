@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClearThread.java,v $
- * Date   : $Date: 2005/05/16 17:45:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 15:37:47 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.report.I_CmsReport;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.12
  */
 public class CmsAdminHistoryClearThread extends A_CmsReportThread {
@@ -83,7 +83,7 @@ public class CmsAdminHistoryClearThread extends A_CmsReportThread {
      * @see java.lang.Runnable#run()
      */
     public void run() {              
-        getReport().println(getReport().key("report.history.begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().println(Messages.get().container(Messages.RPT_DELETE_HISTORY_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
         
         // get the necessary parameters from the map
         int versions = Integer.parseInt((String)m_params.get("versions"));
@@ -95,6 +95,6 @@ public class CmsAdminHistoryClearThread extends A_CmsReportThread {
         } catch (CmsException e) {
             getReport().println(e);
         }         
-        getReport().println(getReport().key("report.history.end"), I_CmsReport.C_FORMAT_HEADLINE);       
+        getReport().println(Messages.get().container(Messages.RPT_DELETE_HISTORY_END_0), I_CmsReport.C_FORMAT_HEADLINE);       
     }
 }

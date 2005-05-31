@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2005/05/13 09:07:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 15:41:43 $
+ * Version: $Revision: 1.2 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -58,7 +58,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
  * Implements methods to utilize a report thread for <code>CmsIndexingReport</code>.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3.1
  */
 public class CmsIndexingReportThread extends A_CmsReportThread {
@@ -127,7 +127,7 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      */
     public void run() {
 
-        getReport().println(getReport().key("search.indexing_rebuild_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().println(Messages.get().container(Messages.RPT_REBUILD_SEARCH_INDEXES_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
         try {
 
             if (m_indexName == null) {
@@ -135,12 +135,14 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
             } else {
                 OpenCms.getSearchManager().updateIndex(m_indexName, getReport());
             }
-            getReport().println(getReport().key("search.indexing_rebuild_finished"), I_CmsReport.C_FORMAT_HEADLINE);
+            getReport().println(Messages.get().container(Messages.RPT_REBUILD_SEARCH_INDEXES_END_0), I_CmsReport.C_FORMAT_HEADLINE);
         } catch (CmsVfsResourceNotFoundException e) {
-            getReport().println(getReport().key("search.indexing_missing_config"), I_CmsReport.C_FORMAT_NOTE);
+            
+            getReport().println(Messages.get().container(Messages.RPT_SEARCH_CONFIG_NOT_FOUND_0), I_CmsReport.C_FORMAT_NOTE);
             m_error = e;
         } catch (CmsException exc) {
-            getReport().println(getReport().key("search.indexing_failed"), I_CmsReport.C_FORMAT_WARNING);
+            getReport().println(org.opencms.search.Messages.get().container(
+                org.opencms.search.Messages.RPT_SEARCH_INDEXING_FAILED_0), I_CmsReport.C_FORMAT_WARNING);
             getReport().println(exc);
             m_error = exc;
         }
