@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/05/31 18:02:34 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2005/05/31 18:56:34 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.78 $
+ * @version $Revision: 1.79 $
  * 
  * @since 5.3.5
  */
@@ -153,10 +153,10 @@ public class OpenCmsTestCase extends TestCase {
          * </p>
          * @see org.dom4j.util.NodeComparator#compare(org.dom4j.Document, org.dom4j.Document)
          */
-        public int compare(Document d1, Document d2) {
-
-            return compare((Node)d1, (Node)d2);
-        }
+//        public int compare(Document d1, Document d2) {
+//
+//            return compare((Node)d1, (Node)d2);
+//        }
     }
 
     /** Key for tests on MySql database. */
@@ -1433,7 +1433,7 @@ public class OpenCmsTestCase extends TestCase {
         }
 
         InternalNodeComparator comparator = new InternalNodeComparator();
-        if (comparator.compare(d1, d2) != 0) {
+        if (comparator.compare((Node)d1, (Node)d2) != 0) {
             fail("Comparison of documents failed: "
                 + "name = "
                 + d1.getName()
