@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
@@ -55,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -150,10 +151,10 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.getLog(this).isDebugEnabled() && C_DEBUG) {
-            OpenCms.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
-            OpenCms.getLog(this).debug("Template file is: " + templateFile);
-            OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+        if(CmsLog.getLog(this).isDebugEnabled() && C_DEBUG) {
+            CmsLog.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
+            CmsLog.getLog(this).debug("Template file is: " + templateFile);
+            CmsLog.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsRequestContext reqCont = cms.getRequestContext();
@@ -362,8 +363,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                         cms.deleteProject(project.getId());
                         reqCont.setCurrentProject(cms.readProject(C_PROJECT_ONLINE_ID));
                     }
-                    if(OpenCms.getLog(this).isWarnEnabled() ) {
-                        OpenCms.getLog(this).warn(e.getMessage(), e);
+                    if(CmsLog.getLog(this).isWarnEnabled() ) {
+                        CmsLog.getLog(this).warn(e.getMessage(), e);
                     }
                     throw e;
                 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.core;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsResourceTranslator;
@@ -40,6 +41,8 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Implementation of the I_CmsRequest interface which wraps a HttpServletRequest
@@ -63,31 +66,11 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
-
-    /**
-     * Definition of the error message for an empty request.
-     */
-    static final String C_REQUEST_NOTNULL = "The Request cannot be null.";
-
-    /**
-     * Definition of the error message for being not a multipart request.
-     */
-    static final String C_REQUEST_NOMULTIPART = "Posted content type isn't multipart/form-data";
-
-    /**
-     * Definition of the error message for a negative maximum post size.
-     */
-    static final String C_REQUEST_SIZENOTNEGATIVE = "The maxPostSize must be positive.";
-
-    /**
-     * Definition of the error message for a premature end.
-     */
-    static final String C_REQUEST_PROMATUREEND = "Corrupt form data: premature ending";
 
     /**
      * Definition of the error message for missing boundary.
@@ -95,14 +78,32 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
     static final String C_REQUEST_NOBOUNDARY = "Separation boundary was not specified";
 
     /**
-     * The original request.
+     * Definition of the error message for being not a multipart request.
      */
-    private HttpServletRequest m_req;
+    static final String C_REQUEST_NOMULTIPART = "Posted content type isn't multipart/form-data";
+
+    /**
+     * Definition of the error message for an empty request.
+     */
+    static final String C_REQUEST_NOTNULL = "The Request cannot be null.";
+
+    /**
+     * Definition of the error message for a premature end.
+     */
+    static final String C_REQUEST_PROMATUREEND = "Corrupt form data: premature ending";
+
+    /**
+     * Definition of the error message for a negative maximum post size.
+     */
+    static final String C_REQUEST_SIZENOTNEGATIVE = "The maxPostSize must be positive.";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsRequestHttpServlet.class);
     
     /**
-     * The type of theis CmsRequest.
+     * File counter.
      */
-    private int m_type = I_CmsConstants.C_REQUEST_HTTP;
+    int m_filecounter;
 
     /**
      * Storage for all uploaded files.
@@ -113,26 +114,34 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      * Storage for all uploaded name values.
      */
     private Hashtable m_parameters = new Hashtable();
+
+    /**
+     * The original request.
+     */
+    private HttpServletRequest m_req;
+
+    /** String to the requested resource. */
+    private String m_requestedResource;
+    private String m_scheme="";
+    private String m_serverName="";
+    private int m_serverPort;
+    private String m_servletUrl="";
+
+    /**
+     * Resource translator (for uploaded file names).
+     */
+    private CmsResourceTranslator m_translator;
     
     /**
-     * File counter.
+     * The type of theis CmsRequest.
      */
-    int m_filecounter;
+    private int m_type = I_CmsConstants.C_REQUEST_HTTP;
 
     /**
      * The data from the original request. We save them to get them after the
      * original request is expired.
      */
     private String m_webAppUrl="";
-    private String m_servletUrl="";
-    private String m_serverName="";
-    private String m_scheme="";
-    private int m_serverPort;
-
-    /**
-     * Resource translator (for uploaded file names).
-     */
-    private CmsResourceTranslator m_translator;
 
     /**
      * Constructor, creates a new CmsRequestHttpServlet object.
@@ -180,11 +189,194 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
                 }
                 req.setCharacterEncoding(encoding);
             }
-            if (OpenCms.getLog(this).isDebugEnabled()) { 
-                OpenCms.getLog(this).debug("Request character encoding is: '" + req.getCharacterEncoding() + "'");
+            if (LOG.isDebugEnabled()) { 
+                LOG.debug("Request character encoding is: '" + req.getCharacterEncoding() + "'");
             }
         }
     }
+
+    /**
+     * Returns the content of an uploaded file.
+     * Returns null if no file with this name has been uploaded with this request.
+     * Returns an empty byte[] if a file without content has been uploaded.
+     *
+     * @param name The name of the uploaded file.
+     * @return The selected uploaded file content.
+     */
+    public byte[] getFile(String name) {
+        return (byte[])m_files.get(name);
+    }
+
+    /**
+     * Returns the names of all uploaded files in this request.
+     * Returns an empty eumeration if no files were included in the request.
+     *
+     * @return An Enumeration of file names.
+     */
+    public Enumeration getFileNames() {
+        Enumeration names = m_files.keys();
+        return names;
+    }
+
+    /**
+     * Returns the original request that was used to create the CmsRequest.
+     *
+     * @return The original request of the CmsRequest.
+     */
+    public HttpServletRequest getOriginalRequest() {
+        return m_req;
+    }
+
+    /**
+     * Returns the type of the request that was used to create the CmsRequest.
+     * The returned int must be one of the constants defined above in this interface.
+     *
+     * @return The type of the CmsRequest.
+     */
+    public int getOriginalRequestType() {
+        return m_type;
+    }
+
+    /**
+     * Returns the value of a named parameter as a String.
+     * Returns null if the parameter does not exist or an empty string if the parameter
+     * exists but without a value.
+     *
+     * @param name The name of the parameter.
+     * @return The value of the parameter.
+     */
+    public String getParameter(String name) {
+        String parameter = null;
+
+        // Test if this is a multipart-request.
+        // If it is, extract all files from it.
+        String type = m_req.getHeader("content-type");
+        if ((type != null) && type.startsWith("multipart/form-data")) {
+            parameter = (String)m_parameters.get(name);
+        } else {
+            parameter = m_req.getParameter(name);
+        }
+        return parameter;
+    }
+
+    /**
+     * Returns all parameter names as an Enumeration of String objects.
+     * Returns an empty Enumeratrion if no parameters were included in the request.
+     *
+     * @return Enumeration of parameter names.
+     */
+    public Enumeration getParameterNames() {
+        String type = m_req.getHeader("content-type");
+        if ((type != null) && type.startsWith("multipart/form-data")) {
+
+            // add all parameters extreacted in the multipart handling
+            return m_parameters.keys();
+        } else {
+
+            // add all parameters from the original request
+            return m_req.getParameterNames();
+        }
+    }
+
+    /**
+     * Returns all parameter values of a parameter key.
+     *
+     * @param key the parameter key
+     * @return Aarray of String containing the parameter values.
+     */
+    public String[] getParameterValues(String key) {
+        return m_req.getParameterValues(key);
+    }
+
+    /**
+     * This funtion returns the name of the requested resource.
+     * <P>
+     * For a http request, the name of the resource is extracted as follows:
+     * <CODE>http://{servername}/{servletpath}/{path to the cms resource}</CODE>
+     * In the following example:
+     * <CODE>http://my.work.server/servlet/opencms/system/def/explorer</CODE>
+     * the requested resource is <CODE>/system/def/explorer</CODE>.
+     * </P>
+     *
+     * @return The path to the requested resource.
+     */
+    public String getRequestedResource() {
+        if (m_requestedResource != null) {
+            return m_requestedResource;
+        }
+        m_requestedResource = m_req.getPathInfo();
+        if (m_requestedResource == null) {
+            m_requestedResource = "/";
+        }       
+        return m_requestedResource;
+    }
+    /**
+     * Methods to get the data from the original request.
+     * 
+     * @return the scheme
+     */
+    public String getScheme() {
+        return m_scheme;
+    }
+
+    /**
+     * Methods to get the data from the original request.
+     * 
+     * @return the server name
+     */
+    public String getServerName() {
+        return m_serverName;
+    }
+    /**
+     * Methods to get the data from the original request.
+     * 
+     * @return the server port
+     */
+    public int getServerPort() {
+        return m_serverPort;
+    }
+
+    /**
+     * Gets the part of the Url that describes the current servlet of this
+     * Web-Application.
+     * 
+     * @return the servlet part of the url
+     */
+    public String getServletUrl() {
+        return m_servletUrl;
+    }
+
+    /**
+     * Returns the part of the Url that descibes the Web-Application.
+     *
+     * E.g: http://www.myserver.com/opencms/engine/index.html returns
+     * http://www.myserver.com/opencms
+     * 
+     * @return the web application part of the url
+     */
+    public String getWebAppUrl() {
+        return m_webAppUrl;
+    }
+    
+    /**
+     * Overwrites the original request that was used to create the CmsRequest.
+     * 
+     * @param request the request
+     */
+    public void setOriginalRequest(HttpServletRequest request) {
+        m_req = request;
+    }
+    
+    /**
+     * Set the name returned by getRequestedResource().
+     * This is required in case there was a folder name requested and 
+     * a default file (e.g. index.html) has to be used instead of the folder.
+     * 
+     * @param resourceName The name to set the requested resource name to 
+     */
+    public void setRequestedResource(String resourceName) {
+        m_requestedResource = resourceName;
+    }    
 
     /**
      * Extracts and returns the boundary token from a line.
@@ -309,145 +501,6 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         retval[2] = filename;
         return retval;
     }
-
-    /**
-     * Returns the content of an uploaded file.
-     * Returns null if no file with this name has been uploaded with this request.
-     * Returns an empty byte[] if a file without content has been uploaded.
-     *
-     * @param name The name of the uploaded file.
-     * @return The selected uploaded file content.
-     */
-    public byte[] getFile(String name) {
-        return (byte[])m_files.get(name);
-    }
-
-    /**
-     * Returns the names of all uploaded files in this request.
-     * Returns an empty eumeration if no files were included in the request.
-     *
-     * @return An Enumeration of file names.
-     */
-    public Enumeration getFileNames() {
-        Enumeration names = m_files.keys();
-        return names;
-    }
-
-    /**
-     * Returns the original request that was used to create the CmsRequest.
-     *
-     * @return The original request of the CmsRequest.
-     */
-    public HttpServletRequest getOriginalRequest() {
-        return m_req;
-    }
-    
-    /**
-     * Overwrites the original request that was used to create the CmsRequest.
-     * 
-     * @param request the request
-     */
-    public void setOriginalRequest(HttpServletRequest request) {
-        m_req = request;
-    }
-
-    /**
-     * Returns the type of the request that was used to create the CmsRequest.
-     * The returned int must be one of the constants defined above in this interface.
-     *
-     * @return The type of the CmsRequest.
-     */
-    public int getOriginalRequestType() {
-        return m_type;
-    }
-
-    /**
-     * Returns the value of a named parameter as a String.
-     * Returns null if the parameter does not exist or an empty string if the parameter
-     * exists but without a value.
-     *
-     * @param name The name of the parameter.
-     * @return The value of the parameter.
-     */
-    public String getParameter(String name) {
-        String parameter = null;
-
-        // Test if this is a multipart-request.
-        // If it is, extract all files from it.
-        String type = m_req.getHeader("content-type");
-        if ((type != null) && type.startsWith("multipart/form-data")) {
-            parameter = (String)m_parameters.get(name);
-        } else {
-            parameter = m_req.getParameter(name);
-        }
-        return parameter;
-    }
-
-    /**
-     * Returns all parameter names as an Enumeration of String objects.
-     * Returns an empty Enumeratrion if no parameters were included in the request.
-     *
-     * @return Enumeration of parameter names.
-     */
-    public Enumeration getParameterNames() {
-        String type = m_req.getHeader("content-type");
-        if ((type != null) && type.startsWith("multipart/form-data")) {
-
-            // add all parameters extreacted in the multipart handling
-            return m_parameters.keys();
-        } else {
-
-            // add all parameters from the original request
-            return m_req.getParameterNames();
-        }
-    }
-
-    /**
-     * Returns all parameter values of a parameter key.
-     *
-     * @param key the parameter key
-     * @return Aarray of String containing the parameter values.
-     */
-    public String[] getParameterValues(String key) {
-        return m_req.getParameterValues(key);
-    }
-
-    /** String to the requested resource. */
-    private String m_requestedResource;
-
-    /**
-     * This funtion returns the name of the requested resource.
-     * <P>
-     * For a http request, the name of the resource is extracted as follows:
-     * <CODE>http://{servername}/{servletpath}/{path to the cms resource}</CODE>
-     * In the following example:
-     * <CODE>http://my.work.server/servlet/opencms/system/def/explorer</CODE>
-     * the requested resource is <CODE>/system/def/explorer</CODE>.
-     * </P>
-     *
-     * @return The path to the requested resource.
-     */
-    public String getRequestedResource() {
-        if (m_requestedResource != null) {
-            return m_requestedResource;
-        }
-        m_requestedResource = m_req.getPathInfo();
-        if (m_requestedResource == null) {
-            m_requestedResource = "/";
-        }       
-        return m_requestedResource;
-    }
-    
-    /**
-     * Set the name returned by getRequestedResource().
-     * This is required in case there was a folder name requested and 
-     * a default file (e.g. index.html) has to be used instead of the folder.
-     * 
-     * @param resourceName The name to set the requested resource name to 
-     */
-    public void setRequestedResource(String resourceName) {
-        m_requestedResource = resourceName;
-    }    
 
     /**
      * A utility method that reads a single part of the multipart request
@@ -730,52 +783,5 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
                 }
             }
         }
-    }
-
-    /**
-     * Returns the part of the Url that descibes the Web-Application.
-     *
-     * E.g: http://www.myserver.com/opencms/engine/index.html returns
-     * http://www.myserver.com/opencms
-     * 
-     * @return the web application part of the url
-     */
-    public String getWebAppUrl() {
-        return m_webAppUrl;
-    }
-
-    /**
-     * Gets the part of the Url that describes the current servlet of this
-     * Web-Application.
-     * 
-     * @return the servlet part of the url
-     */
-    public String getServletUrl() {
-        return m_servletUrl;
-    }
-
-    /**
-     * Methods to get the data from the original request.
-     * 
-     * @return the server name
-     */
-    public String getServerName() {
-        return m_serverName;
-    }
-    /**
-     * Methods to get the data from the original request.
-     * 
-     * @return the server port
-     */
-    public int getServerPort() {
-        return m_serverPort;
-    }
-    /**
-     * Methods to get the data from the original request.
-     * 
-     * @return the scheme
-     */
-    public String getScheme() {
-        return m_scheme;
     }
 }

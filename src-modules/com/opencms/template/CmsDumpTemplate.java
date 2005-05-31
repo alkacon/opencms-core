@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2005/05/17 16:13:36 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -48,7 +48,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/31 15:51:19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -93,8 +93,8 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @throws CmsException if something goes wrong
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
-        if (C_DEBUG && OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Dumping contents of file " + templateFile);
+        if (C_DEBUG && CmsLog.getLog(this).isDebugEnabled()) {
+            CmsLog.getLog(this).debug("Dumping contents of file " + templateFile);
         }
         byte[] s = null;
         try {
@@ -104,8 +104,8 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
         } catch (Exception e) {
             s = null;
             String errorMessage = "Error while reading file " + templateFile + ": " + e;
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(errorMessage, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error(errorMessage, e);
             }
             if (e instanceof CmsException) {
                 throw (CmsException)e;

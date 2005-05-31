@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2005/05/19 08:57:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.mail.CmsHtmlMail;
 import org.opencms.mail.CmsMailTransport;
 import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.I_CmsScheduledJob;
@@ -285,8 +286,8 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
                     try {
                         retArray.add(new InternetAddress((String)tokens.nextElement()));
                     } catch (AddressException e) {
-                        if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error(e);
+                        if (CmsLog.getLog(this).isErrorEnabled()) {
+                            CmsLog.getLog(this).error(e);
                         }   
                     }
                 }

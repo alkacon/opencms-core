@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleNewFiles.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -69,10 +69,10 @@ public class CmsAdminModuleNewFiles extends CmsWorkplaceDefault {
      * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.getLog(this).isDebugEnabled() && C_DEBUG) {
-            OpenCms.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
-            OpenCms.getLog(this).debug("Template file is: " + templateFile);
-            OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+        if(CmsLog.getLog(this).isDebugEnabled() && C_DEBUG) {
+            CmsLog.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
+            CmsLog.getLog(this).debug("Template file is: " + templateFile);
+            CmsLog.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2005/04/10 21:00:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
   
@@ -186,17 +186,17 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
     public void testLog() throws Exception {
         
         // first 4 log levels are uncritical
-        OpenCms.getLog(this).trace("This is a 'trace' log message");
-        OpenCms.getLog(this).debug("This is a 'debug' log message");
-        OpenCms.getLog(this).info("This is a 'info' log message");        
-        OpenCms.getLog(this).warn("This is a 'warn' log message");
+        CmsLog.getLog(this).trace("This is a 'trace' log message");
+        CmsLog.getLog(this).debug("This is a 'debug' log message");
+        CmsLog.getLog(this).info("This is a 'info' log message");        
+        CmsLog.getLog(this).warn("This is a 'warn' log message");
 
         // is something is written to log level 'error' or 'fatal' 
         // a runtime exception must be thrown while unit tests are running
         boolean noException;
         noException = true; 
         try {
-            OpenCms.getLog(this).error("This is a 'error' log message");
+            CmsLog.getLog(this).error("This is a 'error' log message");
         } catch (RuntimeException e) {
             noException = false;
         }
@@ -205,7 +205,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         }
         noException = true; 
         try {
-            OpenCms.getLog(this).fatal("This is a 'fatal' log message");
+            CmsLog.getLog(this).fatal("This is a 'fatal' log message");
         } catch (RuntimeException e) {
             noException = false;
         }

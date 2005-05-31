@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/05/31 14:39:21 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,19 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message contant for key in the resource bundle. */
     public static final String ERR_CONTEXT_INFO_FROZEN_0 = "ERR_CONTEXT_INFO_FROZEN_0";
-   
+       
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_SESSION_CREATED_1 = "LOG_SESSION_CREATED_1";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_SESSION_DESTROYED_2 = "LOG_SESSION_DESTROYED_2";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_SESSION_DESTROYED_1 = "LOG_SESSION_DESTROYED_1";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_SESSION_CREATED_2 = "LOG_SESSION_CREATED_2";
+
     /** Message contant for key in the resource bundle. */
     public static final String ERR_CRITICAL_CLASS_CREATION_1 = "ERR_CRITICAL_CLASS_CREATION_1";
 

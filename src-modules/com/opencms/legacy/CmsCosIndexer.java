@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
@@ -50,7 +51,8 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.defaults.master.*;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
 
 import java.util.Iterator;
 import java.util.Vector;
@@ -62,7 +64,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2005/05/23 07:26:46 $
+ * @version $Revision: 1.4 $ $Date: 2005/05/31 15:51:19 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -209,8 +211,8 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
             if (m_report != null) {
                 m_report.println(m_report.key("search.indexing_folder_failed"), I_CmsReport.C_FORMAT_WARNING);
             }
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Failed to index " + channel, exc);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Failed to index " + channel, exc);
             }
             
             throw new CmsIndexException(Messages.get().container(Messages.ERR_COS_INDEXING_CONTENTS_OF_CLASS_1, channel), exc);

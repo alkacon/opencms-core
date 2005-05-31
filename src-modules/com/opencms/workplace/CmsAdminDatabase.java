@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2005/05/25 09:01:57 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.workplace;
 import org.opencms.file.CmsObject;
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.workplace.threads.CmsDatabaseImportThread;
@@ -56,7 +57,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -101,8 +102,8 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator));
         if(!discFolder.exists()) {
             boolean success = discFolder.mkdir();
-            if(OpenCms.getLog(this).isWarnEnabled() && (!success)) {
-                OpenCms.getLog(this).warn("Couldn't create folder " + discFolder.getAbsolutePath());
+            if(CmsLog.getLog(this).isWarnEnabled() && (!success)) {
+                CmsLog.getLog(this).warn("Couldn't create folder " + discFolder.getAbsolutePath());
             }
         }
 
@@ -139,11 +140,11 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         Hashtable parameters, 
         String templateSelector
     ) throws CmsException {               
-        if(C_DEBUG && OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Getting content of element "
+        if(C_DEBUG && CmsLog.getLog(this).isDebugEnabled()) {
+            CmsLog.getLog(this).debug("Getting content of element "
                             + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.getLog(this).debug("Template file is: " + templateFile);
-            OpenCms.getLog(this).debug("Delected template section is: "
+            CmsLog.getLog(this).debug("Template file is: " + templateFile);
+            CmsLog.getLog(this).debug("Delected template section is: "
                             + ((templateSelector == null) ? "<default>" : templateSelector));
         }
 

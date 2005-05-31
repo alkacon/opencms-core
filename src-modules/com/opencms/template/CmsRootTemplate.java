@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2005/05/20 14:32:31 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@ package com.opencms.template;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsResponse;
 import com.opencms.legacy.CmsLegacyException;
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * the content of a master template.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2005/05/20 14:32:31 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/31 15:51:19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -123,9 +123,9 @@ public class CmsRootTemplate {
                 result = templateClass.getContent(cms, masterTemplateUri, I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters);
             } catch (CmsException e) {
                 cache.clearCache(cacheKey);
-                if (OpenCms.getLog(this).isWarnEnabled() && (e instanceof CmsLegacyException) && (((CmsLegacyException)e).getType() == CmsLegacyException.C_NO_USER)) {
+                if (CmsLog.getLog(this).isWarnEnabled() && (e instanceof CmsLegacyException) && (((CmsLegacyException)e).getType() == CmsLegacyException.C_NO_USER)) {
                     
-                    OpenCms.getLog(this).warn("Could not get contents of master template " + masterTemplate.getName(), e);
+                    CmsLog.getLog(this).warn("Could not get contents of master template " + masterTemplate.getName(), e);
                 }
                 throw e;
             }

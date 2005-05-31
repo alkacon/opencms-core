@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2005/05/20 15:12:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.i18n;
 
 import org.opencms.file.CmsRfsResourceNotFoundException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexnader Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.7.3
  */
@@ -61,7 +61,7 @@ public class CmsMultiMessages extends CmsMessages {
     public static final String NULL_STRING = "null";
 
     /** Static reference to the log. */
-    private static final Log LOG = OpenCms.getLog(CmsMultiMessages.class);
+    private static final Log LOG = CmsLog.getLog(CmsMultiMessages.class);
 
     /** A cache for the messages to prevent multiple lookups in many bundles. */
     private Map m_messageCache;

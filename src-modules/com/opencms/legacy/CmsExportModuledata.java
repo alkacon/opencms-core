@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2005/05/28 09:35:34 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $ $Date: 2005/05/28 09:35:34 $
+ * @version $Revision: 1.4 $ $Date: 2005/05/31 15:51:19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -418,33 +418,33 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
                 }
             } catch (InvocationTargetException e) {
                 getReport().println(e);
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error exporting COS data for channel id " + channelId, e);
+                if (CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error("Error exporting COS data for channel id " + channelId, e);
                 }
             } catch (NoSuchMethodException e) {
                 getReport().println(e);
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error exporting COS data for channel id " + channelId, e);
+                if (CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error("Error exporting COS data for channel id " + channelId, e);
                 }
             } catch (IllegalArgumentException e) {
                 getReport().println(e);
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error exporting COS data for channel id " + channelId, e);
+                if (CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error("Error exporting COS data for channel id " + channelId, e);
                 }
             } catch (SecurityException e) {
                 getReport().println(e);
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error exporting COS data for channel id " + channelId, e);
+                if (CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error("Error exporting COS data for channel id " + channelId, e);
                 }
             } catch (IllegalAccessException e) {
                 getReport().println(e);
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error exporting COS data for channel id " + channelId, e);
+                if (CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error("Error exporting COS data for channel id " + channelId, e);
                 }
             } catch (ClassNotFoundException e) {
                 getReport().println(e);
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error exporting COS data for channel id " + channelId, e);
+                if (CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error("Error exporting COS data for channel id " + channelId, e);
                 }
             }
         }
@@ -530,8 +530,8 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         try {
             ownerName = getCms().readUser(dataset.m_userId).getName();
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Unable to read user with id " + dataset.m_userId, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Unable to read user with id " + dataset.m_userId, e);
             }
         }
         // get the name of the group
@@ -539,8 +539,8 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         try {
             groupName = getCms().readGroup(dataset.m_groupId).getName();
         } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Unable to read group with id " + dataset.m_groupId, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Unable to read group with id " + dataset.m_groupId, e);
             }
         }
         
@@ -617,14 +617,14 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             getExportZipStream().closeEntry();
         } catch (SAXException e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Unable to write ZIP dataset file " + filename, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Unable to write ZIP dataset file " + filename, e);
             }
             throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
         } catch (IOException e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Unable to write ZIP dataset file " + filename, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Unable to write ZIP dataset file " + filename, e);
             }
             throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
         }
@@ -673,14 +673,14 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             getExportZipStream().closeEntry();
         } catch (SAXException e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Unable to write ZIP media content file " + contentFilename, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Unable to write ZIP media content file " + contentFilename, e);
             }
             throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
         } catch (IOException e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Unable to write ZIP media content file " + contentFilename, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Unable to write ZIP media content file " + contentFilename, e);
             }
             throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
         }
@@ -703,33 +703,33 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             cd = (CmsMasterContent)co.newInstance(objects);
         } catch (InvocationTargetException e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error generating instance for class " + classname, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Error generating instance for class " + classname, e);
             }
         } catch (NoSuchMethodException e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error generating instance for class " + classname, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Error generating instance for class " + classname, e);
             }
         } catch (InstantiationException e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error generating instance for class " + classname, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Error generating instance for class " + classname, e);
             }
         } catch (ClassNotFoundException e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error generating instance for class " + classname, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Error generating instance for class " + classname, e);
             }
         } catch (IllegalArgumentException e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error generating instance for class " + classname, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Error generating instance for class " + classname, e);
             }
         } catch (IllegalAccessException e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error generating instance for class " + classname, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Error generating instance for class " + classname, e);
             }
         }
         return cd;
@@ -750,8 +750,8 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             getExportZipStream().closeEntry();
         } catch (IOException ioex) {
             getReport().println(ioex);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Unable to write ZIP for filename " + filename, ioex);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Unable to write ZIP for filename " + filename, ioex);
             }
         }
     }

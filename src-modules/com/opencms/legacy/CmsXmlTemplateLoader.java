@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/05/31 14:39:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,9 +46,27 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.I_CmsWpConstants;
 
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.template.cache.*;
+import com.opencms.core.CmsRequestHttpServlet;
+import com.opencms.core.CmsResponseHttpServlet;
+import com.opencms.core.CmsSession;
+import com.opencms.core.I_CmsRequest;
+import com.opencms.core.I_CmsResponse;
+import com.opencms.core.I_CmsSession;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsRootTemplate;
+import com.opencms.template.CmsTemplateCache;
+import com.opencms.template.CmsTemplateClassManager;
+import com.opencms.template.CmsXmlControlFile;
+import com.opencms.template.CmsXmlTemplate;
+import com.opencms.template.I_CmsTemplate;
+import com.opencms.template.I_CmsTemplateCache;
+import com.opencms.template.I_CmsXmlTemplate;
+import com.opencms.template.cache.CmsElementCache;
+import com.opencms.template.cache.CmsElementDefinition;
+import com.opencms.template.cache.CmsElementDefinitionCollection;
+import com.opencms.template.cache.CmsElementDescriptor;
+import com.opencms.template.cache.CmsUri;
+import com.opencms.template.cache.CmsUriDescriptor;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -88,7 +106,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -242,16 +260,16 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
 
         // collect xml template information
         String absolutePath = cms.getSitePath(file);
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("absolutePath=" + absolutePath);
+        if (CmsLog.getLog(this).isDebugEnabled()) {
+            CmsLog.getLog(this).debug("absolutePath=" + absolutePath);
         }
         String templateProp = cms.readPropertyObject(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE, false).getValue();
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("templateProp=" + templateProp);
+        if (CmsLog.getLog(this).isDebugEnabled()) {
+            CmsLog.getLog(this).debug("templateProp=" + templateProp);
         }
         String templateClassProp = cms.readPropertyObject(absolutePath, I_CmsConstants.C_PROPERTY_BODY_CLASS, false).getValue(I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("templateClassProp=" + templateClassProp);
+        if (CmsLog.getLog(this).isDebugEnabled()) {
+            CmsLog.getLog(this).debug("templateClassProp=" + templateClassProp);
         }
         
         // ladies and gentelman: and now for something completly different 
@@ -294,12 +312,12 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             uriDesc = new CmsUriDescriptor(uri);
             cmsUri = elementCache.getUriLocator().get(uriDesc);
             // check if cached
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("found cmsUri=" + cmsUri);
+            if (CmsLog.getLog(this).isDebugEnabled()) {
+                CmsLog.getLog(this).debug("found cmsUri=" + cmsUri);
         }
             if ((cmsUri != null) && !cmsUri.getElementDescriptor().getTemplateName().equalsIgnoreCase(templateProp)) {
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("cmsUri has different template: " + cmsUri.getElementDescriptor().getTemplateName()
+                if (CmsLog.getLog(this).isDebugEnabled()) {
+                    CmsLog.getLog(this).debug("cmsUri has different template: " + cmsUri.getElementDescriptor().getTemplateName()
                             + " than current template: " + templateProp + ", not using cmsUri from cache");
                 }
                 cmsUri = null;
@@ -409,8 +427,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
                     if (paramValue != null) {
                         newParameters.put(elementName + "." + paramName, paramValue);
                     } else {
-                        if (OpenCms.getLog(this).isInfoEnabled()) {
-                            OpenCms.getLog(this).info("Empty parameter \"" + paramName + "\" found.");
+                        if (CmsLog.getLog(this).isInfoEnabled()) {
+                            CmsLog.getLog(this).info("Empty parameter \"" + paramName + "\" found.");
                         }
                     }
                 }
@@ -438,8 +456,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
                     newParameters.put(datafor + pname, paramValue);
                 }
             } else {
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info("Empty URL parameter \"" + pname + "\" found.");
+                if (CmsLog.getLog(this).isInfoEnabled()) {
+                    CmsLog.getLog(this).info("Empty URL parameter \"" + pname + "\" found.");
                 }
             }
         }
@@ -478,8 +496,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
                 I_CmsTemplate tmpl = getTemplateClass(templateClass);               
                 if (!(tmpl instanceof I_CmsXmlTemplate)) {
                     String errorMessage = "Error in " + cms.getSitePath(file) + ": " + templateClass + " is not a XML template class.";
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error(errorMessage);
+                    if (CmsLog.getLog(this).isErrorEnabled()) {
+                        CmsLog.getLog(this).error(errorMessage);
                     } 
                     throw new CmsLegacyException(errorMessage, CmsLegacyException.C_XML_WRONG_TEMPLATE_CLASS);
                 }
@@ -487,8 +505,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
                 clearLoaderCache(true, true);
                 output = callCanonicalRoot(cms, tmpl, masterTemplate, newParameters);
             } catch (CmsException e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this);
                 }
                 doc.removeFromFileCache();
                 throw e;
@@ -527,8 +545,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
      * @throws CmsException if something goes wrong
      */
     private I_CmsTemplate getTemplateClass(String classname) throws CmsException {
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Getting start template class: " + classname);
+        if (CmsLog.getLog(this).isDebugEnabled()) {
+            CmsLog.getLog(this).debug("Getting start template class: " + classname);
         }
         Object o = CmsTemplateClassManager.getClassInstance(classname);
 
@@ -537,8 +555,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         // This is done be checking the implemented interface.
         if (!(o instanceof I_CmsTemplate)) {
             String errorMessage = "Class " + classname + " is not an OpenCms template class.";
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(errorMessage);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error(errorMessage);
             }
             throw new CmsLegacyException(errorMessage, CmsLegacyException.C_XML_NO_TEMPLATE_CLASS);
         }
@@ -570,8 +588,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
 
         // log the error if it is no CmsException
         if (! (e instanceof CmsException)) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(errorText, e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error(errorText, e);
             }
         }
 
@@ -687,8 +705,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     private void processXmlTemplate(CmsObject cms, CmsFile file) throws CmsException {
 
         // first some debugging output.
-        if ((DEBUG > 0) && OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Loader started for " + file.getName());
+        if ((DEBUG > 0) && CmsLog.getLog(this).isDebugEnabled()) {
+            CmsLog.getLog(this).debug("Loader started for " + file.getName());
         }
 
         // check all values to be valid
@@ -700,8 +718,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             errorMessage = "CmsObject missing";
         }
         if (errorMessage != null) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(errorMessage);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error(errorMessage);
             } 
             throw new CmsLegacyException(errorMessage, CmsLegacyException.C_LOADER_GENERIC_ERROR);
         }
@@ -802,8 +820,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
                 out.close();
             }
         } catch (IOException ioe) {
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("IO error while writing to response stream for " + cms.getRequestContext().getUri(), ioe);
+            if (CmsLog.getLog(this).isDebugEnabled()) {
+                CmsLog.getLog(this).debug("IO error while writing to response stream for " + cms.getRequestContext().getUri(), ioe);
             }
         } catch (Exception e) {
             String errorMessage = "Cannot write output to HTTP response stream";

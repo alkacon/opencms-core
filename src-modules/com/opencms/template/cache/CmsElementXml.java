@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2005/05/17 16:13:36 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.template.cache;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.security.CmsSecurityException;
 
 import com.opencms.legacy.CmsLegacyException;
@@ -134,8 +134,8 @@ public class CmsElementXml extends A_CmsElement {
             try {
                 templateClass = getTemplateClass(cms, m_className);
             } catch(Throwable e) {
-                if(OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Could not load my template class \"" + m_className + "\"", e);
+                if(CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error("Could not load my template class \"" + m_className + "\"", e);
                     return e.toString().getBytes();
                 }
             }
@@ -164,8 +164,8 @@ public class CmsElementXml extends A_CmsElement {
                         try{
                             theTemplate = mergedElDefs.get("body").getTemplateName();
                         }catch(Exception exc){
-                            if(OpenCms.getLog(this).isErrorEnabled()) {
-                                OpenCms.getLog(this).error("Could not find the body element to get the default template file for " + this.toString(), exc);
+                            if(CmsLog.getLog(this).isErrorEnabled()) {
+                                CmsLog.getLog(this).error("Could not find the body element to get the default template file for " + this.toString(), exc);
                             }
                         }
                     }
@@ -176,21 +176,21 @@ public class CmsElementXml extends A_CmsElement {
                         if(ce instanceof CmsSecurityException) {
                             // This was an access denied exception.
                             // This is not very critical at the moment.
-                            if(OpenCms.getLog(this).isDebugEnabled()) {
-                                OpenCms.getLog(this).debug("Access denied in getContent for template class " + m_className);
+                            if(CmsLog.getLog(this).isDebugEnabled()) {
+                                CmsLog.getLog(this).debug("Access denied in getContent for template class " + m_className);
                             }
                         } else {
                             // Any other CmsException.
                             // This could be more critical.
-                            if(OpenCms.getLog(this).isWarnEnabled()) {
-                                OpenCms.getLog(this).warn("Error in getContent() for template class " + m_className, e);
+                            if(CmsLog.getLog(this).isWarnEnabled()) {
+                                CmsLog.getLog(this).warn("Error in getContent() for template class " + m_className, e);
                             }
                         }
                         throw ce;
                     } else {
                         // No CmsException. This is really, really bad!
-                        if(OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error("Non OpenCms error occured in getContent for template class " + m_className, e);
+                        if(CmsLog.getLog(this).isErrorEnabled()) {
+                            CmsLog.getLog(this).error("Non OpenCms error occured in getContent for template class " + m_className, e);
                         }
                         throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
                     }

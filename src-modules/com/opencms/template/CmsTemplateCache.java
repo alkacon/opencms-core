@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2005/05/31 14:39:21 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.apache.commons.collections.map.LRUMap;
  * Implements the OpenCms template cache.<p>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2005/05/31 14:39:21 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/31 15:51:19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -65,8 +65,8 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
      * Deletes all documents from the template cache. 
      */
     public void clearCache() {
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info("Clearing template cache");
+        if (CmsLog.getLog(this).isInfoEnabled()) {
+            CmsLog.getLog(this).info("Clearing template cache");
         }
         m_templateCache.clear();
     }
@@ -80,8 +80,8 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
         if (key instanceof String) {
             m_templateCache.remove(key);
         } else {
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info("Could not clear key from cache: " + key);
+            if (CmsLog.getLog(this).isInfoEnabled()) {
+                CmsLog.getLog(this).info("Could not clear key from cache: " + key);
             }
         }
     }
@@ -92,14 +92,14 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
      * @return byte array with the cached template content or null if no cached value was found.
      */
     public byte[] get(Object key) {
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info("Getting " + key + " from cache");
+        if (CmsLog.getLog(this).isInfoEnabled()) {
+            CmsLog.getLog(this).info("Getting " + key + " from cache");
         }
         if (key instanceof String) {
             return (byte[])m_templateCache.get(key);
         } else {
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info("Getting " + key + " from cache failed");
+            if (CmsLog.getLog(this).isInfoEnabled()) {
+                CmsLog.getLog(this).info("Getting " + key + " from cache failed");
             }
             return null;
         }
@@ -115,8 +115,8 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
         if (key instanceof String) {
             return m_templateCache.get(key) != null;
         } else {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn(key + " is not instanceof String");
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn(key + " is not instanceof String");
             }
             return false;
         }
@@ -131,8 +131,8 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
         if (key instanceof String) {
             m_templateCache.put(key, content);
         } else {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn(key + " is not instanceof String");
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn(key + " is not instanceof String");
             }
         }
     }

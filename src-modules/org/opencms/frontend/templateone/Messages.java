@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/Messages.java,v $
- * Date   : $Date: 2005/05/12 15:01:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_EXT_MODULE_FILE_NOT_FOUND_1 = "LOG_EXT_MODULE_FILE_NOT_FOUND_1";
+        
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_EXT_MODULE_PROP_VALUE_1 = "LOG_EXT_MODULE_PROP_VALUE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INCLUDE_PART_ERR_2 = "LOG_INCLUDE_PART_ERR_2";

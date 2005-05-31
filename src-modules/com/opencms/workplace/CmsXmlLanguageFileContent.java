@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlLanguageFileContent.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,14 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-import org.opencms.workplace.*;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.workplace.I_CmsWpConstants;
+
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ import java.util.List;
  * Support for XML-style locales will be removed in a future release.<p> 
  *
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -151,8 +151,8 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
                 // try read from old module locales path
                 try {
                     moduleLangFiles = cms.getFilesInFolder(cms.getSitePath((CmsFolder)modules.get(i)) + oldLang);
-                    if(OpenCms.getLog(this).isWarnEnabled() ) {
-                        OpenCms.getLog(this).warn("Old module 'locales' path used: " + cms.getSitePath((CmsFolder)modules.get(i)) + oldLang);
+                    if(CmsLog.getLog(this).isWarnEnabled() ) {
+                        CmsLog.getLog(this).warn("Old module 'locales' path used: " + cms.getSitePath((CmsFolder)modules.get(i)) + oldLang);
                     }                    
                 } catch (CmsException ex) {
                     // no language files found, we can live with that, probably the module just has none                      
@@ -169,8 +169,8 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
                 try {
                     init(cms, cms.getSitePath(file));
                 } catch(Exception exc) {
-                    if(OpenCms.getLog(this).isErrorEnabled() ) {
-                        OpenCms.getLog(this).error("Error merging language file: " + cms.getSitePath(file), exc);
+                    if(CmsLog.getLog(this).isErrorEnabled() ) {
+                        CmsLog.getLog(this).error("Error merging language file: " + cms.getSitePath(file), exc);
                     }
                 }
             }

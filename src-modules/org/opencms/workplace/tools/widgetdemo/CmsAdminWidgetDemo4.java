@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo4.java,v $
- * Date   : $Date: 2005/05/24 11:05:56 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,22 @@
 package org.opencms.workplace.tools.widgetdemo;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.OpenCms;
-import org.opencms.widgets.*;
+import org.opencms.main.CmsLog;
+import org.opencms.widgets.A_CmsWidget;
+import org.opencms.widgets.CmsCheckboxWidget;
+import org.opencms.widgets.CmsComboWidget;
+import org.opencms.widgets.CmsDownloadGalleryWidget;
+import org.opencms.widgets.CmsHtmlGalleryWidget;
+import org.opencms.widgets.CmsImageGalleryWidget;
+import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.CmsLinkGalleryWidget;
+import org.opencms.widgets.CmsTableGalleryWidget;
+import org.opencms.widgets.CmsTextareaWidget;
+import org.opencms.widgets.CmsVfsFileWidget;
+import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
-
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,19 +57,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * A basic example and proof-of-concept on how to use OpenCms widgets within a custom build form
  * without XML contents.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "widgetdemo4";
+
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsAdminWidgetDemo3.class);
 
     /**
      * Public constructor with JSP action element.<p>
@@ -193,7 +209,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
             // close table
             result.append("</table>\n");
         } catch (Throwable t) {
-            OpenCms.getLog(this).error("Error in XML editor", t);
+           LOG.error(Messages.get().key(Messages.ERR_XML_EDITOR_0), t);
         }
         return result.toString();
     }
@@ -214,6 +230,14 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter("tablegalwidget", new CmsTableGalleryWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("extgalwidget", new CmsLinkGalleryWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("combowidget", new CmsComboWidget("Value1:Hilfe für Value 1|Value2:Hilfe für den zweiten Wert|Value3"), 0, 2));
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return new String[] {"page1"};
     }
 
     
@@ -263,13 +287,5 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
             // set the default action               
             setAction(ACTION_DEFAULT);
         }
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
-     */
-    protected String[] getPageArray() {
-
-        return new String[] {"page1"};
     }
 }

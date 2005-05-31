@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminProjectResent.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@ package com.opencms.workplace;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -46,7 +46,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -68,10 +68,10 @@ public class CmsAdminProjectResent extends CmsWorkplaceDefault {
     
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.getLog(this).isDebugEnabled() && C_DEBUG) {
-            OpenCms.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
-            OpenCms.getLog(this).debug("Template file is: " + templateFile);
-            OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+        if(CmsLog.getLog(this).isDebugEnabled() && C_DEBUG) {
+            CmsLog.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
+            CmsLog.getLog(this).debug("Template file is: " + templateFile);
+            CmsLog.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, 
                 elementName, parameters, templateSelector);

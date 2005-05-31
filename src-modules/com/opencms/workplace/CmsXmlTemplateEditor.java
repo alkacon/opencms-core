@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2005/05/20 14:32:31 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
@@ -68,7 +69,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2005/05/20 14:32:31 $
+ * @version $Revision: 1.5 $ $Date: 2005/05/31 15:51:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -546,8 +547,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                     cms.getRequestContext().setCurrentProject(cms.readProject(curProject));
                 }catch(CmsException e) {
                     cms.getRequestContext().setCurrentProject(cms.readProject(curProject));
-                    if(OpenCms.getLog(this).isErrorEnabled() ) {
-                        OpenCms.getLog(this).error("Could not write property " + C_PROPERTY_TITLE + " for file " + file, e);
+                    if(CmsLog.getLog(this).isErrorEnabled() ) {
+                        CmsLog.getLog(this).error("Could not write property " + C_PROPERTY_TITLE + " for file " + file, e);
                     }
                 }
             }
@@ -926,8 +927,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
 
         // Check the existance of the "file" parameter
         if(!existsContentParam) {
-            if(OpenCms.getLog(this).isWarnEnabled() ) {
-                OpenCms.getLog(this).warn("No content found");
+            if(CmsLog.getLog(this).isWarnEnabled() ) {
+                CmsLog.getLog(this).warn("No content found");
             }
             content = "";
         }

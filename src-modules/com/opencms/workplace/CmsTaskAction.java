@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2005/05/25 10:56:53 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.mail.CmsMailTransport;
 import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
@@ -47,7 +48,6 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.legacy.CmsLegacyException;
-import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -57,7 +57,6 @@ import java.util.Vector;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This helper-class is used to do task-actions like create or forward. It uses the
@@ -65,7 +64,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2005/05/25 10:56:53 $
+ * @version $Revision: 1.4 $ $Date: 2005/05/31 15:51:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -127,8 +126,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
                 new CmsMailTransport(mail).send();
             }
             catch(Exception exc) {
-                if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                    OpenCms.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
+                if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                    CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
                 }
             }
         }
@@ -216,8 +215,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
             mail = createMail(taskService.readOwner(task), users, subject, contentBuf.toString());
         }
         catch(CmsException e) {
-            if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                OpenCms.getLog(CmsTaskAction.class).warn("Could not generate mail while creating task for "
+            if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                CmsLog.getLog(CmsTaskAction.class).warn("Could not generate mail while creating task for "
                         + taskService.readOwner(task).getName(), e);
             }
         }
@@ -234,8 +233,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
                             subject, contentBuf.toString(), true);
                 }
                 catch(CmsException e) {
-                    if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                        OpenCms.getLog(CmsTaskAction.class).warn("Could not generate mail while creating task for "
+                    if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                        CmsLog.getLog(CmsTaskAction.class).warn("Could not generate mail while creating task for "
                                 + taskService.readOwner(task).getName(), e);
                     }
                 }
@@ -417,8 +416,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
                 new CmsMailTransport(mail).send();
             }
             catch(Exception exc) {
-                if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                    OpenCms.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
+                if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                    CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
                 }
             }
         }
@@ -496,8 +495,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
                     new CmsMailTransport(mail).send();
                 }
                 catch(Exception exc) {
-                    if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                        OpenCms.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
+                    if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                        CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
                     }
                 }
             }
@@ -513,8 +512,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
                     new CmsMailTransport(mail1).send();
                 }
                 catch(Exception exc) {
-                    if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                        OpenCms.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
+                    if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                        CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
                     }
                 }
 
@@ -528,8 +527,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
                     new CmsMailTransport(mail2).send();
                 }
                 catch(Exception exc) {
-                    if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                        OpenCms.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
+                    if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                        CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
                     }
                 }
             }
@@ -622,8 +621,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
             new CmsMailTransport(mail).send();
         }
         catch(Exception exc) {
-            if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                OpenCms.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
+            if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
             }
         }
     }
@@ -709,8 +708,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
             new CmsMailTransport(mail).send();
         }
         catch(Exception exc) {
-            if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                OpenCms.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
+            if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
             }
         }
     }
@@ -807,8 +806,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
             new CmsMailTransport(mail).send();
         }
         catch(Exception exc) {
-            if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                OpenCms.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
+            if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
             }
         }
     }
@@ -873,8 +872,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
             new CmsMailTransport(mail).send();
         }
         catch(Exception exc) {
-            if(OpenCms.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                OpenCms.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
+            if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
             }
         }
     }

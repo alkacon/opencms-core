@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2005/05/19 08:57:24 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,8 +29,8 @@
 package com.opencms.template.cache;
 
 import org.opencms.file.CmsObject;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import com.opencms.legacy.CmsLegacyException;
@@ -132,8 +132,8 @@ public class CmsMethodElement extends A_CmsElement {
             try {
                 templateClass = getTemplateClass(cms, m_className);
             } catch(Throwable e) {
-                if(OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Could not load my template class \"" + m_className + "\"", e);
+                if(CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error("Could not load my template class \"" + m_className + "\"", e);
                     return e.toString().getBytes();
                 }
             }
@@ -213,8 +213,8 @@ public class CmsMethodElement extends A_CmsElement {
      * @throws CmsLegacyException
      */
     protected void throwException(String errorMessage, int type) throws CmsLegacyException {
-        if(OpenCms.getLog(this).isErrorEnabled() ) {
-            OpenCms.getLog(this).error(errorMessage);
+        if(CmsLog.getLog(this).isErrorEnabled() ) {
+            CmsLog.getLog(this).error(errorMessage);
         }
         throw new CmsLegacyException(errorMessage, type);
     }

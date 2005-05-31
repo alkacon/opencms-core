@@ -26,7 +26,7 @@ package com.opencms.defaults;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.template.A_CmsXmlContent;
@@ -453,8 +453,8 @@ public class CmsShowContent extends CmsXmlTemplate {
             try {
                 template.setData(datablockName, (String)method.invoke(contentDefinition, args));
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error during automatic call method '" + method.getName(), e);
+                if (CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error("Error during automatic call method '" + method.getName(), e);
                 }
                 // set datablock with error text to indicate that calling the get-method failed
                 template.setData(datablockName, C_ERROR_TEXT);

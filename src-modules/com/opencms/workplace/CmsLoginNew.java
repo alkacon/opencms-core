@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2005/05/17 13:47:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
@@ -58,7 +59,7 @@ import java.util.Iterator;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -158,8 +159,8 @@ public class CmsLoginNew extends CmsXmlTemplate {
             }
             
             if (! validLogin) {
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info("Failed login attempt for user '" + name + "'");
+                if (CmsLog.getLog(this).isInfoEnabled()) {
+                    CmsLog.getLog(this).info("Failed login attempt for user '" + name + "'");
                 }                
                 throw new CmsLegacyException("[OpenCms login failed]", CmsLegacyException.C_NO_USER);
             }
@@ -168,8 +169,8 @@ public class CmsLoginNew extends CmsXmlTemplate {
             // get a session for this user so that he is authentificated at the
             // end of this request
             session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info("Login of user '" + username + "'");
+            if (CmsLog.getLog(this).isInfoEnabled()) {
+                CmsLog.getLog(this).info("Login of user '" + username + "'");
             }
 
             // read the user data from the databsse

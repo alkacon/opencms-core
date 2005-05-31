@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.template;
 
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.io.InputStream;
@@ -53,7 +54,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:32 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -92,8 +93,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             DOMSerializer domSerializer = serializer.asDOMSerializer();
             domSerializer.serialize(doc);
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Xml parsing error", e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Xml parsing error", e);
             }
         }
     }
@@ -115,8 +116,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             DOMSerializer domSerializer = serializer.asDOMSerializer();
             domSerializer.serialize(doc);
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Xml parsing error", e);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Xml parsing error", e);
             }
         }
     }
@@ -164,8 +165,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             parser.setFeature("http://apache.org/xml/features/dom/include-ignorable-whitespace", false);
         }
         catch(SAXException e) {
-            if(OpenCms.getLog(this).isWarnEnabled()  && !c_xercesWarning) {
-                OpenCms.getLog(this).warn("Cannot set parser feature for apache xerces XML parser, you should use Xerces 1.1.1 or newer");
+            if(CmsLog.getLog(this).isWarnEnabled()  && !c_xercesWarning) {
+                CmsLog.getLog(this).warn("Cannot set parser feature for apache xerces XML parser, you should use Xerces 1.1.1 or newer");
                 c_xercesWarning = true;
             }
         }
@@ -200,7 +201,7 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
                     result = (String)d.getClass().getMethod("getXmlEncoding", new Class[]{}).invoke(d, new Object[]{});
                     m_xercesVersion = 2;
                 } catch (Throwable t) {
-                    OpenCms.getLog(this).debug("Xerces 2 not found - getXmlEncoding() did not work", t);
+                    CmsLog.getLog(this).debug("Xerces 2 not found - getXmlEncoding() did not work", t);
                 }
             }
             if ((m_xercesVersion == 1) || (m_xercesVersion == 0)) {
@@ -208,7 +209,7 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
                     result = (String)d.getClass().getMethod("getEncoding", new Class[]{}).invoke(d, new Object[]{});
                     m_xercesVersion = 1;
                 } catch (Throwable t) {
-                    OpenCms.getLog(this).debug("Xerces 1 not found - getEncoding() did not work", t);
+                    CmsLog.getLog(this).debug("Xerces 1 not found - getEncoding() did not work", t);
                 }
             }           
             // String result = ((org.apache.xerces.dom.CoreDocumentImpl)doc).getEncoding();

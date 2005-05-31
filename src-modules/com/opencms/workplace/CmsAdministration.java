@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2005/05/20 12:10:17 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -58,7 +58,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.4 $ $Date: 2005/05/20 12:10:17 $
+ * @version $Name:  $ $Revision: 1.5 $ $Date: 2005/05/31 15:51:19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -242,13 +242,13 @@ public class CmsAdministration extends CmsWorkplaceDefault {
             }
         }
         
-        if(OpenCms.getLog(this).isDebugEnabled() && C_DEBUG) {
-            OpenCms.getLog(this).debug("Getting content of element "
+        if(CmsLog.getLog(this).isDebugEnabled() && C_DEBUG) {
+            CmsLog.getLog(this).debug("Getting content of element "
                     + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.getLog(this).debug("Template file is: " + templateFile);
-            OpenCms.getLog(this).debug("Selected template section is: "
+            CmsLog.getLog(this).debug("Template file is: " + templateFile);
+            CmsLog.getLog(this).debug("Selected template section is: "
                     + ((templateSelector == null) ? "<default>" : templateSelector));
-            OpenCms.getLog(this).debug("SentBy: " + sentBy );                    
+            CmsLog.getLog(this).debug("SentBy: " + sentBy );                    
         }          
         
         List iconVector = (List) new ArrayList();
@@ -420,8 +420,8 @@ public class CmsAdministration extends CmsWorkplaceDefault {
             }
         }
         catch(Exception e) {
-             if(OpenCms.getLog(this).isWarnEnabled()){
-                 OpenCms.getLog(this).warn("Adminpoints unsorted cause I cant get a valid float value", e);
+             if(CmsLog.getLog(this).isWarnEnabled()){
+                 CmsLog.getLog(this).warn("Adminpoints unsorted cause I cant get a valid float value", e);
              }
         }
     } // of sort

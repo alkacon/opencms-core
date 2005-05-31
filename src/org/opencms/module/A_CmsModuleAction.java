@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/A_CmsModuleAction.java,v $
- * Date   : $Date: 2005/04/29 15:00:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,8 +108,8 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
      */
     public void shutDown(CmsModule module) {
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Module '" + module.getName() + "' " + this.getClass().getName() + " shutting down");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_MODULE_SHUTDOWN_2, module.getName(), this.getClass().getName()));
         }         
     }
 }

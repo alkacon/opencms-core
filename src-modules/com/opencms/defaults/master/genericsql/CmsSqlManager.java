@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/05/17 13:47:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,21 +30,19 @@
  */
 package com.opencms.defaults.master.genericsql;
 
-import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
-
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
@@ -63,7 +61,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:32 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -118,8 +116,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
             m_queries.putAll(properties);
         } catch(Exception exc) {
             // no query.properties found - write to logstream.
-            if(OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Couldn't load " + queryFilename, exc);
+            if(CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Couldn't load " + queryFilename, exc);
             }
         }
     }
@@ -287,8 +285,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     public String readQuery(String queryKey) {              
         String value = null;
         if ((value = (String)m_queries.get(queryKey)) == null) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Query '" + queryKey + "' not found");
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error("Query '" + queryKey + "' not found");
             }
         }
         return value;

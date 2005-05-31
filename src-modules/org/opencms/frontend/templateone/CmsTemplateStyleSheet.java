@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/05/12 15:01:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * Provides methods to build the dynamic CSS style sheet of template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsTemplateStyleSheet extends CmsJspActionElement {
 
@@ -145,8 +145,8 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
             }
         } catch (Exception e) {
             // log error in debug mode
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug(e);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e);
             }
         }
         if (CmsStringUtil.isEmpty(value)) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2005/05/17 13:47:27 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.template.cache;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -157,8 +157,8 @@ public class CmsElementLocator {
                              CmsXmlTemplateLoader.getElementCache().getVariantCachesize());
                     put(desc, result);
                 } catch(Throwable e) {
-                    if(OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Could not initialize method element for class \"" + className  + "\"", e);
+                    if(CmsLog.getLog(this).isErrorEnabled()) {
+                        CmsLog.getLog(this).error("Could not initialize method element for class \"" + className  + "\"", e);
                         return null;
                     }
                 }
@@ -168,8 +168,8 @@ public class CmsElementLocator {
                     result = cmsTemplate.createElement(cms, desc.getTemplateName(), parameters);
                     put(desc, result);
                 } catch(Throwable e) {
-                    if(OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Could not initialize (sub-)element for class \"" + desc.getClassName() + "\"", e);
+                    if(CmsLog.getLog(this).isErrorEnabled()) {
+                        CmsLog.getLog(this).error("Could not initialize (sub-)element for class \"" + desc.getClassName() + "\"", e);
                         throw new CmsLegacyException("Could not initialize (sub-)element for class \"" +
                                              desc.getClassName() + "\". " +e.toString() , CmsLegacyException.C_XML_WRONG_TEMPLATE_CLASS);
                     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2005/03/08 10:50:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import java.util.Set;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.apache.commons.collections.Buffer;
+import org.apache.commons.logging.Log;
 
 /**
  * Keeps track of the sessions running on the OpenCms server and
@@ -67,10 +68,13 @@ import org.apache.commons.collections.Buffer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1
  */
 public class CmsSessionManager {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSessionManager.class);
 
     /** Counter for the currently active sessions. */
     private int m_sessionCountCurrent;
@@ -318,12 +322,12 @@ public class CmsSessionManager {
 
         m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 1 : (m_sessionCountCurrent + 1);
         m_sessionCountTotal++;
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info(
-                "Session created - Total: " + m_sessionCountTotal + " Current: " + m_sessionCountCurrent);
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().key(Messages.LOG_SESSION_CREATED_2, new Integer(
+                m_sessionCountTotal), new Integer(m_sessionCountCurrent)));
         }
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Session created - Id is: " + event.getSession().getId());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SESSION_CREATED_1, event.getSession().getId()));
         }
     }
 
@@ -354,12 +358,12 @@ public class CmsSessionManager {
             OpenCms.getLockManager().removeTempLocks(userId);
         }
 
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info(
-                "Session destroyed - Total: " + m_sessionCountTotal + " Current: " + m_sessionCountCurrent);
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().key(Messages.LOG_SESSION_DESTROYED_2, new Integer(m_sessionCountTotal), 
+                new Integer(m_sessionCountCurrent)));
         }
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Session destroyed - Id was: " + event.getSession().getId());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_SESSION_DESTROYED_1, event.getSession().getId()));
         }
     }
 

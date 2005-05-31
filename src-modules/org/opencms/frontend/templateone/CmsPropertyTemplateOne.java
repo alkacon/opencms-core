@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/05/23 12:39:25 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
 
@@ -437,8 +437,8 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             }
         } catch (CmsException e) {
             // should usually never happen
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e);
             }
         }
         return URI_PROPERTY_DIALOG;
@@ -714,8 +714,8 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
                     path);
             } catch (CmsException e) {
                 // should never happen
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error(e);
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e);
                 }
             }
             // try to find a localized key for the description property value

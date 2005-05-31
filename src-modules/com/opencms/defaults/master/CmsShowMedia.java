@@ -27,7 +27,7 @@ package com.opencms.defaults.master;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -175,20 +175,20 @@ public class CmsShowMedia extends CmsXmlTemplate {
             Constructor c = cdClass.getConstructor(new Class[] { CmsObject.class, CmsUUID.class });
             o = c.newInstance(new Object[] { cms, id });
         } catch (InvocationTargetException ite) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Invocation target exception", ite);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Invocation target exception", ite);
             }
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Requested method was not found", nsm);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Requested method was not found", nsm);
             }
         } catch (InstantiationException e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("The reflected class is abstract", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("The reflected class is abstract", e);
             }
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Other exception", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Other exception", e);
             }
     
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2005/05/19 08:57:23 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
@@ -76,7 +77,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -593,20 +594,20 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             Constructor c = contentClass.getConstructor(new Class[] {CmsObject.class, CmsUUID.class});
             o = c.newInstance(new Object[] {cms, contentId});
         } catch (InvocationTargetException ite) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Invocation target exception", ite);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Invocation target exception", ite);
             }
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Requested method was not found", nsm);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Requested method was not found", nsm);
             }
         } catch (InstantiationException ie) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("The reflected class is abstract", ie);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("The reflected class is abstract", ie);
             }
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Other exception", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Other exception", e);
             }
         }
         return o;
@@ -626,20 +627,20 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class});
             o = c.newInstance(new Object[] {cms});
         } catch (InvocationTargetException ite) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Invocation target exception", ite);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Invocation target exception", ite);
             }
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Requested method was not found", nsm);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Requested method was not found", nsm);
             }
         } catch (InstantiationException ie) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("The reflected class is abstract", ie);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("The reflected class is abstract", ie);
             }
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Other exception", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Other exception", e);
             }
         }
         return o;
@@ -659,20 +660,20 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, String.class});
             o = c.newInstance(new Object[] {cms, id});
         } catch (InvocationTargetException ite) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Invocation target exception", ite);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Invocation target exception", ite);
             }
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Requested method was not found", nsm);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Requested method was not found", nsm);
             }
         } catch (InstantiationException ie) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("The reflected class is abstract", ie);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("The reflected class is abstract", ie);
             }
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Other exception", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Other exception", e);
             }
         }
         return o;
@@ -1162,8 +1163,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         template.setData("setaction", "");
                     }
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Backoffice: history method caused an exception", e);
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn("Backoffice: history method caused an exception", e);
                     }
                     templateSelector = "historyerror";
                     template.setData("historyerror", e.getMessage());
@@ -1201,8 +1202,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 try {
                     ((I_CmsExtendedContentDefinition)o).restore(cms, Integer.parseInt(versionId));
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Restore method caused an exception", e);
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn("Restore method caused an exception", e);
                     }
                     templateSelector = "historyerror";
                     template.setData("historyerror", e.getMessage());
@@ -1246,8 +1247,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             try {
                 cdHistory = ((I_CmsExtendedContentDefinition)o).getHistory(cms);
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("History reading history for class " + cdClass.getName(), e);
+                if (CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error("History reading history for class " + cdClass.getName(), e);
                 }
             }
             // fill the names and values
@@ -1261,8 +1262,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     names.addElement(output);
                     values.addElement(curCd.getVersionId() + "");
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error(e);
+                    if (CmsLog.getLog(this).isErrorEnabled()) {
+                        CmsLog.getLog(this).error(e);
                     }
                 }
             }
@@ -1364,8 +1365,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     ((I_CmsExtendedContentDefinition)o).chmod(cms, newAccessFlags);
                 }
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Changing permissions method caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Changing permissions method caused an exception", e);
                 }
                 templateSelector = "permissionserror";
                 template.setData("permissionserror", e.getMessage());
@@ -1633,8 +1634,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             tableContent = (Vector)cdClass.getMethod("applyFilter", new Class[] {CmsObject.class, CmsFilterMethod.class, String.class}).invoke(null, new Object[] {cms, filterMethod, filterParam});
         } catch (InvocationTargetException ite) {
             //error occured while applying the filter
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Apply filter caused an InvocationTargetException", ite);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Apply filter caused an InvocationTargetException", ite);
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
@@ -1645,8 +1646,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             session.removeValue(sessionFilterParam);
             //session.removeValue("filter");
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Apply filter method was not found", nsm);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Apply filter method was not found", nsm);
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
@@ -1654,8 +1655,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             session.removeValue(sessionFilterParam);
             //session.removeValue("filterparameter");
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Apply filter: Other Exception", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Apply filter: Other Exception", e);
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
@@ -1672,8 +1673,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         try {
             fieldMethods = (Vector)cdClass.getMethod("getFieldMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
         } catch (Exception exc) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("getFieldMethods caused an exception", exc);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("getFieldMethods caused an exception", exc);
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
@@ -1699,8 +1700,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     getMethod = (Method)fieldMethods.elementAt(j);
 
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Could not get field method for " + (String)columnsVector.elementAt(j) + " - check for correct spelling", e);
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn("Could not get field method for " + (String)columnsVector.elementAt(j) + " - check for correct spelling", e);
                     }
                 }
                 try {
@@ -1715,20 +1716,20 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         fieldEntry = null;
                     }
                 } catch (InvocationTargetException ite) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Backoffice content definition object caused an InvocationTargetException", ite);
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn("Backoffice content definition object caused an InvocationTargetException", ite);
                     }
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Backoffice content definition object: Other exception", e);
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn("Backoffice content definition object: Other exception", e);
                     }
                 }
 
                 try {
                     id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Backoffice: getUniqueId caused an Exception, e");
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn("Backoffice: getUniqueId caused an Exception, e");
                     }
                 }
 
@@ -1744,8 +1745,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         v.addElement(template);
                         url = getUrl(cms, null, null, v);
                     } catch (Exception e) {
-                        if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error("Error getting URL for ID " + id, e);
+                        if (CmsLog.getLog(this).isErrorEnabled()) {
+                            CmsLog.getLog(this).error("Error getting URL for ID " + id, e);
                         }                      
                         
                         url = "";
@@ -1765,8 +1766,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             try {
                 id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Backoffice: getUniqueId caused an Exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Backoffice: getUniqueId caused an Exception", e);
                 }
             }
 
@@ -1900,8 +1901,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             tableContent = (Vector)cdClass.getMethod("applyFilter", new Class[] {CmsObject.class, CmsFilterMethod.class, String.class}).invoke(null, new Object[] {cms, filterMethod, filterParam});
         } catch (InvocationTargetException ite) {
             //error occured while applying the filter
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Apply filter caused an InvocationTargetException", ite);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Apply filter caused an InvocationTargetException", ite);
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
@@ -1912,8 +1913,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             session.removeValue(sessionFilterParam);
             //session.removeValue("filter");
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Apply filter method was not found", nsm);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Apply filter method was not found", nsm);
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
@@ -1921,8 +1922,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             session.removeValue(sessionFilterParam);
             //session.removeValue("filterparameter");
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Apply filter caused an Exception", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Apply filter caused an Exception", e);
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
@@ -1938,8 +1939,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         try {
             fieldMethods = (Vector)cdClass.getMethod("getFieldMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
         } catch (Exception exc) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("getFieldMethods caused an exception", exc);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("getFieldMethods caused an exception", exc);
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
@@ -1971,8 +1972,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 try {
                     getMethod = (Method)fieldMethods.elementAt(j);
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Could not get field method for " + (String)columnsVector.elementAt(j) + " - check for correct spelling", e);
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn("Could not get field method for " + (String)columnsVector.elementAt(j) + " - check for correct spelling", e);
                     }
                 }
                 try {
@@ -1985,19 +1986,19 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         fieldEntry = null;
                     }
                 } catch (InvocationTargetException ite) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Backoffice content definition object caused an InvocationTargetException", ite);
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn("Backoffice content definition object caused an InvocationTargetException", ite);
                     }
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Backoffice content definition object: Other exception", e);
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn("Backoffice content definition object: Other exception", e);
                     }
                 }
                 try {
                     id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Backoffice getUniqueId caused an Exception", e);
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn("Backoffice getUniqueId caused an Exception", e);
                     }
                 }
 
@@ -2040,8 +2041,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             try {
                 id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Backoffice: getUniqueId caused an Exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Backoffice: getUniqueId caused an Exception", e);
                 }
             }
 
@@ -2159,8 +2160,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 try {
                     lockedByUserId = ((A_CmsContentDefinition)o).getLockstate();
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn(e.getMessage());
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn(e.getMessage());
                     }
                 }
             } else {
@@ -2168,8 +2169,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 try {
                     lockedByUserId = ((A_CmsContentDefinition)o).getLockstate();
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn(e.getMessage());
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn(e.getMessage());
                     }
                 }
             }
@@ -2219,16 +2220,16 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             try {
                 lockedByUserId = ((A_CmsContentDefinition)o).getLockstate();
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn(e.getMessage());
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn(e.getMessage());
                 }
             }
 
             try {
                 lockedByUserId = ((A_CmsContentDefinition)o).getLockstate();
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Method getLockstate caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Method getLockstate caused an exception", e);
                 }
             }
 
@@ -2243,8 +2244,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     try {
                         lockedInProject = ((I_CmsExtendedContentDefinition)o).getLockedInProject();
                     } catch (Exception e) {
-                        if (OpenCms.getLog(this).isWarnEnabled()) {
-                            OpenCms.getLog(this).warn("Method getLockstate caused an exception", e);
+                        if (CmsLog.getLog(this).isWarnEnabled()) {
+                            CmsLog.getLog(this).warn("Method getLockstate caused an exception", e);
                         }
                     }
                     if (curProjectId == lockedInProject) {
@@ -2252,8 +2253,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         try {
                             ((A_CmsContentDefinition)o).setLockstate(CmsUUID.getNullUUID());
                         } catch (Exception e) {
-                            if (OpenCms.getLog(this).isWarnEnabled()) {
-                                OpenCms.getLog(this).warn("Method setLockstate caused an exception", e);
+                            if (CmsLog.getLog(this).isWarnEnabled()) {
+                                CmsLog.getLog(this).warn("Method setLockstate caused an exception", e);
                             }
                         }
                     } else {
@@ -2261,8 +2262,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         try {
                             ((A_CmsContentDefinition)o).setLockstate(actUserId);
                         } catch (Exception e) {
-                            if (OpenCms.getLog(this).isWarnEnabled()) {
-                                OpenCms.getLog(this).warn("Method setLockstate caused an exception", e);
+                            if (CmsLog.getLog(this).isWarnEnabled()) {
+                                CmsLog.getLog(this).warn("Method setLockstate caused an exception", e);
                             }
                         }
                     }
@@ -2272,8 +2273,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     try {
                         ((A_CmsContentDefinition)o).setLockstate(CmsUUID.getNullUUID());
                     } catch (Exception e) {
-                        if (OpenCms.getLog(this).isWarnEnabled()) {
-                            OpenCms.getLog(this).warn("Method setLockstate caused an exception", e);
+                        if (CmsLog.getLog(this).isWarnEnabled()) {
+                            CmsLog.getLog(this).warn("Method setLockstate caused an exception", e);
                         }
                     }
                 }
@@ -2281,8 +2282,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 try {
                     ((A_CmsContentDefinition)o).write(cms); // reflection is not neccessary!
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Method write caused an exception", e);
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn("Method write caused an exception", e);
                     }
                 }
                 templateSelector = "done";
@@ -2292,16 +2293,16 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     try {
                         ((A_CmsContentDefinition)o).setLockstate(actUserId);
                     } catch (Exception e) {
-                        if (OpenCms.getLog(this).isWarnEnabled()) {
-                            OpenCms.getLog(this).warn("Could not set lockstate", e);
+                        if (CmsLog.getLog(this).isWarnEnabled()) {
+                            CmsLog.getLog(this).warn("Could not set lockstate", e);
                         }
                     }
                     //write to DB
                     try {
                         ((A_CmsContentDefinition)o).write(cms);
                     } catch (Exception e) {
-                        if (OpenCms.getLog(this).isWarnEnabled()) {
-                            OpenCms.getLog(this).warn("Could not set lockstate", e);
+                        if (CmsLog.getLog(this).isWarnEnabled()) {
+                            CmsLog.getLog(this).warn("Could not set lockstate", e);
                         }
                     }
                     templateSelector = "done";
@@ -2310,16 +2311,16 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     try {
                         ((A_CmsContentDefinition)o).setLockstate(actUserId);
                     } catch (Exception e) {
-                        if (OpenCms.getLog(this).isWarnEnabled()) {
-                            OpenCms.getLog(this).warn("Could not set lockstate", e);
+                        if (CmsLog.getLog(this).isWarnEnabled()) {
+                            CmsLog.getLog(this).warn("Could not set lockstate", e);
                         }
                     }
                     //write to DB/VFS
                     try {
                         ((A_CmsContentDefinition)o).write(cms);
                     } catch (Exception e) {
-                        if (OpenCms.getLog(this).isWarnEnabled()) {
-                            OpenCms.getLog(this).warn("Could not write to content definition", e);
+                        if (CmsLog.getLog(this).isWarnEnabled()) {
+                            CmsLog.getLog(this).warn("Could not write to content definition", e);
                         }
                     }
                 }
@@ -2348,17 +2349,17 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             try {
                 retObject = cdClass.getMethod(method, paramClasses).invoke(null, params);
             } catch (InvocationTargetException ite) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn(method + " caused an InvocationTargetException", ite);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn(method + " caused an InvocationTargetException", ite);
                 }
                 ite.getTargetException().printStackTrace();
             } catch (NoSuchMethodException nsm) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn(method + ": Requested method was not found", nsm);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn(method + ": Requested method was not found", nsm);
                 }
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn(method + ": Other Exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn(method + ": Other Exception", e);
                 }
             }
         }
@@ -2465,16 +2466,16 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             //get the returned object
             laObject = laMethod.invoke(null, null);
         } catch (InvocationTargetException ite) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Method isLockable caused an Invocation target exception", ite);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Method isLockable caused an Invocation target exception", ite);
             }
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Requested method isLockable was not found", nsm);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Requested method isLockable was not found", nsm);
             }
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Method isLockable caused an exception", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Method isLockable caused an exception", e);
             }
         }
 
@@ -2486,8 +2487,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 template.setData("backofficecontextmenue", "backofficeedit");
                 template.setData("lockedby", template.getDataValue("nolock"));
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Backoffice setLockstates:'not lockable' section caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Backoffice setLockstates:'not lockable' section caused an exception", e);
                 }
             }
         } else {
@@ -2497,8 +2498,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 lockedByUserId = ((A_CmsContentDefinition)entryObject).getLockstate();
                 hasWriteAccess = ((A_CmsContentDefinition)entryObject).hasWriteAccess(cms);
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Method getLockstate caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Method getLockstate caused an exception", e);
                 }
             }
             try {
@@ -2533,8 +2534,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     }
                 }
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Backoffice setLockstates caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Backoffice setLockstates caused an exception", e);
                 }
             }
         }
@@ -2569,16 +2570,16 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             //get the returned object
             laObject = laMethod.invoke(null, null);
         } catch (InvocationTargetException ite) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Method isLockable caused an Invocation target exception", ite);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Method isLockable caused an Invocation target exception", ite);
             }
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Requested method isLockable was not found", nsm);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Requested method isLockable was not found", nsm);
             }
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Method isLockable caused an exception", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Method isLockable caused an exception", e);
             }
         }
 
@@ -2590,8 +2591,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 template.setData("backofficecontextmenue", "backofficeedit");
                 template.setData("lockedby", template.getDataValue("nolock"));
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Backoffice setLockstates:'not lockable' section caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Backoffice setLockstates:'not lockable' section caused an exception", e);
                 }
             }
         } else {
@@ -2601,8 +2602,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 lockedByUserId = ((A_CmsContentDefinition)entryObject).getLockstate();
                 hasWriteAccess = ((A_CmsContentDefinition)entryObject).hasWriteAccess(cms);
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Method getLockstate caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Method getLockstate caused an exception", e);
                 }
             }
             try {
@@ -2616,8 +2617,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         //get the method lockstate
                         lockedInProject = ((I_CmsExtendedContentDefinition)entryObject).getLockedInProject();
                     } catch (Exception e) {
-                        if (OpenCms.getLog(this).isWarnEnabled()) {
-                            OpenCms.getLog(this).warn("Method getLockedInProject caused an exception", e);
+                        if (CmsLog.getLog(this).isWarnEnabled()) {
+                            CmsLog.getLog(this).warn("Method getLockedInProject caused an exception", e);
                         }
                     }
                     if (lockedInProject == curProjectId) {
@@ -2646,8 +2647,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     }
                 }
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Backoffice setLockstates caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Backoffice setLockstates caused an exception", e);
                 }
             }
         }
@@ -2673,8 +2674,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         try {
             template.setData("projectflag", template.getDataValue("noproject"));
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Backoffice setProjectFlag:'no project' section caused an exception", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Backoffice setProjectFlag:'no project' section caused an exception", e);
             }
         }
 
@@ -2682,8 +2683,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         try {
             state = ((I_CmsExtendedContentDefinition)entryObject).getState();
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Method getState caused an exception", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Method getState caused an exception", e);
             }
         }
 
@@ -2692,8 +2693,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 //the entry is not changed, so do not set the project flag
                 template.setData("projectflag", template.getDataValue("noproject"));
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Backoffice setProjectFlag:'no project' section caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Backoffice setProjectFlag:'no project' section caused an exception", e);
                 }
             }
         } else {
@@ -2702,8 +2703,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             try {
                 projectId = ((I_CmsExtendedContentDefinition)entryObject).getLockedInProject();
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Method getLockedInProject caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Method getLockedInProject caused an exception", e);
                 }
             }
             try {
@@ -2725,8 +2726,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     template.setData("projectflag", projectFlag);
                 }
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Backoffice setLockstates caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Backoffice setLockstates caused an exception", e);
                 }
             }
         }
@@ -2753,8 +2754,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         try {
             projectId = ((I_CmsExtendedContentDefinition)entryObject).getProjectId();
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Method getProjectId caused an exception", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Method getProjectId caused an exception", e);
             }
         }
 
@@ -2768,16 +2769,16 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             try {
                 ((A_CmsContentDefinition)entryObject).getLockstate();
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Method getLockstate caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Method getLockstate caused an exception", e);
                 }
             }
             // get the state of an entry: if its unchanged do not change the font
             try {
                 state = ((I_CmsExtendedContentDefinition)entryObject).getState();
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Method getState caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Method getState caused an exception", e);
                 }
             }
 
@@ -2820,8 +2821,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         try {
             projectId = ((I_CmsExtendedContentDefinition)entryObject).getProjectId();
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Method getProjectId caused an exception", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Method getProjectId caused an exception", e);
             }
         }
 
@@ -2835,16 +2836,16 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             try {
                 lockedByUserId = ((A_CmsContentDefinition)entryObject).getLockstate();
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Method getLockstate caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Method getLockstate caused an exception", e);
                 }
             }
             // get the state of an entry: if its unchanged do not change the font
             try {
                 state = ((I_CmsExtendedContentDefinition)entryObject).getState();
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Method getState caused an exception", e);
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Method getState caused an exception", e);
                 }
             }
             if (lockedByUserId.isNullUUID()) {
@@ -2860,8 +2861,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 try {
                     lockedInProject = ((I_CmsExtendedContentDefinition)entryObject).getLockedInProject();
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isWarnEnabled()) {
-                        OpenCms.getLog(this).warn("Method getLockedInProject caused an exception", e);
+                    if (CmsLog.getLog(this).isWarnEnabled()) {
+                        CmsLog.getLog(this).warn("Method getLockedInProject caused an exception", e);
                     }
                 }
                 if (lockedInProject == actProjectId) {
@@ -2946,16 +2947,16 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             filterMethods = (Vector)cdClass.getMethod("getFilterMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
         } catch (InvocationTargetException ite) {
             //error occured while applying the filter
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("InvocationTargetException", ite);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("InvocationTargetException", ite);
             }
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Requested method was not found", nsm);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Requested method was not found", nsm);
             }
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Problem occured with your filter methods", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Problem occured with your filter methods", e);
             }
         }
         return filterMethods;
@@ -3318,8 +3319,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     session.removeValue("selectedmediaCD");
                     session.removeValue("media_position");
                     session.removeValue("weShallDisplayThePreviewButton");
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error while saving data to Content Definition", ex);
+                    if (CmsLog.getLog(this).isErrorEnabled()) {
+                        CmsLog.getLog(this).error("Error while saving data to Content Definition", ex);
                     }
                     throw new CmsLegacyException(ex.getMessage(), CmsLegacyException.C_UNKNOWN_EXCEPTION, ex);
                 }
@@ -3349,8 +3350,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         // there the backoffice url of the module will be called
                         return "done";
                     } catch (Exception e) {
-                        if (OpenCms.getLog(this).isErrorEnabled()) {
-                            OpenCms.getLog(this).error("Error while doing redirect ", e);
+                        if (CmsLog.getLog(this).isErrorEnabled()) {
+                            CmsLog.getLog(this).error("Error while doing redirect ", e);
                         }
                         throw new CmsLegacyException(e.getMessage(), e);
                     }
@@ -3472,8 +3473,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 }
                 template.setData(datablockName + "escaped", escapedValue);
             } catch (Exception e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error during automatic call method '" + methodName, e);
+                if (CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error("Error during automatic call method '" + methodName, e);
                 }
             } // try
         } //for
@@ -3535,8 +3536,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         contentMethod.invoke(contentDefinition, new Object[] {content});
                     }
                 } catch (Exception e) {
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error("Error during automatic call method '" + m.getName(), e);
+                    if (CmsLog.getLog(this).isErrorEnabled()) {
+                        CmsLog.getLog(this).error("Error during automatic call method '" + m.getName(), e);
                     }
                 } // try
             } //if

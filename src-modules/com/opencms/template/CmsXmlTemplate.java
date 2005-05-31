@@ -1,47 +1,46 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2005/05/19 08:57:23 $
-* Version: $Revision: 1.3 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsXmlTemplate.java,v $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.4 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2001  The OpenCms Group
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.template;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
 import com.opencms.defaults.A_CmsContentDefinition;
 import com.opencms.defaults.I_CmsTimedContentDefinition;
-import com.opencms.legacy.*;
-
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
+import com.opencms.legacy.CmsLegacyException;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.cache.A_CmsElement;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.template.cache.CmsElementDefinition;
@@ -61,12 +60,12 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:23 $
+ * @version $Revision: 1.4 $ $Date: 2005/05/31 15:51:19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
-    
+
     /** Name of the frame selector parameter. */
     public static final String C_FRAME_SELECTOR = "cmsframe";
 
@@ -78,7 +77,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
     /** Error string to be inserted for corrupt subtemplates for guest user requests. */
     private static final String C_ERRORTEXT = "ERROR!";
-    
+
     /** Element descriptor. */
     private static final String C_ELEMENT = "_ELEMENT_";
 
@@ -107,7 +106,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param userObject Hashtable with parameters.
      * @return Actual value of <code>counter</code>.
      */
-    public Integer counter(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Integer counter(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+    throws CmsException {
+
         m_counter++;
         return new Integer(m_counter);
     }
@@ -132,7 +133,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return Content of the template and all subtemplates.
      * @throws CmsException if something goes wrong
      */
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName,
+        Hashtable parameters) throws CmsException {
+
         return getContent(cms, templateFile, elementName, parameters, null);
     }
 
@@ -149,11 +152,15 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return Content of the template and all subtemplates.
      * @throws CmsException if something goes wrong
      */
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if (OpenCms.getLog(this).isDebugEnabled() && C_DEBUG ) {
-            OpenCms.getLog(this).debug("[CmsXmlTemplate] getting content of element " + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.getLog(this).debug("[CmsXmlTemplate] template file is: " + templateFile);
-            OpenCms.getLog(this).debug("[CmsXmlTemplate] selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName,
+        Hashtable parameters, String templateSelector) throws CmsException {
+
+        if (CmsLog.getLog(this).isDebugEnabled() && C_DEBUG) {
+            CmsLog.getLog(this).debug("[CmsXmlTemplate] getting content of element "
+                + ((elementName == null) ? "<root>" : elementName));
+            CmsLog.getLog(this).debug("[CmsXmlTemplate] template file is: " + templateFile);
+            CmsLog.getLog(this).debug("[CmsXmlTemplate] selected template section is: "
+                + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         if (templateSelector == null || "".equals(templateSelector)) {
@@ -170,7 +177,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException if something goes wrong
      */
-    public Object getFileUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getFileUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         String uri = cms.getRequestContext().getUri();
         return uri.substring(uri.lastIndexOf("/") + 1);
     }
@@ -187,7 +196,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException if something goes wrong
      */
-    public Object mergeAbsolutePath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object mergeAbsolutePath(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         return CmsLinkManager.getAbsoluteUri(tagcontent, doc.getAbsoluteFilename()).getBytes();
     }
 
@@ -203,11 +214,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException if something goes wrong
      */
-    public Object mergeAbsoluteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object mergeAbsoluteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         String ocPath = new String((byte[])mergeAbsolutePath(cms, tagcontent, doc, userObject));
         String servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
         return (servletPath + ocPath).getBytes();
     }
+
     /**
      * Gets the QueryString for CmsFrameTemplates.
      * <P>
@@ -221,7 +235,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException if something goes wrong
      */
-    public Object getFrameQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getFrameQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
 
         String query = new String();
         // get the parameternames of the original request and get the values from the userObject
@@ -232,12 +247,12 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 String name = (String)parameters.nextElement();
                 String value = (String)((Hashtable)userObject).get(name);
                 if (value != null && !"".equals(value)) {
-                    paramQuery.append(name+"="+value+"&");
+                    paramQuery.append(name + "=" + value + "&");
                 }
             }
             if (paramQuery.length() > 0) {
                 // add the parameters to the query string
-                query = paramQuery.substring(0, paramQuery.length()-1).toString();
+                query = paramQuery.substring(0, paramQuery.length() - 1).toString();
             }
         } catch (Exception exc) {
             exc.printStackTrace();
@@ -302,8 +317,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             query = "?" + param.substring(param.indexOf("&") + 1);
         }
         if (query.trim().equals("?") || query.trim().equals("&") || query.trim().equals("?&")
-                || query.trim().equals("??")) {
-            query="";
+            || query.trim().equals("??")) {
+            query = "";
         }
         return query;
     }
@@ -321,7 +336,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException if something goes wrong
      */
-    public Object getFrameTarget(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getFrameTarget(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         String target = "";
         String cmsframe = (String)((Hashtable)userObject).get("cmsframe");
         cmsframe = (cmsframe == null ? "" : cmsframe);
@@ -351,9 +368,13 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param templateSelector template section that should be processed.
      * @return key that can be used for caching
      */
-    public Object getKey(CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
+    public Object getKey(CmsObject cms, String templateFile, Hashtable parameters,
+        String templateSelector) {
+
         CmsRequestContext reqContext = cms.getRequestContext();
-        String result = "" + reqContext.currentProject().getId() + ":" + reqContext.currentUser().getName() + reqContext.getUri() + reqContext.addSiteRoot(templateFile);
+        String result = "" + reqContext.currentProject().getId() + ":"
+            + reqContext.currentUser().getName() + reqContext.getUri()
+            + reqContext.addSiteRoot(templateFile);
         Enumeration keys = parameters.keys();
         while (keys.hasMoreElements()) {
             String key = (String)keys.nextElement();
@@ -378,7 +399,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return the template file
      * @throws CmsException if something goes wrong
      */
-    public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    public CmsXmlTemplateFile getOwnTemplateFile(CmsObject cms, String templateFile,
+        String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+
         CmsXmlTemplateFile xmlTemplateDocument = new CmsXmlTemplateFile(cms, templateFile);
         return xmlTemplateDocument;
     }
@@ -393,7 +416,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException if something goes wrong
      */
-    public Object getPathUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getPathUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         String path = cms.getRequestContext().getUri();
         path = path.substring(0, path.lastIndexOf("/") + 1);
         path = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + path;
@@ -413,7 +438,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException if something goes wrong
      */
-    public Object getQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getQueryString(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         String query = (CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getQueryString();
         if (query != null && !"".equals(query)) {
             query = "?" + query;
@@ -434,7 +461,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException if something goes wrong
      */
-    public String getRequestIp(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public String getRequestIp(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         return (CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getRemoteAddr();
     }
 
@@ -452,7 +481,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsException if something goes wrong
      * @deprecated instead of this method you should use the link tag.
      */
-    public Object getServletPath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getServletPath(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         return CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + "/";
     }
 
@@ -469,7 +500,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      *@throws CmsException if something goes wrong
      */
-    public String getSessionId(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public String getSessionId(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         return (CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getSession(true).getId();
     }
 
@@ -496,13 +529,15 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException In case no stylesheet was found (or there were errors accessing the CmsObject)
      */
-    public String getStylesheet(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public String getStylesheet(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         String styleSheetUri = null;
         try {
             styleSheetUri = getStylesheet(cms, tagcontent, null, doc, userObject);
         } catch (CmsException e) {
             // Happens if no frametemplate is defined, can be ignored
-        } 
+        }
         if ((styleSheetUri == null) || ("".equals(styleSheetUri))) {
             styleSheetUri = getStylesheet(cms, tagcontent, "frametemplate", doc, userObject);
         } // The original behaviour is to throw an exception in case no stylesheed could be found
@@ -511,7 +546,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         }
         return styleSheetUri;
     }
-                
+
     /**
      * Internal method to do the actual lookup of the "stylesheet" tag
      * on the subtemplate / element specified.
@@ -525,12 +560,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException In case no stylesheet was found (or there were errors accessing the CmsObject)
      */
-    private String getStylesheet(CmsObject cms, String tagcontent, String templatename, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    private String getStylesheet(CmsObject cms, String tagcontent, String templatename,
+        A_CmsXmlContent doc, Object userObject) throws CmsException {
+
         CmsXmlTemplateFile tempTemplateFile = (CmsXmlTemplateFile)doc;
-        
+
         // If templatename==null look in the master template
         CmsXmlTemplateFile templateFile = tempTemplateFile;
-        
+
         if (templatename != null) {
             // Get the XML parsed content of the selected template file.
             // This can be done by calling the getOwnTemplateFile() method of the
@@ -540,7 +577,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             CmsXmlTemplate frameTemplateClassObject = (CmsXmlTemplate)tempObj;
             templateFile = frameTemplateClassObject.getOwnTemplateFile(cms, tempTemplateFile.getSubtemplateFilename(templatename), null, null, null);
         }
-        
+
         // Get the styles from the parameter hashtable
         String styleIE = null;
         String styleNS = null;
@@ -565,9 +602,10 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
         HttpServletRequest orgReq = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest();
         String servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
-        if (!servletPath.endsWith("/")){
+        if (!servletPath.endsWith("/")) {
             // Make sure servletPath always end's with a "/"
-            servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + "/";
+            servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl()
+                + "/";
         }
 
         // Make sure we don't have a double "/" in the style sheet path
@@ -580,15 +618,15 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
         // Get the user's browser
         String browser = orgReq.getHeader("user-agent");
-        if ((browser!= null) && (browser.indexOf("MSIE") > -1)) {
-            return ("".equals(styleIE))?"":servletPath + styleIE;
+        if ((browser != null) && (browser.indexOf("MSIE") > -1)) {
+            return ("".equals(styleIE)) ? "" : servletPath + styleIE;
         } else {
             // return NS style as default value
-            return ("".equals(styleNS))?"":servletPath + styleNS;
+            return ("".equals(styleNS)) ? "" : servletPath + styleNS;
         }
-     
+
     }
-    
+
     /**
      * Find the corresponding template class to be loaded.
      * this should be defined in the template file of the parent
@@ -600,7 +638,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return Name of the class that should generate the output for the included template file.
      * @throws CmsException if something goes wrong
      */
-    protected String getTemplateClassName(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
+    protected String getTemplateClassName(String elementName, CmsXmlTemplateFile doc,
+        Hashtable parameters) throws CmsException {
+
         String result = null;
         if (parameters.containsKey(elementName + "._CLASS_")) {
             result = (String)parameters.get(elementName + "._CLASS_");
@@ -638,7 +678,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return Name of the template file that should be included.
      * @throws CmsException if something goes wrong
      */
-    protected String getTemplateFileName(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
+    protected String getTemplateFileName(String elementName, CmsXmlTemplateFile doc,
+        Hashtable parameters) throws CmsException {
+
         String result = null;
         if (parameters.containsKey(elementName + "._TEMPLATE_")) {
             result = (String)parameters.get(elementName + "._TEMPLATE_");
@@ -675,7 +717,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return Name of the class that should generate the output for the included template file.
      * @throws CmsException if something goes wrong
      */
-    protected String getTemplateSelector(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
+    protected String getTemplateSelector(String elementName, CmsXmlTemplateFile doc,
+        Hashtable parameters) throws CmsException {
+
         if (parameters.containsKey(elementName + "._TEMPLATESELECTOR_")) {
             return (String)parameters.get(elementName + "._TEMPLATESELECTOR_");
         } else {
@@ -707,7 +751,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException if something goes wrong
      */
-    public Object getTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+    throws CmsException {
+
         String requestedUri = cms.getRequestContext().getUri();
         String title = cms.readProperty(requestedUri, I_CmsConstants.C_PROPERTY_TITLE);
         if (title == null) {
@@ -715,7 +761,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         }
         return title;
     }
-    
+
     /**
      * Inserts the document title into the template, escaping special and non - ASCII characters
      * with their HTML number representation (e.g. &amp; becomes &amp;#38;).<p>
@@ -730,7 +776,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException if something goes wrong
      */
-    public Object getTitleEscaped(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getTitleEscaped(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         String requestedUri = cms.getRequestContext().getUri();
         String title = cms.readProperty(requestedUri, I_CmsConstants.C_PROPERTY_TITLE);
         if (title == null) {
@@ -738,7 +786,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         }
         return CmsEncoder.escapeHtml(title);
     }
-    
+
     /**
      * Inserts the correct document description into the template.
      * <P>
@@ -752,7 +800,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException if something goes wrong
      */
-    public Object getDescription(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getDescription(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         String requestedUri = cms.getRequestContext().getUri();
         String description = cms.readProperty(requestedUri, I_CmsConstants.C_PROPERTY_DESCRIPTION);
         if (description == null) {
@@ -774,14 +824,17 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException if something goes wrong
      */
-    public Object getProperty(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getProperty(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         String requestedUri = cms.getRequestContext().getUri();
         String value = "";
         try {
             value = cms.readProperty(requestedUri, tagcontent);
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Usermethod getProperty throwed an Exception getting " + tagcontent, e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Usermethod getProperty throwed an Exception getting "
+                    + tagcontent, e);
             }
         }
         if (value == null) {
@@ -803,7 +856,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException
      */
-    public Object getKeywords(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getKeywords(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         String requestedUri = cms.getRequestContext().getUri();
         String keywords = cms.readProperty(requestedUri, I_CmsConstants.C_PROPERTY_KEYWORDS);
         if (keywords == null) {
@@ -812,18 +867,20 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         return keywords;
     }
 
-    public Object getEncoding(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getEncoding(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
         return cms.getRequestContext().getEncoding();
     }
 
-    public Object setEncoding(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-         if((tagcontent != null) && !"".equals(tagcontent)){
-             cms.getRequestContext().setEncoding(tagcontent.trim());
+    public Object setEncoding(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
+
+        if ((tagcontent != null) && !"".equals(tagcontent)) {
+            cms.getRequestContext().setEncoding(tagcontent.trim());
         }
-    return "";
+        return "";
     }
-
-
 
     /**
      * @param cms CmsObject Object for accessing system resources.
@@ -833,12 +890,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException
      */
-    public Object getUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object getUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+    throws CmsException {
+
         String res = cms.getRequestContext().getUri();
-        if(tagcontent == null || "".equals(tagcontent)){
+        if (tagcontent == null || "".equals(tagcontent)) {
             return OpenCms.getLinkManager().substituteLink(cms, res).getBytes();
-        }else{
-            return OpenCms.getLinkManager().substituteLink(cms, res+"?"+tagcontent).getBytes();
+        } else {
+            return OpenCms.getLinkManager().substituteLink(cms, res + "?" + tagcontent).getBytes();
         }
     }
 
@@ -850,34 +909,35 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException
      */
-    public Object getUriWithParameter(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException{
+    public Object getUriWithParameter(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
 
         String query = new String();
         // get the parameternames of the original request and get the values from the userObject
-        try{
+        try {
             Enumeration parameters = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getParameterNames();
             StringBuffer paramQuery = new StringBuffer();
-            while(parameters.hasMoreElements()){
+            while (parameters.hasMoreElements()) {
                 String name = (String)parameters.nextElement();
                 String value = (String)((Hashtable)userObject).get(name);
-                if(value != null && !"".equals(value)){
-                    paramQuery.append(name+"="+value+"&");
+                if (value != null && !"".equals(value)) {
+                    paramQuery.append(name + "=" + value + "&");
                 }
             }
-            if(paramQuery.length() > 0){
+            if (paramQuery.length() > 0) {
                 // add the parameters to the query string
-                query = paramQuery.substring(0,paramQuery.length()-1).toString();
+                query = paramQuery.substring(0, paramQuery.length() - 1).toString();
             }
-        } catch (Exception exc){
+        } catch (Exception exc) {
             exc.printStackTrace();
         }
 
         // get the parameters in the tagcontent
-        if((tagcontent != null) && (!"".equals(tagcontent))){
-            if(tagcontent.startsWith("?")){
+        if ((tagcontent != null) && (!"".equals(tagcontent))) {
+            if (tagcontent.startsWith("?")) {
                 tagcontent = tagcontent.substring(1);
             }
-            query = tagcontent +"&" + query;
+            query = tagcontent + "&" + query;
         }
         return getUri(cms, query, doc, userObject);
     }
@@ -906,7 +966,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
      */
-    public boolean isStreamable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean isStreamable(CmsObject cms, String templateFile, String elementName,
+        Hashtable parameters, String templateSelector) {
+
         return true;
     }
 
@@ -923,7 +985,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
      */
-    public CmsCacheDirectives collectCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public CmsCacheDirectives collectCacheDirectives(CmsObject cms, String templateFile,
+        String elementName, Hashtable parameters, String templateSelector) {
 
         // Frist build our own cache directives.
         boolean isCacheable = isCacheable(cms, templateFile, elementName, parameters, templateSelector);
@@ -931,7 +994,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         boolean isProxyPublicCacheable = isProxyPublicCacheable(cms, templateFile, elementName, parameters, templateSelector);
         boolean isExportable = isExportable(cms, templateFile, elementName, parameters, templateSelector);
         boolean isStreamable = isStreamable(cms, templateFile, elementName, parameters, templateSelector);
-        CmsCacheDirectives result = new CmsCacheDirectives(isCacheable, isProxyPrivateCacheable, isProxyPublicCacheable, isExportable, isStreamable);
+        CmsCacheDirectives result = new CmsCacheDirectives(isCacheable, isProxyPrivateCacheable,
+            isProxyPublicCacheable, isExportable, isStreamable);
 
         // Collect all subelements of this page
         CmsXmlTemplateFile doc = null;
@@ -943,7 +1007,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
             // Loop through all subelements and get their cache directives
             int numSubtemplates = subtemplates.size();
-            for(int i = 0;i < numSubtemplates;i++) {
+            for (int i = 0; i < numSubtemplates; i++) {
                 String elName = (String)subtemplates.elementAt(i);
                 String className = null;
                 String templateName = null;
@@ -951,21 +1015,21 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 className = getTemplateClassName(elName, doc, parameters);
                 templateName = getTemplateFileName(elName, doc, parameters);
 
-                if(className != null) {
+                if (className != null) {
                     I_CmsTemplate templClass = (I_CmsTemplate)CmsTemplateClassManager.getClassInstance(className);
                     CmsCacheDirectives cd2 = templClass.collectCacheDirectives(cms, templateName, elName, parameters, null);
                     /*System.err.println("*                INT PUB PRV EXP STR");
-                    debugPrint(elementName, result.m_cd);
-                    System.err.println(" ");
-                    debugPrint(elName, cd2.m_cd);
-                    System.err.println(" " + templClass.getClass());
-                    System.err.println("*                -------------------");*/
+                     debugPrint(elementName, result.m_cd);
+                     System.err.println(" ");
+                     debugPrint(elName, cd2.m_cd);
+                     System.err.println(" " + templClass.getClass());
+                     System.err.println("*                -------------------");*/
 
                     //result.merge(templClass.collectCacheDirectives(cms, templateName, elName, parameters, null));
                     result.merge(cd2);
                     /*debugPrint(elementName, result.m_cd);
-                    System.err.println(" ");
-                    System.err.println("* ");*/
+                     System.err.println(" ");
+                     System.err.println("* ");*/
                 } else {
                     // This template file includes a subelement not exactly defined.
                     // The name of it's template class is missing at the moment, so
@@ -974,10 +1038,10 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                     return new CmsCacheDirectives(false);
                 }
             }
-        }
-        catch(CmsException e) {
-            if(OpenCms.getLog(this).isInfoEnabled() ) {
-                OpenCms.getLog(this).info("Can not determine cache directives for my template file " + templateFile, e);
+        } catch (CmsException e) {
+            if (CmsLog.getLog(this).isInfoEnabled()) {
+                CmsLog.getLog(this).info("Can not determine cache directives for my template file "
+                    + templateFile, e);
                 return new CmsCacheDirectives(false);
             }
         }
@@ -995,7 +1059,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
      */
-    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile,
+        String elementName, Hashtable parameters, String templateSelector) {
 
         // First build our own cache directives.
         CmsCacheDirectives result = new CmsCacheDirectives(true);
@@ -1010,24 +1075,20 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      *  @param cms the cms object.
      *  @param methodName the name of the method for witch the MethodCacheDirectives are wanted.
      */
-    public CmsMethodCacheDirectives getMethodCacheDirectives(CmsObject cms, String methodName){
-        if("getTitle".equals(methodName) || "getUri".equals(methodName)
-                                         || "getFileUri".equals(methodName)
-                                         || "getDescription".equals(methodName)
-                                         || "getKeywords".equals(methodName)
-                                         || "getProperty".equals(methodName)
-                                         || "getPathUri".equals(methodName)){
+    public CmsMethodCacheDirectives getMethodCacheDirectives(CmsObject cms, String methodName) {
+
+        if ("getTitle".equals(methodName) || "getUri".equals(methodName)
+            || "getFileUri".equals(methodName) || "getDescription".equals(methodName)
+            || "getKeywords".equals(methodName) || "getProperty".equals(methodName)
+            || "getPathUri".equals(methodName)) {
             CmsMethodCacheDirectives mcd = new CmsMethodCacheDirectives(true);
             mcd.setCacheUri(true);
             return mcd;
         }
-        if ("getFrameQueryString".equals(methodName)
-                                || "getQueryString".equals(methodName)
-                                || "getRequestIp".equals(methodName)
-                                || "getSessionId".equals(methodName)
-                                || "getUriWithParameter".equals(methodName)
-                                || "parameters".equals(methodName)
-                                || "getStylesheet".equals(methodName)){
+        if ("getFrameQueryString".equals(methodName) || "getQueryString".equals(methodName)
+            || "getRequestIp".equals(methodName) || "getSessionId".equals(methodName)
+            || "getUriWithParameter".equals(methodName) || "parameters".equals(methodName)
+            || "getStylesheet".equals(methodName)) {
             return new CmsMethodCacheDirectives(false);
         }
         return null;
@@ -1038,6 +1099,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return <code>true</code> if setted, <code>false</code> otherwise.
      */
     public final boolean isTemplateCacheSet() {
+
         return m_cache != null;
     }
 
@@ -1054,11 +1116,13 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param userObj Hashtable with parameters.
      * @return Debugging information about all parameters.
      */
-    public String parameters(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) {
+    public String parameters(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) {
+
         Hashtable param = (Hashtable)userObject;
         Enumeration keys = param.keys();
         String s = "";
-        while(keys.hasMoreElements()) {
+        while (keys.hasMoreElements()) {
             String key = (String)keys.nextElement();
             s = s + "<B>" + key + "</B>: " + param.get(key) + "<BR>";
         }
@@ -1073,6 +1137,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param c Template cache to be used.
      */
     public final void setTemplateCache(I_CmsTemplateCache c) {
+
         m_cache = c;
     }
 
@@ -1088,7 +1153,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param templateSelector template section that should be processed.
      * @return <code>false</code>
      */
-    public boolean shouldReload(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public boolean shouldReload(CmsObject cms, String templateFile, String elementName,
+        Hashtable parameters, String templateSelector) {
+
         return false;
     }
 
@@ -1112,74 +1179,74 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @param cosClassDeps A vector (of Class objects) with the contentdefinitions that variant depends on.
      */
     protected void registerVariantDeps(CmsObject cms, String templateName, String elementName,
-                        String templateSelector, Hashtable parameters, Vector vfsDeps,
-                        Vector cosDeps, Vector cosClassDeps) throws CmsException {
+        String templateSelector, Hashtable parameters, Vector vfsDeps, Vector cosDeps,
+        Vector cosClassDeps) throws CmsException {
 
-        String cacheKey = getCacheDirectives(cms, templateName, elementName,
-                                parameters, templateSelector).getCacheKey(cms, parameters);
-        if(CmsXmlTemplateLoader.isElementCacheEnabled() && (cacheKey != null) &&
-                (cms.getRequestContext().currentProject().isOnlineProject()) ) {
+        String cacheKey = getCacheDirectives(cms, templateName, elementName, parameters, templateSelector).getCacheKey(cms, parameters);
+        if (CmsXmlTemplateLoader.isElementCacheEnabled() && (cacheKey != null)
+            && (cms.getRequestContext().currentProject().isOnlineProject())) {
             boolean exportmode = false;
             Hashtable externVarDeps = CmsXmlTemplateLoader.getVariantDependencies();
             long exTimeForVariant = Long.MAX_VALUE;
             long now = System.currentTimeMillis();
             // this will be the entry for the extern hashtable
-            String variantEntry = getClass().getName() + "|"+ templateName +"|"+ cacheKey;
+            String variantEntry = getClass().getName() + "|" + templateName + "|" + cacheKey;
 
             // the vector for the intern variant store. it contains the keys for the extern Hashtable
             Vector allDeps = new Vector();
             // first the dependencies for the cos system
-            if(cosDeps != null){
-                for (int i = 0; i < cosDeps.size(); i++){
+            if (cosDeps != null) {
+                for (int i = 0; i < cosDeps.size(); i++) {
                     A_CmsContentDefinition contentDef = (A_CmsContentDefinition)cosDeps.elementAt(i);
-                    String key = cms.getRequestContext().addSiteRoot(contentDef.getClass().getName() + "/" + contentDef.getUniqueId(cms));
-//                    if(exportmode){
-//                        cms.getRequestContext().addDependency(key);
-//                    }
+                    String key = cms.getRequestContext().addSiteRoot(contentDef.getClass().getName()
+                        + "/" + contentDef.getUniqueId(cms));
+                    //                    if(exportmode){
+                    //                        cms.getRequestContext().addDependency(key);
+                    //                    }
                     allDeps.add(key);
-                    if(contentDef.isTimedContent()){
+                    if (contentDef.isTimedContent()) {
                         long time = ((I_CmsTimedContentDefinition)cosDeps.elementAt(i)).getPublicationDate();
-                        if (time > now && time < exTimeForVariant){
+                        if (time > now && time < exTimeForVariant) {
                             exTimeForVariant = time;
                         }
                         time = ((I_CmsTimedContentDefinition)cosDeps.elementAt(i)).getPurgeDate();
-                        if (time > now && time < exTimeForVariant){
+                        if (time > now && time < exTimeForVariant) {
                             exTimeForVariant = time;
                         }
                         time = ((I_CmsTimedContentDefinition)cosDeps.elementAt(i)).getAdditionalChangeDate();
-                        if (time > now && time < exTimeForVariant){
+                        if (time > now && time < exTimeForVariant) {
                             exTimeForVariant = time;
                         }
                     }
                 }
             }
-//            // now for the Classes
-//            if(cosClassDeps != null){
-//                for(int i=0; i<cosClassDeps.size(); i++){
-//                    String key = cms.getRequestContext().addSiteRoot(((Class)cosClassDeps.elementAt(i)).getName() + "/");
-//                    allDeps.add(key);
-//                    if(exportmode){
-//                        cms.getRequestContext().addDependency(key);
-//                    }
-//                }
-//            }
+            //            // now for the Classes
+            //            if(cosClassDeps != null){
+            //                for(int i=0; i<cosClassDeps.size(); i++){
+            //                    String key = cms.getRequestContext().addSiteRoot(((Class)cosClassDeps.elementAt(i)).getName() + "/");
+            //                    allDeps.add(key);
+            //                    if(exportmode){
+            //                        cms.getRequestContext().addDependency(key);
+            //                    }
+            //                }
+            //            }
             // now for the vfs
-//            if(vfsDeps != null){
-//                for(int i = 0; i < vfsDeps.size(); i++){
-//                    allDeps.add(((CmsResource)vfsDeps.elementAt(i)).getName());
-//                    if(exportmode){
-//                        cms.getRequestContext().addDependency(((CmsResource)vfsDeps.elementAt(i)).getName());
-//                    }
-//                }
-//            }
+            //            if(vfsDeps != null){
+            //                for(int i = 0; i < vfsDeps.size(); i++){
+            //                    allDeps.add(((CmsResource)vfsDeps.elementAt(i)).getName());
+            //                    if(exportmode){
+            //                        cms.getRequestContext().addDependency(((CmsResource)vfsDeps.elementAt(i)).getName());
+            //                    }
+            //                }
+            //            }
             // now put them all in the extern store
-            for(int i=0; i<allDeps.size(); i++){
+            for (int i = 0; i < allDeps.size(); i++) {
                 String key = (String)allDeps.elementAt(i);
                 Vector variantsForDep = (Vector)externVarDeps.get(key);
-                if (variantsForDep == null){
+                if (variantsForDep == null) {
                     variantsForDep = new Vector();
                 }
-                if(!variantsForDep.contains(variantEntry)){
+                if (!variantsForDep.contains(variantEntry)) {
                     variantsForDep.add(variantEntry);
                 }
                 externVarDeps.put(key, variantsForDep);
@@ -1189,25 +1256,26 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // in the startproccessing method.
             // Get current element.
             CmsElementCache elementCache = CmsXmlTemplateLoader.getElementCache();
-            CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(), templateName);
+            CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(),
+                templateName);
             A_CmsElement currElem = elementCache.getElementLocator().get(cms, elKey, parameters);
             // add an empty variant with the vector to the element
             CmsElementVariant emptyVar = new CmsElementVariant();
             emptyVar.addDependencies(allDeps);
-            if(exTimeForVariant < Long.MAX_VALUE ){
+            if (exTimeForVariant < Long.MAX_VALUE) {
                 emptyVar.mergeNextTimeout(exTimeForVariant);
             }
             Vector removedVar = currElem.addVariant(cacheKey, emptyVar);
-            if((removedVar != null) ){
+            if ((removedVar != null)) {
                 // adding a new variant deleted this variant so we have to update the extern store
                 String key = (String)removedVar.firstElement();
                 CmsElementVariant oldVar = (CmsElementVariant)removedVar.lastElement();
                 Vector oldVarDeps = oldVar.getDependencies();
-                if (oldVarDeps != null){
-                    String oldVariantEntry = getClass().getName() + "|"+ templateName +"|"+ key;
-                    for(int i=0; i<oldVarDeps.size(); i++){
+                if (oldVarDeps != null) {
+                    String oldVariantEntry = getClass().getName() + "|" + templateName + "|" + key;
+                    for (int i = 0; i < oldVarDeps.size(); i++) {
                         Vector externEntrys = (Vector)externVarDeps.get(oldVarDeps.elementAt(i));
-                        if(externEntrys != null){
+                        if (externEntrys != null) {
                             externEntrys.removeElement(oldVariantEntry);
                         }
                     }
@@ -1243,32 +1311,36 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return Content of the template and all subtemplates.
      * @throws CmsException
      */
-    protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument,
+        String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+
         byte[] result = null;
 
-        if(CmsXmlTemplateLoader.isElementCacheEnabled()) {
+        if (CmsXmlTemplateLoader.isElementCacheEnabled()) {
             CmsElementDefinitionCollection mergedElDefs = (CmsElementDefinitionCollection)parameters.get("_ELDEFS_");
             // We are in element cache mode. Create a new variant instead of a completely processed subtemplate
             CmsElementVariant variant = xmlTemplateDocument.generateElementCacheVariant(this, parameters, elementName, templateSelector);
             // Get current element.
             CmsElementCache elementCache = CmsXmlTemplateLoader.getElementCache();
-            CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(), xmlTemplateDocument.getAbsoluteFilename());
+            CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(),
+                xmlTemplateDocument.getAbsoluteFilename());
             A_CmsElement currElem = elementCache.getElementLocator().get(cms, elKey, parameters);
 
             // If this elemement is cacheable, store the new variant
-            if(currElem.getCacheDirectives().isInternalCacheable()) {
+            if (currElem.getCacheDirectives().isInternalCacheable()) {
                 //currElem.addVariant(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector), variant);
                 Vector removedVar = currElem.addVariant(currElem.getCacheDirectives().getCacheKey(cms, parameters), variant);
-                if((removedVar != null) && currElem.hasDependenciesVariants()){
+                if ((removedVar != null) && currElem.hasDependenciesVariants()) {
                     // adding a new variant deleted this variant so we have to update the extern dependencies store
                     String key = (String)removedVar.firstElement();
                     CmsElementVariant oldVar = (CmsElementVariant)removedVar.lastElement();
                     Vector oldVarDeps = oldVar.getDependencies();
-                    if (oldVarDeps != null){
-                        String oldVariantEntry = getClass().getName() + "|"+ xmlTemplateDocument.getAbsoluteFilename() +"|"+ key;
-                        for(int i=0; i<oldVarDeps.size(); i++){
+                    if (oldVarDeps != null) {
+                        String oldVariantEntry = getClass().getName() + "|"
+                            + xmlTemplateDocument.getAbsoluteFilename() + "|" + key;
+                        for (int i = 0; i < oldVarDeps.size(); i++) {
                             Vector externEntrys = (Vector)CmsXmlTemplateLoader.getVariantDependencies().get(oldVarDeps.elementAt(i));
-                            if(externEntrys != null){
+                            if (externEntrys != null) {
                                 externEntrys.removeElement(oldVariantEntry);
                             }
                         }
@@ -1280,34 +1352,32 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // Classic way. Element cache is not activated, so let's genereate the template as usual
             // Try to process the template file
             try {
-                result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, templateSelector).getBytes(
-                    cms.getRequestContext().getEncoding());
-            }
-            catch(Throwable e) {
+                result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, templateSelector).getBytes(cms.getRequestContext().getEncoding());
+            } catch (Throwable e) {
                 // There were errors while generating output for this template.
                 // Clear HTML cache and then throw exception again
                 xmlTemplateDocument.removeFromFileCache();
-                if(isCacheable(cms, xmlTemplateDocument.getAbsoluteFilename(), elementName, parameters, templateSelector)) {
+                if (isCacheable(cms, xmlTemplateDocument.getAbsoluteFilename(), elementName, parameters, templateSelector)) {
                     m_cache.clearCache(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector));
                 }
-                if(e instanceof CmsException) {
+                if (e instanceof CmsException) {
                     throw (CmsException)e;
-                }
-                else {
+                } else {
                     // under normal cirumstances, this should not happen.
                     // any exception should be caught earlier and replaced by
                     // corresponding CmsExceptions.
-                    String errorMessage = "Exception while getting content for (sub)template " + elementName + ". " + e;
-                    if(OpenCms.getLog(this).isErrorEnabled() ) {
-                        OpenCms.getLog(this).error(errorMessage, e);
+                    String errorMessage = "Exception while getting content for (sub)template "
+                        + elementName + ". " + e;
+                    if (CmsLog.getLog(this).isErrorEnabled()) {
+                        CmsLog.getLog(this).error(errorMessage, e);
                     }
                     throw new CmsLegacyException(errorMessage);
                 }
             }
         }
         // update the template selector if nescessary
-        if (templateSelector!=null) {
-          parameters.put(elementName+"._TEMPLATESELECTOR_",templateSelector);
+        if (templateSelector != null) {
+            parameters.put(elementName + "._TEMPLATESELECTOR_", templateSelector);
         }
 
         return result;
@@ -1328,7 +1398,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @throws CmsException
      */
-    public Object templateElement(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+    public Object templateElement(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+        Object userObject) throws CmsException {
 
         // Our own template file that wants to include a subelement
         CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile)doc;
@@ -1363,27 +1434,25 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         // try to load the subtemplate class
         try {
             loadedObject = CmsTemplateClassManager.getClassInstance(templateClass);
-        }
-        catch(CmsException e) {
+        } catch (CmsException e) {
 
             // There was an error. First remove the template file from the file cache
             templateFile.removeFromFileCache();
-            if(isAnonymousUser) {
+            if (isAnonymousUser) {
 
                 // The current user is the anonymous user
                 return C_ERRORTEXT;
-            }
-            else {
+            } else {
                 // The current user is a system user, so we throw the exception again.
                 throw e;
             }
         }
 
         // Check if the loaded object is really an instance of an OpenCms template class
-        if(!(loadedObject instanceof I_CmsTemplate)) {
+        if (!(loadedObject instanceof I_CmsTemplate)) {
             String errorMessage = "Class " + templateClass + " is no OpenCms template class.";
-            if(OpenCms.getLog(this).isErrorEnabled() ) {
-                OpenCms.getLog(this).error(errorMessage);
+            if (CmsLog.getLog(this).isErrorEnabled()) {
+                CmsLog.getLog(this).error(errorMessage);
             }
             throw new CmsLegacyException(errorMessage, CmsLegacyException.C_XML_NO_TEMPLATE_CLASS);
         }
@@ -1392,12 +1461,12 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         // Template class is now loaded. Next try to read the parameters
         Vector parameterTags = null;
         parameterTags = templateFile.getParameterNames(tagcontent);
-        if(parameterTags != null) {
+        if (parameterTags != null) {
             int numParameterTags = parameterTags.size();
-            for(int i = 0;i < numParameterTags;i++) {
+            for (int i = 0; i < numParameterTags; i++) {
                 String paramName = (String)parameterTags.elementAt(i);
                 String paramValue = templateFile.getParameter(tagcontent, paramName);
-                if(!parameterHashtable.containsKey(paramName)) {
+                if (!parameterHashtable.containsKey(paramName)) {
                     parameterHashtable.put(tagcontent + "." + paramName, paramValue);
                 }
             }
@@ -1409,44 +1478,47 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
         // Try to get the result from the cache
         //if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null)) {
-        if(subTemplate.collectCacheDirectives(cms, templateFilename, tagcontent, parameterHashtable, null).isInternalCacheable()) {
+        if (subTemplate.collectCacheDirectives(cms, templateFilename, tagcontent, parameterHashtable, null).isInternalCacheable()) {
             subTemplateKey = subTemplate.getKey(cms, templateFilename, parameterHashtable, null);
-            if(m_cache != null && m_cache.has(subTemplateKey) && (!subTemplate.shouldReload(cms, templateFilename, tagcontent, parameterHashtable, null))) {
+            if (m_cache != null
+                && m_cache.has(subTemplateKey)
+                && (!subTemplate.shouldReload(cms, templateFilename, tagcontent, parameterHashtable, null))) {
                 result = m_cache.get(subTemplateKey);
             }
         }
 
         // OK. let's call the subtemplate
-        if(result == null) {
+        if (result == null) {
             try {
                 result = subTemplate.getContent(cms, templateFilename, tagcontent, parameterHashtable, templateSelector);
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
 
                 // Oh, oh..
 
                 // There were errors while getting the content of the subtemplate
-                if(OpenCms.getLog(this).isErrorEnabled() ) {
-                    OpenCms.getLog(this).error("Could not generate output for template file \"" + templateFilename + "\" included as element \"" + tagcontent + "\"", e);
+                if (CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error("Could not generate output for template file \""
+                        + templateFilename + "\" included as element \"" + tagcontent + "\"", e);
                 }
 
                 // The anonymous user gets an error String instead of an exception
-                if(isAnonymousUser) {
+                if (isAnonymousUser) {
                     return C_ERRORTEXT;
-                }
-                else {
-                    if(e instanceof CmsException) {
+                } else {
+                    if (e instanceof CmsException) {
                         throw (CmsException)e;
-                    }
-                    else {
-                        throw new CmsLegacyException("Error while executing getContent for subtemplate \"" + tagcontent + "\". " + e);
+                    } else {
+                        throw new CmsLegacyException(
+                            "Error while executing getContent for subtemplate \"" + tagcontent
+                                + "\". " + e);
                     }
                 }
             }
 
             // Store the results in the template cache, if cacheable
             //if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null)) {
-            if(subTemplate.collectCacheDirectives(cms, templateFilename, tagcontent, parameterHashtable, null).isInternalCacheable() && m_cache != null) {
+            if (subTemplate.collectCacheDirectives(cms, templateFilename, tagcontent, parameterHashtable, null).isInternalCacheable()
+                && m_cache != null) {
 
                 // we don't need to re-get the caching-key here since it already exists
                 m_cache.put(subTemplateKey, result);
@@ -1463,6 +1535,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsException
      */
     protected void throwException(String errorMessage) throws CmsException {
+
         throwException(errorMessage, CmsLegacyException.C_UNKNOWN_EXCEPTION);
     }
 
@@ -1475,8 +1548,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsLegacyException
      */
     protected void throwException(String errorMessage, int type) throws CmsLegacyException {
-        if(OpenCms.getLog(this).isErrorEnabled() ) {
-            OpenCms.getLog(this).error(errorMessage);
+
+        if (CmsLog.getLog(this).isErrorEnabled()) {
+            CmsLog.getLog(this).error(errorMessage);
         }
         throw new CmsLegacyException(errorMessage, type);
     }
@@ -1490,13 +1564,13 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, Exception e) throws CmsException {
-        if(OpenCms.getLog(this).isErrorEnabled()) {
-            OpenCms.getLog(this).error(errorMessage, e);
+
+        if (CmsLog.getLog(this).isErrorEnabled()) {
+            CmsLog.getLog(this).error(errorMessage, e);
         }
-        if(e instanceof CmsException) {
+        if (e instanceof CmsException) {
             throw (CmsException)e;
-        }
-        else {
+        } else {
             throw new CmsLegacyException(errorMessage, CmsLegacyException.C_UNKNOWN_EXCEPTION, e);
         }
     }
@@ -1531,46 +1605,47 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             Vector subtemplates = xmlTemplateDocument.getAllSubElementDefinitions();
 
             int numSubtemplates = subtemplates.size();
-            for(int i = 0; i < numSubtemplates; i++) {
+            for (int i = 0; i < numSubtemplates; i++) {
                 String elName = (String)subtemplates.elementAt(i);
                 String className = null;
                 String templateName = null;
                 String templateSelector = null;
 
-                if(xmlTemplateDocument.hasSubtemplateClass(elName)) {
+                if (xmlTemplateDocument.hasSubtemplateClass(elName)) {
                     className = xmlTemplateDocument.getSubtemplateClass(elName);
                 }
 
-                if(xmlTemplateDocument.hasSubtemplateFilename(elName)) {
+                if (xmlTemplateDocument.hasSubtemplateFilename(elName)) {
                     templateName = xmlTemplateDocument.getSubtemplateFilename(elName);
                 }
 
-                if(xmlTemplateDocument.hasSubtemplateSelector(elName)) {
+                if (xmlTemplateDocument.hasSubtemplateSelector(elName)) {
                     templateSelector = xmlTemplateDocument.getSubtemplateSelector(elName);
                 }
                 Hashtable templateParameters = xmlTemplateDocument.getParameters(elName);
-                if(className != null || templateName != null || templateSelector != null || templateParameters.size() > 0) {
-                    if(className == null){
+                if (className != null || templateName != null || templateSelector != null
+                    || templateParameters.size() > 0) {
+                    if (className == null) {
                         className = I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS;
                     }
-                    if(templateName != null){
+                    if (templateName != null) {
                         templateName = CmsLinkManager.getAbsoluteUri(templateName, templateFile);
                     }
-                    CmsElementDefinition elDef = new CmsElementDefinition(elName, className, templateName, templateSelector, templateParameters);
+                    CmsElementDefinition elDef = new CmsElementDefinition(elName, className,
+                        templateName, templateSelector, templateParameters);
                     subtemplateDefinitions.add(elDef);
                 }
             }
-        } catch(Exception e) {
-            if(templateFile != null){
-                if(OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Could not generate my template cache element", e);
+        } catch (Exception e) {
+            if (templateFile != null) {
+                if (CmsLog.getLog(this).isWarnEnabled()) {
+                    CmsLog.getLog(this).warn("Could not generate my template cache element", e);
                 }
             }
         }
-        CmsElementXml result = new CmsElementXml(getClass().getName(),
-                                                 templateFile, getCacheDirectives(cms, templateFile, null, parameters, null),
-                                                 subtemplateDefinitions,
-                                                 variantCachesize);
+        CmsElementXml result = new CmsElementXml(getClass().getName(), templateFile,
+            getCacheDirectives(cms, templateFile, null, parameters, null), subtemplateDefinitions,
+            variantCachesize);
         return result;
     }
 }

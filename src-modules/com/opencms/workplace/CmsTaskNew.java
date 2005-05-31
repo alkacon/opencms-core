@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskNew.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import com.opencms.template.A_CmsXmlContent;
 
@@ -47,7 +47,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -123,10 +123,10 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.getLog(this).isDebugEnabled() && C_DEBUG) {
-            OpenCms.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
-            OpenCms.getLog(this).debug("Template file is: " + templateFile);
-            OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+        if(CmsLog.getLog(this).isDebugEnabled() && C_DEBUG) {
+            CmsLog.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
+            CmsLog.getLog(this).debug("Template file is: " + templateFile);
+            CmsLog.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
@@ -177,8 +177,8 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
                 templateSelector = "done";
             }
             catch(Exception exc) {
-                if(OpenCms.getLog(this).isWarnEnabled() ) {
-                    OpenCms.getLog(this).warn("Could not create task", exc);
+                if(CmsLog.getLog(this).isWarnEnabled() ) {
+                    CmsLog.getLog(this).warn("Could not create task", exc);
                 }
                 xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(exc));
                 templateSelector = "error";
@@ -303,8 +303,8 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
             C_USER_5 = document.getDataValue("user_5");
         }
         catch(CmsException exc) {
-            if(OpenCms.getLog(this).isWarnEnabled() ) {
-                OpenCms.getLog(this).warn("Couldn't get xml datablocks for CmsTaskNew", exc);
+            if(CmsLog.getLog(this).isWarnEnabled() ) {
+                CmsLog.getLog(this).warn("Couldn't get xml datablocks for CmsTaskNew", exc);
             }
         }
     }

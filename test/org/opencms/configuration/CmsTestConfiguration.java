@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.configuration;
 
-import org.opencms.main.OpenCms;
+import org.opencms.main.CmsLog;
 
 import org.apache.commons.digester.Digester;
 
@@ -62,8 +62,8 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
      */
     public CmsTestConfiguration() {
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Empty constructor called on " + this);
+        if (CmsLog.getLog(this).isDebugEnabled()) {
+            CmsLog.getLog(this).debug("Empty constructor called on " + this);
         }  
     }
     

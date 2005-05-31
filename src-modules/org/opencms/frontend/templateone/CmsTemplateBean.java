@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -432,8 +432,8 @@ public class CmsTemplateBean extends CmsJspActionElement {
             C_PROPERTY_EXTENSIONMODULE,
             I_CmsWpConstants.C_VFS_PATH_MODULES + C_MODULE_NAME,
             C_PROPERTY_VALUE_NONE);
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Property value for extension module: " + configModule);
+        if (LOG.isDebugEnabled()) {
+           LOG.debug(Messages.get().key(Messages.LOG_EXT_MODULE_PROP_VALUE_1, configModule));
         }
         if (!C_PROPERTY_VALUE_NONE.equals(configModule)) {
             // extension module name found, check presence of file
@@ -521,8 +521,8 @@ public class CmsTemplateBean extends CmsJspActionElement {
                     text = key(text, text);
                 } catch (Exception e) {
                     // problem extracting information from property
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error(e);
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e);
                     }
                 }
 

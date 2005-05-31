@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2005/05/31 14:39:21 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/31 15:51:19 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2 $ $Date: 2005/05/31 14:39:21 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/31 15:51:19 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -196,8 +196,8 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
         try {
             m_res.sendRedirect(hostName + contextPath + servlet + location);
         } catch (IOException exc) {
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Couldn't redirect http response to: " + hostName + contextPath + servlet + location);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Couldn't redirect http response to: " + hostName + contextPath + servlet + location);
             }
         }
     }

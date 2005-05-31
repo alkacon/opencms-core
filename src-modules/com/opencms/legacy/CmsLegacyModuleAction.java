@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2005/05/17 13:47:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 15:51:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.module.A_CmsModuleAction;
@@ -45,7 +46,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.defaults.master.genericsql.*;
+import com.opencms.defaults.master.genericsql.CmsDbAccess;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -127,14 +128,14 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
         CmsDbAccess dbAccess = new CmsDbAccess(poolUrl);
         boolean masterAvailable = dbAccess.checkTables();
 
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Checking master module tables for " + dbName
+        if (CmsLog.getLog(this).isDebugEnabled()) {
+            CmsLog.getLog(this).debug("Checking master module tables for " + dbName
                 + " - " + ((masterAvailable) ? "found" : "not found"));
         }
         
         if (!masterAvailable) {
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Calling master module table setup script for " + dbName);
+            if (CmsLog.getLog(this).isDebugEnabled()) {
+                CmsLog.getLog(this).debug("Calling master module table setup script for " + dbName);
             }
             
             String[] modulePath = (String[])module.getResources().toArray(new String[1]);
@@ -160,15 +161,15 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
                 }
                 dbAccess.updateDatabase(updateScript, replacers);
             } catch (CmsException exc) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error(
+                if (CmsLog.getLog(this).isErrorEnabled()) {
+                    CmsLog.getLog(this).error(
                         "Error while creating master module tables",
                         exc);
                 }
             }
             
-            if (OpenCms.getLog(this).isInfoEnabled()) {
-                OpenCms.getLog(this).info(
+            if (CmsLog.getLog(this).isInfoEnabled()) {
+                CmsLog.getLog(this).info(
                         ". Legacy initialization: Created master module tables");
             }
         }
@@ -240,15 +241,15 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
                     report.println(report.key("report.publish_class_for_module_does_not_exist_1")
                         + (String)legacyPublishClasses.get(i)
                         + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error(
+                    if (CmsLog.getLog(this).isErrorEnabled()) {
+                        CmsLog.getLog(this).error(
                             "Error calling publish class of module " + (String)legacyPublishClasses.get(i),
                             ec);
                     }
                 } catch (Throwable t) {
                     report.println(t);
-                    if (OpenCms.getLog(this).isErrorEnabled()) {
-                        OpenCms.getLog(this).error(
+                    if (CmsLog.getLog(this).isErrorEnabled()) {
+                        CmsLog.getLog(this).error(
                             "Error while publishing data of module " + (String)legacyPublishClasses.get(i),
                             t);
                     }
