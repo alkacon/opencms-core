@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/05/28 17:17:17 $
- * Version: $Revision: 1.189 $
+ * Date   : $Date: 2005/05/31 16:30:07 $
+ * Version: $Revision: 1.190 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -127,7 +127,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.189 $
+ * @version $Revision: 1.190 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1577,7 +1577,7 @@ public final class OpenCmsCore {
         try {
             htmlProps.load(getClass().getClassLoader().getResourceAsStream(HTML_MESSAGE_FILE));
         } catch (Throwable th) {
-            CmsLog.LOG.error("Could not load " + HTML_MESSAGE_FILE, th);
+            CmsLog.LOG.error(Messages.get().key(Messages.INIT_ERR_LOAD_HTML_PROPERTY_FILE_1, HTML_MESSAGE_FILE), th);
         }
 
         // get localized message bundle

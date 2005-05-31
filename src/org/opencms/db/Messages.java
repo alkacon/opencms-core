@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/29 09:28:23 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/05/31 16:30:07 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCEPT_TASK_1 = "ERR_ACCEPT_TASK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLOSE_PROJECT_DRIVER_0 = "ERR_CLOSE_PROJECT_DRIVER_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLOSE_USER_DRIVER_0 = "ERR_CLOSE_USER_DRIVER_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLOSE_VFS_DRIVER_0 = "ERR_CLOSE_VFS_DRIVER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLOSE_WORKFLOW_DRIVER_0 = "ERR_CLOSE_WORKFLOW_DRIVER_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLOSE_BACKUP_DRIVER_0 = "ERR_CLOSE_BACKUP_DRIVER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCESS_FILE_AS_FOLDER_1 = "ERR_ACCESS_FILE_AS_FOLDER_1";

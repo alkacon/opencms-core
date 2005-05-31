@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/05/25 09:43:47 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/05/31 16:30:08 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -1194,7 +1194,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // close table
             result.append("</table>\n");                     
         } catch (Throwable t) {
-            LOG.error("Error in XML editor", t);
+            LOG.error(Messages.get().key(Messages.ERR_XML_EDITOR_0), t);
         }               
         return result;
     }

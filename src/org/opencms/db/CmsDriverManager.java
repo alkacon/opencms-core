@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/31 15:10:04 $
- * Version: $Revision: 1.515 $
+ * Date   : $Date: 2005/05/31 16:30:07 $
+ * Version: $Revision: 1.516 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.515 $
+ * @version $Revision: 1.516 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7222,27 +7222,27 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             try {
                 m_projectDriver.destroy();
             } catch (Throwable t) {
-                LOG.error("Error closing project driver", t);
+                LOG.error(Messages.get().key(Messages.ERR_CLOSE_PROJECT_DRIVER_0), t);
             }
             try {
                 m_userDriver.destroy();
             } catch (Throwable t) {
-                LOG.error("Error closing user driver", t);
+                LOG.error(Messages.get().key(Messages.ERR_CLOSE_USER_DRIVER_0), t);
             }
             try {
                 m_vfsDriver.destroy();
             } catch (Throwable t) {
-                LOG.error("Error closing VFS driver", t);
+                LOG.error(Messages.get().key(Messages.ERR_CLOSE_VFS_DRIVER_0), t);
             }
             try {
                 m_workflowDriver.destroy();
             } catch (Throwable t) {
-                LOG.error("Error closing workflow driver", t);
+                LOG.error(Messages.get().key(Messages.ERR_CLOSE_WORKFLOW_DRIVER_0), t);
             }
             try {
                 m_backupDriver.destroy();
             } catch (Throwable t) {
-                LOG.error("Error closing backup driver", t);
+                LOG.error(Messages.get().key(Messages.ERR_CLOSE_BACKUP_DRIVER_0), t);
             }
 
             for (int i = 0; i < m_connectionPools.size(); i++) {

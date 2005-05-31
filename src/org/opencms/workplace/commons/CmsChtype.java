@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/31 16:30:07 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.5.0
  */
@@ -158,7 +158,9 @@ public class CmsChtype extends CmsDialog {
                             // error reading the groups of the current user
                             permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
                             if (LOG.isErrorEnabled()) {
-                                LOG.error("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
+                                LOG.error(org.opencms.workplace.explorer.Messages.get()
+                                    .key(org.opencms.workplace.explorer.Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, 
+                                        cms.getRequestContext().currentUser().getName()));
                             }      
                         }
                         
