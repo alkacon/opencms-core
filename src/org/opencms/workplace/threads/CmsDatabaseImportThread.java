@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsDatabaseImportThread.java,v $
- * Date   : $Date: 2005/05/25 09:01:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/31 11:08:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,19 +33,25 @@ package org.opencms.workplace.threads;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Imports an OpenCms export file into the VFS.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1.10
  */
 public class CmsDatabaseImportThread extends A_CmsReportThread {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDatabaseImportThread.class);
 
     private String m_importFile;
 
@@ -57,7 +63,10 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
      * @param old flag for report mode
      */
     public CmsDatabaseImportThread(CmsObject cms, String importFile, boolean old) {
-        super(cms, "OpenCms: Import from " + importFile);
+        super(cms, Messages.get().key(
+            cms.getRequestContext().getLocale(),
+            Messages.GUI_DB_IMPORT_THREAD_NAME_1,
+            new Object[] {importFile}));
         m_importFile = importFile;
         if (old) {
             initOldHtmlReport(cms.getRequestContext().getLocale());
@@ -81,8 +90,8 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
             OpenCms.getImportExportManager().importData(getCms(), m_importFile, I_CmsConstants.C_ROOT, getReport());
         } catch (CmsException e) {
             getReport().println(e);
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error importing the database", e);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.ERR_DB_IMPORT_0), e);
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/Attic/CmsMessageContainerCompound.java,v $
- * Date   : $Date: 2005/05/30 15:20:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 11:08:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,22 +39,23 @@ import java.util.Locale;
 /**
  * A <code>CmsMessageContainer</code> implementation that may be used to 
  * collect several instances that may be localized by the same mechanism 
- * (exceptions, loggin) as the superclass. <p>
+ * (exceptions, logging) as the superclass. <p>
  * 
  * Additional helper methods support the generation 
  * of localizable formatted output that consists of format literals and localized 
  * messages. <p>
  * 
- * The methods {@link #getKey()}, {@link #getBundle()} and {@link #getArgs()} 
- * and need not to be called as the contained messages may spread over several packages / bundles 
- * with separate arguments. <p>
+ * The methods {@link #getKey()}, {@link #getBundle()} and {@link #getArgs()} return 
+ * null because this instance is a wrapper for various <code>CmsMessageContainer</code> 
+ * instances with possibly (and most likely) different settings. They must 
+ * not be called and don't need to be too. <p>
  * 
  * @author Achim Westermann (a.westermann@alkacon.com)
  * 
  */
 public class CmsMessageContainerCompound extends CmsMessageContainer {
 
-    private static final CmsMessageContainer CONTAINER_COLON = new CmsMessageContainer(null, null) {
+    private static final CmsMessageContainer CONTAINER_COLON = new CmsMessageContainerLiteral() {
 
         /**
          * @return always the String containing newline character (':')
@@ -64,18 +65,9 @@ public class CmsMessageContainerCompound extends CmsMessageContainer {
             return ":";
         }
 
-        /**
-         * @param locale ignored
-         * @return always the String containing colon character (':')
-         */
-        public String key(Locale locale) {
-
-            return ":";
-        }
-
     };
 
-    private static final CmsMessageContainer CONTAINER_DOT = new CmsMessageContainer(null, null) {
+    private static final CmsMessageContainer CONTAINER_DOT = new CmsMessageContainerLiteral() {
 
         /**
          * @return always the String containing dot character
@@ -85,18 +77,9 @@ public class CmsMessageContainerCompound extends CmsMessageContainer {
             return ".";
         }
 
-        /**
-         * @param locale ignored
-         * @return always the String containing dot character
-         */
-        public String key(Locale locale) {
-
-            return ".";
-        }
-
     };
 
-    private static final CmsMessageContainer CONTAINER_NEWLINE = new CmsMessageContainer(null, null) {
+    private static final CmsMessageContainer CONTAINER_NEWLINE = new CmsMessageContainerLiteral() {
 
         /**
          * @return always the String containing newline character
@@ -106,18 +89,9 @@ public class CmsMessageContainerCompound extends CmsMessageContainer {
             return "\n";
         }
 
-        /**
-         * @param locale ignored
-         * @return always the String containing newline character
-         */
-        public String key(Locale locale) {
-
-            return "\n";
-        }
-
     };
 
-    private static final CmsMessageContainer CONTAINER_COMMA = new CmsMessageContainer(null, null) {
+    private static final CmsMessageContainer CONTAINER_COMMA = new CmsMessageContainerLiteral() {
 
         /**
          * @return always the String containing newline character
@@ -126,33 +100,14 @@ public class CmsMessageContainerCompound extends CmsMessageContainer {
 
             return ",";
         }
-
-        /**
-         * @param locale ignored
-         * @return always the String containing newline character
-         */
-        public String key(Locale locale) {
-
-            return ",";
-        }
-
     };
 
-    private static final CmsMessageContainer CONTAINER_SPACE = new CmsMessageContainer(null, null) {
+    private static final CmsMessageContainer CONTAINER_SPACE = new CmsMessageContainerLiteral() {
 
         /**
          * @return always the String containing space character
          */
         public String key() {
-
-            return " ";
-        }
-
-        /**
-         * @param locale ignored
-         * @return always the String containing space character
-         */
-        public String key(Locale locale) {
 
             return " ";
         }
@@ -352,5 +307,34 @@ public class CmsMessageContainerCompound extends CmsMessageContainer {
         }
         ret.append("\n]");
         return ret.toString();
+    }
+
+    /**
+     * Base class for <code>CmsMessageContainer</code> dummies that contain 
+     * locale-independant formatting literals. 
+     */
+    private abstract static class CmsMessageContainerLiteral extends CmsMessageContainer {
+
+        /**
+         * Creates a new instance that will have null values for bundle and key.
+         * Intended for intarnl use only. 
+         */
+        private CmsMessageContainerLiteral() {
+
+            super(null, null);
+        }
+
+
+        /**
+         * Formatting - literals are locale - independent: {@link #key()} is returned. 
+         * 
+         * @param locale ignored
+         * @return {@link #key()}
+         * @see org.opencms.i18n.CmsMessageContainer#key(java.util.Locale)
+         */
+        public final String key(Locale locale) {
+
+            return key();
+        }
     }
 }

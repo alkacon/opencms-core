@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsSynchronizeThread.java,v $
- * Date   : $Date: 2005/05/16 17:45:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 11:08:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.synchronize.CmsSynchronize;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsSynchronizeThread extends A_CmsReportThread {
@@ -56,7 +56,10 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
      * @param cms the current OpenCms context object
      */
     public CmsSynchronizeThread(CmsObject cms) {
-        super(cms, "OpenCms: Synchronizing to project " + cms.getRequestContext().currentProject().getName());
+        super(cms, Messages.get().key(
+            cms.getRequestContext().getLocale(),
+            Messages.GUI_SYNCHRONIZE_THREAD_NAME_1,
+            new Object[] {cms.getRequestContext().currentProject().getName()}));
         initHtmlReport(cms.getRequestContext().getLocale());
         start();
     }
@@ -78,15 +81,28 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
-    public void run() {         
-        getReport().println(getReport().key("report.sync_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-        getReport().println(getReport().key("report.sync_rfs_folder") + OpenCms.getSystemInfo().getSynchronizeSettings().getDestinationPathInRfs().replace('\\', '/'), I_CmsReport.C_FORMAT_HEADLINE);                         
-        getReport().println(getReport().key("report.sync_vfs_resource") + OpenCms.getSystemInfo().getSynchronizeSettings().getSourcePathInVfs(), I_CmsReport.C_FORMAT_HEADLINE);                
+    public void run() {   
+        I_CmsReport report = getReport();
+        
+        report.println(
+            Messages.get().container(Messages.RPT_SYNCHRONIZE_BEGIN_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(
+            Messages.RPT_SYNCHRONIZE_RFS_FOLDER_1,
+            OpenCms.getSystemInfo().getSynchronizeSettings().getDestinationPathInRfs()
+            .replace('\\', '/')), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(
+            Messages.get().container(
+                Messages.RPT_SYNCHRONIZE_VFS_FOLDER_1,
+                OpenCms.getSystemInfo().getSynchronizeSettings().getSourcePathInVfs()),
+            I_CmsReport.C_FORMAT_HEADLINE);                
         try {
             new CmsSynchronize(getCms(), getReport());
         } catch (CmsException e) {
-            getReport().println(e);
+            report.println(e);
         }
-        getReport().println(getReport().key("report.sync_end"), I_CmsReport.C_FORMAT_HEADLINE);       
+        report.println(
+            Messages.get().container(Messages.RPT_SYNCHRONIZE_END_0),
+            I_CmsReport.C_FORMAT_HEADLINE);       
     }
 }

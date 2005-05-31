@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsReportTestThread.java,v $
- * Date   : $Date: 2005/05/16 17:45:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 11:08:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.file.CmsObject;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsReportTestThread extends A_CmsReportThread {
@@ -55,7 +55,11 @@ public class CmsReportTestThread extends A_CmsReportThread {
      * @param count the count for the test output
      */
     public CmsReportTestThread(CmsObject cms, int count) {
-        super(cms, "OpenCms: Report test");
+
+        super(cms, Messages.get().key(
+            cms.getRequestContext().getLocale(),
+            Messages.GUI_REPORT_TEST_THREAD_NAME_0,
+            null));
         m_count = count;
         initHtmlReport(cms.getRequestContext().getLocale());
         start();
@@ -65,6 +69,7 @@ public class CmsReportTestThread extends A_CmsReportThread {
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
+
         return getReport().getReportUpdate();
     }
 
@@ -72,15 +77,24 @@ public class CmsReportTestThread extends A_CmsReportThread {
      * @see java.lang.Runnable#run()
      */
     public void run() {
-        getReport().println("Test output starting...", I_CmsReport.C_FORMAT_HEADLINE);
-        for (int i=0; i<m_count; i++) {
-            getReport().println("( " + i + " / " + m_count + " ) Test output", I_CmsReport.C_FORMAT_DEFAULT);
+        I_CmsReport report = getReport();
+        report.println(
+            Messages.get().container(Messages.RPT_TEST_REPORT_BEGIN_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
+        for (int i = 0; i < m_count; i++) {
+            report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_2,
+                String.valueOf(i),
+                String.valueOf(m_count)));
+            report.println(Messages.get().container(Messages.RPT_TEST_REPORT_OUTPUT_0));
             try {
                 sleep(250);
             } catch (InterruptedException e) {
                 // just continue
             }
         }
-        getReport().println("... finished writing Test output.", I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().println(
+            Messages.get().container(Messages.RPT_TEST_REPORT_END_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
     }
 }

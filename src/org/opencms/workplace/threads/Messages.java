@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Messages.java,v $
- * Date   : $Date: 2005/05/17 15:29:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/31 11:08:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,81 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SYNCHRONIZE_VFS_FOLDER_1 = "RPT_SYNCHRONIZE_VFS_FOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SYNCHRONIZE_RFS_FOLDER_1 = "RPT_SYNCHRONIZE_RFS_FOLDER_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SYNCHRONIZE_END_0 = "RPT_SYNCHRONIZE_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SYNCHRONIZE_BEGIN_0 = "RPT_SYNCHRONIZE_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SYNCHRONIZE_THREAD_NAME_1 = "GUI_SYNCHRONIZE_THREAD_NAME_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TEST_REPORT_END_0 = "RPT_TEST_REPORT_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TEST_REPORT_OUTPUT_0 = "RPT_TEST_REPORT_OUTPUT_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TEST_REPORT_BEGIN_0 = "RPT_TEST_REPORT_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REPORT_TEST_THREAD_NAME_0 = "GUI_REPORT_TEST_THREAD_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_RESOURCE_SWITCH_PROJECT_1 = "RPT_PUBLISH_RESOURCE_SWITCH_PROJECT_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_RESOURCE_END_0 = "RPT_PUBLISH_RESOURCE_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_RESOURCE_BEGIN_0 = "RPT_PUBLISH_RESOURCE_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_PROJECT_THREAD_NAME_1 = "GUI_DELETE_PROJECT_THREAD_NAME_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_TRHEAD_NAME_0 = "GUI_PUBLISH_TRHEAD_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REPLACE_MODULE_THREAD_NAME_1 = "GUI_REPLACE_MODULE_THREAD_NAME_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_MODULE_END_0 = "RPT_DELETE_MODULE_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_PROJECT_END_0 = "RPT_PUBLISH_PROJECT_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_PUBLISH_PROJECT_BEGIN_0 = "RPT_PUBLISH_PROJECT_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_MODULE_BEGIN_0 = "RPT_DELETE_MODULE_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_MODULE_PROJECT_NAME_0 = "GUI_DELETE_MODULE_PROJECT_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_MODULE_PROJECT_DESC_1 = "GUI_DELETE_MODULE_PROJECT_DESC_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_MODULE_THREAD_NAME_1 = "GUI_DELETE_MODULE_THREAD_NAME_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1 = "GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DB_IMPORT_0 = "ERR_DB_IMPORT_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DB_IMPORT_THREAD_NAME_1 = "GUI_DB_IMPORT_THREAD_NAME_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DB_EXPORT_0 = "ERR_DB_EXPORT_0";
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsProjectDeleteThread.java,v $
- * Date   : $Date: 2005/05/16 17:45:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 11:08:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsProjectDeleteThread extends A_CmsReportThread {
@@ -61,7 +61,10 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
      * @param projectId the project id to delete
      */
     public CmsProjectDeleteThread(CmsObject cms, int projectId) {
-        super(cms, "OpenCms: Project deletion of " + projectId);
+        super(cms, Messages.get().key(
+            cms.getRequestContext().getLocale(),
+            Messages.GUI_DELETE_PROJECT_THREAD_NAME_1,
+            new Object[] {new Integer(projectId)}));
         m_projectId = projectId;
     }
     

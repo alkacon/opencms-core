@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2005/05/16 17:45:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 11:08:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsPublishThread extends A_CmsReportThread {
@@ -84,7 +84,10 @@ public class CmsPublishThread extends A_CmsReportThread {
      * @see org.opencms.file.CmsObject#getPublishList()
      */
     public CmsPublishThread(CmsObject cms, CmsPublishList publishList, CmsWorkplaceSettings settings) {
-        super(cms, "OpenCms: Publishing of resources in publish list");
+        super(cms, Messages.get().key(
+            cms.getRequestContext().getLocale(),
+            Messages.GUI_PUBLISH_TRHEAD_NAME_0,
+            null));
         m_cms = cms;
         m_publishList = publishList;
         m_settings = settings;
@@ -112,12 +115,16 @@ public class CmsPublishThread extends A_CmsReportThread {
      */
     public void run() {
         try {
-            getReport().println(getReport().key("report.publish_resource_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            getReport().println(
+                Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_BEGIN_0),
+                I_CmsReport.C_FORMAT_HEADLINE);
             getCms().publishProject(getReport(), m_publishList);
             if (m_updateSessionInfo) {
                 updateSessionInfo();
             }
-            getReport().println(getReport().key("report.publish_resource_end"), I_CmsReport.C_FORMAT_HEADLINE);
+            getReport().println(
+                Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_END_0),
+                I_CmsReport.C_FORMAT_HEADLINE);
         } catch (Exception e) {
             getReport().println(e);
             LOG.error(Messages.get().key(Messages.LOG_PUBLISH_PROJECT_FAILED_0), e);
@@ -149,7 +156,11 @@ public class CmsPublishThread extends A_CmsReportThread {
                 sessionInfo.setProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
                 // update the workplace settings as well
                 m_settings.setProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-                getReport().println(getReport().key("report.publish_resource_switch_project")+  m_cms.getRequestContext().currentProject().getName(), I_CmsReport.C_FORMAT_DEFAULT);
+                getReport().println(
+                    Messages.get().container(
+                        Messages.RPT_PUBLISH_RESOURCE_SWITCH_PROJECT_1,
+                        m_cms.getRequestContext().currentProject().getName()),
+                    I_CmsReport.C_FORMAT_DEFAULT);
             }
         }        
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsHtmlLinkValidatorThread.java,v $
- * Date   : $Date: 2005/05/16 17:45:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 11:08:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.commons.logging.Log;
  * A report thread for the HTML link validator.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2005/05/16 17:45:07 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/31 11:08:23 $
  */
 public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
     
@@ -78,7 +78,9 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
      * @see org.opencms.file.CmsObject#getPublishList()
      */
     public CmsHtmlLinkValidatorThread(CmsObject cms) {
-        super(cms, "OpenCms: validating HTML links in all unpublished resources of project " + cms.getRequestContext().currentProject().getName());
+        super(cms, Messages.get().key(cms.getRequestContext().getLocale(), 
+            Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1, 
+            new Object[]{cms.getRequestContext().currentProject().getName()}));
         
         m_directPublishResource = null;
         m_directPublishSiblings = false;
@@ -109,8 +111,10 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
      * @see org.opencms.file.CmsObject#getPublishList(CmsResource, boolean)
      */
     public CmsHtmlLinkValidatorThread(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings, CmsWorkplaceSettings settings) {
-        super(cms, "OpenCms: validating HTML links in unpublished resources of project " + cms.getRequestContext().currentProject().getName());
-        
+        super(cms, Messages.get().key(
+            cms.getRequestContext().getLocale(),
+            Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1,
+            new Object[] {cms.getRequestContext().currentProject().getName()}));
         m_directPublishResource = directPublishResource;
         m_directPublishSiblings = directPublishSiblings;
         m_savePublishList = true;
