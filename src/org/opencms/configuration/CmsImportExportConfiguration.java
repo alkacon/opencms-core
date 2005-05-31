@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2005/05/19 16:05:45 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/05/31 07:49:05 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -465,7 +465,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     public void setImportExportManager(CmsImportExportManager manager) {
         m_importExportManager = manager;
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().container(Messages.INIT_IMPORT_MANAGER_0));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_IMPORT_MANAGER_0));
         }
     }
     
@@ -477,7 +477,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     public void setStaticExportManager(CmsStaticExportManager manager) {
         m_staticExportManager = manager;
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().container(Messages.INIT_STATEXP_MANAGER_0));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_STATEXP_MANAGER_0));
         }
     }
     

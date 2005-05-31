@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/05/31 07:49:05 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
  * 
- * @version $Revision: 1.23 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.24 $ $Date: 2005/05/31 07:49:05 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
@@ -113,7 +113,7 @@ public class CmsDefaultUsers {
 
         // check if all required user and group names are not null or empty
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().container(Messages.INIT_CHECKING_DEFAULT_USER_NAMES_0));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_CHECKING_DEFAULT_USER_NAMES_0));
         }
         if (CmsStringUtil.isEmpty(userAdmin)
             || CmsStringUtil.isEmpty(userGuest)
