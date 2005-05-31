@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/05/28 09:35:34 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/05/31 14:39:21 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
 
@@ -258,8 +258,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
         Locale locale = getLocale(localeName);
         if (!m_defaultLocales.contains(locale)) {
             m_defaultLocales.add(locale);
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(
                     Messages.get().key(
                         Messages.INIT_I18N_CONFIG_DEFAULT_LOCALE_2,
                         new Integer(m_defaultLocales.size()),

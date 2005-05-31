@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/05/23 16:21:44 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/05/31 14:39:21 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message contant for key in the resource bundle. */
     public static final String ERR_CONTEXT_INFO_FROZEN_0 = "ERR_CONTEXT_INFO_FROZEN_0";
-
+   
     /** Message contant for key in the resource bundle. */
     public static final String ERR_CRITICAL_CLASS_CREATION_1 = "ERR_CRITICAL_CLASS_CREATION_1";
 
@@ -244,6 +244,12 @@ public static final String LOG_INIT_CMSOBJECT_IN_ERROR_HANDLER_2 = "LOG_INIT_CMS
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_INIT_INVALID_ERROR_2 = "LOG_INIT_INVALID_ERROR_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_SET_DEFAULT_ENCODING_1 = "LOG_SET_DEFAULT_ENCODING_1";
+        
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_SET_SERVERNAME_1 = "LOG_SET_SERVERNAME_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_SHUTDOWN_CONSOLE_NOTE_2 = "LOG_SHUTDOWN_CONSOLE_NOTE_2";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/05/30 15:20:41 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2005/05/31 14:39:21 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.103 $
+ * @version $Revision: 1.104 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1743,15 +1743,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         while ((count < HANDLER_FINISH_TIME) && m_handler.isBusy()) {
             count++;
             try {
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                        ". Shutting down        : Waiting for static export handler "
-                            + m_handler.getClass().getName()
-                            + " to finish ("
-                            + count
-                            + "/"
-                            + HANDLER_FINISH_TIME
-                            + ")");
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_SHUTDOWN_3, 
+                        m_handler.getClass().getName(), String.valueOf(count), String.valueOf(HANDLER_FINISH_TIME)));
                 }
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

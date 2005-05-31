@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/05/31 14:39:21 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.apache.commons.collections.map.LRUMap;
  * Implements the OpenCms template cache.<p>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:32 $
+ * @version $Revision: 1.2 $ $Date: 2005/05/31 14:39:21 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -56,8 +56,8 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
             monitor.register(this.getClass().getName()+"."+"templateCache", m_templateCache);
         }
         
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : XMLTemplate template cache initialized successfully");
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(". Loader init          : XMLTemplate template cache initialized successfully");
         }
     }
     

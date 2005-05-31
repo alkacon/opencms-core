@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/05/28 09:35:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/31 14:39:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -600,8 +600,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         
         // check if the element cache is enabled
         boolean elementCacheEnabled = config.getBoolean("elementcache.enabled", false);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : XMLTemplate element cache " + (elementCacheEnabled ? "enabled" : "disabled"));
+        if (CmsLog.LOG.isInfoEnabled()) {
+            CmsLog.LOG.info(". Loader init          : XMLTemplate element cache " + (elementCacheEnabled ? "enabled" : "disabled"));
         }
         if (elementCacheEnabled) {
             try {
@@ -610,8 +610,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
                     config.getInteger("elementcache.elements", 50000), 
                     config.getInteger("elementcache.variants", 100));
             } catch (Exception e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Loader init          : XMLTemplate element cache non-critical error " + e.toString());
+                if (CmsLog.LOG.isWarnEnabled()) {
+                    CmsLog.LOG.warn(". Loader init          : XMLTemplate element cache non-critical error " + e.toString());
                 }
             }
             m_variantDeps = new Hashtable();
@@ -620,8 +620,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             m_elementCache = null;
         }
         
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized");
+        if (CmsLog.LOG.isInfoEnabled()) { 
+            CmsLog.LOG.info(". Loader init          : " + this.getClass().getName() + " initialized");
         }             
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Messages.java,v $
- * Date   : $Date: 2005/05/25 09:16:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/31 14:39:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -107,6 +107,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_STATIC_EXPORT_ENABLED_0 = "INIT_STATIC_EXPORT_ENABLED_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_STATIC_EXPORT_SHUTDOWN_3 = "INIT_STATIC_EXPORT_SHUTDOWN_3";
     
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_SE_PARAM_2 = "LOG_ADD_SE_PARAM_2";

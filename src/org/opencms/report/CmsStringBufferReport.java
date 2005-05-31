@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsStringBufferReport.java,v $
- * Date   : $Date: 2005/05/24 08:13:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/05/31 14:39:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * report using the {@link #toString()} method.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2005/05/24 08:13:26 $
+ * @version $Revision: 1.6 $ $Date: 2005/05/31 14:39:21 $
  */
 public class CmsStringBufferReport extends A_CmsReport {
 
@@ -178,7 +178,7 @@ public class CmsStringBufferReport extends A_CmsReport {
      */
     public void println(Throwable t) {
 
-        print(key("report.exception"), C_FORMAT_WARNING);
+        print(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null), C_FORMAT_WARNING);
         println(t.getMessage(), C_FORMAT_WARNING);
 
         StackTraceElement[] stackTrace = t.getStackTrace();

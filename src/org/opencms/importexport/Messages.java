@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2005/05/30 15:17:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/05/31 14:39:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -265,13 +265,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_DELFOLDER_START_0 = "RPT_DELFOLDER_START_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_EXPORTING_0 = "RPT_EXPORTING_0";
+    public static final String RPT_EXPORT_0 = "RPT_EXPORT_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_EXPORTING_GROUP_0 = "RPT_EXPORTING_GROUP_0";
+    public static final String RPT_EXPORT_BEGIN_0 = "RPT_EXPORT_BEGIN_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_EXPORTING_USER_0 = "RPT_EXPORTING_USER_0";
+    public static final String RPT_EXPORT_END_0 = "RPT_EXPORT_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXPORT_GROUP_0 = "RPT_EXPORT_GROUP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXPORT_USER_0 = "RPT_EXPORT_USER_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IMPORT_ACL_DATA_FAILED_0 = "RPT_IMPORT_ACL_DATA_FAILED_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/05/30 15:17:51 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2005/05/31 14:39:21 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.63 $ $Date: 2005/05/30 15:17:51 $
+ * @version $Revision: 1.64 $ $Date: 2005/05/31 14:39:21 $
  */
 public class CmsExport implements Serializable {
     
@@ -845,7 +845,7 @@ public class CmsExport implements Serializable {
                     org.opencms.report.Messages.RPT_SUCCESSION_1,
                     new Integer(1)), I_CmsReport.C_FORMAT_NOTE);
                 report.print(
-                    Messages.get().container(Messages.RPT_EXPORTING_0),
+                    Messages.get().container(Messages.RPT_EXPORT_0),
                     I_CmsReport.C_FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -1011,7 +1011,7 @@ public class CmsExport implements Serializable {
         report.print(org.opencms.report.Messages.get().container(
             org.opencms.report.Messages.RPT_SUCCESSION_1,
             String.valueOf(++m_exportCount)), I_CmsReport.C_FORMAT_NOTE);
-        report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.C_FORMAT_NOTE);
+        report.print(Messages.get().container(Messages.RPT_EXPORT_0), I_CmsReport.C_FORMAT_NOTE);
         report.print(org.opencms.report.Messages.get().container(
             org.opencms.report.Messages.RPT_ARGUMENT_1,
             getCms().getSitePath(file)));
@@ -1105,7 +1105,7 @@ public class CmsExport implements Serializable {
                     String.valueOf(i + 1),
                     String.valueOf(l)), I_CmsReport.C_FORMAT_NOTE);
                 report.print(
-                    Messages.get().container(Messages.RPT_EXPORTING_GROUP_0),
+                    Messages.get().container(Messages.RPT_EXPORT_GROUP_0),
                     I_CmsReport.C_FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -1216,7 +1216,7 @@ public class CmsExport implements Serializable {
                     String.valueOf(i + 1),
                     String.valueOf(l)), I_CmsReport.C_FORMAT_NOTE);
                 report.print(
-                    Messages.get().container(Messages.RPT_EXPORTING_USER_0),
+                    Messages.get().container(Messages.RPT_EXPORT_USER_0),
                     I_CmsReport.C_FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,

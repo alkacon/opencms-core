@@ -33,13 +33,13 @@ package org.opencms.workplace.tools.content;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
-import java.io.*;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -63,7 +63,7 @@ import org.w3c.tidy.Tidy;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsHtmlImportConverter {
 
@@ -227,8 +227,8 @@ public class CmsHtmlImportConverter {
             output.close();
             
         } catch (IOException e) {
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn("Conversion error: " + e.getMessage());
+            if (CmsLog.LOG.isWarnEnabled()) {
+                CmsLog.LOG.warn(Messages.get().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_1, e.getLocalizedMessage()));
             }
             return;
         }

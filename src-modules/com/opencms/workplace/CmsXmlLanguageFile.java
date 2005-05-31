@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2005/05/20 15:12:42 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/05/31 14:39:21 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2005/05/20 15:12:42 $
+ * @version $Revision: 1.3 $ $Date: 2005/05/31 14:39:21 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -140,8 +140,8 @@ public class CmsXmlLanguageFile {
                 // set compatiblity flag for old locales
                 Boolean flag = Boolean.valueOf((String)OpenCms.getRuntimeProperty(C_COMPATIBILITY_OLDLOCALES));
                 m_supportOldLocale = (flag != null)?flag:new Boolean(false);
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Old locale support   : " + (m_supportOldLocale.booleanValue() ? "enabled" : "disabled"));
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(". Old locale support   : " + (m_supportOldLocale.booleanValue() ? "enabled" : "disabled"));
                 }
             }
         }

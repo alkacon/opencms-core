@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2005/05/24 08:13:26 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/05/31 14:39:21 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsHtmlReport extends A_CmsReport {
 
@@ -389,7 +389,7 @@ public class CmsHtmlReport extends A_CmsReport {
         if (!m_writeHtml) {
             if (m_showExceptionStackTracke) {
                 buf.append("aT('");
-                buf.append(key("report.exception"));
+                buf.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
                 exception = CmsStringUtil.substitute(exception, "\\", "\\\\");
                 StringTokenizer tok = new StringTokenizer(exception, "\r\n");
@@ -401,7 +401,7 @@ public class CmsHtmlReport extends A_CmsReport {
                 m_content.add(buf);
             } else {
                 buf.append("aT('");
-                buf.append(key("report.exception"));
+                buf.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
                 buf.append(throwable.toString());
                 buf.append("'); ");
                 m_content.add(buf);
@@ -409,7 +409,7 @@ public class CmsHtmlReport extends A_CmsReport {
         } else {
             if (m_showExceptionStackTracke) {
                 buf.append("<span class='throw'>");
-                buf.append(key("report.exception"));
+                buf.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
                 exception = CmsStringUtil.substitute(exception, "\\", "\\\\");
                 StringTokenizer tok = new StringTokenizer(exception, "\r\n");
@@ -420,7 +420,7 @@ public class CmsHtmlReport extends A_CmsReport {
                 buf.append("</span>");
             } else {
                 buf.append("<span class='throw'>");
-                buf.append(key("report.exception"));
+                buf.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
                 buf.append(throwable.toString());
                 buf.append("</span>");
                 buf.append(getLineBreak());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2005/04/18 21:21:18 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/05/31 14:39:21 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,12 +59,12 @@ import org.apache.log4j.helpers.Loader;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public final class CmsLog {
 
     /** Initialization messages. */
-    public static final String CHANNEL_INIT = "org.opencms.init";
+    private static final String CHANNEL_INIT = "org.opencms.init";
 
     /** Log for initialization messages. */
     public static final Log LOG = LogFactory.getLog(CHANNEL_INIT);

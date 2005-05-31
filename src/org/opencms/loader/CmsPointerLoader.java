@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/05/31 14:39:21 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletResponse;
  * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
 
@@ -159,7 +159,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
      */
     public void initConfiguration() {
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+        if (CmsLog.LOG.isInfoEnabled()) {
             CmsLog.LOG.info(Messages.get().key(
                 Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));            
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
- * Date   : $Date: 2005/05/24 08:13:26 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/05/31 14:39:21 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * This prints all messages in the logfile at INFO level.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsLogReport extends A_CmsReport {
 
@@ -220,7 +220,7 @@ public class CmsLogReport extends A_CmsReport {
     public synchronized void println(Throwable t) {
 
         if (OpenCms.getLog(m_clazz).isInfoEnabled()) {
-            m_buffer.append(key("report.exception"));
+            m_buffer.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
             m_buffer.append(t.getMessage());
             OpenCms.getLog(m_clazz).info(m_buffer.toString(), t);
         }
