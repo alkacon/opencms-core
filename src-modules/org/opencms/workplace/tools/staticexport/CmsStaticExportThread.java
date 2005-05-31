@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/staticexport/Attic/CmsStaticExportThread.java,v $
- * Date   : $Date: 2005/05/16 17:45:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/05/31 15:20:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.ServletException;
  * 
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsStaticExportThread extends A_CmsReportThread {
@@ -82,7 +82,9 @@ public class CmsStaticExportThread extends A_CmsReportThread {
      * @see java.lang.Runnable#run()
      */
     public void run() {
-        getReport().println(getReport().key("report.staticexport_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        
+        getReport().println(org.opencms.staticexport.Messages.get().container(
+            org.opencms.staticexport.Messages.RPT_STATICEXPORT_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
         try {
             OpenCms.getStaticExportManager().exportFullStaticRender(true, getReport());
         } catch (CmsException e) {
@@ -94,11 +96,11 @@ public class CmsStaticExportThread extends A_CmsReportThread {
         }    
      
         // append runtime statistics to report
-        StringBuffer stats = new StringBuffer();
-        stats.append(getReport().key("report.publish_stats"));
-        stats.append(getReport().key("report.publish_stats_duration"));
-        stats.append(getReport().formatRuntime());
-        getReport().println(stats.toString());        
-        getReport().println(getReport().key("report.staticexport_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().print(org.opencms.report.Messages.get().container(
+            org.opencms.report.Messages.RPT_STAT_0));
+        getReport().println(org.opencms.report.Messages.get().container(
+            org.opencms.report.Messages.RPT_STAT_DURATION_1, getReport().formatRuntime()));     
+        getReport().println(org.opencms.staticexport.Messages.get().container(
+            org.opencms.staticexport.Messages.RPT_STATICEXPORT_END_0), I_CmsReport.C_FORMAT_HEADLINE);
     }
 }
