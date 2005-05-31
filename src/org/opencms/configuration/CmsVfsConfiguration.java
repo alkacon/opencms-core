@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/05/19 16:35:47 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/05/31 07:49:55 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -661,8 +661,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     public void setXmlContentTypeManager(CmsXmlContentTypeManager manager) {
 
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
-                Messages.get().key(Messages.INIT_VFS_XML_CONTENT_FINISHED_0)));
+            CmsLog.LOG.info(Messages.get().key(Messages.INIT_VFS_XML_CONTENT_FINISHED_0));
         }
         m_xmlContentTypeManager = manager;
     }
