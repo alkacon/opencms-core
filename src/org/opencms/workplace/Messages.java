@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2005/05/30 14:24:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/05/31 16:28:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -245,9 +245,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PARSE_MULIPART_REQ_FAILED_0 = "LOG_PARSE_MULIPART_REQ_FAILED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_READING_GROUPS_OF_USER_FAILED_1 = "LOG_READING_GROUPS_OF_USER_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READING_VIEW_FOLDER_FAILED_1 = "LOG_READING_VIEW_FOLDER_FAILED_1";

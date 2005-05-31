@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/05/30 14:24:54 $
- * Version: $Revision: 1.119 $
+ * Date   : $Date: 2005/05/31 16:28:47 $
+ * Version: $Revision: 1.120 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.119 $
+ * @version $Revision: 1.120 $
  * 
  * @since 5.1
  */
@@ -511,11 +511,9 @@ public abstract class CmsWorkplace {
                 permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
                     cms.getRequestContext().currentUser());
                 if (LOG.isWarnEnabled()) {
-                    CmsLog.getLog(CmsTree.class).warn(
-                        Messages.get().key(
-                            Messages.LOG_READING_GROUPS_OF_USER_FAILED_1,
-                            cms.getRequestContext().currentUser().getName()),
-                        e);
+                    CmsLog.getLog(CmsTree.class).warn(org.opencms.workplace.explorer.Messages.get()
+                        .key(org.opencms.workplace.explorer.Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, 
+                            cms.getRequestContext().currentUser().getName()), e);
                 }
             }
             if (permissions.getPermissionString().indexOf("+w") != -1) {

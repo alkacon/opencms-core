@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo4.java,v $
- * Date   : $Date: 2005/05/31 15:51:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/05/31 16:29:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
@@ -209,7 +209,8 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
             // close table
             result.append("</table>\n");
         } catch (Throwable t) {
-           LOG.error(Messages.get().key(Messages.ERR_XML_EDITOR_0), t);
+            LOG.error(org.opencms.workplace.editors.Messages.get()
+                .key(org.opencms.workplace.editors.Messages.ERR_XML_EDITOR_0), t);
         }
         return result.toString();
     }
