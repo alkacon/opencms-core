@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsEditUserDialog.java,v $
- * Date   : $Date: 2005/05/31 11:17:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/31 12:52:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,10 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.widgets.A_CmsWidget;
+import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsPasswordWidget;
+import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.9.1
  */
 public class CmsEditUserDialog extends CmsWidgetDialog {
@@ -217,11 +218,13 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
             result.append(createDialogRowsHtml(5, 8));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_PASSWORD_BLOCK_0)));
-            result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(9, 10));
-            result.append(createWidgetTableEnd());
-            result.append(dialogBlockEnd());
+            if (!isOverview()) {
+                result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_PASSWORD_BLOCK_0)));
+                result.append(createWidgetTableStart());
+                result.append(createDialogRowsHtml(9, 10));
+                result.append(createWidgetTableEnd());
+                result.append(dialogBlockEnd());
+            }
         }
 
         // close widget table
@@ -231,6 +234,15 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Checks if the User overview has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the user overview has to be displayed
+     */
+    private boolean isOverview() {
+        return getCurrentToolPath().equals("/users/edit");
+    }
+    
+    /**
      * Creates the list of widgets for this dialog.<p>
      */
     protected void defineWidgets() {
@@ -238,23 +250,41 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         // initialize the user object to use for the dialog
         initUserObject();
 
+        I_CmsWidget widget = new CmsInputWidget();
+        if (isOverview()) {
+            // if in user overview tool disable everything 
+            widget = new CmsDisplayWidget();
+        }
         // widgets to display on the first dialog page
         if (m_user.getId() == null) {
-            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], widget.newInstance()));
         } else {
-            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsInputWidget(
-                A_CmsWidget.DISABLED_CONFIGURATION)));
+            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsDisplayWidget()));
         }
-        addWidget(new CmsWidgetDialogParameter(m_user, "description", "", PAGES[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_user, "address", "", PAGES[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", "", PAGES[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_user, "city", "", PAGES[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_user, "country", "", PAGES[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", PAGES[0], new CmsPasswordWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "confirmation", PAGES[0], new CmsPasswordWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_user, "description", "", PAGES[0], widget.newInstance(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], widget.newInstance()));
+        addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], widget.newInstance()));
+        addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], widget.newInstance()));
+        addWidget(new CmsWidgetDialogParameter(m_user, "address", "", PAGES[0], widget.newInstance(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", "", PAGES[0], widget.newInstance(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_user, "city", "", PAGES[0], widget.newInstance(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_user, "country", "", PAGES[0], widget.newInstance(), 0, 1));
+        if (!isOverview()) {
+            if (m_user.getId() == null) {
+                addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", PAGES[0], new CmsPasswordWidget()));
+                addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "confirmation", PAGES[0], new CmsPasswordWidget()));
+            } else {
+                addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", "", PAGES[0], new CmsPasswordWidget(), 0, 1));
+                addWidget(new CmsWidgetDialogParameter(
+                    m_pwdInfo,
+                    "confirmation",
+                    "",
+                    PAGES[0],
+                    new CmsPasswordWidget(),
+                    0,
+                    1));
+            }
+        }
     }
 
     /**

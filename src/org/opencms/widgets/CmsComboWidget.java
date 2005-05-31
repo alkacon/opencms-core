@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsComboWidget.java,v $
- * Date   : $Date: 2005/05/30 15:47:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/31 12:52:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.StringTokenizer;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.3
  */
 public class CmsComboWidget extends A_CmsWidget {
@@ -248,7 +248,7 @@ public class CmsComboWidget extends A_CmsWidget {
 
         if (m_comboOptions == null) {
             // use the configuration value, with processed macros
-            m_comboOptions = CmsMacroResolver.resolveMacros(getContentConfiguration(), cms, widgetDialog.getMessages());
+            m_comboOptions = CmsMacroResolver.resolveMacros(getConfiguration(), cms, widgetDialog.getMessages());
         }
         if (CmsStringUtil.isEmpty(m_comboOptions)) {
             m_comboOptions = "";

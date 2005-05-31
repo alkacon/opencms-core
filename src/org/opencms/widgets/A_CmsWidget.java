@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/05/30 15:47:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/31 12:52:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
 
@@ -42,16 +41,10 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public abstract class A_CmsWidget implements I_CmsWidget {
-
-    /** String to separate diferent configuration parameters. */
-    public static final String CONFIG_PARAM_SEPARATOR = "#";
-
-    /** Configuration string to disable a widget. */
-    public static final String DISABLED_CONFIGURATION = "disabled";
 
     /** Postfix for melp message locale. */
     static final String HELP_POSTFIX = "help";
@@ -259,29 +252,6 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     }
 
     /**
-     * Removes the disabled flag and returns the rest of the configuration string.<p>
-     * 
-     * @return the configuration string without the disabled flag
-     */
-    protected String getContentConfiguration() {
-
-        if (m_configuration == null) {
-            return "";
-        }
-        String[] configs = CmsStringUtil.splitAsArray(m_configuration, CONFIG_PARAM_SEPARATOR);
-        StringBuffer ret = new StringBuffer(512);
-        for (int i = 0; i < configs.length; i++) {
-            if (!configs[i].equals(DISABLED_CONFIGURATION)) {
-                if (i != 0) {
-                    ret.append(CONFIG_PARAM_SEPARATOR);
-                }
-                ret.append(configs[i]);
-            }
-        }
-        return ret.toString();
-    }
-
-    /**
      * Creates the tags to include external javascript files.<p>
      *  
      * @param fileName the absolute path to the javascript file
@@ -294,24 +264,5 @@ public abstract class A_CmsWidget implements I_CmsWidget {
         result.append(fileName);
         result.append("\"></script>");
         return result.toString();
-    }
-
-    /**
-     * Checks if the disabled flag has been set.<p>
-     * 
-     * @return <code>true</code> if the disabled flag has been set
-     */
-    protected boolean isDisabled() {
-
-        if (m_configuration == null) {
-            return false;
-        }
-        String[] configs = CmsStringUtil.splitAsArray(m_configuration, CONFIG_PARAM_SEPARATOR);
-        for (int i = 0; i < configs.length; i++) {
-            if (configs[i].equals(DISABLED_CONFIGURATION)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

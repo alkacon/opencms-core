@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsInputWidget.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
  * Date   : $Date: 2005/05/31 12:52:06 $
- * Version: $Revision: 1.6 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,15 +39,15 @@ import org.opencms.i18n.CmsEncoder;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  * @since 5.5.0
  */
-public class CmsInputWidget extends A_CmsWidget {
+public class CmsDisplayWidget extends A_CmsWidget {
 
     /**
      * Creates a new input widget.<p>
      */
-    public CmsInputWidget() {
+    public CmsDisplayWidget() {
 
         // empty constructor is required for class registration
         this("");
@@ -58,7 +58,7 @@ public class CmsInputWidget extends A_CmsWidget {
      * 
      * @param configuration the configuration to use
      */
-    public CmsInputWidget(String configuration) {
+    public CmsDisplayWidget(String configuration) {
 
         super(configuration);
     }
@@ -71,13 +71,12 @@ public class CmsInputWidget extends A_CmsWidget {
         String id = param.getId();
 
         StringBuffer result = new StringBuffer(16);
-
+        
         result.append("<td class=\"xmlTd\">");
-        result.append("<input class=\"xmlInput textInput");
-        if (param.hasError()) {
-            result.append(" xmlInputError");
-        }
-        result.append("\"");
+        result.append("<span class=\"xmlInput textInput\" style=\"border: 0px solid black;\">");
+        result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
+        result.append("</span>");
+        result.append("<input type=\"hidden\"");
         result.append(" name=\"");
         result.append(id);
         result.append("\" id=\"");
@@ -95,6 +94,24 @@ public class CmsInputWidget extends A_CmsWidget {
      */
     public I_CmsWidget newInstance() {
 
-        return new CmsInputWidget(getConfiguration());
+        return new CmsDisplayWidget(getConfiguration());
+    }
+    
+    
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#getHelpBubble(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    public String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+
+        return "<td>&nbsp;</td>";
+    }
+    
+    
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#getHelpText(org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    public String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+
+        return "";
     }
 }

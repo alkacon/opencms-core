@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidget.java,v $
- * Date   : $Date: 2005/05/30 15:47:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/05/31 12:52:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.StringTokenizer;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.3
  */
 public class CmsSelectWidget extends A_CmsWidget {
@@ -189,7 +189,7 @@ public class CmsSelectWidget extends A_CmsWidget {
                 m_selectOptions = param.getDefault(cms);
             } else {
                 // use the configuration value, with processed macros
-                m_selectOptions = CmsMacroResolver.resolveMacros(getContentConfiguration(), cms, widgetDialog.getMessages());
+                m_selectOptions = CmsMacroResolver.resolveMacros(getConfiguration(), cms, widgetDialog.getMessages());
             }
         }
         return m_selectOptions;

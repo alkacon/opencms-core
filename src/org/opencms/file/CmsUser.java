@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/05/31 11:17:05 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/05/31 12:52:06 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -260,7 +260,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public static void checkZipCode(String zipcode) {
 
-        if (!CmsStringUtil.validateRegex(zipcode, "[\\w]*", false)) {
+        if (!CmsStringUtil.validateRegex(zipcode, "[\\w]*", true)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_ZIPCODE_VALIDATION_1, zipcode));
         }
     }

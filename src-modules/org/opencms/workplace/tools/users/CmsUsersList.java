@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersList.java,v $
- * Date   : $Date: 2005/05/31 11:17:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/05/31 12:52:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsUsersList extends A_CmsListDialog {
@@ -262,7 +262,7 @@ public class CmsUsersList extends A_CmsListDialog {
                 params.put(CmsEditUserDialog.PARAM_USERID, userId);
                 // set action parameter to initial dialog call
                 params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
-                getToolManager().jspRedirectTool(this, "/users/overview", params);
+                getToolManager().jspRedirectTool(this, "/users/edit/user", params);
             } catch (IOException e) {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_USER_0), e);
@@ -277,7 +277,7 @@ public class CmsUsersList extends A_CmsListDialog {
                 params.put(CmsEditUserDialog.PARAM_USERID, userId);
                 // set action parameter to initial dialog call
                 params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
-                getToolManager().jspRedirectTool(this, "/users/groups", params);
+                getToolManager().jspRedirectTool(this, "/users/edit/groups", params);
             } catch (IOException e) {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_GROUPS_0), e);
@@ -292,7 +292,7 @@ public class CmsUsersList extends A_CmsListDialog {
                 params.put(CmsEditUserDialog.PARAM_USERID, userId);
                 // set action parameter to initial dialog call
                 params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
-                getToolManager().jspRedirectTool(this, "/users/roles", params);
+                getToolManager().jspRedirectTool(this, "/users/edit/roles", params);
             } catch (IOException e) {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_ROLES_0), e);
