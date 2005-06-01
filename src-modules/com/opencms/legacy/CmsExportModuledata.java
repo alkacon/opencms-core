@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/01 12:34:42 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.4 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/01 12:34:42 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -227,12 +227,12 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             exportNode = openExportFile();
 
             // first export the cos folders (ie. channels)               
-            getReport().println(getReport().key("report.export_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            getReport().println(Messages.get().container(Messages.RPT_EXPORT_CHANNELS_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
 
             getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
             // export all the resources
             exportAllResources(exportNode, resourcesToExport);
-            getReport().println(getReport().key("report.export_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);
+            getReport().println(Messages.get().container(Messages.RPT_EXPORT_CHANNELS_END_0), I_CmsReport.C_FORMAT_HEADLINE);
 
             // get the modules to export
             Vector modules = new Vector();
@@ -388,9 +388,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      */
     private void exportCos(Element parent, String classname, Set exportedChannelIds) throws CmsException, SAXException {
         // output something to the report for the data
-        getReport().print(getReport().key("report.export_moduledata_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-        getReport().print("<i>" + classname + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
-        getReport().println(getReport().key("report.dots"), I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().println(Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_1, classname), I_CmsReport.C_FORMAT_HEADLINE);
 
         Iterator keys = exportedChannelIds.iterator();
         // get the subId of the module
@@ -452,7 +450,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         getSaxWriter().writeClose(masters);
         parent.remove(masters);
 
-        getReport().println(getReport().key("report.export_moduledata_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().println(Messages.get().container(Messages.RPT_EXPORT_MODULE_END_0, classname), I_CmsReport.C_FORMAT_HEADLINE);
     }
 
     /**
@@ -469,8 +467,9 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      */
     private void exportCosModule(Element parent, String classname, CmsMasterDataSet dataset, int masterNr, int subId) throws CmsException, SAXException {
         // output something to the report for the resource
-        getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
-        getReport().print("'" + dataset.m_title + "' (id: " + dataset.m_masterId + ")");
+        
+        getReport().print(Messages.get().container(Messages.RPT_EXPORT_WITH_ID_2, 
+            dataset.m_title, dataset.m_masterId), I_CmsReport.C_FORMAT_NOTE);
 
         // the name of the XML-file where the dataset is stored
         String dataSetFile = "dataset_" + subId + "_" + masterNr + ".xml";
@@ -503,8 +502,8 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         }
         // write the XML
         digestElement(parent, master);
-        getReport().print(getReport().key("report.dots"));
-        getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
+        getReport().println(org.opencms.report.Messages.get().container(
+            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosImportExportHandler.java,v $
- * Date   : $Date: 2005/05/17 13:47:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/01 12:34:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.dom4j.Element;
  * Import/export handler implementation for COS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:30 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/01 12:34:42 $
  * @since 5.3
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -100,19 +100,23 @@ public class CmsCosImportExportHandler extends Object implements I_CmsImportExpo
      * @see org.opencms.importexport.I_CmsImportExportHandler#exportData(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport)
      */
     public void exportData(CmsObject cms, I_CmsReport report) throws CmsImportExportException {
-        report.println(report.key("report.export_db_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(org.opencms.importexport.Messages.get().container(
+            org.opencms.importexport.Messages.RPT_EXPORT_DB_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
         new CmsExportModuledata(cms, getFileName(), getExportChannels(), getExportModules(), report);
-        report.println(report.key("report.export_db_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(org.opencms.importexport.Messages.get().container(
+            org.opencms.importexport.Messages.RPT_EXPORT_DB_END_0), I_CmsReport.C_FORMAT_HEADLINE);
     }
 
     /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#importData(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.report.I_CmsReport)
      */
     public synchronized void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsXmlException, CmsImportExportException {
-        report.println(report.key("report.import_db_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(org.opencms.importexport.Messages.get().container(
+            org.opencms.importexport.Messages.RPT_IMPORT_DB_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
         CmsImportModuledata cosImport = new CmsImportModuledata(cms, importFile, importPath, report);
         cosImport.importResources();
-        report.println(report.key("report.import_db_end"), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(org.opencms.importexport.Messages.get().container(
+            org.opencms.importexport.Messages.RPT_IMPORT_DB_END_0), I_CmsReport.C_FORMAT_HEADLINE);
     }    
 
     /**

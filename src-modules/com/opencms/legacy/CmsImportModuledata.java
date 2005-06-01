@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2005/06/01 12:34:42 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.6 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.7 $ $Date: 2005/06/01 12:34:42 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -115,10 +115,10 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     public synchronized void importResources() throws CmsImportExportException, CmsXmlException {
         // initialize the import
         openImportFile();
-        m_report.println("Import Version "+m_importVersion, I_CmsReport.C_FORMAT_NOTE);
+        m_report.println(Messages.get().container(Messages.RPT_IMPORT_VERSION_1, new Integer(m_importVersion)), I_CmsReport.C_FORMAT_NOTE);
         try {
             // first import the channels
-            m_report.println(m_report.key("report.import_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(Messages.get().container(Messages.RPT_IMPORT_CHANNELS_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
             //importAllResources(null, null, null, null, null);
             // now find the correct import implementation    
             m_cms.getRequestContext().saveSiteRoot();
@@ -134,12 +134,12 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
                      }
                  }   
             m_cms.getRequestContext().restoreSiteRoot();
-            m_report.println(m_report.key("report.import_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(Messages.get().container(Messages.RPT_IMPORT_CHANNELS_END_0), I_CmsReport.C_FORMAT_HEADLINE);
  
             // now import the moduledata
-            m_report.println(m_report.key("report.import_moduledata_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(Messages.get().container(Messages.RPT_IMPORT_MODULE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
             importModuleMasters();
-            m_report.println(m_report.key("report.import_moduledata_end"), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(Messages.get().container(Messages.RPT_IMPORT_MODULE_END_0), I_CmsReport.C_FORMAT_HEADLINE);
         } catch (CmsXmlException e) { 
             
             throw e;
@@ -204,7 +204,8 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
                 String classname = (String)availableModules.get(subid);
                 if ((classname != null) && !("".equals(classname.trim()))) {
                     // import the dataset, the channelrelation and the media
-                    m_report.print(" ( " + (i + 1) + " / " + length + " ) ", I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
+                        String.valueOf(i + 1), String.valueOf(length)), I_CmsReport.C_FORMAT_NOTE); 
                     importMaster(subid, classname, currentMasterElement);
                 }
             }
@@ -226,8 +227,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         Vector channelRelations = new Vector();
         Vector masterMedia = new Vector();
         
-        m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
-
+        m_report.print(org.opencms.importexport.Messages.get().container(
+            org.opencms.importexport.Messages.RPT_IMPORTING_0), I_CmsReport.C_FORMAT_NOTE);
+        
         // try to get the dataset
         try {
             int subIdInt = Integer.parseInt(subId);
@@ -237,8 +239,10 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             throw new CmsLegacyException("Cannot get dataset ", e);
         }
         
-        m_report.print("'" + CmsEncoder.escapeHtml(newDataset.m_title) + "' (" + classname + ")");
-        m_report.print(m_report.key("report.dots"));
+        m_report.print(Messages.get().container(Messages.RPT_ARGUMENT_2, 
+            CmsEncoder.escapeHtml(newDataset.m_title), classname));
+        m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));   
+        
 
         // try to get the channelrelations
         try {
@@ -275,7 +279,8 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             throw new CmsLegacyException("Cannot write master ", e);
         }
         
-        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+        m_report.println(org.opencms.report.Messages.get().container(
+            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
     }
 
     /**

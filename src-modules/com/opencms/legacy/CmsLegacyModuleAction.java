@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2005/05/31 15:51:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/01 12:34:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -237,10 +237,9 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
                             new Long(publishDate),
                             changedResources,
                             changedModuleMasters});
-                } catch (ClassNotFoundException ec) {
-                    report.println(report.key("report.publish_class_for_module_does_not_exist_1")
-                        + (String)legacyPublishClasses.get(i)
-                        + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
+                } catch (ClassNotFoundException ec) {      
+                    report.println(Messages.get().container(Messages.RPT_NONEXISTENT_PUBLISH_CLASS_FOR_MODULE_1, 
+                        legacyPublishClasses.get(i)), I_CmsReport.C_FORMAT_WARNING);
                     if (CmsLog.getLog(this).isErrorEnabled()) {
                         CmsLog.getLog(this).error(
                             "Error calling publish class of module " + (String)legacyPublishClasses.get(i),
