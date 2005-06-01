@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/05/31 16:30:07 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/01 14:37:21 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,21 +44,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCEPT_TASK_1 = "ERR_ACCEPT_TASK_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CLOSE_PROJECT_DRIVER_0 = "ERR_CLOSE_PROJECT_DRIVER_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CLOSE_USER_DRIVER_0 = "ERR_CLOSE_USER_DRIVER_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CLOSE_VFS_DRIVER_0 = "ERR_CLOSE_VFS_DRIVER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CLOSE_WORKFLOW_DRIVER_0 = "ERR_CLOSE_WORKFLOW_DRIVER_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CLOSE_BACKUP_DRIVER_0 = "ERR_CLOSE_BACKUP_DRIVER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCESS_FILE_AS_FOLDER_1 = "ERR_ACCESS_FILE_AS_FOLDER_1";
@@ -110,6 +95,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHANGE_USER_TYPE_WITH_NAME_1 = "ERR_CHANGE_USER_TYPE_WITH_NAME_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLOSE_BACKUP_DRIVER_0 = "ERR_CLOSE_BACKUP_DRIVER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLOSE_PROJECT_DRIVER_0 = "ERR_CLOSE_PROJECT_DRIVER_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLOSE_USER_DRIVER_0 = "ERR_CLOSE_USER_DRIVER_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLOSE_VFS_DRIVER_0 = "ERR_CLOSE_VFS_DRIVER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CLOSE_WORKFLOW_DRIVER_0 = "ERR_CLOSE_WORKFLOW_DRIVER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CONSTRAINT_DELETE_GROUP_DEFAULT_1 = "ERR_CONSTRAINT_DELETE_GROUP_DEFAULT_1";
@@ -343,7 +343,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_CHILD_GROUP_NO_PERMISSION_0 = "ERR_READ_CHILD_GROUP_NO_PERMISSION_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_CHILD_RESOURCES_3 = "ERR_READ_CHILD_RESOURCES_3";
+    public static final String ERR_READ_CHILD_RESOURCES_1 = "ERR_READ_CHILD_RESOURCES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_FILE_2 = "ERR_READ_FILE_2";
@@ -376,7 +376,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_OWNER_FOR_TASKLOG_1 = "ERR_READ_OWNER_FOR_TASKLOG_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_PATH_3 = "ERR_READ_PATH_3";
+    public static final String ERR_READ_PATH_2 = "ERR_READ_PATH_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_PROJECT_FOR_ID_1 = "ERR_READ_PROJECT_FOR_ID_1";
@@ -655,6 +655,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_USERS_GROUP_1 = "INIT_USERS_GROUP_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_1 = "LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_CLOSE_CONN_POOL_ERROR_1 = "LOG_CLOSE_CONN_POOL_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
@@ -674,9 +677,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_DRIVER_MANAGER_START_0 = "LOG_ERR_DRIVER_MANAGER_START_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_READ_PROJECT_RESOURCES_1 = "LOG_ERR_READ_PROJECT_RESOURCES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_GET_TIMESTAMP_2 = "LOG_GET_TIMESTAMP_2";

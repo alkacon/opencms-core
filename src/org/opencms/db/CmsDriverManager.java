@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/05/31 16:30:07 $
- * Version: $Revision: 1.516 $
+ * Date   : $Date: 2005/06/01 14:37:21 $
+ * Version: $Revision: 1.517 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.516 $
+ * @version $Revision: 1.517 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3626,7 +3626,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             projectResources = readProjectResources(dbc, dbc.currentProject());
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_ERR_READ_PROJECT_RESOURCES_1, e));
+                LOG.error(Messages.get().key(Messages.LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_1, resourcename), e);
             }
             return false;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/05/28 17:17:17 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2005/06/01 14:37:21 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -3026,10 +3026,8 @@ public final class CmsSecurityManager {
             result = m_driverManager.readChildResources(dbc, resource, filter, getFolders, getFiles);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_CHILD_RESOURCES_3,
-                context.getSitePath(resource),
-                String.valueOf(getFolders),
-                String.valueOf(getFiles)), e);
+                Messages.ERR_READ_CHILD_RESOURCES_1,
+                context.getSitePath(resource)), e);
         } finally {
             dbc.clear();
         }
@@ -3397,10 +3395,8 @@ public final class CmsSecurityManager {
             result = m_driverManager.readPath(dbc, projectId, path, filter);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_PATH_3,
-                new Integer(projectId),
-                path,
-                String.valueOf(filter)), e);
+                Messages.ERR_READ_PATH_2, new Integer(projectId),
+                path), e);
         } finally {
             dbc.clear();
         }
