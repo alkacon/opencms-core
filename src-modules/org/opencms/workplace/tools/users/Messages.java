@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/Messages.java,v $
- * Date   : $Date: 2005/05/31 11:17:05 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/01 15:46:33 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,51 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_HELP_0 = "GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_HELP_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_GROUP_0 = "GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_GROUP_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_GROUPS_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_GROUPS_ADMIN_TOOL_NAVBARNAME_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_COLS_ACTIONS_0 = "GUI_USERS_LIST_COLS_ACTIONS_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_NAME_0 = "GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_NAME_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_ROLES_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_ROLES_ADMIN_TOOL_NAVBARNAME_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_ADMIN_TOOL_NAVBARNAME_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_MACTIVATE_CONF_0 = "GUI_USERS_LIST_ACTION_MACTIVATE_CONF_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_EDITUSER_NAME_0 = "GUI_USERS_LIST_ACTION_EDITUSER_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_EDITUSER_HELP_0 = "GUI_USERS_LIST_ACTION_EDITUSER_HELP_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_MACTIVATE_NAME_0 = "GUI_USERS_LIST_ACTION_MACTIVATE_NAME_0";
+            
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_COLS_ACTIONS_HELP_0 = "GUI_USERS_LIST_COLS_ACTIONS_HELP_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_EDITUSER_CONF_0 = "GUI_USERS_LIST_ACTION_EDITUSER_CONF_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_LIST_ACTION_MACTIVATE_HELP_0 = "GUI_USERS_LIST_ACTION_MACTIVATE_HELP_0";
+    
     /** Message contant for key in the resource bundle. */
     public static final String ERR_ACTIVATE_SELECTED_USERS_0 = "ERR_ACTIVATE_SELECTED_USERS_0";
 
@@ -308,9 +353,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_COLS_USERNAME_0 = "GUI_USERS_LIST_COLS_USERNAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_DEFACTION_EDIT_CONF_0 = "GUI_USERS_LIST_DEFACTION_EDIT_CONF_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_DEFACTION_EDIT_HELP_0 = "GUI_USERS_LIST_DEFACTION_EDIT_HELP_0";
