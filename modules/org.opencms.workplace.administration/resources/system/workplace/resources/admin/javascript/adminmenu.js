@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/adminmenu.js,v $
- * Date   : $Date: 2005/06/01 13:25:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/01 15:58:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ function openView(id, url, frame) {
         } else {
             finalUrl = finalUrl + "?";
         }
-        finalUrl = finalUrl + "action=cancel&closelink=" + url;
+        finalUrl = finalUrl + "action=cancel&closelink=" + encodeURIComponent(url);
     }
     parent.frames[frame].location.href = finalUrl;
     return false;

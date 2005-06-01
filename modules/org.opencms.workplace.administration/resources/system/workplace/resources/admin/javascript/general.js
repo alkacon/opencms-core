@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/general.js,v $
- * Date   : $Date: 2005/06/01 13:27:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ function openPageIn(url, target) {
         } else {
             finalUrl = finalUrl + "?";
         }
-        finalUrl = finalUrl + "action=cancel&closelink=" + url;
+        finalUrl = finalUrl + "action=cancel&closelink=" + encodeURIComponent(url);
     }
     target.location.href = finalUrl;
 }
