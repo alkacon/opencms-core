@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2005/05/20 12:48:02 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/01 14:21:17 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -438,7 +438,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         m_parameters.put(paramName, paramValue);
         if (LOG.isDebugEnabled()) {
             LOG.debug(org.opencms.configuration.Messages.get().key(
-                org.opencms.configuration.Messages.LOG_ADD_CONFIG_PARAM_CALLED_3,
+                org.opencms.configuration.Messages.LOG_ADD_CONFIG_PARAM_3,
                 paramName,
                 paramValue,
                 this));
