@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/01 15:14:28 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
@@ -183,9 +183,7 @@ public class CmsXmlContentTypeManager {
         try {
             type = addContentType(classClazz);
         } catch (Exception e) {
-            LOG.error(
-                Messages.get().key(Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1, classClazz.getName()),
-                e);
+            LOG.error(Messages.get().key(Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1, classClazz.getName()), e);
             return;
         }
 

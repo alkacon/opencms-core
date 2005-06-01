@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2005/05/20 15:12:41 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/01 15:14:28 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
@@ -100,9 +100,7 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
             try {
                 req.setCharacterEncoding(encoding);
             } catch (UnsupportedEncodingException e) {
-                LOG.error(
-                    Messages.get().key(Messages.ERR_UNSUPPORTED_REQUEST_ENCODING_1, encoding),
-                    e);
+                LOG.error(Messages.get().key(Messages.ERR_UNSUPPORTED_REQUEST_ENCODING_1, encoding), e);
             }
         }
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/05/30 15:17:51 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2005/06/01 15:14:28 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -389,9 +389,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             }
         } catch (FileNotFoundException fnfe) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(
-                    Messages.get().key(Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1, filename),
-                    fnfe);
+                LOG.error(Messages.get().key(Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1, filename), fnfe);
             }
             m_report.println(fnfe);
         } catch (IOException ioe) {

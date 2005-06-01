@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2005/05/30 15:20:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/01 15:14:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * Provides methods to get the editor information for the editor manager.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.1
  */
@@ -315,12 +315,9 @@ public class CmsWorkplaceEditorConfiguration {
         setValidConfiguration(false);
         if (LOG.isErrorEnabled()) {
             if (t == null) {
-               LOG.error(
-                    Messages.get().key(Messages.LOG_EDITOR_CONFIG_ERROR_1, message));
+               LOG.error(Messages.get().key(Messages.LOG_EDITOR_CONFIG_ERROR_1, message));
             } else {
-                LOG.error(
-                    Messages.get().key(Messages.LOG_EDITOR_CONFIG_ERROR_1, message),
-                    t);
+                LOG.error(Messages.get().key(Messages.LOG_EDITOR_CONFIG_ERROR_1, message), t);
             }
         }
     }
