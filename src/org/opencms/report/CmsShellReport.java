@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2005/05/24 08:13:26 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/01 12:36:12 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.report;
 
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.Locale;
@@ -41,8 +40,9 @@ import java.util.Locale;
  * 
  * It stores nothing. It just prints everthing to <code>System.out</code>.
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.13 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com) 
+ * @author Jan Baudisch (j.baudisch@alkacon.com) 
+ * @version $Revision: 1.14 $
  */
 public class CmsShellReport extends A_CmsReport {
 
@@ -78,34 +78,8 @@ public class CmsShellReport extends A_CmsReport {
         return "";
     }
 
-    
     /**
-     * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer)
-     */
-    public synchronized void print(CmsMessageContainer container) {
-
-        print(container.key(getLocale()), C_FORMAT_DEFAULT);
-    }
-    
-
-    /**
-     * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer, int)
-     */
-    public synchronized void print(CmsMessageContainer container, int format) {
-
-        print(container.key(getLocale()), format);
-    }
-
-    /**
-     * @see org.opencms.report.I_CmsReport#print(java.lang.String)
-     */
-    public synchronized void print(String value) {
-
-        this.print(value, C_FORMAT_DEFAULT);
-    }
-
-    /**
-     * @see org.opencms.report.I_CmsReport#print(java.lang.String, int)
+     * @see org.opencms.report.A_CmsReport#print(java.lang.String, int)
      */
     public synchronized void print(String value, int format) {
 
@@ -144,58 +118,6 @@ public class CmsShellReport extends A_CmsReport {
     public synchronized void println() {
 
         System.out.println();
-    }
-    
-    /**
-     * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer)
-     */
-    public synchronized void println(CmsMessageContainer container) {
-
-        println(container.key(getLocale()), C_FORMAT_DEFAULT);
-    }
-    
-
-    /**
-     * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer, int)
-     */
-    public synchronized void println(CmsMessageContainer container, int format) {
-
-        println(container.key(getLocale()), format);
-    }
-
-    /**
-     * @see org.opencms.report.I_CmsReport#println(java.lang.String)
-     */
-    public synchronized void println(String value) {
-
-        this.println(value, C_FORMAT_DEFAULT);
-    }
-
-    /**
-     * @see org.opencms.report.I_CmsReport#println(java.lang.String, int)
-     */
-    public synchronized void println(String value, int format) {
-
-        StringBuffer buf;
-        switch (format) {
-            case C_FORMAT_HEADLINE:
-                buf = new StringBuffer();
-                buf.append("------ ");
-                buf.append(value);
-                System.out.println(buf);
-                break;
-            case C_FORMAT_WARNING:
-                buf = new StringBuffer();
-                buf.append("   !!! ");
-                buf.append(value);
-                System.out.println(buf);
-                break;
-            case C_FORMAT_NOTE:
-            case C_FORMAT_OK:
-            case C_FORMAT_DEFAULT:
-            default:
-                System.out.println(value);
-        }
     }
     
     /**

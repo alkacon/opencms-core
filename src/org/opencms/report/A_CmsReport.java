@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/01 12:36:12 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.report;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 
@@ -43,7 +44,8 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
+ * @version $Revision: 1.13 $
  */
 public abstract class A_CmsReport implements I_CmsReport {
 
@@ -134,7 +136,42 @@ public abstract class A_CmsReport implements I_CmsReport {
         // if not found, check in 
         return CmsMessages.formatUnknownKey(keyName);
     }
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer)
+     */
+    public synchronized void print(CmsMessageContainer container) {
 
+        print(container.key(getLocale()), C_FORMAT_DEFAULT);
+    }
+    
+
+    /**
+     * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer, int)
+     */
+    public synchronized void print(CmsMessageContainer container, int format) {
+
+        print(container.key(getLocale()), format);
+    }
+    
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer)
+     */
+    public synchronized void println(CmsMessageContainer container) {
+
+        println(container.key(getLocale()), C_FORMAT_DEFAULT);
+    }
+    
+
+    /**
+     * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer, int)
+     */
+    public synchronized void println(CmsMessageContainer container, int format) {
+
+        println(container.key(getLocale()), format);
+    }
+    
     /**
      * @see org.opencms.report.I_CmsReport#resetRuntime()
      */
@@ -153,5 +190,51 @@ public abstract class A_CmsReport implements I_CmsReport {
         m_starttime = System.currentTimeMillis();
         m_messages = new ArrayList();
         m_locale = locale;
+    }
+
+    /**
+     * Prints a String to the report.<p>
+     *
+     * @param value the String to add
+     */
+    protected synchronized void print(String value) {
+
+        print(value, C_FORMAT_DEFAULT);
+    }
+    
+    /**
+     * Prints a String to the report, using the indicated formatting.<p>
+     * 
+     * Use the contants starting with <code>C_FORMAT</code> from this interface
+     * to indicate which formatting to use.<p>
+     *
+     * @param value the message container to add
+     * @param format the formatting to use for the output
+     */
+    protected abstract void print(String value, int format);
+    
+    /**
+     * Prints a String with line break to the report.<p>
+     * 
+     * @param value the message container to add
+     */
+    protected synchronized void println(String value) {
+
+        println(value, C_FORMAT_DEFAULT);
+    }
+    
+    /**
+     * Prints a String with line break to the report, using the indicated formatting.<p>
+     * 
+     * Use the contants starting with <code>C_FORMAT</code> from this interface
+     * to indicate which formatting to use.<p>
+     *
+     * @param value the String to add
+     * @param format the formatting to use for the output
+     */
+    protected synchronized void println(String value, int format) {
+
+        print(value, format);
+        println();
     }
 }

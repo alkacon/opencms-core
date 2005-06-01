@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2005/05/25 07:29:32 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/01 12:36:12 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,8 @@ import java.util.Locale;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.18 $
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
+ * @version $Revision: 1.19 $
  */
 public interface I_CmsReport {
         
@@ -163,24 +164,6 @@ public interface I_CmsReport {
      * @param format the formatting to use for the output
      */
     void print(CmsMessageContainer container, int format);  
-
-    /**
-     * Prints a String to the report.<p>
-     * 
-     * @param value the message container to add
-     */
-    void print(String value);
-
-    /**
-     * Prints a String to the report, using the indicated formatting.<p>
-     * 
-     * Use the contants starting with <code>C_FORMAT</code> from this interface
-     * to indicate which formatting to use.<p>
-     *
-     * @param value the message container to add
-     * @param format the formatting to use for the output
-     */
-    void print(String value, int format);
     
     /**
      * Adds a line break to the report.<p>
@@ -204,24 +187,6 @@ public interface I_CmsReport {
      * @param format the formatting to use for the output
      */
     void println(CmsMessageContainer container, int format);  
-    
-    /**
-     * Prints a String with line break to the report.<p>
-     *
-     * @param value the String to add
-     */
-    void println(String value);
-
-    /**
-     * Prints a String with line break to the report, using the indicated formatting.<p>
-     * 
-     * Use the contants starting with <code>C_FORMAT</code> from this interface
-     * to indicate which formatting to use.<p>
-     *
-     * @param value the String to add
-     * @param format the formatting to use for the output
-     */
-    void println(String value, int format);
     
     /**
      * Adds an Exception to the report, ensuring that the Exception content is
