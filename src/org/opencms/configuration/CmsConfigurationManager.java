@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2005/05/19 16:46:04 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/01 13:03:17 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -359,7 +359,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * 
      * @param clazz the configuration class to write the XML for
      * @throws IOException in case of I/O errors while writing
-     * @throws CmsConfigurationException in case the given class is not a valid configuration classe
+     * @throws CmsConfigurationException if the given class is not a valid configuration class
      */
     public void writeConfiguration(Class clazz) throws IOException, CmsConfigurationException {
 

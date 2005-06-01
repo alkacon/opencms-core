@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Messages.java,v $
- * Date   : $Date: 2005/05/19 16:46:04 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/01 13:03:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -160,7 +160,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_WORKPLACE_INIT_FINISHED_0 = "INIT_WORKPLACE_INIT_FINISHED_0";
     
     /** Constant for message LOG_ADD_CONFIG_PARAM_CALLED_3. */
-    public static final String LOG_ADD_CONFIG_PARAM_CALLED_3 = "LOG_ADD_CONFIG_PARAM_CALLED_3";
+    public static final String LOG_ADD_CONFIG_PARAM_3 = "LOG_ADD_CONFIG_PARAM_3";
     
     /** Constant for message LOG_ADD_CONFIG_PARAM_CALLED_3. */
     public static final String LOG_CACHE_DTD_SYSTEM_ID_1 = "LOG_CACHE_DTD_SYSTEM_ID_1";    
