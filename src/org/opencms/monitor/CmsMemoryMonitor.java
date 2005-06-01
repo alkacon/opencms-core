@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/06/01 09:17:53 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.49 $ $Date: 2005/04/30 11:15:38 $
+ * @version $Revision: 1.50 $ $Date: 2005/06/01 09:17:53 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -839,66 +839,26 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (warning) {
             m_lastLogWarning = System.currentTimeMillis();
             m_warningLoggedSinceLastStatus = true;
-            LOG.warn(
-                " W A R N I N G Memory consumption of "
-                    + m_memoryCurrent.getUsage()
-                    + "% has reached a critical level"
-                    + " ("
-                    + m_maxUsagePercent
-                    + "% configured)");
+            LOG.warn(Messages.get().key(Messages.LOG_MM_WARNING_MEM_CONSUME_2, new Long(m_memoryCurrent.getUsage()), 
+                new Integer(m_maxUsagePercent)));
         } else {
             m_warningLoggedSinceLastStatus = false;
             m_lastLogStatus = System.currentTimeMillis();
         }
 
-        String memStatus = "Memory (current) max: "
-            + m_memoryCurrent.getMaxMemory()
-            + " mb  "
-            + "total: "
-            + m_memoryCurrent.getTotalMemory()
-            + " mb  "
-            + "free: "
-            + m_memoryCurrent.getFreeMemory()
-            + " mb  "
-            + "used: "
-            + m_memoryCurrent.getUsedMemory()
-            + " mb  "
-            + "percent: "
-            + m_memoryCurrent.getUsage()
-            + "%  "
-            + "limit: "
-            + m_maxUsagePercent
-            + "%  ";
-
-        String avgStatus = "Memory (average) max: "
-            + m_memoryAverage.getMaxMemory()
-            + " mb  "
-            + "total: "
-            + m_memoryAverage.getTotalMemory()
-            + " mb  "
-            + "free: "
-            + m_memoryAverage.getFreeMemory()
-            + " mb  "
-            + "used: "
-            + m_memoryAverage.getUsedMemory()
-            + " mb  "
-            + "percent: "
-            + m_memoryAverage.getUsage()
-            + "%  "
-            + "count: "
-            + m_memoryAverage.getCount();
-        
         if (warning) {
-            LOG.warn(memStatus);
+            LOG.warn(Messages.get().key(Messages.LOG_MM_WARNING_MEM_STATUS_6, new Object[] {
+                new Long(m_memoryCurrent.getMaxMemory()),
+                new Long(m_memoryCurrent.getTotalMemory()),
+                new Long(m_memoryCurrent.getFreeMemory()),
+                new Long(m_memoryCurrent.getUsedMemory()), 
+                new Long(m_memoryCurrent.getUsage()),
+                new Integer(m_maxUsagePercent)}));
         } else {
 
             m_logCount++;
-            LOG.info(
-                "Memory monitor log for server "
-                    + OpenCms.getSystemInfo().getServerName().toUpperCase()
-                    + " ("
-                    + m_logCount
-                    + ")");
+            LOG.info(Messages.get().key(Messages.LOG_MM_LOG_INFO_2, 
+                OpenCms.getSystemInfo().getServerName().toUpperCase(), String.valueOf(m_logCount)));
 
             List keyList = Arrays.asList(m_monitoredObjects.keySet().toArray());
             Collections.sort(keyList);
@@ -914,45 +874,47 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 PrintfFormat name1 = new PrintfFormat("%-80s");
                 PrintfFormat name2 = new PrintfFormat("%-50s");
                 PrintfFormat form = new PrintfFormat("%9s");
-                LOG.info(
-                    "    "
-                        + "Monitored: "
-                        + name1.sprintf(key)
-                        + " "
-                        + "Type: "
-                        + name2.sprintf(obj.getClass().getName())
-                        + " "
-                        + "Entries: "
-                        + form.sprintf(getItems(obj))
-                        + " "
-                        + "Limit: "
-                        + form.sprintf(getLimit(obj))
-                        + " "
-                        + "Size: "
-                        + form.sprintf(Long.toString(size)));
+                LOG.info(Messages.get().key(Messages.LOG_MM_NOWARN_STATUS_5, new Object[] {
+                    name1.sprintf(key), 
+                    name2.sprintf(obj.getClass().getName()),
+                    form.sprintf(getItems(obj)), 
+                    form.sprintf(getLimit(obj)),
+                    form.sprintf(Long.toString(size))}));
             }
-            memStatus += "size monitored: " + totalSize + " (" + totalSize / 1048576 + " mb)";
             
-            LOG.info(memStatus);
-            LOG.info(avgStatus);
+            LOG.info(
+                Messages.get().key(Messages.LOG_MM_WARNING_MEM_STATUS_6, new Object[] {
+                    new Long(m_memoryCurrent.getMaxMemory()),
+                    new Long(m_memoryCurrent.getTotalMemory()),
+                    new Long(m_memoryCurrent.getFreeMemory()),
+                    new Long(m_memoryCurrent.getUsedMemory()), 
+                    new Long(m_memoryCurrent.getUsage()),
+                    new Integer(m_maxUsagePercent), 
+                    new Long(totalSize),
+                    new Long(totalSize / 1048576)
+                })
+
+            );
+            LOG.info(Messages.get().key(Messages.LOG_MM_WARNING_MEM_STATUS_AVG_6, new Object[] {
+                new Long(m_memoryAverage.getMaxMemory()),
+                new Long(m_memoryAverage.getTotalMemory()),
+                new Long(m_memoryAverage.getFreeMemory()),
+                new Long(m_memoryAverage.getUsedMemory()), 
+                new Long(m_memoryAverage.getUsage()),
+                new Integer(m_memoryAverage.getCount())}));
 
             CmsSessionManager sm = OpenCms.getSessionManager();
 
             if (sm != null) {
-                LOG.info(
-                    "Sessions users: "
-                        + sm.getSessionCountAuthenticated()
-                        + " current: "
-                        + sm.getSessionCountCurrent()
-                        + " total: "
-                        + sm.getSessionCountTotal());
+                LOG.info(Messages.get().key(Messages.LOG_MM_SESSION_STAT_3, 
+                    String.valueOf(sm.getSessionCountAuthenticated()), String.valueOf(sm.getSessionCountCurrent()), 
+                    String.valueOf(sm.getSessionCountTotal())));
             }
             sm = null;
             
-            LOG.info("OpenCms startup time was: " 
-                + CmsDateUtil.getDateTimeShort(OpenCms.getSystemInfo().getStartupTime())
-                + " - current runtime is: "
-                + CmsStringUtil.formatRuntime(OpenCms.getSystemInfo().getRuntime()));            
+            LOG.info(Messages.get().key(Messages.LOG_MM_STARTUP_TIME_2, 
+                CmsDateUtil.getDateTimeShort(OpenCms.getSystemInfo().getStartupTime()), 
+                CmsStringUtil.formatRuntime(OpenCms.getSystemInfo().getRuntime())));            
         }
     }
 }
