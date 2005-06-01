@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/A_CmsModuleAction.java,v $
- * Date   : $Date: 2005/05/31 15:51:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/01 07:00:49 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 
 import org.apache.commons.logging.Log;
