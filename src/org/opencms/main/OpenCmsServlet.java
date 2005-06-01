@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/05/23 16:21:44 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/06/01 07:27:25 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
@@ -159,7 +159,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 } catch (CmsException e) {
                     // unlikley to happen 
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn("Error initializing CmsObject in " + name + " handler for '" + path + "'", e);
+                        LOG.warn(Messages.get().key(Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2, name, path), e);
                     }
                 }
                 if (exportData != null) {
@@ -171,7 +171,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                             res.setStatus(OpenCms.getStaticExportManager().export(exportReq, res, cms, exportData));
                         } catch (Throwable t) {
                             if (LOG.isWarnEnabled()) {
-                                LOG.warn("Error exporting " + exportData, t);
+                                LOG.warn(Messages.get().key(Messages.LOG_ERROR_EXPORT_1, exportData), t);
                             }
                             openErrorHandler(req, res, errorCode);
                         }
@@ -251,7 +251,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         } catch (CmsException e) {
             // unlikely to happen, comment: that's what they all say
             CmsMessageContainer container = Messages.get().container(
-                Messages.LOG_INIT_CMSOBJECT_IN_ERROR_HANDLER_2,
+                Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2,
                 new Integer(errorCode),
                 handlerUri);
             if (LOG.isWarnEnabled()) {

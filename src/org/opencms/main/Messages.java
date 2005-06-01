@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/05/31 16:30:07 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/01 07:27:25 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -251,8 +251,11 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_WRITING_CONFIG_1 = "LOG_ERROR_WRITING_CONFIG_1";
 
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_EXPORT_1  = "LOG_ERROR_EXPORT_1";
+    
 /** Message contant for key in the resource bundle. */
-public static final String LOG_INIT_CMSOBJECT_IN_ERROR_HANDLER_2 = "LOG_INIT_CMSOBJECT_IN_ERROR_HANDLER_2";
+public static final String LOG_INIT_CMSOBJECT_IN_HANDLER_2  = "LOG_INIT_CMSOBJECT_IN_HANDLER_2";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_INIT_FAILURE_MESSAGE_1 = "LOG_INIT_FAILURE_MESSAGE_1";
