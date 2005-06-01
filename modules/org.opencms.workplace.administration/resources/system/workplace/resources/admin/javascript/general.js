@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/general.js,v $
- * Date   : $Date: 2005/05/20 10:37:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/01 13:27:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,31 @@ function openPage(url) {
 }
 
 /*
+ * Removes a parameter an its value from a given url.
+ */
+function removeParam(url, param) {
+    var iniPos = url.indexOf("&" + param + "=");
+    if (iniPos > -1) {
+       var endPos = url.indexOf("&", iniPos + 1);
+       ret = url.substring(0, iniPos);
+       if (endPos > -1) {
+          ret = ret + url.substring(endPos);
+       }
+       return ret;
+    }
+    iniPos = url.indexOf("?" + param + "=");
+    if (iniPos > -1) {
+       var endPos = url.indexOf("&", iniPos + 1);
+       ret = url.substring(0, iniPos);
+       if (endPos > -1) {
+          ret = ret + "?" + url.substring(endPos + 1);
+       }
+       return ret;
+    }
+    return url;
+}
+
+/*
  * Opens a new page in the given target frame.
  * It also shows the loading screen during loading
  */
@@ -60,6 +85,8 @@ function openPageIn(url, target) {
        finalUrl = url;
     } else {
         finalUrl = target.location.href;
+        finalUrl = removeParam(finalUrl, "action");
+        finalUrl = removeParam(finalUrl, "closelink");
         if (finalUrl.indexOf("?")>-1) {
             finalUrl = finalUrl + "&";
         } else {
