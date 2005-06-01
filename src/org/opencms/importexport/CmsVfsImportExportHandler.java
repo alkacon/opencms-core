@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2005/05/31 15:44:36 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/01 12:34:26 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.dom4j.Element;
  * Import/export handler implementation for VFS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2005/05/31 15:44:36 $
+ * @version $Revision: 1.11 $ $Date: 2005/06/01 12:34:26 $
  * @since 5.3
  */
 public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
@@ -162,12 +162,12 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     throws CmsImportExportException, CmsXmlException, CmsRoleViolationException {
 
         report.println(
-            Messages.get().container(Messages.RPT_IMPORT_BEGIN_0),
+            Messages.get().container(Messages.RPT_IMPORT_DB_BEGIN_0),
             I_CmsReport.C_FORMAT_HEADLINE);
         CmsImport vfsImport = new CmsImport(cms, importFile, importPath, report);
         vfsImport.importResources();
         report.println(
-            Messages.get().container(Messages.RPT_IMPORT_END_0),
+            Messages.get().container(Messages.RPT_IMPORT_DB_END_0),
             I_CmsReport.C_FORMAT_HEADLINE);
     }
 

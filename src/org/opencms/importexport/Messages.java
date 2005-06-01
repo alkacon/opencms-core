@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2005/05/31 15:44:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/01 12:34:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -284,13 +284,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_IMPORT_ACL_DATA_FAILED_0 = "RPT_IMPORT_ACL_DATA_FAILED_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_IMPORT_BEGIN_0 = "RPT_IMPORT_BEGIN_0";
+    public static final String RPT_IMPORT_DB_BEGIN_0 = "RPT_IMPORT_DB_BEGIN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMPORT_DB_END_0 = "RPT_IMPORT_DB_END_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IMPORT_DB_NO_CLASS_0 = "RPT_IMPORT_DB_NO_CLASS_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_IMPORT_END_0 = "RPT_IMPORT_END_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IMPORT_GROUP_0 = "RPT_IMPORT_GROUP_0";
