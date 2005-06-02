@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/02 09:08:02 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsProject implements Cloneable {
 
@@ -243,7 +243,8 @@ public class CmsProject implements Cloneable {
     public String getDescription() {
 
         if ((m_description == null) || (m_description.length() < 1)) {
-            return "(No project description entered)";
+            // no locale available, perhaps get the user local of the owner?
+            return Messages.get().key(Messages.GUI_PROJECT_DESCRIPTION_EMPTY_0);
         } else {
             return m_description;
         }
