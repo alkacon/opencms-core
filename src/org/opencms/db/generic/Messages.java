@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/05/24 08:13:26 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/02 07:12:13 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,9 +49,6 @@ public final class Messages extends A_CmsMessageBundle {
        
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BACKUP_FILE_NOT_FOUND_1 = "ERR_BACKUP_FILE_NOT_FOUND_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CANNOT_READ_GROUPS_OF_USER_1 = "ERR_CANNOT_READ_GROUPS_OF_USER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COUNTING_PROPERTIES_1 = "ERR_COUNTING_PROPERTIES_1";
@@ -111,9 +108,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_NO_GROUP_WITH_ID_1 = "ERR_NO_GROUP_WITH_ID_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_GROUP_WITH_NAME_1 = "ERR_NO_GROUP_WITH_NAME_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_PROJECT_WITH_ID_1 = "ERR_NO_PROJECT_WITH_ID_1";
 
     /** Message constant for key in the resource bundle. */
@@ -130,9 +124,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_USER_WITH_ID_1 = "ERR_NO_USER_WITH_ID_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_USER_WITH_NAME_1 = "ERR_NO_USER_WITH_NAME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_OUT_OF_MEMORY_0 = "ERR_OUT_OF_MEMORY_0";
@@ -181,15 +172,9 @@ public final class Messages extends A_CmsMessageBundle {
      
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_USER_0 = "ERR_READING_USER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READING_USER_WITH_NAME_1 = "ERR_READING_USER_WITH_NAME_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_USERS_0 = "ERR_READING_USERS_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READING_USERS_OF_GROUP_1 = "ERR_READING_USERS_OF_GROUP_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1 = "ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1";
@@ -261,7 +246,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_DELETING_PROPERTIES_1 = "LOG_DELETING_PROPERTIES_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERROR_RESETING_RESOURCE_STATE_1 = "LOG_ERROR_RESETING_RESOURCE_STATE_1";
+    public static final String LOG_ERROR_RESETTING_RESOURCE_STATE_1 = "LOG_ERROR_RESETTING_RESOURCE_STATE_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LOAD_QUERY_PROP_FILE_FAILED_1 = "LOG_LOAD_QUERY_PROP_FILE_FAILED_1";

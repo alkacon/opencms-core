@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2005/06/02 07:12:13 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.95 $
+ * @version $Revision: 1.96 $
  * @since 5.1
  */
 public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
@@ -882,7 +882,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             if (res.next()) {
                 group = internalCreateGroup(res);
             } else {
-                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_GROUP_WITH_NAME_1, groupName);
+                CmsMessageContainer message = org.opencms.db.Messages.get().container(
+                    org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1, groupName);
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(message.key());
                 }
@@ -1024,7 +1025,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             if (res.next()) {
                 user = internalCreateUser(res);
             } else {
-                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_USER_WITH_NAME_1, name);
+                CmsMessageContainer message = org.opencms.db.Messages.get().container(
+                    org.opencms.db.Messages.ERR_UNKNOWN_USER_1, name);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(message.key());
                 }
@@ -1068,7 +1070,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             } else {
                 res.close();
                 res = null;
-                CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_USER_WITH_NAME_1, name);
+                CmsMessageContainer message = org.opencms.db.Messages.get().container(
+                    org.opencms.db.Messages.ERR_UNKNOWN_USER_1, name);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(message.key());
                 }
@@ -1156,9 +1159,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USERS_OF_GROUP_1, name), e);
+            throw new CmsDbIoException(org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_GET_USERS_OF_GROUP_1, name), e);
         } catch (ClassNotFoundException e) {
-            throw new CmsDataAccessException(Messages.get().container(Messages.ERR_READING_USERS_OF_GROUP_1, name), e);
+            throw new CmsDataAccessException(org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_GET_USERS_OF_GROUP_1, name), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1360,9 +1365,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 m_sqlManager.closeAll(dbc, conn, stmt, null);
             }
         } else {
-            throw new CmsDbEntryNotFoundException(Messages.get().container(
-                Messages.ERR_NO_GROUP_WITH_NAME_1,
-                group.getName()));
+            throw new CmsDbEntryNotFoundException(org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1, group.getName()));
         }
     }
 

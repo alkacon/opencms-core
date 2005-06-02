@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Messages.java,v $
- * Date   : $Date: 2005/05/30 15:20:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/02 07:12:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_REPLACE_RESOURCE_FOLDER_1 = "ERR_REPLACE_RESOURCE_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_RESTORE_FOLDERS_1 = "ERR_RESTORE_FOLDERS_1";
+    public static final String ERR_RESTORE_FOLDERS_0 = "ERR_RESTORE_FOLDERS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_FILE_IS_FOLDER_1 = "ERR_WRITE_FILE_IS_FOLDER_1";

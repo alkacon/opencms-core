@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/06/01 07:17:18 $
- * Version: $Revision: 1.225 $
+ * Date   : $Date: 2005/06/02 07:12:13 $
+ * Version: $Revision: 1.226 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.225 $
+ * @version $Revision: 1.226 $
  * @since 5.1
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
@@ -2287,7 +2287,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_ERROR_RESETING_RESOURCE_STATE_1, resource.getRootPath()), e);
+                LOG.error(Messages.get().key(Messages.LOG_ERROR_RESETTING_RESOURCE_STATE_1, resource.getRootPath()), e);
             }
             throw e;
         }
