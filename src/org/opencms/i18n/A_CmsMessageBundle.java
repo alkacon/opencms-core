@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/A_CmsMessageBundle.java,v $
- * Date   : $Date: 2005/06/02 09:36:55 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/06/02 12:48:20 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.db.generic.Messages.get(),
             org.opencms.file.Messages.get(),
             org.opencms.file.collectors.Messages.get(),
+            org.opencms.file.types.Messages.get(),
             org.opencms.flex.Messages.get(),
             org.opencms.i18n.Messages.get(),
             org.opencms.importexport.Messages.get(),
@@ -65,6 +66,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.main.Messages.get(),
             org.opencms.module.Messages.get(),
             org.opencms.monitor.Messages.get(),
+            org.opencms.report.Messages.get(),
             org.opencms.scheduler.Messages.get(),
             org.opencms.search.Messages.get(),
             org.opencms.search.documents.Messages.get(),
@@ -73,16 +75,18 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.site.Messages.get(),
             org.opencms.staticexport.Messages.get(),
             org.opencms.synchronize.Messages.get(),
-            org.opencms.workplace.threads.Messages.get(),
             org.opencms.util.Messages.get(),
             org.opencms.validation.Messages.get(),
+            org.opencms.widgets.Messages.get(),
             org.opencms.workflow.Messages.get(),
             org.opencms.workplace.Messages.get(),
             org.opencms.workplace.commons.Messages.get(),
+            org.opencms.workplace.editors.Messages.get(),
             org.opencms.workplace.explorer.Messages.get(),
-            org.opencms.workplace.tools.Messages.get(),
+            org.opencms.workplace.galleries.Messages.get(),
             org.opencms.workplace.list.Messages.get(),
-            org.opencms.widgets.Messages.get(),
+            org.opencms.workplace.threads.Messages.get(),
+            org.opencms.workplace.tools.Messages.get(),
             org.opencms.xml.Messages.get(),
             org.opencms.xml.content.Messages.get(),
             org.opencms.xml.page.Messages.get(),
