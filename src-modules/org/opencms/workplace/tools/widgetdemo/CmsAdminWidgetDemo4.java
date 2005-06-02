@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo4.java,v $
- * Date   : $Date: 2005/05/31 16:29:31 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/02 16:41:07 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
@@ -230,7 +230,17 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter("htmlgalwidget", new CmsHtmlGalleryWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("tablegalwidget", new CmsTableGalleryWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("extgalwidget", new CmsLinkGalleryWidget(), 0, 5));
-        addWidget(new CmsWidgetDialogParameter("combowidget", new CmsComboWidget("Value1:Hilfe für Value 1|Value2:Hilfe für den zweiten Wert|Value3"), 0, 2));
+        String val1 = Messages.get().key(getLocale(), Messages.GUI_WIDGETDEMO_DEMOVALUE_1, new Object[]{"1"});
+        addWidget(new CmsWidgetDialogParameter("combowidget", 
+            new CmsComboWidget(
+                val1 
+                + ":" 
+                +  Messages.get().key(getLocale(), Messages.GUI_WIDGETDEMO_DEMOHELP_1, new Object[]{val1})
+                + "|" 
+                + Messages.get().key(getLocale(), Messages.GUI_WIDGETDEMO_DEMOVALUE_1, new Object[]{"2"})
+                + Messages.get().key(getLocale(), Messages.GUI_WIDGETDEMO_DEMOHELP_VAL2_0, null)
+                + Messages.get().key(getLocale(), Messages.GUI_WIDGETDEMO_DEMOVALUE_1, new Object[]{"3"}))
+              , 0, 2));
     }
     
     /**

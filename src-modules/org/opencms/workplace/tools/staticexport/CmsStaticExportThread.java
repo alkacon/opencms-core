@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/staticexport/Attic/CmsStaticExportThread.java,v $
- * Date   : $Date: 2005/05/31 15:20:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/02 16:41:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.ServletException;
  * 
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1.10
  */
 public class CmsStaticExportThread extends A_CmsReportThread {
@@ -59,7 +59,7 @@ public class CmsStaticExportThread extends A_CmsReportThread {
      * @param cms the current cms context
      */
     public CmsStaticExportThread(CmsObject cms) {
-        super(cms, "OpenCms: Static export");
+        super(cms, Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_STATEXP_THREAD_NAME_0, null));
         initHtmlReport(cms.getRequestContext().getLocale());
         start();
     }
