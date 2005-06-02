@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClearThread.java,v $
- * Date   : $Date: 2005/05/31 15:37:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/02 08:46:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.report.I_CmsReport;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1.12
  */
 public class CmsAdminHistoryClearThread extends A_CmsReportThread {
@@ -59,7 +59,10 @@ public class CmsAdminHistoryClearThread extends A_CmsReportThread {
      * @param params the necessary parameters to delete the backup versions
      */
     public CmsAdminHistoryClearThread(CmsObject cms, Map params) {
-        super(cms, "OpenCms: Synchronizing to project " + cms.getRequestContext().currentProject().getName());
+        super(
+            cms,
+            Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_ADMIN_HISTORY_CLEAR_THREAD_NAME_1, 
+                new Object[] {cms.getRequestContext().currentProject().getName()}));
         m_params = params;
         initHtmlReport(cms.getRequestContext().getLocale());
         start();

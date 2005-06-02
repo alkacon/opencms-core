@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Messages.java,v $
- * Date   : $Date: 2005/05/31 15:37:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/02 08:46:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADMIN_HISTORY_CLEAR_THREAD_NAME_1 = "GUI_ADMIN_HISTORY_CLEAR_THREAD_NAME_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_DATE_1 = "ERR_INVALID_DATE_1";
 
