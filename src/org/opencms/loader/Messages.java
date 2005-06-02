@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/02 10:02:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,6 +65,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_RESTYPE_NAME_REQ_1 = "ERR_UNKNOWN_RESTYPE_NAME_REQ_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOADER_XMLCONTENT_DEFAULT_DESC_0 = "GUI_LOADER_XMLCONTENT_DEFAULT_DESC_0";    
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_COLLECTOR_1 = "INIT_ADD_COLLECTOR_1";
