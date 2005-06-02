@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2005/06/02 13:09:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/02 13:54:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,6 +73,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_LOAD_ANALYZER_1 = "ERR_LOAD_ANALYZER_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_QUERY_TOO_SHORT_1 = "ERR_QUERY_TOO_SHORT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SEARCH_PARAMS_1 = "ERR_SEARCH_PARAMS_1";
 
     /** Message constant for key in the resource bundle. */
@@ -140,9 +143,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PARSE_EXCERPT_LENGTH_FAILED_1 = "LOG_PARSE_EXCERPT_LENGTH_FAILED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_QUERY_TOO_SHORT_1 = "ERR_QUERY_TOO_SHORT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_CATEGORY_FAILED_1 = "LOG_READ_CATEGORY_FAILED_1";
