@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/05/13 09:07:23 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2005/06/02 10:30:40 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.79 $
+ * @version $Revision: 1.80 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -273,13 +273,14 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
     /**
      * Return a String describing the ResourceLoader,
-     * which is <code>"The OpenCms default resource loader for JSP".</code>
+     * which is (localized to the system default locale)
+     * <code>"The OpenCms default resource loader for JSP".</code>
      * 
      * @return a describing String for the ResourceLoader 
      */
     public String getResourceLoaderInfo() {
 
-        return "The OpenCms default resource loader for JSP";
+        return Messages.get().key(Messages.GUI_LOADER_JSP_DEFAULT_DESC_0);
     }
 
     /**
@@ -1028,7 +1029,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
                 } catch (CmsException e) {
                     controller.setThrowable(e, jspVfsName);
-                    throw new ServletException("JspLoader: Could not access JSP file '" + jspVfsName + "'", e);
+                    throw new ServletException(
+                        Messages.get().key(Messages.ERR_LOADER_JSP_ACCESS_1, jspVfsName), e);
                 }
 
                 try {
@@ -1045,7 +1047,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                             Messages.LOG_UPDATED_JSP_2, jspTargetName, cms.getSitePath(resource)));
                     }
                 } catch (FileNotFoundException e) {
-                    throw new ServletException("JspLoader: Could not write to file '" + f.getName() + "'\n" + e, e);
+                    throw new ServletException(
+                        Messages.get().key(Messages.ERR_LOADER_JSP_WRITE_1, f.getName()), e);
                 }
             }
 
