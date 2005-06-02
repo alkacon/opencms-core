@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/01 14:37:21 $
- * Version: $Revision: 1.517 $
+ * Date   : $Date: 2005/06/02 08:45:45 $
+ * Version: $Revision: 1.518 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.517 $
+ * @version $Revision: 1.518 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1938,7 +1938,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             projectManagerGroup,
             task,
             I_CmsProjectDriver.C_TEMP_FILE_PROJECT_NAME,
-            I_CmsProjectDriver.C_TEMP_FILE_PROJECT_DESCRIPTION,
+            Messages.get().key(dbc.getRequestContext().getLocale(), Messages.GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0, null),
             I_CmsConstants.C_PROJECT_STATE_INVISIBLE,
             I_CmsConstants.C_PROJECT_STATE_INVISIBLE,
             null);

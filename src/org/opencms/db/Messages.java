@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/06/01 14:37:21 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/02 08:45:45 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.9.1
  */
 public final class Messages extends A_CmsMessageBundle {
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCEPT_TASK_1 = "ERR_ACCEPT_TASK_1";
 
@@ -578,6 +578,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_WEB_USER_CONSTRAINT_0 = "ERR_WRITE_WEB_USER_CONSTRAINT_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0 = "GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADMIN_GROUP_1 = "INIT_ADMIN_GROUP_1";
