@@ -29,8 +29,48 @@
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/workplace/editors/"/>
-			<resource uri="/system/workplace/resources/buttons/"/>
-			<resource uri="/system/workplace/resources/editors/"/>
+			<resource uri="/system/workplace/resources/buttons/anchor.gif"/>
+			<resource uri="/system/workplace/resources/buttons/bold.gif"/>
+			<resource uri="/system/workplace/resources/buttons/bullist.gif"/>
+			<resource uri="/system/workplace/resources/buttons/center.gif"/>
+			<resource uri="/system/workplace/resources/buttons/cleanup.gif"/>
+			<resource uri="/system/workplace/resources/buttons/color_fill.gif"/>
+			<resource uri="/system/workplace/resources/buttons/color_text.gif"/>
+			<resource uri="/system/workplace/resources/buttons/copy.gif"/>
+			<resource uri="/system/workplace/resources/buttons/cut.gif"/>
+			<resource uri="/system/workplace/resources/buttons/details.gif"/>
+			<resource uri="/system/workplace/resources/buttons/directedit_cl.gif"/>
+			<resource uri="/system/workplace/resources/buttons/directedit_in.gif"/>
+			<resource uri="/system/workplace/resources/buttons/directedit_op.gif"/>
+			<resource uri="/system/workplace/resources/buttons/editorsearch.gif"/>
+			<resource uri="/system/workplace/resources/buttons/elements.gif"/>
+			<resource uri="/system/workplace/resources/buttons/elements_in.gif"/>
+			<resource uri="/system/workplace/resources/buttons/erase.gif"/>
+			<resource uri="/system/workplace/resources/buttons/exit.gif"/>
+			<resource uri="/system/workplace/resources/buttons/image.gif"/>
+			<resource uri="/system/workplace/resources/buttons/indent.gif"/>
+			<resource uri="/system/workplace/resources/buttons/italic.gif"/>
+			<resource uri="/system/workplace/resources/buttons/left.gif"/>
+			<resource uri="/system/workplace/resources/buttons/link.gif"/>
+			<resource uri="/system/workplace/resources/buttons/numlist.gif"/>
+			<resource uri="/system/workplace/resources/buttons/outdent.gif"/>
+			<resource uri="/system/workplace/resources/buttons/paste.gif"/>
+			<resource uri="/system/workplace/resources/buttons/properties.gif"/>
+			<resource uri="/system/workplace/resources/buttons/properties_in.gif"/>
+			<resource uri="/system/workplace/resources/buttons/redo.gif"/>
+			<resource uri="/system/workplace/resources/buttons/right.gif"/>
+			<resource uri="/system/workplace/resources/buttons/save.gif"/>
+			<resource uri="/system/workplace/resources/buttons/save_exit.gif"/>
+			<resource uri="/system/workplace/resources/buttons/specialchar.gif"/>
+			<resource uri="/system/workplace/resources/buttons/table.gif"/>
+			<resource uri="/system/workplace/resources/buttons/table_td.gif"/>
+			<resource uri="/system/workplace/resources/buttons/table_tr.gif"/>
+			<resource uri="/system/workplace/resources/buttons/tb_start.gif"/>
+			<resource uri="/system/workplace/resources/buttons/underline.gif"/>
+			<resource uri="/system/workplace/resources/buttons/undo.gif"/>
+			<resource uri="/system/workplace/resources/editors/simple" />
+			<resource uri="/system/workplace/resources/editors/simplehtml" />
+			<resource uri="/system/workplace/resources/editors/xmlcontent" />
 		</resources>
 		<parameters/>
 	</module>

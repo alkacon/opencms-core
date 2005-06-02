@@ -27,15 +27,15 @@
 		<dependencies/>
 		<exportpoints/>
 		<resources>
-			<resource uri="/system/bodies/"/>
-			<resource uri="/system/galleries/"/>
 			<resource uri="/system/login/"/>
 			<resource uri="/system/lost-found/"/>
-			<resource uri="/system/modules/"/>
 			<resource uri="/system/workplace/commons/includes/"/>
 			<resource uri="/system/workplace/commons/style/"/>
 			<resource uri="/system/workplace/locales/"/>
-			<resource uri="/system/workplace/views/"/>
+			<resource uri="/system/workplace/views/top_foot.jsp"/>
+			<resource uri="/system/workplace/views/top_fs.jsp"/>
+			<resource uri="/system/workplace/views/workplace.jsp"/>
+			<resource uri="/system/workplace/views/top_head.jsp"/>
 		</resources>
 		<parameters/>
 	</module>

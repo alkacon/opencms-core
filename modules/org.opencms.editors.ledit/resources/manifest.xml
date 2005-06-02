@@ -30,7 +30,10 @@
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/workplace/editors/ledit/"/>
-			<resource uri="/system/workplace/resources/buttons/"/>
+			<resource uri="/system/workplace/resources/buttons/goto.gif"/>
+			<resource uri="/system/workplace/resources/buttons/help.gif"/>
+			<resource uri="/system/workplace/resources/buttons/print.gif"/>
+			<resource uri="/system/workplace/resources/buttons/replace.gif"/>
 		</resources>
 		<parameters/>
 	</module>

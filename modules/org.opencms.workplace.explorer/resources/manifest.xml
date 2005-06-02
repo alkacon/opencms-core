@@ -30,7 +30,12 @@
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/workplace/commons/"/>
-			<resource uri="/system/workplace/resources/buttons"/>
+			<resource uri="/system/workplace/resources/buttons/back.gif"/>
+			<resource uri="/system/workplace/resources/buttons/folder.gif"/>
+			<resource uri="/system/workplace/resources/buttons/up.gif"/>
+			<resource uri="/system/workplace/resources/buttons/up_in.gif"/>
+			<resource uri="/system/workplace/resources/buttons/upload.gif"/>
+			<resource uri="/system/workplace/resources/buttons/upload_in.gif"/>
 			<resource uri="/system/workplace/resources/commons"/>
 			<resource uri="/system/workplace/resources/components"/>
 			<resource uri="/system/workplace/resources/explorer"/>
