@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/05/31 14:39:21 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2005/06/02 14:24:11 $
+ * Version: $Revision: 1.105 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.104 $
+ * @version $Revision: 1.105 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -218,10 +218,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @param rfsName the name of the resource in the "real" file system
      * @param vfsName the name of the resource in the VFS
+     * @param parameters the optional parameters for the generation of the resource
      */
-    public void cacheExportUri(Object rfsName, Object vfsName) {
+    public void cacheExportUri(String rfsName, String vfsName, String parameters) {
 
-        m_cacheExportUris.put(rfsName, vfsName);
+        m_cacheExportUris.put(rfsName, new CmsStaticExportData(vfsName, parameters));
     }
 
     /**
@@ -516,7 +517,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         int count = 1;
 
-        report.println(Messages.get().container(Messages.RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(
+            Messages.get().container(Messages.RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_BEGIN_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
 
         // loop through all resources
         Iterator i = publishedResources.iterator();
@@ -577,19 +580,24 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     exportData.getRfsName()));
             }
 
-            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
-                new Integer(count++), new Integer(size)), I_CmsReport.C_FORMAT_NOTE);
+            report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_2,
+                new Integer(count++),
+                new Integer(size)), I_CmsReport.C_FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.C_FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1, exportData.getVfsName()));
+                org.opencms.report.Messages.RPT_ARGUMENT_1,
+                exportData.getVfsName()));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             int status = export(null, null, cms, exportData);
             if (status == HttpServletResponse.SC_OK) {
-                report.println(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+                report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                    I_CmsReport.C_FORMAT_OK);
             } else {
-                report.println(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_IGNORED_0), I_CmsReport.C_FORMAT_NOTE);
+                report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_IGNORED_0),
+                    I_CmsReport.C_FORMAT_NOTE);
             }
 
             if (LOG.isInfoEnabled()) {
@@ -603,7 +611,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         resourcesToExport = null;
 
-        report.println(Messages.get().container(Messages.RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(
+            Messages.get().container(Messages.RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_END_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
 
         return templatesFound;
 
@@ -623,7 +633,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_EXPORT_TEMPLATES_1, new Integer(size)));
         }
-        report.println(Messages.get().container(Messages.RPT_STATICEXPORT_TEMPLATE_RESOURCES_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(
+            Messages.get().container(Messages.RPT_STATICEXPORT_TEMPLATE_RESOURCES_BEGIN_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
 
         // now loop through all of them and request them from the server
         Iterator i = publishedTemplateResources.iterator();
@@ -631,11 +643,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         while (i.hasNext()) {
             String rfsName = (String)i.next();
 
-            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
-                new Integer(count++), new Integer(size)), I_CmsReport.C_FORMAT_NOTE);
+            report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_2,
+                new Integer(count++),
+                new Integer(size)), I_CmsReport.C_FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.C_FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1, rfsName));
+                org.opencms.report.Messages.RPT_ARGUMENT_1,
+                rfsName));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             String exportUrlStr = getExportUrl() + getRfsPrefix() + rfsName;
@@ -693,8 +708,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
                 // write the report
                 if (status == HttpServletResponse.SC_OK) {
-                    report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                        I_CmsReport.C_FORMAT_OK);
                 } else if (status == HttpServletResponse.SC_NOT_MODIFIED) {
                     report.println(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_SKIPPED_0), I_CmsReport.C_FORMAT_NOTE);
@@ -703,13 +719,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         org.opencms.report.Messages.RPT_IGNORED_0), I_CmsReport.C_FORMAT_NOTE);
                 } else {
                     report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1, new Integer(status)), I_CmsReport.C_FORMAT_OK);
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        new Integer(status)), I_CmsReport.C_FORMAT_OK);
                 }
             } catch (IOException e) {
                 report.println(e);
             }
         }
-        report.println(Messages.get().container(Messages.RPT_STATICEXPORT_TEMPLATE_RESOURCES_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(
+            Messages.get().container(Messages.RPT_STATICEXPORT_TEMPLATE_RESOURCES_END_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
 
     }
 
@@ -734,14 +753,18 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns a cached vfs resource name for the given rfs name.<p>
+     * Returns a cached export data for the given rfs name.<p>
+     * 
+     * Please note that this export data contains only the vfs name and the parameters,
+     * not the resource itself. It can therefore not directly be used as a return 
+     * value for the static export.<p>
      * 
      * @param rfsName the name of the ref resource to get the cached vfs resource name for
      * @return a cached vfs resource name for the given rfs name, or null 
      */
-    public String getCachedExportUri(Object rfsName) {
+    public CmsStaticExportData getCachedExportUri(String rfsName) {
 
-        return (String)m_cacheExportUris.get(rfsName);
+        return (CmsStaticExportData)m_cacheExportUris.get(rfsName);
     }
 
     /**
@@ -750,7 +773,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @param vfsName the name of the vfs resource to get the cached link for
      * @return a cached link for the given vfs name, or null 
      */
-    public String getCachedOnlineLink(Object vfsName) {
+    public String getCachedOnlineLink(String vfsName) {
 
         return (String)m_cacheOnlineLinks.get(vfsName);
     }
@@ -1385,7 +1408,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
             } else {
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_DISABLED_0));
-            }    
+            }
         }
     }
 
@@ -1462,8 +1485,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public boolean isSecureLink(CmsObject cms, String vfsName) {
 
-        if (! cms.getRequestContext().currentProject().isOnlineProject()) {
-            return false; 
+        if (!cms.getRequestContext().currentProject().isOnlineProject()) {
+            return false;
         }
         Boolean secureResource = (Boolean)m_cacheSecureLinks.get(getCacheKey(
             cms.getRequestContext().getSiteRoot(),
@@ -1744,8 +1767,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             count++;
             try {
                 if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_SHUTDOWN_3, 
-                        m_handler.getClass().getName(), String.valueOf(count), String.valueOf(HANDLER_FINISH_TIME)));
+                    CmsLog.LOG.info(Messages.get().key(
+                        Messages.INIT_STATIC_EXPORT_SHUTDOWN_3,
+                        m_handler.getClass().getName(),
+                        String.valueOf(count),
+                        String.valueOf(HANDLER_FINISH_TIME)));
                 }
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -1880,9 +1906,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // cut export prefix from name
             rfsName = rfsName.substring(getRfsPrefix().length());
 
+            String parameters = null;
             if (vfsName == null) {
-                // check if we have the result already in the cache        
-                vfsName = getCachedExportUri(rfsName);
+                // check if we have the result already in the cache
+                CmsStaticExportData data = getCachedExportUri(rfsName);
+                if (data != null) {
+                    vfsName = data.getVfsName();
+                    parameters = data.getParameters();
+                }
             }
 
             if (vfsName != null) {
@@ -1892,11 +1923,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     try {
                         resource = cms.readResource(vfsName);
                     } catch (CmsException e) {
-                        // no export if error occured here                       
+                        // the resource has probably been deleted
                         return null;
                     }
                     // valid cache entry, return export data object
-                    return new CmsStaticExportData(vfsName, rfsName, resource);
+                    return new CmsStaticExportData(vfsName, rfsName, resource, parameters);
                 } else {
                     // this uri can not be exported
                     return null;
@@ -1919,7 +1950,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     // it could be a translated resourcename with parameters, so make a lookup
                     // in the published resources table
                     try {
-                        String parameters = cms.readStaticExportPublishedResourceParameters(rfsName);
+                        parameters = cms.readStaticExportPublishedResourceParameters(rfsName);
                         // there was a match in the db table, so get the StaticExportData 
                         if (CmsStringUtil.isNotEmpty(parameters)) {
 
@@ -1932,24 +1963,24 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                             // everything is there, so read the resource in the vfs and build the static export data object
                             if (vfsBaseName != null) {
                                 resource = cms.readResource(vfsBaseName);
-                                CmsStaticExportData data = new CmsStaticExportData(
+                                CmsStaticExportData exportData = new CmsStaticExportData(
                                     vfsBaseName,
                                     rfsName,
                                     resource,
                                     parameters);
-                                cacheExportUri(rfsName, data.getVfsName());
-                                return data;
+                                cacheExportUri(rfsName, exportData.getVfsName(), parameters);
+                                return exportData;
                             }
                         }
                     } catch (CmsException e) {
                         // ignore, resource does not exist
                     }
                     // no match found, nothing to export
-                    cacheExportUri(rfsName, CACHEVALUE_404);
+                    cacheExportUri(rfsName, CACHEVALUE_404, null);
                     return null;
                 } else {
                     // found a resource to export
-                    cacheExportUri(rfsName, vfsName);
+                    cacheExportUri(rfsName, vfsName, null);
                     return new CmsStaticExportData(vfsName, rfsName, resource);
                 }
             }
