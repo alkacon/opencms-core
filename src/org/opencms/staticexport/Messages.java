@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Messages.java,v $
- * Date   : $Date: 2005/06/02 13:09:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/02 13:41:50 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1 = "GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_FOLDER_1 = "ERR_CREATE_FOLDER_1";
