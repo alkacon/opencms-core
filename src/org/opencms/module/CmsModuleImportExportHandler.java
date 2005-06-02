@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/06/02 09:42:39 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/02 12:31:38 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2005/06/02 09:42:39 $
+ * @version $Revision: 1.18 $ $Date: 2005/06/02 12:31:38 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
@@ -284,7 +284,15 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                     importProject = cms.readProject(C_IMPORT_MODULE_PROJECT_NAME);
                 } catch (CmsException e) {
                     // create a Project to import the module
-                    importProject = cms.createProject(C_IMPORT_MODULE_PROJECT_NAME, "A System generated project to import the module " + getModuleName(), OpenCms.getDefaultUsers().getGroupAdministrators(), OpenCms.getDefaultUsers().getGroupAdministrators(), I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
+                    importProject = cms.createProject(
+                        C_IMPORT_MODULE_PROJECT_NAME, 
+                        Messages.get().key(
+                            cms.getRequestContext().getLocale(), 
+                            Messages.GUI_PROJECT_NAME_IMPORT_MODULE_1, 
+                            new Object[] {getModuleName()}), 
+                        OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                        OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                        I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
                 }
                 
                 cms.getRequestContext().setCurrentProject(importProject);
@@ -341,7 +349,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             
             int todo = 0;
             // remove this catch clause (and the 3 Cms* clauses above) 
-            // once the package org.opencms.module is correct localized
+            // once the package org.opencms.module is localized correctly
             
             CmsMessageContainer message = Messages.get().container(Messages.ERR_MODULE_IMPORTING_MODULE_1, importFile);
             if (LOG.isDebugEnabled()) {
