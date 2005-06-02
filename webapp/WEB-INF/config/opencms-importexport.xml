@@ -37,6 +37,7 @@
 				<resource uri="/system/workplace/restypes/"/>
 				<resource uri="/system/workplace/scripts/"/>
 				<resource uri="/system/workplace/templates/"/>
+				<resource uri="/system/workplace/views/"/>
 				<resource uri="/channels/"/>
 				<resource uri="/sites/"/>
 			</immutables>
