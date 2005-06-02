@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/05/30 14:24:54 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2005/06/02 15:54:18 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsThrowable;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.tools.CmsToolDialog;
@@ -55,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  * 
  * @since 5.1
  */
@@ -814,21 +815,6 @@ public class CmsDialog extends CmsToolDialog {
 
         return dialogWhiteBox(HTML_START);
     }
-    
-    /**
-     * Displays the throwable on the error page and logs the error.<p>
-     * 
-     * @param wp the workplace class
-     * @param t the throwable to be displayed on the errorpage
-     * @throws JspException if the include of the errorpage jsp fails
-     */
-    public void includeErrorpage(CmsWorkplace wp, Throwable t) throws JspException {
-
-        CmsLog.getLog(wp).error(t);
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, wp);
-        getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, t);
-        getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
-    }
 
     /**
      * Returns the action value.<p>
@@ -880,6 +866,72 @@ public class CmsDialog extends CmsToolDialog {
             return getDialogRealUri();
         } else {
             return getToolManager().linkForPath(getJsp(), getCurrentToolPath(), null);
+        }
+    }
+    
+    /**
+     * Returns the error message to be displayed.<p>
+     * 
+     * @return the error message to be displayed
+     */
+    public String getErrorMessage() {
+   
+        StringBuffer result = new StringBuffer(512);
+        Throwable t = (Throwable)getJsp().getRequest().getAttribute("throwable");
+        // if a localized message is already set as a parameter, append it.
+        if (CmsStringUtil.isNotEmpty(getParamMessage())) {
+            result.append(getParamMessage());
+            result.append("<br><br>").append(key("label.reason")).append(": ");
+        } 
+        result.append(getMessage(t));
+        // recursively append all error reasons to the message
+        for (Throwable cause = t.getCause(); cause != null; cause = cause.getCause()) {
+            result.append("<br><br>").append(key("label.reason")).append(": ");
+            result.append(getMessage(cause));
+        }
+        return result.toString().replaceAll("\n", "<br>");
+    }
+    
+    /**
+     * Returns the formatted value of the exception.<p>
+     * 
+     * The error stack is used by the common error screen 
+     * that is displayed if an error occurs.<p>
+     * 
+     * @return the formatted value of the errorstack parameter
+     */
+    public String getFormattedErrorstack() {
+
+        String exception = CmsException.getStackTraceAsString(((Throwable)getJsp().getRequest().getAttribute(
+            "throwable")));
+        if (CmsStringUtil.isEmpty(exception)) {
+            return "";
+        } else {
+            exception = CmsStringUtil.escapeJavaScript(exception);
+            exception = CmsStringUtil.substitute(exception, ">", "&gt;");
+            exception = CmsStringUtil.substitute(exception, "<", "&lt;");
+            return "<html><body style='background-color: Window; overflow: scroll;'><pre>"
+                + exception
+                + "</pre></body></html>";
+        }
+    }
+    
+    /** 
+     * Returns the localized Message, if the argument is a CmsException, or
+     * the message otherwise.<p>
+     * 
+     * @param t the Throwable to get the message from
+     * 
+     * @return returns the localized Message, if the argument is a CmsException, or
+     * the message otherwise
+     */
+    public String getMessage(Throwable t) {
+
+        if (t instanceof I_CmsThrowable && ((I_CmsThrowable)t).getMessageContainer() != null) {
+            I_CmsThrowable cmsThrowable = (I_CmsThrowable)t;
+            return cmsThrowable.getLocalizedMessage(getLocale());
+        } else {
+            return t.getMessage();
         }
     }
 
@@ -1073,6 +1125,21 @@ public class CmsDialog extends CmsToolDialog {
     public String htmlStartStyle(String title, String stylesheet) {
 
         return pageHtmlStyle(HTML_START, title, stylesheet);
+    }
+    
+    /**
+     * Displays the throwable on the error page and logs the error.<p>
+     * 
+     * @param wp the workplace class
+     * @param t the throwable to be displayed on the errorpage
+     * @throws JspException if the include of the errorpage jsp fails
+     */
+    public void includeErrorpage(CmsWorkplace wp, Throwable t) throws JspException {
+
+        CmsLog.getLog(wp).error(t);
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, wp);
+        getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, t);
+        getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
     }
 
     /**

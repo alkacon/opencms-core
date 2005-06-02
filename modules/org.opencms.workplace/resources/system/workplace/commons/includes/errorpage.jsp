@@ -1,5 +1,4 @@
 <%@ page import="org.opencms.workplace.*,
-                 org.opencms.workplace.commons.CmsErrorpage,
                  org.opencms.workplace.editors.CmsEditor,
                  org.opencms.util.CmsStringUtil" buffer="none" %><%
 	
@@ -29,7 +28,7 @@ function toggleElement(id) {
 
 function initTrace() {
 	trace.document.open();
-	trace.document.write("<%= CmsErrorpage.getFormattedErrorstack(wp) %>");
+	trace.document.write("<%= wp.getFormattedErrorstack() %>");
 	trace.document.close();
 }
 
@@ -61,7 +60,7 @@ function confirmAction(actionValue, theForm) {
 	<td style="vertical-align: middle;">
 <%= wp.dialogBlockStart(wp.key("title.error")) %>
 
-<%= CmsErrorpage.getErrorMessage(wp) %>
+<%= wp.getErrorMessage() %>
 
 <%= wp.dialogBlockEnd() %></td>
 </tr>
