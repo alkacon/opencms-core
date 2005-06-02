@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/05/28 09:35:34 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/06/02 13:18:39 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -413,15 +413,19 @@ public final class CmsSiteManager implements Cloneable {
             m_defaultSite = new CmsSite("/", CmsSiteMatcher.DEFAULT_MATCHER);
         }
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
-                Messages.INIT_DEFAULT_SITE_ROOT_1,
-                (m_defaultSite != null ? "" + m_defaultSite : "(not configured)")));
+            if (m_defaultSite != null) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DEFAULT_SITE_ROOT_1, m_defaultSite));
+            } else {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DEFAULT_SITE_ROOT_0));
+            }
         }
         m_workplaceSiteMatcher = new CmsSiteMatcher(m_workplaceServer);
         if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
-                Messages.INIT_WORKPLACE_SITE_1,
-                (m_workplaceSiteMatcher != null ? "" + m_workplaceSiteMatcher : "(not configured)")));
+            if (m_workplaceSiteMatcher != null) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_SITE_1, m_workplaceSiteMatcher));
+            } else {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_SITE_0));
+            }
         }
 
         // set site lists to unmodifiable 
