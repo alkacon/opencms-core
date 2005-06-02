@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/06/02 13:57:08 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/02 14:55:32 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -305,9 +305,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             sendCmsRedirect(getJsp().getRequestContext().getUri()+"?"+paramsAsRequest());              
         } catch (Throwable e) {
             // error defining property, show error dialog
-            includeErrorpage(this, e);              
+            includeErrorpage(this, e);  
+            }
         }
-    }
     
     /**
      * Deletes the current resource if the dialog is in wizard mode.<p>
@@ -423,7 +423,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             result.append("</table>"); 
         } else {
             // there are no properties defined for this resource, show nothing (should never happen)
-            result.append("No properties defined!");
+            result.append(Messages.get().key(Messages.GUI_PROPERTY_ADVANCED_NO_PROPDEFS_0));
         }      
         return result.toString();
     }

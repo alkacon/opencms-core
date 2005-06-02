@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2005/06/01 15:14:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/02 14:55:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * Provides methods to get the editor information for the editor manager.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.1
  */
@@ -116,7 +116,7 @@ public class CmsWorkplaceEditorConfiguration {
             initialize(CmsXmlUtils.unmarshalHelper(xmlData, null), editorUri);
         } catch (CmsXmlException e) {
             // xml String could not be parsed
-            logConfigurationError("Could not parse xml.", e);
+            logConfigurationError(Messages.get().key(Messages.ERR_XML_PARSE_0), e);
         }
     }
     
@@ -141,13 +141,13 @@ public class CmsWorkplaceEditorConfiguration {
             float ranking;
             String name = currentType.elementText(C_NODE_NAME);
             if (name == null || "".equals(name.trim())) {
-                logConfigurationError("Invalid resource type name.", null);
+                logConfigurationError(Messages.get().key(Messages.ERR_INVALID_RESTYPE_NAME_0), null);
                 continue;
             }
             try {
                 ranking = Float.parseFloat(currentType.elementText(C_NODE_RANKING));
             } catch (Throwable t) {
-                logConfigurationError("Invalid ranking for resource type " + name + '.', t);
+                logConfigurationError(Messages.get().key(Messages.ERR_INVALID_RESTYPE_RANKING_1, name), t);
                 continue;
             }
             String mapTo = currentType.elementText(C_NODE_MAPTO);
@@ -167,14 +167,14 @@ public class CmsWorkplaceEditorConfiguration {
                 I_CmsEditorTypeMatcher matcher = (I_CmsEditorTypeMatcher)Class.forName(name).newInstance();
                 assignedTypes = matcher.getAdditionalResourceTypes();           
            } catch (Throwable t) {
-                logConfigurationError("Invalid class for resource type " + name + '.', t);
+                logConfigurationError(Messages.get().key(Messages.ERR_INVALID_RESTYPE_CLASS_1, name), t);
                 continue;
            }
            float ranking;
            try {
                ranking = Float.parseFloat(currentClass.elementText(C_NODE_RANKING));
            } catch (Throwable t) {
-               logConfigurationError("Invalid ranking for resource type " + name + '.', t);
+               logConfigurationError(Messages.get().key(Messages.ERR_INVALID_RESTYPE_RANKING_1, name), t);
                continue;
            }
            String mapTo = currentClass.elementText(C_NODE_MAPTO);
@@ -204,10 +204,10 @@ public class CmsWorkplaceEditorConfiguration {
                 try {
                     pattern.add(Pattern.compile(agentName));
                 } catch (PatternSyntaxException e) {
-                    logConfigurationError("Error in regular expression " + agentName + '.', e);
+                    logConfigurationError(Messages.get().key(Messages.ERR_COMPILE_EDITOR_REGEX_1, agentName), e);
                 }
             } else {
-                logConfigurationError("Invalid user agent definition.", null);
+                logConfigurationError(Messages .get().key(Messages.ERR_INVALID_USERAGENT_DEF_0), null);
             }
         }
         setBrowserPattern(pattern);

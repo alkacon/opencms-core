@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Messages.java,v $
- * Date   : $Date: 2005/05/31 16:30:08 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/02 14:55:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,18 +41,36 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.9.1
  */
 public final class Messages extends A_CmsMessageBundle {
-
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COMPILE_EDITOR_REGEX_1 = "ERR_COMPILE_EDITOR_REGEX_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_CONTENT_ENC_1 = "ERR_INVALID_CONTENT_ENC_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_RESTYPE_CLASS_1 = "ERR_INVALID_RESTYPE_CLASS_1";
 
-  
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_RESTYPE_NAME_0 = "ERR_INVALID_RESTYPE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_RESTYPE_RANKING_1 = "ERR_INVALID_RESTYPE_RANKING_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_USERAGENT_DEF_0 = "ERR_INVALID_USERAGENT_DEF_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_EDITOR_FOUND_0 = "ERR_NO_EDITOR_FOUND_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UPDATE_ELEMENTS_0 = "ERR_UPDATE_ELEMENTS_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XML_EDITOR_0 = "ERR_XML_EDITOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_XML_PARSE_0 = "ERR_XML_PARSE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_BROWSER_MATCHES_CONFIG_1 = "LOG_BROWSER_MATCHES_CONFIG_1";
@@ -83,8 +101,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_USER_AGENTS_0 = "LOG_NO_USER_AGENTS_0";
-    
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_EDITIR_FOLDER_FAILED_1 = "LOG_READ_EDITIR_FOLDER_FAILED_1";
 
@@ -103,14 +120,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_XMLPAGE_FAILED_1 = "LOG_READ_XMLPAGE_FAILED_1";
 
-    
-    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_VISITING_1 = "LOG_VISITING_1";
-    
-    
-    
-    
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.editors.messages";
 
