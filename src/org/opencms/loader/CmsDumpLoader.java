@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2005/05/13 09:07:23 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2005/06/02 10:30:55 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
 
@@ -152,13 +152,14 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
 
     /**
      * Return a String describing the ResourceLoader,
-     * which is <code>"The OpenCms default resource loader for unprocessed files"</code>.<p>
+     * which is (localized to the system default locale) 
+     * <code>"The OpenCms default resource loader for unprocessed files"</code>.<p>
      * 
      * @return a describing String for the ResourceLoader 
      */
     public String getResourceLoaderInfo() {
 
-        return "The OpenCms default resource loader for unprocessed files";
+        return Messages.get().key(Messages.GUI_LOADER_DUMB_DEFAULT_DESC_0);
     }
 
     /**

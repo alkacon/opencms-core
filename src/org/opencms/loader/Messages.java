@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2005/06/02 10:02:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/02 10:30:55 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,24 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
     
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOADER_JSP_WRITE_1 = "ERR_LOADER_JSP_WRITE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOADER_JSP_ACCESS_1 = "ERR_LOADER_JSP_ACCESS_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOADER_XMLPAGE_DEFAULT_DESC_0 = "GUI_LOADER_XMLPAGE_DEFAULT_DESC_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOADER_POINTER_DEFAULT_DESC_0 = "GUI_LOADER_POINTER_DEFAULT_DESC_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOADER_JSP_DEFAULT_DESC_0 = "GUI_LOADER_JSP_DEFAULT_DESC_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOADER_DUMB_DEFAULT_DESC_0 = "GUI_LOADER_DUMB_DEFAULT_DESC_0";
+ 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_COLLECTOR_NAME_1 = "ERR_INVALID_COLLECTOR_NAME_1";
 
