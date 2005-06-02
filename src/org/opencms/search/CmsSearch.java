@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/06/02 08:44:46 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/02 13:09:20 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.lucene.search.SortField;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.30 $ $Date: 2005/06/02 08:44:46 $
+ * @version $Revision: 1.31 $ $Date: 2005/06/02 13:09:20 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -513,7 +513,7 @@ public class CmsSearch implements Serializable, Cloneable {
             } catch (Exception exc) {
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_SEARCHING_FAILED_1, this.getClass().getName()), exc);
+                    LOG.debug(Messages.get().key(Messages.LOG_SEARCHING_FAILED_0), exc);
                 }
 
                 m_result = null;
@@ -701,9 +701,7 @@ public class CmsSearch implements Serializable, Cloneable {
             } catch (Exception exc) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(
-                        Messages.LOG_INDEX_ACCESS_FAILED_2,
-                        this.getClass().getName(),
-                        indexName), exc);
+                        Messages.LOG_INDEX_ACCESS_FAILED_1, indexName), exc);
                 }
                 m_lastException = exc;
             }

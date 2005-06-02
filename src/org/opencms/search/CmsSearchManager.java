@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/06/01 15:14:28 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/06/02 13:09:20 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.lucene.search.Similarity;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.41 $ $Date: 2005/06/01 15:14:28 $
+ * @version $Revision: 1.42 $ $Date: 2005/06/02 13:09:20 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -789,14 +789,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 mimeTypes = documenttype.getMimeTypes();
 
                 if (name == null) {
-                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCTYPE_NO_NAME_1, this.getClass().getName()));
+                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCTYPE_NO_NAME_0));
                 }
                 if (className == null) {
-                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCTYPE_NO_CLASS_DEF_1, this.getClass().getName()));
+                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCTYPE_NO_CLASS_DEF_0));
                 }
 
                 if (resourceTypes.size() == 0) {
-                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCTYPE_NO_RESOURCETYPE_DEF_1, this.getClass().getName()));
+                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCTYPE_NO_RESOURCETYPE_DEF_0));
                 }
 
                 try {
@@ -804,11 +804,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     documentFactory = (I_CmsDocumentFactory)c.getConstructor(new Class[] {String.class}).newInstance(
                         new Object[] {name});
                 } catch (ClassNotFoundException exc) {
-                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCCLASS_NOT_FOUND_2, 
-                        this.getClass().getName(), className), exc);
+                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCCLASS_NOT_FOUND_1, className), exc);
                 } catch (Exception exc) {
-                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCCLASS_INIT_2, 
-                        this.getClass().getName(), className), exc);                    
+                    throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCCLASS_INIT_1, className), exc);                    
                 }
 
                 for (Iterator key = documentFactory.getDocumentKeys(resourceTypes, mimeTypes).iterator(); key.hasNext();) {

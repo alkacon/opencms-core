@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/Messages.java,v $
- * Date   : $Date: 2005/05/31 08:04:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/02 13:09:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,19 +43,19 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_CREATE_DIR_2 = "ERR_CREATE_DIR_2";
+    public static final String ERR_CREATE_DIR_1 = "ERR_CREATE_DIR_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_CREATE_FILE_2 = "ERR_CREATE_FILE_2";
+    public static final String ERR_CREATE_FILE_1 = "ERR_CREATE_FILE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_EXISTANT_FILE_2 = "ERR_EXISTANT_FILE_2";
+    public static final String ERR_EXISTENT_FILE_1 = "ERR_EXISTENT_FILE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORT_1 = "ERR_IMPORT_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_INIT_SYNC_1 = "ERR_INIT_SYNC_1";
+    public static final String ERR_INIT_SYNC_0 = "ERR_INIT_SYNC_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IO_WRITE_SYNCLIST_0 = "ERR_IO_WRITE_SYNCLIST_0";

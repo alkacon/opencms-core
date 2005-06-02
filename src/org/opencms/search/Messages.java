@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2005/06/02 08:43:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/02 13:09:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,19 +49,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CREATING_INDEX_DOC_0 = "ERR_CREATING_INDEX_DOC_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DOCCLASS_INIT_2 = "ERR_DOCCLASS_INIT_2";
+    public static final String ERR_DOCCLASS_INIT_1 = "ERR_DOCCLASS_INIT_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DOCCLASS_NOT_FOUND_2 = "ERR_DOCCLASS_NOT_FOUND_2";
+    public static final String ERR_DOCCLASS_NOT_FOUND_1 = "ERR_DOCCLASS_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DOCTYPE_NO_CLASS_DEF_1 = "ERR_DOCTYPE_NO_CLASS_DEF_1";
+    public static final String ERR_DOCTYPE_NO_CLASS_DEF_0 = "ERR_DOCTYPE_NO_CLASS_DEF_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DOCTYPE_NO_NAME_1 = "ERR_DOCTYPE_NO_NAME_1";
+    public static final String ERR_DOCTYPE_NO_NAME_0 = "ERR_DOCTYPE_NO_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_DOCTYPE_NO_RESOURCETYPE_DEF_1 = "ERR_DOCTYPE_NO_RESOURCETYPE_DEF_1";
+    public static final String ERR_DOCTYPE_NO_RESOURCETYPE_DEF_0 = "ERR_DOCTYPE_NO_RESOURCETYPE_DEF_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INDEX_NOT_FOUND_1 = "ERR_INDEX_NOT_FOUND_1";
@@ -112,7 +112,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_EVENT_CLEAR_CACHES_0 = "LOG_EVENT_CLEAR_CACHES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_INDEX_ACCESS_FAILED_2 = "LOG_INDEX_ACCESS_FAILED_2";
+    public static final String LOG_INDEX_ACCESS_FAILED_1 = "LOG_INDEX_ACCESS_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INDEX_FAILED_1 = "LOG_INDEX_FAILED_1";
@@ -169,7 +169,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_SEARCH_PRIORITY_TOO_LOW_2 = "LOG_SEARCH_PRIORITY_TOO_LOW_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_SEARCHING_FAILED_1 = "LOG_SEARCHING_FAILED_1";
+    public static final String LOG_SEARCHING_FAILED_0 = "LOG_SEARCHING_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SKIPPED_1 = "LOG_SKIPPED_1";

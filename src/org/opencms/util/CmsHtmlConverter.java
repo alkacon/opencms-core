@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/04/28 09:45:17 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/02 13:09:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.w3c.tidy.Tidy;
  * Html cleaner, used to clean up html code (e.g. remove word tags) and created xhtml output.<p>
  *  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsHtmlConverter {
 
@@ -285,7 +285,7 @@ public class CmsHtmlConverter {
             return convertToByte(htmlInput);
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_BYTE_FAILED_1, this.getClass().getName()), e);
+                LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_BYTE_FAILED_0), e);
             }
             return htmlInput;
         }
@@ -303,13 +303,13 @@ public class CmsHtmlConverter {
             return convertToByte(htmlInput.getBytes(m_encoding));
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_BYTE_FAILED_1, this.getClass().getName()), e);
+                LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_BYTE_FAILED_0), e);
             }
             try {
                 return htmlInput.getBytes(m_encoding);
             } catch (UnsupportedEncodingException e1) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_BYTE_FAILED_1, this.getClass().getName()), e1);
+                    LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_BYTE_FAILED_0), e1);
                 }
                 return htmlInput.getBytes();
             }
@@ -355,13 +355,13 @@ public class CmsHtmlConverter {
             return convertToString(htmlInput);
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_STRING_FAILED_1, this.getClass().getName()), e);
+                LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_BYTE_FAILED_0), e);
             }
             try {
                 return new String(htmlInput, m_encoding);
             } catch (UnsupportedEncodingException e1) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_STRING_FAILED_1, this.getClass().getName()), e1);
+                    LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_BYTE_FAILED_0), e1);
                 }
                 return new String(htmlInput);
             }
@@ -381,7 +381,7 @@ public class CmsHtmlConverter {
             return convertToString(htmlInput);
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_STRING_FAILED_1, this.getClass().getName()), e);
+                LOG.warn(Messages.get().key(Messages.LOG_CONVERSION_BYTE_FAILED_0), e);
             }
             return htmlInput;
         }

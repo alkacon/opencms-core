@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Messages.java,v $
- * Date   : $Date: 2005/05/31 14:39:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/02 13:09:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,9 +53,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_OUTPUT_STREAM_1 = "ERR_OUTPUT_STREAM_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_RESOURCE_NOT_FOUND_2 = "ERR_RESOURCE_NOT_FOUND_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_EXPORT_DEFAULT_1 = "INIT_EXPORT_DEFAULT_1";

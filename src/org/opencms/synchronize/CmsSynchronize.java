@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/05/31 08:04:14 $
- * Version: $Revision: 1.48 $
- * Date   : $Date: 2005/05/31 08:04:14 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/06/02 13:09:20 $
+ * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/06/02 13:09:20 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.48 $ $Date: 2005/05/31 08:04:14 $
+ * @version $Revision: 1.49 $ $Date: 2005/06/02 13:09:20 $
  */
 public class CmsSynchronize {
 
@@ -159,7 +159,7 @@ public class CmsSynchronize {
             m_syncList = null;
             m_newSyncList = null;
         } else {
-            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_INIT_SYNC_1, this.getClass().getName()));            
+            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_INIT_SYNC_0));            
         }
     }
 
@@ -881,7 +881,7 @@ public class CmsSynchronize {
      */
     private void createNewLocalFile(File newFile) throws CmsException {
         if (newFile.exists()) {
-            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_EXISTANT_FILE_2, this.getClass().getName(), newFile.getPath()));            
+            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_EXISTENT_FILE_1, newFile.getPath()));            
         }
         FileOutputStream fOut = null;
         try {
@@ -890,10 +890,10 @@ public class CmsSynchronize {
             if (parentFolder.exists()) {
                 fOut = new FileOutputStream(newFile);
             } else {
-                throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_CREATE_DIR_2, this.getClass().getName(), newFile.getPath()));
+                throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_CREATE_DIR_1, newFile.getPath()));
             }
         } catch (IOException e) {
-            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_CREATE_FILE_2, this.getClass().getName(), newFile.getPath()), e);
+            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_CREATE_FILE_1, this.getClass().getName(), newFile.getPath()), e);
         } finally {
             if (fOut != null) {
                 try {
