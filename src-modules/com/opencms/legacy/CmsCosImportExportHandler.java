@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosImportExportHandler.java,v $
- * Date   : $Date: 2005/06/01 12:34:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/02 09:42:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.dom4j.Element;
  * Import/export handler implementation for COS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2005/06/01 12:34:42 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/02 09:42:39 $
  * @since 5.3
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -72,7 +72,8 @@ public class CmsCosImportExportHandler extends Object implements I_CmsImportExpo
      */
     public CmsCosImportExportHandler() {
         super();
-        m_description = C_DEFAULT_DESCRIPTION;
+        m_description = org.opencms.importexport.Messages.get().key(
+            org.opencms.importexport.Messages.GUI_CMSIMPORTHANDLER_DEFAULT_DESC_0);
     }
     
     /**

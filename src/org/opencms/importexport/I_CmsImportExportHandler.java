@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImportExportHandler.java,v $
- * Date   : $Date: 2005/04/29 15:54:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/02 09:42:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,13 +55,10 @@ import org.dom4j.Document;
  * Use {@link org.opencms.main.OpenCms#getImportExportManager()} to get the Cms import/export manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2005/04/29 15:54:15 $
+ * @version $Revision: 1.9 $ $Date: 2005/06/02 09:42:39 $
  * @since 5.3
  */
 public interface I_CmsImportExportHandler {
-
-    /** The default description being used in all handler implementations.<p> */
-    String C_DEFAULT_DESCRIPTION = "No description available for this handler";
 
     /**
      * Exports the data from the Cms.<p>
