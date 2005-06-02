@@ -56,7 +56,7 @@ public class CmsMergePagesThread extends A_CmsReportThread {
      */
     public CmsMergePagesThread(CmsObject cms, CmsMergePages mergePages) {
 
-        super(cms, "Merging Pages");
+        super(cms, Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_MERGE_PAGES_THREAD_NAME_0, null));
         cms.getRequestContext().setUpdateSessionEnabled(false);
         initHtmlReport(cms.getRequestContext().getLocale());
         m_mergePages = mergePages;

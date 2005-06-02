@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2005/05/31 13:06:03 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/02 15:52:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MERGE_PAGES_THREAD_NAME_0 = "GUI_MERGE_PAGES_THREAD_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLIMPORT_DIALOG_TITLE_0 = "GUI_HTMLIMPORT_DIALOG_TITLE_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DEL_PROP_RESOURCES_LOCKED_1 = "ERR_DEL_PROP_RESOURCES_LOCKED_1";
 

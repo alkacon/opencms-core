@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2005/05/31 15:41:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/02 15:53:00 $
+ * Version: $Revision: 1.3 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -58,7 +58,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
  * Implements methods to utilize a report thread for <code>CmsIndexingReport</code>.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3.1
  */
 public class CmsIndexingReportThread extends A_CmsReportThread {
@@ -76,7 +76,7 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      */
     public CmsIndexingReportThread(CmsObject cms) {
 
-        super(cms, "OpenCms: Reindexing all");
+        super(cms, Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_INDEXING_THREAD_NAME_0, null));
         initHtmlReport(cms.getRequestContext().getLocale());
 
         m_indexName = null;
@@ -92,7 +92,8 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      */
     public CmsIndexingReportThread(CmsObject cms, String indexName) {
 
-        super(cms, "OpenCms: Reindexing " + indexName);
+        super(cms, Messages.get().key(cms.getRequestContext().getLocale(), 
+            Messages.GUI_INDEXING_THREAD_NAME_1, new Object[]{indexName}));
         initHtmlReport(cms.getRequestContext().getLocale());
 
         m_indexName = indexName;
