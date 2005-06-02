@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUsersList.java,v $
- * Date   : $Date: 2005/05/31 12:52:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/02 16:46:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsUsersList extends A_CmsListDialog {
@@ -397,7 +397,7 @@ public class CmsUsersList extends A_CmsListDialog {
         } catch (CmsException e) {
             throw new CmsRuntimeException(Messages.get().container(
                 Messages.ERR_CREATE_LIST_1,
-                this.getCms().getRequestContext().getUri()));
+                getCms().getRequestContext().getUri()));
         }
 
         return ret;

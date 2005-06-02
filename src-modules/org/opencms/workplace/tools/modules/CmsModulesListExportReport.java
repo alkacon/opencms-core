@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesListExportReport.java,v $
- * Date   : $Date: 2005/06/02 15:52:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/02 16:46:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * Provides a report for exporting modules.<p> 
  *
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsModulesListExportReport extends A_CmsListReport {
@@ -136,8 +136,8 @@ public class CmsModulesListExportReport extends A_CmsListReport {
         moduleExportHandler.setFileName(filename);
         moduleExportHandler.setModuleName(moduleName.replace('\\', '/'));
         moduleExportHandler.setAdditionalResources(resources);
-        moduleExportHandler.setDescription(Messages.get().key(this.getJsp()
-            .getRequestContext().getLocale(), 
+        moduleExportHandler.setDescription(Messages.get().key(
+            getLocale(), 
             Messages.GUI_MODULES_LIST_EXPORT_REPORT_HANDLER_NAME_1, 
             new Object[]{moduleExportHandler.getModuleName()}));
 

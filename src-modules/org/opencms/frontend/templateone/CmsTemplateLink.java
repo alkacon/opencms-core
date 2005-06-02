@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateLink.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/02 16:46:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ package org.opencms.frontend.templateone;
  * These objects are used for the head link row creation of template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsTemplateLink implements Comparable {
     
@@ -91,7 +91,7 @@ public class CmsTemplateLink implements Comparable {
      */
     public int compareTo(Object theObject) {
         // sort links by their order number in ascending order
-        return new Integer(this.getOrder()).compareTo(new Integer(((CmsTemplateLink)theObject).getOrder()));    
+        return new Integer(getOrder()).compareTo(new Integer(((CmsTemplateLink)theObject).getOrder()));    
     }
     
     /**

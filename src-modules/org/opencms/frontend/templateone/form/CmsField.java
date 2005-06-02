@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/Attic/CmsField.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/02 16:46:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.List;
  * e.g. the field type, label, name, validation rule, etc.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsField {
 
@@ -165,7 +165,7 @@ public class CmsField {
      */
     public boolean needsItems() {
 
-        return (C_TYPE_CHECKBOX.equals(this.getType()) || C_TYPE_SELECT.equals(this.getType()) || C_TYPE_RADIO.equals(this.getType()));
+        return (C_TYPE_CHECKBOX.equals(getType()) || C_TYPE_SELECT.equals(getType()) || C_TYPE_RADIO.equals(this.getType()));
     }
     
     /**
