@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/04/25 09:10:05 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
 
@@ -222,9 +222,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         }
                         t = controller.setThrowable(e, m_vfsTarget);
                         throw new ServletException(Messages.get().key(
-                            Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_RESOURCE_FROM_CACHE_2,
-                            m_vfsTarget,
-                            t), t);
+                            Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_RESOURCE_FROM_CACHE_1,
+                            m_vfsTarget), t);
                     }
                 } else {
                     // cache is on and resource is not yet cached, so we need to read the cache key for the response
@@ -265,9 +264,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                             // all other errors are not handled here
                             controller.setThrowable(e, m_vfsTarget);
                             throw new ServletException(Messages.get().key(
-                                Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_CACHE_PROPERTIES_2,
-                                m_vfsTarget,
-                                e), e);
+                                Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_CACHE_PROPERTIES_1, m_vfsTarget), e);
                         }
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(Messages.get().key(
@@ -304,16 +301,13 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 } catch (ClassCastException e) {
                     controller.setThrowable(e, m_vfsTarget);
                     throw new ServletException(Messages.get().key(
-                        Messages.ERR_FLEXREQUESTDISPATCHER_CLASSCAST_EXCEPTION_2,
-                        m_vfsTarget,
-                        e), e);
+                        Messages.ERR_FLEXREQUESTDISPATCHER_CLASSCAST_EXCEPTION_1,
+                        m_vfsTarget), e);
                 } catch (CmsException e) {
                     // file might not exist or no read permissions
                     controller.setThrowable(e, m_vfsTarget);
                     throw new ServletException(Messages.get().key(
-                        Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_READING_RESOURCE_2,
-                        m_vfsTarget,
-                        e), e);
+                        Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_READING_RESOURCE_1, m_vfsTarget), e);
                 }
 
                 if (LOG.isDebugEnabled()) {

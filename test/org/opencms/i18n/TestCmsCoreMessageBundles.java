@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsCoreMessageBundles.java,v $
- * Date   : $Date: 2005/06/01 15:09:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ package org.opencms.i18n;
  * 
  * @author Achim Westermann (a.westermann@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public final class TestCmsCoreMessageBundles extends TestCmsMessageBundles {
@@ -58,7 +58,6 @@ public final class TestCmsCoreMessageBundles extends TestCmsMessageBundles {
             org.opencms.i18n.Messages.get(),
             org.opencms.importexport.Messages.get(),
             org.opencms.jsp.Messages.get(),
-            org.opencms.jsp.layout.Messages.get(),
             org.opencms.loader.Messages.get(),
             org.opencms.lock.Messages.get(),
             org.opencms.mail.Messages.get(),

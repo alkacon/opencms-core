@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2005/05/03 12:17:52 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsJspTagProperty extends TagSupport {
 
@@ -263,7 +263,7 @@ public class CmsJspTagProperty extends TagSupport {
 
             } catch (Exception ex) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.ERR_TAG_PROPERTY_0), ex);
+                    LOG.error(Messages.get().key(Messages.ERR_PROCESS_TAG_1, "property"), ex);
                 }
                 throw new javax.servlet.jsp.JspException(ex);
             }

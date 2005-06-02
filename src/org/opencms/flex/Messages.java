@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/Messages.java,v $
- * Date   : $Date: 2005/06/02 09:23:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,16 +49,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ADD_COOKIE_0 = "ERR_ADD_COOKIE_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_FLEXREQUESTDISPATCHER_CLASSCAST_EXCEPTION_2 = "ERR_FLEXREQUESTDISPATCHER_CLASSCAST_EXCEPTION_2";
+    public static final String ERR_FLEXREQUESTDISPATCHER_CLASSCAST_EXCEPTION_1 = "ERR_FLEXREQUESTDISPATCHER_CLASSCAST_EXCEPTION_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_CACHE_PROPERTIES_2 = "ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_CACHE_PROPERTIES_2";
+    public static final String ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_CACHE_PROPERTIES_1 = "ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_CACHE_PROPERTIES_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_RESOURCE_FROM_CACHE_2 = "ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_RESOURCE_FROM_CACHE_2";
+    public static final String ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_RESOURCE_FROM_CACHE_1 = "ERR_FLEXREQUESTDISPATCHER_ERROR_LOADING_RESOURCE_FROM_CACHE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_FLEXREQUESTDISPATCHER_ERROR_READING_RESOURCE_2 = "ERR_FLEXREQUESTDISPATCHER_ERROR_READING_RESOURCE_2";
+    public static final String ERR_FLEXREQUESTDISPATCHER_ERROR_READING_RESOURCE_1 = "ERR_FLEXREQUESTDISPATCHER_ERROR_READING_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FLEXREQUESTDISPATCHER_INCLUSION_LOOP_1 = "ERR_FLEXREQUESTDISPATCHER_INCLUSION_LOOP_1";

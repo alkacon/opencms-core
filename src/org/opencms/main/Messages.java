@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/06/01 07:27:25 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -115,15 +115,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_ILLEGAL_ARG_2 = "ERR_ILLEGAL_ARG_2";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_ILLEGAL_ARG_3 = "ERR_ILLEGAL_ARG_3";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_ILLEGAL_ARG_4 = "ERR_ILLEGAL_ARG_4";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_ILLEGAL_ARG_5 = "ERR_ILLEGAL_ARG_5";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_INVALID_INIT_USER_2 = "ERR_INVALID_INIT_USER_2";

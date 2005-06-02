@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/05/30 09:26:03 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
 
@@ -324,7 +324,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * Method overlodad from the standard HttpServletRequest API.<p>
+     * Method overloaded from the standard HttpServletRequest API.<p>
      *
      * Cookies must be set directly as a header, otherwise they might not be set
      * in the super class.<p>

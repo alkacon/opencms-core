@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2005/06/01 12:34:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,19 +110,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_IMPORTEXPORT_ERROR_OPENING_ZIP_ARCHIVE_1 = "ERR_IMPORTEXPORT_ERROR_OPENING_ZIP_ARCHIVE_1";
     
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMPORTEXPORT_ERROR_READING_ALL_GROUPS_0 = "ERR_IMPORTEXPORT_ERROR_READING_ALL_GROUPS_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMPORTEXPORT_ERROR_READING_ALL_USERS_0 = "ERR_IMPORTEXPORT_ERROR_READING_ALL_USERS_0";
-    
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORTEXPORT_ERROR_READING_FILE_1 = "ERR_IMPORTEXPORT_ERROR_READING_FILE_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMPORTEXPORT_ERROR_READING_GROUPS_OF_USER_1 = "ERR_IMPORTEXPORT_ERROR_READING_GROUPS_OF_USER_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMPORTEXPORT_ERROR_READING_PARENT_GROUP_1 = "ERR_IMPORTEXPORT_ERROR_READING_PARENT_GROUP_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORTEXPORT_ERROR_REMOVING_FOLDERS_OF_IMPORTED_BODY_FILES_0 = "ERR_IMPORTEXPORT_ERROR_REMOVING_FOLDERS_OF_IMPORTED_BODY_FILES_0";
@@ -315,9 +303,6 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String RPT_NOT_CREATED_0 = "RPT_NOT_CREATED_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_OK_0 = "RPT_OK_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SKIPPING_0 = "RPT_SKIPPING_0";

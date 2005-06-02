@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/05/30 15:17:51 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -669,7 +669,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                         m_report.print(
                             Messages.get().container(
                             Messages.RPT_SKIPPING_0), I_CmsReport.C_FORMAT_OK);
-                        m_report.print(org.opencms.report.Messages.get().container(
+                        m_report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             translatedName));
                         if (LOG.isInfoEnabled()) {
@@ -685,7 +685,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     m_report.print(
                         Messages.get().container(Messages.RPT_SKIPPING_0),
                         I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(org.opencms.report.Messages.get().container(
+                    m_report.println(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         translatedName));
 
@@ -867,7 +867,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
 
             m_report.println(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_DOTS_0), I_CmsReport.C_FORMAT_OK);
+                org.opencms.report.Messages.RPT_DOTS_0));
 
         } catch (CmsException exc) {
             
@@ -1062,9 +1062,8 @@ public class CmsImportVersion2 extends A_CmsImport {
                     LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_END_IMPORTING_XML_PAGE_0));
                 } 
     
-                m_report.println(
-                    Messages.get().container(Messages.RPT_OK_0),
-                    I_CmsReport.C_FORMAT_OK);
+                m_report.println(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
     
             } else {
     

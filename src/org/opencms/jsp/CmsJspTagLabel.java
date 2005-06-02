@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLabel.java,v $
- * Date   : $Date: 2005/05/12 10:27:40 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsJspTagLabel extends BodyTagSupport {
 
@@ -96,7 +96,7 @@ public class CmsJspTagLabel extends BodyTagSupport {
 
             } catch (Exception ex) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.ERR_TAG_LABEL_0), ex);
+                    LOG.error(Messages.get().key(Messages.ERR_PROCESS_TAG_1, "label"), ex);
                 }
                 throw new javax.servlet.jsp.JspException(ex);
             }

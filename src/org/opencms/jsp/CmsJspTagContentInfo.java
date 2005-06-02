@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/05/03 15:56:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * Used to access and display XML content item information from the VFS.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 6.0 alpha 3
  */
 public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolver {
@@ -102,7 +102,7 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
             // localize error message:
             // build a container:
             String msg;
-            CmsMessageContainer container = Messages.get().container(Messages.ERR_TAG_CONTENTINFO_WRONG_PARENT_0);
+            CmsMessageContainer container = Messages.get().container(Messages.ERR_PARENTLESS_TAG_1, "contentinfo");
             msg = Messages.getLocalizedMessage(container, pageContext);
             throw new JspTagException(msg);
         }
@@ -124,10 +124,10 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
         try {
             pageContext.getOut().print(tagContent);
         } catch (IOException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_ERR_PROCESS_CONTENTINFO_0, new Object[] {}), e);
-            }
-            throw new JspException(e);
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_PROCESS_TAG_1, "contentinfo");
+            LOG.error(message.key(), e);
+            throw new JspException(message.key(pageContext.getRequest().getLocale()));
         }
 
         return SKIP_BODY;

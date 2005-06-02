@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2005/05/03 15:56:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagContentContainer {
@@ -94,7 +94,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
         // get a reference to the parent "content container" class
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
         if (ancestor == null) {
-            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_TAG_CONTENTLOOP_WRONG_PARENT_0);
+            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_PARENTLESS_TAG_1, "contentloop");
             String msg = Messages.getLocalizedMessage(errMsgContainer, pageContext);
             throw new JspTagException(msg);
         }

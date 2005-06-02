@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/05/31 14:39:21 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.64 $ $Date: 2005/05/31 14:39:21 $
+ * @version $Revision: 1.65 $ $Date: 2005/06/02 09:36:55 $
  */
 public class CmsExport implements Serializable {
     
@@ -1045,8 +1045,8 @@ public class CmsExport implements Serializable {
                 String.valueOf(m_exportCount),
                 source));
         }
-        getReport().println(
-            Messages.get().container(Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+        report.println(org.opencms.report.Messages.get().container(
+            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
     }
 
     /**
@@ -1077,7 +1077,8 @@ public class CmsExport implements Serializable {
             digestElement(parent, e);
         } catch (CmsException e) {
             
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_READING_PARENT_GROUP_1, group.getName());
+            CmsMessageContainer message = org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_GET_PARENT_GROUP_1, group.getName());
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
@@ -1121,7 +1122,7 @@ public class CmsExport implements Serializable {
             throw e;
         } catch (CmsException e) {
             
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_READING_ALL_GROUPS_0);
+            CmsMessageContainer message = org.opencms.db.Messages.get().container(org.opencms.db.Messages.ERR_GET_GROUPS_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
@@ -1188,7 +1189,8 @@ public class CmsExport implements Serializable {
             digestElement(parent, e);
         } catch (CmsException e) {
             
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_READING_GROUPS_OF_USER_1, user.getName());
+            CmsMessageContainer message = org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_GET_GROUPS_OF_USER_1, user.getName());
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
@@ -1232,7 +1234,8 @@ public class CmsExport implements Serializable {
             throw e;
         } catch (CmsException e) {
             
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_READING_ALL_USERS_0);
+            CmsMessageContainer message = org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_GET_USERS_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }

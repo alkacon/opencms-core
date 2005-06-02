@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2005/05/03 15:56:51 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/02 09:36:55 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,6 @@
 package org.opencms.jsp;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.OpenCms;
 
 import javax.servlet.jsp.JspException;
@@ -137,9 +136,8 @@ public class CmsJspTagParam extends BodyTagSupport {
 
         Tag t = findAncestorWithClass(this, I_CmsJspTagParamParent.class);
         if (t == null) {
-            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_TAG_PARAM_ORPHAN_0);
-            String msg = Messages.getLocalizedMessage(errMsgContainer, pageContext);
-            throw new JspTagException(msg);
+            throw new JspTagException(Messages.get().key(pageContext.getRequest().getLocale(), 
+                Messages.ERR_PARENTLESS_TAG_1, new Object[] {"param"}));
         }
         // take no action for null or empty names
         if (m_name == null || m_name.equals("")) {
