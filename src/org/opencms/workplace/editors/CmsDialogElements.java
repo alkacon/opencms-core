@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.0
  */
@@ -303,7 +303,7 @@ public class CmsDialogElements extends CmsDialog {
                     m_changeElement = ((CmsDialogElement)elementList.get(0)).getName();                    
                 }
             }                       
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // show error dialog
             setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_UPDATE_ELEMENTS_0));
             includeErrorpage(this, e);   

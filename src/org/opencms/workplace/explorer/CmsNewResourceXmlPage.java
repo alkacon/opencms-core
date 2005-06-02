@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/02 13:57:07 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3.3
  */
@@ -194,7 +194,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             // set the resource parameter to full path for property dialog 
             setParamResource(fullResourceName);     
             setResourceCreated(true);
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error creating folder, show error dialog
             includeErrorpage(this, e);   
         }

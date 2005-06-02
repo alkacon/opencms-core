@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyDelete.java,v $
- * Date   : $Date: 2005/05/23 12:39:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.3
  */
@@ -116,7 +116,7 @@ public class CmsPropertyDelete extends CmsDialog {
             getCms().deletePropertyDefinition(getParamPropertyName());
             // close the dialog
             actionCloseDialog();
-        } catch (CmsException e) {              
+        } catch (Throwable e) {              
             // error while deleting property definition, show error dialog
             includeErrorpage(this, e);  
         }
@@ -176,7 +176,7 @@ public class CmsPropertyDelete extends CmsDialog {
                 reason.append(dialogWhiteBoxEnd());
                 throw new CmsVfsException(Messages.get().container(Messages.ERR_DEL_PROP_RESOURCES_LOCKED_1, reason.toString()));
             }
-        } catch (CmsException e) {              
+        } catch (Throwable e) {              
             // error while deleting property definition, show error dialog
             includeErrorpage(this, e);         
         } 

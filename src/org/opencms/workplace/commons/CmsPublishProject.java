@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1.12
  */
@@ -315,7 +315,7 @@ public class CmsPublishProject extends CmsReport {
                     setParamReportContinueKey("label.button.continue.brokenlinks");
                     getJsp().include(C_FILE_REPORT_OUTPUT); 
                     
-                } catch (CmsException e) {
+                } catch (Throwable e) {
                     // error while unlocking resources, show error screen
                     includeErrorpage(this, e);  
                 }                         

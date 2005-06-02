@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.3
  */
@@ -121,7 +121,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             if (isEditable()) {
                 performEditOperation(request);    
             }    
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // Cms error defining property, show error dialog
             includeErrorpage(this, e);  
         } 
@@ -388,7 +388,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
             setExplorerTypeSettings(OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName));
             setShowNavigation(getExplorerTypeSettings().isShowNavigation());
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error reading file, show error dialog
             try {
                 includeErrorpage(this, e);  

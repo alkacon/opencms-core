@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package org.opencms.workplace.tools.history;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -55,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -223,7 +222,7 @@ public class CmsAdminHistoryClear extends CmsReport {
                     setParamAction(REPORT_BEGIN);
                     setParamThread(thread.getUUID().toString());
                     getJsp().include(C_FILE_REPORT_OUTPUT);  
-                } catch (CmsRuntimeException e) {
+                } catch (Throwable e) {
                     // error setting history values, show error dialog
                     includeErrorpage(this, e);
                 }               

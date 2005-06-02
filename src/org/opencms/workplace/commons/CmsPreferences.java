@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/05/31 11:17:05 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/02 13:57:07 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1.12
  */
@@ -284,7 +284,7 @@ public class CmsPreferences extends CmsTabDialog {
             pwdInfo.setNewPwd(newPwd);
             pwdInfo.setConfirmation(newPwd);
             pwdInfo.applyChanges();
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // failed setting the new password, show error dialog
             setAction(ACTION_ERROR);
             includeErrorpage(this, e);

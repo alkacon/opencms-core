@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0
  */
@@ -347,7 +347,7 @@ public class CmsSecure extends CmsDialog {
             }
 
             actionCloseDialog();
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error during change of secure settings, show error dialog
             includeErrorpage(this, e);  
         }

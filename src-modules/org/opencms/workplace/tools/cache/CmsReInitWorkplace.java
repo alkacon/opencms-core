@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/cache/Attic/CmsReInitWorkplace.java,v $
- * Date   : $Date: 2005/05/30 11:39:40 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,9 @@
 package org.opencms.workplace.tools.cache;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.tools.staticexport.CmsStaticExportThread;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for re-initialization of the OpenCms Workplace.<p> 
  *
  * @author  Michael Emmerich(m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1.10
  */
@@ -94,7 +91,7 @@ public class CmsReInitWorkplace extends CmsDialog {
                 try {
                     OpenCms.getWorkplaceManager().initialize(getCms());
                     actionCloseDialog();
-                } catch (CmsException e) {
+                } catch (Throwable e) {
                     // create a new Exception with custom message
                     includeErrorpage(this, e);  
                 }

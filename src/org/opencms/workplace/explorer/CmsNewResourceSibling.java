@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/02 13:57:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.3
  */
@@ -163,7 +163,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
             // set resource parameter to new resource name for property dialog
             setParamResource(newResourceParam);    
             setResourceCreated(true);
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error creating pointer, show error dialog
             setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_CREATE_LINK_0));
             includeErrorpage(this, e);   

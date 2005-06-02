@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsEditPointer.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -54,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.5.0
  */
@@ -104,7 +103,7 @@ public class CmsEditPointer extends CmsDialog {
             getCms().writeFile(editFile);
             // close the dialog window
             actionCloseDialog();
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error changing link target, show error dialog
             setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_CHANGE_LINK_TARGET_0));
             includeErrorpage(this, e); 
@@ -126,7 +125,7 @@ public class CmsEditPointer extends CmsDialog {
                 // get pointer contents
                 CmsFile file = getCms().readFile(getParamResource());
                 linkTarget = new String(file.getContents());
-            } catch (CmsException e1) {
+            } catch (Throwable e1) {
                 // error reading file, show error dialog
                 setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_GET_LINK_TARGET_1, getParamResource()));
                 includeErrorpage(this, e1);

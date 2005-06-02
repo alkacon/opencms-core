@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/02 13:57:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -63,7 +62,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.3
  */
@@ -185,7 +184,7 @@ public class CmsNewResourceFolder extends CmsNewResource {
             getCms().createResource(fullResourceName, CmsResourceTypeFolder.getStaticTypeId(), null, properties);           
             setParamResource(fullResourceName);   
             setResourceCreated(true);
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error creating folder, show error dialog
             setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_CREATE_FOLDER_0));
             includeErrorpage(this, e);   

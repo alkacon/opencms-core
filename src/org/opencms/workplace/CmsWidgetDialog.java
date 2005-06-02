@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/31 11:17:05 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/06/02 13:59:14 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
@@ -57,14 +56,12 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.logging.Log;
-
 /**
  * Base class for dialogs that use the OpenCms widgets without XML content.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -92,9 +89,6 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** Prefix for "hidden" parameters, required since these must be unescaped later. */
     public static final String HIDDEN_PARAM_PREFIX = "hidden.";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsWidgetDialog.class);
 
     /** The errors thrown by commit actions. */
     protected List m_commitErrors;
@@ -549,7 +543,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                     set.add(widget);
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
 
             includeErrorpage(this, e);
         }
@@ -577,9 +571,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                     set.add(widget);
                 }
             }
-        } catch (Exception e) {
-
-            LOG.error(e);
+        } catch (Throwable e) {
             includeErrorpage(this, e);
         }
         return result.toString();
@@ -606,9 +598,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                     set.add(widget);
                 }
             }
-        } catch (Exception e) {
-
-            LOG.error(e);
+        } catch (Throwable e) {
             includeErrorpage(this, e);
         }
         return result.toString();

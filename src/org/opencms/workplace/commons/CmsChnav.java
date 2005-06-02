@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -294,7 +294,7 @@ public class CmsChnav extends CmsDialog {
                 }
                 getCms().writePropertyObject(filename, newNavPos);
             }
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error during chnav, show error dialog
             includeErrorpage(this, e);  
         }

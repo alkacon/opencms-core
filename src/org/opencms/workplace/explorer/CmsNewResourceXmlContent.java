@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContent.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/02 13:57:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.explorer;
 
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -53,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  */
 public class CmsNewResourceXmlContent extends CmsNewResource {
@@ -125,7 +124,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
                 resType.getTypeId(), null, properties);           
             setParamResource(fullResourceName); 
             setResourceCreated(true);
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error creating file, show error dialog
             includeErrorpage(this, e);   
         }

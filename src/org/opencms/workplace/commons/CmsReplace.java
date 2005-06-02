@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsReplace.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.5.0
  */
@@ -130,7 +130,7 @@ public class CmsReplace extends CmsDialog {
             } else {
                 throw new CmsException(Messages.get().container(Messages.ERR_UPLOAD_FILE_NOT_FOUND_0));
             }
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error replacing file, show error dialog
             includeErrorpage(this, e);   
         }

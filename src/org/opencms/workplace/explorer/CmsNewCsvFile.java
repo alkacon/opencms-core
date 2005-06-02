@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/02 13:57:07 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.dom4j.io.DocumentSource;
  * </ul>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.7.3
  */
@@ -259,7 +259,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             if (!styleProp.isNullProperty()) { 
                 getCms().writePropertyObject(getParamResource(), styleProp);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // error uploading file, show error dialog
             setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_TABLE_IMPORT_FAILED_0));
             includeErrorpage(this, e);  

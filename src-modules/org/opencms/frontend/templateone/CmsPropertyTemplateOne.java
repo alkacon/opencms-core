@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/05/31 15:51:19 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
 
@@ -185,7 +185,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             if (isEditable()) {
                 performEditOperation(request);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // Cms checked error defining property, show error dialog
             includeErrorpage(this, e);   
         }

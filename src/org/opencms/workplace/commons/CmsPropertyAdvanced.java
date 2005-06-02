@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -303,15 +303,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             setParamAction(DIALOG_SHOW_DEFAULT);
             setParamNewproperty(null);
             sendCmsRedirect(getJsp().getRequestContext().getUri()+"?"+paramsAsRequest());              
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error defining property, show error dialog
-            includeErrorpage(this, e);  
-        } catch (IOException e) {
-            // should usually never happen
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
-            }
-            getJsp().include(C_FILE_EXPLORER_FILELIST);
+            includeErrorpage(this, e);              
         }
     }
     
@@ -327,7 +321,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             // only delete resource if dialog mode is a wizard mode
             try {
                 getCms().deleteResource(getParamResource(), I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-            } catch (CmsException e) {
+            } catch (Throwable e) {
                 // error deleting the resource, show error dialog
                 includeErrorpage(this, e);
             }
@@ -347,7 +341,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             if (isEditable()) {
                 performEditOperation(request);
             }         
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error editing property, show error dialog
             includeErrorpage(this, e);
         } 

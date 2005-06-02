@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/02 13:57:07 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3.3
  */
@@ -187,7 +187,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 getCms().renameResource(getParamResource(), newResourceName);
                 setParamResource(newResourceName);
             }
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error updating file, show error dialog
             setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_UPLOAD_FILE_0));
             includeErrorpage(this, e);
@@ -268,7 +268,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
             } else {
                 throw new CmsWorkplaceException(Messages.get().container(Messages.ERR_UPLOAD_FILE_NOT_FOUND_0));
             }
-        } catch (CmsException e) {
+        } catch (Throwable e) {
             // error uploading file, show error dialog
             setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_UPLOAD_FILE_0));
             includeErrorpage(this, e);   

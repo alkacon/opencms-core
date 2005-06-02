@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/02 13:57:08 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.5.1
  */
@@ -107,7 +107,7 @@ public class CmsHistory extends CmsDialog {
         if (getParamVersionid() != null) {
             try {
                 performRestoreOperation();
-            } catch (CmsException e) {
+            } catch (Throwable e) {
                 // Cms error defining property, show error dialog
                 includeErrorpage(this, e);                  
             }    
