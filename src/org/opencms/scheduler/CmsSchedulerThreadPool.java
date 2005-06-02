@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThreadPool.java,v $
- * Date   : $Date: 2005/04/18 21:21:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/02 12:01:12 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.quartz.spi.ThreadPool;
  * @author James House
  * @author Juergen Donnerstag
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.3
  */
 public class CmsSchedulerThreadPool implements ThreadPool {
@@ -173,14 +173,14 @@ public class CmsSchedulerThreadPool implements ThreadPool {
     public void initialize() throws SchedulerConfigException {
 
         if (m_maxThreadCount <= 0 || m_maxThreadCount > 200) {
-            throw new SchedulerConfigException("Maximum thread count for scheduler must be > 0 and <= 200");
+            throw new SchedulerConfigException(Messages.get().key(Messages.ERR_MAX_THREAD_COUNT_BOUNDS_0));
         }
         if (m_initialThreadCount < 0 || m_initialThreadCount > m_maxThreadCount) {
             throw new SchedulerConfigException(
-                "Initial thread count for scheduler must be > -1 and <= configured maximum");
+                Messages.get().key(Messages.ERR_INIT_THREAD_COUNT_BOUNDS_0));
         }
         if (m_threadPriority <= 0 || m_threadPriority > 9) {
-            throw new SchedulerConfigException("Scheduler thread priority must be > 0 and <= 9");
+            throw new SchedulerConfigException(Messages.get().key(Messages.ERR_SCHEDULER_PRIORITY_BOUNDS_0));
         }
 
         if (m_inheritGroup) {

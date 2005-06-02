@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Messages.java,v $
- * Date   : $Date: 2005/05/31 20:29:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/02 12:01:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IOERROR_0 = "ERR_IOERROR_0";    
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_CLASSLOADER_RESOURCE_1 = "ERR_MISSING_CLASSLOADER_RESOURCE_1";    
     

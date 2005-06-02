@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXmlSaxWriter.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/02 12:01:12 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $ $Date: 2005/04/10 11:00:14 $
+ * @version $Revision: 1.7 $ $Date: 2005/06/02 12:01:12 $
  */
 public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
@@ -133,7 +133,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
             writeNewLine();
             m_writer.flush();
         } catch (IOException e) {
-            throw new SAXException("I/O error", e);
+            throw new SAXException(Messages.get().key(Messages.ERR_IOERROR_0), e);
         }
     }
 
@@ -264,7 +264,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
         try {
             m_writer.write(s);
         } catch (IOException e) {
-            throw new SAXException("I/O error", e);
+            throw new SAXException(Messages.get().key(Messages.ERR_IOERROR_0), e);
         }
     }
 
@@ -284,7 +284,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
             // flush the stream
             m_writer.flush();
         } catch (IOException e) {
-            throw new SAXException("I/O error", e);
+            throw new SAXException(Messages.get().key(Messages.ERR_IOERROR_0), e);
         }
     }
 }

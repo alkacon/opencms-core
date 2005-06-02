@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/06/02 09:36:55 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/02 12:01:12 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,9 @@ public final class Messages extends A_CmsMessageBundle {
         "Please see the GNU Lesser General Public Licence for",
         "further details.",
         ""};
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_NOT_A_FOLDER_1 = "ERR_NOT_A_FOLDER_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_ALREADY_INITIALIZED_0 = "ERR_ALREADY_INITIALIZED_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/06/02 12:01:13 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -329,8 +329,12 @@ public class CmsLinkProcessor {
             InputStream stream = new ByteArrayInputStream(newContent.toString().getBytes(encoding));
             page = new Page(stream, encoding);
         } catch (UnsupportedEncodingException e) {
-            // fall back to default encoding, should not happen since all xml pages must have a valid encoding    
-            throw new ParserException("Invalid encoding for HTML content parsing '" + encoding + "'");
+            
+            // ParserException is no API-constraint: replace by CmsException?
+            int todo = 0;
+            
+            // fall back to default encoding, should not happen since all xml pages must have a valid encoding  
+            throw new ParserException(Messages.get().key(Messages.ERR_INVALID_ENCODING_1, encoding));
         }
         lexer.setPage(page);
         parser.setLexer(lexer);

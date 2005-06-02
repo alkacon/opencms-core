@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/05/24 07:45:07 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2005/06/02 12:01:12 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -123,7 +123,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         String resolvedTarget = CmsLinkManager.getAbsoluteUri(target, folder);
         CmsResource res = m_cms.readResource(resolvedTarget);
         if (!res.isFolder()) {
-            throw new Exception("Not a folder: " + resolvedTarget);
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NOT_A_FOLDER_1, resolvedTarget));
         }
         m_cms.getRequestContext().setUri(resolvedTarget);
         System.out.println("\nThe current folder is now '" + resolvedTarget + "'");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/Messages.java,v $
- * Date   : $Date: 2005/05/20 12:48:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/02 12:01:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,6 +64,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_COULD_NOT_SCHEDULE_JOB_2 = "ERR_COULD_NOT_SCHEDULE_JOB_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INIT_THREAD_COUNT_BOUNDS_0 = "ERR_INIT_THREAD_COUNT_BOUNDS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_JOB_CONFIGURATION_0 = "ERR_INVALID_JOB_CONFIGURATION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -79,7 +82,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_JOB_WITH_ID_DOES_NOT_EXIST_1 = "ERR_JOB_WITH_ID_DOES_NOT_EXIST_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_MAX_THREAD_COUNT_BOUNDS_0 = "ERR_MAX_THREAD_COUNT_BOUNDS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_SCHEDULER_1 = "ERR_NO_SCHEDULER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SCHEDULER_PRIORITY_BOUNDS_0 = "ERR_SCHEDULER_PRIORITY_BOUNDS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SCHEDULER_CONFIG_FINISHED_0 = "INIT_SCHEDULER_CONFIG_FINISHED_0";
