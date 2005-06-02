@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsCoreMessageBundles.java,v $
- * Date   : $Date: 2005/06/02 09:36:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/02 13:07:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,9 @@ package org.opencms.i18n;
  * core classes (folder src, org.* packages). <p>
  * 
  * @author Achim Westermann (a.westermann@alkacon.com)
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public final class TestCmsCoreMessageBundles extends TestCmsMessageBundles {
@@ -47,45 +48,7 @@ public final class TestCmsCoreMessageBundles extends TestCmsMessageBundles {
      */
     protected I_CmsMessageBundle[] getTestMessageBundles() {
 
-        return new I_CmsMessageBundle[] {
-            org.opencms.cache.Messages.get(),
-            org.opencms.configuration.Messages.get(),
-            org.opencms.db.Messages.get(),
-            org.opencms.db.generic.Messages.get(),
-            org.opencms.file.Messages.get(),
-            org.opencms.file.collectors.Messages.get(),
-            org.opencms.flex.Messages.get(),
-            org.opencms.i18n.Messages.get(),
-            org.opencms.importexport.Messages.get(),
-            org.opencms.jsp.Messages.get(),
-            org.opencms.loader.Messages.get(),
-            org.opencms.lock.Messages.get(),
-            org.opencms.mail.Messages.get(),
-            org.opencms.main.Messages.get(),
-            org.opencms.module.Messages.get(),
-            org.opencms.monitor.Messages.get(),
-            org.opencms.scheduler.Messages.get(),
-            org.opencms.search.Messages.get(),
-            org.opencms.search.documents.Messages.get(),
-            org.opencms.security.Messages.get(),
-            org.opencms.setup.Messages.get(),
-            org.opencms.site.Messages.get(),
-            org.opencms.staticexport.Messages.get(),
-            org.opencms.synchronize.Messages.get(),
-            org.opencms.workplace.threads.Messages.get(),
-            org.opencms.util.Messages.get(),
-            org.opencms.validation.Messages.get(),
-            org.opencms.workflow.Messages.get(),
-            org.opencms.workplace.Messages.get(),
-            org.opencms.workplace.commons.Messages.get(),
-            org.opencms.workplace.explorer.Messages.get(),
-            org.opencms.workplace.tools.Messages.get(),
-            org.opencms.workplace.list.Messages.get(),
-            org.opencms.widgets.Messages.get(),
-            org.opencms.xml.Messages.get(),
-            org.opencms.xml.content.Messages.get(),
-            org.opencms.xml.page.Messages.get(),
-            org.opencms.xml.types.Messages.get()};
+        return A_CmsMessageBundle.getOpenCmsMessageBundles();
     }
 
 }
