@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/04/29 16:02:25 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/02 13:36:03 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * as optimization for non-dynamic content.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.7.3
  * @see I_CmsStaticExportHandler
  */
@@ -130,7 +130,8 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                         m_busy = false;
                     }
                 }
-            }, "OpenCms: Scrubbing export folders for history id " + id);
+            }, 
+            Messages.get().key(Messages.GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1, String.valueOf(id)));
             t.start();
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/Messages.java,v $
- * Date   : $Date: 2005/06/02 13:18:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/02 13:36:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,13 +43,13 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_WORKPLACE_SITE_0 = "INIT_WORKPLACE_SITE_0";    
+    public static final String ERR_CONFIG_FROZEN_0 = "ERR_CONFIG_FROZEN_0";    
     
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DUPLICATE_SERVER_NAME_1 = "ERR_DUPLICATE_SERVER_NAME_1";
+       
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DEFAULT_SITE_ROOT_0 = "INIT_DEFAULT_SITE_ROOT_0";    
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CONFIG_FROZEN_0 = "ERR_CONFIG_FROZEN_0";    
   
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DEFAULT_SITE_ROOT_1 = "INIT_DEFAULT_SITE_ROOT_1";    
@@ -70,6 +70,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_START_SITE_CONFIG_0 = "INIT_START_SITE_CONFIG_0";
     
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_WORKPLACE_SITE_0 = "INIT_WORKPLACE_SITE_0";    
+    
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_WORKPLACE_SITE_1 = "INIT_WORKPLACE_SITE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -77,9 +80,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_SITE_PROP_FAILED_0 = "LOG_READ_SITE_PROP_FAILED_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_DUPLICATE_SERVER_NAME_1 = "ERR_DUPLICATE_SERVER_NAME_1";
     
     
     
