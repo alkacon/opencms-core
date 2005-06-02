@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateSearch.java,v $
- * Date   : $Date: 2005/04/28 13:46:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/02 08:45:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,11 @@ package org.opencms.frontend.templateone;
 
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchResult;
+import org.opencms.search.Messages;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -52,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for the search result JSP page.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsTemplateSearch extends CmsTemplateBean {
     
@@ -100,7 +102,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
         if (search.getLastException() != null) {
             // the search did not run properly, create error output
             String errorMessage = "";
-            if (search.getLastException().toString().indexOf("too short,") != -1) {
+            if (((CmsException)search.getLastException()).getMessageContainer().getKey().equals(Messages.ERR_QUERY_TOO_SHORT_1)) {
                 // query String was too short
                 errorMessage = key("search.error.wordlength");
             } else {
