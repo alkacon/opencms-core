@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/Messages.java,v $
- * Date   : $Date: 2005/05/25 10:56:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/02 14:05:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,10 +48,37 @@ import java.util.Locale;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TASK_STATE_ENDED_0 = "GUI_TASK_STATE_ENDED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TASK_STATE_HALTED_0 = "GUI_TASK_STATE_HALTED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TASK_STATE_PREPARED_0 = "GUI_TASK_STATE_PREPARED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TASK_STATE_RUNNING_0 = "GUI_TASK_STATE_RUNNING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TASK_STATE_START_0 = "GUI_TASK_STATE_START_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TASK_STATE_STARTED_0 = "GUI_TASK_STATE_STARTED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TASK_STATE_UNKNOWN_0 = "GUI_TASK_STATE_UNKNOWN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TASK_TYPE_ACTIVE_0 = "GUI_TASK_TYPE_ACTIVE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TASK_TYPE_ALL_0 = "GUI_TASK_TYPE_ALL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TASK_TYPE_DONE_0 = "GUI_TASK_TYPE_DONE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TASK_TYPE_ILLEGAL_0 = "GUI_TASK_TYPE_ILLEGAL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TASK_TYPE_NEW_0 = "GUI_TASK_TYPE_NEW_0";
@@ -59,27 +86,11 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TASK_TYPE_OPEN_0 = "GUI_TASK_TYPE_OPEN_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_TYPE_ACTIVE_0 = "GUI_TASK_TYPE_ACTIVE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_TASK_TYPE_ILLEGAL_0 = "GUI_TASK_TYPE_ILLEGAL_0";
-
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workflow.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /**
-     * Returns an instance of this localized message accessor.<p>
-     * 
-     * @return an instance of this localized message accessor
-     */
-    public static I_CmsMessageBundle get() {
-
-        return INSTANCE;
-    }
 
     /**
      * Hides the public constructor for this utility class.<p>
@@ -90,13 +101,13 @@ public final class Messages extends A_CmsMessageBundle {
     }
 
     /**
-     * Returns the bundle name for this OpenCms package.<p>
+     * Returns an instance of this localized message accessor.<p>
      * 
-     * @return the bundle name for this OpenCms package
+     * @return an instance of this localized message accessor
      */
-    public String getBundleName() {
+    public static I_CmsMessageBundle get() {
 
-        return BUNDLE_NAME;
+        return INSTANCE;
     }
 
     /**
@@ -178,17 +189,27 @@ public final class Messages extends A_CmsMessageBundle {
         Object[] dummy = new Object[0];
         switch (taskType) {
             case I_CmsConstants.C_TASKS_ACTIVE:
-                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy); 
+                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy);
             case I_CmsConstants.C_TASKS_ALL:
-                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy); 
+                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy);
             case I_CmsConstants.C_TASKS_DONE:
-                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy); 
+                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy);
             case I_CmsConstants.C_TASKS_NEW:
-                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy); 
+                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy);
             case I_CmsConstants.C_TASKS_OPEN:
             default:
-                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ILLEGAL_0, dummy); 
+                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ILLEGAL_0, dummy);
         }
+    }
+
+    /**
+     * Returns the bundle name for this OpenCms package.<p>
+     * 
+     * @return the bundle name for this OpenCms package
+     */
+    public String getBundleName() {
+
+        return BUNDLE_NAME;
     }
 
 }
