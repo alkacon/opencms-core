@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/02 12:57:28 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.16 $ $Date: 2005/02/17 12:44:35 $
+ * @version $Revision: 1.17 $ $Date: 2005/06/02 12:57:28 $
  */
 public class CmsSetupDb extends Object {
     
@@ -98,10 +98,10 @@ public class CmsSetupDb extends Object {
             Class.forName(DbDriver).newInstance();
             m_con = DriverManager.getConnection(jdbcUrl, DbUser, DbPwd);
         } catch (ClassNotFoundException e) {
-            m_errors.addElement("Error loading JDBC driver: " + DbDriver);
+            m_errors.addElement(Messages.get().key(Messages.ERR_LOAD_JDBC_DRIVER_1, DbDriver));
             m_errors.addElement(CmsException.getStackTraceAsString(e));
         } catch (Exception e) {
-            m_errors.addElement("Error connecting to database using: " + DbConStr);
+            m_errors.addElement(Messages.get().key(Messages.ERR_DB_CONNECT_1, DbConStr));
             m_errors.addElement(CmsException.getStackTraceAsString(e));
         }
     }
