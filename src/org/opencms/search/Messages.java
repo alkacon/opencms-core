@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2005/05/31 15:42:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/02 08:43:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -142,7 +142,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PARSE_EXCERPT_LENGTH_FAILED_1 = "LOG_PARSE_EXCERPT_LENGTH_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_QUERY_TOO_SHORT_1 = "LOG_QUERY_TOO_SHORT_1";
+    public static final String ERR_QUERY_TOO_SHORT_1 = "ERR_QUERY_TOO_SHORT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_CATEGORY_FAILED_1 = "LOG_READ_CATEGORY_FAILED_1";
