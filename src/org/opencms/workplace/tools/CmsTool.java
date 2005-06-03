@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/05/23 13:12:21 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools;
 
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsIdentifiableObjectContainer;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Iterator;
@@ -47,7 +48,7 @@ import java.util.List;
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
 public class CmsTool {
@@ -110,11 +111,17 @@ public class CmsTool {
 
         if (!m_handler.isVisible(wp.getCms())) {
             return "";
-        }
+        }        
         String link = OpenCms.getWorkplaceManager().getToolManager().linkForPath(
             wp.getJsp(),
             this.getHandler().getPath(),
             null);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getHandler().getParameters())) {
+            if (!link.endsWith("&")) {
+                link += "&";
+            }
+            link += wp.resolveMacros(getHandler().getParameters());
+        }
         String onClic = "openPage('" + link + "');";
         return A_CmsHtmlIconButton.defaultButtonHtml(
             CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT,

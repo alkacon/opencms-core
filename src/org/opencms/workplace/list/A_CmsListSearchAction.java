@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListSearchAction.java,v $
- * Date   : $Date: 2005/05/20 16:52:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * It provides the default show all action accessor and the rendering method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
@@ -73,7 +73,7 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
         Messages.get(),
         Messages.GUI_LIST_ACTION_SHOWALL_HELP_0);
     /** Default icon for show all action. */
-    private static final String SHOWALL_ICON = "list/showall.gif";
+    private static final String SHOWALL_ICON = "list/showall.png";
 
     /** Default name for show all action. */
     private static final CmsMessageContainer SHOWALL_NAME = new CmsMessageContainer(
@@ -107,8 +107,9 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
      */
     public String buttonHtml(CmsWorkplace wp) {
 
-        String onClic = getListId()
-            + "ListSearchAction('"
+        String onClic = "listSearchAction('"
+            + getListId()
+            + "', '"
             + getId()
             + "', '"
             + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
@@ -167,8 +168,9 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
              */
             public String buttonHtml(CmsWorkplace wp) {
 
-                String onClic = getListId()
-                    + "ListSearchAction('"
+                String onClic = "listSearchAction('"
+                    + getListId()
+                    + "', '"
                     + getId()
                     + "', '"
                     + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))

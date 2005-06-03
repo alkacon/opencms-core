@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/05/24 12:57:12 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,22 +40,35 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Helper class to build easily other admin tool handlers.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
 public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
+    /** Property for the params arg.<p> */
+    public static final String C_ARG_PARAM_NAME = "params";
+
+    /** Property for the path arg.<p> */
+    public static final String C_ARG_PATH_NAME = "path";
+
     /** Property for the args.<p> */
     public static final String C_ARGS_PROPERTY_DEFINITION = "admintoolhandler-args";
+
+    /** Argument separator.<p> */
+    public static final String C_ARGUMENT_SEPARATOR = "|";
 
     /** Default disabled help text constant.<p> */
     public static final String C_DEFAULT_DISABLED_HELPTEXT = "${key." + Messages.GUI_TOOLS_DISABLED_HELP_0 + "}";
 
-    /** Arg-name and arg-value separator.<p> */
+    /** Argument name and value separator.<p> */
     public static final String C_VALUE_SEPARATOR = ":";
 
     /** Help text or description if disabled. */
@@ -75,6 +88,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /** Display name. */
     private String m_name;
+
+    /** Needed parameters. */
+    private String m_parameters;
 
     /** Tool path to install in. */
     private String m_path;
@@ -134,6 +150,16 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns the needed parameters.<p>
+     *
+     * @return the parameters
+     */
+    public String getParameters() {
+
+        return m_parameters;
     }
 
     /**
@@ -229,6 +255,16 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     }
 
     /**
+     * Sets the parameters.<p>
+     *
+     * @param parameters the parameters to set
+     */
+    public void setParameters(String parameters) {
+
+        m_parameters = parameters;
+    }
+
+    /**
      * Sets the path.<p>
      *
      * @param path the path to set
@@ -313,7 +349,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
         String iconPath = navElem.getNavImage();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(iconPath)) {
-            iconPath = "${key." + Messages.GUI_TOOLS_DEFAULT_ICON_0 + "}";
+            iconPath = "admin/images/default_tool_big.png:admin/images/default_tool_small.png";
         }
         String smallIconPath = iconPath;
         if (iconPath.indexOf(C_VALUE_SEPARATOR) >= 0) {
@@ -388,7 +424,19 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
         try {
             CmsProperty prop = cms.readPropertyObject(resourcePath, C_ARGS_PROPERTY_DEFINITION, false);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
-                path = prop.getValue();
+                Map argsMap = new HashMap();
+                Iterator itArgs = CmsStringUtil.splitAsList(prop.getValue(), C_ARGUMENT_SEPARATOR).iterator();
+                while (itArgs.hasNext()) {
+                    String arg = (String)itArgs.next();
+                    int pos = arg.indexOf(C_VALUE_SEPARATOR);
+                    argsMap.put(arg.substring(0, pos), arg.substring(pos + 1));
+                }
+                if (argsMap.get(C_ARG_PATH_NAME) != null) {
+                    path = (String)argsMap.get(C_ARG_PATH_NAME);
+                }
+                if (argsMap.get(C_ARG_PARAM_NAME) != null) {
+                    setParameters((String)argsMap.get(C_ARG_PARAM_NAME));
+                }
             }
         } catch (CmsException e) {
             // noop
@@ -409,5 +457,4 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
         return m_path + " - " + m_group + " - " + m_position;
     }
-
 }

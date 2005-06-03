@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/05/25 11:03:55 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
@@ -326,11 +326,9 @@ public class CmsListMetadata {
         }
         if (!m_multiActions.isEmpty()) {
             html.append("\t<th width='0' class='select'>\n");
-            html.append("\t\t<input type='checkbox' class='checkbox' name='");
+            html.append("\t\t<input type='checkbox' class='checkbox' name='listSelectAll' value='true' onClick=\"listSelect('");
             html.append(list.getId());
-            html.append("ListSelectAll' value='true' onClick='");
-            html.append(list.getId());
-            html.append("ListSelect()'\n>");
+            html.append("')\"\n>");
             html.append("\t</th>\n");
         }
         html.append("</tr>\n");
@@ -340,14 +338,13 @@ public class CmsListMetadata {
     /**
      * Returns the html code for a list item.<p>
      * 
-     * @param listId the id of the associated list
      * @param item the list item to render
      * @param wp the workplace context
      * @param odd if the position is odd or even
      * 
      * @return html code
      */
-    public String htmlItem(String listId, CmsListItem item, CmsWorkplace wp, boolean odd) {
+    public String htmlItem(CmsListItem item, CmsWorkplace wp, boolean odd) {
 
         StringBuffer html = new StringBuffer(1024);
         html.append("<tr class='");
@@ -362,15 +359,16 @@ public class CmsListMetadata {
                 html.append(col.getAlign());
                 html.append("'");
             }
+            if (!col.isTextWrapping()) {
+                html.append(" style='white-space: nowrap;'");
+            }
             html.append(">\n");
             html.append(col.htmlCell(item, wp));
             html.append("</td>\n");
         }
         if (!m_multiActions.isEmpty()) {
             html.append("\t<td class='select' align='center' >\n");
-            html.append("\t\t<input type='checkbox' class='checkbox' name='");
-            html.append(listId);
-            html.append("MultiAction' value='");
+            html.append("\t\t<input type='checkbox' class='checkbox' name='listMultiAction' value='");
             html.append(item.getId());
             html.append("'>\n");
             html.append("\t</td>\n");
@@ -438,12 +436,11 @@ public class CmsListMetadata {
     /**
      * Generates the html code for the search bar.<p>
      * 
-     * @param listId the id of the list to generate the code for
      * @param wp the workplace context
      * 
      * @return html code
      */
-    public String htmlSearchBar(String listId, CmsWorkplace wp) {
+    public String htmlSearchBar(CmsWorkplace wp) {
 
         if (!isSearchable()) {
             return "";
@@ -451,9 +448,7 @@ public class CmsListMetadata {
         StringBuffer html = new StringBuffer(1024);
         html.append("<td class='main'>\n");
         html.append("\t<div>\n");
-        html.append("\t\t<input type='text' name='");
-        html.append(listId);
-        html.append("Filter' value='' size='20' maxlength='245' style='vertical-align: bottom;'>\n");
+        html.append("\t\t<input type='text' name='listSearchFilter' value='' size='20' maxlength='245' style='vertical-align: bottom;'>\n");
         html.append(m_searchAction.buttonHtml(wp));
         I_CmsListAction showAllAction = m_searchAction.getShowAllAction();
         if (showAllAction != null) {
@@ -471,7 +466,7 @@ public class CmsListMetadata {
      */
     public boolean isSearchable() {
 
-        return m_searchAction != null; // && getColumnDefinition(m_searchByColumnName).isVisible()
+        return m_searchAction != null;
     }
 
     /**

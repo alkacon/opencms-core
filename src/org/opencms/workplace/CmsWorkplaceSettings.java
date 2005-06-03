@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/05/25 10:56:52 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.tools.CmsToolUserData;
 
 import org.opencms.file.CmsUser;
@@ -49,7 +48,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -65,7 +64,7 @@ public class CmsWorkplaceSettings {
     private boolean m_explorerShowLinks;
     private Map m_frameUris;
     private String m_galleryType;
-    private CmsHtmlList m_htmlList;
+    private Object m_listObject;
     private Map m_lastUsedGalleries;
     private CmsMessages m_messages;
     private String m_permissionDetailView;
@@ -99,7 +98,7 @@ public class CmsWorkplaceSettings {
      * Returns the dialog object.<p>
      *
      * Use this mechanism for transferring a complex object between
-     * several page instances of an interactive dialog. This in usually 
+     * several page instances of an interactive dialog. This is usually 
      * required when editing a complex object in a dialog of the "Administration" view.<p> 
      *
      * @return the dialog object
@@ -220,13 +219,20 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Returns the last user used list state.<p>
+     * Returns the list dialog object.<p>
      *
-     * @return the list
+     * Use this mechanism for transfering a html list object between
+     * several page instances of an interactive dialog. This is usually 
+     * required when having several lists in a tool or when a list action 
+     * another list displays of the "Administration" view.<p> 
+     *
+     * @return the dialog object
+     * 
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListObject()
      */
-    public CmsHtmlList getHtmlList() {
+    public Object getListObject() {
 
-        return m_htmlList;
+        return m_listObject;
     }
 
     /**
@@ -405,7 +411,7 @@ public class CmsWorkplaceSettings {
      * Sets the dialog object.<p>
      * 
      * Use this mechanism for transferring a complex object between
-     * several page instances of an interactive dialog. This in usually 
+     * several page instances of an interactive dialog. This is usually 
      * required when editing a complex object in a dialog of the "Administration" view.<p>
      *  
      * @param dialogObject the dialog object to set
@@ -527,13 +533,20 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Sets the list state.<p>
-     *
-     * @param list the list to set
+     * Sets the list object.<p>
+     * 
+     * Use this mechanism for transfering a html list object between
+     * several page instances of an interactive dialog. This is usually 
+     * required when having several lists in a tool or when a list action 
+     * another list displays of the "Administration" view.<p> 
+     *  
+     * @param listObject the list object to set
+     * 
+     * @see org.opencms.workplace.list.A_CmsListDialog#setListObject(org.opencms.workplace.list.CmsHtmlList)
      */
-    public synchronized void setHtmlList(CmsHtmlList list) {
+    public synchronized void setListObject(Object listObject) {
 
-        m_htmlList = list;
+        m_listObject = listObject;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/02 13:59:14 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
+import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetDialog;
 
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -118,7 +119,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * when calling <code>{@link org.opencms.workplace.CmsWorkplace#paramsAsHidden()}</code>.<p>
      */
     private String m_paramElementIndex = "0";
-    
+
     /** 
      * Parameter stores the name of the element to add or remove.<p>
      * 
@@ -148,7 +149,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * Deletes the edited dialog object from the session.<p>
      */
@@ -156,12 +157,12 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         clearDialogObject();
     }
-    
+
     /**
      * Commits the edited object after pressing the "OK" button.<p>
      */
     public abstract void actionCommit();
-    
+
     /**
      * Performs the dialog actions depending on the initialized action.<p>
      * 
@@ -171,75 +172,32 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     public void actionDialog() throws IOException, JspException {
 
         switch (getAction()) {
-            
-        case ACTION_CANCEL:
-            // ACTION: cancel button pressed
-            actionCancel();
-            actionCloseDialog();
-            break;
 
-        case ACTION_ERROR:
-            // ACTION: an error occured (display nothing)
-            break;
-            
-        case ACTION_SAVE:
-            // ACTION: save edited values
-            setParamAction(DIALOG_OK);
-            actionCommit();
-            if (getCommitErrors().size() == 0) {
+            case ACTION_CANCEL:
+                // ACTION: cancel button pressed
+                actionCancel();
                 actionCloseDialog();
                 break;
-            }   
-            
-        case ACTION_DEFAULT:
-        default:
-            // ACTION: show dialog (default)
-            setParamAction(DIALOG_SAVE);          
-            StringBuffer result = new StringBuffer(2048);
-            result.append(htmlStart("administration/index.html"));
-            result.append("<script type=\"text/javascript\" src=\"").append(getResourceUri()).append("editors/xmlcontent/edit.js\"></script>\n");
-            result.append("<script type=\"text/javascript\" src=\"").append(getResourceUri()).append("editors/xmlcontent/help.js\"></script>\n");
-            result.append(getWidgetIncludes());
-            result.append("<script type=\"text/javascript\">\n<!--\n");
-            result.append("// flag indicating if form initialization is finished\n");
-            result.append("var initialized = false;\n");
-            result.append("// the OpenCms context path\n");
-            result.append("var contextPath = \"").append(OpenCms.getSystemInfo().getOpenCmsContext()).append("\";\n\n");
-            result.append("// action parameters of the form\n");
-            result.append("var actionAddElement = \"").append(EDITOR_ACTION_ELEMENT_ADD).append("\";\n");
-            result.append("var actionRemoveElement = \"").append(EDITOR_ACTION_ELEMENT_REMOVE).append("\";\n");
-            result.append("function init() {\n");
-            result.append(getWidgetInitCalls());
-            result.append("\tsetTimeout(\"scrollForm();\", 200);\n");
-            result.append("\tinitialized = true;\n");
-            result.append("}\n\n");
-            result.append("function exitEditor() {\n");
-            result.append("\ttry {\n");
-            result.append("\t\t// close file selector popup if present\n");
-            result.append("\t\tcloseTreeWin();\n");
-            result.append("\t} catch (e) {}\n");
-            result.append("}\n");
-            result.append(getWidgetInitMethods());
-            result.append("\n// -->\n</script>\n");
-            result.append(bodyStart(null, "onload='init();' onunload='exitEditor();'"));
-            result.append(dialogStart());
-            result.append("<form name=\"EDITOR\" id=\"EDITOR\" method=\"post\" action=\"").append(getDialogUri());
-            result.append("\" class=\"nomargin\" onsubmit=\"return submitAction('").append(DIALOG_OK).append("', null, 'EDITOR');\">\n");
-            result.append(dialogContentStart(null));
-            result.append(buildDialogForm());
-            result.append(dialogContentEnd());
-            result.append(dialogButtonsCustom());
-            result.append(paramsAsHidden());
-            if (getParamFramename() == null) { 
-                result.append("\n<input type=\"hidden\" name=\"").append(PARAM_FRAMENAME).append("\" value=\"\">\n");
-            } 
-            result.append("</form>\n");
-            result.append(getWidgetHtmlEnd());
-            result.append(dialogEnd());
-            result.append(bodyEnd());
-            result.append(htmlEnd());
-            JspWriter out = getJsp().getJspContext().getOut();
-            out.print(result.toString());          
+
+            case ACTION_ERROR:
+                // ACTION: an error occured (display nothing)
+                break;
+
+            case ACTION_SAVE:
+                // ACTION: save edited values
+                setParamAction(DIALOG_OK);
+                actionCommit();
+                if (getCommitErrors().size() == 0) {
+                    actionCloseDialog();
+                    break;
+                }
+
+            case ACTION_DEFAULT:
+            default:
+                // ACTION: show dialog (default)
+                setParamAction(DIALOG_SAVE);
+                JspWriter out = getJsp().getJspContext().getOut();
+                out.print(defaultActionHtml());
         }
     }
 
@@ -316,7 +274,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         // create the dialog HTML
         return createDialogHtml(getParamPage());
     }
-    
+
     /**
      * Returns the html for a button to remove an optional element.<p>
      * 
@@ -396,10 +354,22 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 // this is the first dialog page
                 return dialogButtons(new int[] {BUTTON_CONTINUE, BUTTON_CANCEL}, new String[2]);
             }
-        } else {
+        }
+        boolean onlyDisplay = true;
+        Iterator it = m_widgets.iterator();
+        while (it.hasNext()) {
+            CmsWidgetDialogParameter wdp = (CmsWidgetDialogParameter)it.next();
+            if (!(wdp.getWidget() instanceof CmsDisplayWidget)) {
+                onlyDisplay = false;
+                break;
+            }
+        }
+        if (!onlyDisplay) {
             // this is a single page dialog, create common buttons
             return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]);
         }
+        // this is a display only dialog
+        return "";
     }
 
     /**
@@ -730,7 +700,6 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         if (m_widgets == null) {
             m_widgets = new ArrayList();
         }
-
         m_widgets.add(param);
     }
 
@@ -1026,6 +995,90 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
+     * Generates the dialog starting html code.<p>
+     * 
+     * @return html code
+     * 
+     * @throws JspException if something goes wrong
+     */
+    protected String defaultActionHtml() throws JspException {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append(defaultActionHtmlStart());
+        result.append(defaultActionHtmlContent());
+        result.append(dialogEnd());
+        result.append(bodyEnd());
+        result.append(htmlEnd());
+        return result.toString();
+    }
+
+    /**
+     * Returns the html code for the default action content.<p>
+     * 
+     * @return html code
+     */
+    protected String defaultActionHtmlContent() {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append("<form name=\"EDITOR\" id=\"EDITOR\" method=\"post\" action=\"").append(getDialogUri());
+        result.append("\" class=\"nomargin\" onsubmit=\"return submitAction('").append(DIALOG_OK).append(
+            "', null, 'EDITOR');\">\n");
+        result.append(dialogContentStart(null));
+        result.append(buildDialogForm());
+        result.append(dialogContentEnd());
+        result.append(dialogButtonsCustom());
+        result.append(paramsAsHidden());
+        if (getParamFramename() == null) {
+            result.append("\n<input type=\"hidden\" name=\"").append(PARAM_FRAMENAME).append("\" value=\"\">\n");
+        }
+        result.append("</form>\n");
+        result.append(getWidgetHtmlEnd());
+        return result.toString();
+    }
+
+    /**
+     * Generates the dialog starting html code.<p>
+     * 
+     * @return html code
+     * 
+     * @throws JspException if something goes wrong
+     */
+    protected String defaultActionHtmlStart() throws JspException {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append(htmlStart("administration/index.html"));
+        result.append("<script type=\"text/javascript\" src=\"").append(getResourceUri()).append(
+            "editors/xmlcontent/edit.js\"></script>\n");
+        result.append("<script type=\"text/javascript\" src=\"").append(getResourceUri()).append(
+            "editors/xmlcontent/help.js\"></script>\n");
+        result.append(getWidgetIncludes());
+        result.append("<script type=\"text/javascript\">\n<!--\n");
+        result.append("// flag indicating if form initialization is finished\n");
+        result.append("var initialized = false;\n");
+        result.append("// the OpenCms context path\n");
+        result.append("var contextPath = \"").append(OpenCms.getSystemInfo().getOpenCmsContext()).append("\";\n\n");
+        result.append("// action parameters of the form\n");
+        result.append("var actionAddElement = \"").append(EDITOR_ACTION_ELEMENT_ADD).append("\";\n");
+        result.append("var actionRemoveElement = \"").append(EDITOR_ACTION_ELEMENT_REMOVE).append("\";\n");
+        result.append("function init() {\n");
+        result.append(getWidgetInitCalls());
+        result.append("\tsetTimeout(\"scrollForm();\", 200);\n");
+        result.append("\tinitialized = true;\n");
+        result.append("}\n\n");
+        result.append("function exitEditor() {\n");
+        result.append("\ttry {\n");
+        result.append("\t\t// close file selector popup if present\n");
+        result.append("\t\tcloseTreeWin();\n");
+        result.append("\t} catch (e) {}\n");
+        result.append("}\n");
+        result.append(getWidgetInitMethods());
+        result.append("\n// -->\n</script>\n");
+        result.append(bodyStart(null, "onload='init();' onunload='exitEditor();'"));
+        result.append(dialogStart());
+        return result.toString();
+    }
+
+    /**
      * Defines the list of parameters for this dialog.<p>
      */
     protected abstract void defineWidgets();
@@ -1207,7 +1260,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         return (m_validationErrorList != null) && (m_validationErrorList.size() > 0);
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
@@ -1221,7 +1274,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        
+
         // set the dialog type
         setParamDialogtype(getClass().getName());
 
@@ -1243,6 +1296,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             List errors = commitWidgetValues();
             if (errors.size() > 0) {
                 setAction(ACTION_DEFAULT);
+                // found validation errors, redisplay page
                 return;
             }
             setAction(ACTION_SAVE);
@@ -1323,9 +1377,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Returns the (interal use only) map of dialog objects.<p>
+     * Returns the (internal use only) map of dialog objects.<p>
      * 
-     * @return the (interal use only) map of dialog objects 
+     * @return the (internal use only) map of dialog objects 
      */
     private Map getDialogObjectMap() {
 
@@ -1337,4 +1391,5 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         }
         return objects;
     }
+
 }

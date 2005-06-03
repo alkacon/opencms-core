@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/05/31 11:17:05 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -209,8 +209,16 @@ public class CmsToolManager {
             adminTool = resolveAdminTool(parent);
 
             String id = "nav" + adminTool.getId();
-            String onClic = "openPage('" + linkForPath(wp.getJsp(), parent, null) + "');";
-            String link = A_CmsHtmlIconButton.defaultButtonHtml(
+            String link = linkForPath(wp.getJsp(), parent, null);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(adminTool.getHandler().getParameters())) {
+                if (!link.endsWith("&")) {
+                    link += "&";
+                }
+                link += wp.resolveMacros(adminTool.getHandler().getParameters());
+            }
+            
+            String onClic = "openPage('" + link + "');";
+            String buttonHtml = A_CmsHtmlIconButton.defaultButtonHtml(
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 id,
                 adminTool.getHandler().getName(),
@@ -218,7 +226,7 @@ public class CmsToolManager {
                 true,
                 null,
                 onClic);
-            html = link + C_NAVBAR_SEPARATOR + html;
+            html = buttonHtml + C_NAVBAR_SEPARATOR + html;
         }
 
         return wp.resolveMacros("<div class='pathbar'>\n" + html + "&nbsp;</div>\n");
@@ -363,8 +371,8 @@ public class CmsToolManager {
         if (!getCurrentToolPath(wp).startsWith(getRootToolPath(wp))) {
             setCurrentToolPath(wp, getRootToolPath(wp));
         }
-        wp.setParamPath(toolPath);
-        wp.setParamRoot(rootToolPath);
+        wp.setParamPath(getCurrentToolPath(wp));
+        wp.setParamRoot(getRootToolPath(wp));
     }
 
     /**

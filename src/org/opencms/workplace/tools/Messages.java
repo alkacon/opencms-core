@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Messages.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,9 +62,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     public static final String GUI_TOOLS_DEFAULT_HELP_0 = "GUI_TOOLS_DEFAULT_HELP_0";
-
-    /** Static instance member. */
-    public static final String GUI_TOOLS_DEFAULT_ICON_0 = "GUI_TOOLS_DEFAULT_ICON_0";
 
     /** Static instance member. */
     public static final String GUI_TOOLS_DEFAULT_NAME_0 = "GUI_TOOLS_DEFAULT_NAME_0";

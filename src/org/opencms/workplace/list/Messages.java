@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2005/05/20 16:55:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_LIST_ENUM_PARSE_2 = "ERR_LIST_ENUM_PARSE_2";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_LIST_FILL_1 = "ERR_LIST_FILL_1";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_LIST_INVALID_COLUMN_1 = "ERR_LIST_INVALID_COLUMN_1";
 
     /** Message contant for key in the resource bundle. */
@@ -64,15 +67,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LIST_ACTION_NO_SELECTION_0 = "GUI_LIST_ACTION_NO_SELECTION_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_LIST_ACTION_REFRESH_CONF_0 = "GUI_LIST_ACTION_REFRESH_CONF_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_LIST_ACTION_REFRESH_HELP_0 = "GUI_LIST_ACTION_REFRESH_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_LIST_ACTION_REFRESH_NAME_0 = "GUI_LIST_ACTION_REFRESH_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_PRINT_CONF_0 = "GUI_LIST_ACTION_PRINT_CONF_0";
 
     /** Message contant for key in the resource bundle. */
@@ -80,6 +74,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_PRINT_NAME_0 = "GUI_LIST_ACTION_PRINT_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_REFRESH_CONF_0 = "GUI_LIST_ACTION_REFRESH_CONF_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_REFRESH_HELP_0 = "GUI_LIST_ACTION_REFRESH_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_REFRESH_NAME_0 = "GUI_LIST_ACTION_REFRESH_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_SEARCH_CONF_0 = "GUI_LIST_ACTION_SEARCH_CONF_0";
@@ -146,7 +149,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
 
     /**
      * Hides the public constructor for this utility class.<p>

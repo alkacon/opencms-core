@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPasswordInfo.java,v $
- * Date   : $Date: 2005/05/31 11:17:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.main.OpenCms;
  * Validating bean for changing the password.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsPasswordInfo {
@@ -131,7 +131,7 @@ public class CmsPasswordInfo {
     public void setConfirmation(String confirmation) {
 
         if (getNewPwd() == null) {
-            return;
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEWPWD_EMPTY_0));
         }
         if (!getNewPwd().equals(confirmation)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEWPWD_MISMATCH_0));

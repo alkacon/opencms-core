@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/06/03 09:01:05 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.9.1
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
@@ -119,8 +120,11 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         try {
             // schedule the edited job
             OpenCms.getScheduleManager().scheduleJob(getCms(), m_jobInfo);
-            // clear the HTML list to be up to date after editing
-            getSettings().setHtmlList(null);
+            // refresh the list
+            Map objects = (Map)getSettings().getListObject();
+            if (objects != null) {
+                objects.remove(CmsSchedulerList.class.getName());
+            }
             // update the XML configuration
             OpenCms.writeConfiguration(CmsSystemConfiguration.class);
         } catch (Throwable t) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDefaultAction.java,v $
- * Date   : $Date: 2005/05/20 09:52:37 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.text.MessageFormat;
  * Implementation of a default action in a html list column.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public class CmsListDefaultAction extends CmsListDirectAction {
@@ -95,6 +95,9 @@ public class CmsListDefaultAction extends CmsListDirectAction {
      */
     public String buttonHtml(CmsWorkplace wp) {
 
+        if (m_column==null) {
+            return super.buttonHtml(wp);
+        }
         String id = getId() + getItem().getId();
         String name = (getItem().get(m_column) != null) ? getItem().get(m_column).toString() : getName().key(
             wp.getLocale());
@@ -105,8 +108,9 @@ public class CmsListDefaultAction extends CmsListDirectAction {
                 getColumn())});
             helpText = new MessageFormat(helpText, wp.getLocale()).format(new Object[] {getItem().get(getColumn())});
         }
-        String onClic = getListId()
-            + "ListAction('"
+        String onClic = "listAction('"
+            + getListId()
+            + "', '"
             + getId()
             + "', '"
             + CmsStringUtil.escapeJavaScript(confirmationMessage)

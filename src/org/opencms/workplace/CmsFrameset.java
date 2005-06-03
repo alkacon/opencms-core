@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/06/03 15:48:29 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  * 
  * @since 5.1
  */
@@ -512,6 +512,6 @@ public class CmsFrameset extends CmsWorkplace {
     protected void topFrameReload(CmsWorkplaceSettings settings) {
 
         // reset the HTML list in order to force a full reload
-        settings.setHtmlList(null);
+        settings.setListObject(null);
     }
 }

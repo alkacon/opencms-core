@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/05/31 12:52:06 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -185,6 +185,48 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * Validates an email address.<p>
+     * 
+     * That means, the parameter should only be composed by digits and standard english letters, points, underscores and exact one "At" symbol.<p>
+     * 
+     * @param email the email to validate
+     */
+    public static void checkEmail(String email) {
+
+        if (!CmsStringUtil.validateRegex(email, "[\\w\\.~_]*@[\\w\\.~_]*\\.[\\w]*", false)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMAIL_VALIDATION_1, email));
+        }
+    }
+
+    /**
+     * Validates a login.<p>
+     * 
+     * That means, the parameter should only be composed by digits and standard english letters, points, minus and underscores.<p>
+     * 
+     * @param login the login to validate
+     */
+    public static void checkLogin(String login) {
+
+        if (!CmsStringUtil.validateRegex(login, "[\\w\\.-~_]*", false)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LOGIN_VALIDATION_1, login));
+        }
+    }
+
+    /**
+     * Validates a zip code.<p>
+     * 
+     * That means, the parameter should only be composed by digits and standard english letters.<p>
+     * 
+     * @param zipcode the zipcode to validate
+     */
+    public static void checkZipCode(String zipcode) {
+
+        if (!CmsStringUtil.validateRegex(zipcode, "[\\w]*", true)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_ZIPCODE_VALIDATION_1, zipcode));
+        }
+    }
+
+    /**
      * Returns the "full" name the given user in the format "{firstname} {lastname} ({username})",
      * or the empty String "" if the user is null.<p>
      * 
@@ -221,48 +263,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     public static boolean isWebUser(int type) {
 
         return (type & 2) > 0;
-    }
-
-    /**
-     * Validates a login.<p>
-     * 
-     * That means, the parameter should only be composed by digits and standard english letters, points, minus and underscores.<p>
-     * 
-     * @param login the login to validate
-     */
-    public static void checkLogin(String login) {
-
-        if (!CmsStringUtil.validateRegex(login, "[\\w\\.-~_]*", false)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LOGIN_VALIDATION_1, login));
-        }
-    }
-
-    /**
-     * Validates an email address.<p>
-     * 
-     * That means, the parameter should only be composed by digits and standard english letters, points, underscores and exact one "At" symbol.<p>
-     * 
-     * @param email the email to validate
-     */
-    public static void checkEmail(String email) {
-
-        if (!CmsStringUtil.validateRegex(email, "[\\w\\.~_]*@[\\w\\.~_]*\\.[\\w]*", false)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMAIL_VALIDATION_1, email));
-        }
-    }
-
-    /**
-     * Validates a zip code.<p>
-     * 
-     * That means, the parameter should only be composed by digits and standard english letters.<p>
-     * 
-     * @param zipcode the zipcode to validate
-     */
-    public static void checkZipCode(String zipcode) {
-
-        if (!CmsStringUtil.validateRegex(zipcode, "[\\w]*", true)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_ZIPCODE_VALIDATION_1, zipcode));
-        }
     }
 
     /**
@@ -386,11 +386,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public boolean getDisabled() {
 
-        boolean disabled = false;
-        if (getFlags() == I_CmsConstants.C_FLAG_DISABLED) {
-            disabled = true;
-        }
-        return disabled;
+        return (getFlags() == I_CmsConstants.C_FLAG_DISABLED);
     }
 
     /**
@@ -531,6 +527,18 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * Returns the enabled flag.<p>
+     * 
+     * It should replace the <code>{@link #getDisabled()}</code> method.<p> 
+     * 
+     * @return the enabled flag
+     */
+    public boolean isEnabled() {
+
+        return (getFlags() != I_CmsConstants.C_FLAG_DISABLED);
+    }
+
+    /**
      * Returns <code>true</code> if this user is the default guest user.<p>
      * 
      * @return true if this user is the default guest user
@@ -649,6 +657,23 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     public void setEnabled() {
 
         setFlags(I_CmsConstants.C_FLAG_ENABLED);
+    }
+
+    /**
+     * Sets the enabled flag.<p>
+     * 
+     * It should replace the <code>{@link #setDisabled()}</code> and 
+     * the <code>{@link #setEnabled()}</code> methods.<p> 
+     * 
+     * @param enabled the enabled flag
+     */
+    public void setEnabled(boolean enabled) {
+
+        if (enabled) {
+            setFlags(I_CmsConstants.C_FLAG_ENABLED);
+        } else {
+            setFlags(I_CmsConstants.C_FLAG_DISABLED);
+        }
     }
 
     /**

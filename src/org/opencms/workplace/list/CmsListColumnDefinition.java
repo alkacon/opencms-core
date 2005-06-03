@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/05/24 12:57:12 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,10 +49,16 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
+
+    /** Standard list button location. */
+    public static final String ICON_DOWN = "list/arrow_down.gif";
+
+    /** Standard list button location. */
+    public static final String ICON_UP = "list/arrow_up.gif";
 
     /** List of actions. */
     private List m_actionList = new ArrayList();
@@ -66,23 +72,26 @@ public class CmsListColumnDefinition {
     /** Default action. */
     private CmsListDefaultAction m_defaultAction;
 
+    /** Data formatter. */
+    private I_CmsListFormatter m_formatter;
+
+    /** Customized help text. */
+    private CmsMessageContainer m_helpText;
+
     /** Unique id. */
     private String m_id;
 
     /** Display name. */
     private CmsMessageContainer m_name;
 
+    /** Flag for text wrapping. */
+    private boolean m_textWrapping = false;
+
     /** Visible Flag. */
     private boolean m_visible = true;
 
     /** Column width. */
     private String m_width;
-
-    /** Data formatter. */
-    private I_CmsListFormatter m_formatter;
-
-    /** Customized help text. */
-    private CmsMessageContainer m_helpText;
 
     /**
      * Default Constructor.<p>
@@ -92,9 +101,7 @@ public class CmsListColumnDefinition {
     public CmsListColumnDefinition(String id) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(id)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_LIST_INVALID_NULL_ARG_1,
-                "id"));
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LIST_INVALID_NULL_ARG_1, "id"));
         }
         m_id = id;
     }
@@ -113,26 +120,6 @@ public class CmsListColumnDefinition {
         setName(name);
         setWidth(width);
         setAlign(align);
-    }
-
-    /**
-     * Returns the data formatter.<p>
-     *
-     * @return the data formatter
-     */
-    public I_CmsListFormatter getFormatter() {
-
-        return m_formatter;
-    }
-
-    /**
-     * Sets the data formatter.<p>
-     *
-     * @param formatter the data formatter to set
-     */
-    public void setFormatter(I_CmsListFormatter formatter) {
-
-        m_formatter = formatter;
     }
 
     /**
@@ -156,20 +143,6 @@ public class CmsListColumnDefinition {
     }
 
     /**
-     * Returns the comparator, used for sorting.<p>
-     *
-     * if no comparator was set, the default list item comparator is used.<p>
-     * 
-     * @return the comparator
-     * 
-     * @see CmsListItemDefaultComparator
-     */
-    public I_CmsListItemComparator getListItemComparator() {
-
-        return m_comparator;
-    }
-
-    /**
      * Returns the default Action.<p>
      *
      * @return the default Action
@@ -190,6 +163,28 @@ public class CmsListColumnDefinition {
     }
 
     /**
+     * Returns the data formatter.<p>
+     *
+     * @return the data formatter
+     */
+    public I_CmsListFormatter getFormatter() {
+
+        return m_formatter;
+    }
+
+    /**
+     * Returns the customized help Text.<p>
+     * 
+     * if <code>null</code> a default help text indicating the sort actions is used.<p>
+     *
+     * @return the customized help Text
+     */
+    public CmsMessageContainer getHelpText() {
+
+        return m_helpText;
+    }
+
+    /**
      * Returns the id.<p>
      *
      * @return the id
@@ -197,6 +192,20 @@ public class CmsListColumnDefinition {
     public String getId() {
 
         return m_id;
+    }
+
+    /**
+     * Returns the comparator, used for sorting.<p>
+     *
+     * if no comparator was set, the default list item comparator is used.<p>
+     * 
+     * @return the comparator
+     * 
+     * @see CmsListItemDefaultComparator
+     */
+    public I_CmsListItemComparator getListItemComparator() {
+
+        return m_comparator;
     }
 
     /**
@@ -256,24 +265,6 @@ public class CmsListColumnDefinition {
     }
 
     /**
-     * Indicates if the current column is sorteable or not.<p>
-     * 
-     * if <code>true</code> a default list item comparator is used.<p>
-     * 
-     * if <code>false</code> any previously set list item comparator is removed.<p>
-     * 
-     * @param sorteable the sorteable flag
-     */
-    public void setSorteable(boolean sorteable) {
-
-        if (sorteable) {
-            setListItemComparator(new CmsListItemDefaultComparator());
-        } else {
-            setListItemComparator(null);
-        }
-    }
-
-    /**
      * Returns the html code for a column header.<p>
      * 
      * @param list the list to generate the header code for
@@ -298,6 +289,9 @@ public class CmsListColumnDefinition {
             html.append(getWidth());
             html.append("'");
         }
+        if (!isTextWrapping()) {
+            html.append(" style='white-space: nowrap;'");
+        }
         html.append(">\n");
 
         boolean isSorted = getId().equals(sortedCol);
@@ -307,7 +301,7 @@ public class CmsListColumnDefinition {
         }
         // button
         String id = listId + getId() + "Sort";
-        String onClic = listId + "ListSort('" + getId() + "');";
+        String onClic = "listSort('" + listId + "', '" + getId() + "');";
         String helpText = null;
         if (m_helpText != null) {
             helpText = new MessageFormat(m_helpText.key(locale), locale).format(new Object[] {getName().key(locale)});
@@ -344,12 +338,12 @@ public class CmsListColumnDefinition {
             if (nextOrder == CmsListOrderEnum.ORDER_ASCENDING) {
                 html.append("\t<img src='");
                 html.append(CmsWorkplace.getSkinUri());
-                html.append("list/arrow_up.gif");
+                html.append(ICON_UP);
                 html.append("'>\n");
             } else {
                 html.append("\t<img src='");
                 html.append(CmsWorkplace.getSkinUri());
-                html.append("list/arrow_down.gif");
+                html.append(ICON_DOWN);
                 html.append("'>\n");
             }
         }
@@ -365,6 +359,16 @@ public class CmsListColumnDefinition {
     public boolean isSorteable() {
 
         return getListItemComparator() != null;
+    }
+
+    /**
+     * Returns the text Wrapping flag.<p>
+     *
+     * @return the text Wrapping flag
+     */
+    public boolean isTextWrapping() {
+
+        return m_textWrapping;
     }
 
     /**
@@ -388,16 +392,6 @@ public class CmsListColumnDefinition {
     }
 
     /**
-     * Sets the comparator, used for sorting.<p>
-     *
-     * @param comparator the comparator to set
-     */
-    public void setListItemComparator(I_CmsListItemComparator comparator) {
-
-        m_comparator = comparator;
-    }
-
-    /**
      * Sets the default Action.<p>
      *
      * @param defaultAction the default Action to set
@@ -410,6 +404,38 @@ public class CmsListColumnDefinition {
     }
 
     /**
+     * Sets the data formatter.<p>
+     *
+     * @param formatter the data formatter to set
+     */
+    public void setFormatter(I_CmsListFormatter formatter) {
+
+        m_formatter = formatter;
+    }
+
+    /**
+     * Sets the customized help Text.<p>
+     *
+     * if <code>null</code> a default help text indicating the sort actions is used.<p>
+     *
+     * @param helpText the customized help Text to set
+     */
+    public void setHelpText(CmsMessageContainer helpText) {
+
+        m_helpText = helpText;
+    }
+
+    /**
+     * Sets the comparator, used for sorting.<p>
+     *
+     * @param comparator the comparator to set
+     */
+    public void setListItemComparator(I_CmsListItemComparator comparator) {
+
+        m_comparator = comparator;
+    }
+
+    /**
      * Sets the name.<p>
      *
      * @param name the name to set
@@ -417,6 +443,34 @@ public class CmsListColumnDefinition {
     public void setName(CmsMessageContainer name) {
 
         m_name = name;
+    }
+
+    /**
+     * Indicates if the current column is sorteable or not.<p>
+     * 
+     * if <code>true</code> a default list item comparator is used.<p>
+     * 
+     * if <code>false</code> any previously set list item comparator is removed.<p>
+     * 
+     * @param sorteable the sorteable flag
+     */
+    public void setSorteable(boolean sorteable) {
+
+        if (sorteable) {
+            setListItemComparator(new CmsListItemDefaultComparator());
+        } else {
+            setListItemComparator(null);
+        }
+    }
+
+    /**
+     * Sets the text Wrapping flag.<p>
+     *
+     * @param textWrapping the text Wrapping flag to set
+     */
+    public void setTextWrapping(boolean textWrapping) {
+
+        m_textWrapping = textWrapping;
     }
 
     /**
@@ -437,29 +491,5 @@ public class CmsListColumnDefinition {
     public void setWidth(String width) {
 
         m_width = width;
-    }
-
-    /**
-     * Returns the customized help Text.<p>
-     * 
-     * if <code>null</code> a default help text indicating the sort actions is used.<p>
-     *
-     * @return the customized help Text
-     */
-    public CmsMessageContainer getHelpText() {
-
-        return m_helpText;
-    }
-
-    /**
-     * Sets the customized help Text.<p>
-     *
-     * if <code>null</code> a default help text indicating the sort actions is used.<p>
-     *
-     * @param helpText the customized help Text to set
-     */
-    public void setHelpText(CmsMessageContainer helpText) {
-
-        m_helpText = helpText;
     }
 }

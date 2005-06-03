@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/05/25 13:31:51 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,13 +50,19 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
 
     /** Constant for item separator char used for coding/encoding multiselection. */
     public static final String C_ITEM_SEPARATOR = "|";
+
+    /** Standard list button location. */
+    public static final String ICON_LEFT = "list/leftarrow.png";
+
+    /** Standard list button location. */
+    public static final String ICON_RIGHT = "list/rightarrow.png";
 
     /** Current displayed page number. */
     private int m_currentPage;
@@ -112,6 +118,10 @@ public class CmsHtmlList {
     /**
      * Adds a collection new list items to the content of the list.<p>
      * 
+     * If you need to add or remove items from or to the list at a later step, use the
+     * <code>{@link #insertAllItems(Collection, Locale)}</code> or 
+     * <code>{@link #removeAllItems(Collection, Locale)}</code> methods.<p>
+     * 
      * @param listItems the collection of list items to add
      * 
      * @see List#addAll(Collection)
@@ -124,6 +134,10 @@ public class CmsHtmlList {
     /**
      * Adds a new item to the content of the list.<p>
      * 
+     * If you need to add or remove an item from or to the list at a later step, use the
+     * <code>{@link #insertItem(CmsListItem, Locale)}</code> or
+     * <code>{@link #removeItem(String, Locale)}</code> methods.<p> 
+     * 
      * @param listItem the list item
      * 
      * @see List#add(Object)
@@ -131,19 +145,6 @@ public class CmsHtmlList {
     public void addItem(CmsListItem listItem) {
 
         m_originalItems.add(listItem);
-    }
-
-    /**
-     * Adds a new item at the given position to the content of the list.<p>
-     * 
-     * @param listItem the list item
-     * @param position the insertion point
-     * 
-     * @see List#add(int, Object)
-     */
-    public void addItem(CmsListItem listItem, int position) {
-
-        m_originalItems.add(position, listItem);
     }
 
     /**
@@ -230,7 +231,7 @@ public class CmsHtmlList {
         Iterator it = m_visibleItems.iterator();
         while (it.hasNext()) {
             CmsListItem item = (CmsListItem)it.next();
-            if (id.equals(item.getId())) {
+            if (item.getId().equals(id)) {
                 return item;
             }
         }
@@ -312,6 +313,16 @@ public class CmsHtmlList {
     }
 
     /**
+     * Returns a filled list state.<p>
+     * 
+     * @return the state of the list
+     */
+    public CmsListState getState() {
+
+        return new CmsListState(this);
+    }
+
+    /**
      * Returns the total number of pages.<p> 
      * 
      * @return the total number of pages
@@ -329,6 +340,46 @@ public class CmsHtmlList {
     public int getTotalSize() {
 
         return getAllContent().size();
+    }
+
+    /**
+     * Inserts a collection of list items in an already initialized list.<p>
+     * 
+     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
+     * 
+     * @param listItems the collection of list items to insert
+     * @param locale the locale
+     */
+    public void insertAllItems(Collection listItems, Locale locale) {
+
+        CmsListState state = null;
+        if (m_filteredItems != null || m_visibleItems != null) {
+            state = getState();
+        }
+        addAllItems(listItems);
+        if (state != null) {
+            setState(state, locale);
+        }
+    }
+
+    /**
+     * Inserts an item in an already initialized list.<p>
+     * 
+     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
+     * 
+     * @param listItem the list item to insert
+     * @param locale the locale
+     */
+    public void insertItem(CmsListItem listItem, Locale locale) {
+
+        CmsListState state = null;
+        if (m_filteredItems != null || m_visibleItems != null) {
+            state = getState();
+        }
+        addItem(listItem);
+        if (state != null) {
+            setState(state, locale);
+        }
     }
 
     /**
@@ -372,7 +423,7 @@ public class CmsHtmlList {
             boolean odd = true;
             while (itItems.hasNext()) {
                 CmsListItem item = (CmsListItem)itItems.next();
-                html.append(m_metadata.htmlItem(getId(), item, wp, odd));
+                html.append(m_metadata.htmlItem(item, wp, odd));
                 odd = !odd;
             }
         }
@@ -385,192 +436,15 @@ public class CmsHtmlList {
     /**
      * Generate the need js code for the list.<p>
      * 
-     * @param wp the workplace object
-     * 
      * @return js code
      */
-    public String listJs(CmsWorkplace wp) {
+    public String listJs() {
 
         StringBuffer js = new StringBuffer(1024);
-        js.append("<script language='javascript' type='text/javascript'>\n");
-        js.append("\tfunction ");
-        js.append(m_id);
-        js.append("ListAction(action, confirmation, listItem) {\n");
-        js.append("\t\tvar form = document.forms['");
-        js.append(getId());
-        js.append("-form'];\n");
-        js.append("\t\tif (confirmation!='null' && confirmation!='') {\n");
-        js.append("\t\t\tif (!confirm(confirmation)) {\n");
-        js.append("\t\t\t\treturn false;\n");
-        js.append("\t\t\t}\n");
-        js.append("\t\t}\n");
-        js.append("\t\tform.action.value='");
-        js.append(A_CmsListDialog.LIST_SINGLE_ACTION);
-        js.append("';\n");
-        js.append("\t\tform.");
-        js.append(A_CmsListDialog.PARAM_LIST_ACTION);
-        js.append(".value=action;\n");
-        js.append("\t\tform.");
-        js.append(A_CmsListDialog.PARAM_SEL_ITEMS);
-        js.append(".value=listItem;\n");
-        js.append("\t\tsubmitForm(form);\n");
-        js.append("\t}\n");
-        js.append("\tfunction ");
-        js.append(m_id);
-        js.append("ListIndepAction(action, confirmation) {\n");
-        js.append("\t\tvar form = document.forms['");
-        js.append(getId());
-        js.append("-form'];\n");
-        js.append("\t\tif (confirmation!='null' && confirmation!='') {\n");
-        js.append("\t\t\tif (!confirm(confirmation)) {\n");
-        js.append("\t\t\t\treturn false;\n");
-        js.append("\t\t\t}\n");
-        js.append("\t\t}\n");
-        js.append("\t\tform.action.value='");
-        js.append(A_CmsListDialog.LIST_INDEPENDENT_ACTION);
-        js.append("';\n");
-        js.append("\t\tform.");
-        js.append(A_CmsListDialog.PARAM_LIST_ACTION);
-        js.append(".value=action;\n");
-        js.append("\t\tsubmitForm(form);\n");
-        js.append("\t}\n");
-        js.append("\n\tfunction ");
-        js.append(m_id);
-        js.append("ListSelect() {\n");
-        js.append("\t\tvar form = document.forms['");
-        js.append(getId());
-        js.append("-form'];\n");
-        js.append("\t\tfor (i = 0 ; i < form.elements.length; i++) {\n");
-        js.append("\t\t\tif ((form.elements[i].type == 'checkbox') && (form.elements[i].name == '");
-        js.append(m_id);
-        js.append("MultiAction')) {\n");
-        js.append("\t\t\t\tif (!(form.elements[i].value == 'DISABLED' || form.elements[i].disabled)) {\n");
-        js.append("\t\t\t\t\tform.elements[i].checked = form.");
-        js.append(m_id);
-        js.append("ListSelectAll.checked;\n");
-        js.append("\t\t\t\t}\n");
-        js.append("\t\t\t}\n");
-        js.append("\t\t}\n");
-        js.append("\t\treturn true;\n");
-        js.append("\t}\n");
-        if (!getMetadata().getMultiActions().isEmpty()) {
-            js.append("\tfunction ");
-            js.append(m_id);
-            js.append("ListMultiAction(action, confirmation) {\n");
-            js.append("\t\tvar form = document.forms['");
-            js.append(getId());
-            js.append("-form'];\n");
-            js.append("\t\tvar count = 0;\n");
-            js.append("\t\tvar listItems = '';\n");
-            js.append("\t\tfor (i = 0 ; i < form.elements.length; i++) {\n");
-            js.append("\t\t\tif ((form.elements[i].type == 'checkbox') && (form.elements[i].name == '");
-            js.append(m_id);
-            js.append("MultiAction')) {\n");
-            js.append("\t\t\t\tif (form.elements[i].checked && !(form.elements[i].value == 'DISABLED' || form.elements[i].disabled)) {\n");
-            js.append("\t\t\t\t\tcount++;\n");
-            js.append("\t\t\t\t\tif (listItems!='') {\n");
-            js.append("\t\t\t\t\t\tlistItems = listItems + '");
-            js.append(C_ITEM_SEPARATOR);
-            js.append("';\n");
-            js.append("\t\t\t\t\t}\n");
-            js.append("\t\t\t\t\tlistItems = listItems + form.elements[i].value;\n");
-            js.append("\t\t\t\t}\n");
-            js.append("\t\t\t}\n");
-            js.append("\t\t}\n");
-            js.append("\t\tif (count==0) {\n");
-            js.append("\t\t\talert('");
-            js.append(CmsStringUtil.escapeJavaScript(Messages.get().key(
-                wp.getLocale(),
-                Messages.GUI_LIST_ACTION_NO_SELECTION_0,
-                null)));
-            js.append("');\n");
-            js.append("\t\t\treturn false;\n");
-            js.append("\t\t}\n");
-            js.append("\t\tif (confirmation!='null' && confirmation!='') {\n");
-            js.append("\t\t\tif (!confirm(confirmation)) {\n");
-            js.append("\t\t\t\treturn false;\n");
-            js.append("\t\t\t}\n");
-            js.append("\t\t}\n");
-            js.append("\t\tform.action.value='");
-            js.append(A_CmsListDialog.LIST_MULTI_ACTION);
-            js.append("';\n");
-            js.append("\t\tform.");
-            js.append(A_CmsListDialog.PARAM_LIST_ACTION);
-            js.append(".value=action;\n");
-            js.append("\t\tform.");
-            js.append(A_CmsListDialog.PARAM_SEL_ITEMS);
-            js.append(".value=listItems;\n");
-            js.append("\t\tsubmitForm(form);\n");
-            js.append("\t}\n");
-        }
-        if (getMetadata().isSearchable()) {
-            js.append("\tfunction ");
-            js.append(m_id);
-            js.append("ListSearchAction(action, confirmation) {\n");
-            js.append("\t\tvar form = document.forms['");
-            js.append(getId());
-            js.append("-form'];\n");
-            js.append("\t\tif (confirmation!='null' && confirmation!='') {\n");
-            js.append("\t\t\tif (!confirm(confirmation)) {\n");
-            js.append("\t\t\t\treturn false;\n");
-            js.append("\t\t\t}\n");
-            js.append("\t\t}\n");
-            js.append("\t\tform.action.value = '");
-            js.append(A_CmsListDialog.LIST_SEARCH);
-            js.append("';\n");
-            js.append("\t\tif (action=='");
-            js.append(A_CmsListSearchAction.SHOWALL_ACTION_ID);
-            js.append("') {\n");
-            js.append("\t\t\tform.");
-            js.append(A_CmsListDialog.PARAM_SEARCH_FILTER);
-            js.append(".value = '';\n");
-            js.append("\t\t} else if (action=='");
-            js.append(A_CmsListSearchAction.SEARCH_ACTION_ID);
-            js.append("') {\n");
-            js.append("\t\t\tform.");
-            js.append(A_CmsListDialog.PARAM_SEARCH_FILTER);
-            js.append(".value = form.");
-            js.append(getId());
-            js.append("Filter.value;\n");
-            js.append("\t\t}\n");
-            js.append("\t\tsubmitForm(form);\n");
-            js.append("\t\treturn;\n");
-            js.append("\t}\n");
-        }
-        if (getMetadata().isSorteable()) {
-            js.append("\tfunction ");
-            js.append(m_id);
-            js.append("ListSort(column) {\n");
-            js.append("\t\tvar form = document.forms['");
-            js.append(getId());
-            js.append("-form'];\n");
-            js.append("\t\tform.action.value = '");
-            js.append(A_CmsListDialog.LIST_SORT);
-            js.append("';\n");
-            js.append("\t\tform.");
-            js.append(A_CmsListDialog.PARAM_SORT_COL);
-            js.append(".value = column;\n");
-            js.append("\t\tsubmitForm(form);\n");
-            js.append("\t}\n");
-        }
-        if (getTotalNumberOfPages() > 1) {
-            js.append("\tfunction ");
-            js.append(m_id);
-            js.append("ListSetPage(page) {\n");
-            js.append("\t\tvar form = document.forms['");
-            js.append(getId());
-            js.append("-form'];\n");
-            js.append("\t\tform.action.value = '");
-            js.append(A_CmsListDialog.LIST_SELECT_PAGE);
-            js.append("';\n");
-            js.append("\t\tform.");
-            js.append(A_CmsListDialog.PARAM_PAGE);
-            js.append(".value = page;\n");
-            js.append("\t\tsubmitForm(form);\n");
-            js.append("\t}\n");
-        }
-        js.append("</script>\n");
-        return wp.resolveMacros(js.toString());
+        js.append("\t\t<script language='javascript' type='text/javascript' src='");
+        js.append(CmsWorkplace.getSkinUri());
+        js.append("admin/javascript/list.js'></script>\n");
+        return js.toString();
     }
 
     /**
@@ -597,8 +471,9 @@ public class CmsHtmlList {
 
         StringBuffer js = new StringBuffer(512);
         if (getMetadata().isSearchable()) {
-            js.append(m_id);
-            js.append("ListSearchAction('");
+            js.append("listSearchAction('");
+            js.append(getId());
+            js.append("', '");
             js.append(A_CmsListSearchAction.SEARCH_ACTION_ID);
             js.append("', '");
             js.append(getMetadata().getSearchAction().getConfirmationMessage().key(wp.getLocale()));
@@ -625,20 +500,159 @@ public class CmsHtmlList {
     }
 
     /**
-     * Removes an item from the list, try to use it
-     * instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
+     * Removes a collection of list items from the list.<p> 
+     * 
+     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
+     * 
+     * Try to use it instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
+     * 
+     * @param ids the collection of ids of the items to remove
+     * @param locale the locale
+     * 
+     * @return the list of removed list items
+     */
+    public List removeAllItems(Collection ids, Locale locale) {
+
+        List removedItems = new ArrayList();
+        Iterator itItems = m_originalItems.iterator();
+        while (itItems.hasNext()) {
+            CmsListItem listItem = (CmsListItem)itItems.next();
+            if (ids.contains(listItem.getId())) {
+                removedItems.add(listItem);
+            }
+        }
+        if (removedItems.isEmpty()) {
+            return removedItems;
+        }
+        CmsListState state = null;
+        if (m_filteredItems != null || m_visibleItems != null) {
+            state = getState();
+        }
+        m_originalItems.removeAll(removedItems);
+        if (state != null) {
+            setState(state, locale);
+        }
+        return removedItems;
+    }
+
+    /**
+     * Removes an item from the list.<p> 
+     * 
+     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
+     * 
+     * Try to use it instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
      * 
      * @param id the id of the item to remove
+     * @param locale the locale
      * 
      * @return the removed list item
      */
-    public CmsListItem removeItem(String id) {
+    public CmsListItem removeItem(String id, Locale locale) {
 
-        CmsListItem item = getItem(id);
-        if (m_filteredItems != null) {
-            m_filteredItems.remove(item);
+        CmsListItem item = null;
+        Iterator itItems = m_originalItems.iterator();
+        while (itItems.hasNext()) {
+            CmsListItem listItem = (CmsListItem)itItems.next();
+            if (listItem.getId().equals(id)) {
+                item = listItem;
+                break;
+            }
+        }
+        if (item == null) {
+            return null;
+        }
+        CmsListState state = null;
+        if (m_filteredItems != null || m_visibleItems != null) {
+            state = getState();
         }
         m_originalItems.remove(item);
+        if (state != null) {
+            setState(state, locale);
+        }
+        return item;
+    }
+
+    /**
+     * Replace a list of items in the list.<p> 
+     * 
+     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
+     * 
+     * If the list already contains an item with the id of a given list item, it will be removed and
+     * replaced by the new list item. if not, this method is the same as the 
+     * <code>{@link #insertAllItems(List, Locale)}</code> method.
+     * 
+     * Try to use it instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
+     * 
+     * @param listItems the list of <code>{@link CmsListItem}</code>s to replace
+     * @param locale the locale
+     * 
+     * @return the removed list item, or <code>null</code>
+     */
+    public List replaceAllItems(List listItems, Locale locale) {
+
+        List removedItems = new ArrayList();
+        Iterator itItems = m_originalItems.iterator();
+        while (itItems.hasNext()) {
+            CmsListItem listItem = (CmsListItem)itItems.next();
+            Iterator itNewItems = listItems.iterator();
+            while (itNewItems.hasNext()) {
+                if (listItem.equals(((CmsListItem)itNewItems.next()).getId())) {
+                    removedItems.add(listItem);
+                }
+            }
+        }
+        CmsListState state = null;
+        if (m_filteredItems != null || m_visibleItems != null) {
+            state = getState();
+        }
+        if (!removedItems.isEmpty()) {
+            m_originalItems.removeAll(removedItems);
+        }
+        addAllItems(listItems);
+        if (state != null) {
+            setState(state, locale);
+        }
+        return removedItems;
+    }
+
+    /**
+     * Replace an item in the list.<p> 
+     * 
+     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
+     * 
+     * If the list already contains an item with the id of the given list item, it will be removed and
+     * replaced by the new list item. if not, this method is the same as the 
+     * <code>{@link #insertItem(CmsListItem, Locale)}</code> method.
+     * 
+     * Try to use it instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
+     * 
+     * @param listItem the listItem to replace
+     * @param locale the locale
+     * 
+     * @return the removed list item, or <code>null</code>
+     */
+    public CmsListItem replaceItem(CmsListItem listItem, Locale locale) {
+
+        CmsListItem item = null;
+        Iterator itItems = m_originalItems.iterator();
+        while (itItems.hasNext()) {
+            CmsListItem tmp = (CmsListItem)itItems.next();
+            if (tmp.getId().equals(listItem.getId())) {
+                item = tmp;
+                break;
+            }
+        }
+        CmsListState state = null;
+        if (m_filteredItems != null || m_visibleItems != null) {
+            state = getState();
+        }
+        if (item != null) {
+            m_originalItems.remove(item);
+        }
+        addItem(listItem);
+        if (state != null) {
+            setState(state, locale);
+        }
         return item;
     }
 
@@ -746,6 +760,40 @@ public class CmsHtmlList {
     }
 
     /**
+     * Sets the list state.<p>
+     * 
+     * This may involve sorting, filtering and paging.<p>
+     * 
+     * @param listState the state to be set
+     * @param locale the locale
+     */
+    public void setState(CmsListState listState, Locale locale) {
+
+        setSearchFilter(listState.getFilter(), locale);
+        setSortedColumn(listState.getColumn(), locale);
+        if (listState.getOrder() == CmsListOrderEnum.ORDER_DESCENDING) {
+            setSortedColumn(listState.getColumn(), locale);
+        }
+        if (listState.getPage() > 0 && listState.getPage() <= getNumberOfPages()) {
+            setCurrentPage(listState.getPage());
+        }
+    }
+
+    /**
+     * Sets the metadata for this list.<p>
+     * 
+     * Should only be used by the <code>{@link A_CmsListDialog}</code> class
+     * for temporaly removing the metadata object while the list is saved in the 
+     * <code>{@link org.opencms.workplace.CmsWorkplaceSettings}</code>.<p>     
+     * 
+     * @param metadata the list metadata
+     */
+    /*package*/void setMetadata(CmsListMetadata metadata) {
+
+        m_metadata = metadata;
+    }
+
+    /**
      * Returns the number (from 1) of the first displayed item.<p>
      * 
      * @return the number (from 1) of the first displayed item, or zero if the list is empty
@@ -815,9 +863,7 @@ public class CmsHtmlList {
             html.append("\tvar form = document.forms['");
             html.append(getId());
             html.append("-form'];\n");
-            html.append("\tform.");
-            html.append(getId());
-            html.append("Filter.value='");
+            html.append("\tform.listSearchFilter.value='");
             html.append(getSearchFilter() != null ? CmsStringUtil.escapeJavaScript(getSearchFilter()) : "");
             html.append("';\n");
             html.append("</script>\n");
@@ -842,15 +888,15 @@ public class CmsHtmlList {
         html.append("\t<tr>\n");
         html.append("\t\t<td class='main'>\n");
         // prev button
-        String id = m_id + "Prev";
+        String id = "listPrev";
         String name = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_NAME_0, null);
-        String iconPath = "list/1leftarrow.png";
+        String iconPath = ICON_LEFT;
         boolean enabled = getCurrentPage() > 1;
         String helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_HELP_0, null);
         if (!enabled) {
             helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_HELPDIS_0, null);
         }
-        String onClic = m_id + "ListSetPage(" + (getCurrentPage() - 1) + ")";
+        String onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() - 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
@@ -861,15 +907,15 @@ public class CmsHtmlList {
             onClic));
         html.append("\n");
         // next button
-        id = m_id + "Next";
+        id = "listNext";
         name = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_NAME_0, null);
-        iconPath = "list/1rightarrow.png";
+        iconPath = ICON_RIGHT;
         enabled = getCurrentPage() < getNumberOfPages();
         helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_HELP_0, null);
         if (!enabled) {
             helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_HELPDIS_0, null);
         }
-        onClic = m_id + "ListSetPage(" + (getCurrentPage() + 1) + ")";
+        onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() + 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
@@ -881,11 +927,9 @@ public class CmsHtmlList {
         html.append("\n");
         // page selection list
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
-        html.append("\t\t\t<select name='");
-        html.append(m_id);
-        html.append("PageSet' id='id-page_set' onChange ='");
-        html.append(m_id);
-        html.append("ListSetPage(this.value);' style='vertical-align: bottom;'>\n");
+        html.append("\t\t\t<select name='listPageSet' id='id-page_set' onChange =\"listSetPage('");
+        html.append(getId());
+        html.append("', this.value);\" style='vertical-align: bottom;'>\n");
         for (int i = 0; i < getNumberOfPages(); i++) {
             int displayedFrom = i * getMaxItemsPerPage() + 1;
             int displayedTo = (i + 1) * getMaxItemsPerPage() < getSize() ? (i + 1) * getMaxItemsPerPage() : getSize();
@@ -901,7 +945,7 @@ public class CmsHtmlList {
         }
         html.append("\t\t\t</select>\n");
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
-        if (m_filteredItems == null) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
             html.append(Messages.get().key(
                 locale,
                 Messages.GUI_LIST_PAGING_TEXT_2,
@@ -930,7 +974,7 @@ public class CmsHtmlList {
         StringBuffer html = new StringBuffer(512);
         html.append("<table width='100%' cellspacing='0'>");
         html.append("\t<tr>\n");
-        html.append("\t\t<td>\n");
+        html.append("\t\t<td align='left'>\n");
         html.append("\t\t\t");
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
             html.append(Messages.get().key(
@@ -974,24 +1018,10 @@ public class CmsHtmlList {
         StringBuffer html = new StringBuffer(512);
         html.append("<table width='100%' cellspacing='0' style='margin-bottom: 5px'>\n");
         html.append("\t<tr>\n");
-        html.append(m_metadata.htmlSearchBar(getId(), wp));
+        html.append(m_metadata.htmlSearchBar(wp));
         html.append(m_metadata.htmlMultiActionBar(wp));
         html.append("\t</tr>\n");
         html.append("</table>\n");
         return html.toString();
-    }
-
-    /**
-     * Sets the metadata for this list.<p>
-     * 
-     * Should only be used by the <code>{@link A_CmsListDialog}</code> class
-     * for temporaly removing the metadata object while the list is saved in the 
-     * <code>{@link org.opencms.workplace.CmsWorkplaceSettings}</code>.<p>     
-     * 
-     * @param metadata the list metadata
-     */
-    /*package*/ void setMetadata(CmsListMetadata metadata) {
-
-        m_metadata = metadata;
     }
 }

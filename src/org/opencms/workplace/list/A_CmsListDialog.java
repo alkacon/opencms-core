@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/05/23 16:06:05 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
@@ -40,6 +41,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -77,6 +79,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public static final String ICON_ACTIVE = "list/active.png";
 
     /** Standard list button location. */
+    public static final String ICON_ADD = "list/add.png";
+
+    /** Standard list button location. */
     public static final String ICON_DELETE = "list/delete.png";
 
     /** Standard list button location. */
@@ -86,16 +91,28 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public static final String ICON_DETAILS_SHOW = "list/details_show.png";
 
     /** Standard list button location. */
+    public static final String ICON_DISABLED = "list/disabled.png";
+
+    /** Standard list button location. */
     public static final String ICON_INACTIVE = "list/inactive.png";
 
     /** Standard list button location. */
+    public static final String ICON_MINUS = "list/minus.png";
+
+    /** Standard list button location. */
     public static final String ICON_MULTI_ACTIVATE = "list/multi_activate.png";
+
+    /** Standard list button location. */
+    public static final String ICON_MULTI_ADD = "list/multi_add.png";
 
     /** Standard list button location. */
     public static final String ICON_MULTI_DEACTIVATE = "list/multi_deactivate.png";
 
     /** Standard list button location. */
     public static final String ICON_MULTI_DELETE = "list/multi_delete.png";
+
+    /** Standard list button location. */
+    public static final String ICON_MULTI_MINUS = "list/multi_minus.png";
 
     /** Request parameter value for the list action: a list item independent action has been triggered. */
     public static final String LIST_INDEPENDENT_ACTION = "listindependentaction";
@@ -115,6 +132,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** Request parameter value for the list action: sort. */
     public static final String LIST_SORT = "listsort";
 
+    /** Request parameter key for the requested page. */
+    public static final String PARAM_FORMNAME = "formname";
+
     /** Request parameter key for the list action. */
     public static final String PARAM_LIST_ACTION = "listaction";
 
@@ -133,8 +153,17 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** metadata map for all used list metadata objects. */
     private static Map m_metadatas = new HashMap();
 
+    /** Activation decision Flag. */
+    private boolean m_active;
+
     /** the internal list. */
     private CmsHtmlList m_list;
+
+    /** The id of the list. */
+    private String m_listId;
+
+    /** The displayed page. */
+    private String m_paramFormName;
 
     /** The list action. */
     private String m_paramListAction;
@@ -168,6 +197,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         String searchableColId) {
 
         super(jsp);
+        m_listId = listId;
         // try to read the list from the session
         listRecovery(listId);
         // initialization 
@@ -180,12 +210,44 @@ public abstract class A_CmsListDialog extends CmsDialog {
             // set the number of items per page from the user settings
             getList().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
             // fill the content
-            getList().addAllItems(getListItems());
+            fillList();
             // sort the list
             getList().setSortedColumn(sortedColId, getLocale());
             // save the current state of the list
             listSave();
         }
+    }
+
+    /**
+     * Returns the list object for the given list dialog, or <code>null</code>
+     * if no list object has been set.<p>
+     * 
+     * @param listDialog the list dialog class
+     * @param settings the wp settings for accessing the session
+     * 
+     * @return the list object for this list dialog, or <code>null</code>
+     */
+    public static CmsHtmlList getListObject(Class listDialog, CmsWorkplaceSettings settings) {
+
+        return (CmsHtmlList)getListObjectMap(settings).get(listDialog.getName());
+    }
+
+    /**
+     * Returns the (internal use only) map of list objects.<p>
+     * 
+     * @param settings the wp settings for accessing the session 
+     * 
+     * @return the (internal use only) map of list objects 
+     */
+    private static Map getListObjectMap(CmsWorkplaceSettings settings) {
+
+        Map objects = (Map)settings.getListObject();
+        if (objects == null) {
+            // using hashtable as most efficient version of a synchronized map
+            objects = new Hashtable();
+            settings.setListObject(objects);
+        }
+        return objects;
     }
 
     /**
@@ -228,6 +290,26 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
+     * This method should handle every defined list multi action,
+     * by comparing <code>{@link #getParamListAction()}</code> with the id 
+     * of the action to execute.<p> 
+     * 
+     * @throws CmsRuntimeException to signal that an action is not supported
+     * 
+     */
+    public abstract void executeListMultiActions() throws CmsRuntimeException;
+
+    /**
+     * This method should handle every defined list single action,
+     * by comparing <code>{@link #getParamListAction()}</code> with the id 
+     * of the action to execute.<p> 
+     * 
+     * @throws CmsRuntimeException to signal that an action is not supported or in case an action failed
+     * 
+     */
+    public abstract void executeListSingleActions() throws CmsRuntimeException;
+
+    /**
      * Returns the list.<p>
      *
      * @return the list
@@ -235,9 +317,29 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public CmsHtmlList getList() {
 
         if (m_list != null && m_list.getMetadata() == null) {
-            m_list.setMetadata((CmsListMetadata)m_metadatas.get(m_list.getId()));
+            m_list.setMetadata(getMetadata(m_list.getId()));
         }
         return m_list;
+    }
+
+    /**
+     * Returns the Id of the list.<p>
+     *
+     * @return the list Id
+     */
+    public String getListId() {
+
+        return m_listId;
+    }
+
+    /**
+     * Returns the form name.<p>
+     *
+     * @return the form name
+     */
+    public String getParamFormName() {
+
+        return m_paramFormName;
     }
 
     /**
@@ -317,26 +419,52 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
+     * Returns the activation flag.<p>
+     *
+     * Useful for dialogs with several lists.<p>
+     * 
+     * Is <code></code> if the original <code>formname</code> parameter 
+     * is equals to <code>${listId}-form</code>.<p>
+     * 
+     * @return the activation flag
+     */
+    public boolean isActive() {
+
+        return m_active;
+    }
+
+    /**
      * This method re-read the rows of the list, the user should call this method after executing an action
-     * that added or removed rows to the list. 
+     * that add or remove rows to the list. 
      */
     public void refreshList() {
 
-        String sCol = getList().getSortedColumn();
-        String sFilter = getList().getSearchFilter();
-        int cPage = getList().getCurrentPage();
-        CmsListOrderEnum order = getList().getCurrentSortOrder();
+        CmsListState ls = getList().getState();
         getList().clear(getLocale());
-        getList().addAllItems(getListItems());
-        getList().setSearchFilter(sFilter, getLocale());
-        getList().setSortedColumn(sCol, getLocale());
-        if (order == CmsListOrderEnum.ORDER_DESCENDING) {
-            getList().setSortedColumn(sCol, getLocale());
-        }
-        if (cPage > 0 && cPage <= getList().getNumberOfPages()) {
-            getList().setCurrentPage(cPage);
-        }
+        fillList();
+        getList().setState(ls, getLocale());
         listSave();
+    }
+
+    /**
+     * Removes the list from the workplace settings.<p>
+     * 
+     * Next time the list is displayed the list will be reloaded.<p>
+     */
+    public void removeList() {
+
+        setList(null);
+        listSave();
+    }
+
+    /**
+     * Sets the activation flag.<p>
+     *
+     * @param active the activation flag to set
+     */
+    public void setActive(boolean active) {
+
+        m_active = active;
     }
 
     /**
@@ -347,6 +475,33 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public void setList(CmsHtmlList list) {
 
         m_list = list;
+    }
+
+    /**
+     * Stores the given object as "list object" for the given list dialog in the current users session.<p> 
+     * 
+     * @param listDialog the list dialog class
+     * @param listObject the list to store
+     */
+    public void setListObject(Class listDialog, CmsHtmlList listObject) {
+
+        if (listObject == null) {
+            // null object: remove the entry from the map
+            getListObjectMap(getSettings()).remove(listDialog.getName());
+        } else {
+            listObject.setMetadata(null);
+            getListObjectMap(getSettings()).put(listDialog.getName(), listObject);
+        }
+    }
+
+    /**
+     * Sets the form name.<p>
+     *
+     * @param formName the form name to set
+     */
+    public void setParamFormName(String formName) {
+
+        m_paramFormName = formName;
     }
 
     /**
@@ -428,11 +583,13 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Fill the list with data.<p>
+     * Should generate a list with the list items to be displayed.<p>
      * 
-     * @return a list of <code>{@link CmsListItem}</code>s.
+     * @return a list of <code>{@link CmsListItem}</code>s
+     * 
+     * @throws CmsException if something goes wrong
      */
-    protected abstract List getListItems();
+    protected abstract List getListItems() throws CmsException;
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
@@ -474,8 +631,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected synchronized void listRecovery(String listId) {
 
-        CmsHtmlList list = null;
-        list = getSettings().getHtmlList();
+        CmsHtmlList list = getListObject(this.getClass(), getSettings());
         if (list != null && !list.getId().equals(listId)) {
             list = null;
         }
@@ -490,22 +646,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected synchronized void listSave() {
 
-        CmsHtmlList list = getList();
-        if (list != null) {
-            list.setMetadata(null);
-        }
-        getSettings().setHtmlList(list);
-    }
-
-    /**
-     * Removes the list from the workplace settings.<p>
-     * 
-     * Next time the list is displayed the list will be reloaded.<p>
-     */
-    protected void removeList() {
-
-        setList(null);
-        listSave();
+        setListObject(this.getClass(), getList());
     }
 
     /**
@@ -567,8 +708,23 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
         throw new CmsRuntimeException(Messages.get().container(
             Messages.ERR_LIST_UNSUPPORTED_ACTION_2,
-            getList().getName(),
+            getList().getName().key(getLocale()),
             getParamListAction()));
+    }
+
+    /**
+     * Calls the <code>{@link getListItems}</code> method and catches any exception.<p>
+     */
+    private void fillList() {
+
+        try {
+            getList().addAllItems(getListItems());
+        } catch (Exception e) {
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_LIST_FILL_1,
+                getList().getName().key(getLocale()),
+                null), e);
+        }
     }
 
     /**

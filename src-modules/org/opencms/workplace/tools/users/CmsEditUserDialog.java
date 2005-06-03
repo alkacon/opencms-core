@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsEditUserDialog.java,v $
- * Date   : $Date: 2005/05/31 12:52:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,10 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsPasswordWidget;
-import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.9.1
  */
 public class CmsEditUserDialog extends CmsWidgetDialog {
@@ -121,6 +121,10 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         List errors = new ArrayList();
 
         try {
+            // in the case the confirmation widget has not be enabled 
+            if (CmsStringUtil.isNotEmpty(m_pwdInfo.getNewPwd())) {
+                m_pwdInfo.setConfirmation(m_pwdInfo.getConfirmation());
+            }
             // if new create it first
             if (m_user.getId() == null) {
                 CmsUser newUser = getCms().createUser(
@@ -134,16 +138,31 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
                 newUser.setAddress(m_user.getAddress());
                 m_user = newUser;
             } else if (CmsStringUtil.isNotEmpty(m_pwdInfo.getNewPwd())) {
+                if (!m_pwdInfo.getNewPwd().equals(m_pwdInfo.getConfirmation())) {
+                    m_pwdInfo.setConfirmation(null);
+                }
                 getCms().setPassword(m_user.getName(), m_pwdInfo.getNewPwd());
             }
             // write the edited user
             getCms().writeUser(m_user);
-            // clear the HTML list to be up to date after editing
-            getSettings().setHtmlList(null);
+            // refresh the list
+            Map objects = (Map)getSettings().getListObject();
+            if (objects != null) {
+                objects.remove(CmsUsersList.class.getName());
+            }
         } catch (Throwable t) {
             errors.add(t);
         }
 
+        if (errors.isEmpty() && isNewUser()) {
+            if (getParamCloseLink() != null && getParamCloseLink().indexOf("path=/users") > -1) {
+                // set closelink
+                Map argMap = new HashMap();
+                argMap.put("userid", m_user.getId());
+                argMap.put("username", m_user.getName());
+                setParamCloseLink(getToolManager().linkForPath(getJsp(), "/users/edit", argMap));
+            }
+        }
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
     }
@@ -206,25 +225,33 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
 
+        int n = (isShortInfo() ? 2 : 4);
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_IDENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 4));
+            result.append(createDialogRowsHtml(0, n));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
+            if (isShortInfo()) {
+                result.append(createWidgetTableEnd());
+                return result.toString();
+            }
             result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_ADDRESS_BLOCK_0)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(5, 8));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            if (!isOverview()) {
-                result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_PASSWORD_BLOCK_0)));
-                result.append(createWidgetTableStart());
-                result.append(createDialogRowsHtml(9, 10));
-                result.append(createWidgetTableEnd());
-                result.append(dialogBlockEnd());
+            result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_AUTHENTIFICATION_BLOCK_0)));
+            result.append(createWidgetTableStart());
+            result.append(createDialogRowsHtml(9, 9));
+            if (isOverview()) {
+                result.append(createDialogRowsHtml(10, 10));
+            } else {
+                result.append(createDialogRowsHtml(10, 11));
             }
+            result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
         }
 
         // close widget table
@@ -234,15 +261,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Checks if the User overview has to be displayed.<p>
-     * 
-     * @return <code>true</code> if the user overview has to be displayed
-     */
-    private boolean isOverview() {
-        return getCurrentToolPath().equals("/users/edit");
-    }
-    
-    /**
      * Creates the list of widgets for this dialog.<p>
      */
     protected void defineWidgets() {
@@ -250,40 +268,54 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         // initialize the user object to use for the dialog
         initUserObject();
 
-        I_CmsWidget widget = new CmsInputWidget();
-        if (isOverview()) {
-            // if in user overview tool disable everything 
-            widget = new CmsDisplayWidget();
+        // widgets to display
+        if (isShortInfo()) {
+            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsDisplayWidget()));
+            return;
         }
-        // widgets to display on the first dialog page
+        if (isOverview()) {
+            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "address", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "city", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "country", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "lastlogin", PAGES[0], new CmsDisplayWidget()));
+            return;
+        }
         if (m_user.getId() == null) {
-            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], widget.newInstance()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsInputWidget()));
         } else {
             addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsDisplayWidget()));
         }
-        addWidget(new CmsWidgetDialogParameter(m_user, "description", "", PAGES[0], widget.newInstance(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], widget.newInstance()));
-        addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], widget.newInstance()));
-        addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], widget.newInstance()));
-        addWidget(new CmsWidgetDialogParameter(m_user, "address", "", PAGES[0], widget.newInstance(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", "", PAGES[0], widget.newInstance(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_user, "city", "", PAGES[0], widget.newInstance(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_user, "country", "", PAGES[0], widget.newInstance(), 0, 1));
-        if (!isOverview()) {
-            if (m_user.getId() == null) {
-                addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", PAGES[0], new CmsPasswordWidget()));
-                addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "confirmation", PAGES[0], new CmsPasswordWidget()));
-            } else {
-                addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", "", PAGES[0], new CmsPasswordWidget(), 0, 1));
-                addWidget(new CmsWidgetDialogParameter(
-                    m_pwdInfo,
-                    "confirmation",
-                    "",
-                    PAGES[0],
-                    new CmsPasswordWidget(),
-                    0,
-                    1));
-            }
+        addWidget(new CmsWidgetDialogParameter(m_user, "description", "", PAGES[0], new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_user, "address", "", PAGES[0], new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", "", PAGES[0], new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_user, "city", "", PAGES[0], new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_user, "country", "", PAGES[0], new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsCheckboxWidget()));
+        if (m_user.getId() == null) {
+            addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", PAGES[0], new CmsPasswordWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "confirmation", PAGES[0], new CmsPasswordWidget()));
+        } else {
+            addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", "", PAGES[0], new CmsPasswordWidget(), 0, 1));
+            addWidget(new CmsWidgetDialogParameter(
+                m_pwdInfo,
+                "confirmation",
+                "",
+                PAGES[0],
+                new CmsPasswordWidget(),
+                0,
+                1));
         }
     }
 
@@ -309,7 +341,7 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     /**
      * Initializes the user object to work with depending on the dialog state and request parameters.<p>
      * 
-     * Three initializations of the user object on first dialog call are possible:
+     * Two initializations of the user object on first dialog call are possible:
      * <ul>
      * <li>edit an existing user</li>
      * <li>create a new user</li>
@@ -321,13 +353,10 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
 
         try {
             if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
-                // this is the initial dialog call
-                if (CmsStringUtil.isNotEmpty(getParamUserid())) {
-                    // edit an existing user, get the user object from db
-                    m_user = getCms().readUser(new CmsUUID(getParamUserid()));
-                    m_pwdInfo = new CmsPasswordInfo();
-                    return;
-                }
+                // edit an existing user, get the user object from db
+                m_user = getCms().readUser(new CmsUUID(getParamUserid()));
+                m_pwdInfo = new CmsPasswordInfo();
+                return;
             } else {
                 // this is not the initial call, get the user object from session            
                 o = getDialogObject();
@@ -360,4 +389,38 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         dialogObject.put(C_PWD_OBJECT, m_pwdInfo);
         setDialogObject(dialogObject);
     }
+
+    /**
+     * Checks if the User overview has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the user overview has to be displayed
+     */
+    private boolean isOverview() {
+
+        return getCurrentToolPath().equals("/users/edit");
+    }
+
+    /**
+     * Checks if the User overview has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the user overview has to be displayed
+     */
+    private boolean isShortInfo() {
+
+        boolean ret = !isOverview();
+        ret = ret && !isNewUser();
+        ret = ret && !getCurrentToolPath().equals("/users/edit/user");
+        return ret;
+    }
+
+    /**
+     * Checks if the User overview has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the user overview has to be displayed
+     */
+    private boolean isNewUser() {
+
+        return getCurrentToolPath().equals("/users/new");
+    }
+
 }

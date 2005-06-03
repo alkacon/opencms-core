@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/02 08:45:45 $
- * Version: $Revision: 1.518 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.519 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.518 $
+ * @version $Revision: 1.519 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7157,10 +7157,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException {
 
-        // prevent the admin to be set disabled!
-        if (user.getName().equals(OpenCms.getDefaultUsers().getUserAdmin())) {
-            user.setEnabled();
-        }
         m_userDriver.writeUser(dbc, user);
         // update the cache
         clearUserCache(user);

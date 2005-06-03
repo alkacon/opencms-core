@@ -317,15 +317,34 @@ body, form {
   padding: 0;
 }
 
+
 .list td {
-  white-space: nowrap;
   vertical-align: middle;
 }
 
-.list th {
+.list th { 
   vertical-align: middle;
   text-align: center;
-  white-space: nowrap;
+  background-color:ThreedFace; 
+  border-right: 1px solid ThreedDarkShadow; 
+  border-top: 1px solid ThreeDHighlight; 
+  border-bottom: 1px solid ThreedDarkShadow; 
+  border-left: 1px solid ThreeDHighlight; 
+} 
+
+.list th a:link, 
+.list th a:visited, 
+.list th a:active {
+  color: WindowText;
+  text-decoration: none;
+}
+
+.evenrowbg {
+	background-color: ButtonFace; 
+}
+
+.oddrowbg {
+	background-color: Window;
 }
 
 .pathbar {
@@ -374,7 +393,7 @@ hr {
 }
 
 .misc input {
-  margin-left: 7px;
+  text-align: left;
 }
 
 .toolsArea {
@@ -1058,32 +1077,6 @@ div.widgetcombo a:hover {
 	background-color: Highlight;
 	color: HighlightText;
 }
-
-  <% if (style == NEW_ADMIN) { %>
-
-.list th { 
-	white-space: nowrap; 
-	background-color:ThreedFace; 
-	border-right: 1px solid ThreedDarkShadow; 
-	border-top: 1px solid ThreeDHighlight; 
-	border-bottom: 1px solid ThreedDarkShadow; 
-	border-left: 1px solid ThreeDHighlight; 
-} 
-
-th a:link, th a:visited, th a:active {
-  color: WindowText;
-  text-decoration: none;
-}
-
-.evenrowbg {
-	background-color: ButtonFace; 
-}
-
-.oddrowbg {
-	background-color: Window;
-}
-
-  <% } %>
 
 <% } 
 

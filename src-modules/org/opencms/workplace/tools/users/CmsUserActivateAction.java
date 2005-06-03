@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/CmsUserActivateAction.java,v $
- * Date   : $Date: 2005/05/30 15:50:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/03 16:29:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,7 @@ package org.opencms.workplace.tools.users;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListTwoStatesAction;
 import org.opencms.workplace.list.I_CmsListDirectAction;
@@ -45,7 +42,7 @@ import org.opencms.workplace.list.I_CmsListDirectAction;
  * Activate/deactivate action for a html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsUserActivateAction extends A_CmsListTwoStatesAction {
@@ -84,17 +81,6 @@ public class CmsUserActivateAction extends A_CmsListTwoStatesAction {
     }
     
     /**
-     * @see org.opencms.workplace.list.A_CmsListToggleAction#getName()
-     */
-    public CmsMessageContainer getName() {
-
-        if (!isEnabled()) {
-            return Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_DISABLED_NAME_0);
-        }
-        return super.getName();
-    }
-    
-    /**
      * @see org.opencms.workplace.list.A_CmsListToggleAction#selectAction()
      */
     public I_CmsListDirectAction selectAction() {
@@ -112,44 +98,4 @@ public class CmsUserActivateAction extends A_CmsListTwoStatesAction {
         }
         return getSecondAction();
     }
-
-    /**
-     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isEnabled()
-     */
-    public boolean isEnabled() {
-
-        if (getItem() != null) {
-            String usrName = (String)getItem().get(CmsUsersList.LIST_COLUMN_LOGIN);
-            try {
-                return !getCms().userInGroup(usrName, OpenCms.getDefaultUsers().getGroupAdministrators());
-            } catch (Exception e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_IS_ENABLED_USER_1, usrName), e);
-            }
-        }
-        return super.isEnabled();
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListToggleAction#getHelpText()
-     */
-    public CmsMessageContainer getHelpText() {
-
-        if (isEnabled()) {
-            return super.getHelpText();
-        }
-        return Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_DISABLED_HELP_0);
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListToggleAction#getIconPath()
-     */
-    public String getIconPath() {
-
-        if (isEnabled()) {
-            return super.getIconPath();
-        }
-        return "tools/users/buttons/deactivate_disabled.gif";
-    }
-
 }
