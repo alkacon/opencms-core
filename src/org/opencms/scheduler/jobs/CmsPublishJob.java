@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishJob.java,v $
- * Date   : $Date: 2005/06/03 09:01:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/03 09:01:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  */
 public class CmsPublishJob implements I_CmsScheduledJob {
 
-    /** Proejct parameter. */
+    /** Unlock parameter. */
     public static final String PARAM_UNLOCK = "unlock";
 
     /**
