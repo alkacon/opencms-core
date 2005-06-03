@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsModuleMessageBundles.java,v $
- * Date   : $Date: 2005/06/01 15:09:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/03 08:33:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ package org.opencms.i18n;
  * 
  * @author Achim Westermann (a.westermann@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
@@ -58,6 +58,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
             org.opencms.workplace.tools.modules.Messages.get(),
             org.opencms.workplace.tools.scheduler.Messages.get(),
             org.opencms.workplace.tools.searchindex.Messages.get(), 
+            org.opencms.workplace.tools.staticexport.Messages.get(),
             org.opencms.workplace.tools.users.Messages.get(),
             org.opencms.workplace.tools.widgetdemo.Messages.get()};
     }
