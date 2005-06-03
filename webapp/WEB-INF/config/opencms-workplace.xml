@@ -449,7 +449,7 @@
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="upload" key="fileicon.upload" icon="upload.gif">
+			<explorertype name="upload" key="fileicon.upload" icon="upload.png">
 				<newresource uri="newresource_upload.jsp" order="100"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>

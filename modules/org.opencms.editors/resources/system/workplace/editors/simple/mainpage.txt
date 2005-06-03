@@ -25,6 +25,11 @@
 			buttonAction(1);
 		}
 	}
+	
+<%	if (wp.isHelpEnabled()) {
+		out.println(CmsHelpTemplateBean.buildOnlineHelpJavaScript(wp.getLocale())); 
+	}
+%>
 //-->
 </script>
 
@@ -52,7 +57,7 @@
 <%
 if (wp.isHelpEnabled()) {%>
 	<%= wp.buttonBarSeparator(5, 5) %>
-	<%= wp.button("javascript:treewin=opensmallwin(workplacePath + 'help/" + wp.getLocale() + "/" + wp.key("help.pageeditor") + "', '" + wp.key("button.help") + "', 600, 450);treewin.focus();", null, "help", "button.help", buttonStyle) %><%
+	<%= wp.button("javascript:openOnlineHelp('/editors/simple');", null, "help.png", "button.help", buttonStyle) %><%
 } %>
 <td class="maxwidth">&nbsp;</td>
 <%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>

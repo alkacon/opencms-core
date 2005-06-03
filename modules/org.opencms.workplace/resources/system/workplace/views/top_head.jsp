@@ -1,5 +1,6 @@
 <%@ page import="
 	org.opencms.workplace.*,
+	org.opencms.workplace.help.*,
 	org.opencms.jsp.*"
 	buffer="none"
 
@@ -19,18 +20,19 @@
 <script type="text/javascript">
     var pfad="<%= wp.getResourceUri() %>";
     var encoding="<%= wp.getEncoding() %>";
+
+<%	if (wp.isHelpEnabled()) {
+		out.println(CmsHelpTemplateBean.buildOnlineHelpJavaScript(wp.getLocale())); 
+	}
+%>
     
     function loadBody() {
         var link = document.forms.wpViewSelect.wpView.options[document.forms.wpViewSelect.wpView.selectedIndex].value;
         window.top.body.location.href = link;
     }
     
-    var localePrefix = "../help/<%= wp.getLocale() %>/";
-	var helpUrl = "index.html"; 
-    
-    function openHelp() {
-		openwin(localePrefix + helpUrl, "<%= wp.key("button.help") %>", 600, 450);    
-    }
+    // this can be removed after legacy views are not longer active
+	var helpUrl = ""; 
 
     function doReload() {
 		window.top.location.href = "<%= wp.getWorkplaceReloadUri() %>";
@@ -92,15 +94,15 @@ if (wp.showSiteSelector()) {
 </form>
 
 <%= wp.buttonBarSeparator(5, 0) %>        
-<%= wp.button("javascript:doReload()", null, "reload", "button.reload", buttonStyle) %>
-<%= wp.button("../commons/preferences.jsp", "body", "preferences", "button.preferences", buttonStyle) %>
+<%= wp.button("javascript:doReload()", null, "reload.png", "button.reload", buttonStyle) %>
+<%= wp.button("../commons/preferences.jsp", "body", "preferences.png", "button.preferences", buttonStyle) %>
 
 <% 
 if (wp.isSyncEnabled()) {
 	out.println(wp.button("../administration/syncfolder/synchronize.html", "body", "sync", "button.syncfolder", buttonStyle));
 }
 if (wp.isHelpEnabled()) {
-	out.println(wp.button("javascript:openHelp();", null, "help", "button.help", buttonStyle));
+	out.println(wp.button("javascript:openOnlineHelp();", null, "help.png", "button.help", buttonStyle));
 }        
 %>
        

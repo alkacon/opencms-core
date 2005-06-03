@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/05/19 16:35:47 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/03 15:48:30 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,6 +58,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import junit.extensions.TestSetup;
@@ -68,7 +69,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -112,6 +113,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testValueIndex"));
         suite.addTest(new TestCmsXmlContentWithVfs("testLayoutWidgetMapping"));
         suite.addTest(new TestCmsXmlContentWithVfs("testLinkResolver"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testLocales"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidation"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationExtended"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationLocale"));        
@@ -727,6 +729,39 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals("/sites/default/index.html", link.getTarget());
         assertTrue(link.isInternal());
         assertEquals("/index.html", vfsValue.getStringValue(cms));
+    }
+    
+    /**
+     * Tests the Locale settings of XMLContents with only optional elements and no element present.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testLocales() throws Exception {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing mapping of values in the XML content");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String iso = "ISO-8859-1";
+        
+        String content;
+        CmsXmlContent xmlcontent;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-8.xsd",
+            CmsEncoder.C_UTF8_ENCODING);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_8, content.getBytes(iso));
+
+        // now read the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", iso);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, iso, resolver);
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+        List locales = xmlcontent.getLocales();
+        assertEquals(1, locales.size());
     }
 
     

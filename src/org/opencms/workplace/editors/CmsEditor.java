@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/05/20 14:31:37 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/03 15:48:30 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ import org.apache.commons.logging.Log;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1.12
  */
@@ -453,21 +452,6 @@ public abstract class CmsEditor extends CmsDialog {
             m_picsUri = getEditorResourceUri() + "pics/";
         }
         return m_picsUri;
-    }
-    
-    /**
-     * Determines if the online help is available in the currently selected user language.<p>
-     * 
-     * @return true if the online help is found, otherwise false
-     */
-    public boolean isHelpEnabled() {
-        try {
-            getCms().readFolder(I_CmsWpConstants.C_VFS_PATH_HELP + getLocale() + "/", CmsResourceFilter.IGNORE_EXPIRATION);
-            return true;
-        } catch (CmsException e) {
-            // help folder is not available
-            return false;         
-        }
     }
     
     /**

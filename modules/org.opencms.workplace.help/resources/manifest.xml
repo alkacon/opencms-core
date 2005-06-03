@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0 RC 1 Corrin</opencms_version>
+		<createdate>6/3/05 3:26 PM</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.workplace.help</name>
+		<nicename><![CDATA[OpenCms 6.0 Workplace online help - Base module]]></nicename>
+		<group>OpenCms online help</group>
+		<class/>
+		<description><![CDATA[<p>This module installs the basic templates required for the online help in all languages.</p><p><i>(c) 2004-2005 by Alkacon Software</i></p>]]></description>
+		<version>0.9.7</version>
+		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Tue, 31 May 2005 10:49:39 GMT</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.workplace.help/classes/" destination="WEB-INF/classes/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/modules/org.opencms.workplace.help/"/>
+		</resources>
+		<parameters>
+			<param name="additionalresources">/system/modules/org.opencms.workplace.help/</param>
+		</parameters>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 30 May 2005 07:26:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 01 Jun 2005 10:11:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 10:48:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/classes</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 01 Jun 2005 10:11:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 10:48:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/classes/org</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 01 Jun 2005 10:11:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 10:48:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 01 Jun 2005 10:11:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 10:48:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 01 Jun 2005 10:11:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 10:48:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 01 Jun 2005 10:11:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 10:48:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings.properties</source>
+			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings.properties</destination>
+			<type>plain</type>
+			<uuidresource>4531ec0a-d2a0-11d9-9e1a-01ff5ab8f021</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 14:05:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 01 Jun 2005 13:22:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/messages_de.properties</source>
+			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>0e55ed30-d2a1-11d9-9e1a-01ff5ab8f021</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 12:12:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 01 Jun 2005 13:28:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/messages_en.properties</source>
+			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/messages_en.properties</destination>
+			<type>plain</type>
+			<uuidresource>03f18e7d-d2a1-11d9-9e1a-01ff5ab8f021</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 12:12:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 01 Jun 2005 13:28:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/jsptemplates</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 01 Jun 2005 10:11:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 11:12:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/jsptemplates/help</source>
+			<destination>system/modules/org.opencms.workplace.help/jsptemplates/help</destination>
+			<type>jsp</type>
+			<uuidresource>51129e3d-d435-11d9-83b9-01ff5ab8f021</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 13:46:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Jun 2005 13:42:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[body*|Body]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/workplace/commons/style/onlinehelp.css]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms online help template]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp</source>
+			<destination>system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>d5e0b9c1-d1c4-11d9-926a-01ff5ab8f021</uuidresource>
+			<datelastmodified>Thu, 02 Jun 2005 12:37:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 11:12:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[true]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/jsptemplates/help_head.jsp</source>
+			<destination>system/modules/org.opencms.workplace.help/jsptemplates/help_head.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>d5e9e187-d1c4-11d9-926a-01ff5ab8f021</uuidresource>
+			<datelastmodified>Thu, 02 Jun 2005 12:37:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 11:12:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[true]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 02 Jun 2005 11:27:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 13:05:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[true]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/resources/back.png</source>
+			<destination>system/modules/org.opencms.workplace.help/resources/back.png</destination>
+			<type>image</type>
+			<uuidresource>2e6e7e1f-d1e1-11d9-b78e-01ff5ab8f021</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 12:06:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 14:35:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/resources/close.gif</source>
+			<destination>system/modules/org.opencms.workplace.help/resources/close.gif</destination>
+			<type>image</type>
+			<uuidresource>90ad65f7-d1e1-11d9-b78e-01ff5ab8f021</uuidresource>
+			<datelastmodified>Wed, 01 Jun 2005 10:11:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 14:37:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/resources/contents.png</source>
+			<destination>system/modules/org.opencms.workplace.help/resources/contents.png</destination>
+			<type>image</type>
+			<uuidresource>a656d277-d1d4-11d9-b883-01ff5ab8f021</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 12:07:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 13:05:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/resources/nav_a.gif</source>
+			<destination>system/modules/org.opencms.workplace.help/resources/nav_a.gif</destination>
+			<type>image</type>
+			<uuidresource>fd3ee229-d27a-11d9-bd76-01ff5ab8f021</uuidresource>
+			<datelastmodified>Wed, 01 Jun 2005 10:11:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 01 Jun 2005 08:56:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/resources/nav_i.gif</source>
+			<destination>system/modules/org.opencms.workplace.help/resources/nav_i.gif</destination>
+			<type>image</type>
+			<uuidresource>fd4c9dcc-d27a-11d9-bd76-01ff5ab8f021</uuidresource>
+			<datelastmodified>Wed, 01 Jun 2005 10:11:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 01 Jun 2005 08:56:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/resources/next.png</source>
+			<destination>system/modules/org.opencms.workplace.help/resources/next.png</destination>
+			<type>image</type>
+			<uuidresource>33876ba3-d1e1-11d9-b78e-01ff5ab8f021</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 12:06:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 14:35:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

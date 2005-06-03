@@ -1,0 +1,7 @@
+<%@ page session="false" buffer="none" import="org.opencms.workplace.help.*" %><%
+
+// Create an instance to build the help frameset
+CmsHelpTemplateBean wp = new CmsHelpTemplateBean(pageContext, request, response);
+
+%><%= wp.displayHelp() %>
+

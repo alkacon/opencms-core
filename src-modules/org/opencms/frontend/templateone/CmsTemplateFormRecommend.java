@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormRecommend.java,v $
- * Date   : $Date: 2005/05/12 15:01:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/03 15:48:30 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * Provides methods to build the page recommendation form.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsTemplateFormRecommend extends CmsTemplateForm {
 
@@ -153,6 +153,7 @@ public class CmsTemplateFormRecommend extends CmsTemplateForm {
         // create the new mail message
         CmsHtmlMail theMail = new CmsHtmlMail();
         theMail.setSubject(key("recommend.mail.subject.prefix") + getPageTitle());
+        theMail.setCharset(getRequestContext().getEncoding());
         theMail.setHtmlMsg(getContent("recommend_mail.html", "html", getRequestContext().getLocale()));
         theMail.setTextMsg(getContent("recommend_mail.html", "text", getRequestContext().getLocale()));
         try {

@@ -1,6 +1,7 @@
 <%@ page import="
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
+	org.opencms.workplace.help.*,
 	org.opencms.jsp.*,
 	java.util.*"
 	buffer="none"
@@ -234,6 +235,9 @@ function buttonAction(para) {
 		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=tablegallery", "TableBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
+		break;		
+    case 30:
+		openOnlineHelp("/system/modules/org.opencms.editors.htmlarea/locales/<%= wp.getLocale() %>/help/index.html");
 		break;		
     }
 }
@@ -614,11 +618,19 @@ for (i=0; i<config.toolbar[2].length; i++) {
 }
 <%
 }
+
+// determine help button display
+String onlineHelp = "";
+if (wp.isHelpEnabled()) { %>
+	config.registerButton("oc-onlinehelp", "<%= wp.key("button.help") %>", __editor.imgURL("../../buttons/help.png"), true, function(e) { buttonAction(30); });<%
+	onlineHelp = " \"separator\", \"oc-onlinehelp\", ";
+
+}
 %>
 
 config.toolbar = [
 	[ "starttab", <%= ocDirectPublish %> "oc-save-exit", "oc-save"<%= sourceBt %>, "separator", "undo", "redo", "separator", "cut", "copy", "paste"
-	  <%= insertButtons %><%= textDirection %>, "separator", "inserthorizontalrule",
+	  <%= insertButtons %><%= textDirection %>, "separator", "inserthorizontalrule",<%= onlineHelp %>
 	  "separator", "oc-exit" ],
 
 	[ "starttab", "formatblock", "space",<%= outFontButtons %> ]<%
@@ -632,9 +644,16 @@ config.toolbar = [
 ];
 
 	config.pageStyle = "@import url(<%= cms.link(wp.getUriStyleSheet()) %>);";
+	
 	__editor.generate();
 	return false;
 }
+
+<%	if (wp.isHelpEnabled()) {
+		out.println(CmsHelpTemplateBean.buildOnlineHelpJavaScript(wp.getLocale())); 
+	}
+%>
+
 </script>
 
 </head>

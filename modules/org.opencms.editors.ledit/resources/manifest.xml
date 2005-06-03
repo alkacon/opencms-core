@@ -31,7 +31,6 @@
 		<resources>
 			<resource uri="/system/workplace/editors/ledit/"/>
 			<resource uri="/system/workplace/resources/buttons/goto.gif"/>
-			<resource uri="/system/workplace/resources/buttons/help.gif"/>
 			<resource uri="/system/workplace/resources/buttons/print.gif"/>
 			<resource uri="/system/workplace/resources/buttons/replace.gif"/>
 		</resources>
@@ -206,19 +205,6 @@
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 17 Aug 2004 12:37:03 CEST</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/buttons/help.gif</source>
-			<destination>system/workplace/resources/buttons/help.gif</destination>
-			<type>image</type>
-			<uuidresource>61273153-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 Aug 2004 12:37:04 CEST</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

@@ -1,6 +1,7 @@
 <%@ page import="
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
+	org.opencms.workplace.help.*,
 	org.opencms.jsp.*,
 	java.util.*"
 	buffer="none"

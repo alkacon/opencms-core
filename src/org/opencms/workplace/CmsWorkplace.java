@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/05/31 16:28:47 $
- * Version: $Revision: 1.120 $
+ * Date   : $Date: 2005/06/03 15:48:29 $
+ * Version: $Revision: 1.121 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,6 +54,7 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsTree;
+import org.opencms.workplace.help.CmsHelpTemplateBean;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.120 $
+ * @version $Revision: 1.121 $
  * 
  * @since 5.1
  */
@@ -656,6 +657,11 @@ public abstract class CmsWorkplace {
         if (href != null && href.toLowerCase().startsWith("javascript:")) {
             anchorStart = "<a href=\"#\" onclick=\"";
         }
+        
+        if (image != null && image.indexOf('.') == -1) {
+            // append default suffix for images
+            image += ".gif";
+        }
 
         result.append("<td style=\"vertical-align: top;\">");
         switch (type) {
@@ -682,7 +688,6 @@ public abstract class CmsWorkplace {
                 result.append("style=\"background-image: url('");
                 result.append(imagePath);
                 result.append(image);
-                result.append(".gif");
                 result.append("');\">");
                 result.append(shortKey(label));
                 result.append("</span></span>");
@@ -742,7 +747,6 @@ public abstract class CmsWorkplace {
                 result.append("><img class=\"button\" src=\"");
                 result.append(imagePath);
                 result.append(image);
-                result.append(".gif");
                 result.append("\">");
                 result.append("</span>");
                 if (href != null) {
@@ -1361,6 +1365,17 @@ public abstract class CmsWorkplace {
     public String htmlStart(String title) {
 
         return pageHtml(HTML_START, title);
+    }
+    
+    /**
+     * Returns true if the online help for the users current workplace language is installed.<p>
+     * 
+     * @return true if the online help for the users current workplace language is installed
+     */
+    public boolean isHelpEnabled() {
+
+        return getCms().existsResource(resolveMacros(CmsHelpTemplateBean.PATH_HELP),
+                CmsResourceFilter.IGNORE_EXPIRATION);
     }
 
     /**

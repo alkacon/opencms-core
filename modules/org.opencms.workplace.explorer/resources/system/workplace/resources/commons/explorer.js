@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/05/18 10:40:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/03 15:48:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -846,17 +846,17 @@ function displayHead(doc, pages, actpage){
 	var pageSelect = "";
 
 	if(vr.actDirectory == getRootFolder()) {
-		btUp = button(null, null, "up_in", vr.langup, buttonType);
+		btUp = button(null, null, "folder_up_in.png", vr.langup, buttonType);
 	} else {
-		btUp = button("javascript:top.dirUp();", null, "up", vr.langup, buttonType);
+		btUp = button("javascript:top.dirUp();", null, "folder_up.png", vr.langup, buttonType);
 	}
 
 	if((vr.actProject != vr.onlineProject) && (vi.newButtonActive == true)) {
-		btWizard = button(vr.servpath + link_newresource, "explorer_files", "wizard", vr.langnew, buttonType);
-		btUpload = button(vr.servpath + link_uploadresource, "explorer_files", "upload", vr.langupload, buttonType);
+		btWizard = button(vr.servpath + link_newresource, "explorer_files", "wizard.png", vr.langnew, buttonType);
+		btUpload = button(vr.servpath + link_uploadresource, "explorer_files", "upload.png", vr.langupload, buttonType);
 	} else {
-		btWizard = button(null, null, "wizard_in", vr.langnew, buttonType);
-		btUpload = button(null, null, "upload_in", vr.langupload, buttonType);
+		btWizard = button(null, null, "wizard_in.png", vr.langnew, buttonType);
+		btUpload = button(null, null, "upload_in.png", vr.langupload, buttonType);
 	}
 
 	if(pages > 1){
@@ -900,7 +900,7 @@ function displayHead(doc, pages, actpage){
 	+ "<tr>\n"
 
 	+ buttonSep(0, 0, 0)
-	+ button("javascript:top.histGoBack();", null, "back", vr.langback, buttonType)
+	+ button("javascript:top.histGoBack();", null, "back.png", vr.langback, buttonType)
 	+ btUp
 	// + button("javascript:top.dispSearchForm();", null, "search", vr.langsearch, buttonType)
 	+ btUpload
@@ -922,6 +922,12 @@ function displayHead(doc, pages, actpage){
 
 // formats a button in one of 3 styles (type 0..2)
 function button(href, target, image, label, type) {
+	
+	if (image != null && image.indexOf('.') == -1) {
+        // append default suffix for images
+        image += ".gif";
+    }
+	
 	var result = "<td>";
 	switch (type) {
 		case 1:
@@ -948,7 +954,6 @@ function button(href, target, image, label, type) {
 		result += vi.skinPath;
 		result += "buttons/";
 		result += image;
-		result += ".gif";
 		result += "');\">";
 		result += label;
 		result += "</span></span>";

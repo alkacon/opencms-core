@@ -209,6 +209,11 @@ function popupCloseAction(closeObj) {
 		changeElement(closeObj.elemName, closeObj.elemLocale);
 	}
 }
+
+<%	if (wp.isHelpEnabled()) {
+		out.println(CmsHelpTemplateBean.buildOnlineHelpJavaScript(wp.getLocale())); 
+	}
+%>
 </script>
 
 <%
