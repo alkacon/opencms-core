@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEdit.java,v $
- * Date   : $Date: 2005/06/03 15:21:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/03 16:01:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
@@ -48,6 +49,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsModulesEdit extends CmsWidgetDialog {
@@ -104,15 +106,29 @@ public class CmsModulesEdit extends CmsWidgetDialog {
 
         List errors = new ArrayList();
         getSettings().setHtmlList(null);
-        // freeze the modified module
+        // freeze the module
         m_module.initialize(getCms());
-        // update the module information
-        try {
-            OpenCms.getModuleManager().updateModule(getCms(), m_module);
-        } catch (CmsConfigurationException ce) {
-            errors.add(ce);
-        } catch (CmsRoleViolationException re) {
-            errors.add(re);
+        
+        //check if we have to update an existing module or to create a new one
+        Set moduleNames = OpenCms.getModuleManager().getModuleNames();
+        if (moduleNames.contains(m_module.getName())) {
+        
+            // update the module information
+            try {
+               OpenCms.getModuleManager().updateModule(getCms(), m_module);
+            } catch (CmsConfigurationException ce) {
+                errors.add(ce);
+            } catch (CmsRoleViolationException re) {
+                errors.add(re);
+            }
+        } else {
+            try {
+                OpenCms.getModuleManager().addModule(getCms(), m_module);
+            } catch (CmsConfigurationException ce) {
+                errors.add(ce);
+            } catch (CmsSecurityException se) {
+                errors.add(se);
+            }
         }
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
