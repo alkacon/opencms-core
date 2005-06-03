@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/05/25 09:01:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/03 15:21:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -127,6 +127,8 @@ public class CmsModule implements Comparable {
      */
     public CmsModule() {
 
+        m_version = new CmsModuleVersion(CmsModuleVersion.DEFAULT_VERSION);
+        m_resources = Collections.EMPTY_LIST;
         // noop
     }
 
@@ -167,10 +169,10 @@ public class CmsModule implements Comparable {
         Map parameters) {
 
         super();
-        setName(name);
-        setNiceName(niceName);
-        setActionClass(actionClass);
-        setGroup(group);
+        m_name = name;
+        m_niceName = niceName;
+        m_actionClass = actionClass;
+        m_group = group;
 
         if (CmsStringUtil.isEmpty(description)) {
             m_description = "";
@@ -279,7 +281,15 @@ public class CmsModule implements Comparable {
             m_parameters);
         // and set its frozen state to false
         result.m_frozen = false;
-        result.m_resources = new ArrayList(m_resources);
+
+        if (getExplorerTypes() != null) {
+            result.setExplorerTypes(new ArrayList(getExplorerTypes()));
+        }
+        if (getResourceTypes() != null) {
+            result.setResourceTypes(new ArrayList(getResourceTypes()));
+        }
+
+        result.setResources(new ArrayList(m_resources));
         return result;
     }
 
@@ -642,6 +652,46 @@ public class CmsModule implements Comparable {
     }
 
     /**
+     * Sets the date created of this module.<p>
+     * 
+     * 
+     * <i>Please note:</i>It's not possible to set the module date created once the module
+     * configuration has been frozen.<p>
+     * 
+     * @param value the date created to set
+     */
+    public void setDateCreated(long value) {
+
+        checkFrozen();
+        m_dateCreated = value;
+    }
+
+    /**
+     * Sets the installation date of this module.<p>
+     * 
+     * 
+     * <i>Please note:</i>It's not possible to set the installation date once the module
+     * configuration has been frozen.<p>
+     * 
+     * @param value the installation date this module
+     */
+    public void setDateInstalled(long value) {
+
+        checkFrozen();
+        m_dateInstalled = value;
+    }
+
+    /**
+     * Sets the list of module dependencies.<p>
+     *
+     * @param dependencies list of module dependencies
+     */
+    public void setDependencies(List dependencies) {
+
+        m_dependencies = Collections.unmodifiableList(dependencies);
+    }
+
+    /**
      * Sets the description of this module.<p>
      * 
      * 
@@ -664,6 +714,16 @@ public class CmsModule implements Comparable {
     public void setExplorerTypes(List explorerTypeSettings) {
 
         m_explorerTypeSettings = explorerTypeSettings;
+    }
+
+    /**
+     * Sets the exportpoints of  this module.<p>
+     *
+     * @param exportPoints the exportpoints of this module.
+     */
+    public void setExportPoints(List exportPoints) {
+
+        m_exportPoints = exportPoints;
     }
 
     /**
@@ -756,6 +816,21 @@ public class CmsModule implements Comparable {
     public void setResourceTypes(List resourceTypes) {
 
         m_resourceTypes = Collections.unmodifiableList(resourceTypes);
+    }
+
+    /**
+     * Sets the user who installed of this module.<p>
+     * 
+     * 
+     * <i>Please note:</i>It's not possible to set the user installed once the module
+     * configuration has been frozen.<p>
+     * 
+     * @param value the user who installed this module
+     */
+    public void setUserInstalled(String value) {
+
+        checkFrozen();
+        m_userInstalled = value.trim();
     }
 
     /**

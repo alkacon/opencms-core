@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0 beta 3 Corrin</opencms_version>
-		<createdate>5/24/05 4:03 PM</createdate>
+		<opencms_version>6.0 RC 1 Corrin</opencms_version>
+		<createdate>6/3/05 5:10 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -34,7 +34,7 @@
 			<resource uri="/system/workplace/resources/tools/modules/"/>
 		</resources>
 		<parameters>
-			<param name="additionalresources">/system/modules/org.opencms.workplace.tools.modules/;/system/workplace/admin/modules/;/system/workplace/resources/tools/modules/;system/workplace/admin/modules/</param>
+			<param name="additionalresources">/system/modules/org.opencms.workplace.tools.modules/;/system/workplace/admin/modules/;/system/workplace/resources/tools/modules/</param>
 		</parameters>
 	</module>
 	<files>
@@ -43,7 +43,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 23 May 2005 13:02:31 GMT</datecreated>
+			<datecreated>Wed, 30 Mar 2005 13:13:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -258,7 +258,7 @@
 		<file>
 			<destination>system/workplace/admin/modules</destination>
 			<type>folder</type>
-			<datelastmodified>Thu, 19 May 2005 13:53:27 GMT</datelastmodified>
+			<datelastmodified>Fri, 03 Jun 2005 14:15:36 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 17 May 2005 13:32:07 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -286,7 +286,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/modules/icons/big/modulemanagement.gif:tools/modules/icons/small/modulemanagement.gif]]></value>
+					<value><![CDATA[tools/modules/icons/big/modules.png:tools/modules/icons/small/modules.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -444,7 +444,7 @@
 		<file>
 			<destination>system/workplace/admin/modules/importserver</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 24 May 2005 07:50:06 GMT</datelastmodified>
+			<datelastmodified>Fri, 03 Jun 2005 14:19:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 24 May 2005 07:49:22 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -468,7 +468,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/modules/icons/big/newjob.png]]></value>
+					<value><![CDATA[tools/modules/icons/big/module_import_server.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -510,12 +510,16 @@
 		<file>
 			<destination>system/workplace/admin/modules/new</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 24 May 2005 12:41:23 GMT</datelastmodified>
+			<datelastmodified>Fri, 03 Jun 2005 14:19:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 20 May 2005 08:19:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[2]]></value>
@@ -530,7 +534,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/modules/icons/big/newjob.png]]></value>
+					<value><![CDATA[tools/modules/icons/big/module_add.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -544,13 +548,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/new/index.html</source>
 			<destination>system/workplace/admin/modules/new/index.html</destination>
 			<type>jsp</type>
-			<uuidresource>e39afe81-c907-11d9-a651-8fa6905eb2f3</uuidresource>
-			<datelastmodified>Tue, 24 May 2005 08:49:21 GMT</datelastmodified>
+			<uuidresource>93110d4f-c7b0-11d9-93cd-8fa6905eb2f3</uuidresource>
+			<datelastmodified>Tue, 24 May 2005 09:08:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 20 May 2005 08:19:30 GMT</datecreated>
+			<datecreated>Wed, 18 May 2005 15:21:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -564,7 +567,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[New module]]></value>
+					<value><![CDATA[Edit module]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -692,12 +695,17 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 17 Aug 2004 13:39:50 GMT</datelastmodified>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 Aug 2004 13:39:50 GMT</datecreated>
+			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -750,10 +758,23 @@
 			<source>system/workplace/resources/tools/modules/buttons/export.png</source>
 			<destination>system/workplace/resources/tools/modules/buttons/export.png</destination>
 			<type>image</type>
-			<uuidresource>c9efca32-c770-11d9-8fa2-8fa6905eb2f3</uuidresource>
-			<datelastmodified>Wed, 18 May 2005 07:45:22 GMT</datelastmodified>
+			<uuidresource>34f4a4e8-d43a-11d9-8118-a1a762e70bd3</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 14:17:24 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 18 May 2005 07:45:22 GMT</datecreated>
+			<datecreated>Fri, 03 Jun 2005 14:17:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/modules/buttons/modules.png</source>
+			<destination>system/workplace/resources/tools/modules/buttons/modules.png</destination>
+			<type>image</type>
+			<uuidresource>3b10ab8b-d43a-11d9-8118-a1a762e70bd3</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 14:17:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Jun 2005 14:17:34 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -782,26 +803,39 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/modules/icons/big/modulemanagement.gif</source>
-			<destination>system/workplace/resources/tools/modules/icons/big/modulemanagement.gif</destination>
+			<source>system/workplace/resources/tools/modules/icons/big/module_add.png</source>
+			<destination>system/workplace/resources/tools/modules/icons/big/module_add.png</destination>
 			<type>image</type>
-			<uuidresource>f4505081-c79c-11d9-affe-8fa6905eb2f3</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<uuidresource>d78ff3db-d439-11d9-8118-a1a762e70bd3</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 14:14:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 18 May 2005 13:01:31 GMT</datecreated>
+			<datecreated>Fri, 03 Jun 2005 14:14:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/modules/icons/big/newjob.png</source>
-			<destination>system/workplace/resources/tools/modules/icons/big/newjob.png</destination>
+			<source>system/workplace/resources/tools/modules/icons/big/module_import_server.png</source>
+			<destination>system/workplace/resources/tools/modules/icons/big/module_import_server.png</destination>
 			<type>image</type>
-			<uuidresource>407fd26d-c79a-11d9-affe-8fa6905eb2f3</uuidresource>
-			<datelastmodified>Thu, 20 Jan 2005 16:15:53 GMT</datelastmodified>
+			<uuidresource>d7aeed8e-d439-11d9-8118-a1a762e70bd3</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 14:14:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 18 May 2005 12:42:10 GMT</datecreated>
+			<datecreated>Fri, 03 Jun 2005 14:14:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/modules/icons/big/modules.png</source>
+			<destination>system/workplace/resources/tools/modules/icons/big/modules.png</destination>
+			<type>image</type>
+			<uuidresource>d7b88a81-d439-11d9-8118-a1a762e70bd3</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 14:14:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Jun 2005 14:14:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -819,13 +853,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/modules/icons/small/modulemanagement.gif</source>
-			<destination>system/workplace/resources/tools/modules/icons/small/modulemanagement.gif</destination>
+			<destination>system/workplace/resources/tools/modules/icons/small/modules.png</destination>
 			<type>image</type>
-			<uuidresource>41a0addf-c86d-11d9-9019-8fa6905eb2f3</uuidresource>
-			<datelastmodified>Thu, 19 May 2005 13:52:36 GMT</datelastmodified>
+			<uuidresource>3b10ab8b-d43a-11d9-8118-a1a762e70bd3</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 14:17:34 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 19 May 2005 13:52:36 GMT</datecreated>
+			<datecreated>Fri, 03 Jun 2005 14:17:34 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/Messages.java,v $
- * Date   : $Date: 2005/06/02 15:52:59 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/03 15:21:23 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -198,6 +198,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LIST_COLS_DELETE_0 = "GUI_MODULES_LIST_COLS_DELETE_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LIST_COLS_EDIT_0 = "GUI_MODULES_LIST_COLS_EDIT_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LIST_COLS_EXPORT_0 = "GUI_MODULES_LIST_COLS_EXPORT_0";
 

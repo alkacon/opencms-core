@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/05/25 10:06:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/03 15:21:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Main module management view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsModulesList extends A_CmsListDialog {
@@ -86,6 +86,9 @@ public class CmsModulesList extends A_CmsListDialog {
     /** List column delete. */
     public static final String LIST_COLUMN_DELETE = "delete";
 
+    /** List column export. */
+    public static final String LIST_COLUMN_EDIT = "edit";
+    
     /** List column export. */
     public static final String LIST_COLUMN_EXPORT = "export";
 
@@ -118,6 +121,12 @@ public class CmsModulesList extends A_CmsListDialog {
 
     /** Module parameter. */
     public static final String PARAM_MODULE = "module";
+    
+    /** Path to the list buttons. */
+    public static final String PATH_BUTTONS = "tools/modules/buttons/";
+    
+    /** Path to the module reports. */
+    public static final String PATH_REPORTS = "/system/workplace/admin/modules/reports/";
 
     /**
      * Public constructor.<p>
@@ -165,7 +174,7 @@ public class CmsModulesList extends A_CmsListDialog {
                 params.put(PARAM_MODULE, moduleList);
                 params.put(PARAM_ACTION, DIALOG_INITIAL);
                 params.put(PARAM_STYLE, "new");
-                getToolManager().jspRedirectPage(this, "/system/workplace/admin/modules/reports/delete.html", params);
+                getToolManager().jspRedirectPage(this, PATH_REPORTS + "delete.html", params);
             } catch (IOException e) {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(
@@ -203,7 +212,7 @@ public class CmsModulesList extends A_CmsListDialog {
                 // forward to the delete module screen   
                 params.put(PARAM_ACTION, DIALOG_INITIAL);
                 params.put(PARAM_STYLE, "new");
-                getToolManager().jspRedirectPage(this, "/system/workplace/admin/modules/reports/delete.html", params);
+                getToolManager().jspRedirectPage(this, PATH_REPORTS  + "delete.html", params);
             } catch (IOException e) {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(
@@ -332,6 +341,22 @@ public class CmsModulesList extends A_CmsListDialog {
      */
     protected void setColumns(CmsListMetadata metadata) {
 
+        //add column for edit action
+        CmsListColumnDefinition editCol = new CmsListColumnDefinition(LIST_COLUMN_EDIT);
+        editCol.setName(Messages.get().container(Messages.GUI_MODULES_LIST_COLS_EDIT_0));
+        editCol.setWidth("20");
+        editCol.setSorteable(false);
+        editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        // add the edit action
+        CmsListDirectAction editColAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_EDIT);
+        editColAction.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EDIT_NAME_0));
+        editColAction.setHelpText(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EDIT_HELP_0));
+        editColAction.setIconPath(PATH_BUTTONS + "modules.png");
+        editColAction.setEnabled(true);
+        editColAction.setConfirmationMessage(null);
+        editCol.addDirectAction(editColAction);
+        metadata.addColumn(editCol);
+        
         // add column for export action
         CmsListColumnDefinition expCol = new CmsListColumnDefinition(LIST_COLUMN_EXPORT);
         expCol.setName(Messages.get().container(Messages.GUI_MODULES_LIST_COLS_EXPORT_0));
@@ -343,7 +368,7 @@ public class CmsModulesList extends A_CmsListDialog {
         expModule.setColumn(LIST_COLUMN_NICENAME);
         expModule.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EXPORT_NAME_0));
         expModule.setConfirmationMessage(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EXPORT_CONF_1));
-        expModule.setIconPath("tools/modules/buttons/export.png");
+        expModule.setIconPath(PATH_BUTTONS + "export.png");
         expModule.setEnabled(true);
         expModule.setHelpText(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EXPORT_HELP_1));
         expCol.addDirectAction(expModule);

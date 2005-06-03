@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEdit.java,v $
- * Date   : $Date: 2005/05/25 09:01:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/03 15:21:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsTextareaWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsModulesEdit extends CmsWidgetDialog {
@@ -186,23 +187,23 @@ public class CmsModulesEdit extends CmsWidgetDialog {
         if (dialog.equals(PAGES[0])) {
             result.append(dialogBlockStart(key("editor.label.moduleinformation")));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 4));
+            result.append(createDialogRowsHtml(0, 5));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockStart(key("editor.label.modulecreator")));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(5, 6));
+            result.append(createDialogRowsHtml(6, 7));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         } else if (dialog.equals(PAGES[1])) {
             result.append(dialogBlockStart(key("editor.label.parameter")));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(7, 7));
+            result.append(createDialogRowsHtml(8, 8));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         } else if (dialog.equals(PAGES[2])) {
             result.append(dialogBlockStart(key("editor.label.resource")));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(8, 8));
+            result.append(createDialogRowsHtml(9, 9));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -220,6 +221,11 @@ public class CmsModulesEdit extends CmsWidgetDialog {
 
         initModule();
 
+        if (CmsStringUtil.isEmpty(m_module.getName())) {
+            addWidget(new CmsWidgetDialogParameter(m_module, "name", PAGES[0], new CmsInputWidget()));
+        } else {
+            addWidget(new CmsWidgetDialogParameter(m_module, "name", PAGES[0], new CmsDisplayWidget()));
+        }
         addWidget(new CmsWidgetDialogParameter(m_module, "niceName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "description", PAGES[0], new CmsTextareaWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "version.version", PAGES[0], new CmsInputWidget()));
@@ -294,7 +300,7 @@ public class CmsModulesEdit extends CmsWidgetDialog {
 
         super.initWorkplaceRequestValues(settings, request);
 
-        // save the current state of the job (may be changed because of the widget values)
+        // save the current state of the module (may be changed because of the widget values)
         setDialogObject(m_module);
     }
 }
