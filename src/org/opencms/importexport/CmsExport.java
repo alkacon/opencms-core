@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/06/03 15:25:38 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2005/06/03 16:11:59 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.66 $ $Date: 2005/06/03 15:25:38 $
+ * @version $Revision: 1.67 $ $Date: 2005/06/03 16:11:59 $
  */
 public class CmsExport implements Serializable {
     
@@ -839,11 +839,12 @@ public class CmsExport implements Serializable {
                     fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_SOURCE).addText(fileName);
                 }
             } else {
+                m_exportCount++;
                 I_CmsReport report = getReport();
                 // output something to the report for the folder
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_1,
-                    new Integer(1)), I_CmsReport.C_FORMAT_NOTE);
+                    String.valueOf(m_exportCount)), I_CmsReport.C_FORMAT_NOTE);
                 report.print(
                     Messages.get().container(Messages.RPT_EXPORT_0),
                     I_CmsReport.C_FORMAT_NOTE);
