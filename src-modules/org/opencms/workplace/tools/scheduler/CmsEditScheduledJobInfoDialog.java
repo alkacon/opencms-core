@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/05/25 10:57:50 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/03 09:01:05 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.scheduler.jobs.CmsPublishJob;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.9.1
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
@@ -294,6 +295,10 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         result.append(CmsSearchManager.class.getName());
         result.append(":");
         result.append(key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE2_0));
+        result.append("|");
+        result.append(CmsPublishJob.class.getName());
+        result.append(":");
+        result.append(key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE3_0));
         
         
         return result.toString();
