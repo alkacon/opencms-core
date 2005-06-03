@@ -33,6 +33,7 @@
     	description="(internal target) initializes the selection mode">
 
     	<property file="${basedir}/all-modules.properties" />
+    	<echo message="all: ${basedir}"/>
     	<if>
     		<not><isset property="modules.common.all" /></not>
     	  <then>

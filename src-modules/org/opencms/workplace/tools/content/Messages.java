@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2005/06/02 15:52:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/03 17:00:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,12 +42,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MERGE_PAGES_THREAD_NAME_0 = "GUI_MERGE_PAGES_THREAD_NAME_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_DIALOG_TITLE_0 = "GUI_HTMLIMPORT_DIALOG_TITLE_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DEL_PROP_RESOURCES_LOCKED_1 = "ERR_DEL_PROP_RESOURCES_LOCKED_1";
@@ -81,6 +75,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_DESTDIR_1 = "GUI_HTMLIMPORT_DESTDIR_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLIMPORT_DIALOG_TITLE_0 = "GUI_HTMLIMPORT_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_DOWNGALLERY_1 = "GUI_HTMLIMPORT_DOWNGALLERY_1";
@@ -99,6 +96,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_TEMPLATE_1 = "GUI_HTMLIMPORT_TEMPLATE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MERGE_PAGES_THREAD_NAME_0 = "GUI_MERGE_PAGES_THREAD_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_0 = "GUI_MERGE_PAGES_VALIDATE_FIRST_FOLDER_0";
