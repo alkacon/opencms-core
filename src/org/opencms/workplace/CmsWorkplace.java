@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/03 15:48:29 $
- * Version: $Revision: 1.121 $
+ * Date   : $Date: 2005/06/04 08:11:29 $
+ * Version: $Revision: 1.122 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.121 $
+ * @version $Revision: 1.122 $
  * 
  * @since 5.1
  */
@@ -747,7 +747,7 @@ public abstract class CmsWorkplace {
                 result.append("><img class=\"button\" src=\"");
                 result.append(imagePath);
                 result.append(image);
-                result.append("\">");
+                result.append("\" alt=\"\">");
                 result.append("</span>");
                 if (href != null) {
                     result.append("</a>");

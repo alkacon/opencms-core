@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/05/31 12:52:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/04 08:11:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public abstract class A_CmsWidget implements I_CmsWidget {
@@ -156,10 +156,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             // there was no help message found for this key, so return a spacer cell
             return widgetDialog.dialogHorizontalSpacer(16);
         } else {
-            String jsMethodSuffix = "Help";
-            if (widgetDialog.useNewStyle()) {
-                jsMethodSuffix = "MenuHelp";
-            }
+
             result.append("<td>");
             result.append("<img name=\"img");
             result.append(locKey);
@@ -167,12 +164,9 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             result.append(locKey);
             result.append("\" src=\"");
             result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.gif"));
-            result.append("\" border=\"0\" onmouseout=\"hide").append(jsMethodSuffix).append("('");
-            result.append(locKey);
-            result.append("');\" onmouseover=\"show").append(jsMethodSuffix).append("('");
-            result.append(locKey);
-            result.append("');\">");
-            result.append("</td>");
+            result.append("\" alt=\"\" border=\"0\"");
+            result.append(getJsHelpMouseHandler(widgetDialog, locKey));
+            result.append("></td>");
             return result.toString();
         }
     }
@@ -190,20 +184,11 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             // there was no help message found for this key, so return an empty string
             return "";
         } else {
-            // determine JS Method suffix depending on the displayed dialog style
-            String jsMethodSuffix = "Help";
-            if (widgetDialog.useNewStyle()) {
-                jsMethodSuffix = "MenuHelp";
-            }
-            result.append("<div class=\"help\" name=\"help");
+            result.append("<div class=\"help\" id=\"help");
             result.append(locKey);
-            result.append("\" id=\"help");
-            result.append(locKey);
-            result.append("\" onmouseout=\"hide").append(jsMethodSuffix).append("('");
-            result.append(locKey);
-            result.append("');\" onmouseover=\"show").append(jsMethodSuffix).append("('");
-            result.append(locKey);
-            result.append("');\">");
+            result.append("\"");
+            result.append(getJsHelpMouseHandler(widgetDialog, locKey));
+            result.append(">");
             result.append(locValue);
             result.append("</div>");
             return result.toString();
@@ -249,6 +234,43 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     protected String getConfiguration() {
 
         return m_configuration;
+    }
+
+    /**
+     * Returns the HTML for the JavaScript mouse handlers that show / hide the help text.<p> 
+     * 
+     * This is required since the handler differ between the "Dialog" and the "Administration" mode.<p>
+     * 
+     * @param widgetDialog the dialog where the widget is displayed on
+     * @param key the key for the help bubble 
+     * 
+     * @return the HTML for the JavaScript mouse handlers that show / hide the help text
+     */
+    protected String getJsHelpMouseHandler(I_CmsWidgetDialog widgetDialog, String key) {
+
+        String jsShow;
+        String jsHide;
+        if (widgetDialog.useNewStyle()) {
+            // Administration style
+            jsShow = "sMH";
+            jsHide = "hMH";
+        } else {
+            // Dialog style
+            jsShow = "showHelp";
+            jsHide = "hideHelp";
+        }
+        StringBuffer result = new StringBuffer(128);
+        result.append(" onmouseover=\"");
+        result.append(jsShow);
+        result.append("('");
+        result.append(key);
+        result.append("');\" onmouseout=\"");
+        result.append(jsHide);
+        result.append("('");
+        result.append(key);
+        result.append("');\"");
+
+        return result.toString();
     }
 
     /**

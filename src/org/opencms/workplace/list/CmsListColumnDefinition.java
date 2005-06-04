@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/04 08:11:29 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
@@ -339,12 +339,12 @@ public class CmsListColumnDefinition {
                 html.append("\t<img src='");
                 html.append(CmsWorkplace.getSkinUri());
                 html.append(ICON_UP);
-                html.append("'>\n");
+                html.append("' alt=''>\n");
             } else {
                 html.append("\t<img src='");
                 html.append(CmsWorkplace.getSkinUri());
                 html.append(ICON_DOWN);
-                html.append("'>\n");
+                html.append("' alt=''>\n");
             }
         }
         html.append("</th>\n");

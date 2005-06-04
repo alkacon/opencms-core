@@ -4,8 +4,8 @@
                  org.opencms.workplace.list.*,
                  org.opencms.workplace.tools.modules.CmsModulesList,
                  java.util.*" 
-         buffer="none" %>
-<% 
+
+         buffer="none" %><% 
 
     CmsModulesList wp = new CmsModulesList(pageContext, request, response);
 
@@ -46,9 +46,7 @@ switch (wp.getAction()) {
 
 } //end getAction switch
 
-%>
-
-<%= wp.htmlStart(null) %>
+%><%= wp.htmlStart(null) %>
 
 <%= wp.getList().listJs() %>
 
@@ -64,6 +62,7 @@ switch (wp.getAction()) {
 
 </form>
 
+<%= wp.dialogContentEnd() %>
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>

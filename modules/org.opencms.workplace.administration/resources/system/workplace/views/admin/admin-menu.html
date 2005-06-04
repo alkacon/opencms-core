@@ -6,19 +6,17 @@
 <%
     CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
     CmsAdminMenu wp = new CmsAdminMenu(jsp);
-%>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-  <head>
-    <title>Administration Menu</title>
-    <meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1'>
-     <link rel='stylesheet' type='text/css' href='<%=wp.getStyleUri(wp.getJsp(),"menu.css")%>'>
-  </head>
+<head>
+  <title>Administration Menu</title>
+  <meta http-equiv='Content-Type' content='text/html; charset=<%= wp.getEncoding() %>'>
+  <link rel='stylesheet' type='text/css' href='<%=wp.getStyleUri(wp.getJsp(),"menu.css")%>'>
 
-  <script language='javascript' type='text/javascript' src='<%=wp.getSkinUri()%>admin/javascript/general.js'></script>
-  <script language='javascript' type='text/javascript' src='<%=wp.getSkinUri()%>admin/javascript/adminmenu.js'></script>
-  <script language='javascript'><!--
+  <script type='text/javascript' src='<%=wp.getSkinUri()%>admin/javascript/general.js'></script>
+  <script type='text/javascript' src='<%=wp.getSkinUri()%>admin/javascript/adminmenu.js'></script>
+  <script type='text/javascript'>
     function bodyLoad() {
       if (navigator.appName == 'Microsoft Internet Explorer' && document.documentElement && navigator.userAgent.indexOf ('Opera') == -1) {
         setScrollInIE();
@@ -31,14 +29,15 @@
       loadingOn();
     }
     var activeItem = '/';
-  //--></script>
-  <body onLoad='bodyLoad();' onUnload='bodyUnload();'>
+  </script>
+</head>
+<body onLoad='bodyLoad();' onUnload='bodyUnload();'>
     <a href='#' name='top' id='top'></a>
       <table border="0" cellspacing="0" cellpadding="0" id="loaderContainer" onClick="return false;">
           <tr><td id="loaderContainerH">&nbsp;</td></tr>
       </table>
       <div class='screenBody'>
-        <table id='navArea' cellspacing='0' cellpadding='0' width='100%' border='0' height='100%' summary='Navigation Items Area'>
+        <table id='navArea' cellspacing='0' cellpadding='0' width='100%' border='0'>
           <tr>
             <td>
               <div id='navLayout'>
@@ -48,5 +47,5 @@
           </tr>
         </table>
       </div>
-  </body>
+</body>
 </html>

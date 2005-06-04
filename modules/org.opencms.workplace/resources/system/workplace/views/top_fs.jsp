@@ -11,7 +11,8 @@ if (wp.isReloadRequired()) {
 	response.sendRedirect(cms.link(cms.getRequestContext().getUri()));
 } else {
 
-%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+
 <html>
 
 <head>
@@ -19,8 +20,8 @@ if (wp.isReloadRequired()) {
 
 <title><%= wp.key("label.wptitle") %> <%= wp.getSettings().getUser().getName() %>@<%= request.getServerName() %></title>
 
-<script Language="Javascript" type="text/javascript" src="<%= wp.getSkinUri() %>commons/explorer.js"></script>
-<script Language="Javascript"> 
+<script type="text/javascript" src="<%= wp.getSkinUri() %>commons/explorer.js"></script>
+<script type="text/javascript"> 
 
 function vars_resources() { 
 

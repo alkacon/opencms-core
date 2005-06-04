@@ -319,7 +319,9 @@ body, form {
 
 
 .list td {
+  text-align: left;
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .list th { 

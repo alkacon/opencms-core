@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/06/03 15:48:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/04 08:11:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * The bean that provides methods to build the HTML for the single online help frames.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.9.2
  */
@@ -501,6 +501,9 @@ public class CmsHelpTemplateBean extends CmsDialog {
         }
         result.append("<html>\n");
         result.append("<head>\n");
+        result.append("\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=");
+        result.append(getCms().getRequestContext().getEncoding());
+        result.append("\">\n");
         result.append("\t<title>");
         if (CmsStringUtil.isNotEmpty(getParamHelpresource())) {
             result.append(getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamHelpresource(), key(Messages.GUI_HELP_FRAMESET_TITLE_0)));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/04 08:11:29 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -441,7 +441,7 @@ public class CmsHtmlList {
     public String listJs() {
 
         StringBuffer js = new StringBuffer(1024);
-        js.append("\t\t<script language='javascript' type='text/javascript' src='");
+        js.append("<script type='text/javascript' src='");
         js.append(CmsWorkplace.getSkinUri());
         js.append("admin/javascript/list.js'></script>\n");
         return js.toString();
@@ -859,7 +859,7 @@ public class CmsHtmlList {
         html.append(((CmsDialog)wp).dialogBlock(CmsWorkplace.HTML_END, m_name.key(wp.getLocale()), false));
         html.append("</div>\n");
         if (getMetadata().isSearchable()) {
-            html.append("<script language='javascript'>\n");
+            html.append("<script type='text/javascript'>\n");
             html.append("\tvar form = document.forms['");
             html.append(getId());
             html.append("-form'];\n");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/04 08:11:29 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
@@ -353,14 +353,21 @@ public class CmsListMetadata {
         Iterator itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+            StringBuffer style = new StringBuffer(64);
             html.append("<td");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(col.getAlign().toString())) {
-                html.append(" align='");
-                html.append(col.getAlign());
-                html.append("'");
+            CmsListColumnAlignEnum align = col.getAlign();
+            if (align != CmsListColumnAlignEnum.ALIGN_LEFT && CmsStringUtil.isNotEmpty(align.toString())) {
+                style.append("text-align: ");
+                style.append(col.getAlign());
+                style.append("; ");
             }
-            if (!col.isTextWrapping()) {
-                html.append(" style='white-space: nowrap;'");
+            if (col.isTextWrapping()) {
+                style.append("white-space: normal;");
+            }
+            if (style.length() > 0) {
+                html.append(" style='");
+                html.append(style);
+                html.append("'");
             }
             html.append(">\n");
             html.append(col.htmlCell(item, wp));

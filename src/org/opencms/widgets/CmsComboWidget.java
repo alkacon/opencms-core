@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsComboWidget.java,v $
- * Date   : $Date: 2005/05/31 12:52:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/04 08:11:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.StringTokenizer;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.3
  */
 public class CmsComboWidget extends A_CmsWidget {
@@ -83,8 +83,7 @@ public class CmsComboWidget extends A_CmsWidget {
 
         super(configuration);
     }
-    
-    
+
     /**
      * @see org.opencms.widgets.A_CmsWidget#getDialogHtmlEnd(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
@@ -92,7 +91,7 @@ public class CmsComboWidget extends A_CmsWidget {
 
         String id = param.getId();
         StringBuffer result = new StringBuffer(256);
-        
+
         // get select box options from configuration String
         String defaultValue = getComboOptions(cms, widgetDialog);
 
@@ -101,17 +100,12 @@ public class CmsComboWidget extends A_CmsWidget {
         String val;
         String helpText;
         int delimPos;
-        
+
         if (t.hasMoreTokens()) {
             // create combo div
-            result.append("<div class=\"widgetcombo\" name=\"combo").append(id).append("\" id=\"combo").append(id).append("\">\n");
+            result.append("<div class=\"widgetcombo\" id=\"combo").append(id).append("\">\n");
             int count = 0;
             Map helpTexts = new HashMap(t.countTokens());
-            // determine JS Method suffix for the help texts depending on the displayed dialog style
-            String jsMethodSuffix = "Help";
-            if (widgetDialog.useNewStyle()) {
-                jsMethodSuffix = "MenuHelp";
-            }
             while (t.hasMoreTokens()) {
                 // generate the combo options
                 String itemId = "ci" + id + "." + count;
@@ -135,45 +129,36 @@ public class CmsComboWidget extends A_CmsWidget {
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
                     // create help text mousevent attributes
                     helpTexts.put(itemId, helpText);
-                    result.append(" onmouseover=\"show").append(jsMethodSuffix).append("('");
-                    result.append(itemId);
-                    result.append("');\" onmouseout=\"hide").append(jsMethodSuffix).append("('");
-                    result.append(itemId);
-                    result.append("');\"");
+                    result.append(getJsHelpMouseHandler(widgetDialog, itemId));
                 }
                 result.append(">");
                 result.append(val);
                 result.append("</a>\n");
                 count++;
             }
-            
+
             // close combo div
             result.append("</div>\n");
-            
+
             // create help texts for the values
             Iterator i = helpTexts.keySet().iterator();
             while (i.hasNext()) {
                 String key = (String)i.next();
-                result.append("<div class=\"help\" name=\"help");
+                result.append("<div class=\"help\" id=\"help");
                 result.append(key);
-                result.append("\" id=\"help");
-                result.append(key);
-                result.append("\" onmouseout=\"hide").append(jsMethodSuffix).append("('");
-                result.append(key);
-                result.append("');\" onmouseover=\"show").append(jsMethodSuffix).append("('");
-                result.append(key);
-                result.append("');\">");
+                result.append("\"");
+                result.append(getJsHelpMouseHandler(widgetDialog, key));
+                result.append(">");
                 result.append(helpTexts.get(key));
                 result.append("</div>\n");
             }
-            
         }
-        
+
         // return the icon help text from super class
         result.append(super.getDialogHtmlEnd(cms, widgetDialog, param));
         return result.toString();
     }
-    
+
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
@@ -183,7 +168,7 @@ public class CmsComboWidget extends A_CmsWidget {
         result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/combobox.js"));
         return result.toString();
     }
-    
+
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
@@ -200,7 +185,7 @@ public class CmsComboWidget extends A_CmsWidget {
         String id = param.getId();
         StringBuffer result = new StringBuffer(16);
         result.append("<td class=\"xmlTd\">");
-        
+
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
         // medium text input field
         result.append("<input type=\"text\" class=\"xmlInputMedium");

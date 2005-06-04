@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/05/29 11:44:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/04 08:11:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * Handles the login of Users to the OpenCms workplace.<p> 
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0
  */
@@ -406,7 +406,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("<div style=\"text-align: center; padding-top: 50px;\">");
         html.append("<img src=\"");
         html.append(CmsWorkplace.getResourceUri("commons/login_logo.png"));
-        html.append("\">");
+        html.append("\" alt=\"OpenCms Logo\">");
         html.append("</div>\n");
 
         html.append("<table class=\"logindialog\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n");
@@ -419,18 +419,19 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_HEADLINE_ALREADY_IN_0));
         }
 
-        html.append("</div>\n<div class=\"dialogcontent\">");
-
-        html.append("<table border=\"0\">\n");
-
+        html.append("</div>\n");
+        
         if (m_action == ACTION_DISPLAY) {
             // start form
-            html.append("<form action=\"");
+            html.append("<form style=\"margin: 0px; padding: 0px;\" action=\"");
             html.append(getFormLink());
             html.append("\"");
             appendId(html, PARAM_FORM);
             html.append("method=\"POST\">\n");
         }
+        
+        html.append("<div class=\"dialogcontent\">\n");               
+        html.append("<table border=\"0\">\n");
 
         html.append("<tr>\n");
         html.append("<td></td>\n<td colspan=\"2\" style=\"white-space: nowrap;\">\n");
@@ -449,10 +450,10 @@ public class CmsLogin extends CmsJspLoginBean {
 
         html.append("<tr>\n");
 
-        html.append("<td width=\"60\" rowspan=\"3\" align=\"center\" valign=\"top\">");
+        html.append("<td style=\"width: 60px; text-align: center; vertical-align: top\" rowspan=\"3\">");
         html.append("<img src=\"");
         html.append(CmsWorkplace.getResourceUri("commons/login.png"));
-        html.append("\" height=\"48\" width=\"48\">");
+        html.append("\" height=\"48\" width=\"48\" alt=\"\">");
         html.append("</td>\n");
 
         html.append("<td style=\"white-space: nowrap;\"><b>");
@@ -522,14 +523,16 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append("</tr>\n");
         }
 
+
+        html.append("</table>\n");
+        html.append("</div>");
+        
         if (m_action == ACTION_DISPLAY) {
             // end form
             html.append("</form>\n");
         }
 
-        html.append("</table>\n");
-
-        html.append("</div></td></tr></table>\n");
+        html.append("</td></tr></table>\n");
         html.append("</td></tr></table>\n");
 
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");

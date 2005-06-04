@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/general.js,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/04 08:11:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -151,7 +151,7 @@ function setActiveItemByName(name) {
  * The obj_id argument should be the id of a div tag,
  * which contains the help text.
  */
-function showMenuHelp(obj_id) {
+function sMH(obj_id) {
    if (!isFramed() && !parent.parent.admin_content) {
       showHelp(obj_id);
    } else {
@@ -172,7 +172,7 @@ function showMenuHelp(obj_id) {
  * The obj_id argument should be the id of a div tag,
  * which contains the help text.
  */
-function hideMenuHelp(obj_id) {
+function hMH(obj_id) {
    if (!isFramed() && !parent.parent.admin_content) {
       hideHelp(obj_id);
    } else {

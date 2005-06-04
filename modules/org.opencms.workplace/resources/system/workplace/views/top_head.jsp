@@ -16,7 +16,7 @@
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
 <link rel="stylesheet" type="text/css" href="<%= wp.getStyleUri(wp.getJsp(),"workplace.css")%>">
-
+<title>OpenCms Workplace Head Frame</title>
 <script type="text/javascript">
     var pfad="<%= wp.getResourceUri() %>";
     var encoding="<%= wp.getEncoding() %>";
@@ -50,14 +50,17 @@
 <%= wp.buttonBarStartTab(0, 0) %>
 <%= wp.buttonBarLabel("label.project") %>
 
-<form name="wpProjectSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
-<td><%=
+<td>
+<form style="margin: 0; padding: 0;" name="wpProjectSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
+<div>
+<%=
 	
 	wp.getProjectSelect("name=\"wpProject\" onchange=\"document.forms.wpProjectSelect.submit()\"", "style=\"width:150px\"")
         
-%></td>
-<input type="hidden" id="<%= wp.PARAM_WP_FRAME %>" name="<%= wp.PARAM_WP_FRAME %>" value="head">
-</form>
+%>
+<input type="hidden" name="<%= wp.PARAM_WP_FRAME %>" value="head">
+</div>
+</form></td>
 
 <% 
 if (wp.isPublishEnabled()) {
@@ -71,27 +74,33 @@ if (wp.showSiteSelector()) {
 %><%= wp.buttonBarSeparator(5, 0) %>          
 <%= wp.buttonBarLabel("label.site") %>
 
-<form name="wpSiteSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
-<td><%= 
+<td>
+<form style="margin: 0; padding: 0;" name="wpSiteSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
+<div>
+<%= 
 
 	wp.getSiteSelect("name=\"wpSite\" style=\"width:150px\" onchange=\"document.forms.wpSiteSelect.submit()\"")
         
-%></td>
-<input type="hidden" id="<%= wp.PARAM_WP_FRAME %>" name="<%= wp.PARAM_WP_FRAME %>" value="head">
-</form>
+%>
+<input type="hidden" name="<%= wp.PARAM_WP_FRAME %>" value="head">
+</div>
+</form></td>
 <% } %>
 
 <%= wp.buttonBarSeparator(5, 0) %>          
 <%= wp.buttonBarLabel("label.view") %>
 
-<form name="wpViewSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
-<td><%= 
+<td>
+<form style="margin: 0; padding: 0;" name="wpViewSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
+<div>
+<%= 
 
 	wp.getViewSelect("name=\"wpView\" style=\"width:150px\" onchange=\"document.forms.wpViewSelect.submit()\"")
         
-%></td>
-<input type="hidden" id="<%= wp.PARAM_WP_FRAME %>" name="<%= wp.PARAM_WP_FRAME %>" value="head">
-</form>
+%>
+<input type="hidden" name="<%= wp.PARAM_WP_FRAME %>" value="head">
+</div>
+</form></td>
 
 <%= wp.buttonBarSeparator(5, 0) %>        
 <%= wp.button("javascript:doReload()", null, "reload.png", "button.reload", buttonStyle) %>
@@ -106,7 +115,7 @@ if (wp.isHelpEnabled()) {
 }        
 %>
        
-<td width="100%">&nbsp;</td>
+<td style="width: 100%">&nbsp;</td>
 <%= wp.buttonBarSeparator(5, 0) %>  
 <%= wp.button("../../login/index.html?logout=true", "_top", "logout", "button.exit", buttonStyle) %>
 

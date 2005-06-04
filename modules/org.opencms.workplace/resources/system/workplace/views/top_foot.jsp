@@ -11,15 +11,15 @@
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
 <link rel="stylesheet" type="text/css" href="<%= wp.getStyleUri(wp.getJsp(),"workplace.css")%>">
-
+<title>OpenCms Workplace Foot Frame</title>
 <script type="text/javascript"> 
 function doReloadFoot() {
 	document.location.href="<%= cms.link("top_foot.jsp?wpFrame=foot") %>";
 }
 </script>
 
-<%--
---%><%= wp.getBroadcastMessage() %>
+<%= wp.getBroadcastMessage() %>
+
 </head>
 
 <body class="buttons-foot" unselectable="on" onload="setTimeout('doReloadFoot()', 300000);">

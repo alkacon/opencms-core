@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/04 08:11:29 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -348,6 +348,7 @@ public class CmsToolDialog extends CmsWorkplace {
             myPars = (String)data.get("text");
             if (segment == HTML_START) {
                 StringBuffer html = new StringBuffer(512);
+                html.append("</head>\n");
                 html.append("<body onLoad=");
                 html.append(onLoad);
                 html.append(" onUnload=");
@@ -391,44 +392,46 @@ public class CmsToolDialog extends CmsWorkplace {
         StringBuffer html = new StringBuffer(512);
         html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
         html.append("<html>\n");
-        html.append("\t<head>\n");
-        if (title != null) {
-            html.append("\t\t<title>");
-            html.append(title);
-            html.append("</title>\n");
-        }
-        html.append("\t\t<meta http-equiv='Content-Type' content='text/html; charset=");
+        html.append("<head>\n");
+        html.append("<meta http-equiv='Content-Type' content='text/html; charset=");
         html.append(getEncoding());
         html.append("' >\n");
-        html.append("\t\t<link rel='stylesheet' type='text/css' href='");
+        if (title != null) {
+            html.append("<title>");
+            html.append(title);
+            html.append("</title>\n");
+        } else {
+            // the title tag is required for valid HTML
+            html.append("<title></title>\n");
+        }
+        html.append("<link rel='stylesheet' type='text/css' href='");
         html.append(getStyleUri(getJsp()));
         html.append("new_admin.css'>\n");
-        html.append("\t\t<script language='javascript' type='text/javascript' src='");
+        html.append("<script type='text/javascript' src='");
         html.append(getSkinUri());
         html.append("admin/javascript/general.js'></script>\n");
-        html.append("\t\t<script language='javascript' type='text/javascript' src='");
+        html.append("<script type='text/javascript' src='");
         html.append(getResourceUri());
-        html.append("editors/xmlcontent/help.js'></script>\n");
-        html.append("\t</head>\n");
-        html.append("\t<script language='javascript' type='text/javascript'><!--\n");
-        html.append("\t\tfunction bodyLoad() {\n");
-        html.append("\t\t\tsetContext(\"");
+        html.append("editors/xmlcontent/help.js'></script>\n\n");
+        html.append("<script type='text/javascript'>\n");
+        html.append("\tfunction bodyLoad() {\n");
+        html.append("\t\tsetContext(\"");
         html.append(CmsStringUtil.escapeJavaScript(resolveMacros(getAdminTool().getHandler().getHelpText())));
         html.append("\");\n");
-        html.append("\t\t\tsetActiveItemByName(\"");
+        html.append("\t\tsetActiveItemByName(\"");
         html.append(getCurrentToolPath());
         html.append("\");\n");
-        html.append("\t\t\tloadingOff();\n");
-        html.append("\t\t\ttry {\n");
-        html.append("\t\t\t\tdocument.getElementById('loaderContainerH').height = document.getElementById('screenH').offsetHeight;\n");
-        html.append("\t\t\t} catch(e) {\n");
-        html.append("\t\t\t\t// ignore\n");
-        html.append("\t\t\t}\n");
+        html.append("\t\tloadingOff();\n");
+        html.append("\t\ttry {\n");
+        html.append("\t\t\tdocument.getElementById('loaderContainerH').height = document.getElementById('screenH').offsetHeight;\n");
+        html.append("\t\t} catch(e) {\n");
+        html.append("\t\t\t// ignore\n");
         html.append("\t\t}\n");
-        html.append("\t\tfunction bodyUnload() {\n");
-        html.append("\t\tloadingOn();\n");
-        html.append("\t\t}\n");
-        html.append("\t// --></script>\n");
+        html.append("\t}\n");
+        html.append("\tfunction bodyUnload() {\n");
+        html.append("\tloadingOn();\n");
+        html.append("\t}\n");
+        html.append("</script>\n");
         return html.toString();
     }
 
