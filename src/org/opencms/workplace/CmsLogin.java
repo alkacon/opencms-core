@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/06/04 08:11:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace;
 
+import org.opencms.db.CmsLoginMessage;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -45,6 +46,7 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,7 +60,7 @@ import org.apache.commons.logging.Log;
  * Handles the login of Users to the OpenCms workplace.<p> 
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0
  */
@@ -235,7 +237,16 @@ public class CmsLogin extends CmsJspLoginBean {
                     } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_5 == getLoginException().getMessageContainer().getKey()) {
                         // the user account is temporarily disabled because of too many login failures
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
-                    } else {
+                    } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == getLoginException().getMessageContainer().getKey()) {
+                        // all logins have been diasabled be the Administration
+                        CmsLoginMessage loginMessage = OpenCms.getLoginManager().getLoginMessage();
+                        if (loginMessage != null) {
+                            m_message = Messages.get().container(
+                                Messages.GUI_LOGIN_FAILED_WITH_MESSAGE_1,
+                                loginMessage.getMessage());
+                        }
+                    }
+                    if (m_message == null) {
                         // any other error - display default message
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_0);
                     }
@@ -305,6 +316,26 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("<script type=\"text/javascript\">\n");
 
         html.append("function doOnload() {\n");
+
+        // display login message if required
+        CmsLoginMessage loginMessage = OpenCms.getLoginManager().getLoginMessage();
+        if ((loginMessage != null) && (loginMessage.isActive())) {
+            String message;
+            if (loginMessage.isLoginForbidden()) {
+                // login forbidden for normal users, current user must be Administrator
+                message = Messages.get().container(
+                    Messages.GUI_LOGIN_SUCCESS_WITH_MESSAGE_2,
+                    loginMessage.getMessage(),
+                    new Date(loginMessage.getTimeEnd())).key(m_locale);
+            } else {
+                // just display the message
+                message = loginMessage.getMessage();
+            }
+            html.append("\talert(\"");
+            html.append(CmsStringUtil.escapeJavaScript(message));
+            html.append("\");\n");
+        }
+
         html.append("\tvar openUri = \"");
         html.append(link(requestedResource));
         html.append("\";\n");
@@ -420,7 +451,7 @@ public class CmsLogin extends CmsJspLoginBean {
         }
 
         html.append("</div>\n");
-        
+
         if (m_action == ACTION_DISPLAY) {
             // start form
             html.append("<form style=\"margin: 0px; padding: 0px;\" action=\"");
@@ -429,8 +460,8 @@ public class CmsLogin extends CmsJspLoginBean {
             appendId(html, PARAM_FORM);
             html.append("method=\"POST\">\n");
         }
-        
-        html.append("<div class=\"dialogcontent\">\n");               
+
+        html.append("<div class=\"dialogcontent\">\n");
         html.append("<table border=\"0\">\n");
 
         html.append("<tr>\n");
@@ -523,10 +554,9 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append("</tr>\n");
         }
 
-
         html.append("</table>\n");
         html.append("</div>");
-        
+
         if (m_action == ACTION_DISPLAY) {
             // end form
             html.append("</form>\n");

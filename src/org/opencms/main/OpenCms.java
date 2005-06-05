@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2005/04/26 11:47:30 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.db.CmsDefaultUsers;
+import org.opencms.db.CmsLoginManager;
 import org.opencms.db.CmsSqlManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -67,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  */
 public final class OpenCms {
 
@@ -225,6 +226,16 @@ public final class OpenCms {
     public static Log getLog(Object obj) {
 
         return CmsLog.getLog(obj);
+    }
+
+    /**
+     * Returns the login manager used to check if a login is possible.<p>
+     * 
+     * @return the login manager
+     */
+    public static CmsLoginManager getLoginManager() {
+
+        return OpenCmsCore.getInstance().getLoginManager();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/01 14:37:21 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -2317,30 +2317,44 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Checks if the user of the current database context 
-     * is a member of at last one of the roles in the given role set.<p>
+     * Checks if the user of the current database context is a member of the given role.<p>
      *  
      * @param dbc the current OpenCms users database context
-     * @param roles the role to check
+     * @param role the role to check
      * 
      * @return <code>true</code> if the user of the current database context is at a member of at last 
      *      one of the roles in the given role set
      */
-    public boolean hasRole(CmsDbContext dbc, CmsRole roles) {
+    public boolean hasRole(CmsDbContext dbc, CmsRole role) {
+
+        return hasRole(dbc, dbc.currentUser(), role);
+    }
+    
+    /**
+     * Checks if the given user is a member of the given role.<p>
+     *  
+     * @param dbc the current OpenCms users database context
+     * @param user the user to check the role for
+     * @param role the role to check
+     * 
+     * @return <code>true</code> if the user of the current database context is at a member of at last 
+     *      one of the roles in the given role set
+     */
+    public boolean hasRole(CmsDbContext dbc, CmsUser user, CmsRole role) {
 
         // read all groups of the current user
         List groups;
         try {
             groups = m_driverManager.getGroupsOfUser(
                 dbc,
-                dbc.currentUser().getName(),
+                user.getName(),
                 dbc.getRequestContext().getRemoteAddress());
         } catch (CmsException e) {
             // any exception: return false
             return false;
         }
 
-        return roles.hasRole(groups);
+        return role.hasRole(groups);
     }
 
     /**
@@ -2348,17 +2362,17 @@ public final class CmsSecurityManager {
      * is a member of at last one of the roles in the given role set.<p>
      *  
      * @param context the current request context
-     * @param roles the role to check
+     * @param role the role to check
      * 
      * @return <code>true</code> if the user of given request context is at a member of at last 
      *      one of the roles in the given role set
      */
-    public boolean hasRole(CmsRequestContext context, CmsRole roles) {
+    public boolean hasRole(CmsRequestContext context, CmsRole role) {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         boolean result;
         try {
-            result = hasRole(dbc, roles);
+            result = hasRole(dbc, role);
         } finally {
             dbc.clear();
         }

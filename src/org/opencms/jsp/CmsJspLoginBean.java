@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2005/05/29 11:44:46 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.db.CmsLoginMessage;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
@@ -40,6 +41,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAuthentificationException;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +61,7 @@ import org.apache.commons.logging.Log;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3
  */
@@ -252,6 +254,22 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                         getRequestContext().addSiteRoot(getRequestContext().getUri()),
                         getRequestContext().getRemoteAddress()));
 
+                    
+                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == m_loginException.getMessageContainer().getKey()) {
+
+                    // logins have been disabled by the administration
+                    long endTime = CmsLoginMessage.DEFAULT_TIME_END;
+                    if (OpenCms.getLoginManager().getLoginMessage() != null) {
+                        endTime = OpenCms.getLoginManager().getLoginMessage().getTimeEnd();
+                    }
+                    LOG.info(Messages.get().key(
+                        Messages.LOG_LOGIN_FAILED_WITH_MESSAGE_4,
+                        new Object[] {
+                            userName,
+                            getRequestContext().addSiteRoot(getRequestContext().getUri()),
+                            getRequestContext().getRemoteAddress(),
+                            new Date(endTime)}));
+                    
                 } else {
 
                     // the user exists, so the password must have been wrong

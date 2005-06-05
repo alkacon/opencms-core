@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -187,7 +187,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 // ACTION: save edited values
                 setParamAction(DIALOG_OK);
                 actionCommit();
-                if (getCommitErrors().size() == 0) {
+                if (closeDialogOnCommit()) {
                     actionCloseDialog();
                     break;
                 }
@@ -199,6 +199,19 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 JspWriter out = getJsp().getJspContext().getOut();
                 out.print(defaultActionHtml());
         }
+    }
+    
+    /**
+     * Returns <code>true</code> if the dialog should be closed after the values have been committed.<p>
+     * 
+     * The default implementation returns <code>true</code> in case there are no 
+     * commit errors.<p>
+     * 
+     * @return <code>true</code> if the dialog should be closed after the values have been committed
+     */
+    protected boolean closeDialogOnCommit() {
+        
+        return getCommitErrors().size() == 0;
     }
 
     /**
@@ -1266,7 +1279,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      */
     protected void initMessages() {
 
-        addMessages(Messages.get().getBundleName());
+        addMessages(org.opencms.workplace.Messages.get().getBundleName());
         addMessages(org.opencms.workplace.tools.Messages.get().getBundleName());
     }
 

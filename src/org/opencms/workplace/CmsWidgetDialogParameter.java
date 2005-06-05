@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialogParameter.java,v $
- * Date   : $Date: 2005/05/16 17:10:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.9.1
  */
 public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
@@ -65,7 +65,7 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
     public static final String DEFAULT_DIALOG_PAGE = "default";
 
     /** The maximum number of occurences of a widget dialog element in a list of elements. */
-    public static final int MAX_OCCURENCES = 50;
+    public static final int MAX_OCCURENCES = 100;
 
     /** The (optional) base collection for read / writing collection based parameters. */
     protected Object m_baseCollection;

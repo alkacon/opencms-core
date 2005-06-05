@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2005/06/02 10:02:59 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -149,6 +149,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LOGIN_FAILED_NO_USER_3 = "LOG_LOGIN_FAILED_NO_USER_3";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LOGIN_FAILED_WITH_MESSAGE_4 = "LOG_LOGIN_FAILED_WITH_MESSAGE_4";
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LOGIN_FAILED_TEMP_DISABLED_5 = "LOG_LOGIN_FAILED_TEMP_DISABLED_5";
 

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Attic/CmsInvalidLoginStorage.java,v $
- * Date   : $Date: 2005/05/29 11:44:46 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsLoginManager.java,v $
+ * Date   : $Date: 2005/06/05 14:06:36 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,25 +29,35 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.security;
+package org.opencms.db;
+
+import org.opencms.file.CmsObject;
+import org.opencms.security.CmsAuthentificationException;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
+import org.opencms.security.Messages;
 
 import java.util.Date;
 import java.util.Hashtable;
 
 /**
+ * Provides functions used to check the validity of a user login.<p>
+ * 
  * Stores invalid login attempts and disables a user account temporarily in case 
  * the configured threshold of invalid logins is reached.<p>
  * 
- * The storage operates on a combination of user name, login remote IP address and 
+ * The invalid login attempt storage operates on a combination of user name, login remote IP address and 
  * user type. This means that a user can be disabled for one remote IP, but still be enabled for
  * another rempte IP.<p>
+ * 
+ * Also allows to temporarily disallow logins (for example in case of maintainance work on the system).<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @version $Revision: 1.1 $
  * 
  * @since 6.0
  */
-public class CmsInvalidLoginStorage {
+public class CmsLoginManager {
 
     /**
      * Contains the data stored for each user in the storage for invalid login attempts.<p>
@@ -136,13 +146,16 @@ public class CmsInvalidLoginStorage {
     /** The storage for the bad login attempts. */
     protected Hashtable m_storage;
 
+    /** The login message, setting this may also disable logins for non-Admin users. */
+    private CmsLoginMessage m_loginMessage;
+
     /**
      * Creates a new storage for invalid logins.<p>
      * 
      * @param disableMinutes the minutes to disable an account if the threshold is reached
      * @param attemptThreshold the number of bad login attempts allowed before an account is temporarily disabled
      */
-    public CmsInvalidLoginStorage(int disableMinutes, int attemptThreshold) {
+    public CmsLoginManager(int disableMinutes, int attemptThreshold) {
 
         m_attemptThreshold = attemptThreshold;
         if (m_attemptThreshold >= 0) {
@@ -171,35 +184,6 @@ public class CmsInvalidLoginStorage {
         result.append('_');
         result.append(remoteAddress);
         return result.toString();
-    }
-
-    /**
-     * Adds an invalid attempt to login for the given user / IP to the storage.<p>
-     * 
-     * In case the configured threshold is reached, the user is disabled for the configured time.<p>
-     * 
-     * @param userName the name of the user
-     * @param type the type of the user
-     * @param remoteAddress the remore address (IP) from which the login attempt was made
-     */
-    public void addInvalidLogin(String userName, int type, String remoteAddress) {
-
-        if (m_attemptThreshold < 0) {
-            // invalid login storage is disabled
-            return;
-        }
-
-        String key = createStorageKey(userName, type, remoteAddress);
-        // look up the user in the storage
-        CmsUserData userData = (CmsUserData)m_storage.get(key);
-        if (userData != null) {
-            // user data already contained in storage
-            userData.increaseInvalidLoginCount();
-        } else {
-            // create an new data object for this user
-            userData = new CmsUserData();
-            m_storage.put(key, userData);
-        }
     }
 
     /**
@@ -237,14 +221,105 @@ public class CmsInvalidLoginStorage {
     }
 
     /**
-     * Adds a valid attempt to login for the given user / IP to the storage, in this case
-     * all previous invalid login attempts are reset.<p>
+     * Checks if a login is currently allowed.<p>
+     * 
+     * In case no logins are allowed, an Exception is thrown.<p>
+     * 
+     * @throws CmsAuthentificationException in case no logins are allowed
+     */
+    public void checkLoginAllowed() throws CmsAuthentificationException {
+
+        if ((m_loginMessage != null) && (m_loginMessage.isLoginCurrentlyForbidden())) {
+            // login message has been set and is active                      
+            throw new CmsAuthentificationException(Messages.get().container(
+                Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1,
+                m_loginMessage.getMessage()));
+        }
+    }
+
+    /**
+     * Returns the current login message that is displayed if a user logs in.<p>
+     * 
+     * if <code>null</code> is returned, no login message has been currently set.<p>
+     * 
+     * @return  the current login message that is displayed if a user logs in
+     */
+    public CmsLoginMessage getLoginMessage() {
+
+        return m_loginMessage;
+    }
+
+    /**
+     * Removes the current login message.<p>
+     * 
+     * This operation requires that the current user has role permissions of <code>{@link CmsRole#ADMINISTRATOR}</code>.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * 
+     * @throws CmsRoleViolationException in case the current user does not have the required role permissions
+     */
+    public void removeLoginMessage(CmsObject cms) throws CmsRoleViolationException {
+
+        cms.checkRole(CmsRole.ADMINISTRATOR);
+        m_loginMessage = null;
+    }
+
+    /**
+     * Sets the login message to display if a user logs in.<p>
+     * 
+     * This operation requires that the current user has role permissions of <code>{@link CmsRole#ADMINISTRATOR}</code>.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param message the message to set
+     * 
+     * @throws CmsRoleViolationException in case the current user does not have the required role permissions
+     */
+    public void setLoginMessage(CmsObject cms, CmsLoginMessage message) throws CmsRoleViolationException {
+
+        cms.checkRole(CmsRole.ADMINISTRATOR);
+        m_loginMessage = message;
+        if (m_loginMessage != null) {
+            m_loginMessage.setFrozen();
+        }
+    }
+
+    /**
+     * Adds an invalid attempt to login for the given user / IP to the storage.<p>
+     * 
+     * In case the configured threshold is reached, the user is disabled for the configured time.<p>
      * 
      * @param userName the name of the user
      * @param type the type of the user
      * @param remoteAddress the remore address (IP) from which the login attempt was made
      */
-    public void removeInvalidLogins(String userName, int type, String remoteAddress) {
+    protected void addInvalidLogin(String userName, int type, String remoteAddress) {
+
+        if (m_attemptThreshold < 0) {
+            // invalid login storage is disabled
+            return;
+        }
+
+        String key = createStorageKey(userName, type, remoteAddress);
+        // look up the user in the storage
+        CmsUserData userData = (CmsUserData)m_storage.get(key);
+        if (userData != null) {
+            // user data already contained in storage
+            userData.increaseInvalidLoginCount();
+        } else {
+            // create an new data object for this user
+            userData = new CmsUserData();
+            m_storage.put(key, userData);
+        }
+    }
+
+    /**
+     * Removes all invalid attempts to login for the given user / IP.<p>
+     * 
+     * @param userName the name of the user
+     * @param type the type of the user
+     * @param remoteAddress the remore address (IP) from which the login attempt was made
+     */
+    protected void removeInvalidLogins(String userName, int type, String remoteAddress) {
 
         if (m_attemptThreshold < 0) {
             // invalid login storage is disabled

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/06/02 08:45:45 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.9.1
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCEPT_TASK_1 = "ERR_ACCEPT_TASK_1";
 
@@ -53,7 +53,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_GROUP_FAILED_2 = "ERR_ADD_USER_GROUP_FAILED_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_WEB_1 = "ERR_ADD_USER_WEB_1";
 
@@ -95,16 +95,16 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHANGE_USER_TYPE_WITH_NAME_1 = "ERR_CHANGE_USER_TYPE_WITH_NAME_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CLOSE_BACKUP_DRIVER_0 = "ERR_CLOSE_BACKUP_DRIVER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CLOSE_PROJECT_DRIVER_0 = "ERR_CLOSE_PROJECT_DRIVER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CLOSE_USER_DRIVER_0 = "ERR_CLOSE_USER_DRIVER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CLOSE_VFS_DRIVER_0 = "ERR_CLOSE_VFS_DRIVER_0";
 
@@ -209,7 +209,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_CHILD_GROUPS_TRANSITIVE_1 = "ERR_GET_CHILD_GROUPS_TRANSITIVE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_CONNECTION_1 = "ERR_GET_CONNECTION_1";
 
@@ -290,6 +290,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCK_RESOURCE_2 = "ERR_LOCK_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOGIN_MESSAGE_BAD_MESSAGE_0 = "ERR_LOGIN_MESSAGE_BAD_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOGIN_MESSAGE_BAD_TIME_1 = "ERR_LOGIN_MESSAGE_BAD_TIME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOGIN_MESSAGE_BAD_END_TIME_0 = "ERR_LOGIN_MESSAGE_BAD_END_TIME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOGIN_MESSAGE_FROZEN_0 = "ERR_LOGIN_MESSAGE_FROZEN_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_TO_LOST_AND_FOUND_1 = "ERR_MOVE_TO_LOST_AND_FOUND_1";
@@ -521,7 +533,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNLOCK_RESOURCE_2 = "ERR_UNLOCK_RESOURCE_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNSUPPORTED_OPERATION_2 = "ERR_UNSUPPORTED_OPERATION_2";
 
@@ -578,7 +590,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_WEB_USER_CONSTRAINT_0 = "ERR_WRITE_WEB_USER_CONSTRAINT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0 = "GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0";
 
@@ -719,7 +731,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_EXPORT_POINTS_WRITE_BEGIN_0 = "RPT_EXPORT_POINTS_WRITE_BEGIN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_EXPORT_POINTS_WRITE_END_0 = "RPT_EXPORT_POINTS_WRITE_END_0";
 

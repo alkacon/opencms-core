@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCalendarWidget.java,v $
- * Date   : $Date: 2005/05/30 15:47:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.types.CmsXmlDateTimeValue;
 
 import java.text.ParseException;
 import java.util.Map;
@@ -46,7 +45,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsCalendarWidget extends A_CmsWidget {
@@ -153,8 +152,12 @@ public class CmsCalendarWidget extends A_CmsWidget {
 
         String[] values = (String[])formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
-            CmsXmlDateTimeValue castValue = (CmsXmlDateTimeValue)param;
-            long dateTime = castValue.getDateTimeValue();
+            long dateTime;
+            try {
+                dateTime = Long.valueOf(param.getStringValue(cms)).longValue();
+            } catch (NumberFormatException e) {
+                dateTime = 0;
+            }
             String dateTimeValue = values[0].trim();
             if (CmsStringUtil.isNotEmpty(dateTimeValue)) {
                 try {

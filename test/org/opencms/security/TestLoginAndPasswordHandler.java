@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestLoginAndPasswordHandler.java,v $
- * Date   : $Date: 2005/05/29 09:28:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.security;
 
+import org.opencms.db.CmsLoginMessage;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
@@ -46,7 +47,7 @@ import junit.framework.TestSuite;
  * Tests login and password related functions.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  */
@@ -74,6 +75,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         suite.setName(TestLoginAndPasswordHandler.class.getName());
 
         suite.addTest(new TestLoginAndPasswordHandler("testLoginUser"));
+        suite.addTest(new TestLoginAndPasswordHandler("testLoginMessage"));
         suite.addTest(new TestLoginAndPasswordHandler("testPasswordValidation"));
         suite.addTest(new TestLoginAndPasswordHandler("testSetResetPassword"));
         
@@ -90,6 +92,84 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         
         return wrapper;
     } 
+    
+    /**
+     * Tests the login message functions.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testLoginMessage() throws Exception {
+        
+        echo("Testing login messages");    
+        
+        // this will be initialized as "Admin"
+        CmsObject cms = getCmsObject();
+        
+        String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
+        String test1User = "test1";        
+        
+        // initial the login message must be null
+        assertNull(OpenCms.getLoginManager().getLoginMessage());
+        
+        String message = "This is the test login message";
+        
+        // check a "blocking" login message
+        CmsLoginMessage loginMessage = new CmsLoginMessage(message, true);        
+        OpenCms.getLoginManager().setLoginMessage(cms, loginMessage);
+        
+        CmsException error = null;
+        try {
+            cms.loginUser(test1User, "test1");
+        } catch (CmsAuthentificationException e) {
+            error = e;
+        }        
+        assertNotNull(error);
+        assertSame(Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1, error.getMessageContainer().getKey());
+        assertTrue(error.getMessage().indexOf(message) > 0);
+        
+        cms.loginUser(adminUser, "admin");
+        
+        // remove message and try again
+        OpenCms.getLoginManager().removeLoginMessage(cms);
+        cms.loginUser(test1User, "test1");
+
+        cms.loginUser(adminUser, "admin");
+        
+        // check a "non blocking" login message
+        loginMessage = new CmsLoginMessage(message, false);        
+        OpenCms.getLoginManager().setLoginMessage(cms, loginMessage);        
+        cms.loginUser(test1User, "test1");
+        
+        cms.loginUser(adminUser, "admin");
+
+        // check an expired login message
+        loginMessage = new CmsLoginMessage(0, System.currentTimeMillis(), message, true);        
+        OpenCms.getLoginManager().setLoginMessage(cms, loginMessage);        
+        cms.loginUser(test1User, "test1");        
+        
+        cms.loginUser(adminUser, "admin");
+        
+        // check a login message in the far future
+        loginMessage = new CmsLoginMessage(System.currentTimeMillis() + 100000, Long.MAX_VALUE, message, true);        
+        OpenCms.getLoginManager().setLoginMessage(cms, loginMessage);        
+        cms.loginUser(test1User, "test1");           
+        
+        cms.loginUser(adminUser, "admin");
+        loginMessage = new CmsLoginMessage(message, true);  
+        OpenCms.getLoginManager().setLoginMessage(cms, loginMessage); 
+        error = null;
+        try {
+            cms.loginUser(test1User, "test1");
+        } catch (CmsAuthentificationException e) {
+            error = e;
+        }        
+        assertNotNull(error);
+        assertSame(Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1, error.getMessageContainer().getKey());
+        assertTrue(error.getMessage().indexOf(message) > 0);
+        
+        cms.loginUser(adminUser, "admin");
+        OpenCms.getLoginManager().removeLoginMessage(cms);        
+    }
     
     /**
      * Tests logging in as a user (checking for different kind of exceptions).<p>

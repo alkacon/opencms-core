@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.519 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.520 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,6 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsAuthentificationException;
-import org.opencms.security.CmsInvalidLoginStorage;
 import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
@@ -110,7 +109,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.519 $
+ * @version $Revision: 1.520 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -284,9 +283,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /** The HTML link validator. */
     private CmsHtmlLinkValidator m_htmlLinkValidator;
-
-    /** The storage for invalid logins. */
-    private CmsInvalidLoginStorage m_invalidLoginStorage;
 
     /** The class used for cache key generation. */
     private I_CmsCacheKey m_keyGenerator;
@@ -3599,11 +3595,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // initialize the HTML link validator
         m_htmlLinkValidator = new CmsHtmlLinkValidator(this);
-        
-        // initialize the invalid login storage
-        int todo = 0;
-        // TODO: use values from configuration file
-        m_invalidLoginStorage = new CmsInvalidLoginStorage(15, 5);
     }
 
     /**
@@ -3872,7 +3863,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             if (userExists) {
                 if (dbc.currentUser().isGuestUser()) {
                     // add an invalid login attempt for this user to the storage
-                    m_invalidLoginStorage.addInvalidLogin(userName, userType, remoteAddress);                    
+                    OpenCms.getLoginManager().addInvalidLogin(userName, userType, remoteAddress);                    
                 }
                 throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                     org.opencms.security.Messages.ERR_LOGIN_FAILED_3,
@@ -3900,9 +3891,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if (dbc.currentUser().isGuestUser()) {
             // check if this account is temporarily disabled because of too many invalid login attempts
             // this will throw an exception if the test fails
-            m_invalidLoginStorage.checkInvalidLogins(userName, userType, remoteAddress);
+            OpenCms.getLoginManager().checkInvalidLogins(userName, userType, remoteAddress);
             // test successful, remove all previous invalid login attempts for this user from the storage
-            m_invalidLoginStorage.removeInvalidLogins(userName, userType, remoteAddress);
+            OpenCms.getLoginManager().removeInvalidLogins(userName, userType, remoteAddress);
+        }
+        
+        if (! m_securityManager.hasRole(dbc, newUser, CmsRole.ADMINISTRATOR)) {
+            // new user is not Administrator, check if login is currently allowed
+            OpenCms.getLoginManager().checkLoginAllowed();
         }
 
         // set the last login time to the current time

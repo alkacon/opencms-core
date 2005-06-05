@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/04 08:11:29 $
- * Version: $Revision: 1.122 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.123 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.122 $
+ * @version $Revision: 1.123 $
  * 
  * @since 5.1
  */
@@ -291,11 +291,14 @@ public abstract class CmsWorkplace {
     public static String getCalendarJavaDateFormat(String dateFormat) {
 
         dateFormat = CmsStringUtil.substitute(dateFormat, "%", ""); // remove all "%"
-        dateFormat = CmsStringUtil.substitute(dateFormat, "m", "{$month}");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "H", "{$hour}");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "m", "${month}");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "H", "${hour}");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "Y", "${4anno}");
         dateFormat = dateFormat.toLowerCase();
-        dateFormat = CmsStringUtil.substitute(dateFormat, "{$month}", "M");
-        dateFormat = CmsStringUtil.substitute(dateFormat, "{$hour}", "H");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "${month}", "M");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "${hour}", "H");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "y", "yy");
+        dateFormat = CmsStringUtil.substitute(dateFormat, "${4anno}", "yyyy");
         dateFormat = CmsStringUtil.substitute(dateFormat, "m", "mm"); // minutes with two digits
         dateFormat = dateFormat.replace('e', 'd'); // day of month
         dateFormat = dateFormat.replace('i', 'h'); // 12 hour format
@@ -747,7 +750,9 @@ public abstract class CmsWorkplace {
                 result.append("><img class=\"button\" src=\"");
                 result.append(imagePath);
                 result.append(image);
-                result.append("\" alt=\"\">");
+                result.append("\" alt=\"");
+                result.append(key(label));
+                result.append("\">");
                 result.append("</span>");
                 if (href != null) {
                     result.append("</a>");
@@ -1041,10 +1046,10 @@ public abstract class CmsWorkplace {
         result.append(inputFieldId);
         result.append("\",\n");
         result.append("\t\tifFormat       :    \"");
-        result.append(key("calendar.dateformat"));
+        result.append(key(Messages.GUI_CALENDAR_DATE_FORMAT_0));
         if (showTime) {
             result.append(" ");
-            result.append(key("calendar.timeformat"));
+            result.append(key(Messages.GUI_CALENDAR_TIME_FORMAT_0));
         }
         result.append("\",\n");
         result.append("\t\tbutton         :    \"");
@@ -1175,9 +1180,9 @@ public abstract class CmsWorkplace {
         long dateLong = 0;
 
         // substitute some chars because calendar syntax != DateFormat syntax
-        String dateFormat = key("calendar.dateformat");
+        String dateFormat = key(Messages.GUI_CALENDAR_DATE_FORMAT_0);
         if (useTime) {
-            dateFormat += " " + key("calendar.timeformat");
+            dateFormat += " " + key(Messages.GUI_CALENDAR_TIME_FORMAT_0);
         }
         dateFormat = getCalendarJavaDateFormat(dateFormat);
 
@@ -1200,9 +1205,9 @@ public abstract class CmsWorkplace {
         GregorianCalendar cal = new GregorianCalendar(zone, locale);
         cal.setTimeInMillis(timestamp);
         // format it nicely according to the localized pattern
-        DateFormat df = new SimpleDateFormat(getCalendarJavaDateFormat(key("calendar.dateformat")
+        DateFormat df = new SimpleDateFormat(getCalendarJavaDateFormat(key(Messages.GUI_CALENDAR_DATE_FORMAT_0)
             + " "
-            + key("calendar.timeformat")));
+            + key(Messages.GUI_CALENDAR_TIME_FORMAT_0)));
         return df.format(cal.getTime());
     }
 
@@ -1812,7 +1817,6 @@ public abstract class CmsWorkplace {
      */
     protected void initMessages() {
 
-        //m_messages = m_settings.getMessages();
         // manually add the initialized workplace messages for the current user
         m_bundles.add(m_settings.getMessages());
         addMessages(Messages.get().getBundleName());

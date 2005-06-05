@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/cache/Messages.java,v $
- * Date   : $Date: 2005/05/23 12:39:25 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/Messages.java,v $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.cache;
+package org.opencms.workplace.tools.workplace;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
@@ -43,10 +43,31 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_WORKPLACE_REINIT_0 = "ERR_WORKPLACE_REINIT_0";
+    public static final String GUI_WORKPLACE_BASIC_GROUP_0 = "GUI_WORKPLACE_BASIC_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_LOGINMESSAGE_HELP_0 = "GUI_WORKPLACE_LOGINMESSAGE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_LOGINMESSAGE_NAME_0 = "GUI_WORKPLACE_LOGINMESSAGE_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_REINIT_HELP_0 = "GUI_WORKPLACE_REINIT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_REINIT_NAME_0 = "GUI_WORKPLACE_REINIT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_TOOL_GROUP_0 = "GUI_WORKPLACE_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_TOOL_HELP_0 = "GUI_WORKPLACE_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_TOOL_NAME_0 = "GUI_WORKPLACE_TOOL_NAME_0";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workplace.tools.cache.messages";
+    private static final String BUNDLE_NAME = "org.opencms.workplace.tools.workplace.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

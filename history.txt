@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/06/02 15:24:22 $
- * Version: $Revision: 1.648 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.649 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,6 +26,8 @@ OpenCms 5.9.2 Corrin (aka 6.0 RC 2) - June 17, 2005
 * Fixed issue with duplicate types showing in "new" dialog after the Workplace was re-initialized
 * Fixed issue with renaming files a version with just a different case
 * Fixed issue in static export regarding caching of exported files with parameters
+! Added Workplace tool to display a message for all users that log in
+! Added Workplace tool to temporarily disable all logins (for system maintainance)
 
 OpenCms 5.9.1 Corrin (aka 6.0 RC 1) - May 25, 2005
 * Fixed issue with static export suffix on a JSP with parameters always being set to ".html"

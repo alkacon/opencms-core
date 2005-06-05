@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -420,7 +420,7 @@ public class CmsShell {
             // first initialize runlevel 1 
             m_opencms = OpenCmsCore.getInstance();
             // search for the WEB-INF folder
-            if (webInfPath == null || "".equals(webInfPath)) {
+            if (CmsStringUtil.isEmpty(webInfPath)) {
                 System.out.println("No OpenCms home folder given. Trying to guess...");
                 System.out.println();
                 webInfPath = m_opencms.searchWebInfFolder(System.getProperty("user.dir"));

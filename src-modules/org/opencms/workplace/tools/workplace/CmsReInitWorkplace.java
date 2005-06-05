@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/cache/Attic/CmsReInitWorkplace.java,v $
- * Date   : $Date: 2005/06/02 13:57:08 $
- * Version: $Revision: 1.9 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/CmsReInitWorkplace.java,v $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.cache;
+package org.opencms.workplace.tools.workplace;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for re-initialization of the OpenCms Workplace.<p> 
  *
  * @author  Michael Emmerich(m.emmerich@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.1.10
  */
@@ -93,7 +93,7 @@ public class CmsReInitWorkplace extends CmsDialog {
                     actionCloseDialog();
                 } catch (Throwable e) {
                     // create a new Exception with custom message
-                    includeErrorpage(this, e);  
+                    includeErrorpage(this, e);
                 }
                 break;
         }
@@ -116,7 +116,7 @@ public class CmsReInitWorkplace extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // add the title for the dialog 
-            setParamTitle(key("title.reinitworkplace"));
+            setParamTitle(key(Messages.GUI_WORKPLACE_REINIT_NAME_0));
         }
     }
 }

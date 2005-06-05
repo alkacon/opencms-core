@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/05/31 16:30:07 $
- * Version: $Revision: 1.190 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.191 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDefaultUsers;
+import org.opencms.db.CmsLoginManager;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsSqlManager;
 import org.opencms.file.CmsObject;
@@ -127,7 +128,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.190 $
+ * @version $Revision: 1.191 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -176,6 +177,9 @@ public final class OpenCmsCore {
 
     /** The lock manager used for the locking mechanism. */
     private CmsLockManager m_lockManager;
+
+    /** The login manager. */
+    private CmsLoginManager m_loginManager;
 
     /** The memory monitor for the collection of memory and runtime statistics. */
     private CmsMemoryMonitor m_memoryMonitor;
@@ -453,6 +457,16 @@ public final class OpenCmsCore {
     protected CmsLockManager getLockManager() {
 
         return m_lockManager;
+    }
+
+    /**
+     * Returns the login manager used to check the validity of a login.<p>
+     * 
+     * @return the login manager
+     */
+    protected CmsLoginManager getLoginManager() {
+
+        return m_loginManager;
     }
 
     /**
@@ -913,6 +927,11 @@ public final class OpenCmsCore {
 
         // get the password handler
         m_passwordHandler = systemConfiguration.getPasswordHandler();
+
+        // create the login manager
+        int todo = 0;
+        // TODO: read this values from the system configuration
+        m_loginManager = new CmsLoginManager(15, 5);
 
         // init the OpenCms security manager
         m_securityManager = CmsSecurityManager.newInstance(

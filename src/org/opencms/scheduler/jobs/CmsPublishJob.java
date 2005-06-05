@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishJob.java,v $
- * Date   : $Date: 2005/06/03 09:01:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,18 +41,17 @@ import java.util.Map;
 
 /**
  * Scheduled job for time based publishing.<p>
- * <p>
- * This class is called via the scheduled job backoffice to publish a project at a given time.
- * </p>
+ *
+ * This class is called via the scheduled job backoffice to publish a project at a given time.<p>
  * 
- * <p>
  * Per default, it publishes all new, edited and deleted resources in the project which are not locked.
- * To unlock all resources in the project before publishing, add the parameter "unlock=true" in the scheduled
- * job configuration.
- * </p>
+ * To unlock all resources in the project before publishing, add the parameter <code>unlock=true</code>
+ * in the scheduled job configuration.<p>
  * 
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @version $Revision: 1.3 $
  * 
- *  @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @since 6.0
  */
 public class CmsPublishJob implements I_CmsScheduledJob {
 
@@ -70,7 +69,7 @@ public class CmsPublishJob implements I_CmsScheduledJob {
 
         try {
             // check if the unlock parameter was given
-            if (unlock != null && unlock.equals("true")) {
+            if (Boolean.valueOf(unlock).booleanValue()) {
                 cms.unlockProject(project.getId());
             }
             // publish the project, the publish output will be put in the logfile
@@ -86,5 +85,4 @@ public class CmsPublishJob implements I_CmsScheduledJob {
 
         return finishMessage;
     }
-
 }

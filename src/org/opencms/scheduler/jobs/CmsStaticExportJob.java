@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportJob.java,v $
- * Date   : $Date: 2005/05/25 09:16:24 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsStaticExportJob.java,v $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,8 +28,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-package org.opencms.staticexport;
+
+package org.opencms.scheduler.jobs;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
@@ -37,6 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
+import org.opencms.staticexport.Messages;
 
 import java.io.IOException;
 import java.util.Map;
@@ -46,44 +47,40 @@ import javax.servlet.ServletException;
 /**
  * A schedulable OpenCms job to write a complete static export (e.g. nightly exports).<p>
  * 
- * To enable logging add the following line to <code>opencms.properties</code> in the logging
- * configuration section:
- * 
- * <pre>
- * log4j.logger.org.opencms.staticexport.CmsStaticExportJob=INFO
- * </pre>
+ * This job does not have any parameters.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
+ * 
+ * @since 6.0
  */
 public class CmsStaticExportJob implements I_CmsScheduledJob {
-    
+
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
     public String launch(CmsObject cms, Map parameters) throws Exception {
 
         I_CmsReport report = null;
-        
+
         try {
             report = new CmsLogReport(CmsStaticExportJob.class);
             OpenCms.getStaticExportManager().exportFullStaticRender(true, report);
         } catch (CmsException e) {
             report.println(e);
         } catch (IOException e) {
-            report.println(e);            
+            report.println(e);
         } catch (ServletException e) {
             report.println(e);
-        }  finally {
+        } finally {
             // append runtime statistics to the report
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_STAT_0));
+            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_STAT_0));
             report.println(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_STAT_DURATION_1, report.formatRuntime()));      
-            report.println(Messages.get().container(Messages.RPT_STATICEXPORT_END_0), I_CmsReport.C_FORMAT_HEADLINE);            
+                org.opencms.report.Messages.RPT_STAT_DURATION_1,
+                report.formatRuntime()));
+            report.println(Messages.get().container(Messages.RPT_STATICEXPORT_END_0), I_CmsReport.C_FORMAT_HEADLINE);
         }
-        
+
         return null;
     }
-
 }

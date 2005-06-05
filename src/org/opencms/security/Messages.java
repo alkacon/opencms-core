@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2005/05/31 11:17:05 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/05 14:06:36 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,6 +63,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_FAILED_TEMP_DISABLED_5 = "ERR_LOGIN_FAILED_TEMP_DISABLED_5";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOGIN_FAILED_WITH_MESSAGE_1 = "ERR_LOGIN_FAILED_WITH_MESSAGE_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NEWPWD_EMPTY_0 = "ERR_NEWPWD_EMPTY_0";
 
