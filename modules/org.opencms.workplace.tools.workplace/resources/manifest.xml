@@ -27,10 +27,9 @@
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/workplace/admin/workplace/"/>
+			<resource uri="/system/workplace/resources/tools/workplace/"/>
 		</resources>
-		<parameters>
-			<param name="additionalresources">/system/workplace/admin/workplace/</param>
-		</parameters>
+		<parameters/>
 	</module>
 	<files>
 		<file>
@@ -122,6 +121,10 @@
 				<property>
 					<name>Description</name>
 					<value><![CDATA[${key.GUI_WORKPLACE_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/workplace.png:tools/workplace/icons/small/workplace.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -216,6 +219,10 @@
 					<value><![CDATA[${key.GUI_WORKPLACE_REINIT_HELP_0}]]></value>
 				</property>
 				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/workplace_reload.png]]></value>
+				</property>
+				<property>
 					<name>NavText</name>
 					<value><![CDATA[${key.GUI_WORKPLACE_REINIT_NAME_0}]]></value>
 				</property>
@@ -224,6 +231,108 @@
 					<value><![CDATA[Re-Initialize Workplace]]></value>
 				</property>
 			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 13:39:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 13:39:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 06 Jun 2005 09:28:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Jun 2005 09:28:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/workplace/icons</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 06 Jun 2005 09:29:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Jun 2005 09:29:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/workplace/icons/big</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 06 Jun 2005 09:29:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Jun 2005 09:29:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/icons/big/workplace.png</source>
+			<destination>system/workplace/resources/tools/workplace/icons/big/workplace.png</destination>
+			<type>image</type>
+			<datelastmodified>Mon, 06 Jun 2005 09:29:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Jun 2005 09:29:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/icons/big/workplace_reload.png</source>
+			<destination>system/workplace/resources/tools/workplace/icons/big/workplace_reload.png</destination>
+			<type>image</type>
+			<datelastmodified>Mon, 06 Jun 2005 09:29:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Jun 2005 09:29:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/workplace/icons/small</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 06 Jun 2005 09:29:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Jun 2005 09:29:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/icons/small/workplace.png</source>
+			<destination>system/workplace/resources/tools/workplace/icons/small/workplace.png</destination>
+			<type>image</type>
+			<datelastmodified>Mon, 06 Jun 2005 09:30:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Jun 2005 09:30:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<accesscontrol/>
 		</file>
 	</files>
