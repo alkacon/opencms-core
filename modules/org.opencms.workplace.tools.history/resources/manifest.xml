@@ -109,7 +109,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/history/icons/big/history.gif:tools/history/icons/small/history.gif]]></value>
+					<value><![CDATA[tools/history/icons/big/history.png:tools/history/icons/small/history.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -153,7 +153,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/history/icons/big/history_clear.gif]]></value>
+					<value><![CDATA[tools/history/icons/big/history_clear.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -215,7 +215,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/history/icons/big/history_settings.gif]]></value>
+					<value><![CDATA[tools/history/icons/big/history_settings.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -302,8 +302,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/history/icons/big/history.gif</source>
-			<destination>system/workplace/resources/tools/history/icons/big/history.gif</destination>
+			<source>system/workplace/resources/tools/history/icons/big/history.png</source>
+			<destination>system/workplace/resources/tools/history/icons/big/history.png</destination>
 			<type>image</type>
 
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
@@ -315,8 +315,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/history/icons/big/history_clear.gif</source>
-			<destination>system/workplace/resources/tools/history/icons/big/history_clear.gif</destination>
+			<source>system/workplace/resources/tools/history/icons/big/history_clear.png</source>
+			<destination>system/workplace/resources/tools/history/icons/big/history_clear.png</destination>
 			<type>image</type>
 
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
@@ -328,8 +328,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/history/icons/big/history_settings.gif</source>
-			<destination>system/workplace/resources/tools/history/icons/big/history_settings.gif</destination>
+			<source>system/workplace/resources/tools/history/icons/big/history_settings.png</source>
+			<destination>system/workplace/resources/tools/history/icons/big/history_settings.png</destination>
 			<type>image</type>
 
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
@@ -352,8 +352,8 @@
 			<accesscontrol/>
 		</file>        
 		<file>
-			<source>system/workplace/resources/tools/history/icons/small/history.gif</source>
-			<destination>system/workplace/resources/tools/history/icons/small/history.gif</destination>
+			<source>system/workplace/resources/tools/history/icons/small/history.png</source>
+			<destination>system/workplace/resources/tools/history/icons/small/history.png</destination>
 			<type>image</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
