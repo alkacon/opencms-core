@@ -114,7 +114,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/contenttools/icons/big/contenttools.gif:tools/contenttools/icons/small/contenttools.gif]]></value>
+					<value><![CDATA[tools/contenttools/icons/big/contenttools.png:tools/contenttools/icons/small/contenttools.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -539,10 +539,9 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/contenttools/icons/big/contenttools.gif</source>
-			<destination>system/workplace/resources/tools/contenttools/icons/big/contenttools.gif</destination>
+			<source>system/workplace/resources/tools/contenttools/icons/big/contenttools.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/big/contenttools.png</destination>
 			<type>image</type>
-
 			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
@@ -555,7 +554,6 @@
 			<source>system/workplace/resources/tools/contenttools/icons/big/properties_change.gif</source>
 			<destination>system/workplace/resources/tools/contenttools/icons/big/properties_change.gif</destination>
 			<type>image</type>
-
 			<datelastmodified>Tue, 09 Nov 2004 13:29:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 09 Nov 2004 13:29:23 GMT</datecreated>
@@ -615,8 +613,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/contenttools/icons/small/contenttools.gif</source>
-			<destination>system/workplace/resources/tools/contenttools/icons/small/contenttools.gif</destination>
+			<source>system/workplace/resources/tools/contenttools/icons/small/contenttools.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/small/contenttools.png</destination>
 			<type>image</type>
 			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
