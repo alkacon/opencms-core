@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0 beta 3 Corrin</opencms_version>
-		<createdate>5/20/05 4:38 PM</createdate>
+		<opencms_version>6.0 RC 1 Corrin</opencms_version>
+		<createdate>6/6/05 9:32 AM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -39,7 +39,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 May 2005 09:13:36 GMT</datecreated>
+			<datecreated>Mon, 06 Jun 2005 07:26:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -57,7 +57,7 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 17 May 2005 10:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 08 Aug 2003 13:02:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -66,6 +66,10 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
 				</property>
 			</properties>
 			<accesscontrol>
@@ -140,6 +144,48 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/scheduler/edit.html</source>
+			<destination>system/workplace/admin/scheduler/edit.html</destination>
+			<type>jsp</type>
+			<uuidresource>ab914c0f-d664-11d9-b9b1-0d179596440c</uuidresource>
+			<datelastmodified>Mon, 06 Jun 2005 08:29:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Jun 2005 08:26:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EDITJOB_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITJOB_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITJOB_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit job]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/scheduler/index.html</source>
 			<destination>system/workplace/admin/scheduler/index.html</destination>
 			<type>jsp</type>
@@ -158,69 +204,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/scheduler/edit</destination>
-			<type>folder</type>
-			<datelastmodified>Thu, 21 Apr 2005 15:38:44 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 Apr 2005 15:11:44 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[editjob.html]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_EDITJOB_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_EDITJOB_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_EDITJOB_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Edit Job]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/scheduler/edit/editjob.html</source>
-			<destination>system/workplace/admin/scheduler/edit/editjob.html</destination>
+			<destination>system/workplace/admin/scheduler/new.html</destination>
 			<type>jsp</type>
-			<uuidresource>29239560-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Thu, 19 May 2005 15:58:27 GMT</datelastmodified>
+			<uuidresource>ab914c0f-d664-11d9-b9b1-0d179596440c</uuidresource>
+			<datelastmodified>Mon, 06 Jun 2005 08:29:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 Apr 2005 11:22:05 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/admin/scheduler/new</destination>
-			<type>folder</type>
-			<datelastmodified>Fri, 20 May 2005 13:00:20 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 Apr 2005 15:08:08 GMT</datecreated>
+			<datecreated>Mon, 06 Jun 2005 08:26:24 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -229,12 +218,12 @@
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[4]]></value>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>default-file</name>
-					<value><![CDATA[newjob.html]]></value>
+					<name>NavPos</name>
+					<value><![CDATA[4]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -254,24 +243,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Add Job]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/admin/scheduler/new/newjob.html</destination>
-			<type>jsp</type>
-			<uuidresource>29239560-c771-11d9-ac97-417e0ce441a2</uuidresource>
-			<datelastmodified>Thu, 19 May 2005 15:58:27 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 Apr 2005 11:22:05 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
+					<value><![CDATA[New job]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -279,17 +251,12 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 17 May 2005 10:00:00 GMT</datelastmodified>
+			<datelastmodified>Tue, 17 Aug 2004 13:39:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
+			<datecreated>Tue, 17 Aug 2004 13:39:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
