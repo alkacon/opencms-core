@@ -11,7 +11,14 @@ case CmsPreferences.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed, leave dialog
 
 	if (!"true".equals(wp.getParamSetPressed())) {
-		wp.actionCloseDialog();
+//		wp.actionCloseDialog();
+//////////////////// ACTION: reload the workplace window after pressing "cancel"
+%>
+<html>
+<head></head>
+<body onload="window.top.head.doReload();"></body>
+</html>
+<%
 		break;
 	}	
 
