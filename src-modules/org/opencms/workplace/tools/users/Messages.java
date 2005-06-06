@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/users/Attic/Messages.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/06 08:48:58 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -421,40 +421,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERS_LIST_ACTION_EDIT_NAME_0 = "GUI_USERS_LIST_ACTION_EDIT_NAME_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_EDITUSER_CONF_0 = "GUI_USERS_LIST_ACTION_EDITUSER_CONF_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_EDITUSER_HELP_0 = "GUI_USERS_LIST_ACTION_EDITUSER_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_EDITUSER_NAME_0 = "GUI_USERS_LIST_ACTION_EDITUSER_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_GROUPS_HELP_0 = "GUI_USERS_LIST_ACTION_GROUPS_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_GROUPS_NAME_0 = "GUI_USERS_LIST_ACTION_GROUPS_NAME_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_MACTIVATE_CONF_0 = "GUI_USERS_LIST_ACTION_MACTIVATE_CONF_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_MACTIVATE_HELP_0 = "GUI_USERS_LIST_ACTION_MACTIVATE_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_MACTIVATE_NAME_0 = "GUI_USERS_LIST_ACTION_MACTIVATE_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_ROLES_HELP_0 = "GUI_USERS_LIST_ACTION_ROLES_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_ROLES_NAME_0 = "GUI_USERS_LIST_ACTION_ROLES_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_COLS_ACTIONS_0 = "GUI_USERS_LIST_COLS_ACTIONS_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_COLS_ACTIONS_HELP_0 = "GUI_USERS_LIST_COLS_ACTIONS_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_COLS_ACTIVATE_0 = "GUI_USERS_LIST_COLS_ACTIVATE_0";
