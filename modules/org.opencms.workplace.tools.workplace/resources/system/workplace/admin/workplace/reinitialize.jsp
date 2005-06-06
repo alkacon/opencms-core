@@ -1,7 +1,7 @@
 <%@ page buffer="none" import="
 
 	org.opencms.workplace.*,
-	org.opencms.workplace.tools.cache.*
+	org.opencms.workplace.tools.workplace.*
 
 "%><%	
 
