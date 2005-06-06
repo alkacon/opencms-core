@@ -68,9 +68,9 @@
 			<resource uri="/system/workplace/resources/buttons/tb_start.gif"/>
 			<resource uri="/system/workplace/resources/buttons/underline.gif"/>
 			<resource uri="/system/workplace/resources/buttons/undo.gif"/>
-			<resource uri="/system/workplace/resources/editors/simple" />
-			<resource uri="/system/workplace/resources/editors/simplehtml" />
-			<resource uri="/system/workplace/resources/editors/xmlcontent" />
+			<resource uri="/system/workplace/resources/editors/simple/" />
+			<resource uri="/system/workplace/resources/editors/simplehtml/" />
+			<resource uri="/system/workplace/resources/editors/xmlcontent/" />
 		</resources>
 		<parameters/>
 	</module>
