@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/06/02 12:01:12 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/06 09:50:44 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,28 +54,10 @@ public final class Messages extends A_CmsMessageBundle {
         ""};
 
     /** Message contant for key in the resource bundle. */
-    public static final String ERR_NOT_A_FOLDER_1 = "ERR_NOT_A_FOLDER_1";
-
-    /** Message contant for key in the resource bundle. */
     public static final String ERR_ALREADY_INITIALIZED_0 = "ERR_ALREADY_INITIALIZED_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String INIT_ERR_LOAD_HTML_PROPERTY_FILE_1 = "INIT_ERR_LOAD_HTML_PROPERTY_FILE_1";
-
-    /** Message contant for key in the resource bundle. */
     public static final String ERR_CONTEXT_INFO_FROZEN_0 = "ERR_CONTEXT_INFO_FROZEN_0";
-       
-    /** Message contant for key in the resource bundle. */
-    public static final String LOG_SESSION_CREATED_1 = "LOG_SESSION_CREATED_1";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String LOG_SESSION_DESTROYED_2 = "LOG_SESSION_DESTROYED_2";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String LOG_SESSION_DESTROYED_1 = "LOG_SESSION_DESTROYED_1";
-    
-    /** Message contant for key in the resource bundle. */
-    public static final String LOG_SESSION_CREATED_2 = "LOG_SESSION_CREATED_2";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_CRITICAL_CLASS_CREATION_1 = "ERR_CRITICAL_CLASS_CREATION_1";
@@ -123,14 +105,116 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INVALID_INIT_USER_2 = "ERR_INVALID_INIT_USER_2";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_NOT_A_FOLDER_1 = "ERR_NOT_A_FOLDER_1";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_READ_INTERNAL_RESOURCE_1 = "ERR_READ_INTERNAL_RESOURCE_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_SHOW_ERR_HANDLER_RESOURCE_2 = "ERR_SHOW_ERR_HANDLER_RESOURCE_2";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_MODULE_1 = "ERR_UNKNOWN_MODULE_1";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_AVAILABLE_METHODS_1 = "GUI_SHELL_AVAILABLE_METHODS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_CONFIG_FILE_1 = "GUI_SHELL_CONFIG_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_CURRENT_FOLDER_1 = "GUI_SHELL_CURRENT_FOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_ECHO_OFF_0 = "GUI_SHELL_ECHO_OFF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_ECHO_ON_0 = "GUI_SHELL_ECHO_ON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_ERR_SCRIPTFILE_1 = "GUI_SHELL_ERR_SCRIPTFILE_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_EXEC_METHOD_1 = "GUI_SHELL_EXEC_METHOD_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_GOODBYE_0 = "GUI_SHELL_GOODBYE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_HELP1_0 = "GUI_SHELL_HELP1_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_HELP2_0 = "GUI_SHELL_HELP2_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_HELP3_0 = "GUI_SHELL_HELP3_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_HELP4_0 = "GUI_SHELL_HELP4_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_HR_0 = "GUI_SHELL_HR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_IMPORT_TEMP_PROJECT_NAME_0 = "GUI_SHELL_IMPORT_TEMP_PROJECT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_IMPORTEXPORT_MODULE_HANDLER_NAME_1 = "GUI_SHELL_IMPORTEXPORT_MODULE_HANDLER_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_LIST_MODULES_1 = "GUI_SHELL_LIST_MODULES_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_LOCALES_AVAILABLE_0 = "GUI_SHELL_LOCALES_AVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_LOGIN_1 = "GUI_SHELL_LOGIN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_LOGIN_FAILED_0 = "GUI_SHELL_LOGIN_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_LS_2 = "GUI_SHELL_LS_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_MATCH_SEARCHSTRING_1 = "GUI_SHELL_MATCH_SEARCHSTRING_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_METHOD_NOT_FOUND_1 = "GUI_SHELL_METHOD_NOT_FOUND_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_NO_HOME_FOLDER_FOUND_0 = "GUI_SHELL_NO_HOME_FOLDER_FOUND_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_NO_HOME_FOLDER_SPECIFIED_0 = "GUI_SHELL_NO_HOME_FOLDER_SPECIFIED_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_SETLOCALE_2 = "GUI_SHELL_SETLOCALE_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_SETLOCALE_POST_1 = "GUI_SHELL_SETLOCALE_POST_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_START_DIR_LINE1_0 = "GUI_SHELL_START_DIR_LINE1_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_SHELL_START_DIR_LINE2_0 = "GUI_SHELL_START_DIR_LINE2_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_USAGE_1 = "GUI_SHELL_USAGE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_VERSION_1 = "GUI_SHELL_VERSION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_WEB_INF_PATH_1 = "GUI_SHELL_WEB_INF_PATH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_WELCOME_0 = "GUI_SHELL_WELCOME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_WRONG_USAGE_0 = "GUI_SHELL_WRONG_USAGE_0";
+
     /** Message contant for key in the resource bundle. */
     public static final String INIT_ADDED_REQUEST_HANDLER_2 = "INIT_ADDED_REQUEST_HANDLER_2";
 
@@ -139,6 +223,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String INIT_DOT_0 = "INIT_DOT_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_ERR_LOAD_HTML_PROPERTY_FILE_1 = "INIT_ERR_LOAD_HTML_PROPERTY_FILE_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String INIT_ETHERNET_ADDRESS_1 = "INIT_ETHERNET_ADDRESS_1";
@@ -222,6 +309,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_DUPLICATE_REQUEST_HANDLER_1 = "LOG_DUPLICATE_REQUEST_HANDLER_1";
 
     /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_EXPORT_1 = "LOG_ERROR_EXPORT_1";
+
+    /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_EXPORT_SHUTDOWN_1 = "LOG_ERROR_EXPORT_SHUTDOWN_1";
 
     /** Message contant for key in the resource bundle. */
@@ -246,10 +336,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERROR_WRITING_CONFIG_1 = "LOG_ERROR_WRITING_CONFIG_1";
 
     /** Message contant for key in the resource bundle. */
-    public static final String LOG_ERROR_EXPORT_1  = "LOG_ERROR_EXPORT_1";
-    
-/** Message contant for key in the resource bundle. */
-public static final String LOG_INIT_CMSOBJECT_IN_HANDLER_2  = "LOG_INIT_CMSOBJECT_IN_HANDLER_2";
+    public static final String LOG_INIT_CMSOBJECT_IN_HANDLER_2 = "LOG_INIT_CMSOBJECT_IN_HANDLER_2";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_INIT_FAILURE_MESSAGE_1 = "LOG_INIT_FAILURE_MESSAGE_1";
@@ -258,8 +345,20 @@ public static final String LOG_INIT_CMSOBJECT_IN_HANDLER_2  = "LOG_INIT_CMSOBJEC
     public static final String LOG_INIT_INVALID_ERROR_2 = "LOG_INIT_INVALID_ERROR_2";
 
     /** Message contant for key in the resource bundle. */
+    public static final String LOG_SESSION_CREATED_1 = "LOG_SESSION_CREATED_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_SESSION_CREATED_2 = "LOG_SESSION_CREATED_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_SESSION_DESTROYED_1 = "LOG_SESSION_DESTROYED_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_SESSION_DESTROYED_2 = "LOG_SESSION_DESTROYED_2";
+
+    /** Message contant for key in the resource bundle. */
     public static final String LOG_SET_DEFAULT_ENCODING_1 = "LOG_SET_DEFAULT_ENCODING_1";
-        
+
     /** Message contant for key in the resource bundle. */
     public static final String LOG_SET_SERVERNAME_1 = "LOG_SET_SERVERNAME_1";
 

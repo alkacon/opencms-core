@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/06/06 09:50:44 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,14 @@
 
 package org.opencms.main;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -50,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -74,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -259,15 +264,22 @@ public class CmsShell {
                     }
                 }
             } catch (InvocationTargetException ite) {
-                System.out.println("Exception while calling method '" + foundMethod.getName() + "'");
+                System.out.println(
+                    Messages.get().key(getLocale(), 
+                    Messages.GUI_SHELL_EXEC_METHOD_1, 
+                    new Object[] {foundMethod.getName()}));
                 ite.getTargetException().printStackTrace(System.out);
             } catch (Throwable t) {
-                System.out.println("Exception while calling method '" + foundMethod.getName() + "'");
+                System.out.println(
+                    Messages.get().key(getLocale(), 
+                    Messages.GUI_SHELL_EXEC_METHOD_1, 
+                    new Object[] {foundMethod.getName()}));
                 t.printStackTrace(System.out);
             }
 
             return true;
         }
+        
 
         /**
          * Returns a signature overview of all methods containing the given search String.<p>
@@ -381,11 +393,11 @@ public class CmsShell {
         }
     }
 
+    /** The OpenCms context object. */
+    protected CmsObject m_cms;
+
     /** Additional shell commands object. */
     private I_CmsShellCommands m_additionaShellCommands;
-
-    /** The OpenCms context object. */
-    private CmsObject m_cms;
 
     /** All shell callable objects. */
     private List m_commandObjects;
@@ -401,6 +413,9 @@ public class CmsShell {
 
     /** The shell prompt format. */
     private String m_prompt;
+    
+    /** The current users settings. */
+    private CmsUserSettings  m_settings;
 
     /** Internal shell command object. */
     private I_CmsShellCommands m_shellCommands;
@@ -419,28 +434,37 @@ public class CmsShell {
         try {
             // first initialize runlevel 1 
             m_opencms = OpenCmsCore.getInstance();
+            // Externalisation: get Locale: will be the System default since no CmsObject is up  before 
+            // runlevel 2
+            Locale locale = getLocale();
             // search for the WEB-INF folder
             if (CmsStringUtil.isEmpty(webInfPath)) {
-                System.out.println("No OpenCms home folder given. Trying to guess...");
+                System.out.println(Messages.get().key(locale, Messages.GUI_SHELL_NO_HOME_FOLDER_SPECIFIED_0, null));
                 System.out.println();
                 webInfPath = m_opencms.searchWebInfFolder(System.getProperty("user.dir"));
-                if (webInfPath == null || "".equals(webInfPath)) {
-                    System.err.println("-----------------------------------------------------------------------");
-                    System.err.println("The OpenCms 'WEB-INF' folder can not be found.");
+                if (CmsStringUtil.isEmpty(webInfPath)) {
+                    System.err.println(Messages.get().key(Messages.GUI_SHELL_HR_0));
+                    System.err.println(Messages.get().key(locale, Messages.GUI_SHELL_NO_HOME_FOLDER_FOUND_0, null));
                     System.err.println();
-                    System.err.println("Please start the OpenCms shell from the 'WEB-INF' directory of your");
-                    System.err.println("OpenCms installation, or pass the OpenCms 'WEB-INF' folder as argument.");
-                    System.err.println("-----------------------------------------------------------------------");
+                    System.err.println(Messages.get().key(locale, Messages.GUI_SHELL_START_DIR_LINE1_0, null));
+                    System.err.println(Messages.get().key(locale, Messages.GUI_SHELL_START_DIR_LINE2_0, null));
+                    System.err.println(Messages.get().key(Messages.GUI_SHELL_HR_0));
                     return;
                 }
             }
-            System.out.println("OpenCms WEB-INF path:  " + webInfPath);
+            System.out.println(Messages.get().key(
+                getLocale(),
+                Messages.GUI_SHELL_WEB_INF_PATH_1,
+                new Object[] {webInfPath}));
             // set the path to the WEB-INF folder (the 2nd and 3rd parameters are just reasonable dummies)
             m_opencms.getSystemInfo().init(webInfPath, "/opencms/*", null, "ROOT");
 
             // now read the configuration properties
             String propertyPath = m_opencms.getSystemInfo().getConfigurationFileRfsPath();
-            System.out.println("OpenCms property file: " + propertyPath);
+            System.out.println(Messages.get().key(
+                getLocale(),
+                Messages.GUI_SHELL_CONFIG_FILE_1,
+                new Object[] {propertyPath}));
             System.out.println();
             ExtendedProperties configuration = CmsPropertyUtils.loadProperties(propertyPath);
 
@@ -449,8 +473,12 @@ public class CmsShell {
 
             // create a context object with 'Guest' permissions
             m_cms = m_opencms.initCmsObject(m_opencms.getDefaultUsers().getUserGuest());
-            // set the site root to the default site
-            m_cms.getRequestContext().setSiteRoot(m_opencms.getSiteManager().getDefaultSite().getSiteRoot());
+            
+            // initialize the settings of the user
+            m_settings = initSettings();
+            
+//            // set the site root to the default site
+//            m_cms.getRequestContext().setSiteRoot(m_opencms.getSiteManager().getDefaultSite().getSiteRoot());
 
             // initialize shell command object
             m_shellCommands = new CmsShellCommands();
@@ -502,22 +530,20 @@ public class CmsShell {
                 } else if (arg.startsWith("-script=")) {
                     script = arg.substring(8);
                 } else {
-                    System.out.println("wrong usage!");
+                    System.out.println(Messages.get().key(Messages.GUI_SHELL_WRONG_USAGE_0));
                     wrongUsage = true;
                 }
             }
         }
         if (wrongUsage) {
-            System.out.println("Usage: java "
-                + CmsShell.class.getName()
-                + " [-base={path to WEB-INF}] [-script={scriptfile}]");
+            System.out.println(Messages.get().key(Messages.GUI_SHELL_USAGE_1, CmsShell.class.getName()));
         } else {
             FileInputStream stream = null;
             if (script != null) {
                 try {
                     stream = new FileInputStream(script);
                 } catch (IOException exc) {
-                    System.out.println("trouble reading script file '" + script + "', using SDTIN instead");
+                    System.out.println(Messages.get().key(Messages.GUI_SHELL_ERR_SCRIPTFILE_1, script));
                 }
             }
             if (stream == null) {
@@ -552,6 +578,48 @@ public class CmsShell {
         } catch (Throwable t) {
             t.printStackTrace();
         }
+    }
+
+    /**
+     * Private internal helper for localisation to the current user's locale 
+     * within OpenCms. <p>
+     * 
+     * @return the current user's <code>Locale</code>.
+     */
+    public Locale getLocale() {
+ 
+        if (getSettings() == null) {            
+            return CmsLocaleManager.getDefaultLocale();
+        }        
+        return getSettings().getLocale();
+    }
+    
+    /**
+     * Obtain the additional settings related to the current user.
+     * 
+     * @return the additional settings related to the current user.
+     */
+    public CmsUserSettings getSettings() {
+        
+        return m_settings;
+    }    
+    
+    /**
+     * Initializes the internal <code>CmsWorkplaceSettings</code> that contain (amongst other 
+     * information) important information additional information about the current user 
+     * (an instance of {@link CmsUserSettings}). <p>
+     * 
+     * This step is performed within the <code>CmsShell</code> constructor directly after 
+     * switching to run-level 2 and obtaining the <code>CmsObject</code> for the guest user as 
+     * well as when invoking the <code>CmsShell command {@link CmsShellCommands#login(String, String)}</code>.
+     * 
+     * @return the user settings for the current user.
+     */
+    public CmsUserSettings initSettings() {
+        
+        CmsWorkplaceSettings wpSettings = CmsWorkplace.initWorkplaceSettings(m_cms, null, false);
+        m_settings = wpSettings.getUserSettings();
+        return m_settings;
     }
 
     /**
@@ -597,15 +665,21 @@ public class CmsShell {
         while (i.hasNext()) {
             CmsCommandObject cmdObj = (CmsCommandObject)i.next();
             commandList = cmdObj.getMethodHelp(searchString);
-            if (!"".equals(commandList)) {
-                System.out.println("Available methods in " + cmdObj.getObject().getClass().getName() + ":");
+            if (!CmsStringUtil.isEmpty(commandList)) {
+                System.out.println(Messages.get().key(
+                    getLocale(),
+                    Messages.GUI_SHELL_AVAILABLE_METHODS_1,
+                    new Object[] {cmdObj.getObject().getClass().getName()}));
                 System.out.println(commandList);
                 foundSomething = true;
             }
         }
 
         if (!foundSomething) {
-            System.out.println("No methods available matching: '*" + searchString + "*'");
+            System.out.println(Messages.get().key(
+                getLocale(),
+                Messages.GUI_SHELL_MATCH_SEARCHSTRING_1,
+                new Object[] {searchString}));
         }
     }
 
@@ -663,15 +737,19 @@ public class CmsShell {
         if (!executed) {
             // method not found
             System.out.println();
-            System.out.print("Requested method not found: " + command + "(");
+            StringBuffer commandMsg = new StringBuffer(command).append("(");
             for (int j = 0; j < parameters.size(); j++) {
-                System.out.print("value");
+                commandMsg.append("value");
                 if (j < parameters.size() - 1) {
-                    System.out.print(", ");
+                    commandMsg.append(", ");
                 }
             }
-            System.out.println(")");
-            System.out.println("-----------------------------------------------");
+            commandMsg.append(")");
+            
+            System.out.println(
+                Messages.get().key(getLocale(), Messages.GUI_SHELL_METHOD_NOT_FOUND_1,
+                    new Object[]{commandMsg.toString()}));
+            System.out.println(Messages.get().key(Messages.GUI_SHELL_HR_0));
             ((CmsShellCommands)m_shellCommands).help();
         }
     }

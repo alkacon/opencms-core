@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.123 $
+ * Date   : $Date: 2005/06/06 09:50:44 $
+ * Version: $Revision: 1.124 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.123 $
+ * @version $Revision: 1.124 $
  * 
  * @since 5.1
  */
@@ -395,11 +395,15 @@ public abstract class CmsWorkplace {
      * @param update flag indicating if settings are only updated (user preferences)
      * @return initialized object with the current users workplace settings 
      */
-    static synchronized CmsWorkplaceSettings initWorkplaceSettings(
+    public static synchronized CmsWorkplaceSettings initWorkplaceSettings(
         CmsObject cms,
         CmsWorkplaceSettings settings,
         boolean update) {
 
+        if (settings == null) {
+            settings = new CmsWorkplaceSettings();
+        }
+        
         // save current workplace user & user settings object
         CmsUser user;
         if (update) {
@@ -449,7 +453,7 @@ public abstract class CmsWorkplace {
         } catch (CmsException e) {
             // error reading site root, in this case we will use a readable default
             if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
+                LOG.info(e.getLocalizedMessage(), e);
             }
 
         }
@@ -501,28 +505,24 @@ public abstract class CmsWorkplace {
             // loop through all types and check which types can be displayed and edited for the user
             I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
             // get the settings for the resource type
-            CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                type.getTypeName());
-            // determine if this resource type is editable for the current user
-            CmsPermissionSet permissions;
-            try {
-                // get permissions of the current user
-                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
-                    cms.getRequestContext().currentUser(),
-                    cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
-            } catch (CmsException e) {
-                // error reading the groups of the current user
-                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
-                    cms.getRequestContext().currentUser());
-                if (LOG.isWarnEnabled()) {
-                    CmsLog.getLog(CmsTree.class).warn(org.opencms.workplace.explorer.Messages.get()
-                        .key(org.opencms.workplace.explorer.Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, 
-                            cms.getRequestContext().currentUser().getName()), e);
+            CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+            if (typeSettings != null) {
+                // determine if this resource type is editable for the current user
+                CmsPermissionSet permissions;
+                try {
+                    // get permissions of the current user
+                    permissions = typeSettings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
+                } catch (CmsException e) {
+                    // error reading the groups of the current user
+                    permissions = typeSettings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
+                    if (LOG.isWarnEnabled()) {
+                        CmsLog.getLog(CmsTree.class).warn(org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, cms.getRequestContext().currentUser().getName()), e);
+                    }
                 }
-            }
-            if (permissions.getPermissionString().indexOf("+w") != -1) {
-                // user is allowed to edit this resource type
-                resourceTypes.put(new Integer(type.getTypeId()), type);
+                if (permissions.getPermissionString().indexOf("+w") != -1) {
+                    // user is allowed to edit this resource type
+                    resourceTypes.put(new Integer(type.getTypeId()), type);
+                }
             }
         }
         return resourceTypes;
@@ -660,7 +660,7 @@ public abstract class CmsWorkplace {
         if (href != null && href.toLowerCase().startsWith("javascript:")) {
             anchorStart = "<a href=\"#\" onclick=\"";
         }
-        
+
         if (image != null && image.indexOf('.') == -1) {
             // append default suffix for images
             image += ".gif";
@@ -1371,7 +1371,7 @@ public abstract class CmsWorkplace {
 
         return pageHtml(HTML_START, title);
     }
-    
+
     /**
      * Returns true if the online help for the users current workplace language is installed.<p>
      * 
@@ -1817,6 +1817,7 @@ public abstract class CmsWorkplace {
      */
     protected void initMessages() {
 
+        //m_messages = m_settings.getMessages();
         // manually add the initialized workplace messages for the current user
         m_bundles.add(m_settings.getMessages());
         addMessages(Messages.get().getBundleName());
@@ -1843,7 +1844,7 @@ public abstract class CmsWorkplace {
                 || m_settings.getMessages() != OpenCms.getWorkplaceManager().getMessages(getLocale())) {
                 // create the settings object
                 m_settings = new CmsWorkplaceSettings();
-                initWorkplaceSettings(m_cms, m_settings, false);
+                m_settings = initWorkplaceSettings(m_cms, m_settings, false);
                 storeSettings(m_session, m_settings);
             }
 

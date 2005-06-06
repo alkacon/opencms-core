@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/06/02 12:01:12 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2005/06/06 09:50:44 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -41,6 +42,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleImportExportHandler;
@@ -56,6 +58,7 @@ import org.opencms.workplace.I_CmsWpConstants;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -69,13 +72,13 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
     /** The OpenCms context object. */
     private CmsObject m_cms;
-
+    
     /** The Cms shell object. */
     private CmsShell m_shell;
 
@@ -126,7 +129,10 @@ class CmsShellCommands implements I_CmsShellCommands {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NOT_A_FOLDER_1, resolvedTarget));
         }
         m_cms.getRequestContext().setUri(resolvedTarget);
-        System.out.println("\nThe current folder is now '" + resolvedTarget + "'");
+        System.out.println('\n' + Messages.get().key(
+            m_shell.getLocale(),
+            Messages.GUI_SHELL_CURRENT_FOLDER_1,
+            new Object[] {resolvedTarget}));
         System.out.println();
     }
 
@@ -318,7 +324,11 @@ class CmsShellCommands implements I_CmsShellCommands {
         }
         boolean b = "on".equalsIgnoreCase(echo.trim());
         m_shell.setEcho(b);
-        System.out.println("Echo is now " + (b ? "on" : "off"));
+        if (b) {
+            System.out.println(Messages.get().key(Messages.GUI_SHELL_ECHO_ON_0));
+        } else {
+            System.out.println(Messages.get().key(Messages.GUI_SHELL_ECHO_OFF_0));
+        }
     }
 
     /**
@@ -379,7 +389,10 @@ class CmsShellCommands implements I_CmsShellCommands {
         moduleExportHandler.setFileName(filename);
         moduleExportHandler.setAdditionalResources(resources);
         moduleExportHandler.setModuleName(module.getName().replace('\\', '/'));
-        moduleExportHandler.setDescription("Module export of " + moduleExportHandler.getModuleName());
+        moduleExportHandler.setDescription(Messages.get().key(
+            m_shell.getLocale(),
+            Messages.GUI_SHELL_IMPORTEXPORT_MODULE_HANDLER_NAME_1,
+            new Object[] {moduleExportHandler.getModuleName()}));
 
         // export the module
         OpenCms.getImportExportManager().exportData(m_cms, moduleExportHandler, new CmsShellReport());
@@ -473,17 +486,35 @@ class CmsShellCommands implements I_CmsShellCommands {
             System.out.println(p.getName() + ": " + acList.getPermissions(p).getPermissionString());
         }
     }
+    
+    /**
+     * Returns the Locales available on the system ready to use on Method 
+     * {@link #setLocale(String)} from the <code>CmsShell</code>. <p>
+     * 
+     * Note that the full name containing language, country and optional variant seperated 
+     * by underscores is returned always but the latter two parts may be left out. <p>
+     *
+     */
+    public void getLocales() {
+
+        System.out.println(Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_LOCALES_AVAILABLE_0, null));
+        Locale[] locales = Locale.getAvailableLocales();
+        for (int i = locales.length - 1; i >= 0; i--) {
+            System.out.println("  \"" + locales[i].toString() + "\"");
+        }
+    }
 
     /**
      * Provides help information for the CmsShell.<p>
      */
     public void help() {
 
+        Locale locale = m_shell.getLocale();
         System.out.println();
-        System.out.println("help              Shows this text");
-        System.out.println("help *            Shows the signatures of all available methods");
-        System.out.println("help {string}     Shows the signatures of all methods containing this string");
-        System.out.println("exit or quit      Leaves this OpenCms Shell");
+        System.out.println(Messages.get().key(locale, Messages.GUI_SHELL_HELP1_0, null));
+        System.out.println(Messages.get().key(locale, Messages.GUI_SHELL_HELP2_0, null));
+        System.out.println(Messages.get().key(locale, Messages.GUI_SHELL_HELP3_0, null));
+        System.out.println(Messages.get().key(locale, Messages.GUI_SHELL_HELP4_0, null));
         System.out.println();
     }
 
@@ -566,7 +597,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         CmsProject project = m_cms.createProject(
             "SystemUpdate",
-            "A temporary project for a system update",
+            Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_IMPORT_TEMP_PROJECT_NAME_0, null),
             OpenCms.getDefaultUsers().getGroupAdministrators(),
             OpenCms.getDefaultUsers().getGroupAdministrators(),
             I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
@@ -595,7 +626,11 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void listModules() throws Exception {
 
         Set modules = OpenCms.getModuleManager().getModuleNames();
-        System.out.println("\nThere are currently " + modules.size() + " modules installed:");
+        System.out.println("\n"
+            + Messages.get().key(
+                m_shell.getLocale(),
+                Messages.GUI_SHELL_LIST_MODULES_1,
+                new Object[] {new Integer(modules.size())}));
         Iterator i = modules.iterator();
         while (i.hasNext()) {
             String moduleName = (String)i.next();
@@ -615,11 +650,17 @@ class CmsShellCommands implements I_CmsShellCommands {
         username = OpenCms.getImportExportManager().translateUser(username);
         try {
             m_cms.loginUser(username, password);
-            System.out.println("You are now logged in as user '" + whoami().getName() + "'.");
+            // reset the settings, this will switch the startup site root etc.
+            m_shell.initSettings();
+            System.out.println(Messages.get().key(
+                m_shell.getLocale(),
+                Messages.GUI_SHELL_LOGIN_1,
+                new Object[] {whoami().getName()}));
         } catch (Exception exc) {
-            System.out.println("Login failed!");
+            System.out.println(Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_LOGIN_FAILED_0, null));
         }
     }
+
 
     /**
      * Displays a list of all resources in the current folder.<p>
@@ -631,7 +672,8 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         String folder = CmsResource.getFolderPath(m_cms.getRequestContext().getUri());
         List resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
-        System.out.println("\nThe current folder '" + folder + "' contains " + resources.size() + " resources");
+        System.out.println("\n"
+            + Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_LS_2, new Object[] {folder, resources}));
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource r = (CmsResource)i.next();
@@ -839,6 +881,42 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         return m_cms.getRequestContext().setCurrentProject(m_cms.readProject(name));
     }
+    
+    /**
+     * Set the locale of the current user logged in. <p> 
+     * 
+     * This method will always set a valid Locale for the current user!
+     * If the provided locale name is not valid (i.e. leads to an Exception
+     * when trying to create the Locale, then the configured default Locale is set.<p> 
+     *
+     * The full name must consist of language code, 
+     * country code(optional), variant(optional) separated by "_".<p>
+     * 
+     * @see Locale#getLanguage() 
+     * @see Locale#getCountry()
+     * @see Locale#getVariant() 
+     * @param localeName the full locale name
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     */
+    public void setLocale(String localeName) throws CmsException {
+               
+        Locale locale = CmsLocaleManager.getLocale(localeName);
+
+        System.out.println(Messages.get().key(
+            m_shell.getLocale(),
+            Messages.GUI_SHELL_SETLOCALE_2,
+            new Object[] {locale.toString(), m_cms.getRequestContext().currentUser().getName()}));
+        
+        CmsUserSettings settings = m_shell.getSettings();
+        settings.setLocale(locale);
+        settings.save(m_cms);        
+        System.out.println(Messages.get().key(
+            m_shell.getLocale(),
+            Messages.GUI_SHELL_SETLOCALE_POST_1,
+            new Object[] {locale.toString()}));
+    }
 
     /**
      * @see org.opencms.main.I_CmsShellCommands#shellExit()
@@ -846,7 +924,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void shellExit() {
 
         System.out.println();
-        System.out.println("Goodbye!");
+        System.out.println(Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_GOODBYE_0, null));
     }
 
     /**
@@ -855,7 +933,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void shellStart() {
 
         System.out.println();
-        System.out.println("Welcome to the OpenCms shell!");
+        System.out.println(Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_WELCOME_0, null));
         System.out.println();
 
         // print the version information
@@ -924,7 +1002,10 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void version() {
 
         System.out.println();
-        System.out.println("This is OpenCms " + OpenCms.getSystemInfo().getVersionName());
+        System.out.println(Messages.get().key(
+            m_shell.getLocale(),
+            Messages.GUI_SHELL_VERSION_1,
+            new Object[] {OpenCms.getSystemInfo().getVersionName()}));
     }
 
     /**
