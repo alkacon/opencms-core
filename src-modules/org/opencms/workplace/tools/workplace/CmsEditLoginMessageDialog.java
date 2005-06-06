@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/CmsEditLoginMessageDialog.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/06 15:02:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * Dialog to edit the login message of the OpenCms Workplace.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  */
@@ -103,6 +103,42 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
 
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
+    }
+
+    /**
+     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
+     * 
+     * This overwrites the method from the super class to create a layout variation for the widgets.<p>
+     * 
+     * @param dialog the dialog (page) to get the HTML for
+     * @return the dialog HTML for all defined widgets of the named dialog (page)
+     */
+    protected String createDialogHtml(String dialog) {
+
+        StringBuffer result = new StringBuffer(1024);
+
+        // create widget table
+        result.append(createWidgetTableStart());
+
+        // show error header once if there were validation errors
+        result.append(createWidgetErrorHeader());
+
+        // create the widgets for the first dialog page
+        result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_ACTIVATE_BLOCK_0)));
+        result.append(createWidgetTableStart());
+        result.append(createDialogRowsHtml(0, 0));
+        result.append(createWidgetTableEnd());
+        result.append(dialogBlockEnd());
+        result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_CONFIGURATION_BLOCK_0)));
+        result.append(createWidgetTableStart());
+        result.append(createDialogRowsHtml(1, 4));
+        result.append(createWidgetTableEnd());
+        result.append(dialogBlockEnd());
+
+        // close widget table
+        result.append(createWidgetTableEnd());
+
+        return result.toString();
     }
 
     /**
@@ -185,4 +221,5 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
         // save the current login message (may be changed because of the widget values)
         setDialogObject(m_loginMessage);
     }
+
 }

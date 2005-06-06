@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/Messages.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/06 15:02:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_LABEL_ACTIVATE_BLOCK_0 = "GUI_EDITOR_LABEL_ACTIVATE_BLOCK_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_LABEL_CONFIGURATION_BLOCK_0 = "GUI_EDITOR_LABEL_CONFIGURATION_BLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_BASIC_GROUP_0 = "GUI_WORKPLACE_BASIC_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -50,7 +56,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_LOGINMESSAGE_NAME_0 = "GUI_WORKPLACE_LOGINMESSAGE_NAME_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_REINIT_HELP_0 = "GUI_WORKPLACE_REINIT_HELP_0";
 
