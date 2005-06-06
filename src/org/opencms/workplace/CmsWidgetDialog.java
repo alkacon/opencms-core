@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/06 08:05:33 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -164,12 +164,12 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     public abstract void actionCommit();
 
     /**
-     * Performs the dialog actions depending on the initialized action.<p>
+     * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
      * 
      * @throws IOException if writing to the JSP out fails
      * @throws JspException if dialog actions fail
      */
-    public void actionDialog() throws IOException, JspException {
+    public void displayDialog() throws IOException, JspException {
 
         switch (getAction()) {
 
