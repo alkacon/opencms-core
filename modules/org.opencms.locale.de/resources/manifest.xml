@@ -30,7 +30,8 @@
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/db/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/importexport/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/module/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/report/messages_de.properties"/>
+		    <resource uri="/system/workplace/locales/de/messages/org/opencms/main/messages_de.properties"/>
+            <resource uri="/system/workplace/locales/de/messages/org/opencms/report/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/search/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/staticexport/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/synchronize/messages_de.properties"/>
@@ -174,6 +175,30 @@
 			<destination>system/workplace/locales/de/messages/org/opencms/db/messages_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>dae33772-d426-11d9-bd97-555ce86a55d5</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 08:50:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/main</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 03 Jun 2005 08:46:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Jun 2005 12:00:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/main/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/main/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>dae33772-d426-11d9-bd97-555ce87a55d5</uuidresource>
 			<datelastmodified>Fri, 03 Jun 2005 08:50:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
