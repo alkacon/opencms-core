@@ -103,7 +103,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/cache/icons/big/flexcache.gif:tools/cache/icons/small/flexcache.gif]]></value>
+					<value><![CDATA[tools/cache/icons/big/flexcache.png:tools/cache/icons/small/flexcache.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -194,8 +194,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/cache/icons/big/flexcache.gif</source>
-			<destination>system/workplace/resources/tools/cache/icons/big/flexcache.gif</destination>
+			<source>system/workplace/resources/tools/cache/icons/big/flexcache.png</source>
+			<destination>system/workplace/resources/tools/cache/icons/big/flexcache.png</destination>
 			<type>image</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -217,8 +217,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/cache/icons/small/flexcache.gif</source>
-			<destination>system/workplace/resources/tools/cache/icons/small/flexcache.gif</destination>
+			<source>system/workplace/resources/tools/cache/icons/small/flexcache.png</source>
+			<destination>system/workplace/resources/tools/cache/icons/small/flexcache.png</destination>
 			<type>image</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
