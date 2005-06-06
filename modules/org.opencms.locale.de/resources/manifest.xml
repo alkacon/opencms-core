@@ -9,7 +9,7 @@
 		<export_version>4</export_version>
 	</info>
 	<module>
-		<name>org.opencms.language.german</name>
+		<name>org.opencms.locale.de</name>
 		<nicename><![CDATA[OpenCms 6.0 German Localization]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
@@ -39,6 +39,7 @@
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/administration/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/list/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/messages_de.properties"/>
+			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/cache/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/content/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/history/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/messages_de.properties"/>
@@ -49,7 +50,6 @@
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/workplace_de.properties"/>
 		</resources>
 		<parameters>
-			<param name="additionalresources">/system/workplace/locales/de/messages/;/system/workplace/locales/de/messages/org/opencms/db/generic/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/db/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/importexport/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/module/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/report/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/search/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/staticexport/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/synchronize/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/threads/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/validation/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/workplace/administration/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/workplace/list/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/workplace/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/workplace/tools/content/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/workplace/tools/history/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/workplace/tools/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/workplace/tools/modules/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/workplace/tools/scheduler/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/workplace/tools/searchindex/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/workplace/tools/users/messages_de.properties;/system/workplace/locales/de/messages/org/opencms/workplace/workplace_de.properties</param>
 		</parameters>
 	</module>
 	<files>
@@ -501,6 +501,30 @@
 			<datelastmodified>Fri, 03 Jun 2005 09:44:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/cache</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 03 Jun 2005 12:59:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Jun 2005 12:59:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/workplace/tools/cache/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/cache/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>655ceb93-d42f-11d9-bd97-555ce86a56d5</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 13:04:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Jun 2005 13:00:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
