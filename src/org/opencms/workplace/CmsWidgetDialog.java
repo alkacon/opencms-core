@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/06 08:05:33 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/06/06 08:10:27 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -162,57 +162,6 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * Commits the edited object after pressing the "OK" button.<p>
      */
     public abstract void actionCommit();
-
-    /**
-     * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
-     * 
-     * @throws IOException if writing to the JSP out fails
-     * @throws JspException if dialog actions fail
-     */
-    public void displayDialog() throws IOException, JspException {
-
-        switch (getAction()) {
-
-            case ACTION_CANCEL:
-                // ACTION: cancel button pressed
-                actionCancel();
-                actionCloseDialog();
-                break;
-
-            case ACTION_ERROR:
-                // ACTION: an error occured (display nothing)
-                break;
-
-            case ACTION_SAVE:
-                // ACTION: save edited values
-                setParamAction(DIALOG_OK);
-                actionCommit();
-                if (closeDialogOnCommit()) {
-                    actionCloseDialog();
-                    break;
-                }
-
-            case ACTION_DEFAULT:
-            default:
-                // ACTION: show dialog (default)
-                setParamAction(DIALOG_SAVE);
-                JspWriter out = getJsp().getJspContext().getOut();
-                out.print(defaultActionHtml());
-        }
-    }
-    
-    /**
-     * Returns <code>true</code> if the dialog should be closed after the values have been committed.<p>
-     * 
-     * The default implementation returns <code>true</code> in case there are no 
-     * commit errors.<p>
-     * 
-     * @return <code>true</code> if the dialog should be closed after the values have been committed
-     */
-    protected boolean closeDialogOnCommit() {
-        
-        return getCommitErrors().size() == 0;
-    }
 
     /**
      * Adds or removes an optional element.<p>
@@ -383,6 +332,44 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         }
         // this is a display only dialog
         return "";
+    }
+
+    /**
+     * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
+     * 
+     * @throws IOException if writing to the JSP out fails
+     * @throws JspException if dialog actions fail
+     */
+    public void displayDialog() throws IOException, JspException {
+
+        switch (getAction()) {
+
+            case ACTION_CANCEL:
+                // ACTION: cancel button pressed
+                actionCancel();
+                actionCloseDialog();
+                break;
+
+            case ACTION_ERROR:
+                // ACTION: an error occured (display nothing)
+                break;
+
+            case ACTION_SAVE:
+                // ACTION: save edited values
+                setParamAction(DIALOG_OK);
+                actionCommit();
+                if (closeDialogOnCommit()) {
+                    actionCloseDialog();
+                    break;
+                }
+
+            case ACTION_DEFAULT:
+            default:
+                // ACTION: show dialog (default)
+                setParamAction(DIALOG_SAVE);
+                JspWriter out = getJsp().getJspContext().getOut();
+                out.print(defaultActionHtml());
+        }
     }
 
     /**
@@ -714,6 +701,19 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             m_widgets = new ArrayList();
         }
         m_widgets.add(param);
+    }
+    
+    /**
+     * Returns <code>true</code> if the dialog should be closed after the values have been committed.<p>
+     * 
+     * The default implementation returns <code>true</code> in case there are no 
+     * commit errors.<p>
+     * 
+     * @return <code>true</code> if the dialog should be closed after the values have been committed
+     */
+    protected boolean closeDialogOnCommit() {
+        
+        return getCommitErrors().size() == 0;
     }
 
     /**
