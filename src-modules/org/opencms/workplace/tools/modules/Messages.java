@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/Messages.java,v $
- * Date   : $Date: 2005/06/03 15:21:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/06 13:44:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,10 +67,26 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITMODULE_ADMIN_TOOL_NAME_0 = "GUI_EDITMODULE_ADMIN_TOOL_NAME_0";
    
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITMODULE_ADMIN_TOOL_HELP_0 = "GUI_EDITMODULE_ADMIN_TOOL_HELP_0";
+  
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTMODULE_ADMIN_TOOL_NAME_0 = "GUI_EXPORTMODULE_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTMODULE_ADMIN_TOOL_HELP_0 = "GUI_EXPORTMODULE_ADMIN_TOOL_HELP_0";
+
+    
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWMODULE_ADMIN_TOOL_NAME_0 = "GUI_NEWMODULE_ADMIN_TOOL_NAME_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWMODULE_ADMIN_TOOL_HELP_0 = "GUI_NEWMODULE_ADMIN_TOOL_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETEMODULE_ADMIN_TOOL_NAME_0 = "GUI_DELETEMODULE_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETEMODULE_ADMIN_TOOL_HELP_0 = "GUI_DELETEMODULE_ADMIN_TOOL_HELP_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_MODULE_DELETE_1 = "ERR_ACTION_MODULE_DELETE_1";
@@ -87,9 +103,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_MODULES_DELETE_1 = "ERR_ACTION_MODULES_DELETE_1";
     
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITMODULE_ADMIN_TOOL_HELP_0 = "GUI_EDITMODULE_ADMIN_TOOL_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_ADMIN_TOOL_GROUP_0 = "GUI_MODULES_ADMIN_TOOL_GROUP_0";
 
@@ -195,6 +208,13 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LIST_ACTION_MDELETE_NAME_0 = "GUI_MODULES_LIST_ACTION_MDELETE_NAME_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LIST_ACTION_OVERVIEW_HELP_0 = "GUI_MODULES_LIST_ACTION_OVERVIEW_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LIST_ACTION_OVERVIEW_NAME_0 = "GUI_MODULES_LIST_ACTION_OVERVIEW_NAME_0";
+
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LIST_COLS_DELETE_0 = "GUI_MODULES_LIST_COLS_DELETE_0";
 

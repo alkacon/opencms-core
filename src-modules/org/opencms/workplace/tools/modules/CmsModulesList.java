@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/06/03 15:21:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/06 13:44:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Main module management view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsModulesList extends A_CmsListDialog {
@@ -82,6 +82,9 @@ public class CmsModulesList extends A_CmsListDialog {
 
     /** List action multi delete. */
     public static final String LIST_ACTION_MDELETE = "mdelete";
+    
+    /** list action id constant. */
+    public static final String LIST_ACTION_OVERVIEW = "overview";
 
     /** List column delete. */
     public static final String LIST_COLUMN_DELETE = "delete";
@@ -196,9 +199,21 @@ public class CmsModulesList extends A_CmsListDialog {
         Map params = new HashMap();
         params.put(PARAM_MODULE, module);
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
-            // edit a module from the list
+            // forward to the edit module screen  
             try {
                 // forward to the edit module screen      
+                params.put(PARAM_ACTION, DIALOG_INITIAL);
+                getToolManager().jspRedirectTool(this, "/modules/edit/edit", params);
+            } catch (IOException e) {
+                // should never happen
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_ACTION_MODULE_EDIT_1,
+                    module), e);
+            }
+        } else if (getParamListAction().equals(LIST_ACTION_OVERVIEW)) {
+            // edit a module from the list
+            try {
+                // go to the module overview screen                  
                 params.put(PARAM_ACTION, DIALOG_INITIAL);
                 getToolManager().jspRedirectTool(this, "/modules/edit", params);
             } catch (IOException e) {
@@ -397,11 +412,11 @@ public class CmsModulesList extends A_CmsListDialog {
         nameCol.setWidth("30%");
         nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         // create default edit action for name column: edit module
-        CmsListDefaultAction nameColAction = new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT);
-        nameColAction.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EDIT_NAME_0));
+        CmsListDefaultAction nameColAction = new CmsListDefaultAction(LIST_ID, LIST_ACTION_OVERVIEW);
+        nameColAction.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_OVERVIEW_NAME_0));
         nameColAction.setIconPath(null);
 
-        nameColAction.setHelpText(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EDIT_HELP_0));
+        nameColAction.setHelpText(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_OVERVIEW_HELP_0));
         nameColAction.setEnabled(true);
         nameColAction.setConfirmationMessage(null);
         // set action for the name column

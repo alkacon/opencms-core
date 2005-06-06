@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/03 15:21:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/06 13:44:16 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -148,7 +148,7 @@ public class CmsModule implements Comparable {
      * @param dateInstalled the date this module was uploaded
      * @param dependencies a list of dependencies of this module
      * @param exportPoints a list of export point added by this module
-     * @param moduleResources a list of VFS resources that belong to this module
+     * @param resources a list of VFS resources that belong to this module
      * @param parameters the parameters for this module
      */
     public CmsModule(
@@ -165,7 +165,7 @@ public class CmsModule implements Comparable {
         long dateInstalled,
         List dependencies,
         List exportPoints,
-        List moduleResources,
+        List resources,
         Map parameters) {
 
         super();
@@ -208,10 +208,10 @@ public class CmsModule implements Comparable {
         } else {
             m_exportPoints = Collections.unmodifiableList(exportPoints);
         }
-        if (moduleResources == null) {
+        if (resources == null) {
             m_resources = Collections.EMPTY_LIST;
         } else {
-            m_resources = Collections.unmodifiableList(moduleResources);
+            m_resources = Collections.unmodifiableList(resources);
         }
         if (parameters == null) {
             //m_parameters = Collections.EMPTY_MAP;
@@ -220,7 +220,7 @@ public class CmsModule implements Comparable {
             m_parameters = new TreeMap(parameters);
         }
         // handle old style "additional resources" for backward compatiblity
-        initOldAdditionalResources();
+        //initOldAdditionalResources();
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_MODULE_INSTANCE_CREATED_1, m_name));
         }
