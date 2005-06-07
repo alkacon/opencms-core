@@ -148,6 +148,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
 				<property type="shared">
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
@@ -155,10 +159,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -171,6 +171,10 @@
 				<property>
 					<name>Description</name>
 					<value><![CDATA[${key.GUI_WORKPLACE_LOGINMESSAGE_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/workplace_loginmessage.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -295,6 +299,19 @@
 			<datelastmodified>Mon, 06 Jun 2005 09:29:55 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 06 Jun 2005 09:29:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/icons/big/workplace_loginmessage.png</source>
+			<destination>system/workplace/resources/tools/workplace/icons/big/workplace_loginmessage.png</destination>
+			<type>image</type>
+			<uuidresource>b1e13a59-d730-11d9-b767-0d179596440c</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 08:46:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Jun 2005 08:46:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
