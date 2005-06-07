@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2005/06/07 15:03:46 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/07 16:14:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.6
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestSynchronize extends OpenCmsTestCase {
 
@@ -125,7 +125,7 @@ public class TestSynchronize extends OpenCmsTestCase {
         syncSettings.setEnabled(true);
         ArrayList sourceList = new ArrayList();
         sourceList.add(source);
-        syncSettings.setSourcePathInVfs(sourceList);
+        syncSettings.setSourceListInVfs(sourceList);
         syncSettings.setDestinationPathInRfs(dest);
                 
         // store the settings
@@ -147,7 +147,7 @@ public class TestSynchronize extends OpenCmsTestCase {
         assertNotNull(syncSettings);
         
         assertTrue(syncSettings.isEnabled());
-        assertEquals(source, syncSettings.getSourcePathInVfs().get(0));
+        assertEquals(source, syncSettings.getSourceListInVfs().get(0));
         assertEquals(dest, syncSettings.getDestinationPathInRfs());
     }
 
@@ -168,7 +168,7 @@ public class TestSynchronize extends OpenCmsTestCase {
         syncSettings.setDestinationPathInRfs(getTestDataPath("") + "sync" + File.separator);
         ArrayList sourceList = new ArrayList();
         sourceList.add(source);
-        syncSettings.setSourcePathInVfs(sourceList);
+        syncSettings.setSourceListInVfs(sourceList);
         syncSettings.setEnabled(true);
         
         try {
@@ -178,7 +178,7 @@ public class TestSynchronize extends OpenCmsTestCase {
             storeResources(cms, source);
 
             echo("Synchronizing "
-                + syncSettings.getSourcePathInVfs()
+                + syncSettings.getSourceListInVfs()
                 + " with "
                 + syncSettings.getDestinationPathInRfs());
 
@@ -249,7 +249,7 @@ public class TestSynchronize extends OpenCmsTestCase {
         sourceList.add("/folder1/subfolder11/");
         sourceList.add("/folder1/subfolder12/");
         sourceList.add("/folder2/subfolder21/");
-        syncSettings.setSourcePathInVfs(sourceList);
+        syncSettings.setSourceListInVfs(sourceList);
         syncSettings.setEnabled(true);
         
         try {
@@ -261,7 +261,7 @@ public class TestSynchronize extends OpenCmsTestCase {
             // synchronize everything to the RFS
             new CmsSynchronize(cms, syncSettings, new CmsShellReport());
 
-            Iterator it = syncSettings.getSourcePathInVfs().iterator();
+            Iterator it = syncSettings.getSourceListInVfs().iterator();
             List tree = new ArrayList();
             
             // modify resources in the RFS

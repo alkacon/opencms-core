@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/06/07 15:03:46 $
- * Version: $Revision: 1.50 $
- * Date   : $Date: 2005/06/07 15:03:46 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/06/07 16:14:31 $
+ * Version: $Revision: 1.51 $
+ * Date   : $Date: 2005/06/07 16:14:31 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  */
 public class CmsSynchronize {
 
@@ -102,9 +102,6 @@ public class CmsSynchronize {
     /** The report to write the output to. */
     private I_CmsReport m_report;
 
-    /** The source path in the OpenCms VFS where the resources have to be synchronized from. */
-    private String m_sourcePathInVfs;
-
     /** Hashmap for the synchronisation list of the last sync process. */
     private HashMap m_syncList;
 
@@ -138,33 +135,41 @@ public class CmsSynchronize {
             if (m_destinationPathInRfs.endsWith(File.separator) || m_destinationPathInRfs.endsWith("/")) {
                 m_destinationPathInRfs = m_destinationPathInRfs.substring(0, m_destinationPathInRfs.length() - 1);
             }
-            Iterator i = settings.getSourcePathInVfs().iterator();
+
+            // create the sync list for this run
+            m_syncList = readSyncList();
+            m_newSyncList = new HashMap();
+
+            Iterator i = settings.getSourceListInVfs().iterator();
             while (i.hasNext()) {
                 // iterate all source folders
-                m_sourcePathInVfs = (String)i.next();
+                String sourcePathInVfs = (String)i.next();
 
                 report.println(org.opencms.workplace.threads.Messages.get().container(
                     org.opencms.workplace.threads.Messages.RPT_SYNCHRONIZE_VFS_FOLDER_1,
-                    m_sourcePathInVfs), I_CmsReport.C_FORMAT_HEADLINE);
+                    sourcePathInVfs), I_CmsReport.C_FORMAT_HEADLINE);
                 report.println(org.opencms.workplace.threads.Messages.get().container(
                     org.opencms.workplace.threads.Messages.RPT_SYNCHRONIZE_RFS_FOLDER_1,
                     m_destinationPathInRfs.replace('\\', '/')), I_CmsReport.C_FORMAT_HEADLINE);
-
-                m_syncList = readSyncList();
-                // create the sync list for this run
-                m_newSyncList = new HashMap();
-                // synchronice the VFS and the FS
-                syncVfsFs(m_sourcePathInVfs);
-                // remove files from the FS
-                removeFromFs(m_destinationPathInRfs);
-                // add new files from the FS
-                copyFromFs(m_sourcePathInVfs);
-                // write the sync list
-                writeSyncList();
-                // free mem
-                m_syncList = null;
-                m_newSyncList = null;
+                // synchronice the VFS and the RFS
+                syncVfsToRfs(sourcePathInVfs);
             }
+
+            // remove files from the RFS
+            removeFromRfs(m_destinationPathInRfs);
+            i = settings.getSourceListInVfs().iterator();
+
+            while (i.hasNext()) {
+                // add new files from the RFS
+                copyFromRfs((String)i.next());
+            }
+            
+            // write the sync list
+            writeSyncList();
+            
+            // free mem
+            m_syncList = null;
+            m_newSyncList = null;
         } else {
             throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_INIT_SYNC_0));
         }
@@ -176,7 +181,7 @@ public class CmsSynchronize {
      * @param folder the folder in the VFS to be synchronized with the FS
      * @throws CmsException if something goes wrong
      */
-    private void copyFromFs(String folder) throws CmsException {
+    private void copyFromRfs(String folder) throws CmsException {
 
         // get the corresponding folder in the FS
         File[] res;
@@ -247,7 +252,7 @@ public class CmsSynchronize {
                     }
                 } else {
                     // do a recursion if the current resource is a folder
-                    copyFromFs(resname + "/");
+                    copyFromRfs(resname + "/");
                 }
             }
         }
@@ -660,18 +665,18 @@ public class CmsSynchronize {
     }
 
     /**
-     * Removes all resources in the FS which are deleted in the VFS.<p>
+     * Removes all resources in the RFS which are deleted in the VFS.<p>
      * 
      * @param folder the folder in the FS to check
      * @throws CmsException if something goes wrong
      */
-    private void removeFromFs(String folder) throws CmsException {
+    private void removeFromRfs(String folder) throws CmsException {
 
         // get the corresponding folder in the FS
         File[] res;
-        File fsFile = new File(folder);
+        File rfsFile = new File(folder);
         // get all resources in this folder
-        res = fsFile.listFiles();
+        res = rfsFile.listFiles();
         // now loop through all resources
         for (int i = 0; i < res.length; i++) {
             // get the corrsponding name in the VFS
@@ -679,7 +684,7 @@ public class CmsSynchronize {
             // recurse if it is an directory, we must go depth first to delete 
             // files
             if (res[i].isDirectory()) {
-                removeFromFs(res[i].getAbsolutePath());
+                removeFromRfs(res[i].getAbsolutePath());
             }
             // now check if this resource is still in the old sync list.
             // if so, then it does not exist in the FS anymore andm ust be 
@@ -712,7 +717,7 @@ public class CmsSynchronize {
         }
         // free mem
         res = null;
-        fsFile = null;
+        rfsFile = null;
     }
 
     /**
@@ -739,7 +744,7 @@ public class CmsSynchronize {
     }
 
     /**
-     * Synchronizes resources from the VFS to the FS. <p>
+     * Synchronizes resources from the VFS to the RFS. <p>
      *
      * During the synchronization process, the following actions will be done:<p>
      * 
@@ -754,7 +759,7 @@ public class CmsSynchronize {
      * @param folder The folder in the VFS to be synchronized with the FS
      * @throws CmsException if something goes wrong
      */
-    private void syncVfsFs(String folder) throws CmsException {
+    private void syncVfsToRfs(String folder) throws CmsException {
 
         int action = 0;
         //get all resources in the given folder
@@ -777,7 +782,7 @@ public class CmsSynchronize {
                     }
                     // recurse into the subfolders. This must be done before 
                     // the folder might be deleted!
-                    syncVfsFs(m_cms.getSitePath(res));
+                    syncVfsToRfs(m_cms.getSitePath(res));
                     if (action == C_DELETE_VFS) {
                         deleteFromVfs(res);
                     }

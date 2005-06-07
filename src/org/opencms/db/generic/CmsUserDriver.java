@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/02 07:12:13 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2005/06/07 16:14:31 $
+ * Version: $Revision: 1.97 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,6 +68,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.96 $
+ * @version $Revision: 1.97 $
  * @since 5.1
  */
 public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
@@ -104,6 +105,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /** The SQL manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
+    
+    /** The name of the admin user. */
+    protected String m_adminUserName;
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#createAccessControlEntry(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, int, int, int)
@@ -614,6 +618,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 CmsLog.LOG.info(Messages.get().key(Messages.INIT_SET_DIGEST_ERROR_0), e);
             }
         }
+        
+        m_adminUserName = OpenCms.getDefaultUsers().getUserAdmin();
 
         try {
             if (!existsGroup(dbc, OpenCms.getDefaultUsers().getGroupAdministrators(), null)) {
@@ -1496,16 +1502,30 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      */
     protected CmsUser internalCreateUser(ResultSet res) throws SQLException, IOException, ClassNotFoundException {
 
+        String userName = res.getString(m_sqlManager.readQuery("C_USERS_USER_NAME"));
+        
         // deserialize the additional userinfo hash
         ByteArrayInputStream bin = new ByteArrayInputStream(m_sqlManager.getBytes(
             res,
             m_sqlManager.readQuery("C_USERS_USER_INFO")));
         ObjectInputStream oin = new ObjectInputStream(bin);
-        Map info = (Map)oin.readObject();
+
+        Map info;
+        if (m_adminUserName.equals(userName)) {
+            // ensure the admin user can be read even if it's additional infos are defect
+            try {
+                info = (Map)oin.readObject();
+            } catch (IOException e) {
+                info = new HashMap();
+            }
+        } else {
+            // no exception handling for normal users
+            info = (Map)oin.readObject();
+        }
 
         return new CmsUser(
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_ID"))),
-            res.getString(m_sqlManager.readQuery("C_USERS_USER_NAME")),
+            userName,
             res.getString(m_sqlManager.readQuery("C_USERS_USER_PASSWORD")),
             res.getString(m_sqlManager.readQuery("C_USERS_USER_DESCRIPTION")),
             res.getString(m_sqlManager.readQuery("C_USERS_USER_FIRSTNAME")),

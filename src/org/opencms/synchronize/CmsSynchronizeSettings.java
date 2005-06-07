@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeSettings.java,v $
- * Date   : $Date: 2005/06/07 15:03:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/07 16:14:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.3
  */
 public class CmsSynchronizeSettings implements Serializable {
@@ -53,15 +53,15 @@ public class CmsSynchronizeSettings implements Serializable {
     /** Indicates if the synchronization is enabled or not. */
     private boolean m_enabled;
 
-    /** The source path of the synchronization in the OpenCms VFS. */
-    private List m_sourcePathInVfs;
+    /** The source path list of the synchronization in the OpenCms VFS. */
+    private List m_sourceListInVfs;
 
     /**
      * Empty constructor, called from the configuration.<p>
      */
     public CmsSynchronizeSettings() {
 
-        m_sourcePathInVfs = new ArrayList();
+        m_sourceListInVfs = new ArrayList();
     }
 
     /**
@@ -81,9 +81,9 @@ public class CmsSynchronizeSettings implements Serializable {
      * 
      * @return the source path list of the synchronization in the OpenCms VFS
      */
-    public List getSourcePathInVfs() {
+    public List getSourceListInVfs() {
 
-        return m_sourcePathInVfs;
+        return m_sourceListInVfs;
     }
 
     /**
@@ -106,7 +106,7 @@ public class CmsSynchronizeSettings implements Serializable {
      */
     public boolean isSyncEnabled() {
 
-        return isEnabled() && (m_sourcePathInVfs != null) && (m_destinationPathInRfs != null);
+        return isEnabled() && (m_sourceListInVfs != null) && (m_destinationPathInRfs != null);
     }
 
     /**
@@ -138,14 +138,14 @@ public class CmsSynchronizeSettings implements Serializable {
      * 
      * The objects in the list must be of type <code>{@link String}</code>.
      * 
-     * @param sourcePathInVfs the source path list of the synchronization in the OpenCms VFS to set
+     * @param sourceListInVfs the source path list of the synchronization in the OpenCms VFS to set
      */
-    public void setSourcePathInVfs(List sourcePathInVfs) {
+    public void setSourceListInVfs(List sourceListInVfs) {
 
-        if (sourcePathInVfs == null) {
-            m_sourcePathInVfs = new ArrayList();
+        if (sourceListInVfs == null) {
+            m_sourceListInVfs = new ArrayList();
         } else {
-            m_sourcePathInVfs = sourcePathInVfs;
+            m_sourceListInVfs = sourceListInVfs;
         }
     }
 }

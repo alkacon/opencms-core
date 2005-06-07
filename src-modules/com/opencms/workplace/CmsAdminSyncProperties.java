@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2005/06/07 15:03:46 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/07 16:14:31 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -106,10 +107,11 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
                 session.removeValue("lasturl");
                 session.putValue(C_STEP, "nextstep");
             }
-        } else {
+        } else {            
             if("OK".equalsIgnoreCase(step)) {
                 syncPath = (String)parameters.get(C_SYNCPATH);
                 allResources = (String)parameters.get(C_SYNCRESOURCES);
+                Vector folders = null;
                 // the form has just been submitted, store the data in the session
                 if(((syncPath == null) || syncPath.equals("")) ||
                     ((allResources == null) || allResources.equals(""))) {
@@ -120,29 +122,32 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
                     session.putValue(C_SYNCRESOURCES, allResources);
                     // 'allResources' has the "form res1;res2;...resk;"
                     // this is because the simpler 'getParameterValues' method doesn't work with Silverstream
-                    Vector folders = parseResources(allResources);
-                    if (folders.size() >= 1) {
-                        allResources = (String)folders.elementAt(0);
-                    }
+                    folders = parseResources(allResources);
+                    checkRedundancies(folders);
                     
-                    // modify the foldername if nescessary (the root folder is always given
-                    // as a nice name)
-                    if(lang.getLanguageValue("title.rootfolder").equals(allResources)) {
-                        allResources = "/";
-                    }
-
-                    // numRes = folders.size(); // could have been changed
-                    // check if all the resources are writeable
-                    // if not, return a message
                     Vector notWriteable = new Vector();
-                    if(!isReadable(cms, allResources)) {
-                        notWriteable.addElement(allResources);
-                        templateSelector = "errorsyncproperties";
+                    Iterator it = folders.iterator();
+                    while (it.hasNext()) {
+                        
+                        String source = (String)it.next();
+
+                        // modify the foldername if nescessary (the root folder is always given
+                        // as a nice name)
+                        if (lang.getLanguageValue("title.rootfolder").equals(source)) {
+                            source = "/";
+                        }
+
+                        // check if all the resources are writeable
+                        // if not, return a message
+                        if (!isReadable(cms, source)) {
+                            notWriteable.addElement(source);
+                            templateSelector = "errorsyncproperties";
+                        }
                     }
 
                     if("errorsyncproperties".equals(templateSelector)){
                         // at least one of the choosen folders was not writeable
-                        templateDocument.setData("details", "The following folders were not writeable:"
+                        templateDocument.setData("details", "The following folders were not readable:"
                                 + notWriteable.toString());
                     }
                 }
@@ -150,11 +155,11 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
 
                     // now update the settings
                     CmsSynchronizeSettings settings = new CmsSynchronizeSettings();
-                    settings.setEnabled(true);
+                    settings.setEnabled(! "-".equals(syncPath));
                     settings.setDestinationPathInRfs(syncPath);
-                    ArrayList list = new ArrayList();
-                    list.add(allResources);
-                    settings.setSourcePathInVfs(list);
+                    if (folders != null) {
+                        settings.setSourceListInVfs(new ArrayList(folders));                        
+                    }
                     
                     CmsUserSettings userSettings = new CmsUserSettings(cms.getRequestContext().currentUser());
                     userSettings.setSynchronizeSettings(settings);
@@ -199,7 +204,17 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
             }
         }
         if((allResources == null) || ("".equals(allResources))) {
-            allResources = (String)settings.getSourcePathInVfs().get(0);
+            if (settings.getSourceListInVfs().size() > 0) {
+                StringBuffer result = new StringBuffer();
+                Iterator it = settings.getSourceListInVfs().iterator();
+                while (it.hasNext()) {
+                    result.append(it.next());
+                    if (it.hasNext()) {
+                        result.append(';');
+                    }
+                }                
+                allResources = result.toString(); 
+            }
             if (allResources == null) {
                 allResources = "";
             }
