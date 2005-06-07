@@ -400,10 +400,36 @@ ${opencms.inputlib.textextraction}
     <target name="tomcat.update" 
     	depends="jar, tomcat.copy" description="Recompile changed classes and install in Tomcat webapps directory"/>      
 
-
     <target name="tomcat.all" 
     	depends="clean, tomcat.update" description="Do a complete recompile of all classes and install in Tomcat webapps directory"/>              
     
+    <target name="jboss.copy" 
+    	description="Copy updated files to JBoss directory">
+
+       	<copy todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF/lib">
+            <fileset dir="${opencms.input.libs}">
+                <include name="**/*.jar"/>
+                <include name="**/*.zip"/>
+                <exclude name="**/servlet.jar"/>
+                <exclude name="**/junit.jar"/>
+                <exclude name="${excludes}" />
+            </fileset>
+        </copy>    	
+        <copy todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF/lib">
+            <fileset dir="${opencms.output.jars}">
+                <include name="*.jar"/>
+                <include name="*.zip"/>
+                <exclude name="**/servlet.jar"/>
+                <exclude name="**/junit.jar"/>
+                <exclude name="${excludes}" />
+            </fileset>
+        </copy>     
+        <copy file="${opencms.input.warfiles}/WEB-INF/web.xml" todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF"/>
+        <copy file="${opencms.input.warfiles}/WEB-INF/opencms.tld" todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF"/>       
+    </target>     
+       
+    <target name="jboss.update" 
+    	depends="jar, jboss.copy" description="Recompile changed classes and install in JBoss deploy directory"/>      
     
     <target name="bindist" 
     	depends="clean" description="Creates a binary distribution ZIP, including the templateone demopages">

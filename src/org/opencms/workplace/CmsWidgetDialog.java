@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/06 08:10:27 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/06/07 16:25:39 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -90,6 +90,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** Prefix for "hidden" parameters, required since these must be unescaped later. */
     public static final String HIDDEN_PARAM_PREFIX = "hidden.";
+
+    /** Optional localized key prefix identificator. */
+    private String m_prefix;
 
     /** The errors thrown by commit actions. */
     protected List m_commitErrors;
@@ -148,6 +151,18 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     public CmsWidgetDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Sets an optional localized key prefix identificator for all widgets.<p>  
+     * 
+     * @param prefix the optional localized key prefix identificator for all widgets
+     * 
+     * @see org.opencms.widgets.I_CmsWidgetParameter#setKeyPrefix(java.lang.String)
+     */
+    protected void setKeyPrefix(String prefix) {
+
+        m_prefix = prefix;
     }
 
     /**
@@ -700,9 +715,10 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         if (m_widgets == null) {
             m_widgets = new ArrayList();
         }
+        param.setKeyPrefix(m_prefix);
         m_widgets.add(param);
     }
-    
+
     /**
      * Returns <code>true</code> if the dialog should be closed after the values have been committed.<p>
      * 
@@ -712,7 +728,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * @return <code>true</code> if the dialog should be closed after the values have been committed
      */
     protected boolean closeDialogOnCommit() {
-        
+
         return getCommitErrors().size() == 0;
     }
 
@@ -1158,6 +1174,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
                 if (required) {
                     CmsWidgetDialogParameter param = new CmsWidgetDialogParameter(base, params.size(), j);
+                    param.setKeyPrefix(m_prefix);
                     base.getWidget().setEditorValue(getCms(), processedParamters, this, param);
                     params.add(param);
                 }

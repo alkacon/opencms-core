@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/07 16:25:40 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/07 16:25:40 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -474,7 +474,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         // fill the names and values
         int n = 0;
         for(int z = 0;z < groups.size();z++) {
-            if(((CmsGroup)groups.get(z)).getProjectmanager()) {
+            if(((CmsGroup)groups.get(z)).getProjectManager()) {
                 String name = ((CmsGroup)groups.get(z)).getName();
                 if(defaultGroup.equals(name)) {
                     retValue = n;

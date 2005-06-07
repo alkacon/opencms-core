@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.520 $
+ * Date   : $Date: 2005/06/07 16:25:40 $
+ * Version: $Revision: 1.521 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -109,7 +109,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.520 $
+ * @version $Revision: 1.521 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2174,7 +2174,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // get all users in this group
         users = getUsersOfGroup(dbc, name);
         // delete group only if it has no childs and there are no users in this group.
-        if ((childs == null) && ((users == null) || (users.size() == 0))) {
+        if ((childs == null || childs.size()==0) && ((users == null) || (users.size() == 0))) {
             CmsProject onlineProject = readProject(dbc, I_CmsConstants.C_PROJECT_ONLINE_ID);
             m_userDriver.deleteGroup(dbc, name);
             m_userDriver.removeAccessControlEntriesForPrincipal(dbc, dbc.currentProject(), onlineProject, group.getId());
@@ -2920,20 +2920,17 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsGroup group = null;
 
         // get all child groups if the user group
-        childs = m_userDriver.readChildGroups(dbc, groupname);
-        if (childs != null) {
-            allChilds = childs;
-            // now get all subchilds for each group
-            Iterator it = childs.iterator();
-            while (it.hasNext()) {
-                group = (CmsGroup)it.next();
-                subchilds = getChilds(dbc, group.getName());
-                //add the subchilds to the already existing groups
-                Iterator itsub = subchilds.iterator();
-                while (itsub.hasNext()) {
-                    group = (CmsGroup)itsub.next();
-                    allChilds.add(group);
-                }
+        allChilds = m_userDriver.readChildGroups(dbc, groupname);
+        // now get all subchilds for each group
+        Iterator it = childs.iterator();
+        while (it.hasNext()) {
+            group = (CmsGroup)it.next();
+            subchilds = getChilds(dbc, group.getName());
+            //add the subchilds to the already existing groups
+            Iterator itsub = subchilds.iterator();
+            while (itsub.hasNext()) {
+                group = (CmsGroup)itsub.next();
+                allChilds.add(group);
             }
         }
         return allChilds;
@@ -7292,11 +7289,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if ((group.getId().equals(user)) || (group.getId().equals(admin)) || (group.getId().equals(manager))) {
             return false;
         } else {
-            CmsUUID parentId = group.getParentId();
             // check if the group belongs to Users, Administrators or Projectmanager
-            if (!parentId.isNullUUID()) {
+            if (!group.getParentId().isNullUUID()) {
                 // check is the parentgroup is a webgroup
-                return isWebgroup(dbc, m_userDriver.readGroup(dbc, parentId));
+                return isWebgroup(dbc, m_userDriver.readGroup(dbc, group.getParentId()));
             }
         }
 

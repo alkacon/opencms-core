@@ -1,0 +1,106 @@
+<%@ page import="org.opencms.workplace.*,
+                 org.opencms.main.*,
+                 org.opencms.util.*,
+                 org.opencms.file.*,
+                 org.opencms.workplace.list.*,
+                 org.opencms.workplace.tools.accounts.*,
+                 java.util.*" 
+         buffer="none" %>
+<%     
+    // check the parameters
+    CmsDialog checkDialog = new CmsDialog(pageContext, request, response);
+    try {
+       checkDialog.getCms().readGroup(request.getParameter("groupname"));
+       checkDialog.getCms().readGroup(new CmsUUID(request.getParameter("groupid")));
+    } catch(Exception e) {
+        // redirect to parent if parameters not available
+        checkDialog.actionCloseDialog();
+        return;
+    }
+
+    // start dialog
+    CmsEditGroupDialog wp_info = new CmsEditGroupDialog(pageContext, request, response) {
+            
+            /**
+             * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtml()
+             */
+            protected String defaultActionHtml() throws JspException {
+
+                StringBuffer result = new StringBuffer(2048);
+                result.append(defaultActionHtmlStart());
+                result.append(defaultActionHtmlContent());
+                return result.toString();
+
+            }
+        };
+
+    CmsGroupUsersList in_wp = new CmsGroupUsersList(pageContext, request, response);
+    CmsNotGroupUsersList out_wp = new CmsNotGroupUsersList(pageContext, request, response);
+
+    A_CmsGroupUsersList wp = (in_wp.isActive()? (A_CmsGroupUsersList)in_wp: (A_CmsGroupUsersList)out_wp);
+    if (wp.getAction()==A_CmsListDialog.ACTION_CANCEL) {
+        in_wp.removeList();
+        out_wp.removeList();         
+    }
+
+	// perform the dialog action	
+	wp_info.displayDialog();
+
+//////////////////// start of switch statement 
+switch (wp.getAction()) {    
+    //////////////////// ACTION: closelink
+    case A_CmsListDialog.ACTION_CANCEL:
+         return;
+
+    //////////////////// ACTION: default actions
+    case A_CmsListDialog.ACTION_LIST_SEARCH:
+    case A_CmsListDialog.ACTION_LIST_SORT:
+    case A_CmsListDialog.ACTION_LIST_SELECT_PAGE:
+         wp.executeDefaultActions();
+         break;
+
+    //////////////////// ACTION: execute single list action
+    case A_CmsListDialog.ACTION_LIST_SINGLE_ACTION:
+         wp.executeListSingleActions();
+         in_wp.refreshList();
+         out_wp.refreshList();
+         wp.updateGroupList();
+         break;
+
+    //////////////////// ACTION: execute multiple list actions
+    case A_CmsListDialog.ACTION_LIST_MULTI_ACTION:
+         wp.executeListMultiActions();
+         in_wp.refreshList();
+         out_wp.refreshList();
+         wp.updateGroupList();
+         break;
+
+
+} //end getAction switch
+
+%>
+
+<%= wp.getList().listJs() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<table align='center' width='100%'>
+<tr>
+<td width='50%' valign='top'>
+<form name="<%=in_wp.getList().getId()%>-form" action="<%= in_wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="<%=in_wp.getList().onSubmitSearch(in_wp) %>">
+<%= in_wp.allParamsAsHidden() %>
+<%= in_wp.getList().listHtml(in_wp) %>
+</form>
+</td>
+<td width='20'>&nbsp;</td>
+<td width='50%' valign='top'>
+<form name="<%=out_wp.getList().getId()%>-form" action="<%= out_wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="<%=out_wp.getList().onSubmitSearch(out_wp) %>">
+<%= out_wp.allParamsAsHidden() %>
+<%= out_wp.getList().listHtml(out_wp) %>
+</form>
+</td>
+</tr>
+</table>
+<%= wp.dialogContentEnd() %>
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>

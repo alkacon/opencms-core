@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/general.js,v $
- * Date   : $Date: 2005/06/04 08:11:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/07 16:25:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -152,16 +152,20 @@ function setActiveItemByName(name) {
  * which contains the help text.
  */
 function sMH(obj_id) {
-   if (!isFramed() && !parent.parent.admin_content) {
-      showHelp(obj_id);
-   } else {
-      try {
-         var writezone = document.getElementById('help' + obj_id);
-         context = writezone.firstChild.nodeValue;
-      } catch(e) {
-         context = obj_id;
+   try {
+      if (!isFramed() && !parent.parent.admin_content) {
+         showHelp(obj_id);
+      } else {
+         try {
+            var writezone = document.getElementById('help' + obj_id);
+            context = writezone.firstChild.nodeValue;
+         } catch(e) {
+            context = obj_id;
+         }
+         setContextHelp(context);
       }
-      setContextHelp(context);
+   } catch(e) {
+      // ignore
    }
 }
 
@@ -173,10 +177,14 @@ function sMH(obj_id) {
  * which contains the help text.
  */
 function hMH(obj_id) {
-   if (!isFramed() && !parent.parent.admin_content) {
-      hideHelp(obj_id);
-   } else {
-      setContextHelp('');
+   try {
+      if (!isFramed() && !parent.parent.admin_content) {
+         hideHelp(obj_id);
+      } else {
+         setContextHelp('');
+      }
+   } catch(e) {
+      // ignore
    }
 }
 

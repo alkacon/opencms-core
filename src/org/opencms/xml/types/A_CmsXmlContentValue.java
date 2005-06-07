@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/05/23 09:36:51 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/07 16:25:40 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_CmsWidgetParameter {
@@ -85,6 +85,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /** The content definition this schema type belongs to. */
     private CmsXmlContentDefinition m_contentDefinition;
 
+    /** Optional localized key prefix identificator. */
+    private String m_prefix = null;
+
     /**
      * Default constructor for a xml content type 
      * that initializes some internal values.<p> 
@@ -94,7 +97,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         m_minOccurs = 0;
         m_maxOccurs = Integer.MAX_VALUE;
     }
-    
+
     /**
      * Initializes the required members for this XML content value.<p>
      * 
@@ -212,9 +215,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
                 value.setStringValue(cms, defaultValue);
             } catch (CmsRuntimeException e) {
                 // should not happen if default value is correct
-                LOG.error(Messages.get().key(
-                    Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1,
-                    defaultValue), e);
+                LOG.error(Messages.get().key(Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1, defaultValue), e);
                 element.clearContent();
             }
         }
@@ -289,6 +290,10 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     public String getKey() {
 
         StringBuffer result = new StringBuffer(128);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_prefix)) {
+            result.append(m_prefix);
+            result.append('.');
+        }
         result.append(m_contentDefinition.getInnerName());
         result.append('.');
         result.append(getName());
@@ -354,7 +359,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
 
         return null;
     }
-    
+
     /**
      * @see org.opencms.widgets.I_CmsWidgetParameter#hasError()
      */
@@ -399,6 +404,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsWidgetParameter#setKeyPrefix(java.lang.String)
+     */
+    public void setKeyPrefix(String prefix) {
+
+        m_prefix = prefix;
+    }
+
+    /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#validateValue(java.lang.String)
      */
     public boolean validateValue(String value) {
@@ -422,9 +435,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         try {
             schemaDefinition = CmsFileUtil.readFile(schemaUri, CmsEncoder.C_UTF8_ENCODING);
         } catch (Exception e) {
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                schemaUri), e);
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1, schemaUri), e);
         }
         return schemaDefinition;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialogParameter.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/07 16:25:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.9.1
  */
 public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
@@ -99,6 +99,9 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
 
     /** The name of the parameter. */
     protected String m_name;
+
+    /** Optional localized key prefix identificator. */
+    protected String m_prefix;
 
     /** The value of the parameter. */
     protected String m_value;
@@ -471,7 +474,13 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
      */
     public String getKey() {
 
-        return getName();
+        StringBuffer result = new StringBuffer(128);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_prefix)) {
+            result.append(m_prefix);
+            result.append('.');
+        }
+        result.append(getName());
+        return result.toString();
     }
 
     /**
@@ -592,6 +601,14 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
 
         m_index = index;
         m_id = createId(m_name, m_index);
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidgetParameter#setKeyPrefix(java.lang.String)
+     */
+    public void setKeyPrefix(String prefix) {
+
+        m_prefix = prefix;
     }
 
     /**

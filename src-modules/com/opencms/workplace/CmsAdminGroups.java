@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/07 16:25:40 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.4 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/07 16:25:40 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -284,7 +284,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault {
                     if(theGroup == null) {
                         throw new CmsLegacyException("user does not exist");
                     }
-                    projectManager = theGroup.getProjectmanager();
+                    projectManager = theGroup.getProjectManager();
                     projectCoWorker = theGroup.getProjectCoWorker();
                     role = theGroup.getRole();
                     description = theGroup.getDescription();

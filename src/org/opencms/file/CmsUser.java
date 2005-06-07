@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/07 16:25:40 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -535,7 +535,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public boolean isEnabled() {
 
-        return (getFlags() != I_CmsConstants.C_FLAG_DISABLED);
+        return (getFlags() == I_CmsConstants.C_FLAG_ENABLED);
     }
 
     /**

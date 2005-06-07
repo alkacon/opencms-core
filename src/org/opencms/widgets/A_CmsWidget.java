@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/06/04 08:11:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/07 16:25:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,20 +41,20 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public abstract class A_CmsWidget implements I_CmsWidget {
 
     /** Postfix for melp message locale. */
-    static final String HELP_POSTFIX = "help";
+    static final String HELP_POSTFIX = ".help";
 
     /** Prefix for message locales. */
-    static final String LABEL_PREFIX = "editor.label.";
+    static final String LABEL_PREFIX = "label.";
 
     /** The configuration options of this widget. */
     private String m_configuration;
-
+    
     /** 
      * Constructor for preprocessing the configuration string.<p>
      * 
@@ -77,7 +77,6 @@ public abstract class A_CmsWidget implements I_CmsWidget {
         StringBuffer result = new StringBuffer(64);
         result.append(LABEL_PREFIX);
         result.append(param.getKey());
-        result.append('.');
         result.append(HELP_POSTFIX);
 
         return result.toString();
@@ -95,7 +94,6 @@ public abstract class A_CmsWidget implements I_CmsWidget {
         StringBuffer result = new StringBuffer(64);
         result.append(LABEL_PREFIX);
         result.append(param.getKey());
-
         return result.toString();
     }
 

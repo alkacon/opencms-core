@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/07 16:14:31 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2005/06/07 16:25:39 $
+ * Version: $Revision: 1.98 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.97 $
+ * @version $Revision: 1.98 $
  * @since 5.1
  */
 public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
@@ -820,10 +820,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        //check if the child vector has no elements, set it to null.
-        if (childs.size() == 0) {
-            childs = null;
         }
         return childs;
     }

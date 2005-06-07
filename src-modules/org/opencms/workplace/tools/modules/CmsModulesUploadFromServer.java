@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/07 16:25:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.9.1
  */
 public class CmsModulesUploadFromServer extends CmsWidgetDialog {
@@ -213,7 +213,7 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         if (dialog.equals(PAGES[0])) {
-            result.append(dialogBlockStart(key("editor.label.uploadfromserver")));
+            result.append(dialogBlockStart(key("label.uploadfromserver")));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(0, 0));
             result.append(createWidgetTableEnd());

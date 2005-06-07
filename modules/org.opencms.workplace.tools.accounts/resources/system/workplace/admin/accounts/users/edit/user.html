@@ -1,0 +1,23 @@
+<%@ page buffer="none" import="
+        org.opencms.workplace.*,
+        org.opencms.util.*,
+	org.opencms.workplace.tools.accounts.*
+"%><%	
+
+    // check the parameters
+    CmsDialog checkDialog = new CmsDialog(pageContext, request, response);
+    try {
+       checkDialog.getCms().readUser(request.getParameter("username"));
+       checkDialog.getCms().readUser(new CmsUUID(request.getParameter("userid")));
+    } catch(Exception e) {
+        // redirect to parent if parameters not available
+        checkDialog.actionCloseDialog();
+        return;
+    }
+    // start dialog
+	// initialize the workplace class
+	CmsEditUserDialog wp = new CmsEditUserDialog(pageContext, request, response);
+	
+	// perform the dialog action	
+	wp.displayDialog();
+%>

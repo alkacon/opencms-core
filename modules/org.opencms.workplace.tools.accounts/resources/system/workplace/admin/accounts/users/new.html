@@ -1,0 +1,12 @@
+<%@ page buffer="none" import="
+        java.util.*,
+        org.opencms.util.*,
+	org.opencms.workplace.tools.accounts.*
+"%><%	
+
+	// initialize the workplace class
+	CmsEditUserDialog wp = new CmsEditUserDialog(pageContext, request, response);
+	
+	// perform the dialog action	
+	wp.displayDialog();
+%>

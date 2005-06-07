@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesOverview.java,v $
- * Date   : $Date: 2005/06/06 13:44:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/07 16:25:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsModulesOverview extends CmsWidgetDialog {
@@ -171,11 +171,11 @@ public class CmsModulesOverview extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         if (dialog.equals(PAGES[0])) {
-            result.append(dialogBlockStart(key("editor.label.moduleinformation")));
+            result.append(dialogBlockStart(key("label.moduleinformation")));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(0, 5));
             result.append(createWidgetTableEnd());
-            result.append(dialogBlockStart(key("editor.label.modulecreator")));
+            result.append(dialogBlockStart(key("label.modulecreator")));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(6, 7));
             result.append(createWidgetTableEnd());
