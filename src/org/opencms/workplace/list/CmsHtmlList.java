@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/06/04 08:11:29 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/07 10:07:43 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -357,6 +357,12 @@ public class CmsHtmlList {
             state = getState();
         }
         addAllItems(listItems);
+        if (m_filteredItems != null) {
+            m_filteredItems.addAll(listItems);
+        }
+        if (m_visibleItems != null) {
+            m_visibleItems.addAll(listItems);
+        }        
         if (state != null) {
             setState(state, locale);
         }
@@ -377,6 +383,12 @@ public class CmsHtmlList {
             state = getState();
         }
         addItem(listItem);
+        if (m_filteredItems != null) {
+            m_filteredItems.add(listItem);
+        }
+        if (m_visibleItems != null) {
+            m_visibleItems.add(listItem);
+        }        
         if (state != null) {
             setState(state, locale);
         }
@@ -529,6 +541,12 @@ public class CmsHtmlList {
             state = getState();
         }
         m_originalItems.removeAll(removedItems);
+        if (m_filteredItems != null) {
+            m_filteredItems.removeAll(removedItems);
+        }
+        if (m_visibleItems != null) {
+            m_visibleItems.removeAll(removedItems);
+        }        
         if (state != null) {
             setState(state, locale);
         }
@@ -566,6 +584,12 @@ public class CmsHtmlList {
             state = getState();
         }
         m_originalItems.remove(item);
+        if (m_filteredItems != null) {
+            m_filteredItems.remove(item);
+        }
+        if (m_visibleItems != null) {
+            m_visibleItems.remove(item);
+        }
         if (state != null) {
             setState(state, locale);
         }
