@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.191 $
+ * Date   : $Date: 2005/06/07 15:03:46 $
+ * Version: $Revision: 1.192 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -128,7 +128,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.191 $
+ * @version $Revision: 1.192 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -834,8 +834,6 @@ public final class OpenCmsCore {
         getSystemInfo().setMailSettings(systemConfiguration.getMailSettings());
         // set HTTP authentication settings
         getSystemInfo().setHttpAuthenticationSettings(systemConfiguration.getHttpAuthenticationSettings());
-        // set synchronize configuration
-        getSystemInfo().setSynchronizeSettings(new CmsSynchronizeSettings());
         // set the scheduler manager
         m_scheduleManager = systemConfiguration.getScheduleManager();
         // set resource init classes

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/05/31 14:39:21 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/06/07 15:03:46 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.main;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.mail.CmsMailSettings;
-import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
@@ -52,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -78,6 +77,9 @@ public class CmsSystemInfo {
     /** The default web application (usually "ROOT"). */
     private String m_defaultWebApplicationName;
 
+    /** The HTTP basic authentication settings. */
+    private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;
+
     /** The settings for the internal OpenCms email service. */
     private CmsMailSettings m_mailSettings;
 
@@ -96,9 +98,6 @@ public class CmsSystemInfo {
     /** The startup time of this OpenCms instance. */
     private long m_startupTime;
 
-    /** The settings for the synchronization. */
-    private CmsSynchronizeSettings m_synchronizeSettings;
-    
     /** The version identifier of this OpenCms installation, contains "OpenCms/" and the version number. */
     private String m_version;
 
@@ -122,9 +121,6 @@ public class CmsSystemInfo {
 
     /** The OpenCms web application "WEB-INF" path (in the "real" file system). */
     private String m_webInfRfsPath;
-    
-    /** The HTTP basic authentication settings. */
-    private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;   
 
     /**
      * Creates a new system info container.<p>
@@ -251,6 +247,16 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Returns the HTTP authentication settings.<p>
+     *
+     * @return the HTTP authentication settings
+     */
+    public CmsHttpAuthenticationSettings getHttpAuthenticationSettings() {
+
+        return m_httpAuthenticationSettings;
+    }
+
+    /**
      * Returns the filename of the logfile (in the "real" file system).<p>
      * 
      * If the method returns <code>null</code>, this means that the log
@@ -356,16 +362,6 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the current settings for the synchronization.<p>
-     * 
-     * @return the current settings for the synchronization
-     */
-    public CmsSynchronizeSettings getSynchronizeSettings() {
-
-        return m_synchronizeSettings;
-    }
-
-    /**
      * Returns the identifier "OpenCms/" plus the OpenCms version number.<p>
      * 
      * This information is used for example to identify OpenCms in http response headers.<p>
@@ -373,7 +369,7 @@ public class CmsSystemInfo {
      * @return the identifier "OpenCms/" plus the OpenCms version number
      */
     public String getVersion() {
-        
+
         return m_version;
     }
 
@@ -399,7 +395,7 @@ public class CmsSystemInfo {
 
         return m_versionName;
     }
-    
+
     /**
      * Returns the version number of this OpenCms system.<p>
      *
@@ -467,16 +463,6 @@ public class CmsSystemInfo {
 
         // TODO: make configurable
         return true;
-    }
-
-    /**
-     * Sets the settings for the synchronization.<p>
-     * 
-     * @param synchronizeSettings the settings for the synchronization to set
-     */
-    public void setSynchronizeSettings(CmsSynchronizeSettings synchronizeSettings) {
-
-        m_synchronizeSettings = synchronizeSettings;
     }
 
     /**
@@ -581,6 +567,16 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Sets the HTTP authentication settings.<p>
+     *
+     * @param httpAuthenticationSettings the HTTP authentication settings to set
+     */
+    protected void setHttpAuthenticationSettings(CmsHttpAuthenticationSettings httpAuthenticationSettings) {
+
+        m_httpAuthenticationSettings = httpAuthenticationSettings;
+    }
+
+    /**
      * Sets the settings for the internal OpenCms email service.<p>
      * 
      * @param mailSettings the settings for the internal OpenCms email service to set
@@ -632,25 +628,4 @@ public class CmsSystemInfo {
         // set OpenCms version identifier with propery values
         m_version = "OpenCms/" + m_versionNumber;
     }
-    
-    /**
-     * Returns the HTTP authentication settings.<p>
-     *
-     * @return the HTTP authentication settings
-     */
-    public CmsHttpAuthenticationSettings getHttpAuthenticationSettings() {
-
-        return m_httpAuthenticationSettings;
-    }
-    
-    /**
-     * Sets the HTTP authentication settings.<p>
-     *
-     * @param httpAuthenticationSettings the HTTP authentication settings to set
-     */
-    protected void setHttpAuthenticationSettings(CmsHttpAuthenticationSettings httpAuthenticationSettings) {
-
-        m_httpAuthenticationSettings = httpAuthenticationSettings;
-    }   
-    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeSettings.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/07 15:03:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.synchronize;
 
 import org.opencms.util.CmsStringUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,87 +42,110 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3
  */
-public class CmsSynchronizeSettings {
-    
+public class CmsSynchronizeSettings implements Serializable {
+
     /** The destination path of the synchronization in the "real" file system. */
     private String m_destinationPathInRfs;
-    
+
+    /** Indicates if the synchronization is enabled or not. */
+    private boolean m_enabled;
+
     /** The source path of the synchronization in the OpenCms VFS. */
-    private String m_sourcePathInVfs;
-    
-    /** The list of instanciated synchronize modification classes. */
-    private List m_synchronizeModifications;
-    
+    private List m_sourcePathInVfs;
+
     /**
      * Empty constructor, called from the configuration.<p>
      */
     public CmsSynchronizeSettings() {
-        m_synchronizeModifications = new ArrayList();
+
+        m_sourcePathInVfs = new ArrayList();
     }
-    
-    /**
-     * Returns <code>true</code> if the synchonization is enabled.<p>
-     * 
-     * The synchonization is enabled if both source and destination 
-     * path is set.<p>
-     * 
-     * @return <code>true</code> if the synchonization is enabled
-     */
-    public boolean isSyncEnabled() {
-        return (m_sourcePathInVfs != null) && (m_destinationPathInRfs != null);
-    }    
-    
+
     /**
      * Returns the destination path of the synchronization in the "real" file system.<p>
      * 
      * @return the destination path of the synchronization in the "real" file system
      */
     public String getDestinationPathInRfs() {
+
         return m_destinationPathInRfs;
     }
-    
+
     /**
-     * Returns the source path of the synchronization in the OpenCms VFS.<p>
+     * Returns the source path list of the synchronization in the OpenCms VFS.<p>
      * 
-     * @return the source path of the synchronization in the OpenCms VFS
+     * The objects in the list are of type <code>{@link String}</code>.
+     * 
+     * @return the source path list of the synchronization in the OpenCms VFS
      */
-    public String getSourcePathInVfs() {
+    public List getSourcePathInVfs() {
+
         return m_sourcePathInVfs;
     }
-    
+
     /**
-     * Returns the list of instanciated synchronize modification classes.<p>
-     * 
-     * @return the list of instanciated synchronize modification classes
+     * Returns the enabled flag which indicates if this synchronize settings are enabled or not.<p>
+     *
+     * @return the enabled flag
      */
-    public List getSynchronizeModifications() {
-        return m_synchronizeModifications;
+    public boolean isEnabled() {
+
+        return m_enabled;
     }
-    
+
+    /**
+     * Returns <code>true</code> if the synchonization is enabled.<p>
+     * 
+     * The synchonization is enabled if both source and destination 
+     * path is set, and also the enabled flag is true.<p>
+     * 
+     * @return <code>true</code> if the synchonization is enabled
+     */
+    public boolean isSyncEnabled() {
+
+        return isEnabled() && (m_sourcePathInVfs != null) && (m_destinationPathInRfs != null);
+    }
+
     /**
      * Sets the destination path of the synchronization in the "real" file system.<p>
      * 
      * @param destinationPathInRfs the destination path of the synchronization in the "real" file system to set
      */
     public void setDestinationPathInRfs(String destinationPathInRfs) {
-        m_destinationPathInRfs = destinationPathInRfs;
-        if (CmsStringUtil.isEmpty(m_destinationPathInRfs)) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(destinationPathInRfs)) {
             m_destinationPathInRfs = null;
+        } else {
+            m_destinationPathInRfs = destinationPathInRfs.trim();
         }
     }
-    
+
     /**
-     * Sets the source path of the synchronization in the OpenCms VFS.<p>
-     * 
-     * @param sourcePathInVfs the source path of the synchronization in the OpenCms VFS to set
+     * Sets the enabled flag which indicates if this synchronize settings are enabled or not.<p>
+     *
+     * @param enabled the enabled flag to set
      */
-    public void setSourcePathInVfs(String sourcePathInVfs) {
-        m_sourcePathInVfs = sourcePathInVfs;
-        if (CmsStringUtil.isEmpty(m_sourcePathInVfs)) {
-            m_sourcePathInVfs = null;
-        }        
+    public void setEnabled(boolean enabled) {
+
+        m_enabled = enabled;
+    }
+
+    /**
+     * Sets the source path list of the synchronization in the OpenCms VFS.<p>
+     * 
+     * The objects in the list must be of type <code>{@link String}</code>.
+     * 
+     * @param sourcePathInVfs the source path list of the synchronization in the OpenCms VFS to set
+     */
+    public void setSourcePathInVfs(List sourcePathInVfs) {
+
+        if (sourcePathInVfs == null) {
+            m_sourcePathInVfs = new ArrayList();
+        } else {
+            m_sourcePathInVfs = sourcePathInVfs;
+        }
     }
 }

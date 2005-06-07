@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/06/06 09:50:44 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/07 15:03:46 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,6 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -79,7 +77,8 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
+ * 
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -264,22 +263,21 @@ public class CmsShell {
                     }
                 }
             } catch (InvocationTargetException ite) {
-                System.out.println(
-                    Messages.get().key(getLocale(), 
-                    Messages.GUI_SHELL_EXEC_METHOD_1, 
+                System.out.println(Messages.get().key(
+                    getLocale(),
+                    Messages.GUI_SHELL_EXEC_METHOD_1,
                     new Object[] {foundMethod.getName()}));
                 ite.getTargetException().printStackTrace(System.out);
             } catch (Throwable t) {
-                System.out.println(
-                    Messages.get().key(getLocale(), 
-                    Messages.GUI_SHELL_EXEC_METHOD_1, 
+                System.out.println(Messages.get().key(
+                    getLocale(),
+                    Messages.GUI_SHELL_EXEC_METHOD_1,
                     new Object[] {foundMethod.getName()}));
                 t.printStackTrace(System.out);
             }
 
             return true;
         }
-        
 
         /**
          * Returns a signature overview of all methods containing the given search String.<p>
@@ -413,9 +411,9 @@ public class CmsShell {
 
     /** The shell prompt format. */
     private String m_prompt;
-    
+
     /** The current users settings. */
-    private CmsUserSettings  m_settings;
+    private CmsUserSettings m_settings;
 
     /** Internal shell command object. */
     private I_CmsShellCommands m_shellCommands;
@@ -473,12 +471,9 @@ public class CmsShell {
 
             // create a context object with 'Guest' permissions
             m_cms = m_opencms.initCmsObject(m_opencms.getDefaultUsers().getUserGuest());
-            
+
             // initialize the settings of the user
             m_settings = initSettings();
-            
-//            // set the site root to the default site
-//            m_cms.getRequestContext().setSiteRoot(m_opencms.getSiteManager().getDefaultSite().getSiteRoot());
 
             // initialize shell command object
             m_shellCommands = new CmsShellCommands();
@@ -587,23 +582,23 @@ public class CmsShell {
      * @return the current user's <code>Locale</code>.
      */
     public Locale getLocale() {
- 
-        if (getSettings() == null) {            
+
+        if (getSettings() == null) {
             return CmsLocaleManager.getDefaultLocale();
-        }        
+        }
         return getSettings().getLocale();
     }
-    
+
     /**
      * Obtain the additional settings related to the current user.
      * 
      * @return the additional settings related to the current user.
      */
     public CmsUserSettings getSettings() {
-        
+
         return m_settings;
-    }    
-    
+    }
+
     /**
      * Initializes the internal <code>CmsWorkplaceSettings</code> that contain (amongst other 
      * information) important information additional information about the current user 
@@ -616,9 +611,8 @@ public class CmsShell {
      * @return the user settings for the current user.
      */
     public CmsUserSettings initSettings() {
-        
-        CmsWorkplaceSettings wpSettings = CmsWorkplace.initWorkplaceSettings(m_cms, null, false);
-        m_settings = wpSettings.getUserSettings();
+
+        m_settings = new CmsUserSettings(m_cms.getRequestContext().currentUser());
         return m_settings;
     }
 
@@ -745,10 +739,11 @@ public class CmsShell {
                 }
             }
             commandMsg.append(")");
-            
-            System.out.println(
-                Messages.get().key(getLocale(), Messages.GUI_SHELL_METHOD_NOT_FOUND_1,
-                    new Object[]{commandMsg.toString()}));
+
+            System.out.println(Messages.get().key(
+                getLocale(),
+                Messages.GUI_SHELL_METHOD_NOT_FOUND_1,
+                new Object[] {commandMsg.toString()}));
             System.out.println(Messages.get().key(Messages.GUI_SHELL_HR_0));
             ((CmsShellCommands)m_shellCommands).help();
         }

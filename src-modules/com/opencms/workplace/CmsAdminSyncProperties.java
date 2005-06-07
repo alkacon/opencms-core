@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/07 15:03:46 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
@@ -36,11 +37,13 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.synchronize.CmsSynchronizeSettings;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -145,9 +148,17 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
                 }
                 if(templateSelector == null || "".equals(templateSelector)){
 
-                    // now update the registry
-                    OpenCms.getSystemInfo().getSynchronizeSettings().setDestinationPathInRfs(syncPath);
-                    OpenCms.getSystemInfo().getSynchronizeSettings().setSourcePathInVfs(allResources);
+                    // now update the settings
+                    CmsSynchronizeSettings settings = new CmsSynchronizeSettings();
+                    settings.setEnabled(true);
+                    settings.setDestinationPathInRfs(syncPath);
+                    ArrayList list = new ArrayList();
+                    list.add(allResources);
+                    settings.setSourcePathInVfs(list);
+                    
+                    CmsUserSettings userSettings = new CmsUserSettings(cms.getRequestContext().currentUser());
+                    userSettings.setSynchronizeSettings(settings);
+                    userSettings.save(cms);
 
                     templateSelector = "done";
                     
@@ -174,14 +185,21 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
         if((allResources == null) || ("".equals(allResources))) {
             allResources = (String)session.getValue(C_SYNCRESOURCES);
         }
+
+        CmsUserSettings userSettings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        CmsSynchronizeSettings settings = userSettings.getSynchronizeSettings();
+        if (settings == null) {
+            settings = new CmsSynchronizeSettings();
+        }
+        
         if((syncPath == null) || ("".equals(syncPath))) {
-            syncPath = OpenCms.getSystemInfo().getSynchronizeSettings().getDestinationPathInRfs();
+            syncPath = settings.getDestinationPathInRfs();
             if(syncPath == null){
                 syncPath = "";
             }
         }
         if((allResources == null) || ("".equals(allResources))) {
-            allResources = OpenCms.getSystemInfo().getSynchronizeSettings().getSourcePathInVfs();   
+            allResources = (String)settings.getSourcePathInVfs().get(0);
             if (allResources == null) {
                 allResources = "";
             }
