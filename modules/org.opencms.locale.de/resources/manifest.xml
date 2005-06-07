@@ -38,6 +38,7 @@
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/threads/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/validation/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/administration/messages_de.properties"/>
+			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/help/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/list/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/cache/workplace_de.properties"/>
@@ -479,6 +480,30 @@
 			<datelastmodified>Fri, 03 Jun 2005 13:04:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 03 Jun 2005 13:02:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/help</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 03 Jun 2005 12:55:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Jun 2005 12:55:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>		
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/workplace/help/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/help/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>0e55ed30-d2a1-11d9-9e1a-01ff5ab8f011</uuidresource>
+			<datelastmodified>Fri, 03 Jun 2005 12:12:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 03 Jun 2005 13:28:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
