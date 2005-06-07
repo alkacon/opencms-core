@@ -158,7 +158,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/contenttools/icons/big/properties_change.gif]]></value>
+					<value><![CDATA[tools/contenttools/icons/big/properties_change.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -228,7 +228,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/contenttools/icons/big/properties_delete.gif]]></value>
+					<value><![CDATA[tools/contenttools/icons/big/properties_delete.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -298,7 +298,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/contenttools/icons/big/htmlimport.gif]]></value>
+					<value><![CDATA[tools/contenttools/icons/big/htmlimport.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -364,7 +364,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/contenttools/icons/big/contentmerge.gif]]></value>
+					<value><![CDATA[tools/contenttools/icons/big/contentmerge.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -430,7 +430,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/contenttools/icons/big/renameelement.gif]]></value>
+					<value><![CDATA[tools/contenttools/icons/big/elements_rename.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -526,8 +526,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/contenttools/icons/big/contentmerge.gif</source>
-			<destination>system/workplace/resources/tools/contenttools/icons/big/contentmerge.gif</destination>
+			<source>system/workplace/resources/tools/contenttools/icons/big/contentmerge.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/big/contentmerge.png</destination>
 			<type>image</type>
 
 			<datelastmodified>Wed, 12 Jan 2005 15:50:57 GMT</datelastmodified>
@@ -551,8 +551,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/contenttools/icons/big/properties_change.gif</source>
-			<destination>system/workplace/resources/tools/contenttools/icons/big/properties_change.gif</destination>
+			<source>system/workplace/resources/tools/contenttools/icons/big/properties_change.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/big/properties_change.png</destination>
 			<type>image</type>
 			<datelastmodified>Tue, 09 Nov 2004 13:29:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -563,8 +563,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/contenttools/icons/big/properties_delete.gif</source>
-			<destination>system/workplace/resources/tools/contenttools/icons/big/properties_delete.gif</destination>
+			<source>system/workplace/resources/tools/contenttools/icons/big/properties_delete.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/big/properties_delete.png</destination>
 			<type>image</type>
 
 			<datelastmodified>Tue, 09 Nov 2004 15:02:35 GMT</datelastmodified>
@@ -576,8 +576,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/contenttools/icons/big/renameelement.gif</source>
-			<destination>system/workplace/resources/tools/contenttools/icons/big/renameelement.gif</destination>
+			<source>system/workplace/resources/tools/contenttools/icons/big/elements_rename.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/big/elements_rename.png</destination>
 			<type>image</type>
 
 			<datelastmodified>Fri, 17 Dec 2004 10:51:41 GMT</datelastmodified>
@@ -589,8 +589,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/contenttools/icons/big/htmlimport.gif</source>
-			<destination>system/workplace/resources/tools/contenttools/icons/big/htmlimport.gif</destination>
+			<source>system/workplace/resources/tools/contenttools/icons/big/htmlimport.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/big/htmlimport.png</destination>
 			<type>image</type>
 
 			<datelastmodified>Fri, 15 Oct 2004 09:45:09 GMT</datelastmodified>
