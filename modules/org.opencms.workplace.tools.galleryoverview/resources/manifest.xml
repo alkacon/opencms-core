@@ -94,7 +94,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/galleryoverview/icons/big/galleryoverview.gif:tools/galleryoverview/icons/small/galleryoverview.gif]]></value>
+					<value><![CDATA[tools/galleryoverview/icons/big/gal_manage.png:tools/galleryoverview/icons/small/gal_manage.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -138,7 +138,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/galleryoverview/icons/big/downloadgallery.gif]]></value>
+					<value><![CDATA[tools/galleryoverview/icons/big/gal_download.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -212,7 +212,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/galleryoverview/icons/big/htmlgallery.gif]]></value>
+					<value><![CDATA[tools/galleryoverview/icons/big/gal_html.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -286,7 +286,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/galleryoverview/icons/big/tablegallery.gif]]></value>
+					<value><![CDATA[tools/galleryoverview/icons/big/gal_table.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -360,7 +360,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/galleryoverview/icons/big/imagegallery.gif]]></value>
+					<value><![CDATA[tools/galleryoverview/icons/big/gal_image.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -434,7 +434,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/galleryoverview/icons/big/linkgallery.gif]]></value>
+					<value><![CDATA[tools/galleryoverview/icons/big/gal_link.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -533,78 +533,78 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/galleryoverview/icons/big/galleryoverview.gif</source>
-			<destination>system/workplace/resources/tools/galleryoverview/icons/big/galleryoverview.gif</destination>
+			<source>system/workplace/resources/tools/galleryoverview/icons/big/gal_download.png</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big/gal_download.png</destination>
 			<type>image</type>
-
-			<datelastmodified>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datelastmodified>
+			<uuidresource>a00419ca-d732-11d9-b767-0d179596440c</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 09:00:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datecreated>
+			<datecreated>Tue, 07 Jun 2005 09:00:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/galleryoverview/icons/big/downloadgallery.gif</source>
-			<destination>system/workplace/resources/tools/galleryoverview/icons/big/downloadgallery.gif</destination>
+			<source>system/workplace/resources/tools/galleryoverview/icons/big/gal_html.png</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big/gal_html.png</destination>
 			<type>image</type>
-
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<uuidresource>a007270d-d732-11d9-b767-0d179596440c</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 09:00:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<datecreated>Tue, 07 Jun 2005 09:00:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/galleryoverview/icons/big/htmlgallery.gif</source>
-			<destination>system/workplace/resources/tools/galleryoverview/icons/big/htmlgallery.gif</destination>
+			<source>system/workplace/resources/tools/galleryoverview/icons/big/gal_image.png</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big/gal_image.png</destination>
 			<type>image</type>
-
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<uuidresource>a008d4c0-d732-11d9-b767-0d179596440c</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 09:00:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<datecreated>Tue, 07 Jun 2005 09:00:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/galleryoverview/icons/big/tablegallery.gif</source>
-			<destination>system/workplace/resources/tools/galleryoverview/icons/big/tablegallery.gif</destination>
+			<source>system/workplace/resources/tools/galleryoverview/icons/big/gal_link.png</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big/gal_link.png</destination>
 			<type>image</type>
-
-			<datelastmodified>Thu, 14 Apr 2005 13:40:37 GMT</datelastmodified>
+			<uuidresource>a00be203-d732-11d9-b767-0d179596440c</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 09:00:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 14 Apr 2005 13:40:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>		
-		<file>
-			<source>system/workplace/resources/tools/galleryoverview/icons/big/imagegallery.gif</source>
-			<destination>system/workplace/resources/tools/galleryoverview/icons/big/imagegallery.gif</destination>
-			<type>image</type>
-
-			<datelastmodified>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datecreated>
+			<datecreated>Tue, 07 Jun 2005 09:00:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/galleryoverview/icons/big/linkgallery.gif</source>
-			<destination>system/workplace/resources/tools/galleryoverview/icons/big/linkgallery.gif</destination>
+			<source>system/workplace/resources/tools/galleryoverview/icons/big/gal_manage.png</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big/gal_manage.png</destination>
 			<type>image</type>
-
-			<datelastmodified>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datelastmodified>
+			<uuidresource>a00d68a6-d732-11d9-b767-0d179596440c</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 09:00:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datecreated>
+			<datecreated>Tue, 07 Jun 2005 09:00:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/galleryoverview/icons/big/gal_table.png</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/big/gal_table.png</destination>
+			<type>image</type>
+			<uuidresource>a01075e9-d732-11d9-b767-0d179596440c</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 09:00:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Jun 2005 09:00:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -622,12 +622,13 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/galleryoverview/icons/small/galleryoverview.gif</source>
-			<destination>system/workplace/resources/tools/galleryoverview/icons/small/galleryoverview.gif</destination>
+			<source>system/workplace/resources/tools/galleryoverview/icons/small/gal_manage.png</source>
+			<destination>system/workplace/resources/tools/galleryoverview/icons/small/gal_manage.png</destination>
 			<type>image</type>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<uuidresource>c548cec2-d732-11d9-b767-0d179596440c</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 09:01:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<datecreated>Tue, 07 Jun 2005 09:01:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
