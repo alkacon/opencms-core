@@ -7,4 +7,4 @@
 <c:set var="href">
 	<cms:contentshow element="Href" />
 </c:set>
-<fmt:message key="editor.label.EventOrganization.Link" />:&nbsp;<%= cms.getAnchor("href", "desc", "linkTarget") %>
+<fmt:message key="label.EventOrganization.Link" />:&nbsp;<%= cms.getAnchor("href", "desc", "linkTarget") %>

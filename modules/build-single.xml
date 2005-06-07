@@ -425,4 +425,21 @@
     <target name="tomcat.all" 
     	depends="clean, tomcat.update" description="Does a complete recompile of the module and installs it in Tomcat webapps directory"/>              
 
+    <target name="jboss.copy" 
+    	depends="dist" description="Copies module resources to JBoss directory">       
+        
+		<if>
+			<available file="${module.output.jar}" />
+			<then>
+		        <copy todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF/lib" >    	
+		        	<fileset dir="${module.output.jar}" includes="*.jar"/>
+		    	</copy>
+			</then>		
+		</if>
+    	<copy file="${module.output.zip}/${module.name}_${module.version}.zip" todir="${jboss.home}/server/default/deploy/${app.name}.war/WEB-INF/packages/modules" />
+    </target>
+
+    <target name="jboss.update" 
+    	depends="jboss.copy" description="Recompile changes and installs them in JBoss deploy directory"/>
+
 </project>

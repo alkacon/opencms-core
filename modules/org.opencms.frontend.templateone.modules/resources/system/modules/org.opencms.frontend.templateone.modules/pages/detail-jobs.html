@@ -55,7 +55,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin company --%>
 <cms:contentcheck ifexists="Company">
-<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobArticle.Company" />:&nbsp;</td><td style="width: 100%;">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="label.JobArticle.Company" />:&nbsp;</td><td style="width: 100%;">
 <cms:contentshow element="Company" />
 </td></tr>
 </cms:contentcheck>
@@ -63,7 +63,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin location --%>
 <cms:contentcheck ifexists="Location">
-<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobArticle.Location" />:&nbsp;</td><td style="width: 100%;">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="label.JobArticle.Location" />:&nbsp;</td><td style="width: 100%;">
 <cms:contentshow element="Location" />
 </td></tr>
 </cms:contentcheck>
@@ -90,7 +90,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin qualification --%>
 <cms:contentcheck ifexists="Extended/Qualification">
-<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobExtended.Qualification" />:&nbsp;</td><td style="width: 100%;">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="label.JobExtended.Qualification" />:&nbsp;</td><td style="width: 100%;">
 <cms:contentshow element="Extended/Qualification" />
 </td></tr>
 </cms:contentcheck>
@@ -98,7 +98,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin area --%>
 <cms:contentcheck ifexists="Extended/Area">
-<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobExtended.Area" />:&nbsp;</td><td style="width: 100%;">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="label.JobExtended.Area" />:&nbsp;</td><td style="width: 100%;">
 <cms:contentshow element="Extended/Area" />
 </td></tr>
 </cms:contentcheck>
@@ -106,7 +106,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin salary --%>
 <cms:contentcheck ifexists="Extended/Salary">
-<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobExtended.Salary" />:&nbsp;</td><td style="width: 100%;">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="label.JobExtended.Salary" />:&nbsp;</td><td style="width: 100%;">
 <cms:contentshow element="Extended/Salary" />
 </td></tr>
 </cms:contentcheck>
@@ -124,7 +124,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 <%
 	cms.setDate("dateString");
 %>
-<tr><td class="nowrap"><fmt:message key="editor.label.JobExtended.Begin" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" type="date" /></td></tr>
+<tr><td class="nowrap"><fmt:message key="label.JobExtended.Begin" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" type="date" /></td></tr>
 </cms:contentcheck>
 <%-- end begindate --%>
 
@@ -136,7 +136,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 <%
 	cms.setDate("dateString");
 %>
-<tr><td class="nowrap"><fmt:message key="editor.label.JobExtended.DateLimit" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" type="date" /></td></tr>
+<tr><td class="nowrap"><fmt:message key="label.JobExtended.DateLimit" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" type="date" /></td></tr>
 </cms:contentcheck>
 <%-- end datelimit --%>
 
@@ -148,7 +148,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 <%
 	cms.setDate("dateString");
 %>
-<tr><td class="nowrap"><fmt:message key="editor.label.JobExtended.ClosingDate" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" type="date" /></td></tr>
+<tr><td class="nowrap"><fmt:message key="label.JobExtended.ClosingDate" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" type="date" /></td></tr>
 </cms:contentcheck>
 <%-- end closingdate --%>
 
@@ -158,7 +158,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin id --%>
 <cms:contentcheck ifexists="Extended/Id">
-<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobExtended.Id" />:&nbsp;</td><td style="width: 100%;">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="label.JobExtended.Id" />:&nbsp;</td><td style="width: 100%;">
 <cms:contentshow element="Extended/Id" />
 </td></tr>
 </cms:contentcheck>
@@ -166,7 +166,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin information --%>
 <cms:contentcheck ifexists="Extended/Information">
-<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.JobExtended.Information" />:&nbsp;</td><td style="width: 100%;">
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="label.JobExtended.Information" />:&nbsp;</td><td style="width: 100%;">
 <cms:contentshow element="Extended/Information" />
 </td></tr>
 </cms:contentcheck>

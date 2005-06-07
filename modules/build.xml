@@ -191,6 +191,32 @@
     	</for>
     </target>
 
+    <target name="jboss.copy" 
+    	depends="init" description="Copies the given updated modules to Jboss directory">
+	
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="jboss.copy" />
+    	<for list="${modules.var}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${basedir}/build-single.xml" target="jboss.copy" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+
+	<target name="jboss.update" 
+    	depends="init" description="Recompiles changes and installs them in JBoss deploy directory">
+	
+		<ant antfile="${opencms.input}/build.xml" dir="${opencms.input}" inheritall="false" target="jboss.update" />
+    	<for list="${modules.var}" param="module" trim="yes">
+    	  <sequential>
+    	  	<ant antfile="${basedir}/build-single.xml" target="jboss.update" inheritAll="false" >
+    	  		<property name="module.name" value="@{module}" />
+    	  	</ant>
+    	  </sequential>
+    	</for>
+    </target>
+    			
 	<target name="war"
 		depends="dist" description="Updates the war file">
 		

@@ -27,15 +27,15 @@
 </cms:contentcheck>
 
 <cms:contentcheck ifexists="Phone">
-	<fmt:message key="editor.label.EventAddress.Phone" />:&nbsp;<cms:contentshow element="Phone" /><br>
+	<fmt:message key="label.EventAddress.Phone" />:&nbsp;<cms:contentshow element="Phone" /><br>
 </cms:contentcheck>
 
 <cms:contentcheck ifexists="Fax">
-	<fmt:message key="editor.label.EventAddress.Fax" />:&nbsp;<cms:contentshow element="Fax" /><br>
+	<fmt:message key="label.EventAddress.Fax" />:&nbsp;<cms:contentshow element="Fax" /><br>
 </cms:contentcheck>
 
 <cms:contentcheck ifexists="Email">
-	<fmt:message key="editor.label.EventAddress.Email" />:&nbsp;<a href="mailto:<cms:contentshow element="Email" />"><cms:contentshow element="Email" /></a><br>
+	<fmt:message key="label.EventAddress.Email" />:&nbsp;<a href="mailto:<cms:contentshow element="Email" />"><cms:contentshow element="Email" /></a><br>
 </cms:contentcheck>
 
 <cms:contentcheck ifexists="ExternalLink">

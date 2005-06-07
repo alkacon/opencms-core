@@ -69,7 +69,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin additional dates --%>
 <cms:contentcheck ifexistsone="EventDates/AdditionalDate">
-<tr><td class="nowrap"><fmt:message key="editor.label.EventDate.AdditionalDate" />:&nbsp;</td><td><cms:contentloop element="EventDates/AdditionalDate"><%--
+<tr><td class="nowrap"><fmt:message key="label.EventDate.AdditionalDate" />:&nbsp;</td><td><cms:contentloop element="EventDates/AdditionalDate"><%--
 --%><c:set var="dateString"><%--
 	--%><cms:contentshow  /><%--
 --%></c:set><%
@@ -92,19 +92,19 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 </c:set><%
 	cms.setDate("dateString");
 %>
-<tr><td class="nowrap"><fmt:message key="editor.label.EventDate.RegistrationClose" />:&nbsp;</td><td><fmt:formatDate value="${date}" dateStyle="long" /></td></tr>
+<tr><td class="nowrap"><fmt:message key="label.EventDate.RegistrationClose" />:&nbsp;</td><td><fmt:formatDate value="${date}" dateStyle="long" /></td></tr>
 </cms:contentcheck>
 <%-- end "end of registration" --%>
 
 <%-- begin event number --%>
 <cms:contentcheck ifexists="Extended/Number">
-<tr><td class="nowrap"><fmt:message key="editor.label.EventExtended.Number" />:&nbsp;</td><td><cms:contentshow element="Extended/Number" /></td></tr>
+<tr><td class="nowrap"><fmt:message key="label.EventExtended.Number" />:&nbsp;</td><td><cms:contentshow element="Extended/Number" /></td></tr>
 </cms:contentcheck>
 <%-- end event number --%>
 
 <%-- begin event referent --%>
 <cms:contentcheck ifexists="Extended/Referent">
-<tr><td class="nowrap"><fmt:message key="editor.label.EventExtended.Referent" />:&nbsp;</td><td><cms:contentshow element="Extended/Referent" /></td></tr>
+<tr><td class="nowrap"><fmt:message key="label.EventExtended.Referent" />:&nbsp;</td><td><cms:contentshow element="Extended/Referent" /></td></tr>
 </cms:contentcheck>
 <%-- end event referent --%>
 
@@ -120,7 +120,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin target group --%>
 <cms:contentcheck ifexists="Extended/TargetGroup">
-<tr><td class="nowrap"><fmt:message key="editor.label.EventExtended.TargetGroup" />:&nbsp;</td><td>
+<tr><td class="nowrap"><fmt:message key="label.EventExtended.TargetGroup" />:&nbsp;</td><td>
 <cms:contentshow element="Extended/TargetGroup" />
 </td></tr>
 </cms:contentcheck>
@@ -128,7 +128,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin precondition --%>
 <cms:contentcheck ifexists="Extended/ParticipantPrecondition">
-<tr><td class="nowrap"><fmt:message key="editor.label.EventExtended.ParticipantPrecondition" />:&nbsp;</td><td>
+<tr><td class="nowrap"><fmt:message key="label.EventExtended.ParticipantPrecondition" />:&nbsp;</td><td>
 <cms:contentshow element="Extended/ParticipantPrecondition" />
 </td></tr>
 </cms:contentcheck>
@@ -142,7 +142,7 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 
 <%-- begin price --%>
 <cms:contentcheck ifexists="Price">
-<tr><td class="nowrap"><fmt:message key="editor.label.EventCharge.Price" />:&nbsp;</td><td>
+<tr><td class="nowrap"><fmt:message key="label.EventCharge.Price" />:&nbsp;</td><td>
 <cms:contentshow element="Price" />
 </td></tr>
 </cms:contentcheck>
@@ -206,11 +206,11 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 <cms:contentloop element="Extended/EventOrganization">
 
 <cms:contentcheck ifexistsone="Registration,Phone,Fax,Email,Link">
-<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.EventOrganization.Registration" />:&nbsp;</td><td>
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="label.EventOrganization.Registration" />:&nbsp;</td><td>
 <cms:contentcheck ifexists="Registration"><cms:contentshow element="Registration" /><br></cms:contentcheck>
-<cms:contentcheck ifexists="Phone"><fmt:message key="editor.label.EventOrganization.Phone" />:&nbsp;<cms:contentshow element="Phone" /><br></cms:contentcheck>
-<cms:contentcheck ifexists="Fax"><fmt:message key="editor.label.EventOrganization.Fax" />:&nbsp;<cms:contentshow element="Fax" /><br></cms:contentcheck>
-<cms:contentcheck ifexists="Email"><fmt:message key="editor.label.EventOrganization.Email" />:&nbsp;<a href="mailto:<cms:contentshow element="Email" />"><cms:contentshow element="Email" /></a><br></cms:contentcheck>
+<cms:contentcheck ifexists="Phone"><fmt:message key="label.EventOrganization.Phone" />:&nbsp;<cms:contentshow element="Phone" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="Fax"><fmt:message key="label.EventOrganization.Fax" />:&nbsp;<cms:contentshow element="Fax" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="Email"><fmt:message key="label.EventOrganization.Email" />:&nbsp;<a href="mailto:<cms:contentshow element="Email" />"><cms:contentshow element="Email" /></a><br></cms:contentcheck>
 <cms:contentcheck ifexists="Link">
 <cms:contentloop element="Link">
 <%@ include file="../elements/detail-element-eventlink.txt" %>
@@ -221,11 +221,11 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 </cms:contentcheck>
 
 <cms:contentcheck ifexistsone="Consulting,ConPhone,ConFax,ConEmail,ConLink">
-<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="editor.label.EventOrganization.Consulting" />:&nbsp;</td><td>
+<tr><td class="nowrap" style="vertical-align: top;"><fmt:message key="label.EventOrganization.Consulting" />:&nbsp;</td><td>
 <cms:contentcheck ifexists="Consulting"><cms:contentshow element="Consulting" /><br></cms:contentcheck>
-<cms:contentcheck ifexists="ConPhone"><fmt:message key="editor.label.EventOrganization.ConPhone" />:&nbsp;<cms:contentshow element="ConPhone" /><br></cms:contentcheck>
-<cms:contentcheck ifexists="ConFax"><fmt:message key="editor.label.EventOrganization.ConFax" />:&nbsp;<cms:contentshow element="ConFax" /><br></cms:contentcheck>
-<cms:contentcheck ifexists="ConEmail"><fmt:message key="editor.label.EventOrganization.ConEmail" />:&nbsp;<a href="mailto:<cms:contentshow element="ConEmail" />"><cms:contentshow element="ConEmail" /></a><br></cms:contentcheck>
+<cms:contentcheck ifexists="ConPhone"><fmt:message key="label.EventOrganization.ConPhone" />:&nbsp;<cms:contentshow element="ConPhone" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="ConFax"><fmt:message key="label.EventOrganization.ConFax" />:&nbsp;<cms:contentshow element="ConFax" /><br></cms:contentcheck>
+<cms:contentcheck ifexists="ConEmail"><fmt:message key="label.EventOrganization.ConEmail" />:&nbsp;<a href="mailto:<cms:contentshow element="ConEmail" />"><cms:contentshow element="ConEmail" /></a><br></cms:contentcheck>
 <cms:contentcheck ifexists="ConLink">
 <cms:contentloop element="ConLink">
 <%@ include file="../elements/detail-element-eventlink.txt" %>
