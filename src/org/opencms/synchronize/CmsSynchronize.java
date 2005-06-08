@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/06/08 07:13:21 $
- * Version: $Revision: 1.52 $
- * Date   : $Date: 2005/06/08 07:13:21 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2005/06/08 15:48:00 $
+ * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/06/08 15:48:00 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  */
 public class CmsSynchronize {
 
@@ -129,11 +129,22 @@ public class CmsSynchronize {
         // and the FS are valid
         if ((settings != null) && (settings.isSyncEnabled())) {
 
-            // get the sync from the previous run list
+            // get the destination folder
             m_destinationPathInRfs = settings.getDestinationPathInRfs();
-            // check if the synchronize path in the FS ends with a seperator. If so, remove it
-            if (m_destinationPathInRfs.endsWith(File.separator) || m_destinationPathInRfs.endsWith("/")) {
-                m_destinationPathInRfs = m_destinationPathInRfs.substring(0, m_destinationPathInRfs.length() - 1);
+
+            // check if target folder exists and is writeable
+            File destinationFolder = new File(m_destinationPathInRfs);
+            if (!destinationFolder.exists() || !destinationFolder.isDirectory()) {
+                // destination folder does not exist
+                throw new CmsSynchronizeException(Messages.get().container(
+                    Messages.ERR_RFS_DESTINATION_NOT_THERE_1,
+                    m_destinationPathInRfs));
+            }
+            if (!destinationFolder.canWrite()) {
+                // destination folder can't be written to
+                throw new CmsSynchronizeException(Messages.get().container(
+                    Messages.ERR_RFS_DESTINATION_NO_WRITE_1,
+                    m_destinationPathInRfs));
             }
 
             // create the sync list for this run
@@ -144,13 +155,11 @@ public class CmsSynchronize {
             while (i.hasNext()) {
                 // iterate all source folders
                 String sourcePathInVfs = (String)i.next();
-
+                String destPath = m_destinationPathInRfs + sourcePathInVfs.replace('/', File.separatorChar);
+                
                 report.println(org.opencms.workplace.threads.Messages.get().container(
-                    org.opencms.workplace.threads.Messages.RPT_SYNCHRONIZE_VFS_FOLDER_1,
-                    sourcePathInVfs), I_CmsReport.C_FORMAT_HEADLINE);
-                report.println(org.opencms.workplace.threads.Messages.get().container(
-                    org.opencms.workplace.threads.Messages.RPT_SYNCHRONIZE_RFS_FOLDER_1,
-                    m_destinationPathInRfs.replace('\\', '/')), I_CmsReport.C_FORMAT_HEADLINE);
+                    org.opencms.workplace.threads.Messages.RPT_SYNCHRONIZE_FOLDERS_2,
+                    sourcePathInVfs, destPath), I_CmsReport.C_FORMAT_HEADLINE);
                 // synchronice the VFS and the RFS
                 syncVfsToRfs(sourcePathInVfs);
             }
@@ -163,10 +172,10 @@ public class CmsSynchronize {
                 // add new files from the RFS
                 copyFromRfs((String)i.next());
             }
-            
+
             // write the sync list
             writeSyncList();
-            
+
             // free mem
             m_syncList = null;
             m_newSyncList = null;
@@ -185,7 +194,7 @@ public class CmsSynchronize {
 
         // get the corresponding folder in the FS
         File[] res;
-        File fsFile = getFileInFs(folder);
+        File fsFile = getFileInRfs(folder);
         // first of all, test if this folder existis in the VFS. If not, create it
         try {
             m_cms.readFolder(translate(folder), CmsResourceFilter.IGNORE_EXPIRATION);
@@ -340,7 +349,7 @@ public class CmsSynchronize {
      * @param res the resource to be exported
      * @throws CmsException if something goes wrong
      */
-    private void exportToFS(CmsResource res) throws CmsException {
+    private void exportToRfs(CmsResource res) throws CmsException {
 
         CmsFile vfsFile;
         File fsFile;
@@ -370,7 +379,7 @@ public class CmsSynchronize {
         if ((res.isFolder()) && (!resourcename.endsWith("/"))) {
             resourcename += "/";
         }
-        fsFile = getFileInFs(resourcename);
+        fsFile = getFileInRfs(resourcename);
 
         try {
             // if the resource is marked for deletion, do not export it!
@@ -495,7 +504,7 @@ public class CmsSynchronize {
      * @param res path to the resource inside the VFS
      * @return the corresponding file in the FS
      */
-    private File getFileInFs(String res) {
+    private File getFileInRfs(String res) {
 
         String path = m_destinationPathInRfs + res.substring(0, res.lastIndexOf("/"));
         String fileName = res.substring(res.lastIndexOf("/") + 1);
@@ -739,7 +748,9 @@ public class CmsSynchronize {
             org.opencms.report.Messages.RPT_SUCCESSION_1,
             String.valueOf(m_count++)), I_CmsReport.C_FORMAT_NOTE);
         m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.C_FORMAT_NOTE);
-        m_report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, resname));
+        m_report.println(org.opencms.report.Messages.get().container(
+            org.opencms.report.Messages.RPT_ARGUMENT_1,
+            resname));
     }
 
     /**
@@ -775,7 +786,7 @@ public class CmsSynchronize {
                     action = testSyncVfs(res);
                     // do the correct action according to the test result
                     if (action == C_EXPORT_VFS) {
-                        exportToFS(res);
+                        exportToRfs(res);
                     } else if (action != C_DELETE_VFS) {
                         skipResource(res);
                     }
@@ -792,11 +803,11 @@ public class CmsSynchronize {
                     // do the correct action according to the test result
                     switch (action) {
                         case C_EXPORT_VFS:
-                            exportToFS(res);
+                            exportToRfs(res);
                             break;
 
                         case C_UPDATE_VFS:
-                            updateFromFs(res);
+                            updateFromRfs(res);
                             break;
 
                         case C_DELETE_VFS:
@@ -833,7 +844,7 @@ public class CmsSynchronize {
             // this resource was already used in a previous syncprocess
             CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
             // get the corresponding resource from the FS
-            fsFile = getFileInFs(sync.getResName());
+            fsFile = getFileInRfs(sync.getResName());
             // now check what to do with this resource.
             // if the modification date is newer than the logged modification 
             // date in the sync list, this resource must be exported too
@@ -876,7 +887,7 @@ public class CmsSynchronize {
     /**
      * Translates the resource name.  <p>
      * 
-     * This is nescessary since the server FS does allow different naming 
+     * This is nescessary since the server RFS does allow different naming 
      * conventions than the VFS.
      * 
      * @param name the resource name to be translated
@@ -898,7 +909,7 @@ public class CmsSynchronize {
             }
         }
         // if there was no external method called, do the default OpenCms 
-        // FS-VFS translation
+        // RFS-VFS translation
         if (translation == null) {
             translation = m_cms.getRequestContext().getFileTranslator().translateResource(name);
         }
@@ -912,7 +923,7 @@ public class CmsSynchronize {
      * @param res the resource to be exported
      * @throws CmsException if something goes wrong
      */
-    private void updateFromFs(CmsResource res) throws CmsSynchronizeException, CmsException {
+    private void updateFromRfs(CmsResource res) throws CmsSynchronizeException, CmsException {
 
         CmsFile vfsFile;
         // to get the name of the file in the FS, we must look it up in the
@@ -920,7 +931,7 @@ public class CmsSynchronize {
         // filename.
         String resourcename = m_cms.getSitePath(res);
         CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
-        File fsFile = getFileInFs(sync.getResName());
+        File fsFile = getFileInRfs(sync.getResName());
 
         m_report.print(org.opencms.report.Messages.get().container(
             org.opencms.report.Messages.RPT_SUCCESSION_1,

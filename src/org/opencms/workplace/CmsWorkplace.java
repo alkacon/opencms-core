@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/08 12:48:57 $
- * Version: $Revision: 1.125 $
+ * Date   : $Date: 2005/06/08 15:48:00 $
+ * Version: $Revision: 1.126 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsRequestParameters;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -86,7 +85,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.125 $
+ * @version $Revision: 1.126 $
  * 
  * @since 5.1
  */
@@ -1124,11 +1123,19 @@ public abstract class CmsWorkplace {
      * @param request the current JSP request
      */
     public void fillParamValues(HttpServletRequest request) {
-            
-        CmsRequestParameters parameters = CmsRequestUtil.getRequestParameters(getCms().getRequestContext().getEncoding(), request);
-        m_parameterMap = parameters.getParameters();
-        m_multiPartFileItems = parameters.getMultiPartFileItems();
-        
+
+        // check if this is a multipart request 
+        m_multiPartFileItems = CmsRequestUtil.readMultipartFileItems(request);
+        if (m_multiPartFileItems != null) {
+            // this was indeed a multipart form request
+            m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(
+                getCms().getRequestContext().getEncoding(),
+                m_multiPartFileItems);
+        } else {
+            // the request was a "normal" request
+            m_parameterMap = request.getParameterMap();
+        }
+
         List methods = paramSetMethods();
         Iterator i = methods.iterator();
         while (i.hasNext()) {

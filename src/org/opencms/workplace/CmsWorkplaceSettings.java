@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/06/08 15:48:00 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -228,7 +228,7 @@ public class CmsWorkplaceSettings {
      *
      * @return the dialog object
      * 
-     * @see org.opencms.workplace.list.A_CmsListDialog#getListObject()
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListObject(Class, CmsWorkplaceSettings)
      */
     public Object getListObject() {
 
@@ -542,7 +542,7 @@ public class CmsWorkplaceSettings {
      *  
      * @param listObject the list object to set
      * 
-     * @see org.opencms.workplace.list.A_CmsListDialog#setListObject(org.opencms.workplace.list.CmsHtmlList)
+     * @see org.opencms.workplace.list.A_CmsListDialog#setListObject(Class, org.opencms.workplace.list.CmsHtmlList)
      */
     public synchronized void setListObject(Object listObject) {
 

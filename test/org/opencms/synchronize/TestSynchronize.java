@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2005/06/07 16:14:31 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/08 15:48:00 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.6
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestSynchronize extends OpenCmsTestCase {
 
@@ -119,7 +119,10 @@ public class TestSynchronize extends OpenCmsTestCase {
         assertNull(userSettings.getSynchronizeSettings());
         
         String source = "/folder1/";
-        String dest = "C:/some/folder/";
+        String dest = getTestDataPath("");
+        if (dest.endsWith(File.separator)) {
+            dest = dest.substring(0, dest.length() -1);
+        }
         
         CmsSynchronizeSettings syncSettings = new CmsSynchronizeSettings();
         syncSettings.setEnabled(true);
@@ -165,7 +168,14 @@ public class TestSynchronize extends OpenCmsTestCase {
 
         // save what gets synchronized
         CmsSynchronizeSettings syncSettings = new CmsSynchronizeSettings();
-        syncSettings.setDestinationPathInRfs(getTestDataPath("") + "sync" + File.separator);
+        
+        String dest = getTestDataPath("") + "sync1" + File.separator;
+        File destFolder = new File(dest);
+        if (! destFolder.exists()) {
+            destFolder.mkdirs();
+        }
+        
+        syncSettings.setDestinationPathInRfs(dest);
         ArrayList sourceList = new ArrayList();
         sourceList.add(source);
         syncSettings.setSourceListInVfs(sourceList);
@@ -199,8 +209,8 @@ public class TestSynchronize extends OpenCmsTestCase {
                 }
             }
 
-            // sleep 4 seconds to avoid issues with file system timing
-            Thread.sleep(4000);
+            // sleep 2 seconds to avoid issues with file system timing
+            Thread.sleep(2000);
             
             // synchronize everything back to the VFS
             new CmsSynchronize(cms, syncSettings, new CmsShellReport());
@@ -228,8 +238,8 @@ public class TestSynchronize extends OpenCmsTestCase {
         } finally {
             
             // remove the test data
-            echo("Purging directory " + syncSettings.getDestinationPathInRfs());
-            CmsFileUtil.purgeDirectory(new File(getTestDataPath("sync")));
+            echo("Purging directory " + dest);
+            CmsFileUtil.purgeDirectory(new File(dest));
         }
     }
 
@@ -244,7 +254,14 @@ public class TestSynchronize extends OpenCmsTestCase {
 
         // save what gets synchronized
         CmsSynchronizeSettings syncSettings = new CmsSynchronizeSettings();
-        syncSettings.setDestinationPathInRfs(getTestDataPath("") + "sync" + File.separator);
+        
+        String dest = getTestDataPath("") + "sync2" + File.separator;
+        File destFolder = new File(dest);
+        if (! destFolder.exists()) {
+            destFolder.mkdirs();
+        }
+        
+        syncSettings.setDestinationPathInRfs(dest);
         ArrayList sourceList = new ArrayList();
         sourceList.add("/folder1/subfolder11/");
         sourceList.add("/folder1/subfolder12/");
@@ -282,8 +299,8 @@ public class TestSynchronize extends OpenCmsTestCase {
                 }
             }
 
-            // sleep 4 seconds to avoid issues with file system timing
-            Thread.sleep(4000);
+            // sleep 2 seconds to avoid issues with file system timing
+            Thread.sleep(2000);
             
             // synchronize everything back to the VFS
             new CmsSynchronize(cms, syncSettings, new CmsShellReport());
@@ -311,8 +328,8 @@ public class TestSynchronize extends OpenCmsTestCase {
         } finally {
             
             // remove the test data
-            echo("Purging directory " + syncSettings.getDestinationPathInRfs());
-            CmsFileUtil.purgeDirectory(new File(getTestDataPath("sync")));
+            echo("Purging directory " + dest);
+            CmsFileUtil.purgeDirectory(new File(dest));
         }
     }
     

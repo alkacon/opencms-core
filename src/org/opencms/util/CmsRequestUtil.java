@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/06/08 12:48:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/08 15:48:00 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -54,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0
  */
@@ -200,61 +201,68 @@ public final class CmsRequestUtil {
     }
 
     /**
-     * Reads all parameters from the request, even if the request is of type <code></code>.<p> 
+     * Parses a request of the form <code>multipart/form-data</code>.
      * 
-     * @param encoding the encoding to use when to read parameters
-     * @param request the request to read the parameters from
+     * The result list will contain items of type <code>{@link FileItem}</code>.
+     * If the request is not of type <code>multipart/form-data</code>, then <code>null</code> is returned.<p>
      * 
-     * @return the parameters (and multipart items if available) read from the request
+     * @param request the HTTP servlet request to parse
+     * 
+     * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
+     *      or <code>null</code> if the request was not of type <code>multipart/form-data</code>
      */
-    public static CmsRequestParameters getRequestParameters(String encoding, HttpServletRequest request) {
+    public static List readMultipartFileItems(HttpServletRequest request) {
 
-        if (FileUploadBase.isMultipartContent(request)) {
-            // this is a multipart request, create a map with all non-file parameters
-            return readParametersFromMultiPart(encoding, request);
+        if (!FileUploadBase.isMultipartContent(request)) {
+            return null;
         }
-        return new CmsRequestParameters(request.getParameterMap(), null);
-    }
-
-    /**
-     * Fills the request parameters in a map if treating a multipart request.<p>
-     * 
-     * The created map has the parameter names as key, multipart items are recognized, too.<p>
-     * 
-     * @param request the current HTTP servlet request
-     * @return a map containing all non-file request parameters
-     */
-    private static CmsRequestParameters readParametersFromMultiPart(String encoding, HttpServletRequest request) {
-
-        Map parameterMap = new HashMap();
         DiskFileUpload fu = new DiskFileUpload();
         // maximum size that will be stored in memory
         fu.setSizeThreshold(4096);
         // the location for saving data that is larger than getSizeThreshold()
-        fu.setRepositoryPath(OpenCms.getSystemInfo().getWebInfRfsPath());
-        List multiPartFileItems = null;
+        fu.setRepositoryPath(OpenCms.getSystemInfo().getPackagesRfsPath());
+        List result = new ArrayList();
         try {
-            multiPartFileItems = fu.parseRequest(request);
-            Iterator i = multiPartFileItems.iterator();
-            while (i.hasNext()) {
-                FileItem item = (FileItem)i.next();
-                String name = item.getFieldName();
-                String value = null;
-                if (name != null && item.getName() == null) {
-                    // only put to map if current item is no file and not null
-                    try {
-                        value = item.getString(encoding);
-                    } catch (UnsupportedEncodingException e) {
-                        LOG.error(Messages.get().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
-                        value = item.getString();
-                    }
-                    parameterMap.put(name, new String[] {value});
-                }
+            List items = fu.parseRequest(request);
+            if (items != null) {
+                result = items;
             }
-
         } catch (FileUploadException e) {
             LOG.error(Messages.get().key(Messages.LOG_PARSE_MULIPART_REQ_FAILED_0), e);
         }
-        return new CmsRequestParameters(parameterMap, multiPartFileItems);
+        return result;
+    }
+
+    /**
+     * Creates a "standard" request parameter map from the values of a 
+     * <code>multipart/form-data</code> request.<p>
+     * 
+     * @param encoding the encoding to use when creating the values
+     * @param multiPartFileItems the list of parsed multi part file items
+     * 
+     * @return a map containing all non-file request parameters
+     * 
+     * @see #readMultipartFileItems(HttpServletRequest)
+     */
+    public static Map readParameterMapFromMultiPart(String encoding, List multiPartFileItems) {
+
+        Map parameterMap = new HashMap();
+        Iterator i = multiPartFileItems.iterator();
+        while (i.hasNext()) {
+            FileItem item = (FileItem)i.next();
+            String name = item.getFieldName();
+            String value = null;
+            if (name != null && item.getName() == null) {
+                // only put to map if current item is no file and not null
+                try {
+                    value = item.getString(encoding);
+                } catch (UnsupportedEncodingException e) {
+                    LOG.error(Messages.get().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
+                    value = item.getString();
+                }
+                parameterMap.put(name, new String[] {value});
+            }
+        }
+        return parameterMap;
     }
 }

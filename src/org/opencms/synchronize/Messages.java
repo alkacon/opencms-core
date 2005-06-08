@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/Messages.java,v $
- * Date   : $Date: 2005/06/02 13:09:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/08 15:48:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,10 +61,22 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_IO_WRITE_SYNCLIST_0 = "ERR_IO_WRITE_SYNCLIST_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_RFS_DESTINATION_0 = "ERR_NO_RFS_DESTINATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_VFS_SOURCE_0 = "ERR_NO_VFS_SOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_SYNC_LIST_0 = "ERR_READ_SYNC_LIST_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_FILE_1 = "ERR_READING_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RFS_DESTINATION_NO_WRITE_1 = "ERR_RFS_DESTINATION_NO_WRITE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RFS_DESTINATION_NOT_THERE_1 = "ERR_RFS_DESTINATION_NOT_THERE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_FILE_0 = "ERR_WRITE_FILE_0";

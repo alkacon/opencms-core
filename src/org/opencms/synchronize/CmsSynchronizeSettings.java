@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeSettings.java,v $
- * Date   : $Date: 2005/06/07 16:14:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/08 15:48:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,16 @@
 
 package org.opencms.synchronize;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -42,10 +48,13 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.3
  */
 public class CmsSynchronizeSettings implements Serializable {
+
+    /** use well defined serialVersionUID to avoid issues with serialization. */
+    private static final long serialVersionUID = 3713893787290111758L;
 
     /** The destination path of the synchronization in the "real" file system. */
     private String m_destinationPathInRfs;
@@ -62,6 +71,30 @@ public class CmsSynchronizeSettings implements Serializable {
     public CmsSynchronizeSettings() {
 
         m_sourceListInVfs = new ArrayList();
+    }
+
+    /**
+     * Performs a check if the values that have been set are valid.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * 
+     * @throws CmsException in case the values are not valid
+     */
+    public void checkValues(CmsObject cms) throws CmsException {
+
+        if (isEnabled() && (m_destinationPathInRfs == null)) {
+            // if enabled, it's required to have RFS destination folder available
+            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_NO_RFS_DESTINATION_0));
+        }
+        if (isEnabled() && ((m_sourceListInVfs == null) || (m_sourceListInVfs.size() == 0))) {
+            // if enabled, it's required to have at last one source folder
+            throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_NO_VFS_SOURCE_0));
+        }
+        Iterator i = m_sourceListInVfs.iterator();
+        while (i.hasNext()) {
+            // try to read all given resources, this will cause an error if the resource does not exist 
+            cms.readResource((String)i.next());
+        }
     }
 
     /**
@@ -116,11 +149,33 @@ public class CmsSynchronizeSettings implements Serializable {
      */
     public void setDestinationPathInRfs(String destinationPathInRfs) {
 
+        String destination;
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(destinationPathInRfs)) {
-            m_destinationPathInRfs = null;
+            destination = null;
         } else {
-            m_destinationPathInRfs = destinationPathInRfs.trim();
+            destination = destinationPathInRfs.trim();
         }
+        if (destination != null) {
+            File destinationFolder = new File(destination);
+            if (!destinationFolder.exists() || !destinationFolder.isDirectory()) {
+                // destination folder does not exist
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_RFS_DESTINATION_NOT_THERE_1,
+                    destination));
+            }
+            if (!destinationFolder.canWrite()) {
+                // destination folder can't be written to
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_RFS_DESTINATION_NO_WRITE_1,
+                    destination));
+            }
+            destination = destinationFolder.getAbsolutePath();
+            if (destination.endsWith(File.separator)) {
+                // ensure that the destination folder DOES NOT end with a file separator
+                destination = destination.substring(0, destination.length() - 1);
+            }
+        }
+        m_destinationPathInRfs = destination;
     }
 
     /**
@@ -145,7 +200,76 @@ public class CmsSynchronizeSettings implements Serializable {
         if (sourceListInVfs == null) {
             m_sourceListInVfs = new ArrayList();
         } else {
-            m_sourceListInVfs = sourceListInVfs;
+            m_sourceListInVfs = optimizeSourceList(sourceListInVfs);
         }
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        StringBuffer result = new StringBuffer();
+        result.append("[");
+        result.append(this.getClass().getName());
+        result.append(", enabled: ");
+        result.append(m_enabled);
+        result.append(", RFS destination path: ");
+        result.append(m_destinationPathInRfs);
+        result.append(", VFS source path list: ");
+        if (m_sourceListInVfs == null) {
+            result.append(m_sourceListInVfs);
+        } else {
+            Iterator i = m_sourceListInVfs.iterator();
+            while (i.hasNext()) {
+                String path = (String)i.next();
+                result.append(path);
+                if (i.hasNext()) {
+                    result.append(", ");
+                }
+            }
+        }
+        result.append("]");
+        return result.toString();
+    }
+
+    /**
+     * Optimizes the list of VFS source files by removing all resources that 
+     * have a parent resource already included in the list.<p> 
+     * 
+     * @param sourceListInVfs the list of VFS resources to optimize
+     * @return the optimized result list
+     */
+    protected List optimizeSourceList(List sourceListInVfs) {
+
+        // input should be sorted but may be immutable
+        List input = new ArrayList(sourceListInVfs);
+        Collections.sort(input);
+
+        List result = new ArrayList();
+        Iterator i = input.iterator();
+        while (i.hasNext()) {
+            // check all sources in the list
+            String sourceInVfs = (String)i.next();
+            if (CmsStringUtil.isEmpty(sourceInVfs)) {
+                // skip empty strings
+                continue;
+            }
+            boolean found = false;
+            for (int j = (result.size() - 1); j >= 0; j--) {
+                // check if this source is indirectly contained because a parent folder is contained
+                String check = (String)result.get(j);
+                if (sourceInVfs.startsWith(check)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                // the source is not already contained in the result
+                result.add(sourceInVfs);
+            }
+        }
+
+        return result;
     }
 }

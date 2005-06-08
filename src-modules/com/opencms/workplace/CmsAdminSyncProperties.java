@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2005/06/07 16:14:31 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/08 15:48:00 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,12 +31,8 @@ package com.opencms.workplace;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 
 import com.opencms.core.I_CmsSession;
@@ -123,7 +119,6 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
                     // 'allResources' has the "form res1;res2;...resk;"
                     // this is because the simpler 'getParameterValues' method doesn't work with Silverstream
                     folders = parseResources(allResources);
-                    checkRedundancies(folders);
                     
                     Vector notWriteable = new Vector();
                     Iterator it = folders.iterator();
@@ -135,13 +130,6 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
                         // as a nice name)
                         if (lang.getLanguageValue("title.rootfolder").equals(source)) {
                             source = "/";
-                        }
-
-                        // check if all the resources are writeable
-                        // if not, return a message
-                        if (!isReadable(cms, source)) {
-                            notWriteable.addElement(source);
-                            templateSelector = "errorsyncproperties";
                         }
                     }
 
@@ -156,10 +144,13 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
                     // now update the settings
                     CmsSynchronizeSettings settings = new CmsSynchronizeSettings();
                     settings.setEnabled(! "-".equals(syncPath));
-                    settings.setDestinationPathInRfs(syncPath);
+                    settings.setDestinationPathInRfs(settings.isEnabled() ? syncPath : null);
                     if (folders != null) {
                         settings.setSourceListInVfs(new ArrayList(folders));                        
                     }
+                    
+                    // check the settings
+                    settings.checkValues(cms);                    
                     
                     CmsUserSettings userSettings = new CmsUserSettings(cms.getRequestContext().currentUser());
                     userSettings.setSynchronizeSettings(settings);
@@ -293,60 +284,5 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
             }
         }
         return ret;
-    }
-
-    /** Check whether some of the resources are redundant because a superfolder has also
-     *  been selected.
-     *
-     * @param resources containts the full pathnames of all the resources
-     * @return A vector with the same resources, but the paths in the return value are disjoint
-     */
-    private void checkRedundancies(Vector resources) {
-        int i, j;
-        if(resources == null) {
-            return ;
-        }
-        Vector redundant = new Vector();
-        int n = resources.size();
-        if(n < 2) {
-            // no check needed, because there is only one resource or
-            // no resources selected, return empty Vector
-            return ;
-        }
-        for(i = 0;i < n;i++) {
-            redundant.addElement(new Boolean(false));
-        }
-        for(i = 0;i < n - 1;i++) {
-            for(j = i + 1;j < n;j++) {
-                if(((String)resources.elementAt(i)).length() <
-                        ((String)resources.elementAt(j)).length()) {
-                    if(((String)resources.elementAt(j)).startsWith((String)resources.elementAt(i))) {
-                        redundant.setElementAt(new Boolean(true), j);
-                    }
-                }
-                else {
-                    if(((String)resources.elementAt(i)).startsWith((String)resources.elementAt(j))) {
-                        redundant.setElementAt(new Boolean(true), i);
-                    }
-                }
-            }
-        }
-        for(i = n - 1;i >= 0;i--) {
-            if(((Boolean)redundant.elementAt(i)).booleanValue()) {
-                resources.removeElementAt(i);
-            }
-        }
-    }
-
-    /**
-     * Check if this resource should is writeable.
-     * @param cms The CmsObject
-     * @param res The resource to be checked.
-     * @return True or false.
-     * @throws CmsException if something goes wrong.
-     */
-    private boolean isReadable(CmsObject cms, String resPath)  throws CmsException {
-        CmsResource res = cms.readResource(resPath, CmsResourceFilter.IGNORE_EXPIRATION);
-        return cms.hasPermissions(res, CmsPermissionSet.ACCESS_READ);
     }
 }
