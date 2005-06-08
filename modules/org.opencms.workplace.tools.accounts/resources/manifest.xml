@@ -37,7 +37,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 06 Jun 2005 07:36:21 GMT</datecreated>
+			<datecreated>Tue, 07 Jun 2005 14:26:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -100,7 +100,7 @@
 		<file>
 			<destination>system/workplace/admin/accounts</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 07 Jun 2005 13:29:20 GMT</datelastmodified>
+			<datelastmodified>Tue, 07 Jun 2005 15:06:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 07 Jun 2005 13:27:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -128,7 +128,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/users/icons/big/accounts.png:tools/users/icons/small/accounts.png]]></value>
+					<value><![CDATA[tools/accounts/icons/big/accounts.png:tools/accounts/icons/small/accounts.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -142,68 +142,111 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/accounts/groups</destination>
-			<type>folder</type>
-			<datelastmodified>Tue, 07 Jun 2005 13:34:16 GMT</datelastmodified>
+			<source>system/workplace/admin/accounts/group_delete.html</source>
+			<destination>system/workplace/admin/accounts/group_delete.html</destination>
+			<type>jsp</type>
+			<uuidresource>6d950511-d6a9-11d9-a49a-57d6fd0f62d2</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 15:10:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 07 Jun 2005 13:27:53 GMT</datecreated>
+			<datecreated>Mon, 06 Jun 2005 16:38:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[5.0]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[1]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_GROUPS_ADMIN_TOOL_GROUP_0}]]></value>
+					<value><![CDATA[${key.GUI_EDITGROUP_DELETE_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.GUI_GROUPS_ADMIN_TOOL_HELP_0}]]></value>
+					<value><![CDATA[${key.GUI_EDITGROUP_DELETE_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/group.png:tools/accounts/small/big/group.png]]></value>
+					<value><![CDATA[tools/accounts/icons/big/group_delete.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_GROUPS_ADMIN_TOOL_NAME_0}]]></value>
+					<value><![CDATA[${key.GUI_EDITGROUP_DELETE_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Group Management]]></value>
+					<value><![CDATA[Delete Group]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:groupid=${param.groupid}&groupname=${param.groupname}&action=initial|path:/accounts/groups/edit/delete]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/groups/index.html</source>
-			<destination>system/workplace/admin/accounts/groups/index.html</destination>
+			<source>system/workplace/admin/accounts/group_edit.html</source>
+			<destination>system/workplace/admin/accounts/group_edit.html</destination>
 			<type>jsp</type>
-			<uuidresource>54c29019-d68d-11d9-aa6d-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:50:38 GMT</datelastmodified>
+			<uuidresource>7d30fde9-d6a9-11d9-a49a-57d6fd0f62d2</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 15:10:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 06 Jun 2005 13:17:28 GMT</datecreated>
+			<datecreated>Mon, 06 Jun 2005 16:39:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EDITGROUP_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITGROUP_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/group.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITGROUP_ADMIN_TOOL_NAME_0}:${key.GUI_EDITGROUP_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit Group]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:groupid=${param.groupid}&groupname=${param.groupname}&action=initial|path:/accounts/groups/edit/group]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/groups/new.html</source>
-			<destination>system/workplace/admin/accounts/groups/new.html</destination>
+			<source>system/workplace/admin/accounts/group_new.html</source>
+			<destination>system/workplace/admin/accounts/group_new.html</destination>
 			<type>jsp</type>
 			<uuidresource>6ee7e38a-d726-11d9-9ecc-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:50:45 GMT</datelastmodified>
+			<datelastmodified>Tue, 07 Jun 2005 15:14:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 07 Jun 2005 07:33:25 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -245,15 +288,21 @@
 					<name>Title</name>
 					<value><![CDATA[New Group]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/accounts/groups/new]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/accounts/groups/edit</destination>
-			<type>folder</type>
-			<datelastmodified>Tue, 07 Jun 2005 13:35:21 GMT</datelastmodified>
+			<source>system/workplace/admin/accounts/group_overview.html</source>
+			<destination>system/workplace/admin/accounts/group_overview.html</destination>
+			<type>jsp</type>
+			<uuidresource>14bd19e6-d6a7-11d9-814d-57d6fd0f62d2</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 15:20:12 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 07 Jun 2005 13:27:53 GMT</datecreated>
+			<datecreated>Mon, 06 Jun 2005 16:21:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -262,112 +311,12 @@
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
 					<name>NavPos</name>
 					<value><![CDATA[1.0]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[overview.html]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_EDITGROUP_OVERVIEW_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_EDITGROUP_OVERVIEW_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/editgroup.png]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_EDITGROUP_OVERVIEW_ADMIN_TOOL_NAME_0}:${key.GUI_EDITGROUP_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Edit Group]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:groupid=${param.groupid}&groupname=${param.groupname}]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/accounts/groups/edit/delete.html</source>
-			<destination>system/workplace/admin/accounts/groups/edit/delete.html</destination>
-			<type>jsp</type>
-			<uuidresource>6d950511-d6a9-11d9-a49a-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:50:56 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 06 Jun 2005 16:38:36 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_EDITGROUP_DELETE_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_EDITGROUP_DELETE_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/group_delete.png]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_EDITGROUP_DELETE_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Delete Group]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:groupid=${param.groupid}&groupname=${param.groupname}&action=initial]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/accounts/groups/edit/group.html</source>
-			<destination>system/workplace/admin/accounts/groups/edit/group.html</destination>
-			<type>jsp</type>
-			<uuidresource>7d30fde9-d6a9-11d9-a49a-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:51:02 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 06 Jun 2005 16:39:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -387,55 +336,33 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Edit Group]]></value>
+					<value><![CDATA[Group Overview]]></value>
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:groupid=${param.groupid}&groupname=${param.groupname}&action=initial]]></value>
+					<value><![CDATA[params:groupid=${param.groupid}&groupname=${param.groupname}&action=initial|path:/accounts/groups/edit]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/groups/edit/overview.html</source>
-			<destination>system/workplace/admin/accounts/groups/edit/overview.html</destination>
-			<type>jsp</type>
-			<uuidresource>14bd19e6-d6a7-11d9-814d-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:51:08 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 06 Jun 2005 16:21:47 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Group Overview]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/accounts/groups/edit/users.html</source>
-			<destination>system/workplace/admin/accounts/groups/edit/users.html</destination>
+			<source>system/workplace/admin/accounts/group_users.html</source>
+			<destination>system/workplace/admin/accounts/group_users.html</destination>
 			<type>jsp</type>
 			<uuidresource>75dee83d-d6a9-11d9-a49a-57d6fd0f62d2</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:51:16 GMT</datelastmodified>
+			<datelastmodified>Tue, 07 Jun 2005 15:11:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 06 Jun 2005 16:38:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -463,17 +390,19 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:groupid=${param.groupid}&groupname=${param.groupname}&action=initial]]></value>
+					<value><![CDATA[params:groupid=${param.groupid}&groupname=${param.groupname}&action=initial|path:/accounts/groups/edit/users]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/accounts/users</destination>
-			<type>folder</type>
-			<datelastmodified>Tue, 07 Jun 2005 13:34:33 GMT</datelastmodified>
+			<source>system/workplace/admin/accounts/groups_list.html</source>
+			<destination>system/workplace/admin/accounts/groups_list.html</destination>
+			<type>jsp</type>
+			<uuidresource>54c29019-d68d-11d9-aa6d-57d6fd0f62d2</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 15:46:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 07 Jun 2005 13:30:38 GMT</datecreated>
+			<datecreated>Mon, 06 Jun 2005 13:17:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -483,55 +412,191 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[50]]></value>
+					<value><![CDATA[20]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_USERS_ADMIN_TOOL_GROUP_0}]]></value>
+					<value><![CDATA[${key.GUI_GROUPS_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.GUI_USERS_ADMIN_TOOL_HELP_0}]]></value>
+					<value><![CDATA[${key.GUI_GROUPS_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/user.png:tools/accounts/icons/small/user.png]]></value>
+					<value><![CDATA[tools/accounts/icons/big/group.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_USERS_ADMIN_TOOL_NAME_0}]]></value>
+					<value><![CDATA[${key.GUI_GROUPS_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[User Management]]></value>
+					<value><![CDATA[Group Management]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/accounts/groups]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/users/index.html</source>
-			<destination>system/workplace/admin/accounts/users/index.html</destination>
+			<source>system/workplace/admin/accounts/user_delete.html</source>
+			<destination>system/workplace/admin/accounts/user_delete.html</destination>
 			<type>jsp</type>
-			<uuidresource>fb553117-aa75-11d9-bdd4-733e319ca5ea</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:51:25 GMT</datelastmodified>
+			<uuidresource>0a1bba28-d40e-11d9-8431-b920ebfd9bc1</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 15:16:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 28 Jan 2005 08:23:45 GMT</datecreated>
+			<datecreated>Fri, 03 Jun 2005 09:01:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EDITUSER_DELETE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITUSER_DELETE_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/user_delete.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITUSER_DELETE_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Delete User]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:userid=${param.userid}&username=${param.username}&action=initial|path:/accounts/users/edit/delete]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/users/new.html</source>
-			<destination>system/workplace/admin/accounts/users/new.html</destination>
+			<source>system/workplace/admin/accounts/user_edit.html</source>
+			<destination>system/workplace/admin/accounts/user_edit.html</destination>
+			<type>jsp</type>
+			<uuidresource>44347be5-ac0e-11d9-80b4-733e319ca5ea</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 15:24:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Apr 2005 11:22:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EDITUSER_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITUSER_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/user.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITUSER_ADMIN_TOOL_NAME_0}:${key.GUI_EDITUSER_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit User]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:userid=${param.userid}&username=${param.username}&action=initial|path:/accounts/users/edit/user]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/user_groups.html</source>
+			<destination>system/workplace/admin/accounts/user_groups.html</destination>
+			<type>jsp</type>
+			<uuidresource>4fb1c05b-d1c2-11d9-b09e-b920ebfd9bc1</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 15:18:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 31 May 2005 10:54:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EDITUSER_GROUPS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITUSER_GROUPS_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/group.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITUSER_GROUPS_ADMIN_TOOL_NAME_0}:${key.GUI_EDITUSER_GROUPS_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[User Groups]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:userid=${param.userid}&username=${param.username}&action=initial|path:/accounts/users/edit/groups]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/user_new.html</source>
+			<destination>system/workplace/admin/accounts/user_new.html</destination>
 			<type>jsp</type>
 			<uuidresource>794610f3-d42a-11d9-8431-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:51:30 GMT</datelastmodified>
+			<datelastmodified>Tue, 07 Jun 2005 15:19:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 03 Jun 2005 12:24:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -573,29 +638,35 @@
 					<name>Title</name>
 					<value><![CDATA[New User]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/accounts/users/new]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/accounts/users/edit</destination>
-			<type>folder</type>
-			<datelastmodified>Tue, 07 Jun 2005 13:41:26 GMT</datelastmodified>
+			<source>system/workplace/admin/accounts/user_overview.html</source>
+			<destination>system/workplace/admin/accounts/user_overview.html</destination>
+			<type>jsp</type>
+			<uuidresource>442ed246-d1c2-11d9-b09e-b920ebfd9bc1</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 15:37:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 07 Jun 2005 13:32:04 GMT</datecreated>
+			<datecreated>Tue, 31 May 2005 10:53:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[2]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[overview.html]]></value>
+					<value><![CDATA[1.0]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -606,160 +677,42 @@
 					<value><![CDATA[${key.GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/user.png]]></value>
+				</property>
+				<property>
 					<name>NavText</name>
 					<value><![CDATA[${key.GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_NAME_0}:${key.GUI_EDITUSER_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Edit User]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:userid=${param.userid}&username=${param.username}&action=initial]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/accounts/users/edit/delete.html</source>
-			<destination>system/workplace/admin/accounts/users/edit/delete.html</destination>
-			<type>jsp</type>
-			<uuidresource>0a1bba28-d40e-11d9-8431-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:51:39 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 03 Jun 2005 09:01:14 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_EDITUSER_DELETE_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_EDITUSER_DELETE_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/user_delete.png]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_EDITUSER_DELETE_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Delete User]]></value>
-				</property>
-				<property type="shared">
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:userid=${param.userid}&username=${param.username}&action=initial]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/accounts/users/edit/groups.html</source>
-			<destination>system/workplace/admin/accounts/users/edit/groups.html</destination>
-			<type>jsp</type>
-			<uuidresource>4fb1c05b-d1c2-11d9-b09e-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:51:44 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 31 May 2005 10:54:07 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_EDITUSER_GROUPS_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_EDITUSER_GROUPS_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/group.png]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_EDITUSER_GROUPS_ADMIN_TOOL_NAME_0}:${key.GUI_EDITUSER_GROUPS_ADMIN_TOOL_NAVBARNAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[User Groups]]></value>
-				</property>
-				<property type="shared">
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:userid=${param.userid}&username=${param.username}&action=initial]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/accounts/users/edit/overview.html</source>
-			<destination>system/workplace/admin/accounts/users/edit/overview.html</destination>
-			<type>jsp</type>
-			<uuidresource>442ed246-d1c2-11d9-b09e-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:51:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 31 May 2005 10:53:48 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
 					<value><![CDATA[User Overview]]></value>
 				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:userid=${param.userid}&username=${param.username}&action=initial|path:/accounts/users/edit]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/users/edit/roles.html</source>
-			<destination>system/workplace/admin/accounts/users/edit/roles.html</destination>
+			<source>system/workplace/admin/accounts/user_roles.html</source>
+			<destination>system/workplace/admin/accounts/user_roles.html</destination>
 			<type>jsp</type>
 			<uuidresource>55aecd50-d1c2-11d9-b09e-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:51:55 GMT</datelastmodified>
+			<datelastmodified>Tue, 07 Jun 2005 15:18:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 31 May 2005 10:54:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -785,53 +738,31 @@
 					<name>Title</name>
 					<value><![CDATA[User Roles]]></value>
 				</property>
-				<property type="shared">
+				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:userid=${param.userid}&username=${param.username}&action=initial]]></value>
+					<value><![CDATA[params:userid=${param.userid}&username=${param.username}&action=initial|path:/accounts/users/edit/roles]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/users/edit/sendemail.html</source>
-			<destination>system/workplace/admin/accounts/users/edit/sendemail.html</destination>
+			<source>system/workplace/admin/accounts/users_list.html</source>
+			<destination>system/workplace/admin/accounts/users_list.html</destination>
 			<type>jsp</type>
-			<uuidresource>5ff6f175-d1c2-11d9-b09e-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:52:00 GMT</datelastmodified>
+			<uuidresource>fb553117-aa75-11d9-bdd4-733e319ca5ea</uuidresource>
+			<datelastmodified>Tue, 07 Jun 2005 15:22:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 31 May 2005 10:54:34 GMT</datecreated>
+			<datecreated>Fri, 28 Jan 2005 08:23:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Send Email to User]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/accounts/users/edit/user.html</source>
-			<destination>system/workplace/admin/accounts/users/edit/user.html</destination>
-			<type>jsp</type>
-			<uuidresource>44347be5-ac0e-11d9-80b4-733e319ca5ea</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 13:52:06 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 Apr 2005 11:22:05 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -839,27 +770,27 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_EDITUSER_ADMIN_TOOL_GROUP_0}]]></value>
+					<value><![CDATA[${key.GUI_USERS_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.GUI_EDITUSER_ADMIN_TOOL_HELP_0}]]></value>
+					<value><![CDATA[${key.GUI_USERS_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/user.png]]></value>
+					<value><![CDATA[tools/accounts/icons/big/user.png:tools/accounts/icons/small/user.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_EDITUSER_ADMIN_TOOL_NAME_0}:${key.GUI_EDITUSER_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+					<value><![CDATA[${key.GUI_USERS_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Edit User]]></value>
+					<value><![CDATA[User Management]]></value>
 				</property>
-				<property type="shared">
+				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:userid=${param.userid}&username=${param.username}&action=initial]]></value>
+					<value><![CDATA[path:/accounts/users]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
