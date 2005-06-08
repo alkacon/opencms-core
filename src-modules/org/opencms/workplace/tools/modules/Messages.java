@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/Messages.java,v $
- * Date   : $Date: 2005/06/06 13:44:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/08 10:46:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,6 +75,11 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPORTMODULE_ADMIN_TOOL_HELP_0 = "GUI_EXPORTMODULE_ADMIN_TOOL_HELP_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULEDEPENDENCIES_ADMIN_TOOL_NAME_0 = "GUI_MODULEDEPENDENCIES_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULEDEPENDENCIES_ADMIN_TOOL_HELP_0 = "GUI_MODULEDEPENDENCIES_ADMIN_TOOL_HELP_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWMODULE_ADMIN_TOOL_NAME_0 = "GUI_NEWMODULE_ADMIN_TOOL_NAME_0";
@@ -102,6 +107,9 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_MODULES_DELETE_1 = "ERR_ACTION_MODULES_DELETE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ACTION_DEPENDENCIES_DELETE_2 = "ERR_ACTION_DEPENDENCIES_DELETE_2";
     
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_ADMIN_TOOL_GROUP_0 = "GUI_MODULES_ADMIN_TOOL_GROUP_0";
@@ -213,7 +221,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LIST_ACTION_OVERVIEW_NAME_0 = "GUI_MODULES_LIST_ACTION_OVERVIEW_NAME_0";
-
     
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LIST_COLS_DELETE_0 = "GUI_MODULES_LIST_COLS_DELETE_0";
@@ -239,6 +246,68 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LIST_NAME_0 = "GUI_MODULES_LIST_NAME_0";
 
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_ADMIN_TOOL_GROUP_0 = "GUI_DEPENDENCIES_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETEDEPENDENCIES_ADMIN_TOOL_NAME_0 = "GUI_DELETEDEPENDENCIES_ADMIN_TOOL_NAME_0";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETEDEPENDENCIES_ADMIN_TOOL_HELP_0 = "GUI_DELETEDEPENDENCIES_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITDEPENDENCIES_ADMIN_TOOL_NAME_0 = "GUI_EDITDEPENDENCIES_ADMIN_TOOL_NAME_0";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITDEPENDENCIES_ADMIN_TOOL_HELP_0 = "GUI_EDITDEPENDENCIES_ADMIN_TOOL_HELP_0";
+      
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWDEPENDENCIES_ADMIN_TOOL_NAME_0 = "GUI_NEWDEPENDENCIES_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWDEPENDENCIES_ADMIN_TOOL_HELP_0 = "GUI_NEWDEPENDENCIES_ADMIN_TOOL_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_COLS_NAME_0 = "GUI_DEPENDENCIES_LIST_COLS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_COLS_VERSION_0 = "GUI_DEPENDENCIES_LIST_COLS_VERSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_ACTION_DELETE_CONF_1 = "GUI_DEPENDENCIES_LIST_ACTION_DELETE_CONF_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_ACTION_DELETE_HELP_1 = "GUI_DEPENDENCIES_LIST_ACTION_DELETE_HELP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_ACTION_DELETE_NAME_0 = "GUI_DEPENDENCIES_LIST_ACTION_DELETE_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_ACTION_EDIT_HELP_0 = "GUI_DEPENDENCIES_LIST_ACTION_EDIT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_ACTION_EDIT_NAME_0 = "GUI_DEPENDENCIES_LIST_ACTION_EDIT_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_ACTION_MDELETE_CONF_0 = "GUI_DEPENDENCIES_LIST_ACTION_MDELETE_CONF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_ACTION_MDELETE_HELP_0 = "GUI_DEPENDENCIES_LIST_ACTION_MDELETE_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_ACTION_MDELETE_NAME_0 = "GUI_DEPENDENCIES_LIST_ACTION_MDELETE_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_ACTION_OVERVIEW_HELP_0 = "GUI_DEPENDENCIES_LIST_ACTION_OVERVIEW_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_ACTION_OVERVIEW_NAME_0 = "GUI_DEPENDENCIES_LIST_ACTION_OVERVIEW_NAME_0";
+ 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_LIST_NAME_0 = "GUI_DEPENDENCIES_LIST_NAME_0";
+    
+    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.modules.messages";
 

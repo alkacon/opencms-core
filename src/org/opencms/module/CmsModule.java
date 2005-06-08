@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/06 13:44:16 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/08 10:46:48 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -170,9 +170,9 @@ public class CmsModule implements Comparable {
 
         super();
         m_name = name;
-        m_niceName = niceName;
-        m_actionClass = actionClass;
-        m_group = group;
+        setNiceName(niceName);
+        setActionClass(actionClass);
+        setGroup(group);
 
         if (CmsStringUtil.isEmpty(description)) {
             m_description = "";
@@ -287,6 +287,10 @@ public class CmsModule implements Comparable {
         }
         if (getResourceTypes() != null) {
             result.setResourceTypes(new ArrayList(getResourceTypes()));
+        }
+        
+        if (getDependencies() != null) {
+            result.setDependencies(new ArrayList(getDependencies()));
         }
 
         result.setResources(new ArrayList(m_resources));
@@ -688,7 +692,8 @@ public class CmsModule implements Comparable {
      */
     public void setDependencies(List dependencies) {
 
-        m_dependencies = Collections.unmodifiableList(dependencies);
+        checkFrozen();
+        m_dependencies = dependencies;
     }
 
     /**

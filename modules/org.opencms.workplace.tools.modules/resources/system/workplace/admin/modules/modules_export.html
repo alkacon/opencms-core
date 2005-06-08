@@ -1,0 +1,11 @@
+<%@ page 
+	buffer="none" 
+	import="org.opencms.workplace.tools.modules.*" %><%	
+	
+	// initialize the workplace class
+	CmsModulesListExportReport wp = new CmsModulesListExportReport(pageContext, request, response);
+	
+	// display the report
+	wp.displayReport();
+%>
+

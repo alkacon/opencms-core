@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesOverview.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsDependenciesEdit.java,v $
  * Date   : $Date: 2005/06/08 10:46:48 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,25 @@
 
 package org.opencms.workplace.tools.modules;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleDependency;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,23 +57,26 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Class to show the module overview.<p>
+ * Class to edit a module dependencies.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * @since 5.9.1
  */
-public class CmsModulesOverview extends CmsWidgetDialog {
+public class CmsDependenciesEdit extends CmsWidgetDialog {
 
     /** The dialog type. */
-    public static final String DIALOG_TYPE = "ModulesOverview";
+    public static final String DIALOG_TYPE = "DependenciesEdit";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
-    /** The module object that is edited on this dialog. */
-    private CmsModule m_module;
+    /** The module dependency object that is shown on this dialog. */
+    private CmsModuleDependency m_dependency;
+
+    /** Dependency name. */
+    private String m_paramDependency;
 
     /** Modulename. */
     private String m_paramModule;
@@ -73,7 +86,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsModulesOverview(CmsJspActionElement jsp) {
+    public CmsDependenciesEdit(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -85,7 +98,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsModulesOverview(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsDependenciesEdit(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -95,7 +108,43 @@ public class CmsModulesOverview extends CmsWidgetDialog {
      */
     public void actionCommit() {
 
-        // noop
+        List errors = new ArrayList();
+
+        // refresh the list
+        Map objects = (Map)getSettings().getListObject();
+        if (objects != null) {
+            objects.remove(CmsModulesList.class.getName());
+            objects.remove(CmsModulesDependenciesList.class.getName());
+        }
+
+        try {
+            // get the correct module
+            String moduleName = getParamModule();
+            CmsModule module = (CmsModule)OpenCms.getModuleManager().getModule(moduleName).clone();
+            // get the current dependencies from the module
+            List oldDependencies = module.getDependencies();
+            // now loop through the dependencies and create the new list of dependencies
+            List newDependencies = new ArrayList();
+            Iterator i = oldDependencies.iterator();
+            while (i.hasNext()) {
+                CmsModuleDependency dep = (CmsModuleDependency)i.next();
+                if (!dep.getName().equals(m_dependency.getName())) {
+                    newDependencies.add(dep);
+                }
+            }
+            // update the dependencies
+            newDependencies.add(m_dependency);
+            module.setDependencies(newDependencies);
+            // update the module
+            OpenCms.getModuleManager().updateModule(getCms(), module);
+        } catch (CmsConfigurationException ce) {
+            errors.add(ce);
+        } catch (CmsSecurityException se) {
+            errors.add(se);
+        }
+
+        // set the list of errors to display when saving failed
+        setCommitErrors(errors);
     }
 
     /**
@@ -130,6 +179,16 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     }
 
     /**
+     * Gets the module dependency parameter.<p>
+     * 
+     * @return the module dependency parameter
+     */
+    public String getParamDependency() {
+
+        return m_paramDependency;
+    }
+
+    /**
      * Gets the module parameter.<p>
      * 
      * @return the module parameter
@@ -137,6 +196,15 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     public String getParamModule() {
 
         return m_paramModule;
+    }
+
+    /** 
+     * Sets the module dependency parameter.<p>
+     * @param paramDependency the module dependency parameter
+     */
+    public void setParamDependency(String paramDependency) {
+
+        m_paramDependency = paramDependency;
     }
 
     /** 
@@ -165,13 +233,9 @@ public class CmsModulesOverview extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         if (dialog.equals(PAGES[0])) {
-            result.append(dialogBlockStart(key("label.moduleinformation")));
+            result.append(dialogBlockStart(key("label.dependencyinformation")));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 5));
-            result.append(createWidgetTableEnd());
-            result.append(dialogBlockStart(key("label.modulecreator")));
-            result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(6, 7));
+            result.append(createDialogRowsHtml(0, 1));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -188,15 +252,10 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         initModule();
+        String modules = getModules();
 
-        addWidget(new CmsWidgetDialogParameter(m_module, "name", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "niceName", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "description", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "version.version", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "group", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "actionClass", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "authorName", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "authorEmail", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_dependency, "name", PAGES[0], new CmsSelectWidget(modules)));
+        addWidget(new CmsWidgetDialogParameter(m_dependency, "version.version", PAGES[0], new CmsInputWidget()));
 
     }
 
@@ -225,29 +284,48 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     protected void initModule() {
 
         Object o;
+        CmsModule module;
 
-        if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
-            // this is the initial dialog call
-            if (CmsStringUtil.isNotEmpty(m_paramModule)) {
-                // edit an existing module, get it from manager
-                o = OpenCms.getModuleManager().getModule(m_paramModule);
-            } else {
-                // create a new module
-                o = null;
-            }
+        // first get the correct module
+        if (CmsStringUtil.isNotEmpty(m_paramModule)) {
+            module = (CmsModule)OpenCms.getModuleManager().getModule(m_paramModule).clone();
         } else {
-            // this is not the initial call, get module from session
+            // create a new module
+            module = new CmsModule();
+        }
+
+        // now try to get the dependency
+        if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
+            o = null;
+        } else {
+            // this is not the initial call, get module dependency from session
             o = getDialogObject();
         }
 
-        if (!(o instanceof CmsModule)) {
-            // create a new module
-            m_module = new CmsModule();
+        if (!(o instanceof CmsModuleDependency)) {
+            if (m_paramDependency == null) {
+                // there was no parameter given, so create a new, empty dependency
+                m_dependency = new CmsModuleDependency();
+            } else {
+                // create a new module dependency by reading it from the module
+                List dependencies = module.getDependencies();
+                m_dependency = new CmsModuleDependency();
+                if (dependencies != null && dependencies.size() > 0) {
+                    Iterator i = dependencies.iterator();
+                    while (i.hasNext()) {
+                        CmsModuleDependency dependency = (CmsModuleDependency)i.next();
+                        if (dependency.getName().equals(m_paramDependency)) {
+                            m_dependency = dependency;
+                        }
+                    }
+                }
+            }
 
         } else {
-            // reuse module stored in session
-            m_module = (CmsModule)((CmsModule)o).clone();
+            // reuse module dependency stored in session
+            m_dependency = (CmsModuleDependency)o;
         }
+
     }
 
     /**
@@ -273,6 +351,35 @@ public class CmsModulesOverview extends CmsWidgetDialog {
         }
 
         // save the current state of the module (may be changed because of the widget values)
-        setDialogObject(m_module);
+        setDialogObject(m_dependency);
+    }
+
+    /**
+     * Get the list of all modules available.<p>
+     * @return pipe seperated list of module names
+     */
+    private String getModules() {
+
+        StringBuffer mod = new StringBuffer(32);
+
+        // get all modules
+        Set moduleNames = OpenCms.getModuleManager().getModuleNames();
+        Iterator i = moduleNames.iterator();
+        // add them to the list of modules
+        while (i.hasNext()) {
+            String moduleName = (String)i.next();
+            mod.append(moduleName);
+            // check for the preselection
+            if (moduleName.equals(getParamDependency())) {
+                mod.append("*");
+            }
+            mod.append("|");
+        }
+
+        String modules = new String(mod);
+        if (modules.endsWith("|")) {
+            modules = modules.substring(0, modules.length() - 1);
+        }
+        return modules;
     }
 }

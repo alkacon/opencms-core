@@ -1,0 +1,11 @@
+<%@ page 
+	buffer="none" 
+	import="org.opencms.workplace.tools.modules.*" %><%	
+	
+	
+	// initialize the workplace class
+	CmsDependenciesOverview wp = new CmsDependenciesOverview(pageContext, request, response);
+	
+	// perform the dialog display action	
+	wp.displayDialog();
+%>

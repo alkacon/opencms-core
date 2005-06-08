@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesOverview.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsDependenciesOverview.java,v $
  * Date   : $Date: 2005/06/08 10:46:48 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.modules;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleDependency;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsDialog;
@@ -41,29 +42,35 @@ import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.Iterator;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Class to show the module overview.<p>
+ * Class to show the module dependencies overview.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * @since 5.9.1
  */
-public class CmsModulesOverview extends CmsWidgetDialog {
+public class CmsDependenciesOverview extends CmsWidgetDialog {
 
     /** The dialog type. */
-    public static final String DIALOG_TYPE = "ModulesOverview";
+    public static final String DIALOG_TYPE = "DependenciesOverview";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
-    /** The module object that is edited on this dialog. */
-    private CmsModule m_module;
+    /** The module dependency object that is shown on this dialog. */
+    private CmsModuleDependency m_dependency;
+
+    /** Dependency name. */
+    private String m_paramDependency;
 
     /** Modulename. */
     private String m_paramModule;
@@ -73,7 +80,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsModulesOverview(CmsJspActionElement jsp) {
+    public CmsDependenciesOverview(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -85,7 +92,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsModulesOverview(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsDependenciesOverview(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -130,6 +137,16 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     }
 
     /**
+     * Gets the module dependency parameter.<p>
+     * 
+     * @return the module dependency parameter
+     */
+    public String getParamDependency() {
+
+        return m_paramDependency;
+    }
+
+    /**
      * Gets the module parameter.<p>
      * 
      * @return the module parameter
@@ -137,6 +154,15 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     public String getParamModule() {
 
         return m_paramModule;
+    }
+
+    /** 
+     * Sets the module dependency parameter.<p>
+     * @param paramDependency the module dependency parameter
+     */
+    public void setParamDependency(String paramDependency) {
+
+        m_paramDependency = paramDependency;
     }
 
     /** 
@@ -165,13 +191,9 @@ public class CmsModulesOverview extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         if (dialog.equals(PAGES[0])) {
-            result.append(dialogBlockStart(key("label.moduleinformation")));
+            result.append(dialogBlockStart(key("label.dependencyinformation")));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 5));
-            result.append(createWidgetTableEnd());
-            result.append(dialogBlockStart(key("label.modulecreator")));
-            result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(6, 7));
+            result.append(createDialogRowsHtml(0, 1));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -189,14 +211,9 @@ public class CmsModulesOverview extends CmsWidgetDialog {
 
         initModule();
 
-        addWidget(new CmsWidgetDialogParameter(m_module, "name", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "niceName", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "description", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "version.version", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "group", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "actionClass", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "authorName", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "authorEmail", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_dependency, "name", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_dependency, "version.version", PAGES[0], new CmsDisplayWidget()));
+
 
     }
 
@@ -225,6 +242,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     protected void initModule() {
 
         Object o;
+        CmsModule module;
 
         if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
             // this is the initial dialog call
@@ -242,12 +260,25 @@ public class CmsModulesOverview extends CmsWidgetDialog {
 
         if (!(o instanceof CmsModule)) {
             // create a new module
-            m_module = new CmsModule();
+            module = new CmsModule();
 
         } else {
             // reuse module stored in session
-            m_module = (CmsModule)((CmsModule)o).clone();
+            module = (CmsModule)((CmsModule)o).clone();
         }
+
+        List dependencies = module.getDependencies();
+        m_dependency = new CmsModuleDependency();
+        if (dependencies != null && dependencies.size() > 0) {
+            Iterator i = dependencies.iterator();
+            while (i.hasNext()) {
+                CmsModuleDependency dependency = (CmsModuleDependency)i.next();
+                if (dependency.getName().equals(m_paramDependency)) {
+                    m_dependency = dependency;
+                }
+            }
+        } 
+
     }
 
     /**
@@ -262,7 +293,6 @@ public class CmsModulesOverview extends CmsWidgetDialog {
 
         String moduleName = getParamModule();
         CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
-
         if (module == null) {
             setAction(ACTION_CANCEL);
             try {
@@ -270,9 +300,29 @@ public class CmsModulesOverview extends CmsWidgetDialog {
             } catch (JspException e) {
                 // noop
             }
+        } else {
+            String dependencyName = getParamDependency();
+            List dependencies = module.getDependencies();
+            Iterator i = dependencies.iterator();
+            boolean found = false;
+            while (i.hasNext()) {
+                CmsModuleDependency dep = (CmsModuleDependency)i.next();
+                if (dep.getName().equals(dependencyName)) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                setAction(ACTION_CANCEL);
+                try {
+                    actionCloseDialog();
+                } catch (JspException e) {
+                    // noop
+                }
+            }
         }
 
         // save the current state of the module (may be changed because of the widget values)
-        setDialogObject(m_module);
+        setDialogObject(m_dependency);
+
     }
 }

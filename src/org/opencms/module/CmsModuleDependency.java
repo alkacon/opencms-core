@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleDependency.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/08 10:46:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,20 @@ public class CmsModuleDependency implements Comparable {
 
     /** The (minimum) version of the module dependency. */
     private CmsModuleVersion m_version;
+
+    /**
+     * Generates a new, empty module dependency.<p>
+     * 
+     */
+    public CmsModuleDependency() {
+
+        super();
+        m_name = new String();
+        m_version = new CmsModuleVersion("0");
+
+        // pre - calculate the hash code
+        m_hashCode = m_name.concat(m_version.toString()).hashCode();
+    }
 
     /**
      * Generates a new module dependency.<p>
@@ -153,6 +167,24 @@ public class CmsModuleDependency implements Comparable {
     public int hashCode() {
 
         return m_hashCode;
+    }
+
+    /** Sets the name of a module dependency.<p>
+     * 
+     * @param value the name of a module dependency
+     */
+    public void setName(String value) {
+
+        m_name = value;
+    }
+
+    /** Sets the version of a module dependency.<p>
+     * 
+     * @param value the version of a module dependency
+     */
+    public void setVersion(CmsModuleVersion value) {
+
+        m_version = value;
     }
 
     /**

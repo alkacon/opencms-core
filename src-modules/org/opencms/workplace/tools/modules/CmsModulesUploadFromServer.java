@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2005/06/07 16:25:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/08 10:46:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleImportExportHandler;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsSelectWidget;
-import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -60,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.9.1
  */
 public class CmsModulesUploadFromServer extends CmsWidgetDialog {
@@ -71,15 +69,15 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
+    /** Modulename parameter. */
+    public static final String PARAM_MODULENAME = "modulename";
+
     /** The import action. */
     private static final String IMPORT_ACTION_REPORT = "/system/workplace/admin/modules/reports/import.html";
 
     /** The replace action. */
     private static final String REPLACE_ACTION_REPORT = "/system/workplace/admin/modules/reports/replace.html";
 
-    /** Modulename parameter. */
-    public static final String PARAM_MODULENAME = "modulename";
-    
     /** Modulename. */
     private String m_moduleupload;
 
@@ -124,9 +122,10 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
             param.put(PARAM_CLOSELINK, getToolManager().linkForPath(getJsp(), "/modules", null));
 
             String importpath = OpenCms.getSystemInfo().getPackagesRfsPath();
-            importpath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(importpath + "modules/" +  m_moduleupload);
+            importpath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+                importpath + "modules/" + m_moduleupload);
             CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(importpath);
-            
+
             if (OpenCms.getModuleManager().hasModule(module.getName())) {
                 param.put(PARAM_MODULENAME, module.getName());
                 getToolManager().jspRedirectPage(this, REPLACE_ACTION_REPORT, param);
@@ -134,47 +133,16 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
                 getToolManager().jspRedirectPage(this, IMPORT_ACTION_REPORT, param);
             }
         } catch (IOException e) {
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_ACTION_MODULE_UPLOAD_1,
-                m_moduleupload), e);
+            throw new CmsRuntimeException(
+                Messages.get().container(Messages.ERR_ACTION_MODULE_UPLOAD_1, m_moduleupload),
+                e);
         } catch (CmsConfigurationException e) {
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_ACTION_MODULE_UPLOAD_1,
-                m_moduleupload), e);
+            throw new CmsRuntimeException(
+                Messages.get().container(Messages.ERR_ACTION_MODULE_UPLOAD_1, m_moduleupload),
+                e);
         }
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
-    }
-
-    /**
-     * Builds the HTML for the dialog form.<p>
-     * 
-     * @return the HTML for the dialog form
-     */
-    public String buildDialogForm() {
-
-        StringBuffer result = new StringBuffer(1024);
-
-        try {
-
-            // create the dialog HTML
-            result.append(createDialogHtml(getParamPage()));
-
-        } catch (Throwable t) {
-            // TODO: Error handling
-        }
-        return result.toString();
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsDialog#getCancelAction()
-     */
-    public String getCancelAction() {
-
-        // set the default action
-        setParamPage((String)getPages().get(0));
-
-        return DIALOG_SET;
     }
 
     /**
@@ -217,7 +185,7 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(0, 0));
             result.append(createWidgetTableEnd());
-
+            result.append(dialogBlockEnd());
         }
 
         // close table
@@ -253,30 +221,6 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
         addMessages(Messages.get().getBundleName());
         // add default resource bundles
         super.initMessages();
-    }
-
-    /**
-     * Initializes the module  to work with depending on the dialog state and request parameters.<p>
-     */
-    protected void initModule() {
-
-        Object o;
-
-        if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
-            o = null;
-        } else {
-            // this is not the initial call, get module from session
-            o = getDialogObject();
-        }
-
-        if (!(o instanceof String)) {
-
-            m_moduleupload = new String("");
-
-        } else {
-            // reuse module stored in session
-            m_moduleupload = (String)o;
-        }
     }
 
     /**
