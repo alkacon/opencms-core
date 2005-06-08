@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/08 16:44:19 $
+ * Version: $Revision: 1.2 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,9 @@ import org.opencms.file.CmsGroup;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListDialog;
+import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
@@ -51,7 +53,7 @@ import java.util.Map;
  * Generalized user groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
@@ -138,6 +140,17 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     }
 
     /**
+     * Updates the main user list.<p>
+     */
+    public void updateUserList() {
+
+        Map objects = (Map)getSettings().getListObject();
+        if (objects != null) {
+            objects.remove(CmsUsersList.class.getName());
+        }
+    }
+
+    /**
      * Returns a list of groups to display.<p>
      * 
      * @return a list of <code><{@link CmsGroup}</code>s
@@ -205,8 +218,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             CmsGroupDisabledStateAction iconAction = new CmsGroupDisabledStateAction(
                 getListId(),
                 LIST_ACTION_ICON,
-                getCms(),
-                getParamUsername());
+                getCms());
             iconAction.setFirstAction(dirAction);
             iconAction.setSecondAction(indirAction);
             iconCol.addDirectAction(iconAction);
@@ -233,7 +245,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             // add it to the list definition
             metadata.addColumn(stateCol);
         }
-        
+
         // create column for name
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
         nameCol.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_NAME_0));
@@ -257,14 +269,27 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
         // noop
     }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        // test the needed parameters
+        getCms().readUser(getParamUsername());
+        getCms().readUser(new CmsUUID(getParamUserid()));
+    }    
     
     /**
-     * Updates the main user list.<p>
+     * @see org.opencms.workplace.list.A_CmsListDialog#getList()
      */
-    public void updateUserList() {
-        Map objects = (Map)getSettings().getListObject();
-        if (objects != null) {
-            objects.remove(CmsUsersList.class.getName());
+    public CmsHtmlList getList() {
+        // assure you have the right username
+        CmsGroupDisabledStateAction action = (CmsGroupDisabledStateAction)getMetadata(getListId()).getColumnDefinition(
+            LIST_COLUMN_ICON).getDirectAction(LIST_ACTION_ICON);
+        if (action != null) {
+            action.setUserName(getParamUsername());
         }
+        return super.getList();
     }
 }

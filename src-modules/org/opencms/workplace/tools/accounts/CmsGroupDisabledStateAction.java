@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsGroupDisabledStateAction.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/08 16:44:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.List;
  * Adds/Removes a user to/from a role.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsGroupDisabledStateAction extends A_CmsListTwoStatesAction {
@@ -57,14 +57,30 @@ public class CmsGroupDisabledStateAction extends A_CmsListTwoStatesAction {
      * @param listId the id of the associated list
      * @param id unique id
      * @param cms the cms context
-     * @param userName the user name
      */
-    protected CmsGroupDisabledStateAction(String listId, String id, CmsObject cms, String userName) {
+    protected CmsGroupDisabledStateAction(String listId, String id, CmsObject cms) {
 
         super(listId, id, cms);
-        m_userName = userName;
     }
-   
+    
+    
+    /**
+     * @see org.opencms.workplace.list.A_CmsListToggleAction#getId()
+     */
+    public String getId() {
+
+        // needed to avoid calling the <code>{@link selectAction()}</code> method while setting the right username
+        return getFirstAction().getId();
+    }
+    
+    /**
+     * @see org.opencms.workplace.list.A_CmsListToggleAction#isEnabled()
+     */
+    public boolean isEnabled() {
+
+        return false;
+    }
+    
     /**
      * @see org.opencms.workplace.list.A_CmsListToggleAction#selectAction()
      */
@@ -84,12 +100,13 @@ public class CmsGroupDisabledStateAction extends A_CmsListTwoStatesAction {
         return getSecondAction();
     }
     
-    
     /**
-     * @see org.opencms.workplace.list.A_CmsListToggleAction#isEnabled()
+     * Sets the userName.<p>
+     *
+     * @param userName the userName to set
      */
-    public boolean isEnabled() {
+    public void setUserName(String userName) {
 
-        return false;
+        m_userName = userName;
     }
 }

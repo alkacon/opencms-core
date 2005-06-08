@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2005/06/07 16:25:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/08 16:44:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsEditGroupDialog extends CmsWidgetDialog {
@@ -372,6 +373,23 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
 
         // initialize parameters and dialog actions in super implementation
         super.initWorkplaceRequestValues(settings, request);
+
+        if (!isNewGroup()) {
+            // test the needed parameters
+            try {
+                getCms().readGroup(getParamGroupname());
+                getCms().readGroup(new CmsUUID(getParamGroupid()));
+            } catch (Exception e) {
+                // redirect to parent if parameters not available
+                setAction(ACTION_CANCEL);
+                try {
+                    actionCloseDialog();
+                } catch (JspException e1) {
+                    // noop
+                }
+                return;
+            }
+        }
 
         // save the current state of the group (may be changed because of the widget values)
         setDialogObject(m_group);

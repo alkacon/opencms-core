@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/08 16:44:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,14 +44,17 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.list.CmsListDateMacroFormatter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -59,10 +62,13 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsEditUserDialog extends CmsWidgetDialog {
+
+    /** localized messages Keys prefix. */
+    public static final String C_KEY_PREFIX = "user";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
@@ -79,9 +85,11 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     /** Session parameter name for the user object. */
     private static final Object C_USER_OBJECT = "USER";
 
-    /** localized messages Keys prefix. */
-    public static final String C_KEY_PREFIX = "user";
-    
+    /** Formatter for the last login property. */
+    private static final CmsListDateMacroFormatter LAST_LOGIN_FORMATTER = new CmsListDateMacroFormatter(
+        Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_1),
+        Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0));
+
     /** Stores the value of the request parameter for the user id. */
     private String m_paramUserid;
 
@@ -171,6 +179,18 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the last login.<p>
+     *
+     * Auxiliary Property for better representation of the bean parentId property.<p>
+     * 
+     * @return the last login
+     */
+    public String getLastlogin() {
+
+        return LAST_LOGIN_FORMATTER.format(new Date(m_user.getLastlogin()), getLocale());
+    }
+
+    /**
      * Returns the user id parameter value.<p>
      * 
      * @return the user id parameter value
@@ -188,6 +208,19 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     public String getParamUsername() {
 
         return m_paramUsername;
+    }
+
+    /**
+     * Sets the last login.<p>
+     *
+     * Auxiliary Property for better representation of the bean parentId property.<p>
+     * 
+     * @param lastlogin the last login to set
+     */
+    public void setLastlogin(String lastlogin) {
+
+        // never used
+        lastlogin.length();
     }
 
     /**
@@ -272,7 +305,7 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         initUserObject();
 
         setKeyPrefix(C_KEY_PREFIX);
-        
+
         // widgets to display
         if (isShortInfo()) {
             addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsDisplayWidget()));
@@ -291,7 +324,7 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_user, "city", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "country", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "lastlogin", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "lastlogin", PAGES[0], new CmsDisplayWidget()));
             return;
         }
         if (m_user.getId() == null) {
@@ -388,11 +421,38 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         // initialize parameters and dialog actions in super implementation
         super.initWorkplaceRequestValues(settings, request);
 
+        if (!isNewUser()) {
+            // test the needed parameters
+            try {
+                getCms().readUser(getParamUsername());
+                getCms().readUser(new CmsUUID(getParamUserid()));
+            } catch (Exception e) {
+                // redirect to parent if parameters not available
+                setAction(ACTION_CANCEL);
+                try {
+                    actionCloseDialog();
+                } catch (JspException e1) {
+                    // noop
+                }
+                return;
+            }
+        }
+
         // save the current state of the user and pwd (may be changed because of the widget values)
         Map dialogObject = new HashMap();
         dialogObject.put(C_USER_OBJECT, m_user);
         dialogObject.put(C_PWD_OBJECT, m_pwdInfo);
         setDialogObject(dialogObject);
+    }
+
+    /**
+     * Checks if the User overview has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the user overview has to be displayed
+     */
+    private boolean isNewUser() {
+
+        return getCurrentToolPath().equals("/accounts/users/new");
     }
 
     /**
@@ -416,16 +476,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         ret = ret && !isNewUser();
         ret = ret && !getCurrentToolPath().equals("/accounts/users/edit/user");
         return ret;
-    }
-
-    /**
-     * Checks if the User overview has to be displayed.<p>
-     * 
-     * @return <code>true</code> if the user overview has to be displayed
-     */
-    private boolean isNewUser() {
-
-        return getCurrentToolPath().equals("/accounts/users/new");
     }
 
 }

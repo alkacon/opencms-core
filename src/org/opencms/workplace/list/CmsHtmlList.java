@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/06/07 10:07:43 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/08 16:44:19 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -156,7 +156,9 @@ public class CmsHtmlList {
 
         m_originalItems.clear();
         m_filteredItems = null;
-        m_visibleItems.clear();
+        if (m_visibleItems != null) {
+            m_visibleItems.clear();
+        }
         setSearchFilter("", locale);
         m_sortedColumn = null;
     }
@@ -228,7 +230,7 @@ public class CmsHtmlList {
      */
     public CmsListItem getItem(String id) {
 
-        Iterator it = m_visibleItems.iterator();
+        Iterator it = m_originalItems.iterator();
         while (it.hasNext()) {
             CmsListItem item = (CmsListItem)it.next();
             if (item.getId().equals(id)) {
@@ -362,7 +364,7 @@ public class CmsHtmlList {
         }
         if (m_visibleItems != null) {
             m_visibleItems.addAll(listItems);
-        }        
+        }
         if (state != null) {
             setState(state, locale);
         }
@@ -388,7 +390,7 @@ public class CmsHtmlList {
         }
         if (m_visibleItems != null) {
             m_visibleItems.add(listItem);
-        }        
+        }
         if (state != null) {
             setState(state, locale);
         }
@@ -546,7 +548,7 @@ public class CmsHtmlList {
         }
         if (m_visibleItems != null) {
             m_visibleItems.removeAll(removedItems);
-        }        
+        }
         if (state != null) {
             setState(state, locale);
         }

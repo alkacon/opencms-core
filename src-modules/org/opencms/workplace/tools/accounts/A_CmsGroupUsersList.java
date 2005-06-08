@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/08 16:44:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -51,7 +52,7 @@ import java.util.Map;
  * Generalized user groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
@@ -138,13 +139,16 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     }
 
     /**
-     * Returns a list of users to display.<p>
-     * 
-     * @return a list of <code><{@link CmsUser}</code>s
-     * 
-     * @throws CmsException if something goes wrong
+     * Updates the main user list.<p>
      */
-    protected abstract List getUsers() throws CmsException;
+    public void updateGroupList() {
+
+        Map objects = (Map)getSettings().getListObject();
+        if (objects != null) {
+            objects.remove(CmsGroupsList.class.getName());
+            objects.remove(CmsUsersList.class.getName());
+        }
+    }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
@@ -166,6 +170,15 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
 
         return ret;
     }
+
+    /**
+     * Returns a list of users to display.<p>
+     * 
+     * @return a list of <code><{@link CmsUser}</code>s
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected abstract List getUsers() throws CmsException;
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
@@ -216,7 +229,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
             // add it to the list definition
             metadata.addColumn(stateCol);
         }
-        
+
         // create column for login
         CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN);
         loginCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LOGIN_0));
@@ -240,15 +253,14 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
 
         // noop
     }
-    
+
     /**
-     * Updates the main user list.<p>
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
-    public void updateGroupList() {
-        Map objects = (Map)getSettings().getListObject();
-        if (objects != null) {
-            objects.remove(CmsGroupsList.class.getName());
-            objects.remove(CmsUsersList.class.getName());
-        }
+    protected void validateParamaters() throws Exception {
+
+        // test the needed parameters
+        getCms().readGroup(getParamGroupname());
+        getCms().readGroup(new CmsUUID(getParamGroupid()));
     }
 }

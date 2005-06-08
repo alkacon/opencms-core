@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/08 16:44:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,11 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDateMacroFormatter;
 import org.opencms.workplace.list.CmsListDefaultAction;
-import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemActionIconComparator;
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsUsersList extends A_CmsListDialog {
@@ -597,6 +597,19 @@ public class CmsUsersList extends A_CmsListDialog {
             Messages.GUI_USERS_LIST_MACTION_DEACTIVATE_CONF_0));
         deactivateUser.setIconPath(ICON_MULTI_DEACTIVATE);
         metadata.addMultiAction(deactivateUser);
+    }
+
+    /**
+     * Deletes the user and closes the dialog.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void actionDeleteUser() throws Exception {
+
+        String userName = getJsp().getRequest().getParameter(CmsEditUserDialog.PARAM_USERNAME);
+        getCms().deleteUser(userName);
+        refreshList();
+        actionCloseDialog();
     }
 
 }

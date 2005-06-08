@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsUserRolesList.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/08 16:44:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * User roles view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsUserRolesList extends A_CmsUserGroupsList {
@@ -82,6 +82,7 @@ public class CmsUserRolesList extends A_CmsUserGroupsList {
     public CmsUserRolesList(CmsJspActionElement jsp) {
 
         super(jsp, LIST_ID, Messages.get().container(Messages.GUI_USERROLES_LIST_NAME_0), true);
+        setCacheList(false);
     }
 
     /**
@@ -93,7 +94,7 @@ public class CmsUserRolesList extends A_CmsUserGroupsList {
      */
     public CmsUserRolesList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
-        this(new CmsJspActionElement(context, req, res));
+        this(new CmsJspActionElement(context, req, res));        
     }
 
     /**

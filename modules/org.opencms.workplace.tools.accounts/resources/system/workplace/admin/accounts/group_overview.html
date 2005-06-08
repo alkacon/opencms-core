@@ -1,24 +1,8 @@
-<%@ page buffer="none" import="
-        org.opencms.workplace.*,
-        org.opencms.util.*,
-	org.opencms.workplace.tools.accounts.*,
-        org.opencms.workplace.list.A_CmsListDialog
-"%>
-<%	
-    // check the parameters
-    CmsDialog checkDialog = new CmsDialog(pageContext, request, response);
-    try {
-       checkDialog.getCms().readGroup(request.getParameter("groupname"));
-       checkDialog.getCms().readGroup(new CmsUUID(request.getParameter("groupid")));
-    } catch(Exception e) {
-        // redirect to parent if parameters not available
-        checkDialog.actionCloseDialog();
-        return;
-    }
-    // start dialog
-
-	// initialize the workplace class
-	CmsEditGroupDialog wpd = new CmsEditGroupDialog(pageContext, request, response) {
+<%@ page import="org.opencms.workplace.tools.accounts.*, javax.servlet.jsp.JspException" 
+         buffer="none" %>
+<%
+	// initialize the widget dialog
+	CmsEditGroupDialog wpWidget = new CmsEditGroupDialog(pageContext, request, response) {
             
             /**
              * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtml()
@@ -33,57 +17,17 @@
             }
         };
 
-    CmsShowGroupUsersList wp = new CmsShowGroupUsersList(pageContext, request, response);
-    if (wp.getAction()==A_CmsListDialog.ACTION_CANCEL) {
-        wp.removeList();
-    }
-	// perform the dialog action	
-	wpd.displayDialog();
+	// perform the widget actions	
+	wpWidget.displayDialog();
 
-//////////////////// start of switch statement 
-switch (wp.getAction()) {
-    case A_CmsListDialog.ACTION_CANCEL:
-          wp.actionCloseDialog();
-          return;
-
-    //////////////////// ACTION: default actions
-    case A_CmsListDialog.ACTION_LIST_SEARCH:
-    case A_CmsListDialog.ACTION_LIST_SORT:
-    case A_CmsListDialog.ACTION_LIST_SELECT_PAGE:
-         wp.executeDefaultActions();
-         break;
-
-    //////////////////// ACTION: execute single list action
-    case A_CmsListDialog.ACTION_LIST_SINGLE_ACTION:
-         wp.executeListSingleActions();
-         break;
-
-    //////////////////// ACTION: execute multiple list actions
-    case A_CmsListDialog.ACTION_LIST_MULTI_ACTION:
-         wp.executeListMultiActions();
-         break;
-
-    //////////////////// ACTION: execute independent list actions
-    case A_CmsListDialog.ACTION_LIST_INDEPENDENT_ACTION:
-         wp.executeListIndepActions();
-         break;
-
-
-} //end getAction switch
-
+	// initialize the list dialog
+    CmsShowGroupUsersList wpList = new CmsShowGroupUsersList(pageContext, request, response);
 %>
-
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
-<%= wp.getList().listJs() %>
-
-<form name="<%=wp.getList().getId()%>-form" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="<%=wp.getList().onSubmitSearch(wp) %>">
-<%= wp.allParamsAsHidden() %>
-
-<%= wp.getList().listHtml(wp) %>
-
-</form>
-
-<%=wpd.dialogContentEnd()%>
-<%=wpd.dialogEnd()%>
-<%=wpd.bodyEnd()%>
-<%=wpd.htmlEnd()%>
+<%= wpList.getList().listJs() %>
+<%
+	// perform the list actions	
+	wpList.displayDialog();
+%>
+<%=wpWidget.dialogEnd()%>
+<%=wpWidget.bodyEnd()%>
+<%=wpWidget.htmlEnd()%>

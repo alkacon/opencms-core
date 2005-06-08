@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/08 16:44:19 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -47,12 +48,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
 
 /**
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -156,6 +159,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** Activation decision Flag. */
     private boolean m_active;
 
+    /** Flag to signal that the list should be cached in the session. */
+    private boolean m_cacheList = true;
+
+    /** Initialization error. */
+    private CmsRuntimeException m_initError;
+
     /** the internal list. */
     private CmsHtmlList m_list;
 
@@ -179,6 +188,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /** The column to sort the list. */
     private String m_paramSortCol;
+
+    /** Flag to signal to include a back button in the form. */
+    private boolean m_showBackButton = true;
 
     /**
      * Public constructor.<p>
@@ -248,6 +260,134 @@ public abstract class A_CmsListDialog extends CmsDialog {
             settings.setListObject(objects);
         }
         return objects;
+    }
+
+    /**
+     * Performs the dialog actions depending on the initialized action.<p>
+     * 
+     * @throws JspException if dialog actions fail
+     */
+    public void actionDialog() throws JspException {
+
+        switch (getAction()) {
+
+            case ACTION_CANCEL:
+                // ACTION: cancel button pressed
+                actionCloseDialog();
+                return;
+
+            //////////////////// ACTION: default actions
+            case ACTION_LIST_SEARCH:
+            case ACTION_LIST_SORT:
+            case ACTION_LIST_SELECT_PAGE:
+                executeDefaultActions();
+                break;
+
+            //////////////////// ACTION: execute single list action
+            case ACTION_LIST_SINGLE_ACTION:
+                executeListSingleActions();
+                break;
+
+            //////////////////// ACTION: execute multiple list actions
+            case ACTION_LIST_MULTI_ACTION:
+                executeListMultiActions();
+                break;
+
+            //////////////////// ACTION: execute independent list actions
+            case ACTION_LIST_INDEPENDENT_ACTION:
+                executeListIndepActions();
+                break;
+
+            case ACTION_DEFAULT:
+            default:
+                // ACTION: show dialog (default)
+                setParamAction(DIALOG_INITIAL);
+        }
+    }
+
+    /**
+     * Generates the dialog starting html code.<p>
+     * 
+     * @return html code
+     */
+    public String defaultActionHtml() {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append(defaultActionHtmlStart());
+        result.append(defaultActionHtmlContent());
+        result.append(dialogEnd());
+        result.append(bodyEnd());
+        result.append(htmlEnd());
+        return result.toString();
+    }
+
+    /**
+     * Returns the html code for the default action content.<p>
+     * 
+     * @return html code
+     */
+    public String defaultActionHtmlContent() {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append(dialogContentStart(getParamTitle()));
+        result.append("<form name='");
+        result.append(getList().getId());
+        result.append("-form' action='");
+        result.append(getDialogUri());
+        result.append("' method='post' class='nomargin' onsubmit='");
+        result.append(getList().onSubmitSearch(this));
+        result.append("'>\n");
+        result.append(allParamsAsHidden());
+        result.append("\n");
+        result.append(getList().listHtml(this));
+        result.append("\n</form>\n");
+        result.append(dialogContentEnd());
+        return result.toString();
+    }
+
+    /**
+     * Generates the dialog starting html code.<p>
+     * 
+     * @return html code
+     */
+    public String defaultActionHtmlStart() {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append(htmlStart(null));
+        result.append(getList().listJs());
+        result.append(bodyStart("dialog", null));
+        result.append(dialogStart());
+        return result.toString();
+    }
+
+    /**
+     * Creates the HTML for the buttons on the dialog.<p>
+     * 
+     * @return the HTML for the buttons on the dialog.<p>
+     */
+    public String dialogButtonsCustom() {
+
+        if (isShowBackButton()) {
+            return dialogButtons(new int[] {BUTTON_BACK}, new String[1]);
+        }
+        // don't display any buttons
+        return "";
+    }
+
+    /**
+     * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
+     * 
+     * @throws IOException if writing to the JSP out fails
+     * @throws JspException if dialog actions fail
+     */
+    public void displayDialog() throws IOException, JspException {
+
+        actionDialog();
+        if (getJsp().getResponse().isCommitted()) {
+            return;
+        }
+        JspWriter out = getJsp().getJspContext().getOut();
+        out.print(defaultActionHtml());
     }
 
     /**
@@ -434,6 +574,26 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
+     * Returns the cacheList.<p>
+     *
+     * @return the cacheList
+     */
+    public boolean isCacheList() {
+
+        return m_cacheList;
+    }
+
+    /**
+     * Returns the showBackButton.<p>
+     *
+     * @return the showBackButton
+     */
+    public boolean isShowBackButton() {
+
+        return m_showBackButton;
+    }
+
+    /**
      * This method re-read the rows of the list, the user should call this method after executing an action
      * that add or remove rows to the list. 
      */
@@ -465,6 +625,17 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public void setActive(boolean active) {
 
         m_active = active;
+    }
+
+    /**
+     * Sets the cacheList.<p>
+     *
+     * @param cacheList the cacheList to set
+     */
+    public void setCacheList(boolean cacheList) {
+
+        m_cacheList = cacheList;
+        setListObject(this.getClass(), null);
     }
 
     /**
@@ -555,6 +726,16 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
+     * Sets the showBackButton.<p>
+     *
+     * @param showBackButton the showBackButton to set
+     */
+    public void setShowBackButton(boolean showBackButton) {
+
+        m_showBackButton = showBackButton;
+    }
+
+    /**
      * Filter a list, given the action is set to <code>LIST_SEARCH</code> and
      * the filter text is set in the <code>PARAM_SEARCH_FILTER</code> parameter.<p>
      */
@@ -592,6 +773,27 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected abstract List getListItems() throws CmsException;
 
     /**
+     * Should generate the metadata definition for the list, and return the 
+     * corresponding <code>{@link CmsListMetadata}</code> object.<p>
+     * 
+     * @param listId the id of the list
+     * 
+     * @return The metadata for the given list
+     */
+    protected synchronized CmsListMetadata getMetadata(String listId) {
+
+        if (m_metadatas.get(listId) == null) {
+            CmsListMetadata metadata = new CmsListMetadata();
+
+            setColumns(metadata);
+            setIndependentActions(metadata);
+            setMultiActions(metadata);
+            m_metadatas.put(listId, metadata);
+        }
+        return (CmsListMetadata)m_metadatas.get(listId);
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
     protected void initMessages() {
@@ -620,6 +822,25 @@ public abstract class A_CmsListDialog extends CmsDialog {
         } else if (LIST_MULTI_ACTION.equals(getParamAction())) {
             setAction(ACTION_LIST_MULTI_ACTION);
         }
+
+        // test the needed parameters
+        try {
+            validateParamaters();
+        } catch (Exception e) {
+            // redirect to parent if parameters not available
+            setAction(ACTION_CANCEL);
+            try {
+                actionCloseDialog();
+            } catch (JspException e1) {
+                // noop
+            }
+            return;
+        }
+        // if parameters ok, then no initialization Error should have been thrown
+        if (m_initError != null) {
+            // so throw it
+            throw m_initError;
+        }
     }
 
     /**
@@ -646,7 +867,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected synchronized void listSave() {
 
-        setListObject(this.getClass(), getList());
+        if (isCacheList()) {
+            setListObject(this.getClass(), getList());
+        }
     }
 
     /**
@@ -713,6 +936,16 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
+     * Should be overriden for parameter validation.<p>
+     * 
+     * @throws Exception if the parameters are not valid
+     */
+    protected void validateParamaters() throws Exception {
+
+        // valid by default
+    }
+
+    /**
      * Calls the <code>{@link getListItems}</code> method and catches any exception.<p>
      */
     private void fillList() {
@@ -720,29 +953,10 @@ public abstract class A_CmsListDialog extends CmsDialog {
         try {
             getList().addAllItems(getListItems());
         } catch (Exception e) {
-            throw new CmsRuntimeException(Messages.get().container(
+            m_initError = new CmsRuntimeException(Messages.get().container(
                 Messages.ERR_LIST_FILL_1,
                 getList().getName().key(getLocale()),
                 null), e);
         }
-    }
-
-    /**
-     * Should generate the metadata definition for the list, and return the 
-     * corresponding <code>{@link CmsListMetadata}</code> object.<p>
-     * 
-     * @return The metadata for the given list
-     */
-    private synchronized CmsListMetadata getMetadata(String listId) {
-
-        if (m_metadatas.get(listId) == null) {
-            CmsListMetadata metadata = new CmsListMetadata();
-
-            setColumns(metadata);
-            setIndependentActions(metadata);
-            setMultiActions(metadata);
-            m_metadatas.put(listId, metadata);
-        }
-        return (CmsListMetadata)m_metadatas.get(listId);
     }
 }

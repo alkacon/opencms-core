@@ -1,14 +1,6 @@
-<%@ page buffer="none" import="
-	org.opencms.workplace.tools.accounts.*
-"%><%	
-
+<%@ page buffer="none" import="org.opencms.workplace.tools.accounts.*"%>
+<%	
 	// initialize the workplace class
 	CmsUsersList wp = new CmsUsersList(pageContext, request, response);
-	
-	// perform the dialog action	
-        String userId = wp.getJsp().getRequest().getParameter("userid");
-        String userName = wp.getJsp().getRequest().getParameter("username");
-        wp.getCms().deleteUser(userName);
-        wp.getList().removeItem(userId, wp.getLocale());
-	wp.actionCloseDialog();
+	wp.actionDeleteUser();	
 %>

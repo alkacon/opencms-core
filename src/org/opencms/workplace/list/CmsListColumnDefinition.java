@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/06/04 08:11:29 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/08 16:44:19 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
@@ -491,5 +491,24 @@ public class CmsListColumnDefinition {
     public void setWidth(String width) {
 
         m_width = width;
+    }
+
+    /**
+     * Returns a direct action by id.<p>
+     * 
+     * @param actionId the id of the action
+     * 
+     * @return the action if found or null
+     */
+    public I_CmsListDirectAction getDirectAction(String actionId) {
+
+        Iterator it = m_actionList.iterator();
+        while (it.hasNext()) {
+            I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
+            if (action.getId().equals(actionId)) {
+                return action;
+            }
+        }       
+        return null;
     }
 }

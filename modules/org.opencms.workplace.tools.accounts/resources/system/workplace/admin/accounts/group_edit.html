@@ -1,20 +1,5 @@
-<%@ page buffer="none" import="
-        org.opencms.workplace.*,
-        org.opencms.util.*,
-	org.opencms.workplace.tools.accounts.*
-"%><%	
-
-    // check the parameters
-    CmsDialog checkDialog = new CmsDialog(pageContext, request, response);
-    try {
-       checkDialog.getCms().readGroup(request.getParameter("groupname"));
-       checkDialog.getCms().readGroup(new CmsUUID(request.getParameter("groupid")));
-    } catch(Exception e) {
-        // redirect to parent if parameters not available
-        checkDialog.actionCloseDialog();
-        return;
-    }
-    // start dialog
+<%@ page buffer="none" import="org.opencms.workplace.tools.accounts.*"%>
+<%	
 	// initialize the workplace class
 	CmsEditGroupDialog wp = new CmsEditGroupDialog(pageContext, request, response);
 	
