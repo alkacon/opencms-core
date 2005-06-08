@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.521 $
+ * Date   : $Date: 2005/06/08 09:31:40 $
+ * Version: $Revision: 1.522 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,6 +60,7 @@ import org.opencms.lock.CmsLockManager;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
@@ -109,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.521 $
+ * @version $Revision: 1.522 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5896,6 +5897,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 groupname));
         }
 
+        if (username.equals(CmsDefaultUsers.C_DEFAULT_USER_ADMIN) && groupname.equals(CmsDefaultUsers.C_DEFAULT_GROUP_ADMINISTRATORS)) {
+            // the admin user cannot be removed from the administrators group, throw exception
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_ADMIN_REMOVED_FROM_ADMINISTRATORS_0));
+        }
         CmsUser user;
         CmsGroup group;
 

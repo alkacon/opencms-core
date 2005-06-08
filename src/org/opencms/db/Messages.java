@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/08 09:31:40 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,6 +56,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_WEB_1 = "ERR_ADD_USER_WEB_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ADMIN_REMOVED_FROM_ADMINISTRATORS_0 = "ERR_ADMIN_REMOVED_FROM_ADMINISTRATORS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BACKUP_PROJECT_4 = "ERR_BACKUP_PROJECT_4";
@@ -292,14 +295,14 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_LOCK_RESOURCE_2 = "ERR_LOCK_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOGIN_MESSAGE_BAD_END_TIME_0 = "ERR_LOGIN_MESSAGE_BAD_END_TIME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_MESSAGE_BAD_MESSAGE_0 = "ERR_LOGIN_MESSAGE_BAD_MESSAGE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_MESSAGE_BAD_TIME_1 = "ERR_LOGIN_MESSAGE_BAD_TIME_1";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_LOGIN_MESSAGE_BAD_END_TIME_0 = "ERR_LOGIN_MESSAGE_BAD_END_TIME_0";
-    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_MESSAGE_FROZEN_0 = "ERR_LOGIN_MESSAGE_FROZEN_0";
 
