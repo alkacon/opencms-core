@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/08 12:48:57 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -242,10 +242,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DIALOG_HANDLER_CLASS_2 = "LOG_DIALOG_HANDLER_CLASS_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_ENC_MULTIPART_REQ_ERROR_0 = "LOG_ENC_MULTIPART_REQ_ERROR_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INCLUDE_ERRORPAGE_FAILED_0 = "LOG_INCLUDE_ERRORPAGE_FAILED_0";
 
@@ -257,9 +254,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PARAM_RESOURCE_2 = "LOG_PARAM_RESOURCE_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_PARSE_MULIPART_REQ_FAILED_0 = "LOG_PARSE_MULIPART_REQ_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READING_VIEW_FOLDER_FAILED_1 = "LOG_READING_VIEW_FOLDER_FAILED_1";

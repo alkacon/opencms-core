@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Messages.java,v $
- * Date   : $Date: 2005/06/02 13:09:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/08 12:48:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,10 +73,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_CONVERSION_BYTE_FAILED_0 = "LOG_CONVERSION_BYTE_FAILED_0";
     
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_ENC_MULTIPART_REQ_ERROR_0 = "LOG_ENC_MULTIPART_REQ_ERROR_0";
+    
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_MALFORMED_TRANSLATION_RULE_1 = "LOG_MALFORMED_TRANSLATION_RULE_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NUM_TRANSLATION_RULES_INITIALIZED_1 = "LOG_NUM_TRANSLATION_RULES_INITIALIZED_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PARSE_MULIPART_REQ_FAILED_0 = "LOG_PARSE_MULIPART_REQ_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PARSING_RUNS_2 = "LOG_PARSING_RUNS_2";

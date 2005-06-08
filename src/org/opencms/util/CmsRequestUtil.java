@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/05/28 09:35:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/08 12:48:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,22 +32,36 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.fileupload.DiskFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.logging.Log;
 
 /**
  * Provides utility functions for dealing with values a <code>{@link HttpServletRequest}</code>.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  */
 public final class CmsRequestUtil {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsRequestUtil.class);
 
     /** 
      * Default constructor (empty), private because this class has only 
@@ -183,5 +197,64 @@ public final class CmsRequestUtil {
             result = null;
         }
         return result;
+    }
+
+    /**
+     * Reads all parameters from the request, even if the request is of type <code></code>.<p> 
+     * 
+     * @param encoding the encoding to use when to read parameters
+     * @param request the request to read the parameters from
+     * 
+     * @return the parameters (and multipart items if available) read from the request
+     */
+    public static CmsRequestParameters getRequestParameters(String encoding, HttpServletRequest request) {
+
+        if (FileUploadBase.isMultipartContent(request)) {
+            // this is a multipart request, create a map with all non-file parameters
+            return readParametersFromMultiPart(encoding, request);
+        }
+        return new CmsRequestParameters(request.getParameterMap(), null);
+    }
+
+    /**
+     * Fills the request parameters in a map if treating a multipart request.<p>
+     * 
+     * The created map has the parameter names as key, multipart items are recognized, too.<p>
+     * 
+     * @param request the current HTTP servlet request
+     * @return a map containing all non-file request parameters
+     */
+    private static CmsRequestParameters readParametersFromMultiPart(String encoding, HttpServletRequest request) {
+
+        Map parameterMap = new HashMap();
+        DiskFileUpload fu = new DiskFileUpload();
+        // maximum size that will be stored in memory
+        fu.setSizeThreshold(4096);
+        // the location for saving data that is larger than getSizeThreshold()
+        fu.setRepositoryPath(OpenCms.getSystemInfo().getWebInfRfsPath());
+        List multiPartFileItems = null;
+        try {
+            multiPartFileItems = fu.parseRequest(request);
+            Iterator i = multiPartFileItems.iterator();
+            while (i.hasNext()) {
+                FileItem item = (FileItem)i.next();
+                String name = item.getFieldName();
+                String value = null;
+                if (name != null && item.getName() == null) {
+                    // only put to map if current item is no file and not null
+                    try {
+                        value = item.getString(encoding);
+                    } catch (UnsupportedEncodingException e) {
+                        LOG.error(Messages.get().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
+                        value = item.getString();
+                    }
+                    parameterMap.put(name, new String[] {value});
+                }
+            }
+
+        } catch (FileUploadException e) {
+            LOG.error(Messages.get().key(Messages.LOG_PARSE_MULIPART_REQ_FAILED_0), e);
+        }
+        return new CmsRequestParameters(parameterMap, multiPartFileItems);
     }
 }

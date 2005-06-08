@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/06 09:50:44 $
- * Version: $Revision: 1.124 $
+ * Date   : $Date: 2005/06/08 12:48:57 $
+ * Version: $Revision: 1.125 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,13 +51,14 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsRequestParameters;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsTree;
 import org.opencms.workplace.help.CmsHelpTemplateBean;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
@@ -78,10 +79,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.fileupload.DiskFileUpload;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadBase;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.logging.Log;
 
 /**
@@ -89,7 +86,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.124 $
+ * @version $Revision: 1.125 $
  * 
  * @since 5.1
  */
@@ -178,8 +175,11 @@ public abstract class CmsWorkplace {
      */
     private CmsMessages m_messages;
 
-    /** The list of multi part file items. */
+    /** The list of multi part file items (if available). */
     private List m_multiPartFileItems;
+    
+    /** The map of parameters read from the current request. */
+    private Map m_parameterMap;
 
     /** The current resource URI. */
     private String m_resourceUri;
@@ -1124,25 +1124,21 @@ public abstract class CmsWorkplace {
      * @param request the current JSP request
      */
     public void fillParamValues(HttpServletRequest request) {
-
-        boolean isMultiPart = FileUploadBase.isMultipartContent(request);
-        Map parameterMap = null;
-        if (isMultiPart) {
-            // this is a multipart request, create a map with all non-file parameters
-            parameterMap = createParameterMapFromMultiPart(request);
-        }
+            
+        CmsRequestParameters parameters = CmsRequestUtil.getRequestParameters(getCms().getRequestContext().getEncoding(), request);
+        m_parameterMap = parameters.getParameters();
+        m_multiPartFileItems = parameters.getMultiPartFileItems();
+        
         List methods = paramSetMethods();
         Iterator i = methods.iterator();
         while (i.hasNext()) {
             Method m = (Method)i.next();
             String name = m.getName().substring(8).toLowerCase();
+            String[] values = (String[])m_parameterMap.get(name);
             String value = null;
-            if (isMultiPart) {
+            if (values != null) {
                 // get the parameter value from the map
-                value = (String)parameterMap.get(name);
-            } else {
-                // get the parameter value from the request
-                value = request.getParameter(name);
+                value = values[0];
             }
             if (CmsStringUtil.isEmpty(value)) {
                 value = null;
@@ -1166,7 +1162,7 @@ public abstract class CmsWorkplace {
             }
         }
     }
-
+    
     /**
      * Creates the time in milliseconds from the given parameter.<p>
      * 
@@ -1299,7 +1295,7 @@ public abstract class CmsWorkplace {
 
         return m_messages;
     }
-
+    
     /**
      * Returns a list of FileItem instances parsed from the request, in the order that they were transmitted.<p>
      * 
@@ -1746,46 +1742,6 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Fills the request parameters in a map if treating a multipart request.<p>
-     * 
-     * The created map has the parameter names as key.<p>
-     * 
-     * @param request the current HTTP servlet request
-     * @return a map containing all non-file request parameters
-     */
-    protected Map createParameterMapFromMultiPart(HttpServletRequest request) {
-
-        Map parameterMap = new HashMap();
-        DiskFileUpload fu = new DiskFileUpload();
-        // maximum size that will be stored in memory
-        fu.setSizeThreshold(4096);
-        // the location for saving data that is larger than getSizeThreshold()
-        fu.setRepositoryPath(OpenCms.getSystemInfo().getWebInfRfsPath());
-        try {
-            setMultiPartFileItems(fu.parseRequest(request));
-            Iterator i = getMultiPartFileItems().iterator();
-            while (i.hasNext()) {
-                FileItem item = (FileItem)i.next();
-                String name = item.getFieldName();
-                String value = null;
-                if (name != null && item.getName() == null) {
-                    // only put to map if current item is no file and not null
-                    try {
-                        value = item.getString(getCms().getRequestContext().getEncoding());
-                    } catch (UnsupportedEncodingException e) {
-                        LOG.error(Messages.get().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
-                        value = item.getString();
-                    }
-                    parameterMap.put(name, value);
-                }
-            }
-        } catch (FileUploadException e) {
-            LOG.error(Messages.get().key(Messages.LOG_PARSE_MULIPART_REQ_FAILED_0), e);
-        }
-        return parameterMap;
-    }
-
-    /**
      * Decodes an individual parameter value.<p>
      * 
      * In special cases some parameters might require a different-from-default
@@ -1805,6 +1761,19 @@ public abstract class CmsWorkplace {
         } else {
             return null;
         }
+    }
+    
+    /**
+     * Returns the map of parameters read from the current request.<p>
+     *
+     * This method will also handle parameters from forms
+     * of type <code>multipart/form-data</code>.<p>
+     * 
+     * @return the map of parameters read from the current request
+     */
+    protected Map getParameterMap() {
+
+        return m_parameterMap;
     }
 
     /**
@@ -2013,15 +1982,5 @@ public abstract class CmsWorkplace {
             }
         }
         return list;
-    }
-
-    /**
-     * Sets a list of FileItem instances parsed from the request, in the order that they were transmitted.<p>
-     * 
-     * @param fileItems a list of FileItem instances parsed from the request, in the order that they were transmitted
-     */
-    private void setMultiPartFileItems(List fileItems) {
-
-        m_multiPartFileItems = fileItems;
     }
 }
