@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/06/07 16:14:31 $
- * Version: $Revision: 1.51 $
- * Date   : $Date: 2005/06/07 16:14:31 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2005/06/08 07:13:21 $
+ * Version: $Revision: 1.52 $
+ * Date   : $Date: 2005/06/08 07:13:21 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  */
 public class CmsSynchronize {
 
@@ -739,8 +739,7 @@ public class CmsSynchronize {
             org.opencms.report.Messages.RPT_SUCCESSION_1,
             String.valueOf(m_count++)), I_CmsReport.C_FORMAT_NOTE);
         m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.C_FORMAT_NOTE);
-        m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, resname));
-        m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+        m_report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, resname));
     }
 
     /**
