@@ -3,37 +3,17 @@
 <%     
 
     // start dialog
-    CmsEditUserDialog wpInfo = new CmsEditUserDialog(pageContext, request, response) {
-            
-            /**
-             * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtml()
-             */
-            protected String defaultActionHtml() throws JspException {
-
-                StringBuffer result = new StringBuffer(2048);
-                result.append(defaultActionHtmlStart());
-                result.append(defaultActionHtmlContent());
-                return result.toString();
-
-            }
-        };
-
-    CmsUserGroupsList wpUserGroups = new CmsUserGroupsList(pageContext, request, response);
-    CmsNotUserGroupsList wpNotUserGroups = new CmsNotUserGroupsList(pageContext, request, response);
-
-    A_CmsUserGroupsList wp = (wpUserGroups.isActive()? (A_CmsUserGroupsList)wpUserGroups: (A_CmsUserGroupsList)wpNotUserGroups);
+    CmsUserOverviewDialog wpInfo = new CmsUserOverviewDialog(pageContext, request, response);
 
     // perform the widget actions
     wpInfo.displayDialog();
 
-    // perform the active list actions
-    wp.updateUserList();
-    wp.actionDialog();
-    wpUserGroups.refreshList();
-    wpNotUserGroups.refreshList();
-%>
+    CmsUserGroupsList wpUserGroups = new CmsUserGroupsList(pageContext, request, response);
+    CmsNotUserGroupsList wpNotUserGroups = new CmsNotUserGroupsList(pageContext, request, response);
 
-<%= wp.getList().listJs() %>
+    A_CmsUserGroupsList.actionDialog(wpUserGroups, wpNotUserGroups); 
+%>
+<%= wpUserGroups.getList().listJs() %>
 
 <table align='center' width='100%'>
 <tr>
@@ -46,6 +26,7 @@
 </td>
 </tr>
 </table>
-<%= wp.dialogEnd() %>
-<%= wp.bodyEnd() %>
-<%= wp.htmlEnd() %>
+
+<%= wpUserGroups.dialogEnd() %>
+<%= wpUserGroups.bodyEnd() %>
+<%= wpUserGroups.htmlEnd() %>

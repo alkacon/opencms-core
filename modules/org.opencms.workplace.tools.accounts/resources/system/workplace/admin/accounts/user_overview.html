@@ -1,21 +1,8 @@
-<%@ page import="org.opencms.workplace.tools.accounts.*, javax.servlet.jsp.JspException" 
+<%@ page import="org.opencms.workplace.tools.accounts.*" 
          buffer="none" %>
 <%
 	// initialize the widget dialog
-	CmsEditUserDialog wpWidget = new CmsEditUserDialog(pageContext, request, response) {
-            
-            /**
-             * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtml()
-             */
-            protected String defaultActionHtml() throws JspException {
-
-                StringBuffer result = new StringBuffer(2048);
-                result.append(defaultActionHtmlStart());
-                result.append(defaultActionHtmlContent());
-                return result.toString();
-
-            }
-        };
+	CmsUserOverviewDialog wpWidget = new CmsUserOverviewDialog(pageContext, request, response);
 
 	// perform the widget actions	
 	wpWidget.displayDialog();
