@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/06/03 15:48:30 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/09 12:46:15 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -113,7 +113,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testValueIndex"));
         suite.addTest(new TestCmsXmlContentWithVfs("testLayoutWidgetMapping"));
         suite.addTest(new TestCmsXmlContentWithVfs("testLinkResolver"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testLocales"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testEmptyLocale"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidation"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationExtended"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationLocale"));        
@@ -736,10 +736,10 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      * 
      * @throws Exception in case something goes wrong
      */
-    public void testLocales() throws Exception {
+    public void testEmptyLocale() throws Exception {
         
         CmsObject cms = getCmsObject();
-        echo("Testing mapping of values in the XML content");
+        echo("Testing handling of empty locale nodes in XML content");
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
 
@@ -754,14 +754,24 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             CmsEncoder.C_UTF8_ENCODING);
         // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_8, content.getBytes(iso));
-
-        // now read the XML content
+        CmsXmlContentDefinition cd1 = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_8, resolver);      
+        
+        // read an existing (empty) XML content with just one locale node
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", iso);
         xmlcontent = CmsXmlContentFactory.unmarshal(content, iso, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
         List locales = xmlcontent.getLocales();
         assertEquals(1, locales.size());
+        assertEquals(Locale.ENGLISH, locales.get(0));
+        
+        // create a fresh XML content based on the schema and try again  
+        xmlcontent = CmsXmlContentFactory.createDocument(null, Locale.ENGLISH, CmsEncoder.C_UTF8_ENCODING, cd1);        
+        xmlcontent.validateXmlStructure(resolver);       
+        
+        locales = xmlcontent.getLocales();
+        assertEquals(1, locales.size());
+        assertEquals(Locale.ENGLISH, locales.get(0));
     }
 
     

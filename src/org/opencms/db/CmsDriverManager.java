@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/08 09:31:40 $
- * Version: $Revision: 1.522 $
+ * Date   : $Date: 2005/06/09 12:46:16 $
+ * Version: $Revision: 1.523 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.522 $
+ * @version $Revision: 1.523 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5524,13 +5524,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Returns a List of all siblings of the specified resource,
      * the specified resource being always part of the result set.<p>
      * 
+     * The result is a list of <code>{@link CmsResource}</code> objects.<p>
+     * 
      * @param dbc the current database context
      * @param resource the resource to read the siblings for
      * @param filter a filter object
      * 
-     * @return a list of <code>{@link CmsResource}</code>s that 
+     * @return a list of <code>{@link CmsResource}</code> Objects that 
      *          are siblings to the specified resource, 
-     *          including the specified resource itself.
+     *          including the specified resource itself
      * 
      * @throws CmsException if something goes wrong
      */

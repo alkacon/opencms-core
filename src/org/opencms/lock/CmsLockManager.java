@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2005/05/13 09:25:48 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/09 12:46:16 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1.4
  * 
@@ -545,12 +545,18 @@ public final class CmsLockManager {
     /**
      * Reads all siblings from a given resource.<p>
      * 
+     * The result is a list of <code>{@link CmsResource}</code> objects. 
+     * It does NOT contain the resource itself, only the siblings of the resource.<p>
+     * 
      * @param driverManager the driver manager
      * @param dbc the current database context
      * @param runtimeInfo the current runtime info
      * @param resource the resource to find all siblings from
      * 
-     * @return list of CmsResources
+     * @return a list of <code>{@link CmsResource}</code> Objects that 
+     *          are siblings to the specified resource, 
+     *          excluding the specified resource itself
+     * 
      * @throws CmsException if something goes wrong
      */
     private List internalReadSiblings(CmsDriverManager driverManager, CmsDbContext dbc, CmsResource resource)
@@ -560,16 +566,7 @@ public final class CmsLockManager {
         // inevitably result in an infinite loop...        
 
         List siblings = driverManager.getVfsDriver().readSiblings(dbc, dbc.currentProject(), resource, true);
-
-        int n = siblings.size();
-        for (int i = 0; i < n; i++) {
-            CmsResource currentResource = (CmsResource)siblings.get(i);
-
-            if (currentResource.getStructureId().equals(resource.getStructureId())) {
-                siblings.remove(i);
-                n--;
-            }
-        }
+        siblings.remove(resource);
 
         return driverManager.updateContextDates(dbc, siblings);
     }

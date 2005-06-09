@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/05/31 14:38:39 $
- * Version: $Revision: 1.243 $
+ * Date   : $Date: 2005/06/09 12:46:15 $
+ * Version: $Revision: 1.244 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.243 $ 
+ * @version $Revision: 1.244 $ 
  * @since 5.1
  */
 public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
@@ -1755,9 +1755,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conn = m_sqlManager.getConnection(dbc, currentProject.getId());
 
             if (includeDeleted) {
-                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_VFS_LINKS");
+                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_VFS_SIBLINGS");
             } else {
-                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_NONDELETED_VFS_LINKS");
+                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_NONDELETED_VFS_SIBLINGS");
             }
 
             stmt.setString(1, resource.getResourceId().toString());
@@ -2440,7 +2440,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         try {
             conn = m_sqlManager.getConnection(dbc, projectId);
 
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_COUNTLINKS");
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_COUNT_SIBLINGS");
             stmt.setString(1, resourceId.toString());
             res = stmt.executeQuery();
 

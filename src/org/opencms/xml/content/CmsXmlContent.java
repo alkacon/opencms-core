@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2005/05/25 09:43:47 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/09 12:46:16 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -168,7 +168,8 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @throws CmsRuntimeException if the element identified by the path already occured {@link I_CmsXmlSchemaType#getMaxOccurs()}  
      *         or the given <code>index</code> is invalid (too high).
      */
-    public I_CmsXmlContentValue addValue(CmsObject cms, String path, Locale locale, int index) throws CmsIllegalArgumentException, CmsRuntimeException {
+    public I_CmsXmlContentValue addValue(CmsObject cms, String path, Locale locale, int index)
+    throws CmsIllegalArgumentException, CmsRuntimeException {
 
         // get the schema type of the requested path           
         I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(path);
@@ -177,7 +178,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 Messages.ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1,
                 path));
         }
-        
+
         Element parentElement;
         String elementName;
         CmsXmlContentDefinition contentDefinition;
@@ -356,7 +357,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @param cms the current users OpenCms context
      */
     public void resolveMappings(CmsObject cms) {
-        
+
         // iterate through all initialized value nodes in this XML content
         CmsXmlContentMappingVisitor visitor = new CmsXmlContentMappingVisitor(cms, this);
         visitAllValuesWith(visitor);
@@ -373,7 +374,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         return visitor.getErrorHandler();
     }
-    
+
     /**
      * Visists all values of this XML content with the given value visitor.<p>
      * 
@@ -395,7 +396,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             visitor.visit(value);
         }
     }
-    
+
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#getBookmark(java.lang.String)
      */
@@ -409,10 +410,10 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @see org.opencms.xml.A_CmsXmlDocument#getBookmarks()
      */
     protected Set getBookmarks() {
-        
+
         // allows package classes to directly access the bookmark information of the XML content 
         return super.getBookmarks();
-    }    
+    }
 
     /**
      * Returns the XML root element node for the given locale.<p>
@@ -436,9 +437,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         }
 
         // language element was not found
-        throw new CmsRuntimeException(Messages.get().container(
-            Messages.ERR_XMLCONTENT_MISSING_LOCALE_1,
-            locale));
+        throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_MISSING_LOCALE_1, locale));
     }
 
     /**
@@ -461,6 +460,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 Locale locale = CmsLocaleManager.getLocale(node.attribute(
                     CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
 
+                addLocale(locale);
                 processSchemaNode(node, null, locale, definition);
             } catch (NullPointerException e) {
                 LOG.error(Messages.get().key(Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
@@ -526,8 +526,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // it must have a valid schema, otherwise it would not exist.
         // Therefore the exceptions should never be really thrown.
         if (schema == null) {
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_MISSING_SCHEMA_0));
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_MISSING_SCHEMA_0));
         }
 
         CmsXmlContentDefinition result = null;
@@ -549,14 +548,11 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                     cmsResolver.cacheContentDefinition(schema, result);
                 }
             } catch (SAXException e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_XML_SCHEMA_PARSE_0), e);
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_PARSE_0), e);
             } catch (IOException e) {
-                throw new CmsRuntimeException(Messages.get()
-                    .container(Messages.ERR_XML_SCHEMA_IO_0), e);
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_SCHEMA_IO_0), e);
             } catch (CmsXmlException e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_UNMARSHAL_0), e);
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_UNMARSHAL_0), e);
             }
         }
 
@@ -574,11 +570,6 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      */
     private void processSchemaNode(Element root, String rootPath, Locale locale, CmsXmlContentDefinition definition) {
 
-        // TODO: XMLContents with only optional elements and no element set have no Locales set.
-        // Example: Template one config file configuration_links with node <TemplateOneLink language="en"/>.
-        // After fixing that, check CmsXmlContentEditor methods getElementLocale(), initElementLanguage().
-        int todo = 1;
-        
         int count = 1;
         String previousName = null;
 

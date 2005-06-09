@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/05/31 14:39:21 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/09 12:46:16 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
 
@@ -75,7 +75,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
     private static final Log LOG = CmsLog.getLog(CmsLocaleManager.class);
 
     /** The default locale, this is the first configured locale. */
-    private static Locale m_defaultLocale = Locale.getDefault();
+    private static Locale m_defaultLocale;
 
     /** A cache for accelerated locale lookup, this should never get so large to require a "real" cache. */
     private static Map m_localeCache;
@@ -97,6 +97,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      */
     public CmsLocaleManager() {
 
+        setDefaultLocale();
         m_availableLocales = new ArrayList();
         m_defaultLocales = new ArrayList();
         m_localeHandler = new CmsDefaultLocaleHandler();
@@ -123,6 +124,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      */
     public CmsLocaleManager(Locale defaultLocale) {
 
+        setDefaultLocale();
         m_initialized = false;
 
         m_availableLocales = new ArrayList();
@@ -133,6 +135,13 @@ public class CmsLocaleManager implements I_CmsEventListener {
         m_defaultLocale = defaultLocale;
         m_defaultLocales.add(defaultLocale);
         m_availableLocales.add(defaultLocale);
+    }
+
+    /**
+     * Required for setting the default locale on the first possible time.<p>
+     */
+    static {
+        setDefaultLocale();
     }
 
     /**
@@ -216,6 +225,58 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
+     * Sets the default locale of the Java VM to <code>{@link Locale#ENGLISH}</code> if the 
+     * current default has any other language then English set.<p>
+     *
+     * This is required because otherwise the default (English) resource bundles 
+     * would not be displayed for the English locale if a translated default locale exists.<p>
+     * 
+     * Here's an example of how this issues shows up:
+     * On a German server, the default locale usually is <code>{@link Locale#GERMAN}</code>.
+     * All English translations for OpenCms are located in the "default" message files, for example 
+     * <code>org.opencms.i18n.message.properties</code>. If the German localization is installed, it will be
+     * located in <code>org.opencms.i18n.message_de.properties</code>. If user has English selected
+     * as his locale, the default Java lookup mechanism first tries to find 
+     * <code>org.opencms.i18n.message_en.properties</code>. However, this file does not exist, since the
+     * English localization is kept in the default file. Next, the Java lookup mechanism tries to find the servers
+     * default locale, which in this example is German. Since there is a German message file, the Java lookup mechanism
+     * is finished and uses this German localization, not the default file. Therefore the 
+     * user get the German localization, not the English one.
+     * Setting the default locale explicitly to English avoids this issue.<p>
+     */
+    private static void setDefaultLocale() {
+
+        // set the default locale to english
+        // this is required because otherwise the default (english) resource bundles 
+        // would not be displayed for the english locale if a translated locale exists
+
+        Locale oldLocale = Locale.getDefault();
+        if (!(Locale.ENGLISH.getLanguage().equals(oldLocale.getLanguage()))) {
+            // default language is not English
+            try {
+                Locale.setDefault(Locale.ENGLISH);
+                if (CmsLog.LOG.isInfoEnabled()) {
+                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_I18N_DEFAULT_LOCALE_2, Locale.ENGLISH, oldLocale));
+                }
+            } catch (Exception e) {
+                // any Exception: the locale has not been changed, so there may be issues with the English
+                // localization but OpenCms will run in general
+                CmsLog.LOG.error(Messages.get().key(
+                    Messages.LOG_UNABLE_TO_SET_DEFAULT_LOCALE_2,
+                    Locale.ENGLISH,
+                    oldLocale), e);
+            }
+        } else {
+            if (CmsLog.LOG.isInfoEnabled()) {
+                CmsLog.LOG.info(Messages.get().key(Messages.INIT_I18N_KEEPING_DEFAULT_LOCALE_1, oldLocale));
+            }
+        }
+
+        // initialize the static member with the new default 
+        m_defaultLocale = Locale.getDefault();
+    }
+
+    /**
      * Adds a locale to the list of available locales.<p>
      * 
      * @param localeName the locale to add
@@ -259,11 +320,10 @@ public class CmsLocaleManager implements I_CmsEventListener {
         if (!m_defaultLocales.contains(locale)) {
             m_defaultLocales.add(locale);
             if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(
-                    Messages.get().key(
-                        Messages.INIT_I18N_CONFIG_DEFAULT_LOCALE_2,
-                        new Integer(m_defaultLocales.size()),
-                        locale));
+                CmsLog.LOG.info(Messages.get().key(
+                    Messages.INIT_I18N_CONFIG_DEFAULT_LOCALE_2,
+                    new Integer(m_defaultLocales.size()),
+                    locale));
 
             }
         }

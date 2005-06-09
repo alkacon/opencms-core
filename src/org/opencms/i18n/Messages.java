@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/Messages.java,v $
- * Date   : $Date: 2005/05/20 15:12:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/09 12:46:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,6 +74,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_I18N_CONFIG_VFSACCESS_0 = "INIT_I18N_CONFIG_VFSACCESS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_I18N_DEFAULT_LOCALE_2 = "INIT_I18N_DEFAULT_LOCALE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_I18N_KEEPING_DEFAULT_LOCALE_1 = "INIT_I18N_KEEPING_DEFAULT_LOCALE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_LOCALE_FAILED_1 = "LOG_CREATE_LOCALE_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
@@ -96,6 +102,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RESOLVE_MESSAGE_KEY_1 = "LOG_RESOLVE_MESSAGE_KEY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_UNABLE_TO_SET_DEFAULT_LOCALE_2 = "LOG_UNABLE_TO_SET_DEFAULT_LOCALE_2";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.i18n.messages";

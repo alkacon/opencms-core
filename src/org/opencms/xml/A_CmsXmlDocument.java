@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2005/05/19 12:57:48 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/09 12:46:16 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -456,8 +456,8 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     protected void addBookmark(String name, Locale locale, boolean enabled, Object value) {
 
-        // add the locale to all locales in this dcoument
-        m_locales.add(locale);
+        // add the locale (since the locales are a set adding them more then once does not matter)
+        addLocale(locale);
 
         // add a bookmark to the provided value 
         m_bookmarks.put(getBookmarkName(name, locale), value);
@@ -484,6 +484,17 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             set.add(name);
             m_elementNames.put(locale, set);
         }
+    }
+
+    /**
+     * Adds a locale to the set of locales of the XML document.<p>
+     * 
+     * @param locale the locale to add
+     */
+    protected void addLocale(Locale locale) {
+
+        // add the locale to all locales in this dcoument
+        m_locales.add(locale);
     }
 
     /**
