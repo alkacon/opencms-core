@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2005/06/08 12:48:57 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/09 15:46:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,6 +86,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_BUTTON_OK_0 = "GUI_DIALOG_BUTTON_OK_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_SEARCH_0 = "GUI_DIALOG_BUTTON_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_BUTTON_SET_0 = "GUI_DIALOG_BUTTON_SET_0";

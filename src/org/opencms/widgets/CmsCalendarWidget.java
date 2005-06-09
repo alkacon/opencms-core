@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCalendarWidget.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/09 15:46:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsCalendarWidget extends A_CmsWidget {
@@ -121,7 +121,7 @@ public class CmsCalendarWidget extends A_CmsWidget {
             "#",
             null,
             "calendar",
-            "calendar.input.choosedate",
+            org.opencms.workplace.Messages.GUI_CALENDAR_CHOOSE_DATE_0,
             widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
         result.append("</td></tr></table>");

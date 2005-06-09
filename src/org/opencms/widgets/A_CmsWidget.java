@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/06/07 16:25:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/09 15:46:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.0
  */
 public abstract class A_CmsWidget implements I_CmsWidget {
@@ -54,6 +54,14 @@ public abstract class A_CmsWidget implements I_CmsWidget {
 
     /** The configuration options of this widget. */
     private String m_configuration;
+    
+    /**
+     * Default constructor.<p>
+     */
+    protected A_CmsWidget() {
+
+        setConfiguration("");
+    }
     
     /** 
      * Constructor for preprocessing the configuration string.<p>

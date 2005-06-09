@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsFileWidget.java,v $
- * Date   : $Date: 2005/05/30 15:47:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/09 15:46:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -41,10 +42,19 @@ import org.opencms.workplace.I_CmsWpConstants;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.2
  */
 public class CmsVfsFileWidget extends A_CmsWidget {
+    
+    /** Configuration parameter to set the flag to show the site selector in popup resource tree. */
+    public static final String CONFIGURATION_HIDESITESELECTOR = "hidesiteselector";
+    
+    /** Configuration parameter to set the flag to show the site selector in popup resource tree. */
+    public static final String CONFIGURATION_SHOWSITESELECTOR = "showsiteselector";
+    
+    /** Configuration parameter to set start site of the popup resource tree. */
+    public static final String CONFIGURATION_STARTSITE = "startsite";
 
     /**
      * Creates a new vfs file widget.<p>
@@ -64,6 +74,78 @@ public class CmsVfsFileWidget extends A_CmsWidget {
 
         super(configuration);
     }
+    
+    /**
+     * Createa a new vfs file widget with the parameters to configure the popup tree window behaviour.<p>
+     * 
+     * @param showSiteSelector true if the site selector should be shown in popup window
+     * @param startSite the start site for the popup window
+     */
+    public CmsVfsFileWidget(boolean showSiteSelector, String startSite) {
+
+        m_showSiteSelector = showSiteSelector;
+        m_startSite = startSite;
+    }
+    
+    /** Flag to determine if the site selector should be shown in popup window. */
+    private boolean m_showSiteSelector;
+    
+    /** The start site used in the popup window. */
+    private String m_startSite;
+    
+    
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
+     */
+    protected String getConfiguration() {
+
+        StringBuffer result = new StringBuffer(8);
+        
+        // append site selector flag to configuration
+        if (m_showSiteSelector) {
+            result.append(CONFIGURATION_SHOWSITESELECTOR);
+        } else {
+            result.append(CONFIGURATION_HIDESITESELECTOR);    
+        }
+        
+        // append start site to configuration
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_startSite)) {
+            result.append("|");
+            result.append(CONFIGURATION_STARTSITE);
+            result.append("=");
+            result.append(m_startSite);
+        }
+        
+        return result.toString();
+    }
+    
+    
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#setConfiguration(java.lang.String)
+     */
+    public void setConfiguration(String configuration) {
+        
+        m_showSiteSelector = true;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
+            if (configuration.indexOf(CONFIGURATION_HIDESITESELECTOR) != -1) {
+                // site selector should be hidden
+                m_showSiteSelector = false;
+            }
+            int siteIndex = configuration.indexOf(CONFIGURATION_STARTSITE);
+            if (siteIndex != -1) {
+                // start site is given
+                String site = configuration.substring(CONFIGURATION_STARTSITE.length() + 1);
+                if (site.indexOf('|') != -1) {
+                    // cut eventual followin configuration values
+                    site = site.substring(0, site.indexOf('|'));
+                }
+                m_startSite = site;
+            }
+        }   
+        super.setConfiguration(configuration);
+        
+    }
+    
 
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
@@ -133,7 +215,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
             "javascript:openTreeWin('EDITOR',  '" + id + "', document);",
             null,
             "folder",
-            "button.search",
+            org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_SEARCH_0,
             widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
         result.append("</td></tr></table>");
@@ -150,4 +232,5 @@ public class CmsVfsFileWidget extends A_CmsWidget {
 
         return new CmsVfsFileWidget(getConfiguration());
     }
+    
 }

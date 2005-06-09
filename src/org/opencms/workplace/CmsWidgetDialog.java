@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/09 07:56:46 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/06/09 15:46:09 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -90,9 +90,6 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** Prefix for "hidden" parameters, required since these must be unescaped later. */
     public static final String HIDDEN_PARAM_PREFIX = "hidden.";
-
-    /** Optional localized key prefix identificator. */
-    private String m_prefix;
 
     /** The errors thrown by commit actions. */
     protected List m_commitErrors;
@@ -131,6 +128,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      */
     private String m_paramElementName = "undefined";
 
+    /** Optional localized key prefix identificator. */
+    private String m_prefix;
+
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -151,18 +151,6 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     public CmsWidgetDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * Sets an optional localized key prefix identificator for all widgets.<p>  
-     * 
-     * @param prefix the optional localized key prefix identificator for all widgets
-     * 
-     * @see org.opencms.widgets.I_CmsWidgetParameter#setKeyPrefix(java.lang.String)
-     */
-    protected void setKeyPrefix(String prefix) {
-
-        m_prefix = prefix;
     }
 
     /**
@@ -960,6 +948,32 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         }
         return result.toString();
     }
+    
+    /**
+     * Creates the complete widget dialog end block HTML that finishes a widget block.<p>
+     * 
+     * @return the complete widget dialog end block HTML that finishes a widget block
+     */
+    protected String createWidgetBlockEnd() {
+
+        StringBuffer result = new StringBuffer(8);
+        result.append(createWidgetTableEnd());
+        result.append(dialogBlockEnd());
+        return result.toString();
+    }
+    
+    /**
+     * Create the complete widget dialog start block HTML that begins a widget block with optional headline.<p>
+     * @param headline the headline String for the block
+     * @return the complete widget dialog start block HTML that begins a widget block with optional headline
+     */
+    protected String createWidgetBlockStart(String headline) {
+
+        StringBuffer result = new StringBuffer(16);
+        result.append(dialogBlockStart(headline));
+        result.append(createWidgetTableStart());
+        return result.toString();
+    }
 
     /**
      * Creates the HTML for the error message if validation errors were found.<p>
@@ -1385,6 +1399,18 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected void setCommitErrors(List otherErrors) {
 
         m_commitErrors = otherErrors;
+    }
+
+    /**
+     * Sets an optional localized key prefix identificator for all widgets.<p>  
+     * 
+     * @param prefix the optional localized key prefix identificator for all widgets
+     * 
+     * @see org.opencms.widgets.I_CmsWidgetParameter#setKeyPrefix(java.lang.String)
+     */
+    protected void setKeyPrefix(String prefix) {
+
+        m_prefix = prefix;
     }
 
     /**
