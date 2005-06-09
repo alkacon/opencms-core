@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2005/06/02 09:42:39 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/09 15:44:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,12 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CMSIMPORTHANDLER_DEFAULT_DESC_0 = "GUI_CMSIMPORTHANDLER_DEFAULT_DESC_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_BAD_CONTENT_AGE_1 = "ERR_BAD_CONTENT_AGE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_BAD_FILE_NAME_1 = "ERR_BAD_FILE_NAME_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BODY_CONTENT_NOT_FOUND_0 = "ERR_BODY_CONTENT_NOT_FOUND_0";

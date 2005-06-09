@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/06/03 16:11:59 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2005/06/09 15:44:50 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,27 +93,20 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.67 $ $Date: 2005/06/03 16:11:59 $
+ * @version $Revision: 1.68 $ $Date: 2005/06/09 15:44:50 $
  */
 public class CmsExport implements Serializable {
-    
+
+    private static final int C_SUB_LENGTH = 4096;  
     
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExport.class);
-
-    private static final int C_SUB_LENGTH = 4096;
 
     /** The CmsObject to do the operations. */
     private CmsObject m_cms;
 
     /** Max file age of contents to export. */
     private long m_contentAge;
-
-    /** Indicates if the system should be included to the export. */
-    private boolean m_excludeSystem;
-
-    /** Indicates if the unchanged resources should be included to the export .*/
-    private boolean m_excludeUnchanged;
 
     /** Counter for the export. */
     private int m_exportCount;
@@ -132,6 +125,12 @@ public class CmsExport implements Serializable {
 
     /** The export ZIP stream to write resources to. */
     private ZipOutputStream m_exportZipStream;
+
+    /** Indicates if the system should be included to the export. */
+    private boolean m_includeSystem;
+
+    /** Indicates if the unchanged resources should be included to the export .*/
+    private boolean m_includeUnchanged;
 
     /** The report for the log messages. */
     private I_CmsReport m_report;
@@ -159,9 +158,8 @@ public class CmsExport implements Serializable {
      * @param cms the cmsObject to work with
      * @param exportFile the file or folder to export to
      * @param resourcesToExport the paths of folders and files to export
-     * @param excludeSystem if true, the system folder is excluded, if false all the resources in
-     *        resourcesToExport are included
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded
+     * @param includeSystem if true, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
      * @throws CmsImportExportException if something goes wrong
      * @throws CmsRoleViolationException if the current user has not the required role
      */
@@ -169,11 +167,11 @@ public class CmsExport implements Serializable {
         CmsObject cms,
         String exportFile,
         String[] resourcesToExport,
-        boolean excludeSystem,
-        boolean excludeUnchanged)
+        boolean includeSystem,
+        boolean includeUnchanged)
     throws CmsImportExportException, CmsRoleViolationException {
 
-        this(cms, exportFile, resourcesToExport, excludeSystem, excludeUnchanged, null, false, 0, new CmsShellReport());
+        this(cms, exportFile, resourcesToExport, includeSystem, includeUnchanged, null, false, 0, new CmsShellReport());
     }
 
     /**
@@ -182,9 +180,8 @@ public class CmsExport implements Serializable {
      * @param cms the cmsObject to work with
      * @param exportFile the file or folder to export to
      * @param resourcesToExport the paths of folders and files to export
-     * @param excludeSystem if true, the system folder is excluded, if false all the resources in
-     *        resourcesToExport are included
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded
+     * @param includeSystem if true, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
      * @param moduleElement module informations in a Node for module export
      * @param exportUserdata if true, the user and grou pdata will also be exported
      * @param contentAge export contents changed after this date/time
@@ -197,8 +194,8 @@ public class CmsExport implements Serializable {
         CmsObject cms,
         String exportFile,
         String[] resourcesToExport,
-        boolean excludeSystem,
-        boolean excludeUnchanged,
+        boolean includeSystem,
+        boolean includeUnchanged,
         Element moduleElement,
         boolean exportUserdata,
         long contentAge,
@@ -212,8 +209,8 @@ public class CmsExport implements Serializable {
         // check if the user has the required permissions
         cms.checkRole(CmsRole.EXPORT_DATABASE);
 
-        m_excludeSystem = excludeSystem;
-        m_excludeUnchanged = excludeUnchanged;
+        m_includeSystem = includeSystem;
+        m_includeUnchanged = includeUnchanged;
         m_exportUserdata = exportUserdata;
         m_contentAge = contentAge;
         m_exportCount = 0;
@@ -343,13 +340,16 @@ public class CmsExport implements Serializable {
                 long age = file.getDateLastModified();
     
                 if (getCms().getRequestContext().currentProject().isOnlineProject()
-                    || (!m_excludeUnchanged)
+                    || (m_includeUnchanged)
                     || state == I_CmsConstants.C_STATE_NEW
                     || state == I_CmsConstants.C_STATE_CHANGED) {
                     if ((state != I_CmsConstants.C_STATE_DELETED)
                         && (!file.getName().startsWith("~"))
                         && (age >= m_contentAge)) {
-                        exportFile(getCms().readFile(getCms().getSitePath(file), CmsResourceFilter.IGNORE_EXPIRATION));
+                        String export = getCms().getSitePath(file);
+                        if (checkExportResource(export)) {
+                            exportFile(getCms().readFile(export, CmsResourceFilter.IGNORE_EXPIRATION));
+                        }
                     }
                 }
                 // release file header memory
@@ -364,12 +364,7 @@ public class CmsExport implements Serializable {
                 if (folder.getState() != I_CmsConstants.C_STATE_DELETED) {
                     // check if this is a system-folder and if it should be included.
                     String export = getCms().getSitePath(folder);
-                    if (// always export "/system/"
-                    export.equalsIgnoreCase(I_CmsWpConstants.C_VFS_PATH_SYSTEM) // OR always export "/system/bodies/"                                  
-                        || export.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES) // OR always export "/system/galleries/"
-                        || export.startsWith(I_CmsWpConstants.C_VFS_PATH_GALLERIES) // OR option "exclude system folder" selected
-                        || !(m_excludeSystem // AND export folder is a system folder
-                        && export.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM))) {
+                    if (checkExportResource(export)) {
     
                         // export this folder only if age is above selected age
                         // default for selected age (if not set by user) is <code>long 0</code> (i.e. 1970)
@@ -705,11 +700,14 @@ public class CmsExport implements Serializable {
         if (fileNames != null) {
             for (int i = 0; i < fileNames.size(); i++) {
                 String fileName = (String)fileNames.elementAt(i);
+                
                 try {
                     CmsFile file = getCms().readFile(fileName, CmsResourceFilter.IGNORE_EXPIRATION);
                     if ((file.getState() != I_CmsConstants.C_STATE_DELETED) && (!file.getName().startsWith("~"))) {
-                        addParentFolders(fileName);
-                        exportFile(file);
+                        if (checkExportResource(fileName)) {
+                            addParentFolders(fileName);
+                            exportFile(file);
+                        }
                     }
                 } catch (CmsImportExportException e) {
                     
@@ -775,6 +773,11 @@ public class CmsExport implements Serializable {
     private void addParentFolders(String resourceName) throws CmsImportExportException, SAXException {
 
         try {
+            // this is a resource in /system/ folder and option includeSystem is not true
+            if (! checkExportResource(resourceName)) {
+                return;
+            }
+            
             // Initialize the "previously added folder cache"
             if (m_superFolders == null) {
                 m_superFolders = new Vector();
@@ -995,6 +998,23 @@ public class CmsExport implements Serializable {
             
             throw new CmsImportExportException(message, e);
         }
+    }
+    
+    /**
+     * Returns true if the checked resource name can be exported depending on the include settings.<p>
+     * 
+     * @param resourcename the absolute path of the resource
+     * @return true if the checked resource name can be exported depending on the include settings
+     */
+    private boolean checkExportResource(String resourcename) {
+        
+        return (// other folder than "/system/" will be exported
+        ! resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM) // OR always export "/system/"
+            || resourcename.equalsIgnoreCase(I_CmsWpConstants.C_VFS_PATH_SYSTEM) // OR always export "/system/bodies/"                                  
+            || resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES) // OR always export "/system/galleries/"
+            || resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_GALLERIES) // OR option "include system folder" selected
+            || (m_includeSystem // AND export folder is a system folder
+            && resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM))); 
     }
 
     /**

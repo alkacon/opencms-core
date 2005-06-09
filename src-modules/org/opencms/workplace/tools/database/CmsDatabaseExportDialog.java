@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportDialog.java,v $
- * Date   : $Date: 2005/06/09 07:59:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/09 15:44:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCalendarWidget;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsComboWidget;
+import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
@@ -46,7 +47,10 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,16 +61,16 @@ import javax.servlet.jsp.PageContext;
  * Widget dialog that sets the export options to export VFS resources to the OpenCms server.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0
  */
 public class CmsDatabaseExportDialog extends CmsWidgetDialog {
-
-    /** The import JSP report workplace URI. */
-    protected static final String EXPORT_ACTION_REPORT =  C_PATH_WORKPLACE + "admin/database/reports/export.html";
     
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
+
+    /** The import JSP report workplace URI. */
+    protected static final String EXPORT_ACTION_REPORT =  C_PATH_WORKPLACE + "admin/database/reports/export.html";
     
     /** The export handler object that is edited on this dialog. */
     private CmsVfsImportExportHandler m_exportHandler;
@@ -130,19 +134,20 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
         
-        // create export settings block
-        result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_EXPORTSETTINGS_BLOCK_0)));
-        result.append(createWidgetTableStart());
-        result.append(createDialogRowsHtml(0, 4));
-        result.append(createWidgetTableEnd());
-        result.append(dialogBlockEnd());
-        
         // create export file name block
-        result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_EXPORTFILE_BLOCK_0)));
-        result.append(createWidgetTableStart());
+        result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_FILE_BLOCK_0)));
+        result.append(createDialogRowsHtml(0, 0));
+        result.append(createWidgetBlockEnd());
+        
+        // create export settings block
+        result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_SETTINGS_BLOCK_0)));
+        result.append(createDialogRowsHtml(1, 4));
+        result.append(createWidgetBlockEnd());
+        
+        // create export resource(s) block
+        result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_RESOURCES_BLOCK_0)));
         result.append(createDialogRowsHtml(5, 5));
-        result.append(createWidgetTableEnd());
-        result.append(dialogBlockEnd());
+        result.append(createWidgetBlockEnd());
         
         // close table
         result.append(createWidgetTableEnd());
@@ -158,12 +163,44 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
         // initialize the sexport object to use for the dialog
         initDatabaseExportObject();
         
-        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "exportPaths", "/", PAGES[0], new CmsVfsFileWidget(), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));
-        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "excludeSystem", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "excludeUnchanged", PAGES[0], new CmsCheckboxWidget()));
+        String exportFiles = getComboExportFiles();
+        if (CmsStringUtil.isEmpty(exportFiles)) {
+            // no export files available, display text input field
+            addWidget(new CmsWidgetDialogParameter(m_exportHandler, "fileName", PAGES[0], new CmsInputWidget()));
+        } else {
+            // one or more export files present, create combo widget
+            addWidget(new CmsWidgetDialogParameter(m_exportHandler, "fileName", PAGES[0], new CmsComboWidget(getComboExportFiles())));
+        }
+        
+        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "includeUnchanged", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportHandler, "exportUserdata", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "includeSystem", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportHandler, "contentAge", "0", PAGES[0], new CmsCalendarWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "fileName", PAGES[0], new CmsComboWidget(CmsDatabaseImportFromServer.getFilesFromServer())));
+        
+        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "exportPaths", "/", PAGES[0], new CmsVfsFileWidget(), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));
+    }
+    
+    /**
+     * Returns the present export files on the server to show in the combo box.<p>
+     * 
+     * @return the present export files on the server to show in the combo box
+     */
+    protected String getComboExportFiles() {
+
+        StringBuffer result = new StringBuffer(8);
+        
+        Iterator i = CmsDatabaseImportFromServer.getFileListFromServer(false).iterator();
+        while (i.hasNext()) {
+            String fileName = (String)i.next();
+            result.append(fileName);
+            // append inidivdual help text
+            result.append(":");
+            result.append(Messages.get().key(getLocale(), Messages.GUI_EDITOR_HELP_EXPORTFILE_1, new String[] {fileName}));
+            if (i.hasNext()) {
+                result.append("|");
+            }
+        }
+        return result.toString();
     }
 
     /**
@@ -175,25 +212,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
     }
     
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    protected void initMessages() {
-
-        // add specific dialog resource bundle
-        addMessages(Messages.get().getBundleName());
-        // add default resource bundles
-        super.initMessages();
-    }
-    
-    /**
-     * Initializes the scheduled job object to work with depending on the dialog state and request parameters.<p>
-     * 
-     * Three initializations of the scheduled job object on first dialog call are possible:
-     * <ul>
-     * <li>edit an existing scheduled job</li>
-     * <li>create a new scheduled job</li>
-     * <li>copy an existing scheduled job and edit it</li>
-     * </ul>
+     * Initializes the import/export object to work with depending on the dialog state and request parameters.<p>
      */
     protected void initDatabaseExportObject() {
 
@@ -207,12 +226,30 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
         }
         
         if (!(o instanceof CmsVfsImportExportHandler)) {
-          // create a new export handler object
-          m_exportHandler = new CmsVfsImportExportHandler();
-      } else {
-          // reuse export handler object stored in session
-          m_exportHandler = (CmsVfsImportExportHandler)o;
-      }
+            // create a new export handler object
+            m_exportHandler = new CmsVfsImportExportHandler();
+        } else {
+            // reuse export handler object stored in session
+            m_exportHandler = (CmsVfsImportExportHandler)o;
+        }
+        
+        if (CmsStringUtil.isEmpty(getParamAction()) && m_exportHandler.getExportPaths().size() < 1) {
+            // on initial call, at least on resource input field has to be present
+            List initialPaths = new ArrayList(1);
+            initialPaths.add("/");
+            m_exportHandler.setExportPaths(initialPaths);   
+        }
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        // add specific dialog resource bundle
+        addMessages(Messages.get().getBundleName());
+        // add default resource bundles
+        super.initMessages();
     }
 
     /**

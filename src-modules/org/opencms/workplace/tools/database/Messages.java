@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Messages.java,v $
- * Date   : $Date: 2005/06/09 07:59:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/09 15:44:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,6 +69,15 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASE_ADMIN_TOOL_NAME_0 = "GUI_DATABASE_ADMIN_TOOL_NAME_0";
     
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASE_EXPORT_FILE_BLOCK_0 = "GUI_DATABASE_EXPORT_FILE_BLOCK_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASE_EXPORT_RESOURCES_BLOCK_0 = "GUI_DATABASE_EXPORT_RESOURCES_BLOCK_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASE_EXPORT_SETTINGS_BLOCK_0 = "GUI_DATABASE_EXPORT_SETTINGS_BLOCK_0";
+    
     /** Message constant for key in the resource bundle. */ 
     public static final String GUI_DATABASE_IMPORT_BLOCK_0 = "GUI_DATABASE_IMPORT_BLOCK_0";
     
@@ -76,10 +85,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASE_IMPORT_FILE_0 = "GUI_DATABASE_IMPORT_FILE_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_LABEL_EXPORTFILE_BLOCK_0 = "GUI_EDITOR_LABEL_EXPORTFILE_BLOCK_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_LABEL_EXPORTSETTINGS_BLOCK_0 = "GUI_EDITOR_LABEL_EXPORTSETTINGS_BLOCK_0";
+    public static final String GUI_EDITOR_HELP_EXPORTFILE_1 = "GUI_EDITOR_HELP_EXPORTFILE_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.database.messages";

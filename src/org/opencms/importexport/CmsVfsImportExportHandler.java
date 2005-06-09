@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2005/06/09 07:58:45 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/09 15:44:50 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,13 @@
 package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.dom4j.Document;
@@ -46,7 +48,7 @@ import org.dom4j.Element;
  * Import/export handler implementation for VFS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2005/06/09 07:58:45 $
+ * @version $Revision: 1.14 $
  * @since 5.3
  */
 public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
@@ -58,10 +60,10 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     private String m_description;
 
     /** Boolean flag to decide whether VFS resources under /system/ should be exported or not.<p> */
-    private boolean m_excludeSystem;
+    private boolean m_includeSystem;
 
     /** Boolean flag to decide whether unchanged resources should be exported or not.<p> */
-    private boolean m_excludeUnchanged;
+    private boolean m_includeUnchanged;
 
     /** The VFS paths to be exported.<p> */
     private List m_exportPaths;
@@ -79,10 +81,10 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
 
         super();
         m_description = Messages.get().key(Messages.GUI_CMSIMPORTHANDLER_DEFAULT_DESC_0);
-        m_excludeSystem = true;
-        m_excludeUnchanged = false;
+        m_includeSystem = false;
+        m_includeUnchanged = true;
         m_exportUserdata = true;
-        m_exportPaths = new ArrayList();
+        m_exportPaths = Collections.EMPTY_LIST;
     }
 
     /**
@@ -90,9 +92,9 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @return true, if VFS resources under /system/ should not be exported
      */
-    public boolean isExcludeSystem() {
+    public boolean isIncludeSystem() {
 
-        return m_excludeSystem;
+        return m_includeSystem;
     }
 
     /**
@@ -102,7 +104,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
         
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
         String[] exportPaths = (String[])getExportPaths().toArray(new String[getExportPaths().size()]);
-        new CmsExport(cms, getFileName(), exportPaths, isExcludeSystem(), isExcludeUnchanged(),
+        new CmsExport(cms, getFileName(), exportPaths, isIncludeSystem(), isIncludeUnchanged(),
             null, isExportUserdata(), getContentAge(), report);
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_END_0), I_CmsReport.C_FORMAT_HEADLINE);
     }
@@ -168,9 +170,9 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @return true, if unchanged resources should not be exported
      */
-    public boolean isExcludeUnchanged() {
+    public boolean isIncludeUnchanged() {
 
-        return m_excludeUnchanged;
+        return m_includeUnchanged;
     }
 
     /**
@@ -205,6 +207,10 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      */
     public void setContentAge(long contentAge) {
 
+        if (contentAge < 0) {
+            String ageString = Long.toString(contentAge);
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_CONTENT_AGE_1, ageString));
+        }
         m_contentAge = contentAge;
     }
 
@@ -221,9 +227,9 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @param excludeSystem true, if VFS resources under /system/ should not be exported
      */
-    public void setExcludeSystem(boolean excludeSystem) {
+    public void setIncludeSystem(boolean excludeSystem) {
 
-        m_excludeSystem = excludeSystem;
+        m_includeSystem = excludeSystem;
     }
 
     /**
@@ -231,9 +237,9 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @param excludeUnchanged true, if unchanged resources should not be exported
      */
-    public void setExcludeUnchanged(boolean excludeUnchanged) {
+    public void setIncludeUnchanged(boolean excludeUnchanged) {
 
-        m_excludeUnchanged = excludeUnchanged;
+        m_includeUnchanged = excludeUnchanged;
     }
 
     /**
@@ -263,6 +269,9 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      */
     public void setFileName(String fileName) {
 
+        if (CmsStringUtil.isEmpty(fileName) || !fileName.trim().equals(fileName)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILE_NAME_1, fileName));
+        }
         m_fileName = fileName;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromServer.java,v $
- * Date   : $Date: 2005/06/09 07:59:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/09 15:44:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0
  */
 public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
@@ -102,18 +103,17 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
         this(new CmsJspActionElement(context, req, res));
     }
-
+    
     /**
-     * Returns the list of all uploadable zip files and auploadable folders available on the server.<p>
+     * Returns the list of all uploadable zip files and uploadable folders available on the server.<p>
      * 
-     * The list is returned as a String separated by "|" to use as configuration parameter for selectbox widgets.<p>
-     * 
-     * @return pipe separated list of file names
+     * @param includeFolders if true, the uploadable folders are included in the list
+     * @return the list of all uploadable zip files and uploadable folders available on the server
      */
-    protected static String getFilesFromServer() {
-
-        StringBuffer result = new StringBuffer(32);
-
+    protected static List getFileListFromServer(boolean includeFolders) {
+        
+        List result = new ArrayList();
+        
         // get the RFS package export path
         String exportpath = OpenCms.getSystemInfo().getPackagesRfsPath();
         File folder = new File(exportpath);
@@ -124,20 +124,14 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
             File diskFile = new File(exportpath, files[i]);
             // check this is a file and ends with zip -> this is a database upload file
             if (diskFile.isFile() && diskFile.getName().endsWith(".zip")) {
-                result.append(diskFile.getName());
-                if (i < files.length - 1) {
-                    result.append("|");
-                }
-            } else if (diskFile.isDirectory() && (!diskFile.getName().equalsIgnoreCase(FOLDER_MODULES)) && ((new File(diskFile + File.separator + FILE_MANIFEST)).exists())) {
+                result.add(diskFile.getName());
+            } else if (diskFile.isDirectory() && includeFolders && (!diskFile.getName().equalsIgnoreCase(FOLDER_MODULES)) && ((new File(diskFile + File.separator + FILE_MANIFEST)).exists())) {
                 // this is an unpacked package, add it to uploadable files
-                result.append(diskFile.getName());
-                if (i < files.length - 1) {
-                    result.append("|");
-                }
+                result.add(diskFile.getName());
             }
         }
-
-        return result.toString();
+        
+        return result;
     }
 
     /** 
@@ -225,6 +219,29 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
         
         // add the file select box widget
         addWidget(new CmsWidgetDialogParameter(this, PARAM_IMPORTFILE, PAGES[0], new CmsSelectWidget(files)));
+    }
+
+    /**
+     * Returns the list of all uploadable zip files and uploadable folders available on the server.<p>
+     * 
+     * The list is returned as a String separated by "|" to use as configuration parameter for selectbox widgets.<p>
+     * 
+     * @return pipe separated list of file names
+     */
+    protected String getFilesFromServer() {
+
+        StringBuffer result = new StringBuffer(32);
+
+        Iterator i = getFileListFromServer(true).iterator();
+        while (i.hasNext()) {
+            String fileName = (String)i.next();
+            result.append(fileName);
+            if (i.hasNext()) {
+                result.append("|");
+            }
+        }
+
+        return result.toString();
     }
 
     /**

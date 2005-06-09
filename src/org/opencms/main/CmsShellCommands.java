@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/06/09 07:58:45 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2005/06/09 15:44:50 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.StringTokenizer;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -353,8 +353,8 @@ class CmsShellCommands implements I_CmsShellCommands {
         CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
         vfsExportHandler.setFileName(exportFile);
         vfsExportHandler.setExportPaths(exportPaths);
-        vfsExportHandler.setExcludeSystem(false);
-        vfsExportHandler.setExcludeUnchanged(false);
+        vfsExportHandler.setIncludeSystem(true);
+        vfsExportHandler.setIncludeUnchanged(true);
         vfsExportHandler.setExportUserdata(false);
 
         OpenCms.getImportExportManager().exportData(m_cms, vfsExportHandler, new CmsShellReport());
@@ -415,17 +415,17 @@ class CmsShellCommands implements I_CmsShellCommands {
         while (tok.hasMoreTokens()) {
             exportPaths.add(tok.nextToken());
         }
-        boolean excludeSystem = true;
+        boolean includeSystem = false;
         if (pathList.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)
             || (pathList.indexOf(";" + I_CmsWpConstants.C_VFS_PATH_SYSTEM) > -1)) {
-            excludeSystem = false;
+            includeSystem = true;
         }
 
         CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
         vfsExportHandler.setFileName(exportFile);
         vfsExportHandler.setExportPaths(exportPaths);
-        vfsExportHandler.setExcludeSystem(excludeSystem);
-        vfsExportHandler.setExcludeUnchanged(false);
+        vfsExportHandler.setIncludeSystem(includeSystem);
+        vfsExportHandler.setIncludeUnchanged(true);
         vfsExportHandler.setExportUserdata(false);
 
         OpenCms.getImportExportManager().exportData(m_cms, vfsExportHandler, new CmsShellReport());
@@ -447,17 +447,17 @@ class CmsShellCommands implements I_CmsShellCommands {
         while (tok.hasMoreTokens()) {
             exportPaths.add(tok.nextToken());
         }
-        boolean excludeSystem = true;
+        boolean includeSystem = false;
         if (pathList.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)
             || (pathList.indexOf(";" + I_CmsWpConstants.C_VFS_PATH_SYSTEM) > -1)) {
-            excludeSystem = false;
+            includeSystem = true;
         }
 
         CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
         vfsExportHandler.setFileName(exportFile);
         vfsExportHandler.setExportPaths(exportPaths);
-        vfsExportHandler.setExcludeSystem(excludeSystem);
-        vfsExportHandler.setExcludeUnchanged(false);
+        vfsExportHandler.setIncludeSystem(includeSystem);
+        vfsExportHandler.setIncludeUnchanged(true);
         vfsExportHandler.setExportUserdata(true);
 
         OpenCms.getImportExportManager().exportData(m_cms, vfsExportHandler, new CmsShellReport());
