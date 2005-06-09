@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2005/06/08 16:44:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/09 12:49:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsEditGroupDialog extends CmsWidgetDialog {
@@ -81,7 +81,7 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
     public static final String PARAM_GROUPNAME = "groupname";
 
     /** The user object that is edited on this dialog. */
-    private CmsGroup m_group;
+    protected CmsGroup m_group;
 
     /** Stores the value of the request parameter for the group id. */
     private String m_paramGroupid;
@@ -241,24 +241,17 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
 
         StringBuffer result = new StringBuffer(1024);
 
-        // create widget table
         result.append(createWidgetTableStart());
-
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
 
-        int n = (isShortInfo() ? 1 : 3);
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_IDENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, n));
+            result.append(createDialogRowsHtml(0, 3));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            if (isShortInfo()) {
-                result.append(createWidgetTableEnd());
-                return result.toString();
-            }
             result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(4, 6));
@@ -266,9 +259,7 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
             result.append(dialogBlockEnd());
         }
 
-        // close widget table
         result.append(createWidgetTableEnd());
-
         return result.toString();
     }
 
@@ -283,21 +274,6 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
         setKeyPrefix(C_KEY_PREFIX);
 
         // widgets to display
-        if (isShortInfo()) {
-            addWidget(new CmsWidgetDialogParameter(m_group, "name", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsDisplayWidget()));
-            return;
-        }
-        if (isOverview()) {
-            addWidget(new CmsWidgetDialogParameter(m_group, "name", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "enabled", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "role", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "projectCoWorker", PAGES[0], new CmsDisplayWidget()));
-            return;
-        }
         if (m_group.getId() == null) {
             addWidget(new CmsWidgetDialogParameter(m_group, "name", PAGES[0], new CmsInputWidget()));
         } else {
@@ -431,29 +407,6 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
     private boolean isNewGroup() {
 
         return getCurrentToolPath().equals("/accounts/groups/new");
-    }
-
-    /**
-     * Checks if the User overview has to be displayed.<p>
-     * 
-     * @return <code>true</code> if the user overview has to be displayed
-     */
-    private boolean isOverview() {
-
-        return getCurrentToolPath().equals("/accounts/groups/edit");
-    }
-
-    /**
-     * Checks if the User overview has to be displayed.<p>
-     * 
-     * @return <code>true</code> if the user overview has to be displayed
-     */
-    private boolean isShortInfo() {
-
-        boolean ret = !isOverview();
-        ret = ret && !isNewGroup();
-        ret = ret && !getCurrentToolPath().equals("/accounts/groups/edit/group");
-        return ret;
     }
 
 }

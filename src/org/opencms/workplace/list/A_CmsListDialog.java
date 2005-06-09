@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/08 16:44:19 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/09 12:49:00 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspWriter;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -188,9 +188,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /** The column to sort the list. */
     private String m_paramSortCol;
-
-    /** Flag to signal to include a back button in the form. */
-    private boolean m_showBackButton = true;
 
     /**
      * Public constructor.<p>
@@ -358,20 +355,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
         result.append(bodyStart("dialog", null));
         result.append(dialogStart());
         return result.toString();
-    }
-
-    /**
-     * Creates the HTML for the buttons on the dialog.<p>
-     * 
-     * @return the HTML for the buttons on the dialog.<p>
-     */
-    public String dialogButtonsCustom() {
-
-        if (isShowBackButton()) {
-            return dialogButtons(new int[] {BUTTON_BACK}, new String[1]);
-        }
-        // don't display any buttons
-        return "";
     }
 
     /**
@@ -584,16 +567,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Returns the showBackButton.<p>
-     *
-     * @return the showBackButton
-     */
-    public boolean isShowBackButton() {
-
-        return m_showBackButton;
-    }
-
-    /**
      * This method re-read the rows of the list, the user should call this method after executing an action
      * that add or remove rows to the list. 
      */
@@ -723,16 +696,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public void setParamSortCol(String sortCol) {
 
         m_paramSortCol = sortCol;
-    }
-
-    /**
-     * Sets the showBackButton.<p>
-     *
-     * @param showBackButton the showBackButton to set
-     */
-    public void setShowBackButton(boolean showBackButton) {
-
-        m_showBackButton = showBackButton;
     }
 
     /**

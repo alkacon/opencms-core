@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
- * Date   : $Date: 2005/06/08 16:44:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/09 12:49:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,10 +44,8 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.list.CmsListDateMacroFormatter;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsEditUserDialog extends CmsWidgetDialog {
@@ -85,10 +83,8 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     /** Session parameter name for the user object. */
     private static final Object C_USER_OBJECT = "USER";
 
-    /** Formatter for the last login property. */
-    private static final CmsListDateMacroFormatter LAST_LOGIN_FORMATTER = new CmsListDateMacroFormatter(
-        Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_1),
-        Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0));
+    /** The user object that is edited on this dialog. */
+    protected CmsUser m_user;
 
     /** Stores the value of the request parameter for the user id. */
     private String m_paramUserid;
@@ -98,9 +94,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
 
     /** The password information object. */
     private CmsPasswordInfo m_pwdInfo;
-
-    /** The user object that is edited on this dialog. */
-    private CmsUser m_user;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -179,18 +172,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the last login.<p>
-     *
-     * Auxiliary Property for better representation of the bean parentId property.<p>
-     * 
-     * @return the last login
-     */
-    public String getLastlogin() {
-
-        return LAST_LOGIN_FORMATTER.format(new Date(m_user.getLastlogin()), getLocale());
-    }
-
-    /**
      * Returns the user id parameter value.<p>
      * 
      * @return the user id parameter value
@@ -208,19 +189,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     public String getParamUsername() {
 
         return m_paramUsername;
-    }
-
-    /**
-     * Sets the last login.<p>
-     *
-     * Auxiliary Property for better representation of the bean parentId property.<p>
-     * 
-     * @param lastlogin the last login to set
-     */
-    public void setLastlogin(String lastlogin) {
-
-        // never used
-        lastlogin.length();
     }
 
     /**
@@ -255,24 +223,17 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
 
         StringBuffer result = new StringBuffer(1024);
 
-        // create widget table
         result.append(createWidgetTableStart());
-
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
 
-        int n = (isShortInfo() ? 2 : 4);
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_IDENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, n));
+            result.append(createDialogRowsHtml(0, 4));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            if (isShortInfo()) {
-                result.append(createWidgetTableEnd());
-                return result.toString();
-            }
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_ADDRESS_BLOCK_0)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(5, 8));
@@ -280,19 +241,12 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_AUTHENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(9, 9));
-            if (isOverview()) {
-                result.append(createDialogRowsHtml(10, 10));
-            } else {
-                result.append(createDialogRowsHtml(10, 11));
-            }
+            result.append(createDialogRowsHtml(9, 11));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
 
-        // close widget table
         result.append(createWidgetTableEnd());
-
         return result.toString();
     }
 
@@ -307,26 +261,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         setKeyPrefix(C_KEY_PREFIX);
 
         // widgets to display
-        if (isShortInfo()) {
-            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsDisplayWidget()));
-            return;
-        }
-        if (isOverview()) {
-            addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "description", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "address", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "city", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "country", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(this, "lastlogin", PAGES[0], new CmsDisplayWidget()));
-            return;
-        }
         if (m_user.getId() == null) {
             addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsInputWidget()));
         } else {
@@ -454,28 +388,4 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
 
         return getCurrentToolPath().equals("/accounts/users/new");
     }
-
-    /**
-     * Checks if the User overview has to be displayed.<p>
-     * 
-     * @return <code>true</code> if the user overview has to be displayed
-     */
-    private boolean isOverview() {
-
-        return getCurrentToolPath().equals("/accounts/users/edit");
-    }
-
-    /**
-     * Checks if the User overview has to be displayed.<p>
-     * 
-     * @return <code>true</code> if the user overview has to be displayed
-     */
-    private boolean isShortInfo() {
-
-        boolean ret = !isOverview();
-        ret = ret && !isNewUser();
-        ret = ret && !getCurrentToolPath().equals("/accounts/users/edit/user");
-        return ret;
-    }
-
 }

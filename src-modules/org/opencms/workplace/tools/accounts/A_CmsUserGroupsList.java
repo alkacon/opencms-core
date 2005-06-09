@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/08 16:44:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/09 12:49:00 $
+ * Version: $Revision: 1.3 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,17 +43,20 @@ import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.I_CmsListDirectAction;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.jsp.JspException;
+
 /**
  * Generalized user groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
@@ -97,6 +100,45 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         boolean searchable) {
 
         super(jsp, listId, listName, LIST_COLUMN_NAME, searchable ? LIST_COLUMN_NAME : null);
+    }
+
+    /**
+     * Action method for two list dialogs.<p>
+     * 
+     * @param list1 first list
+     * @param list2 second list
+     * 
+     * @throws JspException if something goes wrong
+     */
+    public static void actionDialog(A_CmsUserGroupsList list1, A_CmsUserGroupsList list2) throws JspException {
+
+        A_CmsUserGroupsList wp1 = (list1.isActive() ? (A_CmsUserGroupsList)list1 : (A_CmsUserGroupsList)list2);
+        A_CmsUserGroupsList wp2 = (!list1.isActive() ? (A_CmsUserGroupsList)list1 : (A_CmsUserGroupsList)list2);
+
+        // perform the active list actions
+        wp1.updateUserList();
+        wp1.actionDialog();
+        wp1.refreshList();
+        wp2.refreshList();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#getList()
+     */
+    public CmsHtmlList getList() {
+
+        // assure you have the right username
+        CmsHtmlList list = super.getList();
+        if (list != null) {
+            CmsListColumnDefinition col = list.getMetadata().getColumnDefinition(LIST_COLUMN_ICON);
+            if (col != null) {
+                I_CmsListDirectAction action = col.getDirectAction(LIST_ACTION_ICON);
+                if (action != null && action instanceof CmsGroupDisabledStateAction) {
+                    ((CmsGroupDisabledStateAction)action).setUserName(getParamUsername());
+                }
+            }
+        }
+        return list;
     }
 
     /**
@@ -278,18 +320,5 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         // test the needed parameters
         getCms().readUser(getParamUsername());
         getCms().readUser(new CmsUUID(getParamUserid()));
-    }    
-    
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getList()
-     */
-    public CmsHtmlList getList() {
-        // assure you have the right username
-        CmsGroupDisabledStateAction action = (CmsGroupDisabledStateAction)getMetadata(getListId()).getColumnDefinition(
-            LIST_COLUMN_ICON).getDirectAction(LIST_ACTION_ICON);
-        if (action != null) {
-            action.setUserName(getParamUsername());
-        }
-        return super.getList();
     }
 }
