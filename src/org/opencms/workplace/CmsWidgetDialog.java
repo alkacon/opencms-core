@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/08 12:02:07 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/06/09 07:56:46 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -798,7 +798,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         StringBuffer result = new StringBuffer(1024);
 
         // create table
-        result.append("<table class=\"xmlTable\">\n");
+        result.append(createWidgetTableStart());
 
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
@@ -815,7 +815,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
         }
         // close table
-        result.append("</table>\n");
+        result.append(createWidgetTableEnd());
 
         return result.toString();
     }
