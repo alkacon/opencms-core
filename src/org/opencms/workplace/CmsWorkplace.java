@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/08 15:48:00 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2005/06/09 10:13:41 $
+ * Version: $Revision: 1.127 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.126 $
+ * @version $Revision: 1.127 $
  * 
  * @since 5.1
  */
@@ -176,7 +176,7 @@ public abstract class CmsWorkplace {
 
     /** The list of multi part file items (if available). */
     private List m_multiPartFileItems;
-    
+
     /** The map of parameters read from the current request. */
     private Map m_parameterMap;
 
@@ -383,31 +383,28 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Initializes the current users workplace settings by reading the values 
-     * from the users preferences.<p>
-     * 
-     * This method is synchronized to ensure that the settings are
-     * initialized only once for a user.
+     * Updates the user settings in the given workplace settings for the current user, reading the user settings
+     * from the database if required.<p>
      * 
      * @param cms the cms object for the current user
-     * @param settings the current workplace settings
+     * @param settings the workplace settings to update (if <code>null</code> a new instance is created)
      * @param update flag indicating if settings are only updated (user preferences)
-     * @return initialized object with the current users workplace settings 
+     * 
+     * @return the current users workplace settings
+     * 
+     * @see #initWorkplaceSettings(CmsObject, CmsWorkplaceSettings, boolean)
      */
-    public static synchronized CmsWorkplaceSettings initWorkplaceSettings(
-        CmsObject cms,
-        CmsWorkplaceSettings settings,
-        boolean update) {
+    public static CmsWorkplaceSettings initUserSettings(CmsObject cms, CmsWorkplaceSettings settings, boolean update) {
 
         if (settings == null) {
             settings = new CmsWorkplaceSettings();
         }
-        
+
         // save current workplace user & user settings object
         CmsUser user;
         if (update) {
             try {
-                // read the user from db to avoid side effects in preferences dialog after publishing
+                // read the user from db to get the latest user information if required
                 user = cms.readUser(cms.getRequestContext().currentUser().getId());
             } catch (CmsException e) {
                 // can usually be ignored
@@ -419,8 +416,36 @@ public abstract class CmsWorkplace {
         } else {
             user = cms.getRequestContext().currentUser();
         }
+        // store the user and it's settings in the Workplace settings
         settings.setUser(user);
         settings.setUserSettings(new CmsUserSettings(user));
+
+        // return the result settings
+        return settings;
+    }
+
+    /**
+     * Updates the given workplace settings, also re-initializing
+     * the state of the Workplace to the users preferences (for example setting the startup site and project).
+     * 
+     * The user settings will also be updated by calling <code>{@link #initUserSettings(CmsObject, CmsWorkplaceSettings, boolean)}</code>
+     * before updating the workplace project, selected site etc.<p>
+     * 
+     * @param cms the cms object for the current user
+     * @param settings the workplace settings to update (if <code>null</code> a new instance is created)
+     * @param update flag indicating if settings are only updated (user preferences)
+     * 
+     * @return the current users initialized workplace settings
+     * 
+     * @see #initUserSettings(CmsObject, CmsWorkplaceSettings, boolean) 
+     */
+    public static synchronized CmsWorkplaceSettings initWorkplaceSettings(
+        CmsObject cms,
+        CmsWorkplaceSettings settings,
+        boolean update) {
+
+        // init the workplace user settings 
+        settings = initUserSettings(cms, settings, update);
 
         // save current project
         settings.setProject(cms.getRequestContext().currentProject().getId());
@@ -435,7 +460,7 @@ public abstract class CmsWorkplace {
             // remove trailing slash
             siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
         }
-        if (!"".equals(siteRoot) && CmsSiteManager.getSite(siteRoot) == null) {
+        if (CmsStringUtil.isNotEmpty(siteRoot) && (CmsSiteManager.getSite(siteRoot) == null)) {
             // this is not the root site and the site is not in the list
             siteRoot = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
             if (siteRoot.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
@@ -504,18 +529,26 @@ public abstract class CmsWorkplace {
             // loop through all types and check which types can be displayed and edited for the user
             I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
             // get the settings for the resource type
-            CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+            CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                type.getTypeName());
             if (typeSettings != null) {
                 // determine if this resource type is editable for the current user
                 CmsPermissionSet permissions;
                 try {
                     // get permissions of the current user
-                    permissions = typeSettings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
+                    permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
+                        cms.getRequestContext().currentUser(),
+                        cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
                 } catch (CmsException e) {
                     // error reading the groups of the current user
-                    permissions = typeSettings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
+                    permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
+                        cms.getRequestContext().currentUser());
                     if (LOG.isWarnEnabled()) {
-                        CmsLog.getLog(CmsTree.class).warn(org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, cms.getRequestContext().currentUser().getName()), e);
+                        CmsLog.getLog(CmsTree.class).warn(
+                            org.opencms.workplace.explorer.Messages.get().key(
+                                org.opencms.workplace.explorer.Messages.LOG_READ_GROUPS_OF_USER_FAILED_1,
+                                cms.getRequestContext().currentUser().getName()),
+                            e);
                     }
                 }
                 if (permissions.getPermissionString().indexOf("+w") != -1) {
@@ -1169,7 +1202,7 @@ public abstract class CmsWorkplace {
             }
         }
     }
-    
+
     /**
      * Creates the time in milliseconds from the given parameter.<p>
      * 
@@ -1302,7 +1335,7 @@ public abstract class CmsWorkplace {
 
         return m_messages;
     }
-    
+
     /**
      * Returns a list of FileItem instances parsed from the request, in the order that they were transmitted.<p>
      * 
@@ -1382,8 +1415,9 @@ public abstract class CmsWorkplace {
      */
     public boolean isHelpEnabled() {
 
-        return getCms().existsResource(resolveMacros(CmsHelpTemplateBean.PATH_HELP),
-                CmsResourceFilter.IGNORE_EXPIRATION);
+        return getCms().existsResource(
+            resolveMacros(CmsHelpTemplateBean.PATH_HELP),
+            CmsResourceFilter.IGNORE_EXPIRATION);
     }
 
     /**
@@ -1769,7 +1803,7 @@ public abstract class CmsWorkplace {
             return null;
         }
     }
-    
+
     /**
      * Returns the map of parameters read from the current request.<p>
      *
