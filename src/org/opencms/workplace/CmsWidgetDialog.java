@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/09 15:46:09 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/06/09 16:18:20 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -1166,8 +1166,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             boolean onPage = false;
             if (base.isCollectionBase()) {
                 // for a collection base, check if we are on the page where the collection base is shown
-                if (CmsStringUtil.isNotEmpty(getParamAction())) {
-                    // if no action set is (usually for first display of dialog) make sure all values are shown 
+                if (CmsStringUtil.isNotEmpty(getParamAction()) && !DIALOG_INITIAL.equals(getParamAction())) {
+                    // if no action set (usually for first display of dialog) make sure all values are shown
+                    // DIALOG_INITIAL is a special value for the first display and must be handled the same way
                     String page = getParamPage();
                     // keep in mind that since the paramPage will be set AFTER the widget values are filled,
                     // so the first time this page is called from another page the following will result to "false",
