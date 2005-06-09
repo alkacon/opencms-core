@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/09 15:45:38 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.9.1
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
@@ -195,23 +195,17 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
-            result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_JOBSETTINGS_BLOCK_0)));
-            result.append(createWidgetTableStart());
+            result.append(createWidgetBlockStart(key(Messages.GUI_EDITOR_LABEL_JOBSETTINGS_BLOCK_0)));
             result.append(createDialogRowsHtml(0, 4));
-            result.append(createWidgetTableEnd());
-            result.append(dialogBlockEnd());
-            result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0)));
-            result.append(createWidgetTableStart());
+            result.append(createWidgetBlockEnd());
+            result.append(createWidgetBlockStart(key(Messages.GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0)));
             result.append(createDialogRowsHtml(5, 11));
-            result.append(createWidgetTableEnd());
-            result.append(dialogBlockEnd());
+            result.append(createWidgetBlockEnd());
         } else if (dialog.equals(PAGES[1])) {
             // create the widget for the second dialog page
-            result.append(dialogBlockStart(key(Messages.GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0)));
-            result.append(createWidgetTableStart());
+            result.append(createWidgetBlockStart(key(Messages.GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0)));
             result.append(createDialogRowsHtml(12, 12));
-            result.append(createWidgetTableEnd());
-            result.append(dialogBlockEnd());
+            result.append(createWidgetBlockEnd());
         }
 
         // close widget table
