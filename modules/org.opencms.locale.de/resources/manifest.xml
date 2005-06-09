@@ -44,6 +44,7 @@
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/cache/workplace_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/content/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/content/workplace_de.properties"/>
+			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/database/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/history/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/modules/messages_de.properties"/>
@@ -707,6 +708,35 @@
 			<datelastmodified>Fri, 03 Jun 2005 13:04:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 03 Jun 2005 13:00:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+				<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/database</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 09 Jun 2005 14:57:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2005 14:57:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/workplace/tools/database/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/database/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>cf8e3c71-d8f6-11d9-b98c-0d179596440c</uuidresource>
+			<datelastmodified>Thu, 09 Jun 2005 14:57:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2005 14:57:34 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

@@ -1,0 +1,11 @@
+<%@ page 
+	buffer="none" 
+	import="org.opencms.workplace.tools.database.*" %><%	
+	
+	// initialize the workplace class
+	CmsDatabaseImportReport wp = new CmsDatabaseImportReport(pageContext, request, response);
+	
+	// display the report
+	wp.displayReport();
+%>
+

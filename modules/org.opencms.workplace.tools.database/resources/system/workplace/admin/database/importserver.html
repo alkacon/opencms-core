@@ -1,0 +1,11 @@
+<%@ page 
+	buffer="none" 
+	import="org.opencms.workplace.tools.database.*" %><%	
+	
+	
+	// initialize the workplace class
+	CmsDatabaseImportFromServer wp = new CmsDatabaseImportFromServer(pageContext, request, response);
+	
+	// perform the dialog display action	
+	wp.displayDialog();
+%>
