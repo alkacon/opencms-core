@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/06/06 09:50:44 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2005/06/09 07:58:45 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.I_CmsWpConstants;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -62,7 +63,6 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 /**
  * Provides additional commands for the CmsShell.<p>
@@ -72,7 +72,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -347,7 +347,8 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void exportAllResources(String exportFile) throws Exception {
 
-        String[] exportPaths = {I_CmsConstants.C_ROOT};
+        List exportPaths = new ArrayList(1);
+        exportPaths.add(I_CmsConstants.C_ROOT);
 
         CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
         vfsExportHandler.setFileName(exportFile);
@@ -410,13 +411,9 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void exportResources(String exportFile, String pathList) throws Exception {
 
         StringTokenizer tok = new StringTokenizer(pathList, ";");
-        Vector paths = new Vector();
+        List exportPaths = new ArrayList();
         while (tok.hasMoreTokens()) {
-            paths.addElement(tok.nextToken());
-        }
-        String[] exportPaths = new String[paths.size()];
-        for (int i = 0; i < paths.size(); i++) {
-            exportPaths[i] = (String)paths.elementAt(i);
+            exportPaths.add(tok.nextToken());
         }
         boolean excludeSystem = true;
         if (pathList.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)
@@ -446,13 +443,9 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void exportResourcesAndUserdata(String exportFile, String pathList) throws Exception {
 
         StringTokenizer tok = new StringTokenizer(pathList, ";");
-        Vector paths = new Vector();
+        List exportPaths = new ArrayList();
         while (tok.hasMoreTokens()) {
-            paths.addElement(tok.nextToken());
-        }
-        String[] exportPaths = new String[paths.size()];
-        for (int i = 0; i < paths.size(); i++) {
-            exportPaths[i] = (String)paths.elementAt(i);
+            exportPaths.add(tok.nextToken());
         }
         boolean excludeSystem = true;
         if (pathList.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)

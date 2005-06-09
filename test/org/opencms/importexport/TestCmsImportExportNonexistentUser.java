@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExportNonexistentUser.java,v $
- * Date   : $Date: 2005/06/03 17:05:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/09 07:58:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,8 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -50,7 +52,7 @@ import junit.framework.TestSuite;
  * Tests exporting/import VFS data with nonexistent users.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
@@ -139,7 +141,9 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             // export the dummy plain text file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
             vfsExportHandler.setFileName(zipExportFilename);
-            vfsExportHandler.setExportPaths(new String[] {filename});
+            List exportPaths = new ArrayList(1);
+            exportPaths.add(filename);
+            vfsExportHandler.setExportPaths(exportPaths);
             vfsExportHandler.setExcludeSystem(true);
             vfsExportHandler.setExcludeUnchanged(false);
             vfsExportHandler.setExportUserdata(false);

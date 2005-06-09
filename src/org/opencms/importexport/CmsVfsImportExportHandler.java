@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2005/06/02 09:42:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/09 07:58:45 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.xml.CmsXmlException;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
@@ -46,7 +46,7 @@ import org.dom4j.Element;
  * Import/export handler implementation for VFS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2005/06/02 09:42:39 $
+ * @version $Revision: 1.13 $ $Date: 2005/06/09 07:58:45 $
  * @since 5.3
  */
 public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
@@ -82,6 +82,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
         m_excludeSystem = true;
         m_excludeUnchanged = false;
         m_exportUserdata = true;
+        m_exportPaths = new ArrayList();
     }
 
     /**
@@ -89,7 +90,7 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @return true, if VFS resources under /system/ should not be exported
      */
-    public boolean excludeSystem() {
+    public boolean isExcludeSystem() {
 
         return m_excludeSystem;
     }
@@ -100,7 +101,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public void exportData(CmsObject cms, I_CmsReport report) throws CmsImportExportException, CmsRoleViolationException {
         
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
-        new CmsExport(cms, getFileName(), getExportPaths(), excludeSystem(), isExcludeUnchanged(),
+        String[] exportPaths = (String[])getExportPaths().toArray(new String[getExportPaths().size()]);
+        new CmsExport(cms, getFileName(), exportPaths, isExcludeSystem(), isExcludeUnchanged(),
             null, isExportUserdata(), getContentAge(), report);
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_END_0), I_CmsReport.C_FORMAT_HEADLINE);
     }
@@ -126,21 +128,11 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     }
 
     /**
-     * Returns the VFS paths to be exported.<p>
+     * Returns the list with VFS paths to be exported.<p>
      * 
-     * @return the VFS paths to be exported
+     * @return the list with VFS paths to be exported
      */
-    public String[] getExportPaths() {
-
-        return (String[])m_exportPaths.toArray();
-    }
-
-    /**
-     * Returns the VFS paths to be exported as a list.<p>
-     * 
-     * @return the VFS paths to be exported as a list
-     */
-    public List getExportPathsAsList() {
+    public List getExportPaths() {
 
         return m_exportPaths;
     }
@@ -245,13 +237,13 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     }
 
     /**
-     * Sets the VFS paths to be exported.<p>
+     * Sets the list with VFS paths to be exported.<p>
      * 
-     * @param exportPaths the VFS paths to be exported
+     * @param exportPaths the list with VFS paths to be exported
      */
-    public void setExportPaths(String[] exportPaths) {
+    public void setExportPaths(List exportPaths) {
 
-        m_exportPaths = Arrays.asList(exportPaths);
+        m_exportPaths = exportPaths;
     }
 
     /**

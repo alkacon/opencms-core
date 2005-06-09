@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/09 07:58:45 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -57,7 +58,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -251,7 +252,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 // start the thread for: export
                 CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
                 vfsExportHandler.setFileName(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + fileName));
-                vfsExportHandler.setExportPaths(exportPaths);
+                vfsExportHandler.setExportPaths(Arrays.asList(exportPaths));
                 vfsExportHandler.setExcludeSystem(excludeSystem);
                 vfsExportHandler.setExcludeUnchanged(excludeUnchanged);
                 vfsExportHandler.setExportUserdata(exportUserdata);
