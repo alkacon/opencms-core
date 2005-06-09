@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserOverviewDialog.java,v $
- * Date   : $Date: 2005/06/09 12:49:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/09 15:39:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * The user overview and user info widget dialog.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsUserOverviewDialog extends CmsEditUserDialog {
@@ -139,8 +139,7 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_AUTHENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(9, 9));
-            result.append(createDialogRowsHtml(10, 10));
+            result.append(createDialogRowsHtml(9, 10));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
