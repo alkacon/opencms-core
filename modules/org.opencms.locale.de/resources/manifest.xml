@@ -10,10 +10,10 @@
 	</info>
 	<module>
 		<name>org.opencms.locale.de</name>
-		<nicename><![CDATA[OpenCms 6.0 German Localization]]></nicename>
+		<nicename><![CDATA[German localization for the OpenCms workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
-		<description><![CDATA[This module contains message bundles for the german locale.]]></description>
+		<description><![CDATA[This module contains the German language localization files for the OpenCms workplace.]]></description>
 		<version>0.9.21</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
@@ -35,12 +35,12 @@
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/search/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/staticexport/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/synchronize/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/threads/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/validation/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/administration/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/help/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/list/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/messages_de.properties"/>
+			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/threads/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/cache/workplace_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/content/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/content/workplace_de.properties"/>
@@ -49,7 +49,6 @@
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/modules/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/scheduler/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/searchindex/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/users/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/workplace_de.properties"/>
 		</resources>
 		<parameters>
@@ -181,7 +180,12 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -205,7 +209,12 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -229,7 +238,12 @@
 			<datecreated>Fri, 03 Jun 2005 13:53:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -253,7 +267,12 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -277,7 +296,12 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -301,7 +325,12 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -325,7 +354,12 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -349,7 +383,12 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -373,11 +412,16 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/locales/de/messages/org/opencms/threads</destination>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/threads</destination>
 			<type>folder</type>
 			<datelastmodified>Fri, 03 Jun 2005 10:54:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -388,8 +432,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/de/messages/org/opencms/threads/messages_de.properties</source>
-			<destination>system/workplace/locales/de/messages/org/opencms/threads/messages_de.properties</destination>
+			<source>system/workplace/locales/de/messages/org/opencms/workplace/threads/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/threads/messages_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>db19ff13-d426-11d9-bd97-555ce86a55d5</uuidresource>
 			<datelastmodified>Fri, 03 Jun 2005 10:58:00 GMT</datelastmodified>
@@ -397,7 +441,12 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -421,7 +470,12 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -445,7 +499,12 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -458,7 +517,12 @@
 			<datecreated>Fri, 03 Jun 2005 13:54:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -482,7 +546,12 @@
 			<datecreated>Fri, 03 Jun 2005 13:02:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -506,7 +575,12 @@
 			<datecreated>Fri, 03 Jun 2005 13:28:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -530,7 +604,12 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -554,7 +633,12 @@
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -578,7 +662,12 @@
 			<datecreated>Fri, 03 Jun 2005 13:00:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -602,7 +691,12 @@
 			<datecreated>Fri, 03 Jun 2005 13:00:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -615,7 +709,12 @@
 			<datecreated>Fri, 03 Jun 2005 13:00:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -639,7 +738,12 @@
 			<datecreated>Fri, 03 Jun 2005 12:59:39 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -663,7 +767,12 @@
 			<datecreated>Fri, 03 Jun 2005 13:01:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -687,7 +796,12 @@
 			<datecreated>Fri, 03 Jun 2005 13:01:21 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -711,31 +825,12 @@
 			<datecreated>Fri, 03 Jun 2005 13:01:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/users</destination>
-			<type>folder</type>
-			<datelastmodified>Fri, 03 Jun 2005 12:59:03 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 03 Jun 2005 13:00:46 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/de/messages/org/opencms/workplace/tools/users/messages_de.properties</source>
-			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/users/messages_de.properties</destination>
-			<type>plain</type>
-			<uuidresource>804e59ca-d42f-11d9-bd97-555ce86a55d5</uuidresource>
-			<datelastmodified>Fri, 03 Jun 2005 13:05:19 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 03 Jun 2005 13:00:46 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 	</files>
