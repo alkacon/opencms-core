@@ -32,7 +32,6 @@
 			<resource uri="/system/shared/"/>
 			<resource uri="/system/workplace/action/"/>
 			<resource uri="/system/workplace/administration/"/>
-			<resource uri="/system/workplace/resources/"/>
 			<resource uri="/system/workplace/scripts/"/>
 			<resource uri="/system/workplace/templates/"/>
 		</resources>
