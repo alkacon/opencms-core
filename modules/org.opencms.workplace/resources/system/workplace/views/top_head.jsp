@@ -64,9 +64,9 @@
 
 <% 
 if (wp.isPublishEnabled()) {
-	out.println(wp.button("../commons/publishproject.jsp", "body", "publish", "button.publish", buttonStyle));
+	out.println(wp.button("../commons/publishproject.jsp", "body", "publish.png", "button.publish", buttonStyle));
 	} else {
-	out.println(wp.button(null, null, "publish_in", "button.publish", buttonStyle));
+	out.println(wp.button(null, null, "publish_in.png", "button.publish", buttonStyle));
 }
 
 if (wp.showSiteSelector()) {

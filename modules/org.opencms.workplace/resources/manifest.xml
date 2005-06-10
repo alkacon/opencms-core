@@ -1094,26 +1094,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/buttons/publish.gif</source>
-			<destination>system/workplace/resources/buttons/publish.gif</destination>
+			<source>system/workplace/resources/buttons/publish.png</source>
+			<destination>system/workplace/resources/buttons/publish.png</destination>
 			<type>image</type>
-			<uuidresource>61b98593-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<uuidresource>dd4ebb84-d9b6-11d9-a746-37a41ee55f9c</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 13:52:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 Aug 2004 12:37:05 CEST</datecreated>
+			<datecreated>Fri, 10 Jun 2005 13:52:20 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/buttons/publish_in.gif</source>
-			<destination>system/workplace/resources/buttons/publish_in.gif</destination>
+			<source>system/workplace/resources/buttons/publish_in.png</source>
+			<destination>system/workplace/resources/buttons/publish_in.png</destination>
 			<type>image</type>
-			<uuidresource>61c0b187-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<uuidresource>dd5af087-d9b6-11d9-a746-37a41ee55f9c</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 13:52:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 Aug 2004 12:37:05 CEST</datecreated>
+			<datecreated>Fri, 10 Jun 2005 13:52:20 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
