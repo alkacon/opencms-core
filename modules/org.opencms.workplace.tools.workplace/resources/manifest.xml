@@ -238,6 +238,56 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/workplace/synchronize.jsp</source>
+			<destination>system/workplace/admin/workplace/synchronize.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>4778d1a5-d8c4-11d9-98f8-516c3c2775b1</uuidresource>
+			<datelastmodified>Thu, 09 Jun 2005 09:40:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2005 08:55:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_BASIC_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_SYNC_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/folder_refresh.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_SYNC_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Manage synchronize settings]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
 			<datelastmodified>Tue, 17 Aug 2004 13:39:50 GMT</datelastmodified>
@@ -292,6 +342,19 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/icons/big/folder_refresh.png</source>
+			<destination>system/workplace/resources/tools/workplace/icons/big/folder_refresh.png</destination>
+			<type>image</type>
+			<uuidresource>4c671ad2-d8c6-11d9-98f8-516c3c2775b1</uuidresource>
+			<datelastmodified>Thu, 09 Jun 2005 09:10:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2005 09:10:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<source>system/workplace/resources/tools/workplace/icons/big/workplace.png</source>
 			<destination>system/workplace/resources/tools/workplace/icons/big/workplace.png</destination>

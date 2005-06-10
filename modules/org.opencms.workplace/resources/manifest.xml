@@ -1003,6 +1003,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/buttons/folder_refresh.png</source>
+			<destination>system/workplace/resources/buttons/folder_refresh.png</destination>
+			<type>image</type>
+			<uuidresource>277e3091-d8e2-11d9-8118-516c3c2775b1</uuidresource>
+			<datelastmodified>Thu, 09 Jun 2005 12:29:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2005 12:29:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>		
+		<file>
 			<source>system/workplace/resources/buttons/logout.gif</source>
 			<destination>system/workplace/resources/buttons/logout.gif</destination>
 			<type>image</type>
