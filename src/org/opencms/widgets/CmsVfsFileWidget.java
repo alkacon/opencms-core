@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsFileWidget.java,v $
- * Date   : $Date: 2005/06/09 15:46:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/10 10:01:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.workplace.I_CmsWpConstants;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.2
  */
 public class CmsVfsFileWidget extends A_CmsWidget {
@@ -109,7 +109,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
         }
         
         // append start site to configuration
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_startSite)) {
+        if (m_startSite != null) {
             result.append("|");
             result.append(CONFIGURATION_STARTSITE);
             result.append("=");
@@ -211,8 +211,25 @@ public class CmsVfsFileWidget extends A_CmsWidget {
         result.append("\"></td>");
         result.append(widgetDialog.dialogHorizontalSpacer(10));
         result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+        
+        StringBuffer buttonJs = new StringBuffer(8);
+        buttonJs.append("javascript:openTreeWin('EDITOR',  '");
+        buttonJs.append(id);
+        buttonJs.append("', document");
+        if (m_showSiteSelector) {
+            buttonJs.append(", true");
+        } else {
+            buttonJs.append(", false");
+        }
+        if (m_startSite != null) {
+            buttonJs.append(", '");
+            buttonJs.append(m_startSite);
+            buttonJs.append("'");
+        }
+        buttonJs.append(");");
+        
         result.append(widgetDialog.button(
-            "javascript:openTreeWin('EDITOR',  '" + id + "', document);",
+            buttonJs.toString(),
             null,
             "folder",
             org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_SEARCH_0,

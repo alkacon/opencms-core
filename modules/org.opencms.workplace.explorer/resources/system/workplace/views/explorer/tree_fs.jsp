@@ -6,19 +6,30 @@
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	CmsTree wp = new CmsTree(cms);
 	
-	String params = "";
+	StringBuffer params = new StringBuffer(16);
 	if (wp.includeFiles()) {
-		params = "&includefiles=true";
+		params.append("&");
+		params.append(wp.PARAM_INCLUDEFILES);
+		params.append("=true");
 	}
 	if (wp.getTreeType() != null) {
-		params += "&type=" + wp.getTreeType();
+		params.append("&");
+		params.append(wp.PARAM_TYPE);
+		params.append("=");
+		params.append(wp.getTreeType());
+	}
+	
+	if (wp.showSiteSelector()) {
+		params.append("&");
+		params.append(wp.PARAM_SHOWSITESELECTOR);
+		params.append("=true");
 	}
 	
 	String frameRows = "*,0";
 	String frameSiteSelector = "";
 	if (wp.showSiteSelector()) {
 		frameRows = "24,*,0";
-		frameSiteSelector = "<frame name=\"tree_siteselector\" src=\"tree_siteselector.jsp?resource=/" + params + "\" scrolling=\"no\">\n\t";
+		frameSiteSelector = "<frame name=\"tree_siteselector\" src=\"tree_siteselector.jsp?" + wp.PARAM_RESOURCE + "=/" + params.toString() + "\" scrolling=\"no\">\n\t";
 	}
 	
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
@@ -41,7 +52,7 @@
 
 <frameset rows="<%= frameRows %>" border="0" frameborder="0" framespacing="0">	
 	<%= frameSiteSelector %><frame name="tree_display" src="<%= wp.getSkinUri() %>commons/empty.html" scrolling="auto">	
-	<frame <%= wp.getFrameSource("tree_files", cms.link("tree_files.jsp?resource=" + wp.getRootFolder() + params)) %>>
+	<frame <%= wp.getFrameSource("tree_files", cms.link("tree_files.jsp?" + wp.PARAM_RESOURCE + "=" + wp.getRootFolder() + params.toString())) %>>
 </frameset>
 
 </html>

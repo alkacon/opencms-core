@@ -31,9 +31,10 @@ function changeSite() {
 
 <form name="siteselect" method="post" action="tree_fs.jsp" target="_top">
 <td>
-<input type="hidden" name="includefiles" value="<%= wp.includeFiles() %>">
-<input type="hidden" name="type" value="<%= wp.getTreeType() %>">
-<input type="hidden" name="resource" value="/">
+<input type="hidden" name="<%= wp.PARAM_INCLUDEFILES %>" value="<%= wp.includeFiles() %>">
+<input type="hidden" name="<%= wp.PARAM_TYPE %>" value="<%= wp.getTreeType() %>">
+<input type="hidden" name="<%= wp.PARAM_SHOWSITESELECTOR %>" value="<%= wp.showSiteSelector() %>">
+<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="/">
 <%= wp.getSiteSelector("name=\"treesite\" onchange=\"changeSite();\" style=\"width:250px;\"") %>
 </td>
 </form>

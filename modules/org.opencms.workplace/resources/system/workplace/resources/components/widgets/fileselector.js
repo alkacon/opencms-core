@@ -41,8 +41,19 @@ var treeForm = null;
 var treeField = null;
 var treeDoc = null;
 
-function openTreeWin(formName, fieldName, curDoc) {
-	var paramString = "?type=vfslink&includefiles=true";
+function openTreeWin(formName, fieldName, curDoc, showSiteSelector, startSite) {
+	var paramString = "?type=vfswidget&includefiles=true&showsiteselector=";
+	
+	if (showSiteSelector) {
+		paramString += "true";	
+	} else {
+		paramString += "false";
+	}
+	
+	if (startSite != null) {
+		paramString += "&treesite=";
+		paramString += startSite;
+	}
 
 	treewin = openWin(vr.contextPath + vr.workplacePath + "views/explorer/tree_fs.jsp" + paramString, "opencms", 300, 450);
 	treeForm = formName;

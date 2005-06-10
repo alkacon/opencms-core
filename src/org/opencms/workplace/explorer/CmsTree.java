@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/10 10:01:59 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,11 +69,47 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
 public class CmsTree extends CmsWorkplace {
+    
+    /** Request parameter name for the includesfiles parameter. */
+    public static final String PARAM_INCLUDEFILES = "includefiles";
+    
+    /** Request parameter name for the lastknown parameter. */
+    public static final String PARAM_LASTKNOWN = "lastknown";
+    
+    /** Request parameter name for the resource parameter. */
+    public static final String PARAM_RESOURCE = "resource";
+    
+    /** Request parameter name for the rootloaded parameter. */
+    public static final String PARAM_ROOTLOADED = "rootloaded";
+    
+    /** Request parameter name for the showsiteselector parameter. */
+    public static final String PARAM_SHOWSITESELECTOR = "showsiteselector";
+    
+    /** Request parameter name for the treesite parameter. */
+    public static final String PARAM_TREESITE = "treesite";
+    
+    /** Request parameter name for the type parameter. */
+    public static final String PARAM_TYPE = "type";
+    
+    /** Type name for showing the tree when copying resources. */
+    private static final String C_TYPE_COPY = "copy";
+    
+    /** Type name for showing the tree when creating page links in the editor. */
+    private static final String C_TYPE_PAGELINK = "pagelink";
+    
+    /** Type name for showing the tree in preferences dialog. */
+    private static final String C_TYPE_PREFERENCES = "preferences";
+    
+    /** Type name for showing the tree when creating links. */
+    private static final String C_TYPE_VFSLINK = "vfslink"; 
+    
+    /** Type name for showing the tree in a widget dialog. */
+    private static final String C_TYPE_VFSWIDGET = "vfswidget";
     
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTree.class);  
@@ -84,8 +120,11 @@ public class CmsTree extends CmsWorkplace {
     /** Indicates if a complete new tree should be created. */
     private boolean m_newTree;
     
-    /** the name of the root folder to dsiplay the tree from, usually "/". */
+    /** The name of the root folder to dsiplay the tree from, usually "/". */
     private String m_rootFolder;
+    
+    /** Flag to indicate if the site selector should be shown in popup tree window. */
+    private boolean m_showSiteSelector;
 
     /** The name of the start folder (or "last known" folder) to be loaded. */
     private String m_startFolder;
@@ -95,18 +134,6 @@ public class CmsTree extends CmsWorkplace {
     
     /** The type of the tree (e.g. "copy", "project" etc.). */
     private String m_treeType;
-    
-    /** Type name for showing the tree when creating links. */
-    private static final String C_TYPE_VFSLINK = "vfslink"; 
-    
-    /** Type name for showing the tree when copying resources. */
-    private static final String C_TYPE_COPY = "copy";
-    
-    /** Type name for showing the tree when creating page links in the editor. */
-    private static final String C_TYPE_PAGELINK = "pagelink";
-    
-    /** Type name for showing the tree in preferences dialog. */
-    private static final String C_TYPE_PREFERENCES = "preferences";
 
     /**
      * Public constructor.<p>
@@ -182,78 +209,6 @@ public class CmsTree extends CmsWorkplace {
         retValue.append("initTreeResources();\n");
         
         return retValue.toString();
-    }
-    
-    /**
-     * Creates the output for a tree node.<p>
-     * 
-     * @param path the path of the resource represented by this tree node
-     * @param title the resource name
-     * @param type the resource type 
-     * @param grey if true, the node is displayed in grey
-     *
-     * @return the output for a tree node
-     */
-    private String getNode(String path, String title, int type, boolean folder, boolean grey) {
-        StringBuffer result = new StringBuffer(64);
-        String parent = CmsResource.getParentFolder(path);
-        result.append("parent.aC(\"");
-        // name
-        result.append(title);
-        result.append("\",");
-        // type
-        result.append(type);
-        result.append(",");
-        // folder 
-        if (folder) {
-            result.append(1);
-        } else {
-            result.append(0);
-        }
-        result.append(",");
-        // hashcode of path
-        result.append(path.hashCode());
-        result.append(",");
-        // hashcode of parent path
-        result.append((parent != null) ? parent.hashCode() : 0);
-        result.append(",");
-        // project status
-        if (grey) {
-            result.append(1);
-        } else {
-            result.append(0);
-        }
-        result.append(");\n");    
-        return result.toString();    
-    }
-    
-    /**
-     * Creates a node entry for the root node of the current site.<p>
-     *  
-     * @return a node entry for the root node of the current site
-     */
-    private String getRootNode() {
-        CmsResource resource = null;
-        String title = null;
-        String folder = getRootFolder();
-        try {
-            resource = getCms().readFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
-            // get the title information of the folder
-            CmsProperty titleProperty = getCms().readPropertyObject(folder, I_CmsConstants.C_PROPERTY_TITLE, false);
-            
-            if (titleProperty == null || titleProperty.isNullProperty()) {
-                getCms().getSitePath(resource);
-                title = resource.getRootPath();
-            } else {
-                title = titleProperty.getValue();
-            }
-        } catch (CmsException e) {
-            // should usually never happen
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e);
-            }
-        }
-        return getNode(resource.getRootPath(), title, resource.getTypeId(), true, false);
     }
     
     /**
@@ -337,24 +292,6 @@ public class CmsTree extends CmsWorkplace {
         
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     } 
-    
-    /**
-     * Returns the name of the start folder (or "last known" folder) to be loaded.<p>
-     *
-     * @return the name of the start folder (or "last known" folder) to be loaded
-     */
-    private String getStartFolder() {
-        return m_startFolder;
-    }    
-    
-    /**
-     * Returns the target folder name.<p>
-     * 
-     * @return the target folder name
-     */
-    private String getTargetFolder() {
-        return m_targetFolder;
-    }
         
     /**
      * Returns the html for the explorer tree.<p>
@@ -579,14 +516,25 @@ public class CmsTree extends CmsWorkplace {
     }
     
     /**
+     * Indicates if the site selector should be shown depending on the tree type, initial settings and the count of accessible sites.<p>
+     * 
+     * @return true if site selector should be shown, otherwise false
+     */
+    public boolean showSiteSelector() {
+        
+        return m_showSiteSelector;
+    }
+    
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        setIncludeFiles(Boolean.valueOf(request.getParameter("includefiles")).booleanValue());
-        boolean rootloaded = Boolean.valueOf(request.getParameter("rootloaded")).booleanValue();
-        String resource = request.getParameter("resource");
-        setTreeType(request.getParameter("type"));
-        String treeSite = request.getParameter("treesite");
+        setIncludeFiles(Boolean.valueOf(request.getParameter(PARAM_INCLUDEFILES)).booleanValue());
+        boolean rootloaded = Boolean.valueOf(request.getParameter(PARAM_ROOTLOADED)).booleanValue();
+        String resource = request.getParameter(PARAM_RESOURCE);
+        setTreeType(request.getParameter(PARAM_TYPE));
+        String treeSite = request.getParameter(PARAM_TREESITE);
+        computeSiteSelector(request);
         
         String currentResource;
         if (getTreeType() == null) {
@@ -596,7 +544,7 @@ public class CmsTree extends CmsWorkplace {
             currentResource = getSettings().getTreeResource(getTreeType());
         }
         
-        String lastknown = request.getParameter("lastknown");
+        String lastknown = request.getParameter(PARAM_LASTKNOWN);
         // both "resource" and "lastknown" must be folders
         if (resource != null) {
             resource = CmsResource.getFolderPath(resource);
@@ -630,6 +578,99 @@ public class CmsTree extends CmsWorkplace {
     }
     
     /**
+     * Determines if the site selector frame should be shown depending on the tree type or the value of a request parameter.<p>
+     * 
+     * If only one site is available, the site selector is not displayed.<p>
+     * 
+     * @param request the HttpServletRequest to check
+     */
+    private void computeSiteSelector(HttpServletRequest request) {
+        
+        boolean selectorForType = C_TYPE_VFSLINK.equals(getTreeType()) || C_TYPE_COPY.equals(getTreeType()) 
+            || C_TYPE_PAGELINK.equals(getTreeType()) || C_TYPE_PREFERENCES.equals(getTreeType());
+        boolean showFromRequest = Boolean.valueOf(request.getParameter(PARAM_SHOWSITESELECTOR)).booleanValue();
+        if (selectorForType || showFromRequest) {
+            // get all available sites
+            int siteCount = CmsSiteManager.getAvailableSites(getCms(), true).size();
+            setShowSiteSelector(siteCount > 1);
+            return;
+        }
+        setShowSiteSelector(false);
+    }
+    
+    /**
+     * Creates the output for a tree node.<p>
+     * 
+     * @param path the path of the resource represented by this tree node
+     * @param title the resource name
+     * @param type the resource type 
+     * @param grey if true, the node is displayed in grey
+     *
+     * @return the output for a tree node
+     */
+    private String getNode(String path, String title, int type, boolean folder, boolean grey) {
+        StringBuffer result = new StringBuffer(64);
+        String parent = CmsResource.getParentFolder(path);
+        result.append("parent.aC(\"");
+        // name
+        result.append(title);
+        result.append("\",");
+        // type
+        result.append(type);
+        result.append(",");
+        // folder 
+        if (folder) {
+            result.append(1);
+        } else {
+            result.append(0);
+        }
+        result.append(",");
+        // hashcode of path
+        result.append(path.hashCode());
+        result.append(",");
+        // hashcode of parent path
+        result.append((parent != null) ? parent.hashCode() : 0);
+        result.append(",");
+        // project status
+        if (grey) {
+            result.append(1);
+        } else {
+            result.append(0);
+        }
+        result.append(");\n");    
+        return result.toString();    
+    }
+    
+    /**
+     * Creates a node entry for the root node of the current site.<p>
+     *  
+     * @return a node entry for the root node of the current site
+     */
+    private String getRootNode() {
+        CmsResource resource = null;
+        String title = null;
+        String folder = getRootFolder();
+        try {
+            resource = getCms().readFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
+            // get the title information of the folder
+            CmsProperty titleProperty = getCms().readPropertyObject(folder, I_CmsConstants.C_PROPERTY_TITLE, false);
+            
+            if (titleProperty == null || titleProperty.isNullProperty()) {
+                getCms().getSitePath(resource);
+                title = resource.getRootPath();
+            } else {
+                title = titleProperty.getValue();
+            }
+        } catch (CmsException e) {
+            // should usually never happen
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
+            }
+        }
+        return getNode(resource.getRootPath(), title, resource.getTypeId(), true, false);
+    }
+    
+    /**
      * Calculates the prefix that has to be added when selecting a resource in a popup tree window.<p>
      * 
      * This is needed for the link dialog in editors 
@@ -652,8 +693,8 @@ public class CmsTree extends CmsWorkplace {
                 prefix = "";
             }
            
-        } else if (C_TYPE_COPY.equals(getTreeType()) || C_TYPE_VFSLINK.equals(getTreeType())) {
-            // in vfs copy|move|link dialog, don't add the prefix for the current workplace site
+        } else if (C_TYPE_COPY.equals(getTreeType()) || C_TYPE_VFSLINK.equals(getTreeType()) || C_TYPE_VFSWIDGET.equals(getTreeType())) {
+            // in vfs copy|move|link or vfs widget mode, don't add the prefix for the current workplace site
             if (storedSiteRoot.equals(prefix)) {
                 prefix = "";
             }
@@ -662,6 +703,24 @@ public class CmsTree extends CmsWorkplace {
         } 
         
         return prefix;
+    }
+    
+    /**
+     * Returns the name of the start folder (or "last known" folder) to be loaded.<p>
+     *
+     * @return the name of the start folder (or "last known" folder) to be loaded
+     */
+    private String getStartFolder() {
+        return m_startFolder;
+    }    
+    
+    /**
+     * Returns the target folder name.<p>
+     * 
+     * @return the target folder name
+     */
+    private String getTargetFolder() {
+        return m_targetFolder;
     }
 
     /**
@@ -708,6 +767,17 @@ public class CmsTree extends CmsWorkplace {
         m_newTree = newTree;
     }
     
+    
+    /**
+     * Sets if the site selector should be shown depending on the tree type and the count of accessible sites.<p>
+     *
+     * @param showSiteSelector true if site selector should be shown, otherwise false
+     */
+    private void setShowSiteSelector(boolean showSiteSelector) {
+
+        m_showSiteSelector = showSiteSelector;
+    }
+    
     /**
      * Sets the name of the start folder (or "last known" folder) to be loaded.<p>
      * 
@@ -733,18 +803,5 @@ public class CmsTree extends CmsWorkplace {
      */
     private void setTreeType(String type) {
         m_treeType = type;
-    }
-    
-    /**
-     * Indicates if the site selector should be shown depending on the tree type and the count of accessible sites.<p>
-     * 
-     * @return true if site selector should be shown, otherwise false
-     */
-    public boolean showSiteSelector() {
-        if (C_TYPE_VFSLINK.equals(getTreeType()) || C_TYPE_COPY.equals(getTreeType()) || C_TYPE_PAGELINK.equals(getTreeType()) || C_TYPE_PREFERENCES.equals(getTreeType())) {
-            int siteCount = CmsSiteManager.getAvailableSites(getCms(), true).size();
-            return (siteCount > 1);
-        }
-        return false;
     }
 }
