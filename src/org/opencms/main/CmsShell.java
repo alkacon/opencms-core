@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/06/07 15:03:46 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/06/10 15:14:24 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
@@ -600,23 +600,6 @@ public class CmsShell {
     }
 
     /**
-     * Initializes the internal <code>CmsWorkplaceSettings</code> that contain (amongst other 
-     * information) important information additional information about the current user 
-     * (an instance of {@link CmsUserSettings}). <p>
-     * 
-     * This step is performed within the <code>CmsShell</code> constructor directly after 
-     * switching to run-level 2 and obtaining the <code>CmsObject</code> for the guest user as 
-     * well as when invoking the <code>CmsShell command {@link CmsShellCommands#login(String, String)}</code>.
-     * 
-     * @return the user settings for the current user.
-     */
-    public CmsUserSettings initSettings() {
-
-        m_settings = new CmsUserSettings(m_cms.getRequestContext().currentUser());
-        return m_settings;
-    }
-
-    /**
      * Prints the shell prompt.<p>
      */
     public void printPrompt() {
@@ -675,6 +658,23 @@ public class CmsShell {
                 Messages.GUI_SHELL_MATCH_SEARCHSTRING_1,
                 new Object[] {searchString}));
         }
+    }
+
+    /**
+     * Initializes the internal <code>CmsWorkplaceSettings</code> that contain (amongst other 
+     * information) important information additional information about the current user 
+     * (an instance of {@link CmsUserSettings}). <p>
+     * 
+     * This step is performed within the <code>CmsShell</code> constructor directly after 
+     * switching to run-level 2 and obtaining the <code>CmsObject</code> for the guest user as 
+     * well as when invoking the <code>CmsShell command {@link CmsShellCommands#login(String, String)}</code>.
+     * 
+     * @return the user settings for the current user.
+     */
+    protected CmsUserSettings initSettings() {
+
+        m_settings = new CmsUserSettings(m_cms.getRequestContext().currentUser());
+        return m_settings;
     }
 
     /**
