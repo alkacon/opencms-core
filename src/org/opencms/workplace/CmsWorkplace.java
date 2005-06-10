@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/09 10:13:41 $
- * Version: $Revision: 1.127 $
+ * Date   : $Date: 2005/06/10 15:05:08 $
+ * Version: $Revision: 1.128 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.127 $
+ * @version $Revision: 1.128 $
  * 
  * @since 5.1
  */
@@ -1384,6 +1384,17 @@ public abstract class CmsWorkplace {
     public CmsWorkplaceSettings getSettings() {
 
         return m_settings;
+    }
+    
+    /**
+     * Returns the path to the cascading stylesheets.<p>
+     * 
+     * @param filename the name of the stylesheet
+     * @return the path to the cascading stylesheets
+     */
+    public String getStyleUri(String filename) {
+        
+        return getStyleUri(getJsp(), filename);
     }
 
     /**

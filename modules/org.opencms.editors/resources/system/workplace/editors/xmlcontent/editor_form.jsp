@@ -107,7 +107,7 @@ default:
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
 <title>Input form</title>
 
-<link rel=stylesheet type="text/css" href="<%= wp.getStyleUri(wp.getJsp(),"workplace.css") %>">
+<link rel=stylesheet type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
 
 <script type="text/javascript" src="<%= wp.getEditorResourceUri() %>edit.js"></script>
 <script type="text/javascript" src="<%= wp.getEditorResourceUri() %>help.js"></script>

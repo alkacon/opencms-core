@@ -64,7 +64,7 @@ default:
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
 <title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
 
-<link rel=stylesheet type="text/css" href="<%= wp.getSkinUri() %>commons/css_workplace.css">
+<link rel=stylesheet type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
 
 <script type="text/javascript">
 // the content as escaped string
