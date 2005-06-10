@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/06/10 10:04:44 $
- * Version: $Revision: 1.653 $
+ * Date   : $Date: 2005/06/10 10:12:41 $
+ * Version: $Revision: 1.654 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,7 +20,8 @@ Legend:
 - General comment
 
 OpenCms 5.9.2 Corrin (aka 6.0 RC 2) - June 17, 2005
-! Added Workplace tool to edit the synchronization settings
+! Tool for the (new) Administration to edit the synchronization settings
+- Update of the 'howto_workplace_translation' documentation and its localization tool to the new localization scheme
 ! New module for the german localization of OpenCms 
 * Fixed issue with folders when moving a folder to it's own subfolder
 ! New JSP based login dialog
