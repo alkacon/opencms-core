@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
- * Date   : $Date: 2005/05/31 13:11:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/10 09:56:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.CmsEncoder;
  *
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public class CmsDisplayWidget extends A_CmsWidget {
@@ -72,9 +72,9 @@ public class CmsDisplayWidget extends A_CmsWidget {
 
         StringBuffer result = new StringBuffer(16);
         
-        result.append("<td class=\"xmlTd\">");
+        result.append("<td class=\"xmlTd\">"); 
         result.append("<span class=\"xmlInput textInput\" style=\"border: 0px solid black;\">");
-        result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
+        result.append(param.getStringValue(cms));
         result.append("</span>");
         result.append("<input type=\"hidden\"");
         result.append(" name=\"");
