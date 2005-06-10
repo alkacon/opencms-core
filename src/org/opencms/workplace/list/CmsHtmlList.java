@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/06/08 16:44:19 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/10 15:58:06 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -470,30 +470,6 @@ public class CmsHtmlList {
     public CmsListItem newItem(String id) {
 
         return new CmsListItem(getMetadata(), id);
-    }
-
-    /**
-     * Returns a call to the search method for the onSubmit form event.<p>
-     * 
-     * Has to be set if you want to search by pressing <code>RETURN</code> in the search pattern input box.<p>
-     * 
-     * @param wp the workplace object
-     * 
-     * @return js onSubmit call
-     */
-    public String onSubmitSearch(CmsWorkplace wp) {
-
-        StringBuffer js = new StringBuffer(512);
-        if (getMetadata().isSearchable()) {
-            js.append("listSearchAction('");
-            js.append(getId());
-            js.append("', '");
-            js.append(A_CmsListSearchAction.SEARCH_ACTION_ID);
-            js.append("', '");
-            js.append(getMetadata().getSearchAction().getConfirmationMessage().key(wp.getLocale()));
-            js.append("');");
-        }
-        return js.toString();
     }
 
     /**

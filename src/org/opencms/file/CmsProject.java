@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2005/06/02 09:08:02 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/10 15:58:06 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,12 +44,12 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsProject implements Cloneable {
 
     /** The creation date of this project. */
-    private long m_dateCreated;
+    private long m_creationDate;
 
     /** The description of this project. */
     private String m_description;
@@ -77,6 +77,14 @@ public class CmsProject implements Cloneable {
 
     /** The type of this project. */
     private int m_type;
+
+    /**
+     * Default constructor for gui usage.<p>
+     */
+    public CmsProject() {
+
+        // noop
+    }
 
     /**
      * Creates a new CmsProject.<p>
@@ -110,11 +118,10 @@ public class CmsProject implements Cloneable {
         m_taskId = taskId;
         m_ownerId = ownerId;
         m_groupUsersId = groupId;
-        m_groupUsersId = groupId;
         m_groupManagersId = managerGroupId;
         m_flags = flags;
         m_type = type;
-        m_dateCreated = dateCreated;
+        m_creationDate = dateCreated;
     }
 
     /**
@@ -208,7 +215,7 @@ public class CmsProject implements Cloneable {
             m_groupUsersId,
             m_groupManagersId,
             m_flags,
-            m_dateCreated,
+            m_creationDate,
             m_type);
     }
 
@@ -230,9 +237,9 @@ public class CmsProject implements Cloneable {
      *
      * @return the creation date of this project
      */
-    public long getCreateDate() {
+    public long getCreationDate() {
 
-        return m_dateCreated;
+        return m_creationDate;
     }
 
     /**
@@ -242,12 +249,7 @@ public class CmsProject implements Cloneable {
      */
     public String getDescription() {
 
-        if ((m_description == null) || (m_description.length() < 1)) {
-            // no locale available, perhaps get the user local of the owner?
-            return Messages.get().key(Messages.GUI_PROJECT_DESCRIPTION_EMPTY_0);
-        } else {
-            return m_description;
-        }
+        return m_description;
     }
 
     /**
@@ -396,4 +398,13 @@ public class CmsProject implements Cloneable {
         m_type = id;
     }
 
+    /**
+     * Sets the name.<p>
+     *
+     * @param name the name to set
+     */
+    public void setName(String name) {
+
+        m_name = name;
+    }
 }

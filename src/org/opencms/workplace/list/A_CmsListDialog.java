@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/09 12:49:00 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/10 15:58:06 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspWriter;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -331,9 +331,17 @@ public abstract class A_CmsListDialog extends CmsDialog {
         result.append(getList().getId());
         result.append("-form' action='");
         result.append(getDialogUri());
-        result.append("' method='post' class='nomargin' onsubmit='");
-        result.append(getList().onSubmitSearch(this));
-        result.append("'>\n");
+        result.append("' method='post' class='nomargin'");
+        if (getMetadata(getListId()).isSearchable()) {
+            result.append(" onsubmit=\"listSearchAction('");
+            result.append(getListId());
+            result.append("', '");
+            result.append(A_CmsListSearchAction.SEARCH_ACTION_ID);
+            result.append("', '");
+            result.append(getMetadata(getListId()).getSearchAction().getConfirmationMessage().key(getLocale()));
+            result.append("');\"");
+        }
+        result.append(">\n");
         result.append(allParamsAsHidden());
         result.append("\n");
         result.append(getList().listHtml(this));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2005/06/10 15:58:06 $
+ * Version: $Revision: 1.127 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.126 $
+ * @version $Revision: 1.127 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1221,9 +1221,9 @@ public class CmsObject {
      * 
      * @return a publish list
      * 
-     * @throws Exception if something goes wrong
+     * @throws CmsException if something goes wrong
      */
-    public CmsPublishList getPublishList() throws Exception {
+    public CmsPublishList getPublishList() throws CmsException {
 
         return getPublishList(null, false);
     }

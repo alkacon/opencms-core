@@ -1,43 +1,7 @@
-<%@ page import="
-	org.opencms.workplace.CmsDialog,
-	org.opencms.workplace.tools.CmsToolManager,
-	org.opencms.jsp.CmsJspActionElement,
-	java.util.*"
+<%@ page import="org.opencms.workplace.administration.CmsAdminDialog"
 	buffer="none"
-
-%><%
-    CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
-    CmsDialog wp = new CmsDialog(jsp);
-    
-    Map params = wp.initAdminTool();
-
-    if (wp.getAdminTool().getHandler().getLink().indexOf("galleryoverview")>-1) {
-        if (wp.getAction()==CmsDialog.ACTION_CANCEL) {
-            wp.actionCloseDialog();
-            return;
-        }
-        jsp.include("tool-fs.html", null, params);
-        return;
-    } 
-
-    // just grouping or real tool
-    if (!wp.getAdminTool().getHandler().getLink().equals(wp.getCms().getRequestContext().getUri())) {
-        //real tool
-        jsp.include(wp.getAdminTool().getHandler().getLink(), null, params);
-        return;
-    } 
-
-    // just grouping 
-    if (wp.getAction() == CmsDialog.ACTION_CANCEL) {
-        wp.actionCloseDialog();
-        return;
-    }
-
-%><%= wp.htmlStart() %>
-<%= wp.bodyStart(null) %>
-<%= wp.dialogStart() %>
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
-<%= wp.dialogContentEnd() %>
-<%= wp.dialogEnd() %>
-<%= wp.bodyEnd() %>
-<%= wp.htmlEnd() %>
+%>
+<%
+    CmsAdminDialog wp = new CmsAdminDialog(pageContext, request, response);
+    wp.displayDialog();
+%>

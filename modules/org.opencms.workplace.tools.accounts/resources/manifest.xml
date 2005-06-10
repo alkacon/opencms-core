@@ -278,7 +278,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/group.png:tools/accounts/icons/small/group.png]]></value>
+					<value><![CDATA[tools/accounts/icons/big/group_add.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -628,7 +628,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/user.png:tools/accounts/icons/small/user.png]]></value>
+					<value><![CDATA[tools/accounts/icons/big/user_add.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>

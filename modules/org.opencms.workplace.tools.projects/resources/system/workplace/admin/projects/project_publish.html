@@ -1,0 +1,9 @@
+<%@ page buffer="none" import="org.opencms.workplace.tools.projects.*"%>
+<%	
+
+	// initialize the workplace class
+	CmsEditProjectDialog wp = new CmsEditProjectDialog(pageContext, request, response);
+	
+	// perform the dialog action	
+	wp.displayDialog();
+%>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupProject.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/10 15:58:06 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsBackupProject extends CmsProject implements Cloneable {
 
@@ -153,7 +153,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
             getOwnerId(),
             getGroupId(),
             getManagerGroupId(),
-            this.getCreateDate(),
+            this.getCreationDate(),
             getType(),
             new Timestamp(this.m_datePublished),
             m_userPublished, 
