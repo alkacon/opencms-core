@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/Messages.java,v $
- * Date   : $Date: 2005/06/06 15:02:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/10 08:51:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,22 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
-
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_SYNC_NAME_0 = "GUI_WORKPLACE_SYNC_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_SYNC_HELP_0 = "GUI_WORKPLACE_SYNC_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_LABEL_ACTIVATE_SYNC_BLOCK_0 = "GUI_EDITOR_LABEL_ACTIVATE_SYNC_BLOCK_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_LABEL_SOURCE_LIST_VFS_BLOCK_0 = "GUI_EDITOR_LABEL_SOURCE_LIST_VFS_BLOCK_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_LABEL_DESTINATION_RFS_BLOCK_0 = "GUI_EDITOR_LABEL_DESTINATION_RFS_BLOCK_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_LABEL_ACTIVATE_BLOCK_0 = "GUI_EDITOR_LABEL_ACTIVATE_BLOCK_0";
     
