@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/06/01 15:14:28 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2005/06/10 08:57:28 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -518,7 +518,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     m_report.print(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_DOTS_0));
                     m_cms.createGroup(name, description, Integer.parseInt(flags), parentgroupName);
-                    m_report.print(org.opencms.report.Messages.get().container(
+                    m_report.println(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
                 } catch (CmsException exc) {
 
