@@ -1055,6 +1055,7 @@ div.widgetcombo {
     left: 0px;
     padding: 0px;
     width: 300px;
+    overflow: hidden;
     border: 1px solid WindowFrame; 
     background-color: Window;
     visibility: hidden;
