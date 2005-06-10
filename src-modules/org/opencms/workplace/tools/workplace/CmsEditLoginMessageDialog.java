@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/CmsEditLoginMessageDialog.java,v $
- * Date   : $Date: 2005/06/06 15:02:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/10 08:48:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * Dialog to edit the login message of the OpenCms Workplace.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  */
@@ -61,7 +61,7 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
-    /** The login message is edited on this dialog. */
+    /** The login message that is edited with this dialog. */
     private CmsLoginMessage m_loginMessage;
 
     /**
@@ -87,7 +87,7 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Commits the edited scheduled job to the scheduler.<p>
+     * Commits the edited login message to the login manager.<p>
      */
     public void actionCommit() {
 
