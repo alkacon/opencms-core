@@ -108,7 +108,7 @@ if (wp.showSiteSelector()) {
 
 <% 
 if (wp.isSyncEnabled()) {
-	out.println(wp.button("../administration/syncfolder/synchronize.html", "body", "sync", "button.syncfolder", buttonStyle));
+	out.println(wp.button("../administration/syncfolder/synchronize.html", "body", "folder_refresh.png", "button.syncfolder", buttonStyle));
 }
 if (wp.isHelpEnabled()) {
 	out.println(wp.button("javascript:openOnlineHelp();", null, "help.png", "button.help", buttonStyle));
