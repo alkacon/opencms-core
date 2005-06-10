@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2005/06/03 17:00:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/10 13:49:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,12 +47,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_DEL_PROP_RESOURCES_LOCKED_1 = "ERR_DEL_PROP_RESOURCES_LOCKED_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_GET_FILE_BYTES_1 = "ERR_GET_FILE_BYTES_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_HTMLIMPORT_PARSE_1 = "ERR_HTMLIMPORT_PARSE_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_ELEM_RENAME_VALIDATE_ENTER_NEW_ELEM_0 = "GUI_ELEM_RENAME_VALIDATE_ENTER_NEW_ELEM_0";
 
     /** Message constant for key in the resource bundle. */
@@ -69,33 +63,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ELEM_RENAME_VALIDATE_SELECT_TEMPLATE_0 = "GUI_ELEM_RENAME_VALIDATE_SELECT_TEMPLATE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_CONSTRAINT_OFFLINE_0 = "GUI_HTMLIMPORT_CONSTRAINT_OFFLINE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_DESTDIR_1 = "GUI_HTMLIMPORT_DESTDIR_1";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_DIALOG_TITLE_0 = "GUI_HTMLIMPORT_DIALOG_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_DOWNGALLERY_1 = "GUI_HTMLIMPORT_DOWNGALLERY_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_IMGGALLERY_1 = "GUI_HTMLIMPORT_IMGGALLERY_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_INPUTDIR_1 = "GUI_HTMLIMPORT_INPUTDIR_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_INVALID_ELEM_2 = "GUI_HTMLIMPORT_INVALID_ELEM_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_LINKGALLERY_1 = "GUI_HTMLIMPORT_LINKGALLERY_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_TEMPLATE_1 = "GUI_HTMLIMPORT_TEMPLATE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MERGE_PAGES_THREAD_NAME_0 = "GUI_MERGE_PAGES_THREAD_NAME_0";
@@ -116,28 +83,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1 = "GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_HTMLIMPORT_CONVERSION_ERROR_0 = "LOG_HTMLIMPORT_CONVERSION_ERROR_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_HTMLIMPORT_CONVERSION_ERROR_1 = "LOG_HTMLIMPORT_CONVERSION_ERROR_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_ARROW_RIGHT_0 = "RPT_ARROW_RIGHT_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_COPY_2 = "RPT_COPY_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CREATE_EXTERNAL_LINK_0 = "RPT_CREATE_EXTERNAL_LINK_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CREATE_FILE_0 = "RPT_CREATE_FILE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CREATE_FOLDER_0 = "RPT_CREATE_FOLDER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_CREATE_INDEX_0 = "RPT_CREATE_INDEX_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_DELETE_PAGE_1 = "RPT_DELETE_PAGE_1";
@@ -164,15 +113,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_FOLDERS_SIBLING_0 = "RPT_FOLDERS_SIBLING_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_HTML_IMPORT_BEGIN_0 = "RPT_HTML_IMPORT_BEGIN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_HTML_IMPORT_END_0 = "RPT_HTML_IMPORT_END_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_IMPORT_0 = "RPT_IMPORT_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_INVALID_ARGUMENT_1 = "RPT_INVALID_ARGUMENT_1";
 
     /** Message constant for key in the resource bundle. */
@@ -195,9 +135,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_NUM_PAGES_1 = "RPT_NUM_PAGES_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_OVERWRITE_0 = "RPT_OVERWRITE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_PROCESS_0 = "RPT_PROCESS_0";
@@ -234,9 +171,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SCANNING_RESULTS_0 = "RPT_SCANNING_RESULTS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_SKIP_EXTERNAL_0 = "RPT_SKIP_EXTERNAL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_UNLOCK_1 = "RPT_UNLOCK_1";

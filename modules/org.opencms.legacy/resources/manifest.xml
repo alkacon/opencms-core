@@ -25,7 +25,7 @@
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.workplace.tools.staticexport" version="0.9.0"/>
+			<dependency name="org.opencms.workplace.tools.database" version="0.9.0"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>
@@ -4146,12 +4146,13 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/administration/staticexport/index.html</source>
 			<destination>system/workplace/administration/staticexport/index.html</destination>
 			<type>jsp</type>
-			<uuidresource>83ef5a5e-d0e5-11d9-ac67-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Thu, 19 Aug 2004 09:02:47 GMT</datelastmodified>
+			<uuidresource>9d2cce36-d9b4-11d9-9556-0d179596440c</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 13:36:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 05 May 2004 13:28:13 GMT</datecreated>
+			<datecreated>Fri, 10 Jun 2005 13:36:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

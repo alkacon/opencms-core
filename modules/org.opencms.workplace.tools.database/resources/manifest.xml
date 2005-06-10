@@ -4,13 +4,13 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0 RC 1 Corrin</opencms_version>
-		<createdate>6/9/05 4:48 PM</createdate>
+		<createdate>6/10/05 1:56 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.database</name>
-		<nicename><![CDATA[OpenCms 6.0 database management tools]]></nicename>
+		<nicename><![CDATA[OpenCms 6.0 Database management tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms database maintainance tools.<p>
@@ -186,6 +186,56 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/database/htmlimport.html</source>
+			<destination>system/workplace/admin/database/htmlimport.html</destination>
+			<type>jsp</type>
+			<uuidresource>c5389f45-d72e-11d9-b767-0d179596440c</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 10:47:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Oct 2004 09:40:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[12]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_HTMLIMPORT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/database/icons/big/htmlimport.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_HTMLIMPORT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Extended Htmlimport]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/database/importhttp.html</source>
 			<destination>system/workplace/admin/database/importhttp.html</destination>
 			<type>jsp</type>
@@ -281,6 +331,48 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Import from server]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/database/staticexport.html</source>
+			<destination>system/workplace/admin/database/staticexport.html</destination>
+			<type>jsp</type>
+			<uuidresource>ca1f2426-d980-11d9-98f6-0d179596440c</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 10:47:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 07:25:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.database.CmsStaticExportToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[11]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_STATEXP_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/database/icons/big/staticexport.png:tools/database/icons/small/staticexport.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_STATEXP_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Static export]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -461,6 +553,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/database/icons/big/htmlimport.png</source>
+			<destination>system/workplace/resources/tools/database/icons/big/htmlimport.png</destination>
+			<type>image</type>
+			<uuidresource>c56813fc-d72e-11d9-b767-0d179596440c</uuidresource>
+			<datelastmodified>Fri, 15 Oct 2004 09:45:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Oct 2004 09:42:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/database/icons/big/staticexport.png</source>
+			<destination>system/workplace/resources/tools/database/icons/big/staticexport.png</destination>
+			<type>image</type>
+			<uuidresource>0e43d70b-d668-11d9-ba7b-0d179596440c</uuidresource>
+			<datelastmodified>Mon, 06 Jun 2005 08:41:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Jun 2005 08:41:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/tools/database/icons/small</destination>
 			<type>folder</type>
 			<datelastmodified>Tue, 07 Jun 2005 09:52:35 GMT</datelastmodified>
@@ -479,6 +597,19 @@
 			<datelastmodified>Tue, 07 Jun 2005 09:53:34 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 07 Jun 2005 09:53:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/database/icons/small/staticexport.png</source>
+			<destination>system/workplace/resources/tools/database/icons/small/staticexport.png</destination>
+			<type>image</type>
+			<uuidresource>0e49f192-d668-11d9-ba7b-0d179596440c</uuidresource>
+			<datelastmodified>Mon, 06 Jun 2005 08:41:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Jun 2005 08:41:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

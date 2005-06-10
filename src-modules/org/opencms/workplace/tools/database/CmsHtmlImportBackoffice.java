@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.content;
+package org.opencms.workplace.tools.database;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;

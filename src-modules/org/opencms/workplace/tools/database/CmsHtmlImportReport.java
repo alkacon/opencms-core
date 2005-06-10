@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/staticexport/Attic/CmsStaticExportReport.java,v $
- * Date   : $Date: 2005/05/16 17:45:09 $
- * Version: $Revision: 1.1 $
+ * File   :
+ * Date   : 
+ * Version: 
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,11 +28,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.workplace.tools.staticexport;
+package org.opencms.workplace.tools.database;
 
+import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
+
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,22 +45,24 @@ import javax.servlet.jsp.PageContext;
 /**
  * Provides an output window for a CmsReport.<p> 
  *
- * @author  Michael Emmerich(m.emmerich@alkacon.com)
+ * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @version $Revision: 1.1 $
  * 
  * @since 5.1.10
  */
-public class CmsStaticExportReport extends CmsReport {
+public class CmsHtmlImportReport extends CmsReport {
+    
+    private CmsHtmlImport m_htmlImport;
     
     /** The dialog type. */
-    public static final String DIALOG_TYPE = "sync";
+    public static final String DIALOG_TYPE = "imp";
 
     /**
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsStaticExportReport(CmsJspActionElement jsp) {
+    public CmsHtmlImportReport(CmsJspActionElement jsp) {
         super(jsp);
     }
     
@@ -68,7 +73,7 @@ public class CmsStaticExportReport extends CmsReport {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsStaticExportReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsHtmlImportReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
     }    
         
@@ -81,6 +86,9 @@ public class CmsStaticExportReport extends CmsReport {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
+            case ACTION_REPORT_END:
+                actionCloseDialog();
+                break;                
             case ACTION_REPORT_UPDATE:
                 setParamAction(REPORT_UPDATE);   
                 getJsp().include(C_FILE_REPORT_OUTPUT);  
@@ -88,12 +96,21 @@ public class CmsStaticExportReport extends CmsReport {
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
             default:
-                CmsStaticExportThread thread = new CmsStaticExportThread(getCms());
+                CmsHtmlImportThread thread = new CmsHtmlImportThread(getCms(), m_htmlImport);                  
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
                 getJsp().include(C_FILE_REPORT_OUTPUT);  
                 break;
         }
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        addMessages(Messages.get().getBundleName());
+        super.initMessages();
     }
         
     /**
@@ -117,8 +134,19 @@ public class CmsStaticExportReport extends CmsReport {
             setAction(ACTION_CANCEL);
         } else {                        
             setAction(ACTION_DEFAULT);
+            Locale locale = CmsFlexController.getCmsObject(request).getRequestContext().getLocale();
             // add the title for the dialog 
-            setParamTitle(key("title.staticexport"));
+            setParamTitle(Messages.get().key(locale, Messages.GUI_HTMLIMPORT_DIALOG_TITLE_0, null));
         }                 
+    }
+    
+    /**
+     * Sets the htmlImport.<p>
+     *
+     * @param htmlImport the htmlImport to set
+     */
+    public void setHtmlImport(CmsHtmlImport htmlImport) {
+
+        m_htmlImport = htmlImport;
     }
 }

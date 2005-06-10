@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/staticexport/Attic/CmsStaticExportToolHandler.java,v $
- * Date   : $Date: 2005/05/16 17:45:09 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsStaticExportToolHandler.java,v $
+ * Date   : $Date: 2005/06/10 13:49:57 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.workplace.tools.staticexport;
+package org.opencms.workplace.tools.database;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;

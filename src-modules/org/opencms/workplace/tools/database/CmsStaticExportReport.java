@@ -1,12 +1,12 @@
 /*
- * File   :
- * Date   : 
- * Version: 
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsStaticExportReport.java,v $
+ * Date   : $Date: 2005/06/10 13:49:57 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,14 +28,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.workplace.tools.content;
+package org.opencms.workplace.tools.database;
 
-import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
-
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,24 +42,22 @@ import javax.servlet.jsp.PageContext;
 /**
  * Provides an output window for a CmsReport.<p> 
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author  Michael Emmerich(m.emmerich@alkacon.com)
+ * @version $Revision: 1.1 $
  * 
  * @since 5.1.10
  */
-public class CmsHtmlImportReport extends CmsReport {
-    
-    private CmsHtmlImport m_htmlImport;
+public class CmsStaticExportReport extends CmsReport {
     
     /** The dialog type. */
-    public static final String DIALOG_TYPE = "imp";
+    public static final String DIALOG_TYPE = "sync";
 
     /**
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsHtmlImportReport(CmsJspActionElement jsp) {
+    public CmsStaticExportReport(CmsJspActionElement jsp) {
         super(jsp);
     }
     
@@ -73,7 +68,7 @@ public class CmsHtmlImportReport extends CmsReport {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsHtmlImportReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsStaticExportReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
     }    
         
@@ -86,9 +81,6 @@ public class CmsHtmlImportReport extends CmsReport {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
-            case ACTION_REPORT_END:
-                actionCloseDialog();
-                break;                
             case ACTION_REPORT_UPDATE:
                 setParamAction(REPORT_UPDATE);   
                 getJsp().include(C_FILE_REPORT_OUTPUT);  
@@ -96,7 +88,7 @@ public class CmsHtmlImportReport extends CmsReport {
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
             default:
-                CmsHtmlImportThread thread = new CmsHtmlImportThread(getCms(), m_htmlImport);                  
+                CmsStaticExportThread thread = new CmsStaticExportThread(getCms());
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
                 getJsp().include(C_FILE_REPORT_OUTPUT);  
@@ -125,19 +117,8 @@ public class CmsHtmlImportReport extends CmsReport {
             setAction(ACTION_CANCEL);
         } else {                        
             setAction(ACTION_DEFAULT);
-            Locale locale = CmsFlexController.getCmsObject(request).getRequestContext().getLocale();
             // add the title for the dialog 
-            setParamTitle(Messages.get().key(locale, Messages.GUI_HTMLIMPORT_DIALOG_TITLE_0, null));
+            setParamTitle(key("title.staticexport"));
         }                 
-    }
-    
-    /**
-     * Sets the htmlImport.<p>
-     *
-     * @param htmlImport the htmlImport to set
-     */
-    public void setHtmlImport(CmsHtmlImport htmlImport) {
-
-        m_htmlImport = htmlImport;
     }
 }

@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.content;
+package org.opencms.workplace.tools.database;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
@@ -63,7 +63,7 @@ import org.w3c.tidy.Tidy;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  */
 public class CmsHtmlImportConverter {
 

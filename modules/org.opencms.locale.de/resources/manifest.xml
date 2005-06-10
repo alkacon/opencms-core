@@ -43,7 +43,6 @@
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/threads/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/cache/workplace_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/content/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/content/workplace_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/database/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/history/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/messages_de.properties"/>
@@ -701,24 +700,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/de/messages/org/opencms/workplace/tools/content/workplace_de.properties</source>
-			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/content/workplace_de.properties</destination>
-			<type>plain</type>
-			<uuidresource>655ceb93-d42f-11d9-bd97-555ce86a55a5</uuidresource>
-			<datelastmodified>Fri, 03 Jun 2005 13:04:58 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 03 Jun 2005 13:00:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-				<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/database</destination>
 			<type>folder</type>
 			<datelastmodified>Thu, 09 Jun 2005 14:57:20 GMT</datelastmodified>

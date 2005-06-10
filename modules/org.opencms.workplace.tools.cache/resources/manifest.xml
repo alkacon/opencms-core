@@ -23,9 +23,7 @@
 		<datecreated>Mon, 14 Feb 2005 17:32:33 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
-		<dependencies>
-			<dependency name="org.opencms.workplace.tools.staticexport" version="0.9.0"/>
-		</dependencies>
+		<dependencies/>
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/workplace/admin/flexcache/"/>

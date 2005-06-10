@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/staticexport/Attic/CmsStaticExportThread.java,v $
- * Date   : $Date: 2005/06/02 16:41:07 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsStaticExportThread.java,v $
+ * Date   : $Date: 2005/06/10 13:49:57 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.staticexport;
+package org.opencms.workplace.tools.database;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
@@ -46,7 +46,7 @@ import javax.servlet.ServletException;
  * 
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * @since 5.1.10
  */
 public class CmsStaticExportThread extends A_CmsReportThread {

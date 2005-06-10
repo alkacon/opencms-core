@@ -268,72 +268,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/contenttools/htmlimport</destination>
-			<type>folder</type>
-			<datelastmodified>Tue, 19 Apr 2005 10:56:22 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 19 Apr 2005 07:41:28 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.4028235E38]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.contenttools.groups.import}]]></value>
-				</property>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.admin.htmlimport.description}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/contenttools/icons/big/htmlimport.png]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.title.htmlimport}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Extended Htmlimport]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/contenttools/htmlimport/index.html</source>
-			<destination>system/workplace/admin/contenttools/htmlimport/index.html</destination>
-			<type>jsp</type>
-
-			<datelastmodified>Thu, 21 Apr 2005 08:30:24 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 15 Oct 2004 09:40:20 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/admin/contenttools/merge</destination>
 			<type>folder</type>
 			<datelastmodified>Fri, 11 Feb 2005 15:03:02 GMT</datelastmodified>
@@ -583,19 +517,6 @@
 			<datelastmodified>Fri, 17 Dec 2004 10:51:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 17 Dec 2004 10:51:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/tools/contenttools/icons/big/htmlimport.png</source>
-			<destination>system/workplace/resources/tools/contenttools/icons/big/htmlimport.png</destination>
-			<type>image</type>
-
-			<datelastmodified>Fri, 15 Oct 2004 09:45:09 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 15 Oct 2004 09:42:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
