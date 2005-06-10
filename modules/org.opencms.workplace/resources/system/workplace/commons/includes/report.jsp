@@ -95,6 +95,7 @@ function reload(actionParam) {
 }
 
 
+
 function continueReport() {
 	if (!parent.buttonsInitialized) {
 		parent.initButtons();
@@ -502,6 +503,10 @@ function submitActionRefresh(para1, para2, para3) {
  }
 }
 
+function reloadWorkplace() {
+	window.top.location.href = "/opencms/opencms/system/workplace/views/workplace.jsp";
+}
+
 //-->
 </script>
 
@@ -524,7 +529,7 @@ function submitActionRefresh(para1, para2, para3) {
     <%= wp.dialogButtonsContinue("id=\"contok\" onclick=\"updateWin.continueReport();\"", "id=\"contcancel\"", "id=\"contdetails\"") %>
   </td></tr>
   <tr><td width="100%" id="buttonrowok" class="hide">
-    <%= wp.dialogButtonsOkCancelDetails("id=\"okclose\"", "id=\"okcancel\"", "id=\"details\"") %>
+    <%= wp.dialogButtonsOkCancelDetails("id=\"okclose\" onclick=\"javascript:reloadWorkplace()\"", "id=\"okcancel\"", "id=\"details\"") %>
   </td></tr>
   <tr><td>
     <iframe src="<%= wp.getDialogRealUri() %>?<%= wp.PARAM_STYLE%>=<%=wp.getParamStyle()%>&<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= 
