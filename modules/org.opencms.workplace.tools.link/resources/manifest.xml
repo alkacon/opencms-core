@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0 RC 1 Corrin</opencms_version>
+		<createdate>6/10/05 5:19 PM</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.workplace.tools.link</name>
+		<nicename><![CDATA[OpenCms 6.0 Link Checking Tools]]></nicename>
+		<group>OpenCms Workplace</group>
+		<class/>
+		<description><![CDATA[This module contains the OpenCms administration tools for checking internal and external links. (c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
+		<version>0.9.5</version>
+		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/workplace/admin/linkchecking/"/>
+			<resource uri="/system/workplace/resources/tools/linkchecking/"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 08:34:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Aug 2003 13:02:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>30</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/admin</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 25 Jan 2005 16:09:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 18 Jan 2005 09:18:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Administration View]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/linkchecking</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 10 Jun 2005 13:32:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 10:42:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[51.0]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[index.html]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_MODULES_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_LINK_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/linkchecking/icons/big/link.png:tools/linkchecking/icons/small/link.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_LINK_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Link Checking]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/linkchecking/checkexternal.jsp</source>
+			<destination>system/workplace/admin/linkchecking/checkexternal.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>db56d9fb-d9aa-11d9-adac-e7655b3582a8</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 15:07:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:26:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_LINK_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_CHECK_INTERNAL_LINK_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/linkchecking/icons/big/link_intern_check.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_CHECK_INTERNAL_LINK_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Check Internal Links]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 13:39:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 13:39:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Jan 2005 16:51:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/linkchecking</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 10 Jun 2005 12:29:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:29:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/linkchecking/icons</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 10 Jun 2005 12:29:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:29:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/linkchecking/icons/big</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 10 Jun 2005 12:29:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:29:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/linkchecking/icons/big/link.png</source>
+			<destination>system/workplace/resources/tools/linkchecking/icons/big/link.png</destination>
+			<type>image</type>
+			<uuidresource>d2c85764-d9ab-11d9-adac-e7655b3582a8</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 12:33:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:33:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/linkchecking/icons/big/link_extern.png</source>
+			<destination>system/workplace/resources/tools/linkchecking/icons/big/link_extern.png</destination>
+			<type>image</type>
+			<uuidresource>dc64d237-d9ab-11d9-adac-e7655b3582a8</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 12:33:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:33:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/linkchecking/icons/big/link_extern_check.png</source>
+			<destination>system/workplace/resources/tools/linkchecking/icons/big/link_extern_check.png</destination>
+			<type>image</type>
+			<uuidresource>e76bb27a-d9ab-11d9-adac-e7655b3582a8</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 12:33:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:33:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/linkchecking/icons/big/link_extern_results.png</source>
+			<destination>system/workplace/resources/tools/linkchecking/icons/big/link_extern_results.png</destination>
+			<type>image</type>
+			<uuidresource>f0f9d56d-d9ab-11d9-adac-e7655b3582a8</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 12:34:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:34:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/linkchecking/icons/big/link_intern.png</source>
+			<destination>system/workplace/resources/tools/linkchecking/icons/big/link_intern.png</destination>
+			<type>image</type>
+			<uuidresource>fa0e82a0-d9ab-11d9-adac-e7655b3582a8</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 12:34:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:34:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/linkchecking/icons/big/link_intern_check.png</source>
+			<destination>system/workplace/resources/tools/linkchecking/icons/big/link_intern_check.png</destination>
+			<type>image</type>
+			<uuidresource>ffff81a3-d9ab-11d9-adac-e7655b3582a8</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 12:34:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:34:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/tools/linkchecking/icons/small</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 10 Jun 2005 12:29:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:29:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/linkchecking/icons/small/link.png</source>
+			<destination>system/workplace/resources/tools/linkchecking/icons/small/link.png</destination>
+			<type>image</type>
+			<uuidresource>0addf256-d9ac-11d9-adac-e7655b3582a8</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 12:34:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:34:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
