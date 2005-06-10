@@ -157,6 +157,7 @@ img {
 /* ---------- big icon buttons  --------- */
 .bigLink {
   width: 128px;
+  height: 62px;
   float: left;
   text-align: center;
   padding-top: 5px;
