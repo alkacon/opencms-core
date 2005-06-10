@@ -1,7 +1,7 @@
 <%@ page import="org.opencms.workplace.explorer.*" buffer="none" %><%	
 
 	// initialize the workplace class
-	CmsNewResourceXmlPage wp = new CmsNewResourceXmlPage(pageContext, request, response);
+	CmsNewResourceXmlPage wp = (CmsNewResourceXmlPage)CmsNewResource.getNewResourceHandler(org.opencms.file.types.CmsResourceTypeXmlPage.getStaticTypeName(), "org.opencms.workplace.explorer.CmsNewResourceXmlPage", pageContext, request, response);
 
 //////////////////// start of switch statement 
 	

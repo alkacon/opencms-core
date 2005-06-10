@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2005/05/23 12:38:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/10 16:02:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -117,6 +117,12 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_ORDER_CONTEXT_MENU_1 = "LOG_WRONG_ORDER_CONTEXT_MENU_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NEW_RES_HANDLER_CLASS_NOT_FOUND_1 = "ERR_NEW_RES_HANDLER_CLASS_NOT_FOUND_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NEW_RES_CONSTRUCTOR_NOT_FOUND_1 = "ERR_NEW_RES_CONSTRUCTOR_NOT_FOUND_1";
+    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.explorer.messages";
 

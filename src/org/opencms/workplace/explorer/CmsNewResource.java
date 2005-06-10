@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/06/02 13:57:07 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/10 16:02:58 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,9 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -51,6 +53,7 @@ import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -74,7 +77,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3.3
  */
@@ -335,6 +338,59 @@ public class CmsNewResource extends CmsDialog {
      */
     public String getParamNewResourceType() {
         return m_paramNewResourceType;
+    }
+    
+    /**
+     * A factory to return handlers to create new resources.<p>
+     * 
+     * @param type the resource type name to get a new resource handler for, as specified in the explorer type settings
+     * @param defaultClassName a default handler class name, to be used if the handler class specified in the explorer type settings cannot be found
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     * @return a new instance of the handler class
+     * @throws CmsRuntimeException if something goes wrong
+     */
+    public static Object getNewResourceHandler(String type, String defaultClassName, PageContext context, HttpServletRequest req, HttpServletResponse res) throws CmsRuntimeException {
+        
+        if (CmsStringUtil.isEmpty(type)) {            
+            // it's not possible to hardwire the resource type name on the JSP for Xml content types
+            type = req.getParameter(PARAM_NEWRESOURCETYPE);
+        }
+        
+        String className = null; 
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
+        
+        if (CmsStringUtil.isNotEmpty(settings.getNewResourceHandlerClassName())) {
+            className = settings.getNewResourceHandlerClassName();
+        } else {
+            className = defaultClassName;
+        }
+        
+        Class clazz = null;
+        try {
+            clazz = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.ERR_NEW_RES_HANDLER_CLASS_NOT_FOUND_1, className), e);
+            }
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEW_RES_HANDLER_CLASS_NOT_FOUND_1, className));
+        }
+        
+        Object handler = null;
+        try {
+            Constructor constructor = clazz.getConstructor(new Class[] {
+                PageContext.class,
+                HttpServletRequest.class,
+                HttpServletResponse.class});
+            handler = constructor.newInstance(new Object[] {context, req, res});
+        } catch (Exception e) {
+            
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEW_RES_CONSTRUCTOR_NOT_FOUND_1, className));
+        }
+        
+        return handler;
     }
       
     /**

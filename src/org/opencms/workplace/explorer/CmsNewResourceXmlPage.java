@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2005/06/02 13:57:07 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/10 16:02:58 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.3.3
  */
@@ -156,6 +156,8 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         }
         super.actionCloseDialog();
     }
+    
+    
     
     /**
      * Creates the xml page using the specified resource name.<p>

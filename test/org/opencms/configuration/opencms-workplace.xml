@@ -67,7 +67,7 @@
 				<newresource uri="newresource.jsp?page=structurecontent" order="12"/>
 			</explorertype>								
 			<explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
-				<newresource uri="newresource_xmlpage.jsp" order="20" autosetnavigation="true" autosettitle="true"/>
+				<newresource handler="org.opencms.workplace.explorer.CmsNewResourceXmlPage" uri="newresource_xmlpage.jsp" order="20" autosetnavigation="true" autosettitle="true"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>

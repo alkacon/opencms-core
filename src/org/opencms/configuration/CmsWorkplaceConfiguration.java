@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/05/19 16:05:45 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/10 16:02:58 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -357,7 +357,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallParam("*/" + N_EXPLORERTYPE, 1, A_KEY);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 2, A_ICON);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 3, A_REFERENCE);
-                
+             
+        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceHandlerClassName", 1);
+        digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_HANDLER);        
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceUri", 1);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_URI);
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceOrder", 1);
@@ -427,6 +429,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                 if (CmsStringUtil.isNotEmpty(settings.getNewResourcePage())) {
                     newResElement.addAttribute(A_PAGE, settings.getNewResourcePage());
                 }
+                newResElement.addAttribute(A_HANDLER, settings.getNewResourceHandlerClassName());
                 newResElement.addAttribute(A_URI, settings.getNewResourceUri());
                 newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
                 if (settings.isAutoSetNavigation()) {
