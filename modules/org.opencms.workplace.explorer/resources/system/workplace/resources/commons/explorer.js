@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/06/03 15:48:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/10 14:49:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -878,7 +878,7 @@ function displayHead(doc, pages, actpage){
 	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n"
 	+ "<html>\n<head>\n"
 	+ "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=" + top.frames.head.encoding + "\">\n"
-	+ "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + vi.skinPath + "commons/css_workplace.css\"></link>\n"
+	+ "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + vi.stylePath + "\"></link>\n"
 
 	+ "<style type='text/css'>\n"
 	+ "input.location { font-family: verdana, sans-serif; font-size: 11px; font-weight: normal; width: 99% }\n"
