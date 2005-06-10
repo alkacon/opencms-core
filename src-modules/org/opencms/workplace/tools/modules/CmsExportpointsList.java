@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesDependenciesList.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsList.java,v $
  * Date   : $Date: 2005/06/10 09:08:56 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,11 @@
 package org.opencms.workplace.tools.modules;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.db.CmsExportPoint;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
-import org.opencms.module.CmsModuleDependency;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -59,13 +59,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Module dependencies view.<p>
+ * Module exportpoint view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsModulesDependenciesList extends A_CmsListDialog {
+public class CmsExportpointsList extends A_CmsListDialog {
 
     /** List action delete. */
     public static final String LIST_ACTION_DELETE = "delete";
@@ -76,23 +76,27 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     /** List action multi delete. */
     public static final String LIST_ACTION_MDELETE = "mdelete";
 
+
     /** List column delete. */
     public static final String LIST_COLUMN_DELETE = "delete";
+
+    /** List column name. */
+    public static final String LIST_COLUMN_DESTINATION = "destination";
+
+    /** List column name. */
+    public static final String LIST_COLUMN_SERVERDESTINATION = "serverdestination";
 
     /** List column edit. */
     public static final String LIST_COLUMN_EDIT = "edit";
 
     /** List column name. */
-    public static final String LIST_COLUMN_NAME = "name";
-
-    /** List column version. */
-    public static final String LIST_COLUMN_VERSION = "version";
+    public static final String LIST_COLUMN_URI = "uri";
 
     /** list id constant. */
-    public static final String LIST_ID = "dependencies";
+    public static final String LIST_ID = "exportpoints";
 
-    /** Dependency parameter. */
-    public static final String PARAM_DEPENDENCY = "dependency";
+    /** Exportpoint parameter. */
+    public static final String PARAM_EXPORTPOINT = "exportpoint";
 
     /** Module parameter. */
     public static final String PARAM_MODULE = "module";
@@ -108,9 +112,9 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsModulesDependenciesList(CmsJspActionElement jsp) {
+    public CmsExportpointsList(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_NAME_0), LIST_COLUMN_NAME, null);
+        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_NAME_0), LIST_COLUMN_URI, null);
     }
 
     /**
@@ -120,7 +124,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsModulesDependenciesList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsExportpointsList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -140,8 +144,8 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
             while (itItems.hasNext()) {
                 CmsModule module = (CmsModule)OpenCms.getModuleManager().getModule(moduleName).clone();
                 CmsListItem listItem = (CmsListItem)itItems.next();
-                String dependencyName = listItem.getId();
-                deleteDependency(module, dependencyName);
+                String exportpointName = listItem.getId();
+                deleteExportpoint(module, exportpointName);
             }
         }
         // refresh the list
@@ -161,21 +165,21 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     public void executeListSingleActions() {
 
         String moduleName = getParamModule();
-        String dependencyName = getSelectedItem().getId();
+        String exportpointName = getSelectedItem().getId();
 
         Map params = new HashMap();
         params.put(PARAM_MODULE, moduleName);
-        params.put(PARAM_DEPENDENCY, dependencyName);
+        params.put(PARAM_EXPORTPOINT, exportpointName);
 
         if (getParamListAction().equals(LIST_ACTION_DELETE)) {
             // delete a dependency
             CmsModule module = (CmsModule)OpenCms.getModuleManager().getModule(moduleName).clone();
-            deleteDependency(module, dependencyName);
+            deleteExportpoint(module, exportpointName);
         } else if (getParamListAction().equals(LIST_ACTION_EDIT)) {
-            // edit a dependency from the list
+            // edit an export pointfrom the list
             try {
                 params.put(PARAM_ACTION, DIALOG_INITIAL);
-                getToolManager().jspRedirectTool(this, "/modules/edit/dependencies/edit", params);
+                getToolManager().jspRedirectTool(this, "/modules/edit/exportpoints/edit", params);
             } catch (IOException e) {
                 // should never happen
                 throw new CmsRuntimeException(
@@ -219,16 +223,18 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
 
         String moduleName = getParamModule();
         CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
-        // get dependencies
-        List dependencies = module.getDependencies();
-        Iterator i = dependencies.iterator();
+        // get exportpoints
+        List exportpoints = module.getExportPoints();
+        Iterator i = exportpoints.iterator();
         while (i.hasNext()) {
-            CmsModuleDependency dependency = (CmsModuleDependency)i.next();
-            CmsListItem item = getList().newItem(dependency.getName());
+            CmsExportPoint exportpoint = (CmsExportPoint)i.next();
+            CmsListItem item = getList().newItem(exportpoint.getUri());
             // name
-            item.set(LIST_COLUMN_NAME, dependency.getName());
-            // version
-            item.set(LIST_COLUMN_VERSION, dependency.getVersion());
+            item.set(LIST_COLUMN_URI, exportpoint.getUri());
+            // destination
+            item.set(LIST_COLUMN_DESTINATION, exportpoint.getConfiguredDestination());
+            // server
+            item.set(LIST_COLUMN_SERVERDESTINATION, exportpoint.getDestinationPath());
 
             ret.add(item);
         }
@@ -259,8 +265,8 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
         editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         // add the edit action
         CmsListDirectAction editColAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_EDIT);
-        editColAction.setName(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_EDIT_NAME_0));
-        editColAction.setHelpText(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_EDIT_HELP_0));
+        editColAction.setName(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_ACTION_EDIT_NAME_0));
+        editColAction.setHelpText(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_ACTION_EDIT_HELP_0));
         editColAction.setIconPath(PATH_BUTTONS + "modules.png");
         editColAction.setEnabled(true);
         editColAction.setConfirmationMessage(null);
@@ -275,38 +281,46 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
         delCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         // direct action: delete module
         CmsListDirectAction delDependency = new CmsListDirectAction(LIST_ID, LIST_ACTION_DELETE);
-        delDependency.setColumn(LIST_COLUMN_NAME);
-        delDependency.setName(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_DELETE_NAME_0));
+        delDependency.setColumn(LIST_COLUMN_URI);
+        delDependency.setName(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_ACTION_DELETE_NAME_0));
         delDependency.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_DEPENDENCIES_LIST_ACTION_DELETE_CONF_1));
+            Messages.GUI_EXPORTPOINTS_LIST_ACTION_DELETE_CONF_1));
         delDependency.setIconPath(ICON_DELETE);
         delDependency.setEnabled(true);
-        delDependency.setHelpText(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_DELETE_HELP_1));
+        delDependency.setHelpText(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_ACTION_DELETE_HELP_1));
         delCol.addDirectAction(delDependency);
         metadata.addColumn(delCol);
 
         // add column for name
-        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
-        nameCol.setName(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_COLS_NAME_0));
-        nameCol.setWidth("80%");
+        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_URI);
+        nameCol.setName(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_COLS_URI_0));
+        nameCol.setWidth("40%");
         nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         // create default edit action for name column: edit dependency
-        CmsListDefaultAction nameColAction = new CmsListDefaultAction(LIST_ID, LIST_COLUMN_EDIT);
-        nameColAction.setName(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_OVERVIEW_NAME_0));
+        CmsListDefaultAction nameColAction = new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT);
+        nameColAction.setName(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_ACTION_OVERVIEW_NAME_0));
         nameColAction.setIconPath(null);
-        nameColAction.setHelpText(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_OVERVIEW_HELP_0));
+        nameColAction.setHelpText(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_ACTION_OVERVIEW_HELP_0));
         nameColAction.setEnabled(true);
         nameColAction.setConfirmationMessage(null);
         // set action for the name column
         nameCol.setDefaultAction(nameColAction);
         metadata.addColumn(nameCol);
 
-        // add column for version
-        CmsListColumnDefinition versionCol = new CmsListColumnDefinition(LIST_COLUMN_VERSION);
-        versionCol.setName(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_COLS_VERSION_0));
-        versionCol.setWidth("20%");
-        versionCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
-        metadata.addColumn(versionCol);
+        // add column for destination
+        CmsListColumnDefinition destinationCol = new CmsListColumnDefinition(LIST_COLUMN_DESTINATION);
+        destinationCol.setName(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_COLS_DESTINATION_0));
+        destinationCol.setWidth("30%");
+        destinationCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        metadata.addColumn(destinationCol);
+
+        // add column for server destination
+        CmsListColumnDefinition serverDestinationCol = new CmsListColumnDefinition(LIST_COLUMN_SERVERDESTINATION);
+        serverDestinationCol.setName(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_COLS_SERVERDESTINATION_0));
+        serverDestinationCol.setWidth("30%");
+        serverDestinationCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        metadata.addColumn(serverDestinationCol);
+
     }
 
     /**
@@ -334,38 +348,40 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     }
 
     /**
-     * Deletes a module dependency from a module.<p>
+     * Deletes a module exportpoint from a module.<p>
      * 
      * @param module the module to delete the dependency from
-     * @param dependencyName the name of the dependcency to delete
+     * @param exportpoint the name of the exportpoint to delete
      */
-    private void deleteDependency(CmsModule module, String dependencyName) {
+    private void deleteExportpoint(CmsModule module, String exportpoint) {
 
-        List oldDependencies = module.getDependencies();
-        List newDependencies = new ArrayList();
-        Iterator i = oldDependencies.iterator();
+        List oldExportpoints = module.getExportPoints();
+        List newExportpoints = new ArrayList();
+        Iterator i = oldExportpoints.iterator();
         while (i.hasNext()) {
-            CmsModuleDependency dep = (CmsModuleDependency)i.next();
-            if (!dep.getName().equals(dependencyName)) {
-                newDependencies.add(dep);
+            CmsExportPoint exp = (CmsExportPoint)i.next();
+            if (!exp.getUri().equals(exportpoint)) {
+                newExportpoints.add(exp);
             }
         }
-        module.setDependencies(newDependencies);
+        module.setExportPoints(newExportpoints);
         // update the module information
         try {
             OpenCms.getModuleManager().updateModule(getCms(), module);
         } catch (CmsConfigurationException ce) {
             // should never happen
-            throw new CmsRuntimeException(
-                Messages.get().container(Messages.ERR_ACTION_DEPENDENCIES_DELETE_2, dependencyName, module.getName()),
-                ce);
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_ACTION_EXPORTPOINTS_DELETE_2,
+                exportpoint,
+                module.getName()), ce);
 
         } catch (CmsRoleViolationException re) {
-            throw new CmsRuntimeException(
-                Messages.get().container(Messages.ERR_ACTION_DEPENDENCIES_DELETE_2, dependencyName, module.getName()),
-                re);
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_ACTION_EXPORTPOINTS_DELETE_2,
+                exportpoint,
+                module.getName()), re);
         }
-        getList().removeItem(dependencyName, getLocale());
+        getList().removeItem(exportpoint, getLocale());
     }
 
 }

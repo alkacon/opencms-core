@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromHttp.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromHttp.java,v $
  * Date   : $Date: 2005/06/10 09:08:56 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,42 +29,39 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.database;
+package org.opencms.workplace.tools.modules;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.administration.A_CmsImportFromHttp;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Class to upload a zip file containing VFS resources with HTTP upload.<p>
+ * Class to upload a module with HTTP upload.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * @since 6.0
  */
-public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
+public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
 
     /** The dialog URI. */
-    public static final String DIALOG_URI = C_PATH_WORKPLACE + "admin/database/importhttp.html";
+    public static final String DIALOG_URI = C_PATH_WORKPLACE + "admin/modules/import.html";
 
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsDatabaseImportFromHttp(CmsJspActionElement jsp) {
+    public CmsModulesUploadFromHttp(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -76,7 +73,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsDatabaseImportFromHttp(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsModulesUploadFromHttp(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -87,26 +84,26 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
     public void actionCommit() {
 
         try {
-            copyFileToServer(OpenCms.getSystemInfo().getPackagesRfsPath());
+           copyFileToServer(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + I_CmsConstants.C_MODULE_PATH);
         } catch (CmsException e) {
             // error copying the file to the OpenCms server
             setException(e);
             return;
         }
-        try {
-            Map params = new HashMap();
-            params.put(PARAM_FILE, getParamImportfile());
-            // set style to display report in correct layout
-            params.put(PARAM_STYLE, "new");
-            // set close link to get back to overview after finishing the import
-            params.put(PARAM_CLOSELINK, getToolManager().linkForPath(getJsp(), "/database", null));
-            // redirect to the report output JSP
-            getToolManager().jspRedirectPage(this, CmsDatabaseImportFromServer.IMPORT_ACTION_REPORT, params);
-        } catch (IOException e) {
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_ACTION_FILE_UPLOAD_1,
-                getParamImportfile()), e);
-        }
+//        try {
+//           Map params = new HashMap();
+//            params.put(PARAM_FILE, getParamImportfile());
+//            // set style to display report in correct layout
+//            params.put(PARAM_STYLE, "new");
+//            // set close link to get back to overview after finishing the import
+//            params.put(PARAM_CLOSELINK, getToolManager().linkForPath(getJsp(), "/database", null));
+//            // redirect to the report output JSP
+//            getToolManager().jspRedirectPage(this, CmsDatabaseImportFromServer.IMPORT_ACTION_REPORT, params);
+//        } catch (IOException e) {
+//            throw new CmsRuntimeException(Messages.get().container(
+//                Messages.ERR_ACTION_FILE_UPLOAD_1,
+//                getParamImportfile()), e);
+//        }
 
     }
 
@@ -123,7 +120,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
      */
     public String getImportMessage() {
 
-        return key(Messages.GUI_DATABASE_IMPORT_FILE_0);
+        return key(Messages.GUI_MODULES_IMPORT_FILE_0);
     }
 
     /**
@@ -131,7 +128,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
      */
     public String getStarttext() {
 
-        return key(Messages.GUI_DATABASE_IMPORT_BLOCK_0);
+        return key(Messages.GUI_MODULES_IMPORT_BLOCK_0);
     }
 
     /**

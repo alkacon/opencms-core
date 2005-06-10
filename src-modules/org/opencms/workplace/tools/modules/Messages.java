@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/Messages.java,v $
- * Date   : $Date: 2005/06/08 10:46:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/10 09:08:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,11 +64,23 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULE_ADMIN_TOOL_GROUP_0 = "GUI_MODULE_ADMIN_TOOL_GROUP_0";
     
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITMODULEPARAMETERS_ADMIN_TOOL_NAME_0 = "GUI_EDITMODULEPARAMETERS_ADMIN_TOOL_NAME_0";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITMODULEPARAMETERS_ADMIN_TOOL_HELP_0 = "GUI_EDITMODULEPARAMETERS_ADMIN_TOOL_HELP_0";
+  
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITMODULERESOURCES_ADMIN_TOOL_NAME_0 = "GUI_EDITMODULERESOURCES_ADMIN_TOOL_NAME_0";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITMODULERESOURCES_ADMIN_TOOL_HELP_0 = "GUI_EDITMODULERESOURCES_ADMIN_TOOL_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITMODULE_ADMIN_TOOL_NAME_0 = "GUI_EDITMODULE_ADMIN_TOOL_NAME_0";
    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITMODULE_ADMIN_TOOL_HELP_0 = "GUI_EDITMODULE_ADMIN_TOOL_HELP_0";
-  
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPORTMODULE_ADMIN_TOOL_NAME_0 = "GUI_EXPORTMODULE_ADMIN_TOOL_NAME_0";
     
@@ -111,6 +123,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_DEPENDENCIES_DELETE_2 = "ERR_ACTION_DEPENDENCIES_DELETE_2";
     
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ACTION_EXPORTPOINTS_DELETE_2 = "ERR_ACTION_EXPORTPOINTS_DELETE_2";
+ 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_ADMIN_TOOL_GROUP_0 = "GUI_MODULES_ADMIN_TOOL_GROUP_0";
 
@@ -246,6 +261,15 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LIST_NAME_0 = "GUI_MODULES_LIST_NAME_0";
 
+    /** Message constant for key in the resource bundle. */ 
+    public static final String GUI_MODULES_IMPORT_BLOCK_0 = "GUI_MODULES_IMPORT_BLOCK_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_IMPORT_FILE_0 = "GUI_MODULES_IMPORT_FILE_0";
+ 
+    
+    
+    
     
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEPENDENCIES_ADMIN_TOOL_GROUP_0 = "GUI_DEPENDENCIES_ADMIN_TOOL_GROUP_0";
@@ -306,7 +330,70 @@ public final class Messages extends A_CmsMessageBundle {
  
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEPENDENCIES_LIST_NAME_0 = "GUI_DEPENDENCIES_LIST_NAME_0";
+
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_ADMIN_TOOL_GROUP_0 = "GUI_EXPORTPOINTS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_ADMIN_TOOL_NAME_0 = "GUI_EXPORTPOINTS_ADMIN_TOOL_NAME_0";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_ADMIN_TOOL_HELP_0 = "GUI_EXPORTPOINTS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITEXPORTPOINTS_ADMIN_TOOL_NAME_0 = "GUI_EDITEXPORTPOINTS_ADMIN_TOOL_NAME_0";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITEXPORTPOINTS_ADMIN_TOOL_HELP_0 = "GUI_EDITEXPORTPOINTS_ADMIN_TOOL_HELP_0";
     
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWEXPORTPOINTS_ADMIN_TOOL_NAME_0 = "GUI_NEWEXPORTPOINTS_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWEXPORTPOINTS_ADMIN_TOOL_HELP_0 = "GUI_NEWEXPORTPOINTS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETEEXPORTPOINTS_ADMIN_TOOL_NAME_0 = "GUI_DELETEEXPORTPOINTS_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETEEXPORTPOINTS_ADMIN_TOOL_HELP_0 = "GUI_DELETEEXPORTPOINTS_ADMIN_TOOL_HELP_0";
+
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_LIST_NAME_0 = "GUI_EXPORTPOINTS_LIST_NAME_0";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_LIST_COLS_DESTINATION_0 = "GUI_EXPORTPOINTS_LIST_COLS_DESTINATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_LIST_COLS_SERVERDESTINATION_0 = "GUI_EXPORTPOINTS_LIST_COLS_SERVERDESTINATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_LIST_ACTION_DELETE_CONF_1 = "GUI_EXPORTPOINTS_LIST_ACTION_DELETE_CONF_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_LIST_ACTION_DELETE_HELP_1 = "GUI_EXPORTPOINTS_LIST_ACTION_DELETE_HELP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_LIST_ACTION_DELETE_NAME_0 = "GUI_EXPORTPOINTS_LIST_ACTION_DELETE_NAME_0";
+   
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_LIST_ACTION_EDIT_HELP_0 = "GUI_EXPORTPOINTS_LIST_ACTION_EDIT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_LIST_ACTION_EDIT_NAME_0 = "GUI_EXPORTPOINTS_LIST_ACTION_EDIT_NAME_0";
+      
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_LIST_ACTION_OVERVIEW_HELP_0 = "GUI_EXPORTPOINTS_LIST_ACTION_OVERVIEW_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_LIST_ACTION_OVERVIEW_NAME_0 = "GUI_EXPORTPOINTS_LIST_ACTION_OVERVIEW_NAME_0";
+ 
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPORTPOINTS_LIST_COLS_URI_0 = "GUI_EXPORTPOINTS_LIST_COLS_URI_0";
+
     
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.modules.messages";

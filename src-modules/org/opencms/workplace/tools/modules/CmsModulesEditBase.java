@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesOverview.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditBase.java,v $
  * Date   : $Date: 2005/06/10 09:08:56 $
- * Version: $Revision: 1.4 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,51 +31,54 @@
 
 package org.opencms.workplace.tools.modules;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.security.CmsRoleViolationException;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
-import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Class to show the module overview.<p>
+ * Base class to edit an exiting module.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * @since 5.9.1
  */
-public class CmsModulesOverview extends CmsWidgetDialog {
+public class CmsModulesEditBase extends CmsWidgetDialog {
 
     /** The dialog type. */
-    public static final String DIALOG_TYPE = "ModulesOverview";
+    public static final String DIALOG_TYPE = "ModulesEdit";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
     /** The module object that is edited on this dialog. */
-    private CmsModule m_module;
+    protected CmsModule m_module;
 
     /** Modulename. */
-    private String m_paramModule;
+    protected String m_paramModule;
 
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsModulesOverview(CmsJspActionElement jsp) {
+    public CmsModulesEditBase(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -87,7 +90,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsModulesOverview(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsModulesEditBase(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -97,27 +100,38 @@ public class CmsModulesOverview extends CmsWidgetDialog {
      */
     public void actionCommit() {
 
-        // noop
-    }
-
-    /**
-     * Builds the HTML for the dialog form.<p>
-     * 
-     * @return the HTML for the dialog form
-     */
-    public String buildDialogForm() {
-
-        StringBuffer result = new StringBuffer(1024);
-
-        try {
-
-            // create the dialog HTML
-            result.append(createDialogHtml(getParamPage()));
-
-        } catch (Throwable t) {
-            // TODO: Error handling
+        List errors = new ArrayList();
+        // refresh the list
+        Map objects = (Map)getSettings().getListObject();
+        if (objects != null) {
+            objects.remove(CmsModulesList.class.getName());
         }
-        return result.toString();
+        // freeze the module
+        m_module.initialize(getCms());
+        
+        //check if we have to update an existing module or to create a new one
+        Set moduleNames = OpenCms.getModuleManager().getModuleNames();
+        if (moduleNames.contains(m_module.getName())) {
+        
+            // update the module information
+            try {
+               OpenCms.getModuleManager().updateModule(getCms(), m_module);
+            } catch (CmsConfigurationException ce) {
+                errors.add(ce);
+            } catch (CmsRoleViolationException re) {
+                errors.add(re);
+            }
+        } else {
+            try {
+                OpenCms.getModuleManager().addModule(getCms(), m_module);
+            } catch (CmsConfigurationException ce) {
+                errors.add(ce);
+            } catch (CmsSecurityException se) {
+                errors.add(se);
+            }
+        }
+        // set the list of errors to display when saving failed
+        setCommitErrors(errors);
     }
 
     /**
@@ -150,56 +164,13 @@ public class CmsModulesOverview extends CmsWidgetDialog {
         m_paramModule = paramModule;
     }
 
-    /**
-     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
-     * 
-     * @param dialog the dialog (page) to get the HTML for
-     * @return the dialog HTML for all defined widgets of the named dialog (page)
-     */
-    protected String createDialogHtml(String dialog) {
-
-        StringBuffer result = new StringBuffer(1024);
-
-        // create table
-        result.append(createWidgetTableStart());
-
-        // show error header once if there were validation errors
-        result.append(createWidgetErrorHeader());
-
-        if (dialog.equals(PAGES[0])) {
-            result.append(dialogBlockStart(key("label.moduleinformation")));
-            result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 5));
-            result.append(createWidgetTableEnd());
-            result.append(dialogBlockStart(key("label.modulecreator")));
-            result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(6, 7));
-            result.append(createWidgetTableEnd());
-            result.append(dialogBlockEnd());
-        }
-
-        // close table
-        result.append(createWidgetTableEnd());
-
-        return result.toString();
-    }
 
     /**
      * Creates the list of widgets for this dialog.<p>
      */
     protected void defineWidgets() {
 
-        initModule();
-
-        addWidget(new CmsWidgetDialogParameter(m_module, "name", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "niceName", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "description", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "version.version", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "group", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "actionClass", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "authorName", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_module, "authorEmail", PAGES[0], new CmsDisplayWidget()));
-
+           // nothing to add here, see the different edit modules
     }
 
     /**
@@ -261,25 +232,6 @@ public class CmsModulesOverview extends CmsWidgetDialog {
         setParamDialogtype(DIALOG_TYPE);
 
         super.initWorkplaceRequestValues(settings, request);
-
-        String moduleName = getParamModule();
-        CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
-
-        if (module == null) {
-            setAction(ACTION_CANCEL);
-            try {
-                actionCloseDialog();
-            } catch (JspException e) {
-                // noop
-            }
-        }
-
-        // refresh the list
-        Map objects = (Map)getSettings().getListObject();
-        if (objects != null) {
-            objects.remove(CmsExportpointsList.class.getName());
-            objects.remove(CmsModulesDependenciesList.class.getName());
-        }
 
         // save the current state of the module (may be changed because of the widget values)
         setDialogObject(m_module);

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsDependenciesEdit.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsOverview.java,v $
  * Date   : $Date: 2005/06/10 09:08:56 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,25 +31,19 @@
 
 package org.opencms.workplace.tools.modules;
 
-import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.db.CmsExportPoint;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
-import org.opencms.module.CmsModuleDependency;
-import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.widgets.CmsInputWidget;
-import org.opencms.widgets.CmsSelectWidget;
+import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,26 +51,26 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Class to edit a module dependencies.<p>
+ * Class to show the module exportpoint overview.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * @since 5.9.1
  */
-public class CmsDependenciesEdit extends CmsWidgetDialog {
+public class CmsExportpointsOverview extends CmsWidgetDialog {
 
     /** The dialog type. */
-    public static final String DIALOG_TYPE = "DependenciesEdit";
+    public static final String DIALOG_TYPE = "ExportpointsOverview";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
-    /** The module dependency object that is shown on this dialog. */
-    private CmsModuleDependency m_dependency;
+    /** The module exportpoints object that is shown on this dialog. */
+    private CmsExportPoint m_exportpoint;
 
-    /** Dependency name. */
-    private String m_paramDependency;
+    /** Exportpoint name. */
+    private String m_paramExportpoint;
 
     /** Modulename. */
     private String m_paramModule;
@@ -86,7 +80,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsDependenciesEdit(CmsJspActionElement jsp) {
+    public CmsExportpointsOverview(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -98,7 +92,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsDependenciesEdit(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsExportpointsOverview(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -108,42 +102,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
      */
     public void actionCommit() {
 
-        List errors = new ArrayList();
-
-        // refresh the list
-        Map objects = (Map)getSettings().getListObject();
-        if (objects != null) {
-            objects.remove(CmsModulesList.class.getName());          
-        }
-
-        try {
-            // get the correct module
-            String moduleName = getParamModule();
-            CmsModule module = (CmsModule)OpenCms.getModuleManager().getModule(moduleName).clone();
-            // get the current dependencies from the module
-            List oldDependencies = module.getDependencies();
-            // now loop through the dependencies and create the new list of dependencies
-            List newDependencies = new ArrayList();
-            Iterator i = oldDependencies.iterator();
-            while (i.hasNext()) {
-                CmsModuleDependency dep = (CmsModuleDependency)i.next();
-                if (!dep.getName().equals(m_dependency.getName())) {
-                    newDependencies.add(dep);
-                }
-            }
-            // update the dependencies
-            newDependencies.add(m_dependency);
-            module.setDependencies(newDependencies);
-            // update the module
-            OpenCms.getModuleManager().updateModule(getCms(), module);
-        } catch (CmsConfigurationException ce) {
-            errors.add(ce);
-        } catch (CmsSecurityException se) {
-            errors.add(se);
-        }
-
-        // set the list of errors to display when saving failed
-        setCommitErrors(errors);
+        // noop
     }
 
     /**
@@ -178,13 +137,13 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     }
 
     /**
-     * Gets the module dependency parameter.<p>
+     * Gets the module exportpoint parameter.<p>
      * 
-     * @return the module dependency parameter
+     * @return the module exportpoint parameter
      */
-    public String getParamDependency() {
+    public String getParamExportpoint() {
 
-        return m_paramDependency;
+        return m_paramExportpoint;
     }
 
     /**
@@ -198,12 +157,12 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     }
 
     /** 
-     * Sets the module dependency parameter.<p>
-     * @param paramDependency the module dependency parameter
+     * Sets the module exportpoint parameter.<p>
+     * @param paramExportpoint the module exportpoint parameter
      */
-    public void setParamDependency(String paramDependency) {
+    public void setParamExportpoint(String paramExportpoint) {
 
-        m_paramDependency = paramDependency;
+        m_paramExportpoint = paramExportpoint;
     }
 
     /** 
@@ -232,9 +191,9 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         if (dialog.equals(PAGES[0])) {
-            result.append(dialogBlockStart(key("label.dependencyinformation")));
+            result.append(dialogBlockStart(key("label.exportpointinformation")));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 1));
+            result.append(createDialogRowsHtml(0, 2));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -251,10 +210,10 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         initModule();
-        String modules = getModules();
 
-        addWidget(new CmsWidgetDialogParameter(m_dependency, "name", PAGES[0], new CmsSelectWidget(modules)));
-        addWidget(new CmsWidgetDialogParameter(m_dependency, "version.version", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_exportpoint, "uri", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_exportpoint, "configuredDestination", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_exportpoint, "destinationPath", PAGES[0], new CmsDisplayWidget()));
 
     }
 
@@ -285,44 +244,39 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
         Object o;
         CmsModule module;
 
-        // first get the correct module
-        if (CmsStringUtil.isNotEmpty(m_paramModule)) {
-            module = (CmsModule)OpenCms.getModuleManager().getModule(m_paramModule).clone();
-        } else {
-            // create a new module
-            module = new CmsModule();
-        }
-
-        // now try to get the dependency
         if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
-            o = null;
+            // this is the initial dialog call
+            if (CmsStringUtil.isNotEmpty(m_paramModule)) {
+                // edit an existing module, get it from manager
+                o = OpenCms.getModuleManager().getModule(m_paramModule);
+            } else {
+                // create a new module
+                o = null;
+            }
         } else {
-            // this is not the initial call, get module dependency from session
+            // this is not the initial call, get module from session
             o = getDialogObject();
         }
 
-        if (!(o instanceof CmsModuleDependency)) {
-            if (m_paramDependency == null) {
-                // there was no parameter given, so create a new, empty dependency
-                m_dependency = new CmsModuleDependency();
-            } else {
-                // create a new module dependency by reading it from the module
-                List dependencies = module.getDependencies();
-                m_dependency = new CmsModuleDependency();
-                if (dependencies != null && dependencies.size() > 0) {
-                    Iterator i = dependencies.iterator();
-                    while (i.hasNext()) {
-                        CmsModuleDependency dependency = (CmsModuleDependency)i.next();
-                        if (dependency.getName().equals(m_paramDependency)) {
-                            m_dependency = dependency;
-                        }
-                    }
-                }
-            }
+        if (!(o instanceof CmsModule)) {
+            // create a new module
+            module = new CmsModule();
 
         } else {
-            // reuse module dependency stored in session
-            m_dependency = (CmsModuleDependency)o;
+            // reuse module stored in session
+            module = (CmsModule)((CmsModule)o).clone();
+        }
+
+        List exportpoints = module.getExportPoints();
+        m_exportpoint = new CmsExportPoint();
+        if (exportpoints != null && exportpoints.size() > 0) {
+            Iterator i = exportpoints.iterator();
+            while (i.hasNext()) {
+                CmsExportPoint exportpoint = (CmsExportPoint)i.next();
+                if (exportpoint.getUri().equals(m_paramExportpoint)) {
+                    m_exportpoint = exportpoint;
+                }
+            }
         }
 
     }
@@ -339,7 +293,6 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
 
         String moduleName = getParamModule();
         CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
-
         if (module == null) {
             setAction(ACTION_CANCEL);
             try {
@@ -347,38 +300,29 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
             } catch (JspException e) {
                 // noop
             }
+        } else {
+            String exportpointName = getParamExportpoint();
+            List exportpoints = module.getExportPoints();
+            Iterator i = exportpoints.iterator();
+            boolean found = false;
+            while (i.hasNext()) {
+                CmsExportPoint exp = (CmsExportPoint)i.next();
+                if (exp.getUri().equals(exportpointName)) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                setAction(ACTION_CANCEL);
+                try {
+                    actionCloseDialog();
+                } catch (JspException e) {
+                    // noop
+                }
+            }
         }
 
         // save the current state of the module (may be changed because of the widget values)
-        setDialogObject(m_dependency);
-    }
+        setDialogObject(m_exportpoint);
 
-    /**
-     * Get the list of all modules available.<p>
-     * @return pipe seperated list of module names
-     */
-    private String getModules() {
-
-        StringBuffer mod = new StringBuffer(32);
-
-        // get all modules
-        Set moduleNames = OpenCms.getModuleManager().getModuleNames();
-        Iterator i = moduleNames.iterator();
-        // add them to the list of modules
-        while (i.hasNext()) {
-            String moduleName = (String)i.next();
-            mod.append(moduleName);
-            // check for the preselection
-            if (moduleName.equals(getParamDependency())) {
-                mod.append("*");
-            }
-            mod.append("|");
-        }
-
-        String modules = new String(mod);
-        if (modules.endsWith("|")) {
-            modules = modules.substring(0, modules.length() - 1);
-        }
-        return modules;
     }
 }

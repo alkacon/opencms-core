@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPoint.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/10 09:08:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.OpenCms;
  *  
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3
  */
 public class CmsExportPoint {
@@ -51,6 +51,16 @@ public class CmsExportPoint {
 
     /** The URI of the OpenCms VFS resource (folder) of the export point. */
     private String m_uri;
+
+    /**
+     * Creates a new, empty export point.<p>
+     */
+    public CmsExportPoint() {
+
+        m_uri = new String();
+        m_configuredDestination = new String();
+        m_destinationPath = new String();
+    }
 
     /**
      * Creates a new export point.<p>
@@ -119,6 +129,48 @@ public class CmsExportPoint {
     public int hashCode() {
 
         return getUri().hashCode();
+    }
+
+    /**
+     * Sets the configured destination path.<p>
+     * 
+     * The configured destination path is always relative to the 
+     * web application path.<p>
+     * 
+     * This set method will automatically set the destination path as well.<p>
+     * 
+     * @param value the configured destination path
+     * 
+     */
+    public void setConfiguredDestination(String value) {
+
+        m_configuredDestination = value;
+        m_destinationPath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(m_configuredDestination);
+
+    }
+
+    /**
+     * Dummy method to use the CmsExportPoint object in widgets.<p>
+     * 
+     * Use the  @see #setConfiguredDestination() method instead.
+     * 
+     * @param value the destination path (dummy only)
+     * 
+     */
+    public void setDestinationPath(String value) {
+
+        // noop
+
+    }
+
+    /**
+     * Sets the uri of the OpenCms VFS folder to write as export point.<p>
+     * 
+     * @param value the uri to set
+     */
+    public void setUri(String value) {
+
+        m_uri = value;
     }
 
     /**

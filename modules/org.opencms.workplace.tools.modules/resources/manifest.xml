@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0 RC 1 Corrin</opencms_version>
-		<createdate>6/8/05 12:23 PM</createdate>
+		<createdate>6/10/05 11:07 AM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[This module contains the OpenCms administration tools for managing the OpenCms modules.
 (c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
-		<version>0.9.8</version>
+		<version>0.9.11</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 23 May 2005 11:16:06 GMT</datecreated>
@@ -43,7 +43,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 06 Jun 2005 13:01:44 GMT</datecreated>
+			<datecreated>Fri, 10 Jun 2005 07:37:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -304,61 +304,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/dependencies_delete.html</source>
-			<destination>system/workplace/admin/modules/dependencies_delete.html</destination>
-			<type>jsp</type>
-			<uuidresource>74f2bd17-d754-11d9-9d80-d995bfb3ec20</uuidresource>
-			<datelastmodified>Wed, 08 Jun 2005 09:18:25 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 07 Jun 2005 13:02:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_DEPENDENCIES_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_DELETEDEPENDENCIES_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_DELETEDEPENDENCIES_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Delete dependencies]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:module=${param.module}&dependency=${param.dependency}&action=initial|path:/modules/edit/dependencies/edit/delete]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/admin/modules/dependencies_edit.html</source>
 			<destination>system/workplace/admin/modules/dependencies_edit.html</destination>
 			<type>jsp</type>
 			<uuidresource>11493748-d740-11d9-ae08-d995bfb3ec20</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 15:23:17 GMT</datelastmodified>
+			<datelastmodified>Thu, 09 Jun 2005 10:21:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 07 Jun 2005 10:36:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -374,7 +324,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -398,7 +348,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:module=${param.module}&dependency=${param.dependency}&action=initial|path:/modules/edit/dependencies/edit/edit]]></value>
+					<value><![CDATA[params:module=${param.module}&dependency=${param.dependency}&action=initial|path:/modules/edit/dependencies/edit]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -408,7 +358,7 @@
 			<destination>system/workplace/admin/modules/dependencies_list.html</destination>
 			<type>jsp</type>
 			<uuidresource>4a82559b-d763-11d9-a9e3-d995bfb3ec20</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 14:50:42 GMT</datelastmodified>
+			<datelastmodified>Wed, 08 Jun 2005 12:45:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 07 Jun 2005 14:49:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -424,7 +374,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[3.4028235E38]]></value>
+					<value><![CDATA[4]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -500,13 +450,63 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/modules/dependencies_overview.html</source>
-			<destination>system/workplace/admin/modules/dependencies_overview.html</destination>
+			<source>system/workplace/admin/modules/exportpoints_edit.html</source>
+			<destination>system/workplace/admin/modules/exportpoints_edit.html</destination>
 			<type>jsp</type>
-			<uuidresource>be8c58d2-d74e-11d9-ae08-d995bfb3ec20</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 15:21:00 GMT</datelastmodified>
+			<uuidresource>880ffa36-d828-11d9-b53a-5b7b61659346</uuidresource>
+			<datelastmodified>Thu, 09 Jun 2005 12:24:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 07 Jun 2005 12:21:58 GMT</datecreated>
+			<datecreated>Wed, 08 Jun 2005 14:20:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EXPORTPOINTS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITEXPORTPOINTS_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITEXPORTPOINTS_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit exportpoints]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:module=${param.module}&exportpoint=${param.exportpoint}&action=initial|path:/modules/edit/exportpoints/edit]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/modules/exportpoints_list.html</source>
+			<destination>system/workplace/admin/modules/exportpoints_list.html</destination>
+			<type>jsp</type>
+			<uuidresource>e78b3453-d816-11d9-ad49-5b7b61659346</uuidresource>
+			<datelastmodified>Wed, 08 Jun 2005 13:05:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Jun 2005 12:14:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -515,12 +515,58 @@
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_MODULE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EXPORTPOINTS_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EXPORTPOINTS_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Exportpoints List]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:module=${param.module}&style=new&action=initial|path:/modules/edit/exportpoints]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/modules/exportpoints_new.html</source>
+			<destination>system/workplace/admin/modules/exportpoints_new.html</destination>
+			<type>jsp</type>
+			<uuidresource>98310450-d82c-11d9-9c7f-5b7b61659346</uuidresource>
+			<datelastmodified>Wed, 08 Jun 2005 14:51:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Jun 2005 14:50:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
+				<property>
 					<name>content-encoding</name>
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -528,23 +574,23 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_DEPENDENCIES_ADMIN_TOOL_GROUP_0}]]></value>
+					<value><![CDATA[${key.GUI_EXPORTPOINTS_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.GUI_EDITDEPENDENCIES_ADMIN_TOOL_HELP_0}]]></value>
+					<value><![CDATA[${key.GUI_NEWEXPORTPOINTS_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_EDITDEPENDENCIES_ADMIN_TOOL_NAME_0}]]></value>
+					<value><![CDATA[${key.GUI_NEWEXPORTPOINTS_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Overview moduledependencies]]></value>
+					<value><![CDATA[New exportpoints]]></value>
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:module=${param.module}&dependency=${param.dependency}&action=initial|path:/modules/edit/dependencies/edit]]></value>
+					<value><![CDATA[params:module=${param.module}&exportpoint=${param.exportpoint}&action=initial|path:/modules/edit/exportpoints/new]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -572,7 +618,7 @@
 			<destination>system/workplace/admin/modules/modules_delete.html</destination>
 			<type>jsp</type>
 			<uuidresource>ac82abe0-c933-11d9-969b-8fa6905eb2f3</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 15:03:28 GMT</datelastmodified>
+			<datelastmodified>Wed, 08 Jun 2005 12:44:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 20 May 2005 13:32:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -589,6 +635,10 @@
 				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -672,11 +722,111 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/modules/modules_edit_parameters.html</source>
+			<destination>system/workplace/admin/modules/modules_edit_parameters.html</destination>
+			<type>jsp</type>
+			<uuidresource>563379bf-d8e3-11d9-a1eb-bfc671789551</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 07:21:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2005 12:38:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[6]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_MODULE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITMODULEPARAMETERS_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITMODULEPARAMETERS_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit module parameters]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:module=${param.module}|path:/modules/edit/editparameters]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/modules/modules_edit_resources.html</source>
+			<destination>system/workplace/admin/modules/modules_edit_resources.html</destination>
+			<type>jsp</type>
+			<uuidresource>7aa2691d-d8e3-11d9-a1eb-bfc671789551</uuidresource>
+			<datelastmodified>Thu, 09 Jun 2005 16:06:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2005 12:39:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[6]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_MODULE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EDITMODULERESOURCES_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EDITMODULERESOURCES_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit module resources]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:module=${param.module}|path:/modules/edit/editresources]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/modules/modules_export.html</source>
 			<destination>system/workplace/admin/modules/modules_export.html</destination>
 			<type>jsp</type>
 			<uuidresource>2f789de2-cba0-11d9-a301-218dc7aa42ee</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 15:05:39 GMT</datelastmodified>
+			<datelastmodified>Wed, 08 Jun 2005 12:44:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 23 May 2005 15:34:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -693,6 +843,10 @@
 				<property>
 					<name>content-encoding</name>
 					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -726,12 +880,16 @@
 			<destination>system/workplace/admin/modules/modules_import.html</destination>
 			<type>jsp</type>
 			<uuidresource>21ec5535-d742-11d9-ae08-d995bfb3ec20</uuidresource>
-			<datelastmodified>Tue, 24 May 2005 08:48:16 GMT</datelastmodified>
+			<datelastmodified>Fri, 10 Jun 2005 09:06:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 07 Jun 2005 10:51:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
 				<property>
 					<name>content-encoding</name>
 					<value><![CDATA[ISO-8859-1]]></value>
@@ -739,6 +897,26 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.5]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_MODULE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_IMPORTMODULE_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/modules/icons/big/module_import_http.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_IMPORTMODULE_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -921,7 +1099,7 @@
 			<destination>system/workplace/admin/modules/reports/delete.html</destination>
 			<type>jsp</type>
 			<uuidresource>ac82abe0-c933-11d9-969b-8fa6905eb2f3</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 15:03:28 GMT</datelastmodified>
+			<datelastmodified>Wed, 08 Jun 2005 12:44:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 20 May 2005 13:32:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -946,7 +1124,7 @@
 			<destination>system/workplace/admin/modules/reports/export.html</destination>
 			<type>jsp</type>
 			<uuidresource>2f789de2-cba0-11d9-a301-218dc7aa42ee</uuidresource>
-			<datelastmodified>Tue, 07 Jun 2005 15:05:39 GMT</datelastmodified>
+			<datelastmodified>Wed, 08 Jun 2005 12:44:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 23 May 2005 15:34:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1171,6 +1349,19 @@
 			<datelastmodified>Mon, 06 Jun 2005 12:07:33 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 06 Jun 2005 12:07:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/modules/icons/big/module_import_http.png</source>
+			<destination>system/workplace/resources/tools/modules/icons/big/module_import_http.png</destination>
+			<type>image</type>
+			<uuidresource>e6b67a1a-d980-11d9-b1c2-bfc671789551</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 07:26:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 07:26:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
