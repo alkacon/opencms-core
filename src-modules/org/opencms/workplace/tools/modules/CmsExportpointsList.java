@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsList.java,v $
- * Date   : $Date: 2005/06/10 09:08:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/10 15:14:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.modules;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Module exportpoint view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsExportpointsList extends A_CmsListDialog {
@@ -76,18 +77,17 @@ public class CmsExportpointsList extends A_CmsListDialog {
     /** List action multi delete. */
     public static final String LIST_ACTION_MDELETE = "mdelete";
 
-
     /** List column delete. */
     public static final String LIST_COLUMN_DELETE = "delete";
 
     /** List column name. */
     public static final String LIST_COLUMN_DESTINATION = "destination";
 
-    /** List column name. */
-    public static final String LIST_COLUMN_SERVERDESTINATION = "serverdestination";
-
     /** List column edit. */
     public static final String LIST_COLUMN_EDIT = "edit";
+
+    /** List column name. */
+    public static final String LIST_COLUMN_SERVERDESTINATION = "serverdestination";
 
     /** List column name. */
     public static final String LIST_COLUMN_URI = "uri";
@@ -267,7 +267,7 @@ public class CmsExportpointsList extends A_CmsListDialog {
         CmsListDirectAction editColAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_EDIT);
         editColAction.setName(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_ACTION_EDIT_NAME_0));
         editColAction.setHelpText(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_ACTION_EDIT_HELP_0));
-        editColAction.setIconPath(PATH_BUTTONS + "modules.png");
+        editColAction.setIconPath(PATH_BUTTONS + "module_exportpoints.png");
         editColAction.setEnabled(true);
         editColAction.setConfirmationMessage(null);
         editCol.addDirectAction(editColAction);
@@ -345,6 +345,18 @@ public class CmsExportpointsList extends A_CmsListDialog {
         deleteDependencies.setEnabled(true);
         deleteDependencies.setHelpText(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_MDELETE_HELP_0));
         metadata.addMultiAction(deleteDependencies);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        if (OpenCms.getModuleManager().getModule(getParamModule()) == null) {
+            // just throw a dummy exception here since getModule does not produce an exception when a 
+            // module is not found
+            throw new CmsIllegalStateException(Messages.get().container(Messages.GUI_DELETEMODULE_ADMIN_TOOL_HELP_0));
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2005/06/08 10:46:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/10 15:14:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,9 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleDependency;
 import org.opencms.module.CmsModuleImportExportHandler;
+import org.opencms.module.CmsModuleManager;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
@@ -58,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.9.1
  */
 public class CmsModulesUploadFromServer extends CmsWidgetDialog {
@@ -73,7 +75,7 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
     public static final String PARAM_MODULENAME = "modulename";
 
     /** The import action. */
-    private static final String IMPORT_ACTION_REPORT = "/system/workplace/admin/modules/reports/import.html";
+    protected static final String IMPORT_ACTION_REPORT = "/system/workplace/admin/modules/reports/import.html";
 
     /** The replace action. */
     private static final String REPLACE_ACTION_REPORT = "/system/workplace/admin/modules/reports/replace.html";
@@ -126,11 +128,38 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
                 importpath + "modules/" + m_moduleupload);
             CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(importpath);
 
-            if (OpenCms.getModuleManager().hasModule(module.getName())) {
-                param.put(PARAM_MODULENAME, module.getName());
-                getToolManager().jspRedirectPage(this, REPLACE_ACTION_REPORT, param);
-            } else {
-                getToolManager().jspRedirectPage(this, IMPORT_ACTION_REPORT, param);
+            // check if all dependencies are fulfilled
+            List dependencies = OpenCms.getModuleManager().checkDependencies(
+                module,
+                CmsModuleManager.C_DEPENDENCY_MODE_IMPORT);
+            if (!dependencies.isEmpty()) {
+                StringBuffer dep = new StringBuffer(32);
+                dep.append("<ul>");
+
+                for (int i = 0; i < dependencies.size(); i++) {
+                    CmsModuleDependency dependency = (CmsModuleDependency)dependencies.get(i);
+                    dep.append("<li>");
+                    dep.append(dependency.getName());
+                    dep.append(" (Version: ");
+                    dep.append(dependency.getVersion());
+                    dep.append(")</li>");
+                }
+                dep.append("</ul>");
+
+                errors.add(new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_ACTION_MODULE_DEPENDENCY_2,
+                    m_moduleupload,
+                    new String(dep))));             
+            }
+
+            if (errors.isEmpty()) {
+
+                if (OpenCms.getModuleManager().hasModule(module.getName())) {
+                    param.put(PARAM_MODULENAME, module.getName());
+                    getToolManager().jspRedirectPage(this, REPLACE_ACTION_REPORT, param);
+                } else {
+                    getToolManager().jspRedirectPage(this, IMPORT_ACTION_REPORT, param);
+                }
             }
         } catch (IOException e) {
             throw new CmsRuntimeException(

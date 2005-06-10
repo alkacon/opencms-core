@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2005/05/25 09:01:57 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/10 15:14:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
   
@@ -197,7 +197,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         String moduleName = "org.opencms.test.additionalResourcesWorkaround";
-        
+      
         // first test - conversion of resources to "additionalresources"
         String res1 = "/system/modules/tests/test1/";
         String res2 = "/system/modules/tests/test2/";
@@ -213,33 +213,10 @@ public class TestModuleOperations extends OpenCmsTestCase {
         
         String sep = I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR;
         String additionalResources = res1 + sep + res2 + sep + res3 + sep + res4;
-        
+ 
         CmsModule module1;               
-        
-        module1 = new CmsModule(
-            moduleName,
-            "A test module for additionalresources",
-            "ModuleGroup",
-            null,
-            null,
-            new CmsModuleVersion("1.0"),
-            "Alexander Kandzior",
-            "alex@opencms.org",
-            System.currentTimeMillis(),
-            null,
-            0L,
-            null,
-            null,
-            resources,
-            null);
-        
-        OpenCms.getModuleManager().addModule(cms, module1);        
-        module1 = OpenCms.getModuleManager().getModule(moduleName);
-        
-        assertTrue(module1.getParameters().size() == 1);
-        assertEquals(additionalResources, module1.getParameter(I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES));
-        
-        // second test - set resources based on "additionalresources"
+
+        //  test - set resources based on "additionalresources"
         additionalResources += sep + "-" + sep + res5;
                 
         Map parameters = new HashMap();
@@ -262,7 +239,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
             null,
             parameters);     
         
-        OpenCms.getModuleManager().updateModule(cms, module1);
+        OpenCms.getModuleManager().addModule(cms, module1);
         module1 = OpenCms.getModuleManager().getModule(moduleName);
         
         assertTrue(module1.getResources().size() == 5);
@@ -272,46 +249,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         assertTrue(resources.contains(res3));
         assertTrue(resources.contains(res4));
         assertTrue(resources.contains(res5));        
-        
-        // third test - resources are set "both ways"
-        resources = new ArrayList();
-        resources.add(res2);
-        resources.add(res4);
-        resources.add(res5);
-        
-        additionalResources = res1 + sep + "-" + sep + res2 + sep + res3 + sep + "-" + sep + res5;
-        
-        module1 = new CmsModule(
-            moduleName,
-            "A test module for additioanlresources",
-            "ModuleGroup",
-            null,
-            null,
-            new CmsModuleVersion("1.0"),
-            "Alexander Kandzior",
-            "alex@opencms.org",
-            System.currentTimeMillis(),
-            null,
-            0L,
-            null,
-            null,
-            resources,
-            parameters); 
-        
-        OpenCms.getModuleManager().updateModule(cms, module1);
-        module1 = OpenCms.getModuleManager().getModule(moduleName);
-        
-        assertTrue(module1.getResources().size() == 5);
-        resources = module1.getResources();
-        assertTrue(resources.contains(res1));
-        assertTrue(resources.contains(res2));
-        assertTrue(resources.contains(res3));
-        assertTrue(resources.contains(res4));
-        assertTrue(resources.contains(res5));   
-        
-        additionalResources = res1 + sep + res2 + sep + res3 + sep + res4 + sep + res5;        
-        assertTrue(module1.getParameters().size() == 1);
-        assertEquals(additionalResources, module1.getParameter(I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES));                
+ 
     }      
     
     /**
@@ -560,8 +498,9 @@ public class TestModuleOperations extends OpenCmsTestCase {
         assertEquals(module.getAuthorEmail(), "alex@opencms.org");
         // check if "additionalresources" where converted to module resources        
         assertTrue(module.getResources().size() == 2);
-        assertEquals(module.getResources().get(0), "/alkacon-documentation/documentation-flexcache/");
-        assertEquals(module.getResources().get(1), "/system/modules/org.opencms.test.modules.testOld/");
+        assertEquals(module.getResources().get(0), "/system/modules/org.opencms.test.modules.testOld/");
+        assertEquals(module.getResources().get(1), "/alkacon-documentation/documentation-flexcache/");
+        
     }      
     
     /**

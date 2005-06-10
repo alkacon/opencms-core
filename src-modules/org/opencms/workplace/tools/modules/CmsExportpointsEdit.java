@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsEdit.java,v $
- * Date   : $Date: 2005/06/10 09:08:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/10 15:14:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsExportpointsEdit extends CmsWidgetDialog {
@@ -110,13 +110,6 @@ public class CmsExportpointsEdit extends CmsWidgetDialog {
 
         List errors = new ArrayList();
 
-        // refresh the list
-        Map objects = (Map)getSettings().getListObject();
-        if (objects != null) {
-            objects.remove(CmsModulesList.class.getName());
-            objects.remove(CmsExportpointsList.class.getName());
-        }
-
         try {
             // get the correct module
             String moduleName = getParamModule();
@@ -141,6 +134,15 @@ public class CmsExportpointsEdit extends CmsWidgetDialog {
             errors.add(ce);
         } catch (CmsSecurityException se) {
             errors.add(se);
+        }
+
+        if (errors.isEmpty()) {
+            // refresh the list
+            Map objects = (Map)getSettings().getListObject();
+            if (objects != null) {
+                objects.remove(CmsModulesList.class.getName());
+                objects.remove(CmsExportpointsList.class.getName());
+            }
         }
 
         // set the list of errors to display when saving failed

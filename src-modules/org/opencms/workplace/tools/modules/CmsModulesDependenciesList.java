@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesDependenciesList.java,v $
- * Date   : $Date: 2005/06/10 09:08:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/10 15:14:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.modules;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Module dependencies view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsModulesDependenciesList extends A_CmsListDialog {
@@ -261,7 +262,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
         CmsListDirectAction editColAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_EDIT);
         editColAction.setName(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_EDIT_NAME_0));
         editColAction.setHelpText(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_EDIT_HELP_0));
-        editColAction.setIconPath(PATH_BUTTONS + "modules.png");
+        editColAction.setIconPath(PATH_BUTTONS + "module_dependencies.png");
         editColAction.setEnabled(true);
         editColAction.setConfirmationMessage(null);
         editCol.addDirectAction(editColAction);
@@ -334,6 +335,18 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        if (OpenCms.getModuleManager().getModule(getParamModule()) == null) {
+            // just throw a dummy exception here since getModule does not produce an exception when a 
+            // module is not found
+            throw new CmsIllegalStateException(Messages.get().container(Messages.GUI_DELETEMODULE_ADMIN_TOOL_HELP_0));
+        }
+    }
+
+    /**
      * Deletes a module dependency from a module.<p>
      * 
      * @param module the module to delete the dependency from
@@ -356,16 +369,17 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
             OpenCms.getModuleManager().updateModule(getCms(), module);
         } catch (CmsConfigurationException ce) {
             // should never happen
-            throw new CmsRuntimeException(
-                Messages.get().container(Messages.ERR_ACTION_DEPENDENCIES_DELETE_2, dependencyName, module.getName()),
-                ce);
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_ACTION_DEPENDENCIES_DELETE_2,
+                dependencyName,
+                module.getName()), ce);
 
         } catch (CmsRoleViolationException re) {
-            throw new CmsRuntimeException(
-                Messages.get().container(Messages.ERR_ACTION_DEPENDENCIES_DELETE_2, dependencyName, module.getName()),
-                re);
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_ACTION_DEPENDENCIES_DELETE_2,
+                dependencyName,
+                module.getName()), re);
         }
         getList().removeItem(dependencyName, getLocale());
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/05/30 15:20:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/10 15:14:54 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -280,7 +280,7 @@ public class CmsModuleManager {
         for (int i = 0; i < module.getResources().size(); i++) {
             String currentResource = null;
             try {
-                currentResource = (String)module.getResources().get(i);
+                currentResource = (String)module.getResources().get(i);                
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_DEL_MOD_RESOURCE_1, currentResource));

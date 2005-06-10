@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromHttp.java,v $
- * Date   : $Date: 2005/06/10 09:08:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/10 15:14:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,15 @@ package org.opencms.workplace.tools.modules;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.administration.A_CmsImportFromHttp;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,13 +52,16 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0
  */
 public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
 
     /** The dialog URI. */
-    public static final String DIALOG_URI = C_PATH_WORKPLACE + "admin/modules/import.html";
+    public static final String DIALOG_URI = C_PATH_WORKPLACE + "admin/modules/modules_import.html";
+
+    /** Modulename parameter. */
+    public static final String PARAM_MODULE = "module";
 
     /**
      * Public constructor with JSP action element.<p>
@@ -84,26 +91,28 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
     public void actionCommit() {
 
         try {
-           copyFileToServer(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + I_CmsConstants.C_MODULE_PATH);
+            copyFileToServer(OpenCms.getSystemInfo().getPackagesRfsPath()
+                + File.separator
+                + I_CmsConstants.C_MODULE_PATH);
         } catch (CmsException e) {
             // error copying the file to the OpenCms server
             setException(e);
             return;
         }
-//        try {
-//           Map params = new HashMap();
-//            params.put(PARAM_FILE, getParamImportfile());
-//            // set style to display report in correct layout
-//            params.put(PARAM_STYLE, "new");
-//            // set close link to get back to overview after finishing the import
-//            params.put(PARAM_CLOSELINK, getToolManager().linkForPath(getJsp(), "/database", null));
-//            // redirect to the report output JSP
-//            getToolManager().jspRedirectPage(this, CmsDatabaseImportFromServer.IMPORT_ACTION_REPORT, params);
-//        } catch (IOException e) {
-//            throw new CmsRuntimeException(Messages.get().container(
-//                Messages.ERR_ACTION_FILE_UPLOAD_1,
-//                getParamImportfile()), e);
-//        }
+        try {
+            Map params = new HashMap();
+            params.put(PARAM_MODULE, getParamImportfile());
+            // set style to display report in correct layout
+            params.put(PARAM_STYLE, "new");
+            // set close link to get back to overview after finishing the import
+            params.put(PARAM_CLOSELINK, getToolManager().linkForPath(getJsp(), "/modules", null));
+            // redirect to the report output JSP
+            getToolManager().jspRedirectPage(this, CmsModulesUploadFromServer.IMPORT_ACTION_REPORT, params);
+        } catch (IOException e) {
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_ACTION_MODULE_UPLOAD_1,
+                getParamImportfile()), e);
+        }
 
     }
 

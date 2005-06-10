@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/Messages.java,v $
- * Date   : $Date: 2005/06/10 09:08:56 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/10 15:14:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -116,6 +116,9 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_MODULE_UPLOAD_1 = "ERR_ACTION_MODULE_UPLOAD_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ACTION_MODULE_DEPENDENCY_2 = "ERR_ACTION_MODULE_DEPENDENCY_2";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_MODULES_DELETE_1 = "ERR_ACTION_MODULES_DELETE_1";

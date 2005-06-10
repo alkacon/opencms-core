@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/08 10:46:48 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/10 15:14:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -219,8 +219,9 @@ public class CmsModule implements Comparable {
         } else {
             m_parameters = new TreeMap(parameters);
         }
-        // handle old style "additional resources" for backward compatiblity
-        //initOldAdditionalResources();
+
+        initOldAdditionalResources();
+        
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_MODULE_INSTANCE_CREATED_1, m_name));
         }
@@ -288,7 +289,7 @@ public class CmsModule implements Comparable {
         if (getResourceTypes() != null) {
             result.setResourceTypes(new ArrayList(getResourceTypes()));
         }
-        
+
         if (getDependencies() != null) {
             result.setDependencies(new ArrayList(getDependencies()));
         }
@@ -877,23 +878,12 @@ public class CmsModule implements Comparable {
                 }
             }
         }
-        Collections.sort(resources);
-        StringBuffer buf = new StringBuffer(512);
-        for (int i = 0; i < resources.size(); i++) {
-            String resource = (String)resources.get(i);
-            buf.append(resource);
-            if ((i + 1) < resources.size()) {
-                buf.append(I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
-            }
-        }
-        parameters.put(I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES, buf.toString());
 
-        // m_parameters = Collections.unmodifiableMap(parameters);
-        // m_resources = Collections.unmodifiableList(resources);
-        m_parameters = parameters;
         m_resources = resources;
     }
 
+    
+    
     /**
      * Checks if two objects are either both null, or equal.<p>
      * 
