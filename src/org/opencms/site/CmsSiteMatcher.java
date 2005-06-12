@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2005/05/28 09:35:34 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.site;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.1
  */
 public final class CmsSiteMatcher implements Cloneable {
@@ -55,7 +55,7 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /** Wildcard for string matching. */
     private static final String WILDCARD = "*";
-    
+
     /** Default matcher that always matches all other Site matchers. */
     public static final CmsSiteMatcher DEFAULT_MATCHER = new CmsSiteMatcher(WILDCARD, WILDCARD, 0);
 
@@ -159,30 +159,22 @@ public final class CmsSiteMatcher implements Cloneable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object o) {
+    public boolean equals(Object obj) {
 
-        if (!(o instanceof CmsSiteMatcher)) {
-            return false;
-        }
-        // if one of the object is the default matcher the result is true
-        if ((this == DEFAULT_MATCHER) || (o == DEFAULT_MATCHER)) {
+        if (obj == this) {
             return true;
         }
-        if (o == this) {
+        if (!(obj instanceof CmsSiteMatcher)) {
+            return false;
+        }
+        // if one of the object is the default matcher the result is always true
+        if ((this == DEFAULT_MATCHER) || (obj == DEFAULT_MATCHER)) {
             return true;
         }
-        CmsSiteMatcher matcher = (CmsSiteMatcher)o;
-        if (getServerPort() != matcher.getServerPort()) {
-            return false;
-        }
-        if (!getServerName().equals(matcher.getServerName())) {
-            return false;
-        }
-        if (!getServerProtocol().equals(matcher.getServerProtocol())) {
-            return false;
-        }
-
-        return true;
+        CmsSiteMatcher other = (CmsSiteMatcher)obj;
+        return (m_serverPort == other.m_serverPort)
+            && m_serverName.equals(other.m_serverName)
+            && m_serverProtocol.equals(other.m_serverProtocol);
     }
 
     /**

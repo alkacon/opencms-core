@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidget.java,v $
- * Date   : $Date: 2005/05/31 12:52:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,37 +32,28 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsStringUtil;
 
-import java.util.StringTokenizer;
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * Provides a standard HTML form select box widget, for use on a widget dialog.<p>
+ * Provides a widget for a standard HTML form select box.<p>
  * 
- * The select box options have to be written in the "default" appinfo node and use the following syntax:<br>
- * valueattribute1*:displayed text 1|valueattribute2:displayed text 2<br>
- * The asterisk marks the preselected value when creating a new value, the displayed text is optional.
- * You can use localized keys for the displayed text like ${key.keyname}.<p>
+ * Please see the documentation of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> for a description 
+ * about the configuration String syntax for the select options.<p>
+ *
+ * The select widget does use the following select options:<ul>
+ * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getValue()}</code> for the <code>value</code> of the HTML select box
+ * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#isDefault()}</code> for pre-selecting a specific value 
+ * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getOption()}</code> for the <code>option</code> of the HTML select box
+ * </ul>
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
- * @since 5.5.3
+ * @version $Revision: 1.6 $
+ * @since 6.0
  */
-public class CmsSelectWidget extends A_CmsWidget {
-
-    /** The delimiter that separates the value attribute from the displayed option text. */
-    public static final char DELIM_ATTRS = ':';
-
-    /** The delimiter that separates the option entries of the select box to create. */
-    public static final String DELIM_OPTIONS = "|";
-
-    /** The character that marks the preselected option of the select box. */
-    public static final char PRESELECTED = '*';
-
-    /** The possible options for the select box. */
-    private String m_selectOptions;
+public class CmsSelectWidget extends A_CmsSelectWidget {
 
     /**
      * Creates a new select widget.<p>
@@ -70,7 +61,21 @@ public class CmsSelectWidget extends A_CmsWidget {
     public CmsSelectWidget() {
 
         // empty constructor is required for class registration
-        this("");
+        super();
+    }
+
+    /**
+     * Creates a select widget with the select options specified in the given configuration List.<p>
+     * 
+     * The list elements must be of type <code>{@link CmsSelectWidgetOption}</code>.<p>
+     * 
+     * @param configuration the configuration (possible options) for the select widget
+     * 
+     * @see CmsSelectWidgetOption
+     */
+    public CmsSelectWidget(List configuration) {
+
+        super(configuration);
     }
 
     /**
@@ -102,57 +107,20 @@ public class CmsSelectWidget extends A_CmsWidget {
         result.append("\">");
 
         // get select box options from default value String
-        String defaultValue = getSelectOptions(cms, widgetDialog, param);
-        if (CmsStringUtil.isEmpty(defaultValue)) {
-            defaultValue = "";
-        }
-
-        // tokenize the found String
-        StringTokenizer t = new StringTokenizer(defaultValue, DELIM_OPTIONS);
-        boolean isPreselected;
-        String val;
-        String label;
-        String selected;
-        int delimPos;
-        while (t.hasMoreTokens()) {
-            // generate the option tags
-            String part = t.nextToken();
-            // check preselection of current option
-            isPreselected = part.indexOf(PRESELECTED) != -1;
-            delimPos = part.indexOf(DELIM_ATTRS);
-            if (delimPos != -1) {
-                // a special label text is given
-                val = part.substring(0, delimPos);
-                label = part.substring(delimPos + 1);
-            } else {
-                // no special label text present, use complete String
-                val = part;
-                label = val;
-            }
-
-            if (isPreselected) {
-                // remove eventual preselected flag markers from Strings
-                String preSelected = "" + PRESELECTED;
-                val = CmsStringUtil.substitute(val, preSelected, "");
-                label = CmsStringUtil.substitute(label, preSelected, "");
-            }
-
-            // check if current option is selected
-            String fieldValue = param.getStringValue(cms);
-            if ((isPreselected && (CmsStringUtil.isEmpty(fieldValue) || defaultValue.equals(fieldValue)))
-                || val.equals(fieldValue)) {
-                selected = " selected=\"selected\"";
-            } else {
-                selected = "";
-            }
-
+        List options = parseSelectOptions(cms, widgetDialog, param);
+        String selected = getSelectedValue(cms, param);
+        Iterator i = options.iterator();
+        while (i.hasNext()) {
+            CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
             // create the option
             result.append("<option value=\"");
-            result.append(val);
+            result.append(option.getValue());
             result.append("\"");
-            result.append(selected);
+            if ((selected != null) && selected.equals(option.getValue())) {
+                result.append(" selected=\"selected\"");
+            }
             result.append(">");
-            result.append(label);
+            result.append(option.getOption());
             result.append("</option>");
         }
 
@@ -168,30 +136,5 @@ public class CmsSelectWidget extends A_CmsWidget {
     public I_CmsWidget newInstance() {
 
         return new CmsSelectWidget(getConfiguration());
-    }
-
-    /**
-     * Returns the possible options for the select box.<p>
-     * 
-     * In case the select Options have not been directly set, 
-     * the default value of the given widget parameter is used.<p>
-     * 
-     * @param cms the current users OpenCms context
-     * @param param the current widget parameter
-     *   
-     * @return the possible options for the select box
-     */
-    private String getSelectOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
-
-        if (m_selectOptions == null) {
-            if (getConfiguration() == null) {
-                // use the default value
-                m_selectOptions = param.getDefault(cms);
-            } else {
-                // use the configuration value, with processed macros
-                m_selectOptions = CmsMacroResolver.resolveMacros(getConfiguration(), cms, widgetDialog.getMessages());
-            }
-        }
-        return m_selectOptions;
     }
 }

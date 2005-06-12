@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsComboWidget.java,v $
- * Date   : $Date: 2005/06/04 08:11:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,37 +33,30 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.List;
 
 /**
  * Provides a HTML text input field with optional values to select in a combo box, for use on a widget dialog.<p>
  * 
- * The combo box options have to be written in the "default" appinfo node and use the following syntax:<br>
- * value1*:displayed help text 1|value2:displayed help text 2<br>
- * You can use localized keys for the displayed values and text like ${key.keyname}.<p>
- *
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * Please see the documentation of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> for a description 
+ * about the configuration String syntax for the select options.<p>
  * 
- * @version $Revision: 1.4 $
+ * The combo widget does use the following select options:<ul>
+ * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getValue()}</code> for the texts to be displayed in the combo selector
+ * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#isDefault()}</code> to fill the input with a preselected text
+ * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getHelp()}</code> to display an (optional) help text for the combo option
+ * </ul>
+ * 
+ * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.5 $
  * @since 5.5.3
  */
-public class CmsComboWidget extends A_CmsWidget {
-
-    /** The delimiter that separates the values from the displayed help text. */
-    public static final char DELIM_ATTRS = ':';
-
-    /** The delimiter that separates the option entries of the combo box to create. */
-    public static final String DELIM_OPTIONS = "|";
-
-    /** The possible options for the combo box. */
-    private String m_comboOptions;
+public class CmsComboWidget extends A_CmsSelectWidget {
 
     /**
      * Creates a new combo widget.<p>
@@ -71,7 +64,21 @@ public class CmsComboWidget extends A_CmsWidget {
     public CmsComboWidget() {
 
         // empty constructor is required for class registration
-        this("");
+        super();
+    }
+
+    /**
+     * Creates a combo widget with the select options specified in the given configuration List.<p>
+     * 
+     * The list elements must be of type <code>{@link CmsSelectWidgetOption}</code>.<p>
+     * 
+     * @param configuration the configuration (possible options) for the select widget
+     * 
+     * @see CmsSelectWidgetOption
+     */
+    public CmsComboWidget(List configuration) {
+
+        super(configuration);
     }
 
     /**
@@ -92,47 +99,36 @@ public class CmsComboWidget extends A_CmsWidget {
         String id = param.getId();
         StringBuffer result = new StringBuffer(256);
 
-        // get select box options from configuration String
-        String defaultValue = getComboOptions(cms, widgetDialog);
+        // get the select box options
+        List options = parseSelectOptions(cms, widgetDialog, param);
 
-        // tokenize the found String
-        StringTokenizer t = new StringTokenizer(defaultValue, DELIM_OPTIONS);
-        String val;
-        String helpText;
-        int delimPos;
-
-        if (t.hasMoreTokens()) {
+        if (options.size() > 0) {
             // create combo div
-            result.append("<div class=\"widgetcombo\" id=\"combo").append(id).append("\">\n");
+            result.append("<div class=\"widgetcombo\" id=\"combo");
+            result.append(id);
+            result.append("\">\n");
+
             int count = 0;
-            Map helpTexts = new HashMap(t.countTokens());
-            while (t.hasMoreTokens()) {
-                // generate the combo options
-                String itemId = "ci" + id + "." + count;
-                String part = t.nextToken();
-                delimPos = part.indexOf(DELIM_ATTRS);
-                if (delimPos != -1) {
-                    // a special help text is given
-                    val = part.substring(0, delimPos);
-                    helpText = part.substring(delimPos + 1);
-                } else {
-                    // no special help text present
-                    val = part;
-                    helpText = null;
-                }
+            Iterator i = options.iterator();
+            while (i.hasNext()) {
+                CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
+                String itemId = new StringBuffer(64).append("ci").append(id).append('.').append(count).toString();
                 // create the link around value
                 result.append("\t<a href=\"javascript:setComboValue(\'");
                 result.append(id);
                 result.append("\', \'");
                 result.append(itemId);
-                result.append("\')\" name=\"").append(itemId).append("\" id=\"").append(itemId).append("\"");
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
+                result.append("\')\" name=\"");
+                result.append(itemId);
+                result.append("\" id=\"");
+                result.append(itemId);
+                result.append("\"");
+                if (option.getHelp() != null) {
                     // create help text mousevent attributes
-                    helpTexts.put(itemId, helpText);
                     result.append(getJsHelpMouseHandler(widgetDialog, itemId));
                 }
                 result.append(">");
-                result.append(val);
+                result.append(option.getValue());
                 result.append("</a>\n");
                 count++;
             }
@@ -141,16 +137,22 @@ public class CmsComboWidget extends A_CmsWidget {
             result.append("</div>\n");
 
             // create help texts for the values
-            Iterator i = helpTexts.keySet().iterator();
+            count = 0;
+            i = options.iterator();
             while (i.hasNext()) {
-                String key = (String)i.next();
-                result.append("<div class=\"help\" id=\"help");
-                result.append(key);
-                result.append("\"");
-                result.append(getJsHelpMouseHandler(widgetDialog, key));
-                result.append(">");
-                result.append(helpTexts.get(key));
-                result.append("</div>\n");
+                CmsSelectWidgetOption option = (CmsSelectWidgetOption)i.next();
+                if (option.getHelp() != null) {
+                    // help text is optional
+                    String itemId = new StringBuffer(64).append("ci").append(id).append('.').append(count).toString();
+                    result.append("<div class=\"help\" id=\"help");
+                    result.append(itemId);
+                    result.append("\"");
+                    result.append(getJsHelpMouseHandler(widgetDialog, itemId));
+                    result.append(">");
+                    result.append(option.getHelp());
+                    result.append("</div>\n");
+                    count++;
+                }
             }
         }
 
@@ -196,9 +198,15 @@ public class CmsComboWidget extends A_CmsWidget {
         result.append(id);
         result.append("\" id=\"");
         result.append(id);
-        result.append("\" value=\"");
-        result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
-        result.append("\">");
+        result.append("\"");
+        String selected = getSelectedValue(cms, param);
+        if (selected != null) {
+            // append the selection 
+            result.append(" value=\"");
+            result.append(CmsEncoder.escapeXml(selected));
+            result.append("\"");
+        }
+        result.append(">");
         result.append("</td><td>");
         // button to open combo box
         result.append("<button name=\"test\" onclick=\"showCombo(\'").append(id).append("\', \'combo").append(id);
@@ -218,26 +226,5 @@ public class CmsComboWidget extends A_CmsWidget {
     public I_CmsWidget newInstance() {
 
         return new CmsComboWidget(getConfiguration());
-    }
-
-    /**
-     * Returns the possible options for the combo box.<p>
-     * 
-     * In case the combo options have not been directly set, 
-     * the default value of the given widget parameter is used.<p>
-     * @param cms the current users OpenCms context
-     * 
-     * @return the possible options for the combo box
-     */
-    private String getComboOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
-
-        if (m_comboOptions == null) {
-            // use the configuration value, with processed macros
-            m_comboOptions = CmsMacroResolver.resolveMacros(getConfiguration(), cms, widgetDialog.getMessages());
-        }
-        if (CmsStringUtil.isEmpty(m_comboOptions)) {
-            m_comboOptions = "";
-        }
-        return m_comboOptions;
     }
 }

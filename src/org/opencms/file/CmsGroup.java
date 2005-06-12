@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsGroup implements I_CmsPrincipal {
 
@@ -117,8 +117,11 @@ public class CmsGroup implements I_CmsPrincipal {
      */
     public boolean equals(Object obj) {
 
+        if (obj == this) {
+            return true;
+        }
         if (obj instanceof CmsGroup) {
-            return ((CmsGroup)obj).getId().equals(m_id);
+            return ((CmsGroup)obj).m_id.equals(m_id);
         }
         return false;
     }
@@ -223,7 +226,7 @@ public class CmsGroup implements I_CmsPrincipal {
         }
         return CmsUUID.getNullUUID().hashCode();
     }
-    
+
     /**
      * Returns the enabled flag.<p>
      * 

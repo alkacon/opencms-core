@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2005/03/18 16:50:38 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.file.collectors;
 
 import org.opencms.file.CmsObject;
@@ -46,11 +46,11 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.2
  */
 public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
-    
+
     /** Format for file create parameter. */
     private static final PrintfFormat C_FORMAT_NUMBER = new PrintfFormat("%0.4d");
 
@@ -59,21 +59,60 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
     /** The hash code of this collector. */
     private int m_hashcode;
-    
+
     /**
      * Constructor to initialize some default values.<p>
      */
     public A_CmsResourceCollector() {
-        
+
         m_hashcode = getClass().getName().hashCode();
     }
-    
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object obj) {
+
+        if (obj == this) {
+            return 0;
+        }
+        if (obj instanceof I_CmsResourceCollector) {
+            return getOrder() - ((I_CmsResourceCollector)obj).getOrder();
+        }
+        return 0;
+    }
+
+    /**
+     * Two collectors are considered to be equal if they are sharing the same
+     * implementation class.<p> 
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof I_CmsResourceCollector) {
+            return getClass().getName().equals(obj.getClass().getName());
+        }
+        return false;
+    }
+
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getOrder()
      */
     public int getOrder() {
-    
+
         return m_order;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_hashcode;
     }
 
     /**
@@ -83,50 +122,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
         m_order = order;
     }
-    
-    /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Object o) {
-    
-        if (o == null) {
-            return 0;
-        }
-        
-        if (! (o instanceof I_CmsResourceCollector)) {
-            return 0;
-        }
-        
-        return (getOrder() - ((I_CmsResourceCollector)o).getOrder());
-    }    
-    
-    /**
-     * Two collectors are considered to be equal if they are sharing the same
-     * implementation class.<p> 
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object o) {
 
-        if (o == null) {
-            return false;
-        }
-        
-        if (! (o instanceof I_CmsResourceCollector)) {
-            return false;
-        }
-        
-        return getClass().getName().equals(o.getClass().getName());
-    }    
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        
-        return m_hashcode;
-    }
-    
     /**
      * Returns the link to create a new XML content item in the folder pointed to by the parameter.<p>
      * 
@@ -165,7 +161,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
         return cms.getRequestContext().removeSiteRoot(checkName);
     }
-    
+
     /**
      * Shrinks a List to fit a maximum size.<p>
      * 
@@ -175,12 +171,12 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
      * @return the shrinked list
      */
     protected List shrinkToFit(List result, int maxSize) {
-        
+
         if ((maxSize > 0) && (result.size() > maxSize)) {
             // cut off all items > count
             result = result.subList(0, maxSize);
         }
-        
+
         return result;
     }
 }

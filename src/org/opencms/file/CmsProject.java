@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2005/06/10 15:58:06 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,12 +44,12 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsProject implements Cloneable {
 
     /** The creation date of this project. */
-    private long m_creationDate;
+    private long m_dateCreated;
 
     /** The description of this project. */
     private String m_description;
@@ -121,7 +121,7 @@ public class CmsProject implements Cloneable {
         m_groupManagersId = managerGroupId;
         m_flags = flags;
         m_type = type;
-        m_creationDate = dateCreated;
+        m_dateCreated = dateCreated;
     }
 
     /**
@@ -215,7 +215,7 @@ public class CmsProject implements Cloneable {
             m_groupUsersId,
             m_groupManagersId,
             m_flags,
-            m_creationDate,
+            m_dateCreated,
             m_type);
     }
 
@@ -224,10 +224,11 @@ public class CmsProject implements Cloneable {
      */
     public boolean equals(Object obj) {
 
-        // check if the object is a CmsProject object
+        if (obj == this) {
+            return true;
+        }
         if (obj instanceof CmsProject) {
-            // same ID than the current project?
-            return ((CmsProject)obj).getId() == m_id;
+            return ((CmsProject)obj).m_id == m_id;
         }
         return false;
     }
@@ -237,9 +238,9 @@ public class CmsProject implements Cloneable {
      *
      * @return the creation date of this project
      */
-    public long getCreationDate() {
+    public long getDateCreated() {
 
-        return m_creationDate;
+        return m_dateCreated;
     }
 
     /**
@@ -374,6 +375,16 @@ public class CmsProject implements Cloneable {
     }
 
     /**
+     * Sets the name.<p>
+     *
+     * @param name the name to set
+     */
+    public void setName(String name) {
+
+        m_name = name;
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -396,15 +407,5 @@ public class CmsProject implements Cloneable {
     void setType(int id) {
 
         m_type = id;
-    }
-
-    /**
-     * Sets the name.<p>
-     *
-     * @param name the name to set
-     */
-    public void setName(String name) {
-
-        m_name = name;
     }
 }

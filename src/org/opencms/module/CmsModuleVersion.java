@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleVersion.java,v $
- * Date   : $Date: 2005/06/03 15:21:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,16 +58,16 @@ import org.opencms.util.CmsStringUtil;
  * @since 5.3.6
  */
 public class CmsModuleVersion implements Comparable {
-    
+
     /** Default version for new modules. */
     public static final String DEFAULT_VERSION = "0.1";
-    
+
     /** The dot count of the version. */
     private int m_dots;
 
     /** The version number (for comparisons). */
     private long m_number;
-    
+
     /** Indicates if the module version was already updated. */
     private boolean m_updated;
 
@@ -89,20 +89,20 @@ public class CmsModuleVersion implements Comparable {
      */
     public int compareTo(Object obj) {
 
-        if ((m_version == null) || (obj == null)) {
+        if (obj == this) {
             return 0;
         }
-
-        if (!(obj instanceof CmsModuleVersion)) {
-            return 0;
+        if (obj instanceof CmsModuleVersion) {
+            if (m_version == null) {
+                return 0;
+            }
+            CmsModuleVersion other = (CmsModuleVersion)obj;
+            if (m_number == other.m_number) {
+                return 0;
+            }
+            return (m_number > other.m_number) ? 1 : -1;
         }
-
-        CmsModuleVersion other = (CmsModuleVersion)obj;
-
-        if (m_number == other.m_number) {
-            return 0;
-        }
-        return (m_number > other.m_number) ? 1 : -1;
+        return 0;
     }
 
     /**
@@ -110,21 +110,17 @@ public class CmsModuleVersion implements Comparable {
      */
     public boolean equals(Object obj) {
 
-        if (obj == null) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-
-        if (!(obj instanceof CmsModuleVersion)) {
-            return false;
+        if (obj instanceof CmsModuleVersion) {
+            CmsModuleVersion other = (CmsModuleVersion)obj;
+            if (m_version == null) {
+                return (other.m_version == null);
+            }
+            return m_version.equals(other.m_version);
         }
-
-        CmsModuleVersion other = (CmsModuleVersion)obj;
-
-        if (m_version == null) {
-            return (other == null);
-        }
-
-        return m_version.equals(other.m_version);
+        return false;
     }
 
     /**
@@ -150,6 +146,40 @@ public class CmsModuleVersion implements Comparable {
     }
 
     /**
+     * Sets the version as a String.<p>
+     *
+     * @param version the version String to set
+     */
+    public void setVersion(String version) {
+
+        m_number = 0L;
+        String[] split = CmsStringUtil.splitAsArray(version, '.');
+        m_dots = split.length;
+        if (m_dots > 4) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_INVALID_VERSION_LENGTH_1,
+                version));
+        }
+        String[] numbers = new String[5];
+        System.arraycopy(split, 0, numbers, 1, m_dots);
+        numbers[0] = "1";
+        for (int i = 1 + m_dots; i < 5; i++) {
+            numbers[i] = "0";
+        }
+        for (int i = numbers.length - 1; i >= 0; i--) {
+            int number = Integer.valueOf(numbers[numbers.length - i - 1]).intValue();
+            if ((number > 999) || (number < 0)) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_INVALID_VERSION_SUBNUMBER_1,
+                    new Integer(number)));
+            }
+            m_number = (long)Math.pow(1000.0, i) * number + m_number;
+        }
+
+        setVersion(m_number);
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -166,11 +196,10 @@ public class CmsModuleVersion implements Comparable {
             m_number += (long)Math.pow(1000.0, (4 - m_dots));
             setVersion(m_number);
         } else {
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_MODULE_VERSION_NUMBER_0));
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_MODULE_VERSION_NUMBER_0));
         }
     }
-    
+
     /**
      * Returns the updated status.<p>
      *
@@ -180,7 +209,7 @@ public class CmsModuleVersion implements Comparable {
 
         return m_updated;
     }
-    
+
     /**
      * Sets the updated status.<p>
      *
@@ -205,45 +234,11 @@ public class CmsModuleVersion implements Comparable {
             if (m_dots >= (4 - i)) {
                 if (m_dots > (4 - i)) {
                     result = '.' + result;
-                } 
+                }
                 result = "" + mod + result;
             }
         }
 
         m_version = result;
-    }
-
-    /**
-     * Sets the version as a String.<p>
-     *
-     * @param version the version String to set
-     */
-    public void setVersion(String version) {
-
-        m_number = 0L;
-        String[] split = CmsStringUtil.splitAsArray(version, '.');
-        m_dots = split.length;
-        if (m_dots > 4) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_INVALID_VERSION_LENGTH_1,
-                version));
-        }
-        String[] numbers = new String[5];
-        System.arraycopy(split, 0, numbers, 1, m_dots);
-        numbers[0] = "1";        
-        for (int i = 1 + m_dots; i < 5; i++) {
-            numbers[i] = "0";
-        }
-        for (int i = numbers.length - 1; i >= 0; i--) {
-            int number = Integer.valueOf(numbers[numbers.length - i - 1]).intValue();
-            if ((number > 999) || (number < 0)) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_INVALID_VERSION_SUBNUMBER_1,
-                    new Integer(number)));
-    }
-            m_number = (long)Math.pow(1000.0, i) * number + m_number;
-        }
-
-        setVersion(m_number);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2005/05/31 14:38:38 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Comparator;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -62,7 +62,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
          */
         public int compare(Object o1, Object o2) {
 
-            if (!(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
+            if ((o1 == o2) || !(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
                 return 0;
             }
 
@@ -95,7 +95,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
          */
         public int compare(Object o1, Object o2) {
 
-            if (!(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
+            if ((o1 == o2) || !(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
                 return 0;
             }
 
@@ -116,7 +116,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
          */
         public int compare(Object o1, Object o2) {
 
-            if (!(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
+            if ((o1 == o2) || !(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
                 return 0;
             }
 
@@ -137,7 +137,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
          */
         public int compare(Object o1, Object o2) {
 
-            if (!(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
+            if ((o1 == o2) || !(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
                 return 0;
             }
 
@@ -441,13 +441,15 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object o) {
+    public int compareTo(Object obj) {
 
-        if (!(o instanceof CmsResource)) {
+        if (obj == this) {
             return 0;
         }
-
-        return m_rootPath.compareTo(((CmsResource)o).m_rootPath);
+        if (obj instanceof CmsResource) {
+            return ((CmsResource)obj).m_rootPath.compareTo(m_rootPath);
+        }
+        return 0;
     }
 
     /**
@@ -455,8 +457,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public boolean equals(Object obj) {
 
+        if (obj == this) {
+            return true;
+        }
         if (obj instanceof CmsResource) {
-            return ((CmsResource)obj).getStructureId().equals(getStructureId());
+            return ((CmsResource)obj).m_structureId.equals(m_structureId);
         }
         return false;
     }

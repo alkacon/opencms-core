@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2005/05/13 09:25:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/12 11:18:22 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.io.Serializable;
  * that is written during each publishing process.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2005/05/13 09:25:48 $
+ * @version $Revision: 1.22 $ $Date: 2005/06/12 11:18:22 $
  * @since 5.1.11
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(CmsDbContext, int, CmsUUID)
  */
@@ -55,7 +55,7 @@ public class CmsPublishedResource implements Serializable, Cloneable {
 
     /** The backup tag ID of the published resource. */
     private int m_backupTagId;
-    
+
     /** Indicates if the published resource is a folder or a file. */
     private boolean m_isFolder;
 
@@ -113,7 +113,7 @@ public class CmsPublishedResource implements Serializable, Cloneable {
         String rootPath,
         int resourceType,
         boolean isFolder,
-        int resourceState, 
+        int resourceState,
         int siblingCount) {
 
         m_structureId = structureId;
@@ -131,15 +131,13 @@ public class CmsPublishedResource implements Serializable, Cloneable {
      */
     public boolean equals(Object obj) {
 
-        if (obj == null) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-
-        if (!(obj instanceof CmsPublishedResource)) {
-            return false;
+        if (obj instanceof CmsPublishedResource) {
+            return ((CmsPublishedResource)obj).m_structureId.equals(m_structureId);
         }
-
-        return getStructureId().equals(((CmsPublishedResource)obj).getStructureId());
+        return false;
     }
 
     /**
@@ -298,8 +296,8 @@ public class CmsPublishedResource implements Serializable, Cloneable {
      */
     public String toString() {
 
-        StringBuffer result = new StringBuffer(128); 
-            
+        StringBuffer result = new StringBuffer(128);
+
         result.append("[");
         result.append(this.getClass().getName());
         result.append(": root path: ");

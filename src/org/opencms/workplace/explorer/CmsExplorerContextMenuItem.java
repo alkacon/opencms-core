@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuItem.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,17 +37,17 @@ package org.opencms.workplace.explorer;
  * An item can be a context menu entry or a separator line.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
 public class CmsExplorerContextMenuItem implements Comparable {
-    
+
     /** The name for an entry type. */
     public static final String C_TYPE_ENTRY = "entry";
     /** The name for a separator type. */
     public static final String C_TYPE_SEPARATOR = "separator";
-    
+
     private boolean m_isXml;
 
     private String m_key;
@@ -56,7 +56,7 @@ public class CmsExplorerContextMenuItem implements Comparable {
     private String m_target;
     private String m_type;
     private String m_uri;
-    
+
     /**
      * Constructor that creates a single context menu entry with all necessary information.<p>
      * 
@@ -68,7 +68,15 @@ public class CmsExplorerContextMenuItem implements Comparable {
      * @param order the order of the item
      * @param isXml if true, the dialog uses legacy XMLTemplate stuff
      */
-    public CmsExplorerContextMenuItem(String type, String key, String uri, String rules, String target, Integer order, boolean isXml) {
+    public CmsExplorerContextMenuItem(
+        String type,
+        String key,
+        String uri,
+        String rules,
+        String target,
+        Integer order,
+        boolean isXml) {
+
         m_type = type;
         m_key = key;
         m_uri = uri;
@@ -77,34 +85,41 @@ public class CmsExplorerContextMenuItem implements Comparable {
         m_target = target;
         m_isXml = isXml;
     }
-    
-    
+
     /**
      * @see java.lang.Object#clone()
      */
     public Object clone() {
+
         return new CmsExplorerContextMenuItem(m_type, m_key, m_uri, m_rules, m_target, m_order, m_isXml);
     }
-    
+
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object o) {
-        if (o instanceof CmsExplorerContextMenuItem) {
-            return m_order.compareTo(((CmsExplorerContextMenuItem)o).getOrder());
+    public int compareTo(Object obj) {
+
+        if (obj == this) {
+            return 0;
+        }
+        if (obj instanceof CmsExplorerContextMenuItem) {
+            return m_order.compareTo(((CmsExplorerContextMenuItem)obj).m_order);
         }
         return 0;
     }
-    
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object o) {
-        if (! (o instanceof CmsExplorerContextMenuItem)) {
-            return false;
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
         }
-        CmsExplorerContextMenuItem other = (CmsExplorerContextMenuItem)o;
-        return getUri().equals(other.getUri());
+        if (obj instanceof CmsExplorerContextMenuItem) {
+            return ((CmsExplorerContextMenuItem)obj).m_uri.equals(m_uri);
+        }
+        return false;
     }
 
     /**
@@ -113,15 +128,17 @@ public class CmsExplorerContextMenuItem implements Comparable {
      * @return the key for localization
      */
     public String getKey() {
+
         return m_key;
     }
-    
+
     /**
      * Returns the sort order of this item.<p>
      * 
      * @return the sort order of this item
      */
     public Integer getOrder() {
+
         return m_order;
     }
 
@@ -131,15 +148,17 @@ public class CmsExplorerContextMenuItem implements Comparable {
      * @return the set of display rules
      */
     public String getRules() {
+
         return m_rules;
     }
-    
+
     /**
      * Returns the frame target of the current item.<p>
      * 
      * @return the frame target of the current item
      */
     public String getTarget() {
+
         return m_target;
     }
 
@@ -149,6 +168,7 @@ public class CmsExplorerContextMenuItem implements Comparable {
      * @return the type of the current item
      */
     public String getType() {
+
         return m_type;
     }
 
@@ -158,22 +178,25 @@ public class CmsExplorerContextMenuItem implements Comparable {
      * @return the dialog URI of the current item
      */
     public String getUri() {
+
         return m_uri;
     }
-    
+
     /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
+
         return getUri().hashCode();
     }
-    
+
     /**
      * Returns if the dialog is build with the legacy XMLTemplate.<p>
      * 
      * @return true, if the dialog is build with the legacy XMLTemplate
      */
     public boolean isXml() {
+
         return m_isXml;
     }
 
@@ -183,6 +206,7 @@ public class CmsExplorerContextMenuItem implements Comparable {
      * @param isXml true, if the dialog is build with the legacy XMLTemplate
      */
     public void setIsXml(boolean isXml) {
+
         m_isXml = isXml;
     }
 
@@ -192,15 +216,17 @@ public class CmsExplorerContextMenuItem implements Comparable {
      * @param key the key for localization
      */
     public void setKey(String key) {
+
         m_key = key;
     }
-    
+
     /**
      * Returns the sort order of this item.<p>
      * 
      * @param order the sort order of this item
      */
     public void setOrder(Integer order) {
+
         m_order = order;
     }
 
@@ -210,15 +236,17 @@ public class CmsExplorerContextMenuItem implements Comparable {
      * @param rules the set of display rules
      */
     public void setRules(String rules) {
+
         m_rules = rules;
     }
-    
+
     /**
      * Sets the frame target of the current item.<p>
      * 
      * @param target the frame target of the current item
      */
     public void setTarget(String target) {
+
         m_target = target;
     }
 
@@ -228,6 +256,7 @@ public class CmsExplorerContextMenuItem implements Comparable {
      * @param type the type of the current item
      */
     public void setType(String type) {
+
         m_type = type;
     }
 
@@ -237,9 +266,7 @@ public class CmsExplorerContextMenuItem implements Comparable {
      * @param uri the dialog URI of the current item
      */
     public void setUri(String uri) {
+
         m_uri = uri;
     }
-    
-   
-
 }

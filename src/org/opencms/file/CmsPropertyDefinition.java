@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,16 +38,18 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** The null property definition object. */
-    private static final CmsPropertyDefinition C_NULL_PROPERTY_DEFINITION = new CmsPropertyDefinition(CmsUUID.getNullUUID(), "");
+    private static final CmsPropertyDefinition C_NULL_PROPERTY_DEFINITION = new CmsPropertyDefinition(
+        CmsUUID.getNullUUID(),
+        "");
 
     /** The id of this property definition. */
     private CmsUUID m_id;
-    
+
     /** The name of this property definition. */
     private String m_name;
 
@@ -57,66 +59,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
      * @param name the name of the property definition
      */
     public CmsPropertyDefinition(CmsUUID id, String name) {
+
         m_id = id;
         m_name = name;
-    }
-    
-    /**
-     * Returns a clone of this Objects instance.<p>
-     * 
-     * @return a clone of this instance
-     */   
-    public Object clone() {
-        return new CmsPropertyDefinition(m_id, m_name);
-    }
-    
-    /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Object obj) {
-        if ((obj == null) || ! (obj instanceof CmsPropertyDefinition)) {
-            return 0;
-        }
-        CmsPropertyDefinition def = (CmsPropertyDefinition)obj;
-        return (getName().compareTo(def.getName()));
-    }    
-    
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-        if (obj instanceof CmsPropertyDefinition) {
-            return ((CmsPropertyDefinition)obj).getId().equals(m_id);
-        }
-        return false;    
-    }
-    
-    /**
-     * Returns the id of this property definition.<p>
-     *
-     * @return id the id of this Propertydefinition
-     */
-    public CmsUUID getId() {
-        return m_id;
-    }
-    
-    /**
-     * Returns the name of this property definition.<p>
-     *
-     * @return name The name of this property definition
-     */
-    public String getName() {
-        return m_name;
-    }
-    
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        if (m_name != null) {
-            return m_name.hashCode();
-        }
-        return 0;
     }
 
     /**
@@ -125,14 +70,85 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
      * @return the null property definition
      */
     public static CmsPropertyDefinition getNullPropertyDefinition() {
+
         return CmsPropertyDefinition.C_NULL_PROPERTY_DEFINITION;
+    }
+
+    /**
+     * Returns a clone of this Objects instance.<p>
+     * 
+     * @return a clone of this instance
+     */
+    public Object clone() {
+
+        return new CmsPropertyDefinition(m_id, m_name);
+    }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object obj) {
+
+        if (obj == this) {
+            return 0;
+        }
+        if (obj instanceof CmsPropertyDefinition) {
+            return ((CmsPropertyDefinition)obj).m_name.compareTo(m_name);
+        }
+        return 0;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsPropertyDefinition) {
+            return ((CmsPropertyDefinition)obj).m_id.equals(m_id);
+        }
+        return false;
+    }
+
+    /**
+     * Returns the id of this property definition.<p>
+     *
+     * @return id the id of this Propertydefinition
+     */
+    public CmsUUID getId() {
+
+        return m_id;
+    }
+
+    /**
+     * Returns the name of this property definition.<p>
+     *
+     * @return name The name of this property definition
+     */
+    public String getName() {
+
+        return m_name;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        if (m_name != null) {
+            return m_name.hashCode();
+        }
+        return 0;
     }
 
     /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        StringBuffer result=new StringBuffer();
+
+        StringBuffer result = new StringBuffer();
         result.append("[Propertydefinition]");
         result.append(" name:");
         result.append(m_name);

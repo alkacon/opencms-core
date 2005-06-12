@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.7.3
  */
 public class CmsTool {
@@ -56,11 +56,11 @@ public class CmsTool {
     /** Sub-tools container. */
     private final CmsIdentifiableObjectContainer m_container = new CmsIdentifiableObjectContainer(true, true);
 
-    /** Dhtml id, from name. */
-    private final String m_id;
-
     /** Handler that represents this tool. */
     private I_CmsToolHandler m_handler;
+
+    /** Dhtml id, from name. */
+    private final String m_id;
 
     /**
      * Default Constructor.<p> 
@@ -111,7 +111,7 @@ public class CmsTool {
 
         if (!m_handler.isVisible(wp.getCms())) {
             return "";
-        }        
+        }
         String link = OpenCms.getWorkplaceManager().getToolManager().linkForPath(
             wp.getJsp(),
             this.getHandler().getPath(),
@@ -136,26 +136,19 @@ public class CmsTool {
     /**
      * Compares two tools by name.<p>
      * 
-     * @param that the other tool
+     * @param obj the other tool
      * 
      * @return <code>true</code> if the tools have the same name
      */
-    public boolean equals(Object that) {
+    public boolean equals(Object obj) {
 
-        if (!this.getClass().isInstance(that)) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-        return this.getId().equals(((CmsTool)that).getId());
-    }
-
-    /**
-     * Returns the dhtml unique id.<p>
-     *
-     * @return the dhtml unique id
-     */
-    public String getId() {
-
-        return m_id;
+        if (obj instanceof CmsTool) {
+            return ((CmsTool)obj).m_id.equals(m_id);
+        }
+        return false;
     }
 
     /**
@@ -166,6 +159,16 @@ public class CmsTool {
     public I_CmsToolHandler getHandler() {
 
         return m_handler;
+    }
+
+    /**
+     * Returns the dhtml unique id.<p>
+     *
+     * @return the dhtml unique id
+     */
+    public String getId() {
+
+        return m_id;
     }
 
     /**
@@ -241,5 +244,4 @@ public class CmsTool {
 
         return m_handler.getName().hashCode();
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2005/05/13 09:25:48 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2005/05/13 09:25:48 $
+ * @version $Revision: 1.23 $ $Date: 2005/06/12 11:18:21 $
  * @since build_5_1_14
  */
 public class CmsProperty implements Serializable, Cloneable, Comparable {
@@ -388,36 +388,25 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
-     * Compares this property to another property.<p>
-     * 
-     * This method behaves like {@link String#compareTo(java.lang.String)}.
-     * Both properties are compared by their names.<p>
-     *  
-     * @param property the other property object to be compared
-     * @return zero if the name of the argument is equal to the name of this property object, 
-     *      a value less than zero if the name of this property is lexicographically less than the name of the argument, 
-     *      or a value greater than zero if the name of this property is lexicographically greater than the name of the argument 
-     * @see String#compareTo(java.lang.String)
-     */
-    public int compareTo(CmsProperty property) {
-
-        return m_name.compareTo(property.getName());
-    }
-
-    /**
      * Compares this property to another Object.<p>
      * 
      * If the Object is a property, this method behaves like {@link String#compareTo(java.lang.String)}.
      * Otherwise, it throws a ClassCastException (as properties are comparable only to other properties).<p>
      *  
-     * @param object the other object to be compared
+     * @param obj the other object to be compared
      * @return if the argument is a property object, returns zero if the name of the argument is equal to the name of this property object, 
      *      a value less than zero if the name of this property is lexicographically less than the name of the argument, 
      *      or a value greater than zero if the name of this property is lexicographically greater than the name of the argument 
      */
-    public int compareTo(Object object) {
+    public int compareTo(Object obj) {
 
-        return compareTo((CmsProperty)object);
+        if (obj == this) {
+            return 0;
+        }
+        if (obj instanceof CmsProperty) {
+            return ((CmsProperty)obj).m_name.compareTo(m_name);
+        }
+        return 0;
     }
 
     /**
@@ -449,16 +438,18 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * Two property objecs are equal if their names are equal.<p>
      * 
-     * @param object another object
+     * @param obj another object
      * @return true, if the specified object is equal to this CmsProperty object
      */
-    public boolean equals(Object object) {
+    public boolean equals(Object obj) {
 
-        if (object == null || !(object instanceof CmsProperty)) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-
-        return (m_name != null) && m_name.equals(((CmsProperty)object).getName());
+        if (obj instanceof CmsProperty) {
+            return ((CmsProperty)obj).m_name.equals(m_name);
+        }
+        return false;
     }
 
     /**

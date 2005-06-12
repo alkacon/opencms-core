@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/06/09 15:46:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public abstract class A_CmsWidget implements I_CmsWidget {
@@ -54,7 +54,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
 
     /** The configuration options of this widget. */
     private String m_configuration;
-    
+
     /**
      * Default constructor.<p>
      */
@@ -62,7 +62,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
 
         setConfiguration("");
     }
-    
+
     /** 
      * Constructor for preprocessing the configuration string.<p>
      * 
@@ -110,12 +110,14 @@ public abstract class A_CmsWidget implements I_CmsWidget {
      */
     public boolean equals(Object obj) {
 
-        if (!(obj instanceof A_CmsWidget)) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-
-        // widgets are equal if they use the same class
-        return getClass().getName().equals(obj.getClass().getName());
+        if (obj instanceof A_CmsWidget) {
+            // widgets are equal if they use the same class
+            return getClass().getName().equals(obj.getClass().getName());
+        }
+        return false;
     }
 
     /**

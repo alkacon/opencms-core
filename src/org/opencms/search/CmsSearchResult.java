@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2005/03/26 11:36:35 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.lucene.document.Field;
 /**
  * Contains the data of a single item in a search result.<p>
  * 
- * @version $Revision: 1.14 $ $Date: 2005/03/26 11:36:35 $
+ * @version $Revision: 1.15 $ $Date: 2005/06/12 11:18:21 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
@@ -129,26 +129,14 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object object) {
+    public int compareTo(Object obj) {
 
-        if (object == null || !(object instanceof CmsSearchResult)) {
+        if (obj == this) {
             return 0;
         }
-
-        try {
-            int score = ((CmsSearchResult)object).getScore();
-
-            if (m_score > score) {
-                return -1;
-            }
-
-            if (m_score < score) {
-                return 1;
-            }
-        } catch (Exception e) {
-            // noop
+        if (obj instanceof CmsSearchResult) {
+            return ((CmsSearchResult)obj).m_score - m_score;
         }
-
         return 0;
     }
 

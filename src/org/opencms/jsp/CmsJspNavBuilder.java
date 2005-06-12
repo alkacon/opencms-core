@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2005/05/02 16:42:05 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * {@link org.opencms.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @see org.opencms.jsp.CmsJspNavElement
  * 
@@ -96,15 +96,17 @@ public class CmsJspNavBuilder {
          */
         public int compareTo(Object obj) {
 
-            if (!(obj instanceof ResourceTitleContainer)) {
+            if (obj == this) {
                 return 0;
+            }            
+            if (obj instanceof ResourceTitleContainer) {
+                if (m_title == null) {
+                    return 1;
+                }
+                return (m_title.toLowerCase().compareTo(((ResourceTitleContainer)obj).m_title.toLowerCase()));
             }
-            if (m_title == null) {
-                return 1;
-            }
-            return (m_title.toLowerCase().compareTo(((ResourceTitleContainer)obj).m_title.toLowerCase()));
+            return 0;
         }
-
     }
 
     /** The log object for this class. */

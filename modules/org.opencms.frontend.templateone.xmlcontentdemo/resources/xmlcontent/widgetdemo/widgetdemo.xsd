@@ -46,7 +46,7 @@
 				<layout element="TableSnippet" widget="TableGalleryWidget" />
 				<layout element="Selector" widget="SelectorWidget" />
 				<layout element="Textarea" widget="TextareaWidget" />
-				<layout element="Combobox" widget="ComboWidget" configuration="Value 1:A help text for value 1.|Value 2:Another help text for the second value.|Value 3:Finally the help text vor value three." />
+				<layout element="Combobox" widget="ComboWidget" configuration="value='Value 1' help='A help text for value 1'|value='Value 2' help='Another help text for the second value.'|value='Value 3' default='true' help='The help text vor value three.'|value='Value 4 which has a very long value text that needs to be displayed in the limited size input area' help='The is the help for value 4'" />
 			</layouts>	
 		</xsd:appinfo>
 	</xsd:annotation>  

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditBase.java,v $
- * Date   : $Date: 2005/06/10 09:08:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsModulesEditBase extends CmsWidgetDialog {
@@ -106,16 +106,14 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
         if (objects != null) {
             objects.remove(CmsModulesList.class.getName());
         }
-        // freeze the module
-        m_module.initialize(getCms());
-        
+
         //check if we have to update an existing module or to create a new one
         Set moduleNames = OpenCms.getModuleManager().getModuleNames();
         if (moduleNames.contains(m_module.getName())) {
-        
+
             // update the module information
             try {
-               OpenCms.getModuleManager().updateModule(getCms(), m_module);
+                OpenCms.getModuleManager().updateModule(getCms(), m_module);
             } catch (CmsConfigurationException ce) {
                 errors.add(ce);
             } catch (CmsRoleViolationException re) {
@@ -164,13 +162,12 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
         m_paramModule = paramModule;
     }
 
-
     /**
      * Creates the list of widgets for this dialog.<p>
      */
     protected void defineWidgets() {
 
-           // nothing to add here, see the different edit modules
+        // nothing to add here, see the different edit modules
     }
 
     /**

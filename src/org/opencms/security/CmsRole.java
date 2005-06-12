@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.List;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public final class CmsRole {
@@ -131,7 +131,6 @@ public final class CmsRole {
 
     /** The "WORKPLACE_USER" role. */
     public static final CmsRole WORKPLACE_USER = new CmsRole("WORKPLACE_USER", new CmsRole[] {CmsRole.ADMINISTRATOR});
-
     /** 
      * The "SYSTEM_USER" role.<p>
      *
@@ -139,11 +138,8 @@ public final class CmsRole {
      * <code>{@link CmsRole#DEVELOPER}</code>.<p>
      */
     public static final CmsRole SYSTEM_USER = new CmsRole("SYSTEM_USER", new CmsRole[] {
-        // important: this role must be defined _after_ all other roles it referes to
-        CmsRole.ADMINISTRATOR,
-        CmsRole.WORKPLACE_USER,
-        CmsRole.PROJECT_MANAGER,
-        CmsRole.DEVELOPER});
+    // important: this role must be defined _after_ all other roles it referes to
+        CmsRole.ADMINISTRATOR, CmsRole.WORKPLACE_USER, CmsRole.PROJECT_MANAGER, CmsRole.DEVELOPER});
     
     /** The list of system roles. */
     private static List m_systemRoles;
@@ -315,6 +311,9 @@ public final class CmsRole {
      */
     public boolean equals(Object obj) {
 
+        if (obj == this) {
+            return true;
+        }
         if (obj instanceof CmsRole) {
             return m_roleName.equals(((CmsRole)obj).m_roleName);
         }

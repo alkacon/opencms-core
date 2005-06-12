@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/10 15:14:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -221,14 +223,12 @@ public class CmsModule implements Comparable {
         }
 
         initOldAdditionalResources();
-        
+
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_MODULE_INSTANCE_CREATED_1, m_name));
         }
         m_resourceTypes = Collections.EMPTY_LIST;
         m_explorerTypeSettings = Collections.EMPTY_LIST;
-
-        m_frozen = true;
     }
 
     /**
@@ -303,10 +303,13 @@ public class CmsModule implements Comparable {
      */
     public int compareTo(Object obj) {
 
-        if ((obj == null) || (!(obj instanceof CmsModule))) {
+        if (obj == this) {
             return 0;
         }
-        return m_name.compareTo(((CmsModule)obj).m_name);
+        if (obj instanceof CmsModule) {
+            return m_name.compareTo(((CmsModule)obj).m_name);
+        }
+        return 0;
     }
 
     /**
@@ -321,17 +324,13 @@ public class CmsModule implements Comparable {
      */
     public boolean equals(Object obj) {
 
-        if (obj == null) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-
-        if (!(obj instanceof CmsModule)) {
-            return false;
+        if (obj instanceof CmsModule) {
+            return ((CmsModule)obj).m_name.equals(m_name);
         }
-
-        CmsModule other = (CmsModule)obj;
-
-        return m_name.equals(other.m_name);
+        return false;
     }
 
     /**
@@ -543,18 +542,6 @@ public class CmsModule implements Comparable {
     }
 
     /**
-     * Initializes this module, also freezing the module configuration.<p>
-     * 
-     * @param cms an initialized OpenCms user context
-     */
-    public void initialize(CmsObject cms) {
-
-        // noop
-        m_frozen = true;
-        m_resources = Collections.unmodifiableList(m_resources);
-    }
-
-    /**
      * Checks if this module is identical with another module.<p>
      * 
      * Modules A, B are <b>identical</b> if <i>all</i> values of A are equal to B.
@@ -596,7 +583,6 @@ public class CmsModule implements Comparable {
         if (m_dateCreated != other.m_dateCreated) {
             return false;
         }
-
         return true;
     }
 
@@ -852,6 +838,23 @@ public class CmsModule implements Comparable {
     }
 
     /**
+     * Initializes this module, also freezing the module configuration.<p>
+     * 
+     * @param cms an initialized OpenCms user context
+     * 
+     * @throws CmsRoleViolationException if the given users does not have the <code>{@link CmsRole#MODULE_MANAGER}</code> role 
+     */
+    protected void initialize(CmsObject cms) throws CmsRoleViolationException {
+
+        checkFrozen();
+        // check if the user has the required permissions
+        cms.checkRole(CmsRole.MODULE_MANAGER);
+
+        m_frozen = true;
+        m_resources = Collections.unmodifiableList(m_resources);
+    }
+
+    /**
      * Resolves the module property "additionalresources" to the resource list and
      * vice versa.<p>
      * 
@@ -882,8 +885,6 @@ public class CmsModule implements Comparable {
         m_resources = resources;
     }
 
-    
-    
     /**
      * Checks if two objects are either both null, or equal.<p>
      * 

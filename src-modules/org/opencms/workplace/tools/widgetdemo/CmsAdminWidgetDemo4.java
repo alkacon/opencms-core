@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo4.java,v $
- * Date   : $Date: 2005/06/02 16:41:07 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.widgets.CmsHtmlGalleryWidget;
 import org.opencms.widgets.CmsImageGalleryWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsLinkGalleryWidget;
+import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.widgets.CmsTableGalleryWidget;
 import org.opencms.widgets.CmsTextareaWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
@@ -65,14 +66,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "widgetdemo4";
-
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAdminWidgetDemo3.class);
@@ -98,7 +98,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
@@ -139,7 +139,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
                 if (count > base.getMinOccurs()) {
                     removeValue = true;
                 }
-                
+
                 // check if value is present
                 boolean disabledElement = false;
                 if (count < 1) {
@@ -148,7 +148,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
                     sequence.add(base);
                     count = 1;
                     if (base.getMinOccurs() == 0) {
-                        disabledElement = true;    
+                        disabledElement = true;
                     }
                 }
 
@@ -209,8 +209,8 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
             // close table
             result.append("</table>\n");
         } catch (Throwable t) {
-            LOG.error(org.opencms.workplace.editors.Messages.get()
-                .key(org.opencms.workplace.editors.Messages.ERR_XML_EDITOR_0), t);
+            LOG.error(org.opencms.workplace.editors.Messages.get().key(
+                org.opencms.workplace.editors.Messages.ERR_XML_EDITOR_0), t);
         }
         return result.toString();
     }
@@ -230,19 +230,27 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter("htmlgalwidget", new CmsHtmlGalleryWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("tablegalwidget", new CmsTableGalleryWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("extgalwidget", new CmsLinkGalleryWidget(), 0, 5));
-        String val1 = Messages.get().key(getLocale(), Messages.GUI_WIDGETDEMO_DEMOVALUE_1, new Object[]{"1"});
-        addWidget(new CmsWidgetDialogParameter("combowidget", 
-            new CmsComboWidget(
-                val1 
-                + ":" 
-                +  Messages.get().key(getLocale(), Messages.GUI_WIDGETDEMO_DEMOHELP_1, new Object[]{val1})
-                + "|" 
-                + Messages.get().key(getLocale(), Messages.GUI_WIDGETDEMO_DEMOVALUE_1, new Object[]{"2"})
-                + Messages.get().key(getLocale(), Messages.GUI_WIDGETDEMO_DEMOHELP_VAL2_0, null)
-                + Messages.get().key(getLocale(), Messages.GUI_WIDGETDEMO_DEMOVALUE_1, new Object[]{"3"}))
-              , 0, 2));
+
+        String val1 = Messages.get().key(getLocale(), Messages.GUI_WIDGETDEMO_DEMOVALUE_1, new Object[] {"1"});
+        List widgetOptions = new ArrayList();
+        widgetOptions.add(new CmsSelectWidgetOption(val1, false, null, Messages.get().key(
+            getLocale(),
+            Messages.GUI_WIDGETDEMO_DEMOHELP_1,
+            new Object[] {val1})));
+        widgetOptions.add(new CmsSelectWidgetOption(Messages.get().key(
+            getLocale(),
+            Messages.GUI_WIDGETDEMO_DEMOVALUE_1,
+            new Object[] {"2"}), true, null, Messages.get().key(
+            getLocale(),
+            Messages.GUI_WIDGETDEMO_DEMOHELP_VAL2_0,
+            null)));
+        widgetOptions.add(new CmsSelectWidgetOption(Messages.get().key(
+            getLocale(),
+            Messages.GUI_WIDGETDEMO_DEMOVALUE_1,
+            new Object[] {"3"})));
+        addWidget(new CmsWidgetDialogParameter("combowidget", new CmsComboWidget(widgetOptions), 0, 2));
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
@@ -251,7 +259,6 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
         return new String[] {"page1"};
     }
 
-    
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#initMessages()
      */
@@ -260,7 +267,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
         addMessages(Messages.get().getBundleName());
         super.initMessages();
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */

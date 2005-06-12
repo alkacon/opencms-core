@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2005/03/06 11:28:39 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/12 11:18:22 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.collections.buffer.BoundedFifoBuffer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.0
  */
@@ -106,16 +106,15 @@ public class CmsSessionInfo implements Comparable {
      * 
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object o) {
+    public int compareTo(Object obj) {
 
-        if (!(o instanceof CmsSessionInfo)) {
-            // not our type...
+        if (obj == this) {
             return 0;
         }
-
-        CmsSessionInfo other = (CmsSessionInfo)o;
-        // compare the user names
-        return m_user.getName().compareTo(other.getUser().getName());
+        if (!(obj instanceof CmsSessionInfo)) {
+            return m_user.getName().compareTo(((CmsSessionInfo)obj).getUser().getName());
+        }
+        return 0;
     }
 
     /**

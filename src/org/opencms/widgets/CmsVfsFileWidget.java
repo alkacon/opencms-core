@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsFileWidget.java,v $
- * Date   : $Date: 2005/06/10 10:01:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,19 +42,25 @@ import org.opencms.workplace.I_CmsWpConstants;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.2
  */
 public class CmsVfsFileWidget extends A_CmsWidget {
-    
+
     /** Configuration parameter to set the flag to show the site selector in popup resource tree. */
     public static final String CONFIGURATION_HIDESITESELECTOR = "hidesiteselector";
-    
+
     /** Configuration parameter to set the flag to show the site selector in popup resource tree. */
     public static final String CONFIGURATION_SHOWSITESELECTOR = "showsiteselector";
-    
+
     /** Configuration parameter to set start site of the popup resource tree. */
     public static final String CONFIGURATION_STARTSITE = "startsite";
+
+    /** Flag to determine if the site selector should be shown in popup window. */
+    private boolean m_showSiteSelector;
+
+    /** The start site used in the popup window. */
+    private String m_startSite;
 
     /**
      * Creates a new vfs file widget.<p>
@@ -66,6 +72,18 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     }
 
     /**
+     * Createa a new vfs file widget with the parameters to configure the popup tree window behaviour.<p>
+     * 
+     * @param showSiteSelector true if the site selector should be shown in the popup window
+     * @param startSite the start site root for the popup window
+     */
+    public CmsVfsFileWidget(boolean showSiteSelector, String startSite) {
+
+        m_showSiteSelector = showSiteSelector;
+        m_startSite = startSite;
+    }
+
+    /**
      * Creates a new vfs file widget with the given configuration.<p>
      * 
      * @param configuration the configuration to use
@@ -74,78 +92,6 @@ public class CmsVfsFileWidget extends A_CmsWidget {
 
         super(configuration);
     }
-    
-    /**
-     * Createa a new vfs file widget with the parameters to configure the popup tree window behaviour.<p>
-     * 
-     * @param showSiteSelector true if the site selector should be shown in popup window
-     * @param startSite the start site for the popup window
-     */
-    public CmsVfsFileWidget(boolean showSiteSelector, String startSite) {
-
-        m_showSiteSelector = showSiteSelector;
-        m_startSite = startSite;
-    }
-    
-    /** Flag to determine if the site selector should be shown in popup window. */
-    private boolean m_showSiteSelector;
-    
-    /** The start site used in the popup window. */
-    private String m_startSite;
-    
-    
-    /**
-     * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
-     */
-    protected String getConfiguration() {
-
-        StringBuffer result = new StringBuffer(8);
-        
-        // append site selector flag to configuration
-        if (m_showSiteSelector) {
-            result.append(CONFIGURATION_SHOWSITESELECTOR);
-        } else {
-            result.append(CONFIGURATION_HIDESITESELECTOR);    
-        }
-        
-        // append start site to configuration
-        if (m_startSite != null) {
-            result.append("|");
-            result.append(CONFIGURATION_STARTSITE);
-            result.append("=");
-            result.append(m_startSite);
-        }
-        
-        return result.toString();
-    }
-    
-    
-    /**
-     * @see org.opencms.widgets.A_CmsWidget#setConfiguration(java.lang.String)
-     */
-    public void setConfiguration(String configuration) {
-        
-        m_showSiteSelector = true;
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
-            if (configuration.indexOf(CONFIGURATION_HIDESITESELECTOR) != -1) {
-                // site selector should be hidden
-                m_showSiteSelector = false;
-            }
-            int siteIndex = configuration.indexOf(CONFIGURATION_STARTSITE);
-            if (siteIndex != -1) {
-                // start site is given
-                String site = configuration.substring(CONFIGURATION_STARTSITE.length() + 1);
-                if (site.indexOf('|') != -1) {
-                    // cut eventual followin configuration values
-                    site = site.substring(0, site.indexOf('|'));
-                }
-                m_startSite = site;
-            }
-        }   
-        super.setConfiguration(configuration);
-        
-    }
-    
 
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
@@ -211,7 +157,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
         result.append("\"></td>");
         result.append(widgetDialog.dialogHorizontalSpacer(10));
         result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-        
+
         StringBuffer buttonJs = new StringBuffer(8);
         buttonJs.append("javascript:openTreeWin('EDITOR',  '");
         buttonJs.append(id);
@@ -221,13 +167,15 @@ public class CmsVfsFileWidget extends A_CmsWidget {
         } else {
             buttonJs.append(", false");
         }
+        buttonJs.append(", '");
         if (m_startSite != null) {
-            buttonJs.append(", '");
             buttonJs.append(m_startSite);
-            buttonJs.append("'");
+        } else {
+            buttonJs.append(cms.getRequestContext().getSiteRoot());
         }
+        buttonJs.append("'");
         buttonJs.append(");");
-        
+
         result.append(widgetDialog.button(
             buttonJs.toString(),
             null,
@@ -243,11 +191,85 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     }
 
     /**
+     * Returns the start site root shown by the widget when first displayed.<p>
+     *
+     * If <code>null</code> is returned, the dialog will display the current site of 
+     * the current user.<p>
+     *
+     * @return the start site root shown by the widget when first displayed
+     */
+    public String getStartSite() {
+
+        return m_startSite;
+    }
+
+    /**
+     * Returns <code>true</code> if the site selector is shown.<p>
+     *
+     * The default is <code>true</code>.<p>
+     *
+     * @return <code>true</code> if the site selector is shown
+     */
+    public boolean isShowingSiteSelector() {
+
+        return m_showSiteSelector;
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#newInstance()
      */
     public I_CmsWidget newInstance() {
 
         return new CmsVfsFileWidget(getConfiguration());
     }
-    
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#setConfiguration(java.lang.String)
+     */
+    public void setConfiguration(String configuration) {
+
+        m_showSiteSelector = true;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration)) {
+            if (configuration.indexOf(CONFIGURATION_HIDESITESELECTOR) != -1) {
+                // site selector should be hidden
+                m_showSiteSelector = false;
+            }
+            int siteIndex = configuration.indexOf(CONFIGURATION_STARTSITE);
+            if (siteIndex != -1) {
+                // start site is given
+                String site = configuration.substring(CONFIGURATION_STARTSITE.length() + 1);
+                if (site.indexOf('|') != -1) {
+                    // cut eventual following configuration values
+                    site = site.substring(0, site.indexOf('|'));
+                }
+                m_startSite = site;
+            }
+        }
+        super.setConfiguration(configuration);
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
+     */
+    protected String getConfiguration() {
+
+        StringBuffer result = new StringBuffer(8);
+
+        // append site selector flag to configuration
+        if (m_showSiteSelector) {
+            result.append(CONFIGURATION_SHOWSITESELECTOR);
+        } else {
+            result.append(CONFIGURATION_HIDESITESELECTOR);
+        }
+
+        // append start site to configuration
+        if (m_startSite != null) {
+            result.append("|");
+            result.append(CONFIGURATION_STARTSITE);
+            result.append("=");
+            result.append(m_startSite);
+        }
+
+        return result.toString();
+    }
 }

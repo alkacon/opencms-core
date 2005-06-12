@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/06/10 10:14:39 $
- * Version: $Revision: 1.655 $
+ * Date   : $Date: 2005/06/12 11:18:22 $
+ * Version: $Revision: 1.656 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,11 @@ OpenCms 5.9.2 Corrin (aka 6.0 RC 2) - June 17, 2005
 ! Account management tool in the (new) Administration finished
 ! Module management tool in the (new) Administration finished
 ! Database management tool in the (new) Administration finished
+! Project management tool in the (new) Administration finished
+! Link check tool in the (new) Administration finished
+! Logfile view tool in the (new) Administration finished
+- Streamlined implementations of equals(Object) and compareTo(Object) for core classes
+- Introduced abstract base class and parameter handling for all select type widgets
 
 OpenCms 5.9.1 Corrin (aka 6.0 RC 1) - May 25, 2005
 * Fixed issue with static export suffix on a JSP with parameters always being set to ".html"

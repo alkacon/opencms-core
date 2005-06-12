@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Messages.java,v $
- * Date   : $Date: 2005/05/16 17:10:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,16 +43,25 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_MALFORMED_SELECT_OPTIONS_0 = "ERR_MALFORMED_SELECT_OPTIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MAP_DUPLICATE_KEY_3 = "ERR_MAP_DUPLICATE_KEY_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MAP_PARAMETER_FORM_1 = "ERR_MAP_PARAMETER_FORM_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_PROPERTY_2 = "ERR_NO_PROPERTY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_WIDGET_DIALOG_0 = "ERR_NO_WIDGET_DIALOG_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PARSE_DATETIME_1 = "ERR_PARSE_DATETIME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROPERTY_READ_2 = "ERR_PROPERTY_READ_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_WIDGET_DIALOG_0 = "ERR_NO_WIDGET_DIALOG_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROPERTY_WRITE_3 = "ERR_PROPERTY_WRITE_3";
@@ -63,12 +72,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_WIDGETCOLLECTOR_ADD_1 = "LOG_DEBUG_WIDGETCOLLECTOR_ADD_1";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_MAP_PARAMETER_FORM_1 = "ERR_MAP_PARAMETER_FORM_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_MAP_DUPLICATE_KEY_3 = "ERR_MAP_DUPLICATE_KEY_3";
-    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.widgets.messages";
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsAcceptLanguageHeaderParser.java,v $
- * Date   : $Date: 2005/05/20 15:12:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,6 +84,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+
 package org.opencms.i18n;
 
 import org.opencms.main.CmsIllegalArgumentException;
@@ -106,7 +107,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Daniel Rall (dlr@collab.net)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsAcceptLanguageHeaderParser implements Iterator {
 
@@ -125,6 +126,7 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
          * @see java.lang.Comparable#compareTo(java.lang.Object)
          */
         public final int compareTo(Object acceptLang) {
+
             return m_quality.compareTo(((AcceptLanguage)acceptLang).m_quality);
         }
     }
@@ -134,7 +136,7 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
 
     /** The default m_quality value for an <code>AcceptLanguage</code> object. */
     protected static final Float DEFAULT_QUALITY = new Float(1.0f);
-    
+
     /** Separates elements of the <code>Accept-Language</code> HTTP header. */
     private static final String LOCALE_SEPARATOR = ",";
 
@@ -143,20 +145,21 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
 
     /** The parsed <code>Accept-Language</code> headers. */
     private List m_acceptLanguage = new ArrayList(3);
-    
+
     /** The parsed locales. */
     private List m_locales;
-    
+
     /**
      * Parses the <code>Accept-Language</code> header from the provided request.<p>
      * 
      * @param req the request to parse
      * @param defaultLocale the default locale to use
-     */    
+     */
     public CmsAcceptLanguageHeaderParser(HttpServletRequest req, Locale defaultLocale) {
+
         this(req.getHeader(ACCEPT_LANGUAGE), defaultLocale);
-    }    
-    
+    }
+
     /**
      * Parses the <code>Accept-Language</code> header.<p>
      * 
@@ -164,18 +167,19 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
      * @param defaultLocale the default locale to use
      */
     public CmsAcceptLanguageHeaderParser(String header, Locale defaultLocale) {
+
         // check if there was a locale foud in the HTTP header.
         // if not, use the default locale.
-        if (header== null) {
+        if (header == null) {
             m_locales = new ArrayList();
-            m_locales.add(defaultLocale);  
-        } else {        
+            m_locales.add(defaultLocale);
+        } else {
             StringTokenizer tok = new StringTokenizer(header, LOCALE_SEPARATOR);
             while (tok.hasMoreTokens()) {
                 AcceptLanguage acceptLang = new AcceptLanguage();
                 String element = tok.nextToken().trim();
                 int index;
-    
+
                 // Record and cut off any quality value that comes after a semi-colon.
                 if ((index = element.indexOf(QUALITY_SEPARATOR)) != -1) {
                     String q = element.substring(index);
@@ -188,9 +192,9 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
                         }
                     }
                 }
-    
+
                 element = element.trim();
-    
+
                 // Create a Locale from the language. A dash may separate the language from the country.
                 if ((index = element.indexOf('-')) == -1) {
                     // No dash means no country.
@@ -198,13 +202,13 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
                 } else {
                     acceptLang.m_locale = new Locale(element.substring(0, index), element.substring(index + 1));
                 }
-                
+
                 m_acceptLanguage.add(acceptLang);
             }
-    
+
             // sort by quality in descending order
             Collections.sort(m_acceptLanguage, Collections.reverseOrder());
-            
+
             // store all calculated Locales in a List
             m_locales = new ArrayList(m_acceptLanguage.size());
             Iterator i = m_acceptLanguage.iterator();
@@ -213,42 +217,45 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
                 m_locales.add(lang.m_locale);
             }
         }
-  
+
     }
-    
+
     /**
      * Creates a value string for the HTTP Accept-Language header based on the default localed.<p>
      * 
      * @return value string for the HTTP Accept-Language
      */
     public static String createLanguageHeader() {
+
         String header;
-        
+
         // get the default accept-language header value
-        List defaultLocales = OpenCms.getLocaleManager().getDefaultLocales(); 
+        List defaultLocales = OpenCms.getLocaleManager().getDefaultLocales();
         Iterator i = defaultLocales.iterator();
         header = "";
         while (i.hasNext()) {
             Locale loc = (Locale)i.next();
-            header += loc.getLanguage()+", ";
+            header += loc.getLanguage() + ", ";
         }
-        header = header.substring(0, header.length()-2);
+        header = header.substring(0, header.length() - 2);
         return header;
     }
-    
+
     /**
      * Returns the sorted list of accepted Locales.<p>
      * 
      * @return the sorted list of accepted Locales
      */
     public List getAcceptedLocales() {
-        return m_locales;        
+
+        return m_locales;
     }
 
     /**
      * @return Whether there are more locales.
      */
     public boolean hasNext() {
+
         return !m_acceptLanguage.isEmpty();
     }
 
@@ -258,6 +265,7 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
      * @return The next highest-rated <code>Locale</code>.
      */
     public Object next() {
+
         if (m_acceptLanguage.isEmpty()) {
             throw new NoSuchElementException();
         }
@@ -271,6 +279,7 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
      *         (<b>interface contract defines {@link UnsupportedOperationException}</b>) 
      */
     public final void remove() throws CmsIllegalArgumentException {
+
         throw new CmsRuntimeException(org.opencms.db.Messages.get().container(
             org.opencms.db.Messages.ERR_UNSUPPORTED_OPERATION_2,
             getClass().getName(),

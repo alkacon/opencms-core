@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2005/05/13 09:25:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.lock;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
-
 /**
  * Represents the lock state of a VFS resource.<p>
  * 
@@ -48,15 +47,22 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2005/05/13 09:25:48 $
+ * @version $Revision: 1.22 $ $Date: 2005/06/12 11:18:21 $
  * @since 5.1.4
  * @see org.opencms.file.CmsObject#getLock(org.opencms.file.CmsResource)
  * @see org.opencms.lock.CmsLockManager
  */
 public class CmsLock implements Cloneable {
 
-    /** The shared null lock object. */
-    private static final CmsLock C_NULL_LOCK = new CmsLock("", CmsUUID.getNullUUID(), I_CmsConstants.C_UNKNOWN_ID, CmsLock.C_TYPE_UNLOCKED);
+    /**
+     * Indicates that the lock is a common lock and doesn't expire.
+     */
+    public static final int C_MODE_COMMON = 0;
+
+    /**
+     * Indicates that the lock is a temporary lock that expires is the user was logged out.
+     */
+    public static final int C_MODE_TEMP = 1;
 
     /** 
      * A lock that allows the user to edit the resource’s structure record, 
@@ -65,44 +71,44 @@ public class CmsLock implements Cloneable {
      * This lock is assigned to files that are locked via the context menu.
      */
     public static final int C_TYPE_EXCLUSIVE = 4;
-    
+
     /**
      * A lock that is inherited from a locked parent folder.
-     */    
+     */
     public static final int C_TYPE_INHERITED = 3;
-    
+
     /**
      * A lock that allows the user to edit the resource’s structure record only, 
      * but not it’s resource record nor content record.<p>
      * 
      * This lock is assigned to files if a sibling of the resource record has
      * already an exclusive lock. 
-     */    
+     */
     public static final int C_TYPE_SHARED_EXCLUSIVE = 2;
-    
+
     /**
      * A lock that allows the user to edit the resource’s structure record only, 
      * but not it’s resource record nor content record.<p>
      * 
      * This lock is assigned to resources that already have a shared exclusive lock,
      * and then inherit a lock because one if it's parent folders gets locked.
-     */    
+     */
     public static final int C_TYPE_SHARED_INHERITED = 1;
-    
+
     /**
      * Reserved for the Null CmsLock.
-     */    
+     */
     public static final int C_TYPE_UNLOCKED = 0;
-    
-    /**
-     * Indicates that the lock is a temporary lock that expires is the user was logged out.
-     */
-    public static final int C_MODE_TEMP = 1;
-    
-    /**
-     * Indicates that the lock is a common lock and doesn't expire.
-     */
-    public static final int C_MODE_COMMON =0;
+
+    /** The shared null lock object. */
+    private static final CmsLock C_NULL_LOCK = new CmsLock(
+        "",
+        CmsUUID.getNullUUID(),
+        I_CmsConstants.C_UNKNOWN_ID,
+        CmsLock.C_TYPE_UNLOCKED);
+
+    /** Flag to indicate if the lock is a temporary lock. */
+    private int m_mode;
 
     /** The ID of the project where the resource is locked. */
     private int m_projectId;
@@ -115,9 +121,6 @@ public class CmsLock implements Cloneable {
 
     /** The ID of the user who locked the resource. */
     private CmsUUID m_userId;
-    
-    /** Flag to indicate if the lock is a temporary lock. */
-    private int m_mode;
 
     /**
      * Constructor for a new Cms lock.<p>
@@ -128,13 +131,14 @@ public class CmsLock implements Cloneable {
      * @param type flag indicating how the resource is locked
      */
     public CmsLock(String resourceName, CmsUUID userId, int projectId, int type) {
+
         m_resourceName = resourceName;
         m_userId = userId;
         m_projectId = projectId;
         m_type = type;
         m_mode = C_MODE_COMMON;
     }
-    
+
     /**
      * Constructor for a new Cms lock.<p>
      * 
@@ -145,6 +149,7 @@ public class CmsLock implements Cloneable {
      * @param mode flag indicating the mode (temporary or common) of a lock
      */
     public CmsLock(String resourceName, CmsUUID userId, int projectId, int type, int mode) {
+
         m_resourceName = resourceName;
         m_userId = userId;
         m_projectId = projectId;
@@ -158,26 +163,40 @@ public class CmsLock implements Cloneable {
      * @return the shared Null CmsLock
      */
     public static CmsLock getNullLock() {
+
         return CmsLock.C_NULL_LOCK;
     }
 
     /**
      * Compares this lock to the specified object.<p>
      * 
-     * @param object the object to compare to
+     * @param obj the object to compare to
      * @return true if and only if member values of this CmsLock are the same with the compared CmsLock 
      */
-    public boolean equals(Object object) {
-        CmsLock otherLock = null;
+    public boolean equals(Object obj) {
 
-        if (object instanceof CmsLock) {
-            otherLock = (CmsLock) object;
-            if (otherLock.getResourceName().equals(getResourceName()) && otherLock.getUserId().equals(getUserId()) && otherLock.getProjectId() == getProjectId()) {
-                return true;
-            }
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj instanceof CmsLock) {
+            CmsLock otherLock = (CmsLock)obj;
+            return otherLock.m_resourceName.equals(m_resourceName)
+                && otherLock.m_userId.equals(m_userId)
+                && otherLock.m_projectId == m_projectId;
         }
 
         return false;
+    }
+
+    /**
+     * Returns the mode of the lock to indicate if the lock is a temporary lock.<p>
+     * 
+     * @return the temporary mode of the lock
+     */
+    public int getMode() {
+
+        return m_mode;
     }
 
     /**
@@ -186,6 +205,7 @@ public class CmsLock implements Cloneable {
      * @return the ID of the project
      */
     public int getProjectId() {
+
         return m_projectId;
     }
 
@@ -195,16 +215,8 @@ public class CmsLock implements Cloneable {
      * @return the name of the locked resource
      */
     public String getResourceName() {
+
         return m_resourceName;
-    }
-    
-    /**
-     * Returns the mode of the lock to indicate if the lock is a temporary lock.<p>
-     * 
-     * @return the temporary mode of the lock
-     */
-    public int getMode() {
-        return m_mode;
     }
 
     /**
@@ -213,6 +225,7 @@ public class CmsLock implements Cloneable {
      * @return the type of the lock
      */
     public int getType() {
+
         return m_type;
     }
 
@@ -222,13 +235,15 @@ public class CmsLock implements Cloneable {
      * @return the ID of the user
      */
     public CmsUUID getUserId() {
+
         return m_userId;
     }
-    
+
     /**
      * @see java.lang.Object#hashCode()
      */
-    public int hashCode() { 
+    public int hashCode() {
+
         return getResourceName().hashCode();
     }
 
@@ -238,34 +253,36 @@ public class CmsLock implements Cloneable {
      * @return true if and only if this CmsLock is the Null CmsLock
      */
     public boolean isNullLock() {
+
         return this.equals(CmsLock.C_NULL_LOCK);
     }
-    
+
     /**
      * Builds a string representation of the current state.<p>
      * 
      * @see java.lang.Object#toString()
      */
     public String toString() {
+
         StringBuffer buf = new StringBuffer();
 
         buf.append("resource: ");
         buf.append(this.getResourceName());
         buf.append(" type: ");
         switch (this.getType()) {
-            case CmsLock.C_TYPE_EXCLUSIVE :
+            case CmsLock.C_TYPE_EXCLUSIVE:
                 buf.append("exclusive");
                 break;
-            case CmsLock.C_TYPE_SHARED_EXCLUSIVE :
+            case CmsLock.C_TYPE_SHARED_EXCLUSIVE:
                 buf.append("shared exclusive");
                 break;
-            case CmsLock.C_TYPE_INHERITED :
+            case CmsLock.C_TYPE_INHERITED:
                 buf.append("inherited");
                 break;
-            case CmsLock.C_TYPE_SHARED_INHERITED :
+            case CmsLock.C_TYPE_SHARED_INHERITED:
                 buf.append("shared inherited");
                 break;
-            default :
+            default:
                 buf.append("unlocked");
                 break;
         }
@@ -275,6 +292,5 @@ public class CmsLock implements Cloneable {
         buf.append(this.getUserId());
 
         return buf.toString();
-    }   
-
+    }
 }

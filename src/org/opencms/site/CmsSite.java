@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2005/05/28 09:35:34 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.ArrayList;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
  *
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.1
  */
 public final class CmsSite implements Cloneable {
@@ -135,12 +135,15 @@ public final class CmsSite implements Cloneable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object o) {
+    public boolean equals(Object obj) {
 
-        if ((o == null) || !(o instanceof CmsSite)) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-        return getSiteMatcher().equals(((CmsSite)o).getSiteMatcher());
+        if (obj instanceof CmsSite) {
+            ((CmsSite)obj).m_siteMatcher.equals(m_siteMatcher);
+        }
+        return false;
     }
 
     /**

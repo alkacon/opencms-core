@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceView.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace;
 
 /**
@@ -35,20 +36,20 @@ package org.opencms.workplace;
  *  
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3
  */
 public class CmsWorkplaceView implements Comparable {
-    
+
     /** The loaclization key of this view. */
     private String m_key;
-    
+
     /** The sort order of the view. */
     private Float m_order;
 
     /** The URI of the OpenCms VFS resource (folder) of the view. */
     private String m_uri;
-    
+
     /**
      * Creates a new workplace view.<p>
      * 
@@ -57,6 +58,7 @@ public class CmsWorkplaceView implements Comparable {
      * @param order the sort order of the view 
      */
     public CmsWorkplaceView(String key, String uri, Float order) {
+
         m_key = key;
         m_uri = uri;
         m_order = order;
@@ -65,55 +67,66 @@ public class CmsWorkplaceView implements Comparable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object o) {
-        if (o instanceof CmsWorkplaceView) {
-            return m_order.compareTo(((CmsWorkplaceView)o).getOrder());
+    public int compareTo(Object obj) {
+
+        if (obj == this) {
+            return 0;
+        }
+        if (obj instanceof CmsWorkplaceView) {
+            return m_order.compareTo(((CmsWorkplaceView)obj).getOrder());
         }
         return 0;
     }
-    
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object o) {
-        if (! (o instanceof CmsWorkplaceView)) {
-            return false;
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
         }
-        CmsWorkplaceView other = (CmsWorkplaceView)o;
-        return getUri().equals(other.getUri());
+        if (obj instanceof CmsWorkplaceView) {
+            return ((CmsWorkplaceView)obj).m_uri.equals(m_uri);
+        }
+        return false;
     }
-    
+
     /**
      * Returns the localization key for the display name of this view .<p>
      * 
      * @return the localization key
      */
     public String getKey() {
+
         return m_key;
     }
-    
+
     /**
      * Returns the sort order of this view.<p>
      * 
      * @return the sort order of this view
      */
     public Float getOrder() {
+
         return m_order;
     }
-    
+
     /**
      * Returns the OpenCms VFS uri of this view.<p>
      * 
      * @return the uri
      */
     public String getUri() {
+
         return m_uri;
     }
-    
+
     /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
+
         return getUri().hashCode();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPoint.java,v $
- * Date   : $Date: 2005/06/10 09:08:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/12 11:18:22 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.OpenCms;
  *  
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3
  */
 public class CmsExportPoint {
@@ -79,13 +79,15 @@ public class CmsExportPoint {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object o) {
+    public boolean equals(Object obj) {
 
-        if (!(o instanceof CmsExportPoint)) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-        CmsExportPoint other = (CmsExportPoint)o;
-        return getUri().equals(other.getUri());
+        if (obj instanceof CmsExportPoint) {
+            return ((CmsExportPoint)obj).m_uri.equals(m_uri);
+        }
+        return false;
     }
 
     /**
@@ -150,17 +152,19 @@ public class CmsExportPoint {
     }
 
     /**
-     * Dummy method to use the CmsExportPoint object in widgets.<p>
+     * Dummy method to expose the destination path as bean property.<p>
      * 
-     * Use the  @see #setConfiguredDestination() method instead.
+     * The method does not actually change the value of the destination path.
+     * Use the <code>{@link #setConfiguredDestination(String)}</code> method instead.
      * 
-     * @param value the destination path (dummy only)
-     * 
+     * @param value the destination path (will be ignored)
      */
     public void setDestinationPath(String value) {
 
-        // noop
-
+        if (value == m_destinationPath) {
+            // required to avoid "unused parameter" warning
+            m_destinationPath = value;
+        }
     }
 
     /**

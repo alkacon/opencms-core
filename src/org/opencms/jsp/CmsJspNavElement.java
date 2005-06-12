@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,17 +41,19 @@ import java.util.Map;
  * Bean to collect navigation information from a resource in the OpenCms VFS.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsJspNavElement implements Comparable {
 
     /** Property constant for <code>"locale"</code>. */
     public static final String C_PROPERTY_LOCALE = "locale";
+    
     /** Property constant for <code>"NavImage"</code>. */
     public static final String C_PROPERTY_NAVIMAGE = "NavImage";
+    
     /** Property constant for <code>"NavInfo"</code>. */
     public static final String C_PROPERTY_NAVINFO = "NavInfo";
-    
+
     private String m_fileName;
     private Boolean m_hasNav;
     private int m_navTreeLevel = Integer.MIN_VALUE;
@@ -110,20 +112,19 @@ public class CmsJspNavElement implements Comparable {
     /**
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public int compareTo(Object o) {
+    public int compareTo(Object obj) {
 
-        if (o == null) {
+        if (obj == this) {
             return 0;
         }
-        if (!(o instanceof CmsJspNavElement)) {
-            return 0;
-        }
-        float f = ((CmsJspNavElement)o).getNavPosition() - m_position;
-        if (f > 0) {
-            return -1;
-        }
-        if (f < 0) {
-            return 1;
+        if (obj instanceof CmsJspNavElement) {
+            float f = ((CmsJspNavElement)obj).getNavPosition() - m_position;
+            if (f > 0) {
+                return -1;
+            }
+            if (f < 0) {
+                return 1;
+            }
         }
         return 0;
     }
@@ -131,15 +132,15 @@ public class CmsJspNavElement implements Comparable {
     /**
      * @see java.lang.Object#equals(Object)
      */
-    public boolean equals(Object o) {
+    public boolean equals(Object obj) {
 
-        if (o == null) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-        if (!(o instanceof CmsJspNavElement)) {
-            return false;
+        if (obj instanceof CmsJspNavElement) {
+            return ((CmsJspNavElement)obj).m_resource.equals(m_resource);
         }
-        return m_resource.equals(((CmsJspNavElement)o).getResourceName());
+        return false;
     }
 
     /**

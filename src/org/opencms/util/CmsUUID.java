@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2005/04/22 08:45:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.util;
 
 import org.opencms.main.CmsInitException;
@@ -57,24 +57,26 @@ import org.doomdark.uuid.UUIDGenerator;
  * This class is just a facade wrapper for the "real" UUID implementation.<p> 
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.0.0
  */
-public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable {  
-   
+public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable {
+
     /** Ethernet addess of the server machine. */
     private static EthernetAddress m_ethernetAddress;
-    
-    /** OpenCms UUID (name based uuid of "www.opencms.org" in the dns name space). */
-    private static UUID m_opencmsUUID = UUIDGenerator.getInstance().generateNameBasedUUID(new UUID(UUID.NAMESPACE_DNS), "www.opencms.org");
-    
+
     /** Flag to indicate if the ethernet address has been initialized. */
     private static boolean m_isNotInitialized = true;
 
+    /** OpenCms UUID (name based uuid of "www.opencms.org" in the dns name space). */
+    private static UUID m_opencmsUUID = UUIDGenerator.getInstance().generateNameBasedUUID(
+        new UUID(UUID.NAMESPACE_DNS),
+        "www.opencms.org");
+
     /** Internal UUID implementation. */
-    private UUID m_uuid;        
-           
+    private UUID m_uuid;
+
     /**
      * Creates a new UUID.<p>
      * 
@@ -82,6 +84,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      * enternet address of the machine.<p>
      */
     public CmsUUID() {
+
         synchronized (this) {
             if (m_isNotInitialized) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_INVALID_ETHERNET_ADDRESS_0));
@@ -89,80 +92,37 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
             m_uuid = UUIDGenerator.getInstance().generateTimeBasedUUID(m_ethernetAddress);
         }
     }
-    
-    /**
-     * Initialize the UUID generator with the ethernet address of the server machine.<p>
-     * 
-     * The ethernetAddress parameter must represent a 'standard' ethernet MAC address string
-     * (e.g. '00:C0:F0:3D:5B:7C').
-     * 
-     * @param ethernetAddress the ethernet address of the server machine
-     * @throws CmsInitException in case the ethernetAddress String is not a valid ethernet address
-     */
-    public static void init(String ethernetAddress) throws CmsInitException {
-        try {
-            m_ethernetAddress = new EthernetAddress(ethernetAddress);
-        } catch (Exception e) {
-            throw new CmsInitException(Messages.get().container(Messages.ERR_INVALID_ETHERNET_ADDRESS_1, ethernetAddress));
-        }
-        m_isNotInitialized = false;
-    }
-    
-    /**
-     * Returns a String representing a dummy (random based) ethernet address.<p>
-     * 
-     * @return a String representing a dummy (random based) ethernet address
-     */
-    public static String getDummyEthernetAddress() {
-        return UUIDGenerator.getInstance().getDummyAddress().toString();
-    }
-    
-    /**
-     * Create a UUID based on a String.<p>
-     * 
-     * @param uuid a String representing a UUID
-     * @throws NumberFormatException in case uuid is not a valid UUID
-     */    
-    public CmsUUID(String uuid) throws NumberFormatException {
-        m_uuid = new UUID(uuid);
-    }
-    
+
     /**
      * Create a UUID based on a binary data array.<p>
      * 
      * @param data a binary data array representing a UUID
      */
     public CmsUUID(byte[] data) {
+
         m_uuid = new UUID(data);
     }
-    
+
+    /**
+     * Create a UUID based on a String.<p>
+     * 
+     * @param uuid a String representing a UUID
+     * @throws NumberFormatException in case uuid is not a valid UUID
+     */
+    public CmsUUID(String uuid)
+    throws NumberFormatException {
+
+        m_uuid = new UUID(uuid);
+    }
+
     /**
      * Create a new UUID based on another one (used internal for cloning).<p>
      * 
      * @param uuid the UUID to clone
      */
     private CmsUUID(UUID uuid) {
-        m_uuid = uuid;
-    }
-    
-    /**
-     * Returns a null UUID,
-     * use this null UUID to check if a UUID has been initilized or not.<p>
-     * 
-     * @return a null UUID
-     */
-    public static CmsUUID getNullUUID() {
-        return new CmsUUID(UUID.getNullUUID());
-    }        
 
-    /**
-     * Returns a constant (name based) UUID for OpenCms,
-     * based on "www.opencms.org" in the dns name space.
-     * 
-     * @return name based UUID of OpenCms
-     */
-    public static CmsUUID getOpenCmsUUID() {
-        return new CmsUUID(m_opencmsUUID);
+        m_uuid = uuid;
     }
 
     /**
@@ -173,7 +133,106 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      * @return name based UUID of the given name
      */
     public static CmsUUID getConstantUUID(String name) {
+
         return new CmsUUID(UUIDGenerator.getInstance().generateNameBasedUUID(m_opencmsUUID, name));
+    }
+
+    /**
+     * Returns a String representing a dummy (random based) ethernet address.<p>
+     * 
+     * @return a String representing a dummy (random based) ethernet address
+     */
+    public static String getDummyEthernetAddress() {
+
+        return UUIDGenerator.getInstance().getDummyAddress().toString();
+    }
+
+    /**
+     * Returns a null UUID,
+     * use this null UUID to check if a UUID has been initilized or not.<p>
+     * 
+     * @return a null UUID
+     */
+    public static CmsUUID getNullUUID() {
+
+        return new CmsUUID(UUID.getNullUUID());
+    }
+
+    /**
+     * Returns a constant (name based) UUID for OpenCms,
+     * based on "www.opencms.org" in the dns name space.
+     * 
+     * @return name based UUID of OpenCms
+     */
+    public static CmsUUID getOpenCmsUUID() {
+
+        return new CmsUUID(m_opencmsUUID);
+    }
+
+    /**
+     * Initialize the UUID generator with the ethernet address of the server machine.<p>
+     * 
+     * The ethernetAddress parameter must represent a 'standard' ethernet MAC address string
+     * (e.g. '00:C0:F0:3D:5B:7C').
+     * 
+     * @param ethernetAddress the ethernet address of the server machine
+     * @throws CmsInitException in case the ethernetAddress String is not a valid ethernet address
+     */
+    public static void init(String ethernetAddress) throws CmsInitException {
+
+        try {
+            m_ethernetAddress = new EthernetAddress(ethernetAddress);
+        } catch (Exception e) {
+            throw new CmsInitException(Messages.get().container(
+                Messages.ERR_INVALID_ETHERNET_ADDRESS_1,
+                ethernetAddress));
+        }
+        m_isNotInitialized = false;
+    }
+
+    /**
+     * Creates a clone of this CmsUUID.<p>
+     * 
+     * @return a clone of this CmsUUID
+     */
+    public Object clone() {
+
+        return new CmsUUID((UUID)m_uuid.clone());
+    }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object obj) {
+
+        if (obj == this) {
+            return 0;
+        }
+        return m_uuid.compareTo(obj);
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsUUID) {
+            return ((CmsUUID)obj).m_uuid.equals(m_uuid);
+        }
+        return false;
+    }
+
+    /**
+     * Optimized hashCode implementation for UUID's.<p>
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_uuid.hashCode();
     }
 
     /**
@@ -182,6 +241,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      * @return true if this UUID is equal to the null UUID
      */
     public boolean isNullUUID() {
+
         return m_uuid.equals(UUID.getNullUUID());
     }
 
@@ -191,49 +251,15 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      * @return 16-byte byte array that contains the UUID's bytes in the network byte order
      */
     public byte[] toByteArray() {
+
         return m_uuid.toByteArray();
-    }
-    
-    /**
-     * Optimized hashCode implementation for UUID's.<p>
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        return m_uuid.hashCode();
-    }
-    
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */    
-    public boolean equals(Object o) {
-        if (o instanceof CmsUUID) {
-            return m_uuid.equals(new UUID(((CmsUUID)o).toString()));
-        }
-        
-        return false;
-    }
-            
-    /**
-     * Creates a clone of this CmsUUID.<p>
-     * 
-     * @return a clone of this CmsUUID
-     */  
-    public Object clone() {        
-        return new CmsUUID((UUID)m_uuid.clone());
     }
 
     /**
      * @see java.lang.Object#toString()
-     */    
+     */
     public String toString() {
+
         return m_uuid.toString();
     }
-    
-    /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Object o) {
-        return m_uuid.compareTo(o);
-    }                  
 }

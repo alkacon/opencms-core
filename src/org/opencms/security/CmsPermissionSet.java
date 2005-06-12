@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Set;
  * <li><code>{@link CmsPermissionSet#PERMISSION_CONTROL}</code> (c) the right to set permissions of a resource</li>
  * <li><code>{@link CmsPermissionSet#PERMISSION_DIRECT_PUBLISH}</code> (d) the right direct publish a resource even without publish project permissions</li></ul><p>
  * 
- * @version $Revision: 1.18 $ $Date: 2005/02/17 12:44:41 $
+ * @version $Revision: 1.19 $ $Date: 2005/06/12 11:18:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
@@ -53,7 +53,8 @@ public class CmsPermissionSet {
     public static final CmsPermissionSet ACCESS_CONTROL = new CmsPermissionSet(CmsPermissionSet.PERMISSION_CONTROL);
 
     /** Permission set to check direct publish permissions. */
-    public static final CmsPermissionSet ACCESS_DIRECT_PUBLISH = new CmsPermissionSet(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH);
+    public static final CmsPermissionSet ACCESS_DIRECT_PUBLISH = new CmsPermissionSet(
+        CmsPermissionSet.PERMISSION_DIRECT_PUBLISH);
 
     /** Permission set to check read access. */
     public static final CmsPermissionSet ACCESS_READ = new CmsPermissionSet(CmsPermissionSet.PERMISSION_READ);
@@ -64,32 +65,31 @@ public class CmsPermissionSet {
     /** Permission set to check write access. */
     public static final CmsPermissionSet ACCESS_WRITE = new CmsPermissionSet(CmsPermissionSet.PERMISSION_WRITE);
 
-    /** No permissions for a resource (used especially for denied permissions). */
-     public static final int PERMISSION_EMPTY  =  0;
-
-    /** The permission to read a resource. */
-    public static final int PERMISSION_READ = 1;
-
-    /** The permission to write a resource. */
-    public static final int PERMISSION_WRITE = 2;
-
-    /**  The permission to view a resource. */
-    public static final int PERMISSION_VIEW = 4;
-
     /** The permission to control a resource. */
     public static final int PERMISSION_CONTROL = 8;
 
     /** The permission to direct publish a resource. */
     public static final int PERMISSION_DIRECT_PUBLISH = 16;
-    
+
+    /** No permissions for a resource (used especially for denied permissions). */
+    public static final int PERMISSION_EMPTY = 0;
+
     /** All allowed permissions for a resource. */
-    public static final int PERMISSION_FULL = 
-        CmsPermissionSet.PERMISSION_READ
+    public static final int PERMISSION_FULL = CmsPermissionSet.PERMISSION_READ
         + CmsPermissionSet.PERMISSION_WRITE
         + CmsPermissionSet.PERMISSION_VIEW
         + CmsPermissionSet.PERMISSION_CONTROL
         + CmsPermissionSet.PERMISSION_DIRECT_PUBLISH;
-    
+
+    /** The permission to read a resource. */
+    public static final int PERMISSION_READ = 1;
+
+    /**  The permission to view a resource. */
+    public static final int PERMISSION_VIEW = 4;
+
+    /** The permission to write a resource. */
+    public static final int PERMISSION_WRITE = 2;
+
     /** HashMap of all available permissions. */
     private static HashMap m_permissions;
 
@@ -175,12 +175,14 @@ public class CmsPermissionSet {
      */
     public boolean equals(Object obj) {
 
-        boolean equal = true;
-        CmsPermissionSet perm = (CmsPermissionSet)obj;
-        if ((perm.getAllowedPermissions() != m_allowed) || (perm.getDeniedPermissions() != m_denied)) {
-            equal = false;
+        if (obj == this) {
+            return true;
         }
-        return equal;
+        if (obj instanceof CmsPermissionSet) {
+            CmsPermissionSet other = (CmsPermissionSet)obj;
+            return (other.m_allowed == m_allowed) && (other.m_denied == m_denied);
+        }
+        return false;
     }
 
     /**

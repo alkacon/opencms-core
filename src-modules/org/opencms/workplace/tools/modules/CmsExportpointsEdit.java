@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsEdit.java,v $
- * Date   : $Date: 2005/06/10 15:14:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsComboWidget;
 import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsExportpointsEdit extends CmsWidgetDialog {
@@ -255,7 +256,7 @@ public class CmsExportpointsEdit extends CmsWidgetDialog {
 
         initModule();
 
-        String destinations = getDestinations();
+        List destinations = getDestinations();
 
         addWidget(new CmsWidgetDialogParameter(m_exportpoint, "uri", PAGES[0], new CmsVfsFileWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportpoint, "configuredDestination", PAGES[0], new CmsComboWidget(
@@ -355,21 +356,17 @@ public class CmsExportpointsEdit extends CmsWidgetDialog {
     }
 
     /**
-     * Get the list of default destinations for export points.<p>
-     * @return pipe seperated list of default destinations
+     * Returns the list of default destinations for export points.<p>
+     * 
+     * The result list elements are of type <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code>.<p> 
+     * 
+     * @return the list of default destinations for export points
      */
-    private String getDestinations() {
+    private List getDestinations() {
 
-        StringBuffer mod = new StringBuffer(32);
-
-        mod.append("WEB-INF/classes/");
-        mod.append("|");
-        mod.append("WEB-INF/lib/");
-
-        String modules = new String(mod);
-        if (modules.endsWith("|")) {
-            modules = modules.substring(0, modules.length() - 1);
-        }
-        return modules;
+        List result = new ArrayList();
+        result.add(new CmsSelectWidgetOption("WEB-INF/classes/"));
+        result.add(new CmsSelectWidgetOption("WEB-INF/lib/"));
+        return result;
     }
 }

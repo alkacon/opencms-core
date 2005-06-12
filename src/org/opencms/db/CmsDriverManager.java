@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/09 12:46:16 $
- * Version: $Revision: 1.523 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.524 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.523 $
+ * @version $Revision: 1.524 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -201,15 +201,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         /**
          * @see java.lang.Object#equals(java.lang.Object)
          */
-        public boolean equals(Object o) {
+        public boolean equals(Object obj) {
 
-            if (o == null) {
+            if (obj == this) {
+                return true;
+            }
+            if (!(obj instanceof CacheId)) {
                 return false;
             }
-            if (!(o instanceof CacheId)) {
-                return false;
-            }
-            CacheId other = (CacheId)o;
+            CacheId other = (CacheId)obj;
             boolean result;
             if (m_uuid != null) {
                 result = m_uuid.equals(other.m_uuid);
@@ -2787,8 +2787,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         if (m_securityManager.hasRole(dbc, CmsRole.PROJECT_MANAGER)) {
             // user is allowed to access all existing projects
-            int todo = 0;
-            // TODO: old logic may have also added the not locked projects (?)
             return m_projectDriver.readProjects(dbc, I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
         }
 
@@ -2840,8 +2838,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if (m_securityManager.hasRole(dbc, CmsRole.PROJECT_MANAGER)) {
 
             // user is allowed to access all existing projects
-            int todo = 0;
-            // TODO: old logic may have also added the not locked projects (?)
             projects.addAll(m_projectDriver.readProjects(dbc, I_CmsConstants.C_PROJECT_STATE_UNLOCKED));
         } else {
 

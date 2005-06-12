@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/05/07 16:08:28 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.InputSource;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -771,15 +771,15 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object o) {
+    public boolean equals(Object obj) {
 
-        if (o == null) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof CmsXmlContentDefinition)) {
             return false;
         }
-        if (!(o instanceof CmsXmlContentDefinition)) {
-            return false;
-        }
-        CmsXmlContentDefinition other = (CmsXmlContentDefinition)o;
+        CmsXmlContentDefinition other = (CmsXmlContentDefinition)obj;
         if (!getInnerName().equals(other.getInnerName())) {
             return false;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleDependency.java,v $
- * Date   : $Date: 2005/06/08 10:46:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,23 +87,19 @@ public class CmsModuleDependency implements Comparable {
      */
     public int compareTo(Object obj) {
 
-        if (obj == null) {
+        if (obj == this) {
             return 0;
         }
-
-        if (!(obj instanceof CmsModuleDependency)) {
-            return 0;
+        if (obj instanceof CmsModuleDependency) {
+            CmsModuleDependency other = (CmsModuleDependency)obj;
+            if (!m_name.equals(other.m_name)) {
+                // not same name means no dependency
+                return 0;
+            }
+            // same name: result depends on version numbers
+            return m_version.compareTo(other.m_version);
         }
-
-        CmsModuleDependency other = (CmsModuleDependency)obj;
-
-        if (!m_name.equals(other.m_name)) {
-            // not same name means no dependency
-            return 0;
-        }
-
-        // same name: result depends on version numbers
-        return m_version.compareTo(other.m_version);
+        return 0;
     }
 
     /**
@@ -128,17 +124,14 @@ public class CmsModuleDependency implements Comparable {
      */
     public boolean equals(Object obj) {
 
-        if (obj == null) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-
-        if (!(obj instanceof CmsModuleDependency)) {
-            return false;
+        if (obj instanceof CmsModuleDependency) {
+            CmsModuleDependency other = (CmsModuleDependency)obj;
+            return m_name.equals(other.m_name) && m_version.equals(other.m_version);
         }
-
-        CmsModuleDependency other = (CmsModuleDependency)obj;
-
-        return m_name.equals(other.m_name) && m_version.equals(other.m_version);
+        return false;
     }
 
     /**

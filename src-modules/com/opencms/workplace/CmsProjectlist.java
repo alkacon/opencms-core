@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsProjectlist.java,v $
-* Date   : $Date: 2005/06/10 15:58:06 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/12 11:18:21 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2005/06/10 15:58:06 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/12 11:18:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -218,7 +218,7 @@ public class CmsProjectlist extends A_CmsWpElement {
         xmlFile.setData(C_PROJECTLIST_STATE, lang.getLanguageValue(state));
         xmlFile.setData(C_PROJECTLIST_PROJECTMANAGER, cms.readManagerGroup(project).getName());
         xmlFile.setData(C_PROJECTLIST_PROJECTWORKER, cms.readGroup(project).getName());
-        xmlFile.setData(C_PROJECTLIST_DATECREATED, CmsDateUtil.getDateTimeShort(project.getCreationDate()));
+        xmlFile.setData(C_PROJECTLIST_DATECREATED, CmsDateUtil.getDateTimeShort(project.getDateCreated()));
         xmlFile.setData(C_PROJECTLIST_OWNER, cms.readOwner(project).getName());
     }
 }

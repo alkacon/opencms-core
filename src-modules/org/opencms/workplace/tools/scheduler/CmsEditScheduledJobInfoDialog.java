@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/06/09 15:45:38 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsComboWidget;
 import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.9.1
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
@@ -228,7 +229,8 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         // widgets to display on the first dialog page
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "jobName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "className", PAGES[0], new CmsComboWidget(getComboClasses())));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "cronExpression", PAGES[0], new CmsComboWidget(getComboCronExpressions())));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "cronExpression", PAGES[0], new CmsComboWidget(
+            getComboCronExpressions())));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.userName", PAGES[0], new CmsInputWidget()));
@@ -277,56 +279,61 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         // widget to display on the second dialog page
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "parameters", PAGES[1], new CmsInputWidget()));
     }
-    
+
     /**
      * Returns the example cron class names to show in the combo box.<p>
      * 
+     * The result list elements are of type <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code>.<p> 
+     * 
      * @return the example cron class names to show in the combo box
      */
-    public String getComboClasses() {
+    protected List getComboClasses() {
 
-        StringBuffer result = new StringBuffer(8);
-        result.append(CmsMemoryMonitor.class.getName());
-        result.append(":");
-        result.append(key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE1_0));
-        result.append("|");
-        result.append(CmsSearchManager.class.getName());
-        result.append(":");
-        result.append(key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE2_0));
-        result.append("|");
-        result.append(CmsPublishJob.class.getName());
-        result.append(":");
-        result.append(key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE3_0));
-        
-        
-        return result.toString();
+        List result = new ArrayList();
+        result.add(new CmsSelectWidgetOption(
+            CmsMemoryMonitor.class.getName(),
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE1_0)));
+        result.add(new CmsSelectWidgetOption(
+            CmsSearchManager.class.getName(),
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE2_0)));
+        result.add(new CmsSelectWidgetOption(
+            CmsPublishJob.class.getName(),
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE3_0)));
+        return result;
     }
-    
+
     /**
      * Returns the example cron expressions to show in the combo box.<p>
      * 
+     * The result list elements are of type <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code>.<p> 
+     * 
      * @return the example cron expressions to show in the combo box
      */
-    protected String getComboCronExpressions() {
+    protected List getComboCronExpressions() {
 
-        StringBuffer result = new StringBuffer(8);
-        
+        List result = new ArrayList();
+
         // 0 0 3 * * ? (daily at 3 am)
-        result.append("0 0 3 * * ?:");
-        result.append(key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE1_0));
+        result.add(new CmsSelectWidgetOption("0 0 3 * * ?", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE1_0)));
         // 0 0/30 * * * ? (daily every thirty minutes) 
-        result.append("|0 0/30 * * * ?:");
-        result.append(key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE2_0));
+        result.add(new CmsSelectWidgetOption("0 0/30 * * * ?", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE2_0)));
         // 0 30 8 ? * 4 (every Wednesday at 8:30 am)
-        result.append("|0 30 8 ? * 4:");
-        result.append(key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE3_0));
-        // 0 15 18 15 * ? (on the 15th day of the month at 6:15 pm)
-        result.append("|0 15 18 15 * ?:");
-        result.append(key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE4_0));
+        result.add(new CmsSelectWidgetOption("0 30 8 ? * 4", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE3_0)));
+        // 0 15 18 15 * ? (on the 20th day of the month at 6:15 pm)
+        result.add(new CmsSelectWidgetOption("0 15 18 20 * ?", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE4_0)));
         // 0 45 15 ? * 1 2005-2006 (every Sunday from the year 2005 to 2006 at 3:45 pm)
-        result.append("|0 45 15 ? * 1 2005-2006:");
-        result.append(key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE5_0));
-        return result.toString();
+        result.add(new CmsSelectWidgetOption(
+            "0 45 15 ? * 1 2005-2006",
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE5_0)));
+        return result;
     }
 
     /**

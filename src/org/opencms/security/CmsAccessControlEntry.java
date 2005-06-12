@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,11 +28,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.security;
 
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
-
 
 import java.util.StringTokenizer;
 
@@ -52,7 +52,7 @@ import java.util.StringTokenizer;
  * <code>C_ACCESSFLAGS_GROUP</code> indicates that the principal is a group
  * </p>
  * 
- * @version $Revision: 1.13 $ $Date: 2005/02/17 12:44:41 $
+ * @version $Revision: 1.14 $ $Date: 2005/06/12 11:18:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlEntry {
@@ -91,7 +91,7 @@ public class CmsAccessControlEntry {
         m_permissions = base.m_permissions;
         m_flags = base.m_flags;
     }
-    
+
     /**
      * Constructor to create a new access control entry on a given resource and a given principal.<p>
      * Permissions are specified as permission set, flags as bitset.
@@ -108,7 +108,7 @@ public class CmsAccessControlEntry {
         m_permissions = new CmsPermissionSetCustom(permissions);
         m_flags = flags;
     }
-    
+
     /**
      * Constructor to create a new access control entry on a given resource and a given principal.<p>
      * Permissions and flags are specified as bitsets.
@@ -150,8 +150,8 @@ public class CmsAccessControlEntry {
             String prefix = tok.nextToken();
             String suffix = tok.nextToken();
             switch (suffix.charAt(0)) {
-                case 'I' :
-                case 'i' :
+                case 'I':
+                case 'i':
                     if (prefix.charAt(0) == '+') {
                         m_flags |= I_CmsConstants.C_ACCESSFLAGS_INHERIT;
                     }
@@ -159,8 +159,8 @@ public class CmsAccessControlEntry {
                         m_flags &= ~I_CmsConstants.C_ACCESSFLAGS_INHERIT;
                     }
                     break;
-                case 'O' :
-                case 'o' :
+                case 'O':
+                case 'o':
                     if (prefix.charAt(0) == '+') {
                         m_flags |= I_CmsConstants.C_ACCESSFLAGS_OVERWRITE;
                     }
@@ -168,7 +168,7 @@ public class CmsAccessControlEntry {
                         m_flags &= ~I_CmsConstants.C_ACCESSFLAGS_OVERWRITE;
                     }
                     break;
-                default :
+                default:
                     permissionString.append(prefix);
                     permissionString.append(suffix);
                     break;
@@ -187,35 +187,37 @@ public class CmsAccessControlEntry {
 
         m_permissions.denyPermissions(denied);
     }
-    
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        boolean equal = true;
 
-        CmsAccessControlEntry ace = (CmsAccessControlEntry)obj;
-        
-        if (!ace.getResource().equals(m_resource)) {
-            equal = false;
+        if (obj == this) {
+            return true;
         }
-        if (!ace.getPrincipal().equals(m_principal)) {
-            equal = false;
-        }   
-        if (ace.getFlags() != m_flags) {
-            equal = false;
+        if (obj instanceof CmsAccessControlEntry) {
+            CmsAccessControlEntry other = (CmsAccessControlEntry)obj;
+            if (other.m_flags != m_flags) {
+                return false;
+            }
+            if (other.getPermissions().getAllowedPermissions() != getPermissions().getAllowedPermissions()) {
+                return false;
+            }
+            if (other.getPermissions().getDeniedPermissions() != getPermissions().getDeniedPermissions()) {
+                return false;
+            }
+            if (!other.m_resource.equals(m_resource)) {
+                return false;
+            }
+            if (!other.m_principal.equals(m_principal)) {
+                return false;
+            }
+            return true;
         }
-        if (ace.getPermissions().getAllowedPermissions() != getPermissions().getAllowedPermissions()) {
-            equal = false;
-        }
-        if (ace.getPermissions().getDeniedPermissions() != getPermissions().getDeniedPermissions()) {
-            equal = false;
-        }
-        return equal;        
+        return false;
     }
-    
-    
-    
+
     /**
      * Returns the currently allowed permissions as bitset.<p>
      * 
@@ -245,6 +247,7 @@ public class CmsAccessControlEntry {
 
         return m_flags;
     }
+
     /**
      * Returns the current permission set (both allowed and denied permissions).<p>
      * 
@@ -289,9 +292,10 @@ public class CmsAccessControlEntry {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
+
         if (m_permissions != null) {
             return m_permissions.hashCode() * m_flags;
-        } 
+        }
         return CmsUUID.getNullUUID().hashCode();
     }
 
@@ -303,6 +307,7 @@ public class CmsAccessControlEntry {
      * @return true, if the inherited flag is set
      */
     public boolean isInherited() {
+
         return ((m_flags & I_CmsConstants.C_ACCESSFLAGS_INHERITED) > 0);
     }
 
@@ -342,6 +347,14 @@ public class CmsAccessControlEntry {
      */
     public String toString() {
 
-        return "[Ace:] " + "ResourceId=" + m_resource + ", PrincipalId=" + m_principal + ", Permissions=" + m_permissions.toString() + ", Flags=" + m_flags;
+        return "[Ace:] "
+            + "ResourceId="
+            + m_resource
+            + ", PrincipalId="
+            + m_principal
+            + ", Permissions="
+            + m_permissions.toString()
+            + ", Flags="
+            + m_flags;
     }
 }

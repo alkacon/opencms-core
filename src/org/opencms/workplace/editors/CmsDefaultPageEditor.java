@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2005/05/20 14:31:37 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1.12
  */
@@ -158,7 +158,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     public void actionClear(boolean forceUnlock) {
         // delete the temporary file        
         deleteTempFile();
-        if ("true".equals(getParamDirectedit()) || forceUnlock) {
+        if (Boolean.valueOf(getParamDirectedit()).booleanValue() || forceUnlock) {
             // unlock the resource when in direct edit mode or force unlock is true
             try {
                 getCms().unlockResource(getParamResource());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2005/06/10 15:58:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Main project management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsProjectsList extends A_CmsListDialog {
@@ -125,6 +125,12 @@ public class CmsProjectsList extends A_CmsListDialog {
     /** list action id constant. */
     public static final String LIST_DEFACTION_FILES = "defaction_files";
 
+    /** list detail constant. */
+    public static final String LIST_DETAIL_PUBLISHING = "details_publishing";
+
+    /** list detail constant. */
+    public static final String LIST_DETAIL_RESOURCES = "details_resources";
+
     /** list id constant. */
     public static final String LIST_ID = "projects";
 
@@ -139,12 +145,6 @@ public class CmsProjectsList extends A_CmsListDialog {
 
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/projects/buttons/";
-
-    /** list detail constant. */
-    public static final String LIST_DETAIL_PUBLISHING = "details_publishing";
-
-    /** list detail constant. */
-    public static final String LIST_DETAIL_RESOURCES = "details_resources";
 
     /**
      * Public constructor.<p>
@@ -337,7 +337,7 @@ public class CmsProjectsList extends A_CmsListDialog {
             } catch (Exception e) {
                 // ignore
             }
-            item.set(LIST_COLUMN_CREATION, new Date(project.getCreationDate()));
+            item.set(LIST_COLUMN_CREATION, new Date(project.getDateCreated()));
             StringBuffer html = new StringBuffer(512);
             // TODO: fill the publish data
             item.set(LIST_DETAIL_PUBLISHING, html.toString());
@@ -536,12 +536,10 @@ public class CmsProjectsList extends A_CmsListDialog {
         CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_RESOURCES);
         resourcesDetails.setAtColumn(LIST_COLUMN_NAME);
         resourcesDetails.setVisible(false);
-        resourcesDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_NAME_0));
+        resourcesDetails.setShowActionName(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_NAME_0));
         resourcesDetails.setShowActionHelpText(Messages.get().container(
             Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_HELP_0));
-        resourcesDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_HIDE_RESOURCES_NAME_0));
+        resourcesDetails.setHideActionName(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_HIDE_RESOURCES_NAME_0));
         resourcesDetails.setHideActionHelpText(Messages.get().container(
             Messages.GUI_PROJECTS_DETAIL_HIDE_RESOURCES_HELP_0));
         resourcesDetails.setName(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_RESOURCES_NAME_0));

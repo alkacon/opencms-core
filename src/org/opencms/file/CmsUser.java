@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -304,12 +304,13 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public boolean equals(Object obj) {
 
-        // check if the object is a CmsUser object
-        if (!(obj instanceof CmsUser)) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-        // same ID than the current user?
-        return (((CmsUser)obj).getId().equals(m_id));
+        if (obj instanceof CmsUser) {
+            return (((CmsUser)obj).m_id.equals(m_id));
+        }
+        return false;
     }
 
     /**

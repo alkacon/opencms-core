@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/12 11:18:21 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_CmsWidgetParameter {
@@ -176,29 +176,32 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object o) {
+    public int compareTo(Object obj) {
 
-        if (!(o instanceof I_CmsXmlSchemaType)) {
+        if (obj == this) {
             return 0;
         }
-        return getTypeName().compareTo(((I_CmsXmlSchemaType)o).getTypeName());
+        if (obj instanceof I_CmsXmlSchemaType) {
+            return getTypeName().compareTo(((I_CmsXmlSchemaType)obj).getTypeName());
+        }
+        return 0;
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(Object o) {
+    public boolean equals(Object obj) {
 
-        if (o == null) {
-            return false;
+        if (obj == this) {
+            return true;
         }
-        if (!(o instanceof I_CmsXmlSchemaType)) {
-            return false;
+        if (obj instanceof I_CmsXmlSchemaType) {
+            I_CmsXmlSchemaType other = (I_CmsXmlSchemaType)obj;
+            return (getName().equals(other.getName())
+                && getTypeName().equals(other.getTypeName())
+                && (getMinOccurs() == other.getMinOccurs()) && (getMaxOccurs() == other.getMaxOccurs()));
         }
-        I_CmsXmlSchemaType other = (I_CmsXmlSchemaType)o;
-        return (getName().equals(other.getName())
-            && getTypeName().equals(other.getTypeName())
-            && (getMinOccurs() == other.getMinOccurs()) && (getMaxOccurs() == other.getMaxOccurs()));
+        return false;
     }
 
     /**
