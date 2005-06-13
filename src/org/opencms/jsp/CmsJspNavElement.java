@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/13 09:51:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  * Bean to collect navigation information from a resource in the OpenCms VFS.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsJspNavElement implements Comparable {
 
@@ -118,13 +118,12 @@ public class CmsJspNavElement implements Comparable {
             return 0;
         }
         if (obj instanceof CmsJspNavElement) {
-            float f = ((CmsJspNavElement)obj).getNavPosition() - m_position;
-            if (f > 0) {
-                return -1;
+            float pos = ((CmsJspNavElement)obj).getNavPosition();
+            // please note: can't just substract and cast to int here because of float precision loss
+            if (m_position == pos) {
+                return 0;
             }
-            if (f < 0) {
-                return 1;
-            }
+            return (m_position < pos) ? -1 : 1;
         }
         return 0;
     }
