@@ -41,7 +41,7 @@
 						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d aaaa aaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d iiii aaai dddd" order="150"/>
@@ -84,7 +84,7 @@
 						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.pageedit" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
@@ -128,7 +128,7 @@
 						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.editsource" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
@@ -169,7 +169,7 @@
 						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
@@ -211,7 +211,7 @@
 						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.editsource" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
@@ -251,7 +251,7 @@
 						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
@@ -290,7 +290,7 @@
 						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.editlink" uri="commons/editpointer.jsp" rules="d d iiii aaai dddd" order="80"/>
@@ -325,7 +325,7 @@
 						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.editsource" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
@@ -380,7 +380,7 @@
 						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d aaaa aaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.opengallery" uri="commons/opengallery.jsp" rules="d d iiii aaai dddd" order="80"/>
@@ -431,7 +431,7 @@
 						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
 						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
 						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
 						<entry key="explorer.context.edit" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>

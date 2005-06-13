@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2005/06/02 14:55:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/13 10:13:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,6 +89,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UPLOAD_FILE_NOT_FOUND_0 = "ERR_UPLOAD_FILE_NOT_FOUND_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYTOPROJECT_NOPART_1 = "GUI_COPYTOPROJECT_NOPART_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYTOPROJECT_PART_1 = "GUI_COPYTOPROJECT_PART_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYTOPROJECT_PROJECT_CONFIRMATION_2 = "GUI_COPYTOPROJECT_PROJECT_CONFIRMATION_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYTOPROJECT_RESOURCES_0 = "GUI_COPYTOPROJECT_RESOURCES_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPYTOPROJECT_TITLE_0 = "GUI_COPYTOPROJECT_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTY_ADVANCED_NO_PROPDEFS_0 = "GUI_PROPERTY_ADVANCED_NO_PROPDEFS_0";

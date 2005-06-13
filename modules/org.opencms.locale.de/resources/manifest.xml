@@ -37,6 +37,7 @@
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/synchronize/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/validation/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/administration/messages_de.properties"/>
+			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/commons/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/help/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/list/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/messages_de.properties"/>
@@ -546,6 +547,35 @@
 			<datelastmodified>Fri, 03 Jun 2005 13:04:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 03 Jun 2005 13:02:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/commons</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 13 Jun 2005 09:30:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 13 Jun 2005 09:30:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/workplace/commons/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/commons/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>d8b8ec04-dbed-11d9-b3c1-0fc796c4637a</uuidresource>
+			<datelastmodified>Mon, 13 Jun 2005 09:55:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 13 Jun 2005 09:30:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

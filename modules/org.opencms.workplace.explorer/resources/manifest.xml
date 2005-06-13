@@ -223,6 +223,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/copytoproject.jsp</source>
+			<destination>system/workplace/commons/copytoproject.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>8178aad4-dbe6-11d9-a02b-0fc796c4637a</uuidresource>
+			<datelastmodified>Mon, 13 Jun 2005 08:55:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 13 Jun 2005 08:38:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Copy resource to project]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/delete.jsp</source>
 			<destination>system/workplace/commons/delete.jsp</destination>
 			<type>jsp</type>
