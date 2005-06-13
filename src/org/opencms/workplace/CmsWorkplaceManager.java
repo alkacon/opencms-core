@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/06/01 15:14:28 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2005/06/13 10:00:03 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  * 
  * @since 5.3.1
  */
@@ -194,8 +194,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public CmsWorkplaceManager() {
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_INITIALIZE_START_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_INITIALIZE_START_0));
         }
         m_locales = new ArrayList();
         m_labelSiteFolders = new ArrayList();
@@ -245,8 +245,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void addDialogHandler(I_CmsDialogHandler clazz) {
 
         m_dialogHandler.put(clazz.getDialogHandler(), clazz);
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_ADD_DIALOG_HANDLER_2,
                 clazz.getDialogHandler(),
                 clazz.getClass().getName()));
@@ -261,8 +261,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void addExplorerTypeSetting(CmsExplorerTypeSettings settings) {
 
         m_explorerTypeSettingsFromXml.add(settings);
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_1, settings.getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_1, settings.getName()));
         }
         if (m_explorerTypeSettings != null) {
             // reset the list of all explorer type settings, but not during startup
@@ -283,8 +283,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             while (i.hasNext()) {
                 CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
                 m_explorerTypeSettingsFromModules.add(settings);
-                if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_1, settings.getName()));
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_1, settings.getName()));
                 }
             }
             // reset the list of all explorer type settings
@@ -302,8 +302,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         CmsExportPoint point = new CmsExportPoint(uri, destination);
         m_exportPoints.add(point);
-        if (CmsLog.LOG.isInfoEnabled() && (point.getDestinationPath() != null)) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled() && (point.getDestinationPath() != null)) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_ADD_EXPORT_POINT_2,
                 point.getUri(),
                 point.getDestinationPath()));
@@ -318,8 +318,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void addLabeledFolder(String uri) {
 
         m_labelSiteFolders.add(uri);
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_LABEL_LINKS_IN_FOLDER_1, uri));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LABEL_LINKS_IN_FOLDER_1, uri));
         }
     }
 
@@ -331,8 +331,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void addLocalizedFolder(String uri) {
 
         m_localizedFolders.add(uri);
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_LOCALIZED_1, uri));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_LOCALIZED_1, uri));
         }
     }
 
@@ -729,8 +729,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             // initialize the locale handler
             initHandler(cms);
 
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_VFS_ACCESS_INITIALIZED_0));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_VFS_ACCESS_INITIALIZED_0));
             }
             try {
                 // read the temporary file project
@@ -811,8 +811,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
                 if (m_explorerTypeSettingsFromModules.contains(settings)) {
                     m_explorerTypeSettingsFromModules.remove(settings);
-                    if (CmsLog.LOG.isInfoEnabled()) {
-                        CmsLog.LOG.info(Messages.get().key(
+                    if (CmsLog.INIT.isInfoEnabled()) {
+                        CmsLog.INIT.info(Messages.get().key(
                             Messages.INIT_REMOVE_EXPLORER_TYPE_SETTING_1,
                             settings.getName()));
                     }
@@ -831,8 +831,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setAutoLock(String value) {
 
         m_autoLockResources = Boolean.valueOf(value).booleanValue();
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 m_autoLockResources ? Messages.INIT_AUTO_LOCK_ENABLED_0 : Messages.INIT_AUTO_LOCK_DISABLED_0));
         }
     }
@@ -857,12 +857,12 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         try {
             m_defaultLocale = CmsLocaleManager.getLocale(locale);
         } catch (Exception e) {
-            if (CmsLog.LOG.isWarnEnabled()) {
-                CmsLog.LOG.warn(Messages.get().key(Messages.INIT_NONCRIT_ERROR_0), e);
+            if (CmsLog.INIT.isWarnEnabled()) {
+                CmsLog.INIT.warn(Messages.get().key(Messages.INIT_NONCRIT_ERROR_0), e);
             }
         }
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DEFAULT_LOCALE_1, m_defaultLocale));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DEFAULT_LOCALE_1, m_defaultLocale));
         }
     }
 
@@ -874,8 +874,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setDefaultPropertiesOnStructure(String defaultPropertiesOnStructure) {
 
         m_defaultPropertiesOnStructure = Boolean.valueOf(defaultPropertiesOnStructure).booleanValue();
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 m_defaultPropertiesOnStructure ? Messages.INIT_PROP_ON_STRUCT_TRUE_0
                 : Messages.INIT_PROP_ON_STRUCT_FALSE_0));
         }
@@ -890,8 +890,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         m_defaultUserSettings = defaultUserSettings;
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DEFAULT_USER_SETTINGS_1, m_defaultUserSettings));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DEFAULT_USER_SETTINGS_1, m_defaultUserSettings));
         }
     }
 
@@ -903,8 +903,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setEditorAction(I_CmsEditorActionHandler clazz) {
 
         m_editorAction = clazz;
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_EDITOR_ACTION_CLASS_1, m_editorAction.getClass().getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_EDITOR_ACTION_CLASS_1, m_editorAction.getClass().getName()));
         }
     }
 
@@ -916,8 +916,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setEditorDisplayOptions(CmsEditorDisplayOptions clazz) {
 
         m_editorDisplayOptions = clazz;
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_EDITOR_DISPLAY_OPTS_1, m_editorAction.getClass().getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_EDITOR_DISPLAY_OPTS_1, m_editorAction.getClass().getName()));
         }
     }
 
@@ -929,8 +929,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setEditorHandler(I_CmsEditorHandler clazz) {
 
         m_editorHandler = clazz;
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_EDITOR_HANDLER_CLASS_1,
                 m_editorHandler.getClass().getName()));
         }
@@ -944,8 +944,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setEnableAdvancedPropertyTabs(String enableAdvancedPropertyTabs) {
 
         m_enableAdvancedPropertyTabs = Boolean.valueOf(enableAdvancedPropertyTabs).booleanValue();
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 m_enableAdvancedPropertyTabs ? Messages.INIT_ADV_PROP_DIALOG_SHOW_TABS_0
                 : Messages.INIT_ADV_PROP_DIALOG_HIDE_TABS_0));
         }
@@ -967,13 +967,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             }
             m_fileMaxUploadSize = -1;
         }
-        if (CmsLog.LOG.isInfoEnabled()) {
+        if (CmsLog.INIT.isInfoEnabled()) {
             if (m_fileMaxUploadSize > 0) {
-                CmsLog.LOG.info(Messages.get().key(
+                CmsLog.INIT.info(Messages.get().key(
                     Messages.INIT_MAX_FILE_UPLOAD_SIZE_1,
                     new Integer(m_fileMaxUploadSize)));
             } else {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_MAX_FILE_UPLOAD_SIZE_UNLIMITED_0));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_MAX_FILE_UPLOAD_SIZE_UNLIMITED_0));
             }
 
         }
@@ -987,11 +987,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public void setUserManagementEnabled(String value) {
 
         m_showUserGroupIcon = Boolean.valueOf(value).booleanValue();
-        if (CmsLog.LOG.isInfoEnabled()) {
+        if (CmsLog.INIT.isInfoEnabled()) {
             if (m_showUserGroupIcon) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_USER_MANAGEMENT_ICON_ENABLED_0));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_USER_MANAGEMENT_ICON_ENABLED_0));
             } else {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_USER_MANAGEMENT_ICON_DISABLED_0));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_USER_MANAGEMENT_ICON_DISABLED_0));
             }
         }
     }
@@ -1025,8 +1025,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 // initialize the access control configuration of the explorer type
                 settings.getAccess().createAccessControlList();
             } catch (CmsException e) {
-                if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_FAILED_1, settings.getName()), e);
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_TYPE_SETTING_FAILED_1, settings.getName()), e);
                 }
             }
         }
@@ -1139,8 +1139,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 CmsWorkplaceView view = new CmsWorkplaceView(key, viewUri, orderValue);
                 m_views.add(view);
                 // log the view
-                if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_VIEW_1, view.getUri()));
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_VIEW_1, view.getUri()));
                 }
             } catch (CmsException e) {
                 // should usually never happen

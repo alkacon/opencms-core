@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/10 09:54:44 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/13 10:00:03 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -94,13 +94,13 @@ public class CmsToolManager {
     public CmsToolManager(CmsObject cms) {
 
         if (!cms.existsResource(C_VIEW_JSPPAGE_LOCATION)) {
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_TOOLMANAGER_NOT_CREATED_0));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_TOOLMANAGER_NOT_CREATED_0));
             }
             return;
         }
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_TOOLMANAGER_CREATED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_TOOLMANAGER_CREATED_0));
         }
         try {
             List handlers = new ArrayList();
@@ -126,21 +126,21 @@ public class CmsToolManager {
                         // keep for later use
                         handlers.add(handler);
                         // log success
-                        if (CmsLog.LOG.isDebugEnabled()) {
+                        if (CmsLog.INIT.isDebugEnabled()) {
                             if (!handler.getLink().equals(C_VIEW_JSPPAGE_LOCATION)) {
-                                CmsLog.LOG.debug(Messages.get().key(
+                                CmsLog.INIT.debug(Messages.get().key(
                                     Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_1,
                                     handler.getLink()));
                             } else {
-                                CmsLog.LOG.debug(Messages.get().key(
+                                CmsLog.INIT.debug(Messages.get().key(
                                     Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_1,
                                     res.getRootPath()));
                             }
                         }
                     } catch (Exception e) {
                         // log failure
-                        if (CmsLog.LOG.isWarnEnabled()) {
-                            CmsLog.LOG.warn(Messages.get().key(
+                        if (CmsLog.INIT.isWarnEnabled()) {
+                            CmsLog.INIT.warn(Messages.get().key(
                                 Messages.INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1,
                                 res.getRootPath()), e);
                         }
@@ -150,8 +150,8 @@ public class CmsToolManager {
             registerHandlerList(cms, 1, handlers);
         } catch (CmsException e) {
             // log failure
-            if (CmsLog.LOG.isErrorEnabled()) {
-                CmsLog.LOG.error(Messages.get().key(Messages.INIT_TOOLMANAGER_SETUP_ERROR_0), e);
+            if (CmsLog.INIT.isErrorEnabled()) {
+                CmsLog.INIT.error(Messages.get().key(Messages.INIT_TOOLMANAGER_SETUP_ERROR_0), e);
             }
         }
 
@@ -571,8 +571,8 @@ public class CmsToolManager {
         //validate path
         if (!validatePath(handler.getPath(), false)) {
             // log failure
-            if (CmsLog.LOG.isWarnEnabled()) {
-                CmsLog.LOG.warn(Messages.get().key(Messages.INIT_TOOLMANAGER_INCONSISTENT_PATH_1, handler.getLink()));
+            if (CmsLog.INIT.isWarnEnabled()) {
+                CmsLog.INIT.warn(Messages.get().key(Messages.INIT_TOOLMANAGER_INCONSISTENT_PATH_1, handler.getLink()));
             }
             return;
         }

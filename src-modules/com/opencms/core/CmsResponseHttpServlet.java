@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/13 10:00:03 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/13 10:00:03 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -106,13 +106,13 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
         // If m != null, the method could be found.
         boolean result = (m != null);
 
-        if (CmsLog.LOG.isDebugEnabled()) {
+        if (CmsLog.INIT.isDebugEnabled()) {
             if (result) {
                 // We have JSDK 2
-                CmsLog.LOG.debug("Compatibility check - JSDK 2 detected. ");
+                CmsLog.INIT.debug("Compatibility check - JSDK 2 detected. ");
             } else {
                 // We have JSDK 1
-                CmsLog.LOG.debug("Compatibility check - JSDK 1 detected. ");
+                CmsLog.INIT.debug("Compatibility check - JSDK 1 detected. ");
             }
         }
         return result;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/06/02 14:24:11 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2005/06/13 10:00:03 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.105 $
+ * @version $Revision: 1.106 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1341,11 +1341,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             m_vfsPrefix = m_vfsPrefix.substring(0, m_vfsPrefix.length() - 1);
         }
 
-        if (CmsLog.LOG.isDebugEnabled()) {
+        if (CmsLog.INIT.isDebugEnabled()) {
             if (cms != null) {
-                CmsLog.LOG.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_1, cms));
+                CmsLog.INIT.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_1, cms));
             } else {
-                CmsLog.LOG.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_0));
+                CmsLog.INIT.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_0));
             }
         }
 
@@ -1394,20 +1394,20 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // get the default accept-charset header value
         m_defaultAcceptCharsetHeader = OpenCms.getSystemInfo().getDefaultEncoding();
 
-        if (CmsLog.LOG.isInfoEnabled()) {
+        if (CmsLog.INIT.isInfoEnabled()) {
             if (isStaticExportEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_ENABLED_0));                
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_DEFAULT_1, new Boolean(getExportPropertyDefault())));
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_PATH_1, getExportPath()));
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_RFS_PREFIX_1, getRfsPrefix()));
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_VFS_PREFIX_1, getVfsPrefix()));
-                CmsLog.LOG.info(Messages.get().key(relativLinksInExport() ? Messages.INIT_EXPORT_LINK_STYLE_RELATIVE_0 : Messages.INIT_EXPORT_LINK_STYLE_ABSOLUTE_0));
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_EXPORT_HANDLER_1, getHandler().getClass().getName()));
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_URL_1, getExportUrl()));
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_OPTIMIZATION_1, getPlainExportOptimization()));
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_ENABLED_0));                
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_DEFAULT_1, new Boolean(getExportPropertyDefault())));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_PATH_1, getExportPath()));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_RFS_PREFIX_1, getRfsPrefix()));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_VFS_PREFIX_1, getVfsPrefix()));
+                CmsLog.INIT.info(Messages.get().key(relativLinksInExport() ? Messages.INIT_EXPORT_LINK_STYLE_RELATIVE_0 : Messages.INIT_EXPORT_LINK_STYLE_ABSOLUTE_0));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_EXPORT_HANDLER_1, getHandler().getClass().getName()));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_URL_1, getExportUrl()));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_OPTIMIZATION_1, getPlainExportOptimization()));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
             } else {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_DISABLED_0));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_DISABLED_0));
             }
         }
     }
@@ -1637,13 +1637,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public void setExportHeader(String exportHeader) {
 
         if (CmsStringUtil.splitAsArray(exportHeader, ':').length == 2) {
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_EXPORT_HEADERS_1, exportHeader));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_HEADERS_1, exportHeader));
             }
             m_exportHeaders.add(exportHeader);
         } else {
-            if (CmsLog.LOG.isWarnEnabled()) {
-                CmsLog.LOG.warn(Messages.get().key(Messages.INIT_INVALID_HEADER_1, exportHeader));
+            if (CmsLog.INIT.isWarnEnabled()) {
+                CmsLog.INIT.warn(Messages.get().key(Messages.INIT_INVALID_HEADER_1, exportHeader));
             }
         }
     }
@@ -1766,8 +1766,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         while ((count < HANDLER_FINISH_TIME) && m_handler.isBusy()) {
             count++;
             try {
-                if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(Messages.get().key(
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().key(
                         Messages.INIT_STATIC_EXPORT_SHUTDOWN_3,
                         m_handler.getClass().getName(),
                         String.valueOf(count),
@@ -1780,8 +1780,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             }
         }
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
         }
 
     }

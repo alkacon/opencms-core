@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.524 $
+ * Date   : $Date: 2005/06/13 10:00:03 $
+ * Version: $Revision: 1.525 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.524 $
+ * @version $Revision: 1.525 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -387,11 +387,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         try {
             // create a driver manager instance
             driverManager = new CmsDriverManager();
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE1_0));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE1_0));
             }
-            if ((runtimeInfoFactory == null) && CmsLog.LOG.isDebugEnabled()) {
-                CmsLog.LOG.debug(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_RT_0));
+            if ((runtimeInfoFactory == null) && CmsLog.INIT.isDebugEnabled()) {
+                CmsLog.INIT.debug(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_RT_0));
             }
         } catch (Exception exc) {
             CmsMessageContainer message = Messages.get().container(Messages.LOG_ERR_DRIVER_MANAGER_START_0);
@@ -407,18 +407,18 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // create and set the sql manager
         driverManager.m_sqlManager = new CmsSqlManager(driverManager);
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE2_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE2_0));
         }
 
         // read the pool names to initialize
         String[] driverPoolNames = config.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
-        if (CmsLog.LOG.isInfoEnabled()) {
+        if (CmsLog.INIT.isInfoEnabled()) {
             String names = "";
             for (int p = 0; p < driverPoolNames.length; p++) {
                 names += driverPoolNames[p] + " ";
             }
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_POOLS_1, names));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_POOLS_1, names));
         }
 
         // initialize each pool
@@ -431,8 +431,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             runtimeInfoFactory.initialize(driverManager);
         }
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE3_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE3_0));
         }
 
         // read the vfs driver class properties and initialize a new instance 
@@ -475,8 +475,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 projectDriver,
                 workflowDriver,
                 backupDriver);
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_OK_0));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_OK_0));
             }
         } catch (Exception exc) {
             CmsMessageContainer message = Messages.get().container(Messages.LOG_ERR_DRIVER_MANAGER_START_0);
@@ -2618,8 +2618,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void destroy() throws Throwable {
 
         finalize();
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_DESTROY_1, getClass().getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_DESTROY_1, getClass().getName()));
         }
     }
 
@@ -3509,8 +3509,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         I_CmsBackupDriver backupDriver) throws CmsException, Exception {
 
         // initialize the access-module.
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_0));
         }
 
         // store the access objects
@@ -4093,20 +4093,20 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         try {
             // try to get the class
             driverClass = Class.forName(driverName);
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_START_1, driverName));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_START_1, driverName));
             }
 
             // try to create a instance
             driver = (I_CmsDriver)driverClass.newInstance();
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
             }
 
             // invoke the init-method of this access class
             driver.init(dbc, configurationManager, successiveDrivers, this);
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_INIT_FINISHED_0));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_INIT_FINISHED_0));
             }
 
         } catch (Throwable t) {
@@ -4141,20 +4141,20 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         try {
             // try to get the class
             driverClass = Class.forName(driverName);
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_START_1, driverName));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_START_1, driverName));
             }
 
             // try to create a instance
             driver = driverClass.newInstance();
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
             }
 
             // invoke the init-method of this access class
             driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DRIVER_INIT_FINISHED_1, driverPoolUrl));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_INIT_FINISHED_1, driverPoolUrl));
             }
 
         } catch (Exception exc) {
@@ -7244,8 +7244,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 for (int j = 0; j < pools.length; j++) {
                     try {
                         driver.closePool(pools[j]);
-                        if (CmsLog.LOG.isDebugEnabled()) {
-                            CmsLog.LOG.debug(Messages.get().key(Messages.INIT_CLOSE_CONN_POOL_1, pools[j]));
+                        if (CmsLog.INIT.isDebugEnabled()) {
+                            CmsLog.INIT.debug(Messages.get().key(Messages.INIT_CLOSE_CONN_POOL_1, pools[j]));
                         }
                     } catch (Throwable t) {
                         LOG.error(Messages.get().key(Messages.LOG_CLOSE_CONN_POOL_ERROR_1, pools[j]), t);

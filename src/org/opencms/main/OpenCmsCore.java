@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/07 15:03:46 $
- * Version: $Revision: 1.192 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.193 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -128,7 +128,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.192 $
+ * @version $Revision: 1.193 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -350,12 +350,12 @@ public final class OpenCmsCore {
         for (int i = 0; i < names.length; i++) {
             String name = names[i];
             if (m_requestHandlers.get(name) != null) {
-                CmsLog.LOG.error(Messages.get().key(Messages.LOG_DUPLICATE_REQUEST_HANDLER_1, name));
+                CmsLog.INIT.error(Messages.get().key(Messages.LOG_DUPLICATE_REQUEST_HANDLER_1, name));
                 continue;
             }
             m_requestHandlers.put(name, handler);
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(
                     Messages.INIT_ADDED_REQUEST_HANDLER_2,
                     name,
                     handler.getClass().getName()));
@@ -758,14 +758,14 @@ public final class OpenCmsCore {
         } catch (SecurityException se) {
             // security manager is active, but we will try other options before giving up
         }
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_FILE_ENCODING_1, systemEncoding));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_FILE_ENCODING_1, systemEncoding));
         }
 
         // read server ethernet address (MAC) and init UUID generator
         String ethernetAddress = configuration.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ETHERNET_ADDRESS_1, ethernetAddress));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ETHERNET_ADDRESS_1, ethernetAddress));
         }
         CmsUUID.init(ethernetAddress);
 
@@ -778,16 +778,16 @@ public final class OpenCmsCore {
 
         // check the installed Java SDK
         try {
-            if (CmsLog.LOG.isInfoEnabled()) {
+            if (CmsLog.INIT.isInfoEnabled()) {
                 String jdkinfo = System.getProperty("java.vm.name") + " ";
                 jdkinfo += System.getProperty("java.vm.version") + " ";
                 jdkinfo += System.getProperty("java.vm.info") + " ";
                 jdkinfo += System.getProperty("java.vm.vendor") + " ";
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_JAVA_VM_1, jdkinfo));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_JAVA_VM_1, jdkinfo));
                 String osinfo = System.getProperty("os.name") + " ";
                 osinfo += System.getProperty("os.version") + " ";
                 osinfo += System.getProperty("os.arch") + " ";
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_OPERATING_SYSTEM_1, osinfo));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_OPERATING_SYSTEM_1, osinfo));
             }
         } catch (Exception e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_PROP_0), e);
@@ -817,8 +817,8 @@ public final class OpenCmsCore {
         if (defaultEncoding == null) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ENCODING_1, setEncoding));
         }
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_OPENCMS_ENCODING_1, defaultEncoding));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_OPENCMS_ENCODING_1, defaultEncoding));
         }
         getSystemInfo().setDefaultEncoding(defaultEncoding);
 
@@ -843,8 +843,8 @@ public final class OpenCmsCore {
         while (it.hasNext()) {
             I_CmsRequestHandler handler = (I_CmsRequestHandler)it.next();
             addRequestHandler(handler);
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.warn(Messages.get().key(Messages.INIT_REQUEST_HANDLER_CLASS_1, handler.getClass().getName()));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.warn(Messages.get().key(Messages.INIT_REQUEST_HANDLER_CLASS_1, handler.getClass().getName()));
             }
         }
 
@@ -876,19 +876,19 @@ public final class OpenCmsCore {
         // try to initialize the flex cache
         CmsFlexCache flexCache = null;
         try {
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_FLEX_CACHE_STARTING_0));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_FLEX_CACHE_STARTING_0));
             }
             // get the flex cache configuration from the SystemConfiguration
             CmsFlexCacheConfiguration flexCacheConfiguration = systemConfiguration.getCmsFlexCacheConfiguration();
             // pass configuration to flex cache for initialization
             flexCache = new CmsFlexCache(flexCacheConfiguration);
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_FLEX_CACHE_FINISHED_0));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_FLEX_CACHE_FINISHED_0));
             }
         } catch (Exception e) {
-            if (CmsLog.LOG.isWarnEnabled()) {
-                CmsLog.LOG.warn(Messages.get().key(Messages.INIT_FLEX_CACHE_ERROR_1, e.getMessage()));
+            if (CmsLog.INIT.isWarnEnabled()) {
+                CmsLog.INIT.warn(Messages.get().key(Messages.INIT_FLEX_CACHE_ERROR_1, e.getMessage()));
             }
         }
 
@@ -1054,24 +1054,24 @@ public final class OpenCmsCore {
         System.err.println();
 
         // output startup message to logfile
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DOT_0));
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DOT_0));
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DOT_0));
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DOT_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
             for (int i = 0; i < Messages.COPYRIGHT_BY_ALKACON.length; i++) {
-                CmsLog.LOG.info(". " + Messages.COPYRIGHT_BY_ALKACON[i]);
+                CmsLog.INIT.info(". " + Messages.COPYRIGHT_BY_ALKACON[i]);
             }
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_LINE_0));
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_STARTUP_TIME_1, new Date(System.currentTimeMillis())));
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_OPENCMS_VERSION_1, OpenCms.getSystemInfo().getVersionName()));            
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SERVLET_CONTAINER_1, context.getServerInfo()));
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WEBAPP_NAME_1, getSystemInfo().getWebApplicationName()));
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SERVLET_PATH_1, getSystemInfo().getServletPath()));
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_OPENCMS_CONTEXT_1, getSystemInfo().getOpenCmsContext()));
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WEBINF_PATH_1, getSystemInfo().getWebInfRfsPath()));
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_PROPERTY_FILE_1, getSystemInfo().getConfigurationFileRfsPath()));
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_LOG_FILE_1, getSystemInfo().getLogFileRfsPath()));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LINE_0));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_STARTUP_TIME_1, new Date(System.currentTimeMillis())));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_OPENCMS_VERSION_1, OpenCms.getSystemInfo().getVersionName()));            
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SERVLET_CONTAINER_1, context.getServerInfo()));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WEBAPP_NAME_1, getSystemInfo().getWebApplicationName()));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SERVLET_PATH_1, getSystemInfo().getServletPath()));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_OPENCMS_CONTEXT_1, getSystemInfo().getOpenCmsContext()));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WEBINF_PATH_1, getSystemInfo().getWebInfRfsPath()));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_PROPERTY_FILE_1, getSystemInfo().getConfigurationFileRfsPath()));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOG_FILE_1, getSystemInfo().getLogFileRfsPath()));
         }
 
         // initialize the configuration
@@ -1229,10 +1229,10 @@ public final class OpenCmsCore {
             // add the servlets request handler
             addRequestHandler(servlet);
             // output the final 'startup is finished' message
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_SYSTEM_RUNNING_1, CmsStringUtil.formatRuntime(getSystemInfo().getRuntime())));
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_LINE_0));
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DOT_0));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_SYSTEM_RUNNING_1, CmsStringUtil.formatRuntime(getSystemInfo().getRuntime())));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_LINE_0));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
             }
         }
     }
@@ -1345,13 +1345,13 @@ public final class OpenCmsCore {
                     Messages.LOG_SHUTDOWN_CONSOLE_NOTE_2,
                     getSystemInfo().getVersionName(),
                     getSystemInfo().getWebApplicationName()));
-                if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_DOT_0));
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_DOT_0));
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_LINE_0));
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_START_1, getSystemInfo().getVersionName()));
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_CURRENT_RUNLEVEL_1, new Integer(getRunLevel())));
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_TIME_1, new Date(System.currentTimeMillis())));
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_LINE_0));
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_START_1, getSystemInfo().getVersionName()));
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_CURRENT_RUNLEVEL_1, new Integer(getRunLevel())));
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_TIME_1, new Date(System.currentTimeMillis())));
                 }
 
                 // take the system offline
@@ -1367,42 +1367,42 @@ public final class OpenCmsCore {
                         m_staticExportManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.LOG.error(Messages.get().key(Messages.LOG_ERROR_EXPORT_SHUTDOWN_1, e.getMessage()), e);
+                    CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_EXPORT_SHUTDOWN_1, e.getMessage()), e);
                 }
                 try {
                     if (m_moduleManager != null) {
                         m_moduleManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.LOG.error(Messages.get().key(Messages.LOG_ERROR_MODULE_SHUTDOWN_1, e.getMessage()), e);
+                    CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_MODULE_SHUTDOWN_1, e.getMessage()), e);
                 }
                 try {
                     if (m_scheduleManager != null) {
                         m_scheduleManager.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.LOG.error(Messages.get().key(Messages.LOG_ERROR_SCHEDULE_SHUTDOWN_1, e.getMessage()), e);
+                    CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_SCHEDULE_SHUTDOWN_1, e.getMessage()), e);
                 }
                 try {
                     if (m_securityManager != null) {
                         m_securityManager.destroy();
                     }
                 } catch (Throwable e) {
-                    CmsLog.LOG.error(Messages.get().key(Messages.LOG_ERROR_SECURITY_SHUTDOWN_1, e.getMessage()), e);
+                    CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_SECURITY_SHUTDOWN_1, e.getMessage()), e);
                 }
                 try {
                     if (m_threadStore != null) {
                         m_threadStore.shutDown();
                     }
                 } catch (Throwable e) {
-                    CmsLog.LOG.error(Messages.get().key(Messages.LOG_ERROR_THREAD_SHUTDOWN_1, e.getMessage()), e);
+                    CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_THREAD_SHUTDOWN_1, e.getMessage()), e);
                 }
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());
-                if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_OPENCMS_STOPPED_1, runtime));
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_LINE_0));
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_DOT_0));
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_DOT_0));
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_OPENCMS_STOPPED_1, runtime));
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_LINE_0));
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
                 }
                 System.err.println(Messages.get().key(Messages.LOG_CONSOLE_TOTAL_RUNTIME_1, runtime));
 
@@ -1430,7 +1430,7 @@ public final class OpenCmsCore {
                 return m_instance;
             }
             if (getRunLevel() != OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-                CmsLog.LOG.error(Messages.get().key(
+                CmsLog.INIT.error(Messages.get().key(
                     Messages.LOG_WRONG_INIT_SEQUENCE_2,
                     new Integer(3),
                     new Integer(getRunLevel())));
@@ -1467,7 +1467,7 @@ public final class OpenCmsCore {
                 return m_instance;
             }
             if (getRunLevel() != OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-                CmsLog.LOG.error(Messages.get().key(
+                CmsLog.INIT.error(Messages.get().key(
                     Messages.LOG_WRONG_INIT_SEQUENCE_2,
                     new Integer(4),
                     new Integer(getRunLevel())));
@@ -1594,7 +1594,7 @@ public final class OpenCmsCore {
         try {
             htmlProps.load(getClass().getClassLoader().getResourceAsStream(HTML_MESSAGE_FILE));
         } catch (Throwable th) {
-            CmsLog.LOG.error(Messages.get().key(Messages.INIT_ERR_LOAD_HTML_PROPERTY_FILE_1, HTML_MESSAGE_FILE), th);
+            CmsLog.INIT.error(Messages.get().key(Messages.INIT_ERR_LOAD_HTML_PROPERTY_FILE_1, HTML_MESSAGE_FILE), th);
         }
 
         // get localized message bundle
@@ -2091,8 +2091,8 @@ public final class OpenCmsCore {
         if (m_instance != null) {
             if (m_instance.m_runLevel >= OpenCms.RUNLEVEL_1_CORE_OBJECT) {
                 // otherwise the log is not available
-                if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(Messages.get().key(
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().key(
                         Messages.INIT_RUNLEVEL_CHANGE_2,
                         new Integer(m_instance.m_runLevel),
                         new Integer(level)));

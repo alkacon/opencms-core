@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/06/02 13:18:39 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -104,8 +104,8 @@ public final class CmsSiteManager implements Cloneable {
         m_siteRoots = new HashSet();
         m_aliases = new ArrayList();
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_START_SITE_CONFIG_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_START_SITE_CONFIG_0));
         }
     }
 
@@ -301,8 +301,8 @@ public final class CmsSiteManager implements Cloneable {
         }
         m_aliases = new ArrayList();
         m_siteRoots.add(site.getSiteRoot());
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SITE_ROOT_ADDED_1, site.toString()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SITE_ROOT_ADDED_1, site.toString()));
         }
     }
 
@@ -375,8 +375,8 @@ public final class CmsSiteManager implements Cloneable {
      */
     public void initialize(CmsObject cms) {
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_NUM_SITE_ROOTS_CONFIGURED_1,
                 new Integer((m_sites.size() + ((m_defaultUri != null) ? 1 : 0)))));
         }
@@ -389,8 +389,8 @@ public final class CmsSiteManager implements Cloneable {
                 try {
                     cms.readResource(site.getSiteRoot());
                 } catch (Throwable t) {
-                    if (CmsLog.LOG.isWarnEnabled()) {
-                        CmsLog.LOG.warn(Messages.get().key(Messages.INIT_NO_ROOT_FOLDER_1, site));
+                    if (CmsLog.INIT.isWarnEnabled()) {
+                        CmsLog.INIT.warn(Messages.get().key(Messages.INIT_NO_ROOT_FOLDER_1, site));
                     }
                 }
             }
@@ -404,27 +404,27 @@ public final class CmsSiteManager implements Cloneable {
             try {
                 cms.readResource(m_defaultSite.getSiteRoot());
             } catch (Throwable t) {
-                if (CmsLog.LOG.isWarnEnabled()) {
-                    CmsLog.LOG.warn(Messages.get().key(Messages.INIT_NO_ROOT_FOLDER_DEFAULT_SITE_1, m_defaultSite));
+                if (CmsLog.INIT.isWarnEnabled()) {
+                    CmsLog.INIT.warn(Messages.get().key(Messages.INIT_NO_ROOT_FOLDER_DEFAULT_SITE_1, m_defaultSite));
                 }
             }
         }
         if (m_defaultSite == null) {
             m_defaultSite = new CmsSite("/", CmsSiteMatcher.DEFAULT_MATCHER);
         }
-        if (CmsLog.LOG.isInfoEnabled()) {
+        if (CmsLog.INIT.isInfoEnabled()) {
             if (m_defaultSite != null) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DEFAULT_SITE_ROOT_1, m_defaultSite));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DEFAULT_SITE_ROOT_1, m_defaultSite));
             } else {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DEFAULT_SITE_ROOT_0));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DEFAULT_SITE_ROOT_0));
             }
         }
         m_workplaceSiteMatcher = new CmsSiteMatcher(m_workplaceServer);
-        if (CmsLog.LOG.isInfoEnabled()) {
+        if (CmsLog.INIT.isInfoEnabled()) {
             if (m_workplaceSiteMatcher != null) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_SITE_1, m_workplaceSiteMatcher));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_SITE_1, m_workplaceSiteMatcher));
             } else {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_SITE_0));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_SITE_0));
             }
         }
 

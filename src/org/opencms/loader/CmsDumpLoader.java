@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2005/06/02 10:30:55 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
 
@@ -167,8 +167,8 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public void initConfiguration() {
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
         }
     }

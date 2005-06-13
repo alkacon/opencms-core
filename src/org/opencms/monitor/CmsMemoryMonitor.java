@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/06/01 09:17:53 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.50 $ $Date: 2005/06/01 09:17:53 $
+ * @version $Revision: 1.51 $ $Date: 2005/06/13 10:00:02 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -306,21 +306,21 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             m_maxUsagePercent = m_configuration.getMaxUsagePercent();
         }
 
-        if (CmsLog.LOG.isInfoEnabled()) {
+        if (CmsLog.INIT.isInfoEnabled()) {
             
-            CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_INTERVAL_LOG_1, new Integer(m_intervalLog / 1000)));
-            CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_INTERVAL_EMAIL_1, new Integer(m_intervalEmail / 1000)));
-            CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_INTERVAL_WARNING_1, new Integer(m_intervalWarning / 1000)));
-            CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_INTERVAL_MAX_USAGE_1, new Integer(m_intervalWarning / 1000)));
+            CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_INTERVAL_LOG_1, new Integer(m_intervalLog / 1000)));
+            CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_INTERVAL_EMAIL_1, new Integer(m_intervalEmail / 1000)));
+            CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_INTERVAL_WARNING_1, new Integer(m_intervalWarning / 1000)));
+            CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_INTERVAL_MAX_USAGE_1, new Integer(m_intervalWarning / 1000)));
 
             if ((m_configuration.getEmailReceiver() == null) || (m_configuration.getEmailSender() == null)) {
-                CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_EMAIL_DISABLED_0));
+                CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_EMAIL_DISABLED_0));
             } else {
-                CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_EMAIL_SENDER_1, m_configuration.getEmailSender()));
+                CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_EMAIL_SENDER_1, m_configuration.getEmailSender()));
                 Iterator i = m_configuration.getEmailReceiver().iterator();
                 int n = 0;
                 while (i.hasNext()) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.LOG_MM_EMAIL_RECEIVER_2, new Integer(n+1), i.next()));
+                    CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_EMAIL_RECEIVER_2, new Integer(n+1), i.next()));
                     n++;
                 }
             }

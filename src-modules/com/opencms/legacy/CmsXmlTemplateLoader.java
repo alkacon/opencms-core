@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/05/31 15:51:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,7 +106,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -618,8 +618,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         
         // check if the element cache is enabled
         boolean elementCacheEnabled = config.getBoolean("elementcache.enabled", false);
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(". Loader init          : XMLTemplate element cache " + (elementCacheEnabled ? "enabled" : "disabled"));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(". Loader init          : XMLTemplate element cache " + (elementCacheEnabled ? "enabled" : "disabled"));
         }
         if (elementCacheEnabled) {
             try {
@@ -628,8 +628,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
                     config.getInteger("elementcache.elements", 50000), 
                     config.getInteger("elementcache.variants", 100));
             } catch (Exception e) {
-                if (CmsLog.LOG.isWarnEnabled()) {
-                    CmsLog.LOG.warn(". Loader init          : XMLTemplate element cache non-critical error " + e.toString());
+                if (CmsLog.INIT.isWarnEnabled()) {
+                    CmsLog.INIT.warn(". Loader init          : XMLTemplate element cache non-critical error " + e.toString());
                 }
             }
             m_variantDeps = new Hashtable();
@@ -638,8 +638,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             m_elementCache = null;
         }
         
-        if (CmsLog.LOG.isInfoEnabled()) { 
-            CmsLog.LOG.info(". Loader init          : " + this.getClass().getName() + " initialized");
+        if (CmsLog.INIT.isInfoEnabled()) { 
+            CmsLog.INIT.info(". Loader init          : " + this.getClass().getName() + " initialized");
         }             
     }
     

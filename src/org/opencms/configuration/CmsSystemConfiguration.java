@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/05/19 16:05:45 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -384,8 +384,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_requestHandlers = new ArrayList();
         m_configuredJobs = new ArrayList();
         m_runtimeProperties = new HashMap();
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
         }          
     }
     
@@ -406,8 +406,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         m_configuredJobs.add(jobInfo);
         
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_SCHEDULER_CONFIG_JOB_3,
                 jobInfo.getJobName(),
                 jobInfo.getClassName(),
@@ -430,12 +430,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         }
         if (initClass instanceof I_CmsRequestHandler) {
             m_requestHandlers.add(initClass);
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_REQUEST_HANDLER_SUCCESS_1, clazz));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_REQUEST_HANDLER_SUCCESS_1, clazz));
             }
         } else {        
-            if (CmsLog.LOG.isErrorEnabled()) {
-                CmsLog.LOG.error(Messages.get().key(Messages.INIT_REQUEST_HANDLER_INVALID_1, clazz));
+            if (CmsLog.INIT.isErrorEnabled()) {
+                CmsLog.INIT.error(Messages.get().key(Messages.INIT_REQUEST_HANDLER_INVALID_1, clazz));
             }
         }
     }
@@ -455,13 +455,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         }
         if (initClass instanceof I_CmsResourceInit) {
             m_resourceInitHandlers.add(initClass);
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get()
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get()
                     .key(Messages.INIT_RESOURCE_INIT_SUCCESS_1, initClass));
             }
         } else {        
-            if (CmsLog.LOG.isErrorEnabled()) {
-                CmsLog.LOG.error(Messages.get().key(
+            if (CmsLog.INIT.isErrorEnabled()) {
+                CmsLog.INIT.error(Messages.get().key(
                     Messages.INIT_RESOURCE_INIT_INVALID_CLASS_1,
                     initClass));
             }
@@ -1052,8 +1052,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * Will be called when configuration of this object is finished.<p> 
      */
     public void initializeFinished() {
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SYSTEM_CONFIG_FINISHED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SYSTEM_CONFIG_FINISHED_0));
         }            
     }   
     
@@ -1132,8 +1132,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public void setLocaleManager(CmsLocaleManager localeManager) {
         m_localeManager = localeManager;
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_CONFIG_I18N_FINISHED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_CONFIG_I18N_FINISHED_0));
         }                    
     }
     
@@ -1156,8 +1156,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public void setPasswordHandler(I_CmsPasswordHandler passwordHandler) {
         m_passwordHandler = passwordHandler;
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_PWD_HANDLER_SUCCESS_1,
                 passwordHandler.getClass().getName()));
         }
@@ -1181,14 +1181,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         
         if (objectInstance instanceof I_CmsDbContextFactory) {
             m_runtimeInfoFactory = (I_CmsDbContextFactory)objectInstance;
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(
                     Messages.INIT_RUNTIME_INFO_FACTORY_SUCCESS_1,
                     className));
             }
         } else {        
-            if (CmsLog.LOG.isFatalEnabled()) {
-                CmsLog.LOG.fatal(Messages.get().key(Messages.INIT_RUNTIME_INFO_FACTORY_FAILURE_1, className));
+            if (CmsLog.INIT.isFatalEnabled()) {
+                CmsLog.INIT.fatal(Messages.get().key(Messages.INIT_RUNTIME_INFO_FACTORY_FAILURE_1, className));
             }
         }        
         
@@ -1202,8 +1202,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void setSiteManager(CmsSiteManager siteManager) {
 
         m_siteManager = siteManager;
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SITE_CONFIG_FINISHED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SITE_CONFIG_FINISHED_0));
         }          
     }    
 
@@ -1218,8 +1218,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         } catch (Throwable t) {
             m_tempFileProjectId = -1;
         }
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_TEMPFILE_PROJECT_ID_1,
                 new Integer(m_tempFileProjectId)));
         }             
@@ -1234,8 +1234,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void setVersionHistorySettings(String historyEnabled, String historyMaxCount) {
         m_versionHistoryEnabled = Boolean.valueOf(historyEnabled).booleanValue();
         m_versionHistoryMaxCount = Integer.valueOf(historyMaxCount).intValue();
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_HISTORY_SETTINGS_2,
                 // is Boolean type localized by underlying java.text.MessageFormat?
                 new Boolean(m_versionHistoryEnabled),

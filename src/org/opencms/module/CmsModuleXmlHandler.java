@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/05/25 09:01:57 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/13 10:00:03 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -453,8 +453,8 @@ public class CmsModuleXmlHandler {
 
         CmsExportPoint point = new CmsExportPoint(uri, destination);
         m_exportPoints.add(point);
-        if (CmsLog.LOG.isInfoEnabled() && (point.getDestinationPath() != null)) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled() && (point.getDestinationPath() != null)) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_ADD_EXPORT_POINT_2, point.getUri(), point.getDestinationPath()));
         }
     }

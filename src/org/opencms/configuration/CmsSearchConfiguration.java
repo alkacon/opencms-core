@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2005/05/19 16:05:45 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  * Lucene search configuration class.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.3.5
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
@@ -104,8 +104,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
     public CmsSearchConfiguration() {
         
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);        
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SEARCH_CONFIG_INIT_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_CONFIG_INIT_0));
         }
     }    
 
@@ -355,8 +355,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public void initializeFinished() {
         
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SEARCH_CONFIG_FINISHED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_CONFIG_FINISHED_0));
         }            
     }    
     
@@ -368,8 +368,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
     public void setSearchManager(CmsSearchManager manager) {
         
         m_searchManager = manager;
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SEARCH_MANAGER_FINISHED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_MANAGER_FINISHED_0));
         }
     }    
     

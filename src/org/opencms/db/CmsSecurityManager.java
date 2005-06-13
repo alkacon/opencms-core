@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/09 15:15:45 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2005/06/13 10:00:03 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -1499,8 +1499,8 @@ public final class CmsSecurityManager {
     public void destroy() throws Throwable {
 
         finalize();
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SECURITY_MANAGER_SHUTDOWN_1, this.getClass().getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SECURITY_MANAGER_SHUTDOWN_1, this.getClass().getName()));
         }
     }
 
@@ -2577,8 +2577,8 @@ public final class CmsSecurityManager {
 
         m_driverManager = CmsDriverManager.newInstance(configurationManager, this, dbContextFactory);
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SECURITY_MANAGER_INIT_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SECURITY_MANAGER_INIT_0));
         }
     }
 

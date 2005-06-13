@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/06/07 15:03:46 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -561,8 +561,8 @@ public class CmsSystemInfo {
     protected void setDefaultEncoding(String encoding) {
 
         m_defaultEncoding = encoding.intern();
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.LOG_SET_DEFAULT_ENCODING_1, m_defaultEncoding));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.LOG_SET_DEFAULT_ENCODING_1, m_defaultEncoding));
         }
     }
 
@@ -599,8 +599,8 @@ public class CmsSystemInfo {
     protected void setServerName(String serverName) {
 
         m_serverName = serverName;
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.LOG_SET_SERVERNAME_1, m_serverName));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.LOG_SET_SERVERNAME_1, m_serverName));
         }
     }
 

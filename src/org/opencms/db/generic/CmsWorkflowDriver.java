@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.49 $ $Date: 2005/05/23 07:26:46 $
+ * @version $Revision: 1.50 $ $Date: 2005/06/13 10:00:02 $
  * @since 5.1
  */
 public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -160,8 +160,8 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
     public void destroy() throws Throwable {
 
         finalize();
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
     }
 
@@ -236,8 +236,8 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
 
         m_driverManager = driverManager;
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2005/05/31 07:49:05 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -173,8 +173,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      */
     public CmsImportExportConfiguration() {
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);        
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_IMPORT_CONFIG_INIT_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_IMPORT_CONFIG_INIT_0));
         }
     } 
 
@@ -452,8 +452,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      * Will be called when configuration of this object is finished.<p> 
      */
     public void initializeFinished() {
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_IMPORT_CONFIG_FINISHED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_IMPORT_CONFIG_FINISHED_0));
         }            
     }   
     
@@ -464,8 +464,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      */
     public void setImportExportManager(CmsImportExportManager manager) {
         m_importExportManager = manager;
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_IMPORT_MANAGER_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_IMPORT_MANAGER_0));
         }
     }
     
@@ -476,8 +476,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      */
     public void setStaticExportManager(CmsStaticExportManager manager) {
         m_staticExportManager = manager;
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_STATEXP_MANAGER_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_STATEXP_MANAGER_0));
         }
     }
     

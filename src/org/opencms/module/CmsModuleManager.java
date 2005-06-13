@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/13 10:00:03 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,21 +91,21 @@ public class CmsModuleManager {
      */
     public CmsModuleManager(List configuredModules) {
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_MOD_MANAGER_CREATED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_MOD_MANAGER_CREATED_0));
         }
 
         m_modules = new HashMap();
         for (int i = 0; i < configuredModules.size(); i++) {
             CmsModule module = (CmsModule)configuredModules.get(i);
             m_modules.put(module.getName(), module);
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_MOD_CONFIGURED_1, module.getName()));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_MOD_CONFIGURED_1, module.getName()));
             }
         }
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_NUM_MODS_CONFIGURED_1, new Integer(m_modules.size())));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_NUM_MODS_CONFIGURED_1, new Integer(m_modules.size())));
         }
         m_moduleActionInstances = new HashMap();
         m_moduleExportPoints = Collections.EMPTY_SET;
@@ -411,20 +411,20 @@ public class CmsModuleManager {
                 try {
                     moduleAction = (I_CmsModuleAction)Class.forName(module.getActionClass()).newInstance();
                 } catch (InstantiationException e) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
                 } catch (IllegalAccessException e) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
                 } catch (ClassNotFoundException e) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
                 } catch (ClassCastException e) {
-                    CmsLog.LOG.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
+                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
                 }
 
                 if (moduleAction != null) {
                     // store and initialize module action class    
                     m_moduleActionInstances.put(module.getName(), moduleAction);
-                    if (CmsLog.LOG.isInfoEnabled()) {
-                        CmsLog.LOG.info(Messages.get().key(
+                    if (CmsLog.INIT.isInfoEnabled()) {
+                        CmsLog.INIT.info(Messages.get().key(
                             Messages.INIT_INITIALIZE_MOD_CLASS_1,
                             moduleAction.getClass().getName()));
                     }
@@ -454,8 +454,8 @@ public class CmsModuleManager {
         // initialize the export points
         initModuleExportPoints();
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_NUM_CLASSES_INITIALIZED_1,
                 new Integer(m_moduleActionInstances.size())));
         }
@@ -474,8 +474,8 @@ public class CmsModuleManager {
             // get the module action instance            
             I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(moduleName);
 
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(
                     Messages.INIT_SHUTDOWN_MOD_CLASS_1,
                     moduleAction.getClass().getName()));
             }
@@ -489,14 +489,14 @@ public class CmsModuleManager {
             }
         }
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_SHUTDOWN_NUM_MOD_CLASSES_1,
                 new Integer(m_moduleActionInstances.size())));
         }
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
         }
     }
 

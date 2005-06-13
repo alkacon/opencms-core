@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2005/05/31 14:39:21 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,8 +48,8 @@ import org.apache.log4j.helpers.Loader;
  * 
  * The OpenCms logging mechanism is based on Apache Commons Logging. 
  * However, log4j is shipped with OpenCms and assumed to be used as default logging mechanism.
- * Since apparently Commons Logging logging may cause issues in more complex classloader scenarios,
- * we will probably switch the logging interface to <code>UGLI</code> once the final release is available.<p>
+ * Since apparently Commons Logging may cause issues in more complex classloader scenarios,
+ * we may switch the logging interface to log4j <code>UGLI</code> once the final release is available.<p>
  * 
  * The log4j configuration file shipped with OpenCms is located 
  * in <code>${opencms.WEB-INF}/classes/log4j.properties</code>. OpenCms will auto-configure itself 
@@ -59,7 +59,7 @@ import org.apache.log4j.helpers.Loader;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public final class CmsLog {
 
@@ -67,7 +67,7 @@ public final class CmsLog {
     private static final String CHANNEL_INIT = "org.opencms.init";
 
     /** Log for initialization messages. */
-    public static final Log LOG = LogFactory.getLog(CHANNEL_INIT);
+    public static final Log INIT = LogFactory.getLog(CHANNEL_INIT);
     
     /** The  abolute path to the OpenCms log file (in the "real" file system). */
     private static String m_logFileRfsPath;
@@ -111,7 +111,7 @@ public final class CmsLog {
                     }
                 }
                 // can't localize this message since this would end in an endless logger init loop
-                LOG.info(". Log4j config file    : " + path);
+                INIT.info(". Log4j config file    : " + path);
             }
         } catch (SecurityException e) {
             // ignore, may be caused if environment can't be written

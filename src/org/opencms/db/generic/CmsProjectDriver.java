@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/06/02 07:12:13 $
- * Version: $Revision: 1.226 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.227 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.226 $
+ * @version $Revision: 1.227 $
  * @since 5.1
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
@@ -379,8 +379,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     public void destroy() throws Throwable {
 
         finalize();
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
     }
 
@@ -398,8 +398,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // ignore the exception - the project was not readable so fill in the defaults
         }
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_FILL_DEFAULTS_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_FILL_DEFAULTS_0));
         }
 
         String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
@@ -558,8 +558,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         m_driverManager = driverManager;
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {

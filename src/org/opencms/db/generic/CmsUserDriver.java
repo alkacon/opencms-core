@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/07 16:25:39 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.98 $
+ * @version $Revision: 1.99 $
  * @since 5.1
  */
 public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
@@ -403,8 +403,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     public void destroy() throws Throwable {
 
         finalize();
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
     }
 
@@ -590,32 +590,32 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         m_driverManager = driverManager;
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
         }
 
         m_digestAlgorithm = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DIGEST_ALGORITHM_1, m_digestAlgorithm));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DIGEST_ALGORITHM_1, m_digestAlgorithm));
         }
 
         m_digestFileEncoding = config.getString(
             I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding",
             CmsEncoder.C_UTF8_ENCODING);
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_DIGEST_ENCODING_1, m_digestFileEncoding));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DIGEST_ENCODING_1, m_digestFileEncoding));
         }
 
         // create the digest
         try {
             m_digest = MessageDigest.getInstance(m_digestAlgorithm);
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_DIGEST_ENC_3, m_digest.getAlgorithm(), 
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DIGEST_ENC_3, m_digest.getAlgorithm(), 
                     m_digest.getProvider().getName(), String.valueOf(m_digest.getProvider().getVersion())));
             }
         } catch (NoSuchAlgorithmException e) {
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_SET_DIGEST_ERROR_0), e);
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_SET_DIGEST_ERROR_0), e);
             }
         }
         
@@ -626,8 +626,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 fillDefaults(dbc);
             }
         } catch (CmsException e) {
-            if (CmsLog.LOG.isErrorEnabled()) {
-                CmsLog.LOG.error(Messages.get().key(Messages.INIT_USER_GROUP_INITIALIZATION_FAILED_0), e);
+            if (CmsLog.INIT.isErrorEnabled()) {
+                CmsLog.INIT.error(Messages.get().key(Messages.INIT_USER_GROUP_INITIALIZATION_FAILED_0), e);
             }
             throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_USER_DRIVER_0), e);
         }
@@ -1666,8 +1666,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             createUserInGroup(dbc, export.getId(), guests.getId(), null);
         }
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_USER_GROUP_DEFAULTS_INITIALIZED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_USER_GROUP_DEFAULTS_INITIALIZED_0));
         }
 
         // avoid warning

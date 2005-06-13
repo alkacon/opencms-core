@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2005/06/02 10:30:55 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {
@@ -159,8 +159,8 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
      */
     public void initConfiguration() {
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
         }
     }
 

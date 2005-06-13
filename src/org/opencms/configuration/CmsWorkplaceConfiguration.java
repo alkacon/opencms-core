@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/06/10 16:02:58 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -336,8 +336,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      */
     public CmsWorkplaceConfiguration() {
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);        
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_INIT_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_INIT_0));
         }               
     } 
 
@@ -924,8 +924,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      */
     public void initializeFinished() {
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_FINISHED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_FINISHED_0));
         }
     }   
     
@@ -936,8 +936,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      */
     public void setWorkplaceManager(CmsWorkplaceManager manager) {
         m_workplaceManager = manager;
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_WORKPLACE_INIT_FINISHED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_INIT_FINISHED_0));
         }
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/05/20 16:53:12 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.3.6
  * 
  * @see org.opencms.scheduler.CmsScheduledJobInfo
@@ -124,8 +124,8 @@ public class CmsScheduleManager implements Job {
             size = m_configuredJobs.size();
         }
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SCHEDULER_CREATED_1, new Integer(size)));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SCHEDULER_CREATED_1, new Integer(size)));
         }
     }
 
@@ -257,8 +257,8 @@ public class CmsScheduleManager implements Job {
             return;
         }
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SCHEDULER_INITIALIZED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SCHEDULER_INITIALIZED_0));
         }
 
         if (m_configuredJobs != null) {
@@ -284,9 +284,9 @@ public class CmsScheduleManager implements Job {
             return;
         }
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SCHEDULER_STARTED_0));
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SCHEDULER_CONFIG_FINISHED_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SCHEDULER_STARTED_0));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SCHEDULER_CONFIG_FINISHED_0));
         }
     }
 
@@ -459,8 +459,8 @@ public class CmsScheduleManager implements Job {
 
         m_adminCms = null;
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
         }
 
         if (m_scheduler != null) {

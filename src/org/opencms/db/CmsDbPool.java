@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2005/05/31 07:49:05 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/13 10:00:03 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * {@link org.opencms.db.CmsSqlManager}.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.35 $ $Date: 2005/05/31 07:49:05 $
+ * @version $Revision: 1.36 $ $Date: 2005/06/13 10:00:03 $
  * @since 5.1
  */
 public final class CmsDbPool {
@@ -369,12 +369,12 @@ public final class CmsDbPool {
         Connection con = connectionFactory.createConnection();
         con.close();
         
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(
                 Messages.get().key(Messages.INIT_JDBC_POOL_2, poolUrl, jdbcUrl));
         }
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_JDBC_POOL_2, poolUrl, jdbcUrl));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_JDBC_POOL_2, poolUrl, jdbcUrl));
         }
              
         return driver;

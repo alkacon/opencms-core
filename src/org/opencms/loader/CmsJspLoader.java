@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/06/02 10:30:40 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.80 $
+ * @version $Revision: 1.81 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -308,14 +308,14 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         m_errorPagesAreNotCommited = config.getBoolean("jsp.errorpage.committed", true);
 
         // output setup information
-        if (CmsLog.LOG.isInfoEnabled()) { 
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) { 
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_JSP_REPOSITORY_ABS_PATH_1, m_jspRepository));
-            CmsLog.LOG.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_WEBAPP_PATH_1, m_jspWebAppRepository));
-            CmsLog.LOG.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_JSP_REPOSITORY_ERR_PAGE_COMMOTED_1, new Boolean(m_errorPagesAreNotCommited)));
-            CmsLog.LOG.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));               
         }
     }
@@ -431,8 +431,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         m_cache = cache;
         // output setup information
-        if (CmsLog.LOG.isInfoEnabled()) { 
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_FLEX_CACHE_0));        
+        if (CmsLog.INIT.isInfoEnabled()) { 
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_FLEX_CACHE_0));        
         }
     }
 

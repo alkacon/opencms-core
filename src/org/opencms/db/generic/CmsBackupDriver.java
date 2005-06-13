@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.133 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.134 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
  * 
- * @version $Revision: 1.133 $
+ * @version $Revision: 1.134 $
  * @since 5.1
  */
 public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
@@ -338,8 +338,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     public void destroy() throws Throwable {
 
         finalize();
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
     }
 
@@ -368,8 +368,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
 
         m_driverManager = driverManager;
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {

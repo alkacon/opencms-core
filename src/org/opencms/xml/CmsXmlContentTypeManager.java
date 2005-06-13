@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/06/01 15:14:28 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/13 10:00:03 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
@@ -103,8 +103,8 @@ public class CmsXmlContentTypeManager {
         fastMap.setFast(true);
         m_contentHandlers = fastMap;
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(Messages.INIT_START_CONTENT_CONFIG_0));
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_START_CONTENT_CONFIG_0));
         }
     }
 
@@ -200,8 +200,8 @@ public class CmsXmlContentTypeManager {
         // store the registered default widget
         m_defaultWidgets.put(type.getTypeName(), widget);
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_ADD_ST_USING_WIDGET_2,
                 type.getTypeName(),
                 widget.getClass().getName()));
@@ -232,11 +232,11 @@ public class CmsXmlContentTypeManager {
             m_widgetAliases.put(aliasName, widgetClazz.getName());
         }
 
-        if (CmsLog.LOG.isInfoEnabled()) {
+        if (CmsLog.INIT.isInfoEnabled()) {
             if (aliasName != null) {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_WIDGET_1, widgetClazz.getName()));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_WIDGET_1, widgetClazz.getName()));
             } else {
-                CmsLog.LOG.info(Messages.get().key(Messages.INIT_ADD_WIDGET_ALIAS_2, widgetClazz.getName(), aliasName));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_WIDGET_ALIAS_2, widgetClazz.getName(), aliasName));
             }
         }
     }
@@ -466,8 +466,8 @@ public class CmsXmlContentTypeManager {
         // create and cache the special system id for the XML content type entity resolver
         CmsXmlEntityResolver.cacheSystemId(CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS, getSchemaBytes());
 
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(Messages.get().key(
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_NUM_ST_INITIALIZED_1,
                 new Integer(m_registeredTypes.size())));
         }

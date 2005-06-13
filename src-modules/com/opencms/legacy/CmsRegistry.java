@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2005/05/31 15:51:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/13 10:00:02 $
+ * Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @deprecated The registry has been replaced by the new XML configuration.
  */
@@ -82,14 +82,14 @@ public class CmsRegistry extends A_CmsXmlContent {
     public static CmsRegistry getInstance() {
         if (m_registry == null) {
             // initialize the (deprecated) XML registry
-            if (CmsLog.LOG.isInfoEnabled()) {
-                CmsLog.LOG.info(". Initializing registry: starting");
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(". Initializing registry: starting");
             }    
             String path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("config/registry.xml");
             try {
                 m_registry = new CmsRegistry(path);
-                if (CmsLog.LOG.isInfoEnabled()) {
-                    CmsLog.LOG.info(". Initializing registry: finished");
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(". Initializing registry: finished");
                 }                
             } catch (CmsException e) {
                 CmsLog.getLog(CmsRegistry.class).error("Unable to read registry.xml from path: '" + path + "'", e);

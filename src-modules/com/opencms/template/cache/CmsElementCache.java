@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2005/05/31 14:39:21 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/13 10:00:02 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,10 +73,10 @@ public class CmsElementCache extends Object implements I_CmsEventListener {
         }
         m_variantCachesize = variantCachesize;
         
-        if (CmsLog.LOG.isInfoEnabled()) {
-            CmsLog.LOG.info(". Legacy element cache : Uri cache size     = " + uriCachesize);
-            CmsLog.LOG.info(". Legacy element cache : Element cache size = " + elementCachesize);
-            CmsLog.LOG.info(". Legacy element cache : Variant cache size = " + variantCachesize);
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(". Legacy element cache : Uri cache size     = " + uriCachesize);
+            CmsLog.INIT.info(". Legacy element cache : Element cache size = " + elementCachesize);
+            CmsLog.INIT.info(". Legacy element cache : Variant cache size = " + variantCachesize);
         }        
         
         // add this class as an event handler to the Cms event listener
