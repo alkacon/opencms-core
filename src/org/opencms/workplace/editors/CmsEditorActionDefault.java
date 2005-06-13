@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2005/05/18 07:34:41 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/13 12:11:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.3.0
  */
@@ -129,10 +129,10 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
      */
     public String getButtonUrl(CmsJspActionElement jsp, String resourceName) {
         // get the button image
-        String button = I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + "buttons/publish";
+        String button = I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + "buttons/publish.png";
         if (!isButtonActive(jsp, resourceName)) {
             // show disabled button if not active
-            button += "_in";
+            button = I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + "buttons/publish_in.png";
         }
         return jsp.link(button);
     }

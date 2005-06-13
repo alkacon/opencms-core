@@ -58,6 +58,7 @@ case CmsXmlContentEditor.ACTION_SAVEEXIT:
 		<input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
 		<input type="hidden" name="<%= wp.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
 		<input type="hidden" name="<%= wp.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
+		<input type="hidden" name="<%= wp.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
 		</form>
 		<script type="text/javascript">
 		<!--
@@ -176,6 +177,7 @@ function exitEditor() {
 <input type="hidden" name="<%= wp.PARAM_OLDELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
 <input type="hidden" name="<%= wp.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
 <input type="hidden" name="<%= wp.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
+<input type="hidden" name="<%= wp.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
 <input type="hidden" name="<%= wp.PARAM_ELEMENTINDEX %>" value="">
 <input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="">
  

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/13 12:11:40 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.12
  */
@@ -151,15 +151,15 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     
     
     /**
-     * Deletes the temporary file and unlocks the edited resource when in direct edit mode.<p>
-     * 
-     * @param forceUnlock if true, the resource will be unlocked anyway
+     * @see org.opencms.workplace.editors.CmsEditor#actionClear(boolean)
      */
     public void actionClear(boolean forceUnlock) {
         // delete the temporary file        
         deleteTempFile();
-        if (Boolean.valueOf(getParamDirectedit()).booleanValue() || forceUnlock) {
-            // unlock the resource when in direct edit mode or force unlock is true
+        boolean directEditMode = Boolean.valueOf(getParamDirectedit()).booleanValue();
+        boolean modified = Boolean.valueOf(getParamModified()).booleanValue();
+        if (directEditMode || forceUnlock || ! modified) {
+            // unlock the resource when in direct edit mode, force unlock is true or resource was not modified
             try {
                 getCms().unlockResource(getParamResource());
             } catch (CmsException e) {
@@ -263,7 +263,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
              performSaveContent(getParamElementname(), getElementLocale());
              // copy the temporary file content back to the original file
              commitTempFile();
-
+            // set the modified parameter
+             setParamModified(Boolean.TRUE.toString());
          } catch (CmsException e) {
              showErrorPage(e);
          }

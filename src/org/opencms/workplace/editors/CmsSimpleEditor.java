@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2005/05/20 14:31:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/13 12:11:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
@@ -110,12 +110,22 @@ public class CmsSimpleEditor extends CmsEditor {
     }
     
     /**
-     * Unlocks the edited resource when in direct edit mode.<p>
-     * 
-     * @param forceUnlock if true, the resource will be unlocked anyway
+     * @see org.opencms.workplace.editors.CmsEditor#actionClear(boolean)
      */
     public void actionClear(boolean forceUnlock) {
-        // nothing to be done here, we are never in direct edit mode
+
+        boolean modified = Boolean.valueOf(getParamModified()).booleanValue();
+        if (forceUnlock || ! modified) {
+            // unlock the resource when force unlock is true or resource was not modified
+            try {
+                getCms().unlockResource(getParamResource());
+            } catch (CmsException e) {
+                // should usually never happen
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
+                }       
+            }
+        }
     }
     
     /**
@@ -174,6 +184,10 @@ public class CmsSimpleEditor extends CmsEditor {
             // save and exit was canceled
             return;
         }
+        
+        // unlock resource, if no modified
+        actionClear(false);
+        
         // close the editor
         actionClose();
     }
@@ -202,7 +216,9 @@ public class CmsSimpleEditor extends CmsEditor {
             } catch (UnsupportedEncodingException e) {
                 throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()), e);
             }
-            setParamContent(encodeContent(decodedContent));            
+            setParamContent(encodeContent(decodedContent));
+            // set the modified parameter
+            setParamModified(Boolean.TRUE.toString());
         } catch (CmsException e) {
             showErrorPage(e);
         }

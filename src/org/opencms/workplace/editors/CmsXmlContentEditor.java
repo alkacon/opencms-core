@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/05/31 16:30:08 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/06/13 12:11:40 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -201,8 +201,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         
         // delete the temporary file        
         deleteTempFile();
-        if ("true".equals(getParamDirectedit()) || forceUnlock) {
-            // unlock the resource when in direct edit mode or force unlock is true
+        boolean directEditMode = Boolean.valueOf(getParamDirectedit()).booleanValue();
+        boolean modified = Boolean.valueOf(getParamModified()).booleanValue();
+        if (directEditMode || forceUnlock || ! modified) {
+            // unlock the resource when in direct edit mode, force unlock is true or resource was not modified
             try {
                 getCms().unlockResource(getParamResource());
             } catch (CmsException e) {
@@ -379,6 +381,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // no errors found, write content and copy temp file contents
                 writeContent();  
                 commitTempFile();
+                // set the modified parameter
+                setParamModified(Boolean.TRUE.toString());
             }
         } catch (CmsException e) {
             showErrorPage(e);

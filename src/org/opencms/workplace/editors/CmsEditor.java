@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/06/03 15:48:30 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/13 12:11:40 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,14 +61,11 @@ import org.apache.commons.logging.Log;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsEditor extends CmsDialog {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEditor.class);  
     
     /** Value for the action: change the body. */
     public static final int ACTION_CHANGE_BODY = 124;
@@ -148,11 +145,17 @@ public abstract class CmsEditor extends CmsDialog {
     /** Parameter name for the request parameter "loaddefault". */
     public static final String PARAM_LOADDEFAULT = "loaddefault";
     
+    /** Parameter name for the request parameter "modified". */
+    public static final String PARAM_MODIFIED = "modified";
+    
     /** Parameter name for the request parameter "old element language". */
     public static final String PARAM_OLDELEMENTLANGUAGE = "oldelementlanguage";
     
     /** Parameter name for the request parameter "tempfile". */
     public static final String PARAM_TEMPFILE = "tempfile";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEditor.class);  
 
     /** The encoding to use (will be read from the file property). */
     private String m_fileEncoding;
@@ -165,6 +168,7 @@ public abstract class CmsEditor extends CmsDialog {
     private String m_paramEditormode;
     private String m_paramElementlanguage;
     private String m_paramLoadDefault;
+    private String m_paramModified;
     private String m_paramOldelementlanguage;
     private String m_paramTempFile;
     
@@ -181,7 +185,7 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
-     * Unlocks the edited resource when in direct edit mode.<p>
+     * Unlocks the edited resource when in direct edit mode or when the resource was not modified.<p>
      * 
      * @param forceUnlock if true, the resource will be unlocked anyway
      */
@@ -309,7 +313,7 @@ public abstract class CmsEditor extends CmsDialog {
             active = actionClass.isButtonActive(getJsp(), getParamResource());
         } else {
             // action class not defined, display inactive button
-            url = getSkinUri() + "buttons/publish_in";
+            url = getSkinUri() + "buttons/publish_in.png";
             name = "explorer.context.publish";
         }
         String image = url.substring(url.lastIndexOf("/") + 1);
@@ -327,15 +331,15 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
-     * Returns the OpenCms request context path.<p>
-     * 
-     * This is a convenience method to use in the editor.<p>
-     * 
-     * @return the OpenCms request context path
-     */ 
-    public String getOpenCmsContext() {
-        
-        return OpenCms.getSystemInfo().getOpenCmsContext();
+     * @see org.opencms.workplace.CmsWorkplace#checkLock(java.lang.String, int)
+     */
+    public void checkLock(String resource, int mode) throws CmsException {
+
+        CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
+        if (! getCms().getLock(res).isNullLock()) {
+            setParamModified(Boolean.TRUE.toString());
+        }
+        super.checkLock(resource, mode);
     }
     
     /**
@@ -355,6 +359,18 @@ public abstract class CmsEditor extends CmsDialog {
      * @return the URI to the editor resource folder
      */
     public abstract String getEditorResourceUri();    
+    
+    /**
+     * Returns the OpenCms request context path.<p>
+     * 
+     * This is a convenience method to use in the editor.<p>
+     * 
+     * @return the OpenCms request context path
+     */ 
+    public String getOpenCmsContext() {
+        
+        return OpenCms.getSystemInfo().getOpenCmsContext();
+    }
     
     /**
      * Returns the back link when closing the editor.<p>
@@ -422,6 +438,16 @@ public abstract class CmsEditor extends CmsDialog {
      */
     public String getParamLoaddefault() {
         return m_paramLoadDefault;
+    }
+    
+    /**
+     * Returns the modified parameter indicating if the resource has been saved.<p>
+     *
+     * @return the modified parameter indicating if the resource has been saved
+     */
+    public String getParamModified() {
+
+        return m_paramModified;
     }
     
     /**
@@ -518,6 +544,16 @@ public abstract class CmsEditor extends CmsDialog {
      */
     public void setParamLoaddefault(String loadDefault) {
         m_paramLoadDefault = loadDefault;
+    }
+    
+    /**
+     * Sets the modified parameter indicating if the resource has been saved.<p>
+     *
+     * @param modified the modified parameter indicating if the resource has been saved
+     */
+    public void setParamModified(String modified) {
+
+        m_paramModified = modified;
     }
     
     /**
@@ -652,6 +688,37 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
+     * Decodes an individual parameter value, ensuring the content is always decoded in UTF-8.<p>
+     * 
+     * For editors the content is always encoded using the 
+     * JavaScript encodeURIComponent() method on the client,
+     * which always encodes in UTF-8.<p> 
+     * 
+     * @param paramName the name of the parameter 
+     * @param paramValue the unencoded value of the parameter
+     * @return the encoded value of the parameter
+     */
+    protected String decodeParamValue(String paramName, String paramValue) {
+        if ((paramName != null) && (paramValue != null)) {
+            if (PARAM_CONTENT.equals(paramName)) {
+                // content will be always encoded in UTF-8 unicode by the editor client
+                return CmsEncoder.decode(paramValue, CmsEncoder.C_UTF8_ENCODING);
+            } else if (PARAM_RESOURCE.equals(paramName) || PARAM_TEMPFILE.equals(paramName)) {
+                String filename = CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
+                if (PARAM_TEMPFILE.equals(paramName) || CmsStringUtil.isEmpty(getParamTempfile())) {
+                    // always use value from temp file if it is available
+                    setFileEncoding(getFileEncoding(getCms(), filename));
+                }
+                return filename;
+            } else {
+                return CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
+            }
+        } else {
+            return null;
+        }
+    }    
+    
+    /**
      * Deletes a temporary file from the OpenCms VFS, needed when exiting an editor.<p> 
      */
     protected void deleteTempFile() {       
@@ -681,37 +748,6 @@ public abstract class CmsEditor extends CmsDialog {
      */
     protected String encodeContent(String content) {
         return CmsEncoder.escapeWBlanks(content, CmsEncoder.C_UTF8_ENCODING);
-    }    
-    
-    /**
-     * Decodes an individual parameter value, ensuring the content is always decoded in UTF-8.<p>
-     * 
-     * For editors the content is always encoded using the 
-     * JavaScript encodeURIComponent() method on the client,
-     * which always encodes in UTF-8.<p> 
-     * 
-     * @param paramName the name of the parameter 
-     * @param paramValue the unencoded value of the parameter
-     * @return the encoded value of the parameter
-     */
-    protected String decodeParamValue(String paramName, String paramValue) {
-        if ((paramName != null) && (paramValue != null)) {
-            if (PARAM_CONTENT.equals(paramName)) {
-                // content will be always encoded in UTF-8 unicode by the editor client
-                return CmsEncoder.decode(paramValue, CmsEncoder.C_UTF8_ENCODING);
-            } else if (PARAM_RESOURCE.equals(paramName) || PARAM_TEMPFILE.equals(paramName)) {
-                String filename = CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
-                if (PARAM_TEMPFILE.equals(paramName) || CmsStringUtil.isEmpty(getParamTempfile())) {
-                    // always use value from temp file if it is available
-                    setFileEncoding(getFileEncoding(getCms(), filename));
-                }
-                return filename;
-            } else {
-                return CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
-            }
-        } else {
-            return null;
-        }
     }    
     
     /**
