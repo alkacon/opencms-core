@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsUUID.java,v $
- * Date   : $Date: 2005/04/22 08:45:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/13 15:53:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,21 +31,20 @@
  
 package org.opencms.util;
 
-import org.opencms.main.CmsInitException;
+import java.util.Random;
+
+import org.doomdark.uuid.UUID;
 
 import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0
  */
 public class TestCmsUUID extends TestCase {
 
-    // DEBUG flag
-    private static final boolean DEBUG = true;
-     
     /**
      * Default JUnit constructor.<p>
      * 
@@ -57,30 +56,95 @@ public class TestCmsUUID extends TestCase {
 
     /**
      * Tests UUID generation.<p>
+     * 
+     * @throws Exception if the test fails
      */
-    public void testUUID() {
-        try {
-            CmsUUID.init(CmsUUID.getDummyEthernetAddress());
-        } catch (CmsInitException e) {
-            // will not happen as the dummy address is always valid
-        }        
+    public void testUUID() throws Exception {
+        
+        CmsUUID.init(CmsUUID.getDummyEthernetAddress());        
         CmsUUID id1 = new CmsUUID();
         CmsUUID id2 = new CmsUUID();
         CmsUUID id3 = new CmsUUID();    
-        if (DEBUG) {
-            System.out.println("UUID 1: " + id1);
-            System.out.println("UUID 2: " + id2);
-            System.out.println("UUID 3: " + id3);
-        }
+
         assertNotSame(id1, id2);
+        assertFalse(id1.equals(id2));
         assertNotSame(id1, id3);
+        assertFalse(id1.equals(id3));
         assertNotSame(id3, id2);  
+        assertFalse(id3.equals(id2));
         
         CmsUUID id4 = CmsUUID.getNullUUID();     
         assertTrue(id4.isNullUUID());
+        assertTrue(id4.equals(CmsUUID.getNullUUID()));
+    }
+    
+    /**
+     * Tests UUID equals() method.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testUUIDEquals() throws Exception {
+
+        CmsUUID.init(CmsUUID.getDummyEthernetAddress());      
+        CmsUUID id1 = new CmsUUID("c300ba5c-01e8-3727-b305-5dcc9ccae1ee");
+        CmsUUID id2 = new CmsUUID("c300ba5c-01e8-3727-b305-5dcc9ccae1ee");
         
-        if (id4.equals(CmsUUID.getNullUUID())) {
-            System.out.println("id4 is null-UUID");
+        assertNotSame(id1, id2);
+        assertEquals(id1, id2);
+        CmsUUID id3 = new CmsUUID(); 
+        assertFalse(id1.equals(id3));
+        assertFalse(id2.equals(id3));
+        
+        UUID uid1 = new UUID("c300ba5c-01e8-3727-b305-5dcc9ccae1ee");
+        UUID uid2 = new UUID("c300ba5c-01e8-3727-b305-5dcc9ccae1ee");
+        assertNotSame(uid1, uid2);
+        assertEquals(uid1, uid2);
+        
+        // check behaviour of equals method in JUG UUID class
+        UUID uid = new UUID("c300ba5c-01e8-3727-b305-5dcc9ccae1ee");        
+        byte[] b1 = uid.asByteArray();
+        byte[] b2 = uid.toByteArray();
+        assertNotSame(b1, b2);       
+        byte[] b3 = uid.asByteArray();
+        assertNotSame(b1, b3);    
+        byte[] b4 = uid.toByteArray();
+        assertNotSame(b2, b4); 
+
+        CmsUUID idNull = new CmsUUID("00000000-0000-0000-0000-000000000000");
+        assertTrue(idNull.isNullUUID());
+        CmsUUID id4 = CmsUUID.getNullUUID();   
+        assertEquals(idNull, id4);
+        
+        int testSize = 100000;
+        CmsUUID[] ids = new CmsUUID[testSize];
+        for (int i=0; i<testSize; i++) {
+            ids[i] = new CmsUUID();
         }
+        
+        int hits1 = 0;
+        Random r = new Random();
+        long start = System.currentTimeMillis();
+        for (int i=0; i<testSize; i++) {            
+            int pos1 = r.nextInt(testSize);
+            int pos2 = r.nextInt(testSize);
+            if (ids[pos1].equals(ids[pos2])) {
+                hits1++;
+            }
+        }
+        long time1 = System.currentTimeMillis() - start;
+        System.out.println("Time for UUID equals() implementation: " + time1);
+        
+//        
+//        int hits2 = 0;
+//        start = System.currentTimeMillis();
+//        for (int i=0; i<testSize; i++) {            
+//            int pos1 = r.nextInt(testSize);
+//            int pos2 = r.nextInt(testSize);
+//            if (ids[pos1].equals2(ids[pos2])) {
+//                hits2++;
+//            }
+//        }
+//        long time2 = System.currentTimeMillis() - start;
+//        System.out.println("Time 2 for equals(): " + time2);
     }
 }

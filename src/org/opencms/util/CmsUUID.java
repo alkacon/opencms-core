@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2005/06/13 14:32:39 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/13 15:53:17 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * This class is just a facade wrapper for the "real" UUID implementation.<p> 
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.0.0
  */
@@ -73,6 +73,9 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     private static UUID m_opencmsUUID = UUIDGenerator.getInstance().generateNameBasedUUID(
         new UUID(UUID.NAMESPACE_DNS),
         "www.opencms.org");
+
+    /** Constant for the null UUID. */
+    private static final CmsUUID NULL_UUID = new CmsUUID(UUID.getNullUUID());
 
     /** Internal UUID implementation. */
     private UUID m_uuid;
@@ -155,7 +158,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      */
     public static CmsUUID getNullUUID() {
 
-        return new CmsUUID(UUID.getNullUUID());
+        return NULL_UUID;
     }
 
     /**
@@ -197,6 +200,9 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      */
     public Object clone() {
 
+        if (this == NULL_UUID) {
+            return NULL_UUID;
+        }
         return new CmsUUID((UUID)m_uuid.clone());
     }
 
@@ -204,8 +210,11 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(Object obj) {
-        
-        return m_uuid.compareTo(obj);
+
+        if (obj instanceof CmsUUID) {
+            return m_uuid.compareTo(((CmsUUID)obj).m_uuid);
+        }
+        return 0;
     }
 
     /**
@@ -214,11 +223,9 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     public boolean equals(Object obj) {
 
         if (obj instanceof CmsUUID) {
-            return m_uuid.equals(new UUID(((CmsUUID)obj).toString()));
-        }        
+            return ((CmsUUID)obj).m_uuid.equals(m_uuid);
+        }
         return false;
-                
-        // return m_uuid.equals(obj);
     }
 
     /**
@@ -238,6 +245,9 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      */
     public boolean isNullUUID() {
 
+        if (this == NULL_UUID) {
+            return true;
+        }
         return m_uuid.equals(UUID.getNullUUID());
     }
 
