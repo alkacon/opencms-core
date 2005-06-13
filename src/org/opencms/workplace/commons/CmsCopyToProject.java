@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopyToProject.java,v $
- * Date   : $Date: 2005/06/13 10:17:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/13 12:03:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  */
@@ -121,7 +121,7 @@ public class CmsCopyToProject extends CmsDialog {
      */
     public String buildProjectInformation() {
 
-        StringBuffer result = new StringBuffer(16);
+        StringBuffer result = new StringBuffer(32);
         
         try {
             String[] localizedObject = new String[]{getCms().getRequestContext().currentProject().getName()};
@@ -132,10 +132,16 @@ public class CmsCopyToProject extends CmsDialog {
                 // at least one resource in current project
                 result.append(key(Messages.GUI_COPYTOPROJECT_PART_1, localizedObject));
                 result.append("<ul style=\"margin-top: 3px; margin-bottom: 3px;\">\n");
+                String siteRoot = getCms().getRequestContext().getSiteRoot();
                 while (i.hasNext()) {
                     // create resource list
+                    String resName = (String)i.next();                   
+                    if (resName.startsWith(siteRoot)) {
+                        // remove current site root from resource name
+                        resName = resName.substring(siteRoot.length());
+                    }
                     result.append("\t<li>");
-                    result.append((String)i.next());
+                    result.append(resName);
                     result.append("</li>\n");
                 }
                 result.append("</ul>\n");
