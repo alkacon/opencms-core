@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportDialog.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/13 10:35:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * Widget dialog that sets the export options to export VFS resources to the OpenCms server.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 6.0
  */
 public class CmsDatabaseExportDialog extends CmsWidgetDialog {
@@ -205,10 +205,8 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
         Iterator i = CmsDatabaseImportFromServer.getFileListFromServer(false).iterator();
         while (i.hasNext()) {
             String fileName = (String)i.next();
-            result.add(new CmsSelectWidgetOption(fileName, false, null, Messages.get().key(
-                getLocale(),
-                Messages.GUI_EDITOR_HELP_EXPORTFILE_1,
-                new String[] {fileName})));
+            String helpText = key(Messages.GUI_EDITOR_HELP_EXPORTFILE_1, new String[] {fileName});
+            result.add(new CmsSelectWidgetOption(fileName, false, null, helpText));
         }
         return result;
     }
