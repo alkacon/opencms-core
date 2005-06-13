@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopyToProject.java,v $
- * Date   : $Date: 2005/06/13 10:13:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/13 10:17:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  */
@@ -73,18 +73,12 @@ public class CmsCopyToProject extends CmsDialog {
     private static final Log LOG = CmsLog.getLog(CmsCopyToProject.class);
     
     /**
-     * Default constructor needed for dialog handler implementation.<p>
-     */
-    public CmsCopyToProject() {
-        super(null);
-    }
-    
-    /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsCopyToProject(CmsJspActionElement jsp) {
+
         super(jsp);
     }
     
@@ -96,6 +90,7 @@ public class CmsCopyToProject extends CmsDialog {
      * @param res the JSP response
      */
     public CmsCopyToProject(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
     } 
 
@@ -190,6 +185,7 @@ public class CmsCopyToProject extends CmsDialog {
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
