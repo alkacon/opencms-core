@@ -148,19 +148,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/messages_en.properties</source>
-			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/messages_en.properties</destination>
-			<type>plain</type>
-			<uuidresource>03f18e7d-d2a1-11d9-9e1a-01ff5ab8f021</uuidresource>
-			<datelastmodified>Fri, 03 Jun 2005 12:12:19 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 01 Jun 2005 13:28:18 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/modules/org.opencms.workplace.help/jsptemplates</destination>
 			<type>folder</type>
 			<datelastmodified>Wed, 01 Jun 2005 10:11:00 GMT</datelastmodified>
