@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/13 14:32:39 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2005/06/12 11:18:21 $
+ * @version $Revision: 1.23 $ $Date: 2005/06/13 14:32:39 $
  * @since 5.1.4
  * @see org.opencms.file.CmsObject#getLock(org.opencms.file.CmsResource)
  * @see org.opencms.lock.CmsLockManager
@@ -178,14 +178,12 @@ public class CmsLock implements Cloneable {
         if (obj == this) {
             return true;
         }
-
         if (obj instanceof CmsLock) {
-            CmsLock otherLock = (CmsLock)obj;
-            return otherLock.m_resourceName.equals(m_resourceName)
-                && otherLock.m_userId.equals(m_userId)
-                && otherLock.m_projectId == m_projectId;
+            CmsLock other = (CmsLock)obj;
+            return other.m_resourceName.equals(m_resourceName)
+                && other.m_userId.equals(m_userId)
+                && (other.m_projectId == m_projectId);
         }
-
         return false;
     }
 
