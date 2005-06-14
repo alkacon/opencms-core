@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportReport.java,v $
- * Date   : $Date: 2005/06/09 07:59:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/14 10:37:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,12 +47,12 @@ import javax.servlet.jsp.PageContext;
  * Provides a report for exporting VFS resources to zipped files of the OpenCms server.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0
  */
 public class CmsDatabaseExportReport extends A_CmsListReport {
     
-    /** Request parameter name for the clas name to get the dialog object from. */
+    /** Request parameter name for the class name to get the dialog object from. */
     public static final String PARAM_CLASSNAME = "classname";
 
     /** Request parameter for the class name to get the dialog object from. */
