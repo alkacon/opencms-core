@@ -36,7 +36,6 @@
 			<defaults>
 				<default element="DateTime" value="${currenttime}" />
 				<default element="Locale" value="${request.locale}" />
-				<default element="Selector" value="Option 1|Option 2|Option 3|Option 4"/>
 			</defaults>
 			<layouts>
 				<layout element="Image" widget="ImageGalleryWidget" />
@@ -44,7 +43,7 @@
 				<layout element="Link" widget="LinkGalleryWidget" />
 				<layout element="HtmlSnippet" widget="HtmlGalleryWidget" />
 				<layout element="TableSnippet" widget="TableGalleryWidget" />
-				<layout element="Selector" widget="SelectorWidget" />
+				<layout element="Selector" widget="SelectorWidget" configuration="Option 1|Option 2|Option 3|Option 4" />
 				<layout element="Textarea" widget="TextareaWidget" />
 				<layout element="Combobox" widget="ComboWidget" configuration="value='Value 1' help='A help text for value 1'|value='Value 2' help='Another help text for the second value.'|value='Value 3' default='true' help='The help text vor value three.'|value='Value 4 which has a very long value text that needs to be displayed in the limited size input area' help='The is the help for value 4'" />
 			</layouts>	
