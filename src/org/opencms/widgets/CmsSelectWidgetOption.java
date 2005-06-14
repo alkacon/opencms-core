@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidgetOption.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/14 12:19:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,9 +53,9 @@ import org.apache.commons.logging.Log;
  * <code>value='value1' default='true' option='option1' help='help1'|value='value2' option='option2' help='help2'</code><p>
  * 
  * The elements <code>default</code>, <code>option</code> and <code>help</code> are all optional, only a 
- * code <code>value</code> must be present in the input. 
+ * <code>value</code> must be present in the input. 
  * There should be only one <code>default</code> set to <code>true</code>
- * in the input, if more then one is detected only the first <code>default</code> found is actually used. 
+ * in the input, if more than one is detected, only the first <code>default</code> found is actually used. 
  * If no <code>option</code> is given, the value of <code>option</code> defaults to the value of the given <code>value</code>. 
  * If no <code>help</code> is given, the default is <code>null</code>.<p> 
  * 
@@ -70,12 +70,12 @@ import org.apache.commons.logging.Log;
  * Example: <code>value='some value' default='true'</code> can also be written as <code>some value*</code>.<p>
  * 
  * Only if you use the short value definition as described above, you can also append the <code>option</code>
- * to the <code>value</code> using a <code>:</code>. In this case no <code>'</code> must sorround the <code>option</code>.
+ * to the <code>value</code> using a <code>:</code>. In this case no <code>'</code> must surround the <code>option</code>.
  * Please keep in mind that in this case the value 
- * itself can not longer contain a <code>:</code> char, since woudld then be interpreted as a delimiter.
+ * itself can not longer contain a <code>:</code> char, since it would then be interpreted as a delimiter.
  * Example: <code>value='some value' option='some option'</code> can also be written as <code>some value:some option</code>.<p>
  * 
- * Any compinations of the obove described shortcuts are allowed in the configuration option String.
+ * Any combinations of the above described shortcuts are allowed in the configuration option String.
  * Here are some more examples of valid configuration option Strings:<p>
  * 
  * <code>1*|2|3|4|5|6|7</code><br>
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * to the log channel of this class at <code>INFO</code>level.<p>
  * 
  * @author Alexander Kandzior (a.kanzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  */
@@ -186,12 +186,12 @@ public class CmsSelectWidgetOption {
     /**
      * Returns a select widget configuration String created from the given list of select options.<p>
      * 
-     * If an element found in in the given list is not of type 
-     * <code>{@link CmsSelectWidgetOption}</code>, this is ignored.<p>
+     * If an element found in the given list is not of type 
+     * <code>{@link CmsSelectWidgetOption}</code>, it is ignored.<p>
      * 
      * @param options the list of select options to create the configuration String for
      * 
-     * @return a select widget configuration String created from the gicen list of select options
+     * @return a select widget configuration String created from the given list of select options
      */
     public static String createConfigurationString(List options) {
 
@@ -199,7 +199,7 @@ public class CmsSelectWidgetOption {
             return "";
         }
         StringBuffer result = new StringBuffer(256);
-        boolean first = false;
+        boolean first = true;
         for (int i = 0; i < options.size(); i++) {
             Object o = options.get(i);
             if (o instanceof CmsSelectWidgetOption) {
@@ -218,7 +218,7 @@ public class CmsSelectWidgetOption {
      * Returns the default option from the given list of select options, 
      * or <code>null</code> in case there is no default option in the given list.<p> 
      * 
-     * If an element found in in the given list is not of type 
+     * If an element found in the given list is not of type 
      * <code>{@link CmsSelectWidgetOption}</code>, this is ignored.<p>
      * 
      * @param options the list of select options to get the default from
