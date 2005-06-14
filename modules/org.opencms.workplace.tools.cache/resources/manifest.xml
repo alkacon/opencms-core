@@ -105,7 +105,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.flexcache.admin.heading}]]></value>
+					<value><![CDATA[${key.flexcache.admin.heading}:${key.flexcache.admin.heading.short}]]></value>
 				</property>
 				<property>
 					<name>Title</name>

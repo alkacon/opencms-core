@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Messages.java,v $
- * Date   : $Date: 2005/06/03 09:01:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/14 15:31:22 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -107,6 +107,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_ADMIN_TOOL_NAME_0 = "GUI_JOBS_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_JOBS_ADMIN_TOOL_SHORTNAME_0 = "GUI_JOBS_ADMIN_TOOL_SHORTNAME_0";
         
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_CONTEXTINFO_ENCODING_0 = "GUI_JOBS_DETAIL_CONTEXTINFO_ENCODING_0";

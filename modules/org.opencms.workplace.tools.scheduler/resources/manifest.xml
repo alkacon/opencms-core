@@ -114,7 +114,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[80.0]]></value>
+					<value><![CDATA[90.0]]></value>
 				</property>
 				<property>
 					<name>default-file</name>
@@ -134,7 +134,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_JOBS_ADMIN_TOOL_NAME_0}]]></value>
+					<value><![CDATA[${key.GUI_JOBS_ADMIN_TOOL_NAME_0}:${key.GUI_JOBS_ADMIN_TOOL_SHORTNAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>

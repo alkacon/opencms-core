@@ -83,7 +83,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[90.0]]></value>
+					<value><![CDATA[80.0]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -99,7 +99,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.icon.searchindex}]]></value>
+					<value><![CDATA[${key.icon.searchindex}:${key.icon.searchindex.short}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
