@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:03 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/14 15:53:27 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -627,6 +627,9 @@ public class CmsToolManager {
         if (toolPath.equals(C_TOOLPATH_SEPARATOR)) {
             return true;
         }
+        if (!toolPath.startsWith(C_TOOLPATH_SEPARATOR)) {
+            return false;
+        }                                                        
         List groups = CmsStringUtil.splitAsList(toolPath, C_TOOLPATH_SEPARATOR);
         Iterator itGroups = groups.iterator();
         String subpath = "";

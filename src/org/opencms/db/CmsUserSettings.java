@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2005/06/07 15:03:46 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsUserProjectSettings;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -52,7 +53,7 @@ import java.util.Map;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1.12
  */
@@ -67,37 +68,70 @@ public class CmsUserSettings {
     /** Identifier prefix for all keys in the user additional info table. */
     private static final String PREFERENCES = "USERPREFERENCES_";
 
+    /** Identifier for the project settings key. */
+    private static final String PROJECT_SETTINGS = "PROJECT_SETTINGS";
+
     /** Identifier for the synchronize setting key. */
     private static final String SYNC_SETTINGS = "SYNC_SETTINGS";
 
     private boolean m_dialogDirectpublish;
+
     private boolean m_dialogExpandInheritedPermissions;
+
     private boolean m_dialogExpandUserPermissions;
+
     private int m_dialogFileCopy;
+
     private int m_dialogFileDelete;
+
     private int m_dialogFolderCopy;
+
     private boolean m_dialogPermissionsInheritOnFolder;
+
     private int m_directeditButtonStyle;
+
     private int m_editorButtonStyle;
+
     private HashMap m_editorSettings;
+
     private int m_explorerButtonStyle;
+
     private int m_explorerFileEntries;
+
     private int m_explorerSettings;
+
     private Locale m_locale;
+
     private String m_project;
+
+    private CmsUserProjectSettings m_projectSettings;
+
     private boolean m_restrictExplorerView;
+
     private boolean m_showExportSettings;
+
     private boolean m_showLock;
+
     private String m_startFolder;
+
     private String m_startSite;
+
     private CmsSynchronizeSettings m_synchronizeSettings;
+
     private int m_taskMessages;
+
     private boolean m_taskShowProjects;
+
     private String m_taskStartupfilter;
+
     private boolean m_uploadApplet;
+
     private CmsUser m_user;
+
     private String m_view;
+
     private int m_workplaceButtonStyle;
+
     private String m_workplaceReportType;
 
     /**
@@ -292,6 +326,16 @@ public class CmsUserSettings {
     public String getPreferredEditor(String resourceType) {
 
         return (String)m_editorSettings.get(resourceType);
+    }
+
+    /**
+     * Returns the project Settings.<p>
+     *
+     * @return the project Settings
+     */
+    public CmsUserProjectSettings getProjectSettings() {
+
+        return m_projectSettings;
     }
 
     /**
@@ -687,6 +731,14 @@ public class CmsUserSettings {
             m_synchronizeSettings = null;
         }
 
+        // project settings
+        try {
+            m_projectSettings = ((CmsUserProjectSettings)m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS));
+        } catch (Throwable t) {
+            // default is to disable the synchronize settings
+            m_projectSettings = null;
+        }
+
         try {
             save(null);
         } catch (CmsException e) {
@@ -978,6 +1030,13 @@ public class CmsUserSettings {
             m_user.deleteAdditionalInfo(PREFERENCES + SYNC_SETTINGS);
         }
 
+        // project settings        
+        if (getProjectSettings() != null) {
+            m_user.setAdditionalInfo(PREFERENCES + PROJECT_SETTINGS, getProjectSettings());
+        } else {
+            m_user.deleteAdditionalInfo(PREFERENCES + PROJECT_SETTINGS);
+        }
+
         // only write the updated user to the DB if we have the cms object
         if (cms != null) {
             cms.writeUser(m_user);
@@ -1156,6 +1215,16 @@ public class CmsUserSettings {
             m_editorSettings.remove(resourceType);
         }
         m_editorSettings.put(resourceType, editorUri);
+    }
+
+    /**
+     * Sets the project Settings.<p>
+     *
+     * @param projectSettings the project Settings to set
+     */
+    public void setProjectSettings(CmsUserProjectSettings projectSettings) {
+
+        m_projectSettings = projectSettings;
     }
 
     /**

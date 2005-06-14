@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsDependenciesEdit.java,v $
- * Date   : $Date: 2005/06/10 15:14:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/14 15:53:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidget;
+import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
@@ -49,7 +50,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.9.1
  */
 public class CmsDependenciesEdit extends CmsWidgetDialog {
@@ -254,9 +254,8 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         initModule();
-        String modules = getModules();
 
-        addWidget(new CmsWidgetDialogParameter(m_dependency, "name", PAGES[0], new CmsSelectWidget(modules)));
+        addWidget(new CmsWidgetDialogParameter(m_dependency, "name", PAGES[0], new CmsSelectWidget(getModules())));
         addWidget(new CmsWidgetDialogParameter(m_dependency, "version.version", PAGES[0], new CmsInputWidget()));
 
     }
@@ -358,30 +357,24 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
 
     /**
      * Get the list of all modules available.<p>
-     * @return pipe seperated list of module names
+     * 
+     * @return list of module names
      */
-    private String getModules() {
+    private List getModules() {
 
-        StringBuffer mod = new StringBuffer(32);
-
+        List retVal = new ArrayList();
         // get all modules
-        Set moduleNames = OpenCms.getModuleManager().getModuleNames();
-        Iterator i = moduleNames.iterator();
+        Iterator i = OpenCms.getModuleManager().getModuleNames().iterator();
         // add them to the list of modules
         while (i.hasNext()) {
             String moduleName = (String)i.next();
-            mod.append(moduleName);
-            // check for the preselection
             if (moduleName.equals(getParamDependency())) {
-                mod.append("*");
+                // check for the preselection
+                retVal.add(new CmsSelectWidgetOption(moduleName, true));
+            } else {
+                retVal.add(new CmsSelectWidgetOption(moduleName, false));
             }
-            mod.append("|");
         }
-
-        String modules = new String(mod);
-        if (modules.endsWith("|")) {
-            modules = modules.substring(0, modules.length() - 1);
-        }
-        return modules;
+        return retVal;
     }
 }

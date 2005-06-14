@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsProject implements Cloneable {
 
@@ -274,6 +274,17 @@ public class CmsProject implements Cloneable {
     }
 
     /**
+     * Sets the user group id of this project.<p>
+     *
+     * @param id the user group id of this project
+     */
+    public void setGroupId(CmsUUID id) {
+
+        CmsUUID.checkId(id, false);
+        m_groupUsersId = id;
+    }
+
+    /**
      * Returns the id of this project.<p>
      *
      * @return the id of this project
@@ -291,6 +302,17 @@ public class CmsProject implements Cloneable {
     public CmsUUID getManagerGroupId() {
 
         return m_groupManagersId;
+    }
+
+    /**
+     * Sets the manager group id of this project.<p>
+     *
+     * @param id the manager group id of this project
+     */
+    public void setManagerGroupId(CmsUUID id) {
+
+        CmsUUID.checkId(id, false);
+        m_groupManagersId = id;
     }
 
     /**
@@ -345,6 +367,18 @@ public class CmsProject implements Cloneable {
     }
 
     /**
+     * Returns the delete After Publishing flag.<p>
+     *
+     * @return the delete After Publishing flag
+     * 
+     * @see #getType()
+     */
+    public boolean isDeleteAfterPublishing() {
+
+        return m_type == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY;
+    }
+
+    /**
      * Returns <code>true</code> if this project is the Online project.<p>
      * 
      * @return <code>true</code> if this project is the Online project
@@ -352,6 +386,18 @@ public class CmsProject implements Cloneable {
     public boolean isOnlineProject() {
 
         return isOnlineProject(m_id);
+    }
+
+    /**
+     * Sets the delete After Publishing flag.<p>
+     *
+     * @param deleteAfterPublishing the delete After Publishing flag to set
+     * 
+     * @see #setType(int)
+     */
+    public void setDeleteAfterPublishing(boolean deleteAfterPublishing) {
+
+        m_type = deleteAfterPublishing ? I_CmsConstants.C_PROJECT_TYPE_TEMPORARY : I_CmsConstants.C_PROJECT_TYPE_NORMAL;
     }
 
     /**

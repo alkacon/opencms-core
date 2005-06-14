@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/06/10 15:58:06 $
- * Version: $Revision: 1.127 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.128 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.127 $
+ * @version $Revision: 1.128 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -3078,6 +3078,23 @@ public class CmsObject {
     public void writeGroup(CmsGroup group) throws CmsException {
 
         m_securityManager.writeGroup(m_context, group);
+    }
+
+    /**
+     * Writes an already existing project.<p>
+     *
+     * The project id has to be a valid OpenCms project id.<br>
+     * 
+     * The project with the given id will be completely overriden
+     * by the given data.<p>
+     *
+     * @param project the project that should be written
+     * 
+     * @throws CmsException if operation was not successful
+     */
+    public void writeProject(CmsProject project) throws CmsException {
+
+        m_securityManager.writeProject(m_context, project);
     }
 
     /**

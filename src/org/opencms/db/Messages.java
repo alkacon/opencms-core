@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/06/08 09:31:40 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -167,6 +167,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_GROUP_1 = "ERR_DELETE_GROUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETE_PROJECT_1 = "ERR_DELETE_PROJECT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_PROPERTY_1 = "ERR_DELETE_PROPERTY_1";
@@ -569,6 +572,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_GROUP_1 = "ERR_WRITE_GROUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_WRITE_PROJECT_1 = "ERR_WRITE_PROJECT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_PROP_2 = "ERR_WRITE_PROP_2";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Main project management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsProjectsList extends A_CmsListDialog {
@@ -126,9 +126,6 @@ public class CmsProjectsList extends A_CmsListDialog {
     public static final String LIST_DEFACTION_FILES = "defaction_files";
 
     /** list detail constant. */
-    public static final String LIST_DETAIL_PUBLISHING = "details_publishing";
-
-    /** list detail constant. */
     public static final String LIST_DETAIL_RESOURCES = "details_resources";
 
     /** list id constant. */
@@ -136,9 +133,6 @@ public class CmsProjectsList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_MACTION_DELETE = "maction_delete";
-
-    /** list action id constant. */
-    public static final String LIST_MACTION_PUBLISH = "maction_publish";
 
     /** list action id constant. */
     public static final String LIST_MACTION_UNLOCK = "maction_unlock";
@@ -207,19 +201,6 @@ public class CmsProjectsList extends A_CmsListDialog {
             } finally {
                 getList().removeAllItems(removedItems, getLocale());
             }
-        } else if (getParamListAction().equals(LIST_MACTION_PUBLISH)) {
-            Map params = new HashMap();
-            params.put(CmsPublishProjectReport.PARAM_PROJECTIDS, getParamSelItems());
-            // set action parameter to initial dialog call
-            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
-
-            try {
-                // forward to the publish report 
-                getToolManager().jspRedirectTool(this, "/projects/publish", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_PUBLISH_0), e);
-            }
         } else if (getParamListAction().equals(LIST_MACTION_UNLOCK)) {
             // execute the unlock multiaction
             try {
@@ -281,7 +262,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_ACTION_PUBLISH)) {
             try {
                 getToolManager().jspRedirectTool(this, "/projects/publish", params);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_PUBLISH_0), e);
             }
@@ -339,9 +320,6 @@ public class CmsProjectsList extends A_CmsListDialog {
             }
             item.set(LIST_COLUMN_CREATION, new Date(project.getDateCreated()));
             StringBuffer html = new StringBuffer(512);
-            // TODO: fill the publish data
-            item.set(LIST_DETAIL_PUBLISHING, html.toString());
-            html = new StringBuffer(512);
             Iterator resources = getCms().readProjectResources(project).iterator();
             while (resources.hasNext()) {
                 html.append(resources.next().toString());
@@ -406,13 +384,41 @@ public class CmsProjectsList extends A_CmsListDialog {
         unlockAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_UNLOCK_HELP_0));
         unlockAction.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_UNLOCK_CONF_0));
         unlockAction.setIconPath(PATH_BUTTONS + "project_unlock.png");
-        // adds an lock/unlock direct action
+        // adds a lock/unlock direct action
         CmsProjectLockAction projectAction = new CmsProjectLockAction(LIST_ID, LIST_ACTION_LOCK, getCms());
         projectAction.setFirstAction(lockAction);
         projectAction.setSecondAction(unlockAction);
         lockCol.addDirectAction(projectAction);
         // add it to the list definition
         metadata.addColumn(lockCol);
+
+        // create column for publishing
+        CmsListColumnDefinition publishCol = new CmsListColumnDefinition(LIST_COLUMN_PUBLISH);
+        publishCol.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_COLS_PUBLISH_0));
+        publishCol.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_COLS_PUBLISH_HELP_0));
+        publishCol.setWidth("20");
+        publishCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        publishCol.setSorteable(false);
+        // publish enabled action
+        CmsListDirectAction publishEnabledAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_PUBLISH);
+        publishEnabledAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_NAME_0));
+        publishEnabledAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_HELP_0));
+        publishEnabledAction.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_CONF_0));
+        publishEnabledAction.setIconPath(PATH_BUTTONS + "project_publish.png");
+        // publish disabled action
+        CmsListDirectAction publishDisabledAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_PUBLISH);
+        publishDisabledAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_NAME_0));
+        publishDisabledAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_HELP_0));
+        publishDisabledAction.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_CONF_0));
+        publishDisabledAction.setIconPath(PATH_BUTTONS + "project_publish_disabled.png");
+        publishDisabledAction.setEnabled(false);
+        // adds a publish enabled/disabled direct action
+        CmsPublishProjectAction publishAction = new CmsPublishProjectAction(LIST_ID, LIST_ACTION_PUBLISH, getCms());
+        publishAction.setFirstAction(publishEnabledAction);
+        publishAction.setSecondAction(publishDisabledAction);
+        publishCol.addDirectAction(publishAction);
+        // add it to the list definition
+        metadata.addColumn(publishCol);
 
         // create column for edition
         CmsListColumnDefinition editCol = new CmsListColumnDefinition(LIST_COLUMN_EDIT);
@@ -429,22 +435,6 @@ public class CmsProjectsList extends A_CmsListDialog {
         editCol.addDirectAction(editAction);
         // add it to the list definition
         metadata.addColumn(editCol);
-
-        // create column for publishing
-        CmsListColumnDefinition publishCol = new CmsListColumnDefinition(LIST_COLUMN_PUBLISH);
-        publishCol.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_COLS_PUBLISH_0));
-        publishCol.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_COLS_PUBLISH_HELP_0));
-        publishCol.setWidth("20");
-        publishCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        publishCol.setSorteable(false);
-        // add publish action
-        CmsListDirectAction publishAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_PUBLISH);
-        publishAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_NAME_0));
-        publishAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_HELP_0));
-        publishAction.setIconPath(PATH_BUTTONS + "project_publish.png");
-        publishCol.addDirectAction(publishAction);
-        // add it to the list definition
-        metadata.addColumn(publishCol);
 
         // create column for deletion
         CmsListColumnDefinition deleteCol = new CmsListColumnDefinition(LIST_COLUMN_DELETE);
@@ -479,6 +469,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         CmsListColumnDefinition descriptionCol = new CmsListColumnDefinition(LIST_COLUMN_DESCRIPTION);
         descriptionCol.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_COLS_DESCRIPTION_0));
         descriptionCol.setWidth("35%");
+        descriptionCol.setTextWrapping(true);
         metadata.addColumn(descriptionCol);
 
         // add column for owner user
@@ -514,23 +505,6 @@ public class CmsProjectsList extends A_CmsListDialog {
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
-
-        // add publishing info details
-        CmsListItemDetails publishingDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_PUBLISHING);
-        publishingDetails.setAtColumn(LIST_COLUMN_NAME);
-        publishingDetails.setVisible(false);
-        publishingDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_SHOW_PUBLISHING_NAME_0));
-        publishingDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_SHOW_PUBLISHING_HELP_0));
-        publishingDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_HIDE_PUBLISHING_NAME_0));
-        publishingDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_HIDE_PUBLISHING_HELP_0));
-        publishingDetails.setName(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_PUBLISHING_NAME_0));
-        publishingDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_PUBLISHING_NAME_0)));
-        metadata.addItemDetails(publishingDetails);
 
         // add publishing info details
         CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_RESOURCES);

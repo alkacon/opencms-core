@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:03 $
- * Version: $Revision: 1.525 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.526 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.525 $
+ * @version $Revision: 1.526 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2333,6 +2333,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // delete the project itself
         m_projectDriver.deleteProject(dbc, deleteProject);
         m_projectCache.remove(new Integer(projectId));
+        m_projectCache.remove(deleteProject.getName());
 
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
             "project",
@@ -6956,6 +6957,26 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         m_groupCache.put(new CacheId(group), group);
     }
 
+    /**
+     * Writes an already existing project.<p>
+     *
+     * The project id has to be a valid OpenCms project id.<br>
+     * 
+     * The project with the given id will be completely overriden
+     * by the given data.<p>
+     *
+     * @param dbc the current database context
+     * @param project the project that should be written
+     * 
+     * @throws CmsException if operation was not successful
+     */
+    public void writeProject(CmsDbContext dbc, CmsProject project) throws CmsException {
+
+        m_projectDriver.writeProject(dbc, project);
+        m_projectCache.put(project.getName(), project);
+        m_projectCache.put(new Integer(project.getId()), project);
+    }
+    
     /**
      * Writes a property for a specified resource.<p>
      * 

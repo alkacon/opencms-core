@@ -244,7 +244,7 @@
 			<destination>system/workplace/admin/projects/project_history.html</destination>
 			<type>jsp</type>
 			<uuidresource>1cf72945-d9b8-11d9-b145-efaaea26ed93</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2005 14:03:24 GMT</datelastmodified>
+			<datelastmodified>Tue, 14 Jun 2005 14:17:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 10 Jun 2005 14:01:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -260,7 +260,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[1]]></value>
+					<value><![CDATA[100]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -348,19 +348,19 @@
 			<destination>system/workplace/admin/projects/project_publish.html</destination>
 			<type>jsp</type>
 			<uuidresource>a53051ac-d9b7-11d9-b145-efaaea26ed93</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2005 13:59:30 GMT</datelastmodified>
+			<datelastmodified>Tue, 14 Jun 2005 11:07:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 10 Jun 2005 13:57:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -376,7 +376,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_EDITPROJECT_PUBLISH_ADMIN_TOOL_NAME_0}]]></value>
+					<value><![CDATA[${key.GUI_EDITPROJECT_PUBLISH_ADMIN_TOOL_NAME_0}:${key.GUI_EDITPROJECT_PUBLISH_ADMIN_TOOL_NAVBARNAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -384,7 +384,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:projectids=${param.projectids}&action=initial|path:/projects/publish]]></value>
+					<value><![CDATA[params:projectid=${param.projectid}&projectname=${param.projectname}&action=initial|path:/projects/publish]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -394,7 +394,7 @@
 			<destination>system/workplace/admin/projects/project_settings.html</destination>
 			<type>jsp</type>
 			<uuidresource>ea6c2a69-d9b7-11d9-b145-efaaea26ed93</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2005 14:02:15 GMT</datelastmodified>
+			<datelastmodified>Tue, 14 Jun 2005 11:15:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 10 Jun 2005 13:59:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -410,7 +410,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[1]]></value>
+					<value><![CDATA[10]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -549,6 +549,18 @@
 			<destination>system/workplace/resources/tools/projects/buttons/project_publish.png</destination>
 			<type>image</type>
 			<uuidresource>40c0ccaa-d8ce-11d9-a5d9-efaaea26ed93</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 13:50:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2005 10:07:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/projects/buttons/project_publish_disabled.png</source>
+			<destination>system/workplace/resources/tools/projects/buttons/project_publish_disabled.png</destination>
+			<type>image</type>
 			<datelastmodified>Fri, 10 Jun 2005 13:50:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 09 Jun 2005 10:07:14 GMT</datecreated>

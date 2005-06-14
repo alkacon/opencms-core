@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/CmsProjectLockAction.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/CmsPublishProjectAction.java,v $
  * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,13 +37,13 @@ import org.opencms.workplace.list.A_CmsListTwoStatesAction;
 import org.opencms.workplace.list.I_CmsListDirectAction;
 
 /**
- * Project lock/unlock action.<p>
+ * publish enabled/disabled action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsProjectLockAction extends A_CmsListTwoStatesAction {
+public class CmsPublishProjectAction extends A_CmsListTwoStatesAction {
 
     /**
      * Default Constructor.<p>
@@ -52,7 +52,7 @@ public class CmsProjectLockAction extends A_CmsListTwoStatesAction {
      * @param id unique id
      * @param cms the cms context
      */
-    protected CmsProjectLockAction(String listId, String id, CmsObject cms) {
+    protected CmsPublishProjectAction(String listId, String id, CmsObject cms) {
 
         super(listId, id, cms);
     }
@@ -66,7 +66,7 @@ public class CmsProjectLockAction extends A_CmsListTwoStatesAction {
      * @param actAction the first action
      * @param deactAction the second action
      */
-    protected CmsProjectLockAction(
+    protected CmsPublishProjectAction(
         String listId,
         String id,
         CmsObject cms,

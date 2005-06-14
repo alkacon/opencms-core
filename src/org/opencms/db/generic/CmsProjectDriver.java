@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.227 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.228 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,6 +61,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 
@@ -85,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.227 $
+ * @version $Revision: 1.228 $
  * @since 5.1
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
@@ -2153,6 +2154,37 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_UNMARK");
             // create the statement
             stmt.setInt(1, project.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+    
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#writeProject(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject)
+     */
+    public void writeProject(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(project.getDescription())) {
+            project.setDescription(" ");
+        }
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+            conn = m_sqlManager.getConnection(dbc);
+
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_WRITE");
+            stmt.setString(1, project.getDescription());
+            stmt.setString(2, project.getGroupId().toString());
+            stmt.setString(3, project.getManagerGroupId().toString());
+            stmt.setInt(4, project.getFlags());
+            stmt.setInt(5, project.getType());
+            stmt.setInt(6, project.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(

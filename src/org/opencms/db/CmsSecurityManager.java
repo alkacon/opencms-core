@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:03 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -1354,9 +1354,7 @@ public final class CmsSecurityManager {
             m_driverManager.deleteProject(dbc, deleteProject);
         } catch (Exception e) {
             String projectName = deleteProject == null ? String.valueOf(projectId) : deleteProject.getName();
-            int todo = 0;
-            // TODO: This must be "delete project", not group
-            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, projectName), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_PROJECT_1, projectName), e);
         } finally {
             dbc.clear();
         }
@@ -4843,7 +4841,7 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param group the group that should be written
      *
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#USER_MANAGER} for the current project. 
+     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#USER_MANAGER} for the current project. 
      * @throws CmsException if operation was not succesfull
      */
     public void writeGroup(CmsRequestContext context, CmsGroup group) throws CmsException, CmsRoleViolationException {
@@ -4854,6 +4852,33 @@ public final class CmsSecurityManager {
             m_driverManager.writeGroup(dbc, group);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_WRITE_GROUP_1, group.getName()), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Writes an already existing project.<p>
+     *
+     * The project id has to be a valid OpenCms project id.<br>
+     * 
+     * The project with the given id will be completely overriden
+     * by the given data.<p>
+     *
+     * @param project the project that should be written
+     * @param context the current request context
+     * 
+     * @throws CmsException if operation was not successful
+     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#PROJECT_MANAGER} for the current project. 
+     */
+    public void writeProject(CmsRequestContext context, CmsProject project) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkRole(dbc, CmsRole.PROJECT_MANAGER);
+            m_driverManager.writeProject(dbc, project);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_WRITE_PROJECT_1, project.getName()), e);
         } finally {
             dbc.clear();
         }

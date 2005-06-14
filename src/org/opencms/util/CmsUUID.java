@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2005/06/13 15:53:17 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.util;
 
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsRuntimeException;
 
@@ -57,7 +58,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * This class is just a facade wrapper for the "real" UUID implementation.<p> 
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.0.0
  */
@@ -268,4 +269,23 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
 
         return m_uuid.toString();
     }
+    
+    /**
+     * Check that the given id is not the null id.<p>
+     * 
+     * @param id the id to check
+     * @param canBeNull only if flag is set, <code>null</code> is accepted
+     * 
+     * @see #isNullUUID()
+     */
+    public static void checkId(CmsUUID id, boolean canBeNull) {
+
+        if (canBeNull && id == null) {
+            return;
+        }
+        if ((!canBeNull && id == null) || id.isNullUUID()) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_UUID_1, id));
+        } 
+    }
+
 }

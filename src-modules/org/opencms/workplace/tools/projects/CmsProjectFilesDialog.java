@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2005/06/10 15:58:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,10 @@
 
 package org.opencms.workplace.tools.projects;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
-
-import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * Comment for <code>CmsProjectFilesDialog</code>.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsProjectFilesDialog extends CmsDialog {
@@ -84,14 +83,15 @@ public class CmsProjectFilesDialog extends CmsDialog {
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
      * 
-     * @throws IOException if writing to the JSP out fails
+     * @throws Exception if writing to the JSP out fails
      */
-    public void displayDialog() throws IOException {
+    public void displayDialog() throws Exception {
 
         if (getAction() == ACTION_CANCEL) {
+            actionCloseDialog();
             return;
         }
-        
+
         int projectId = new Integer(getParamProjectid()).intValue();
         StringBuffer link = new StringBuffer();
         link.append("/system/workplace/views/explorer/explorer_files.jsp?");
@@ -99,6 +99,13 @@ public class CmsProjectFilesDialog extends CmsDialog {
         link.append("=");
         link.append(projectId);
         link.append("&mode=projectview");
+        try {
+            String filter = "&projectfilter=";
+            filter += new CmsUserSettings(getCms().getRequestContext().currentUser()).getProjectSettings().getProjectFilesMode();
+            link.append(filter);
+        } catch (Exception e) {
+            // ignore
+        }
 
         getJsp().getResponse().sendRedirect(getJsp().link(link.toString()));
     }

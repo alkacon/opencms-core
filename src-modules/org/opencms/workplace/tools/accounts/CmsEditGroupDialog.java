@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2005/06/10 15:58:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidget;
+import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.widgets.CmsTextareaWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -64,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.9.1
  */
 public class CmsEditGroupDialog extends CmsWidgetDialog {
@@ -281,7 +282,7 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_group, "name", PAGES[0], new CmsDisplayWidget()));
         }
         addWidget(new CmsWidgetDialogParameter(m_group, "description", PAGES[0], new CmsTextareaWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsSelectWidget(getComboGroups())));
+        addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsSelectWidget(getSelectGroups())));
         addWidget(new CmsWidgetDialogParameter(m_group, "enabled", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_group, "role", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsCheckboxWidget()));
@@ -373,15 +374,14 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the groups names to show in the combo box.<p>
+     * Returns the groups names to show in the select box.<p>
      * 
-     * @return the groups names to show in the combo box
+     * @return the groups names to show in the select box
      */
-    private String getComboGroups() {
+    private List getSelectGroups() {
 
-        StringBuffer result = new StringBuffer(512);
-        result.append("none");
-        result.append("|");
+        List retVal = new ArrayList();
+        retVal.add(new CmsSelectWidgetOption("none", true));
         try {
             Iterator itGroups = getCms().getGroups().iterator();
             while (itGroups.hasNext()) {
@@ -389,15 +389,12 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
                 if (group.getId().equals(m_group.getId())) {
                     continue;
                 }
-                result.append(group.getName());
-                if (itGroups.hasNext()) {
-                    result.append("|");
-                }
+                retVal.add(new CmsSelectWidgetOption(group.getName()));
             }
         } catch (Exception e) {
             // noop
         }
-        return result.toString();
+        return retVal;
     }
 
     /**

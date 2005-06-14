@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Messages.java,v $
- * Date   : $Date: 2005/06/08 15:48:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,6 +59,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_ETHERNET_ADDRESS_1 = "ERR_INVALID_ETHERNET_ADDRESS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_UUID_1 = "ERR_INVALID_UUID_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IOERROR_0 = "ERR_IOERROR_0";

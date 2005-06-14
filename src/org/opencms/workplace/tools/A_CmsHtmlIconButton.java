@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/06/10 15:58:06 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * Default skeleton for an html icon button.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
@@ -142,7 +142,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
             html.append("');\" onmouseout=\"hMH('");
             html.append(id);
             html.append("');\"");
-        }
+        } 
         if (enabled && CmsStringUtil.isNotEmptyOrWhitespaceOnly(onClick)) {
             html.append(" onClick=\"");
             html.append(onClick);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2005/06/02 08:45:45 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.69 $ $Date: 2005/06/02 08:45:45 $
+ * @version $Revision: 1.70 $ $Date: 2005/06/14 15:53:26 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -523,6 +523,21 @@ public interface I_CmsProjectDriver {
      */
     void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
 
+    /**
+     * Writes an already existing project.<p>
+     *
+     * The project id has to be a valid OpenCms project id.<br>
+     * 
+     * The project with the given id will be completely overriden
+     * by the given data.<p>
+     *
+     * @param dbc the current database context
+     * @param project the project that should be written
+     * 
+     * @throws CmsDataAccessException if operation was not successful
+     */
+    void writeProject(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
+    
     /**
      * Inserts an entry in the publish history for a published VFS resource.<p>
      * 

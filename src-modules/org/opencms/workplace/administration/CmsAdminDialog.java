@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminDialog.java,v $
- * Date   : $Date: 2005/06/10 15:58:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.administration;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.Map;
 
@@ -45,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Workplace class for /system/workplace/views/admin/admin-main.html .<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsAdminDialog extends CmsDialog {
@@ -89,14 +90,14 @@ public class CmsAdminDialog extends CmsDialog {
                 actionCloseDialog();
                 return;
             }
-            getJsp().include("tool-fs.html", null, params);
+            getToolManager().jspRedirectPage(this, CmsToolManager.C_ADMINVIEW_ROOT_LOCATION + "/tool-fs.html", params);
             return;
         } 
 
         // just grouping or real tool
         if (!getAdminTool().getHandler().getLink().equals(getCms().getRequestContext().getUri())) {
             //real tool
-            getJsp().include(getAdminTool().getHandler().getLink(), null, params);
+            getToolManager().jspRedirectPage(this, getAdminTool().getHandler().getLink(), params);
             return;
         } 
 

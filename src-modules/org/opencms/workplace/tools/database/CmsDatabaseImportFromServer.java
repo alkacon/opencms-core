@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromServer.java,v $
- * Date   : $Date: 2005/06/09 15:44:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/14 15:53:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.widgets.CmsSelectWidget;
+import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -56,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0
  */
 public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
@@ -215,7 +216,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         // get available files from server
-        String files = getFilesFromServer();
+        List files = getFilesFromServer();
         
         // add the file select box widget
         addWidget(new CmsWidgetDialogParameter(this, PARAM_IMPORTFILE, PAGES[0], new CmsSelectWidget(files)));
@@ -228,20 +229,15 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
      * 
      * @return pipe separated list of file names
      */
-    protected String getFilesFromServer() {
+    protected List getFilesFromServer() {
 
-        StringBuffer result = new StringBuffer(32);
-
+        List retVal = new ArrayList();
         Iterator i = getFileListFromServer(true).iterator();
         while (i.hasNext()) {
             String fileName = (String)i.next();
-            result.append(fileName);
-            if (i.hasNext()) {
-                result.append("|");
-            }
+            retVal.add(new CmsSelectWidgetOption(fileName));
         }
-
-        return result.toString();
+        return retVal;
     }
 
     /**
