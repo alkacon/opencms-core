@@ -3,6 +3,16 @@
 <%	
     // get workplace class from request attribute
     CmsReport wp = CmsReport.initCmsReport(pageContext, request, response);
+    
+    String borderStyle = "";
+    String borderSimpleStyle = "";
+    if (! wp.useNewStyle()) {
+    	borderStyle = "2px inset ThreeDHighlight";
+    	borderSimpleStyle = "2px solid ThreeDFace";
+    } else {
+    	borderStyle = "1px solid ThreeDShadow";
+    	borderSimpleStyle = borderStyle;
+    }
 
 
 //////////////////// start of switch statement 
@@ -232,8 +242,8 @@ function switchOutputFormat() {
 
 var cssStyle =
     "<style type='text/css'>\n" +
-    "body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: #000000; background-color:#ffffff; font-family: sans-serif; font-size: 11px; }\n" +
-    "div.main   { box-sizing: border-box; -moz-box-sizing: border-box; color: #000000; font-family: sans-serif; font-size: 11px; white-space: nowrap; }\n" +
+    "body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: #000000; background-color:#ffffff; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; }\n" +
+    "div.main   { box-sizing: border-box; -moz-box-sizing: border-box; color: #000000; white-space: nowrap; }\n" +
     "span.head  { color: #000099; font-weight: bold; }\n" +
     "span.note  { color: #666666; }\n" +
     "span.ok    { color: #009900; }\n" +
@@ -248,7 +258,7 @@ var cssStyle =
 var pageStartSimple =
     "<html>\n<head>\n" +
     "<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=<%= wp.getEncoding() %>'>\n" + 
-    "<link rel='stylesheet' type='text/css' href='<%= wp.getSkinUri() %>commons/css_workplace.css'>\n" +
+    "<link rel='stylesheet' type='text/css' href='<%= wp.getStyleUri("workplace.css") %>'>\n" +
     cssStyle +
     "</head>\n" +
     "<body style='background-color:Menu;'>\n" +   
@@ -358,10 +368,10 @@ function updateReport() {
 	    		"<span class='head'>" + lastHeadline + "</span><br>\n" +
 	    		pageEndSimple;
     	}
-    	document.getElementById("report").style.border = "2px solid ThreeDFace";
+    	document.getElementById("report").style.border = "<%= borderSimpleStyle %>";
     } else {
     	pageBody = pageStartExtended + htmlText + pageEndExtended;
-    	document.getElementById("report").style.border = "2px inset ThreeDHighlight";
+    	document.getElementById("report").style.border = "<%= borderStyle %>";
     }
 
     report.document.open();    
@@ -514,9 +524,11 @@ function submitActionRefresh(para1, para2, para3) {
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 <%= wp.paramsAsHidden() %>
 
-<table border="0" cellpadding="0" cellspacing="0" width="100%" height="400"><tr><td>
-<iframe name="report" id="report" src="about:blank" style="width:99.8%; height:400px; padding: 0; margin: 0; border: 2px inset ThreeDHighlight;" frameborder="<%=(wp.useNewStyle()?1:0)%>"></iframe>
-</td></tr></table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="400">
+<tr>
+	<td><iframe name="report" id="report" src="about:blank" frameborder="0" style="width:99.8%; height:400px; padding: 0; margin: 0; border: <%= borderStyle %>;"></iframe></td>
+</tr>
+</table>
 
     <%= wp.dialogContentEnd() %>
 
