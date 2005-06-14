@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/10 15:05:08 $
- * Version: $Revision: 1.128 $
+ * Date   : $Date: 2005/06/14 14:49:46 $
+ * Version: $Revision: 1.129 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.128 $
+ * @version $Revision: 1.129 $
  * 
  * @since 5.1
  */
@@ -150,7 +150,8 @@ public abstract class CmsWorkplace {
     private static String m_styleUri;
 
     /** 
-     * Temporary variable for easily adding new resource bundles.      
+     * Temporary variable for easily adding new resource bundles.<p>    
+     *   
      * @see #initMessages()
      * @see #addMessages(String)
      */
@@ -449,11 +450,7 @@ public abstract class CmsWorkplace {
 
         // save current project
         settings.setProject(cms.getRequestContext().currentProject().getId());
-
-        // initialize messages and also store them in settings
-        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(settings.getUserSettings().getLocale());
-        settings.setMessages(messages);
-
+        
         // switch to users preferred site      
         String siteRoot = settings.getUserSettings().getStartSite();
         if (siteRoot.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
@@ -1838,9 +1835,8 @@ public abstract class CmsWorkplace {
      */
     protected void initMessages() {
 
-        //m_messages = m_settings.getMessages();
         // manually add the initialized workplace messages for the current user
-        m_bundles.add(m_settings.getMessages());
+        m_bundles.add(m_messages);
         addMessages(Messages.get().getBundleName());
     }
 
@@ -1861,15 +1857,16 @@ public abstract class CmsWorkplace {
 
             // get / create the workplace settings 
             m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
-            if (m_settings == null
-                || m_settings.getMessages() != OpenCms.getWorkplaceManager().getMessages(getLocale())) {
+                        
+            if (m_settings == null) {
                 // create the settings object
                 m_settings = new CmsWorkplaceSettings();
                 m_settings = initWorkplaceSettings(m_cms, m_settings, false);
                 storeSettings(m_session, m_settings);
             }
 
-            // initialize Messages
+            // initialize messages and also store them in settings
+            m_messages = OpenCms.getWorkplaceManager().getMessages(m_settings.getUserSettings().getLocale());                                
             initMessages();
             if (!m_bundles.isEmpty()) {
                 m_messages = new CmsMultiMessages(m_bundles);

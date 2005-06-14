@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/06/08 15:48:00 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/06/14 14:49:46 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,10 @@ package org.opencms.workplace;
 
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsUser;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.tools.CmsToolUserData;
-
-import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsMessages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +46,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -66,7 +64,6 @@ public class CmsWorkplaceSettings {
     private String m_galleryType;
     private Object m_listObject;
     private Map m_lastUsedGalleries;
-    private CmsMessages m_messages;
     private String m_permissionDetailView;
     private int m_project;
     private CmsPublishList m_publishList;
@@ -244,16 +241,6 @@ public class CmsWorkplaceSettings {
     public String getLastUsedGallery(int galleryTypeId) {
 
         return (String)m_lastUsedGalleries.get(String.valueOf(galleryTypeId));
-    }
-
-    /**
-     * Returns the initialized workplace messages for the current user.<p>
-     * 
-     * @return the initialized workplace messages for the current user
-     */
-    public CmsMessages getMessages() {
-
-        return m_messages;
     }
 
     /**
@@ -558,16 +545,6 @@ public class CmsWorkplaceSettings {
     public void setLastUsedGallery(int galleryTypeId, String gallerypath) {
 
         m_lastUsedGalleries.put(String.valueOf(galleryTypeId), gallerypath);
-    }
-
-    /**
-     * Sets the workplace messages for the current user.<p>
-     * 
-     * @param messages the workplace messages for the current user
-     */
-    public synchronized void setMessages(CmsMessages messages) {
-
-        m_messages = messages;
     }
 
     /**
