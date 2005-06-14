@@ -38,7 +38,7 @@
 
 <% if(style == MENU || style == NEW_ADMIN) { %>
 body {
-	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
 	color: WindowText;
@@ -373,7 +373,7 @@ body, form {
   padding: 3px 12px 5px 11px;
   vertical-align: middle;
   font-size: 18px;
-  font-family: "Franklin Gothic Medium", Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
   color: WindowText;
 }
 
@@ -413,13 +413,13 @@ hr {
 
 /* Default font settings for all standard p, td elements */
 p, td, div, span {
-	font-family: verdana, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 }
 
 /* Default font settings for all form elements */
 input, select, option, textarea {
-	font-family: verdana, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 }
 
@@ -492,7 +492,7 @@ table.dialogbox {
 }
 
 body.dialog {
-	font-family: verdana, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	padding: 0;
 	margin: 0;
@@ -720,7 +720,7 @@ span.dialogblockhead {
 
 /* Submit and other buttons */
 input.dialogbutton {
-	font-family: verdana, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
    <% if(style != NEW_ADMIN) { %>
 	background-color: ButtonFace;
@@ -893,7 +893,7 @@ table.logindialog {
 }
 
 input.loginbutton {
-	font-family: verdana, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	width: 150px;
 	height: 20px;
@@ -907,7 +907,7 @@ input.loginbutton {
 
  /* Body used for workplace head (top_head.html) */
 body.buttons-head {
-	font-family: verdana, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	padding: 0px;
 	margin: 0px;
@@ -920,7 +920,7 @@ body.buttons-head {
 
 /* Body used for workplace foot (top_foot.html) */
 body.buttons-foot {
-	font-family: verdana, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	padding: 0px;
 	margin: 0px;
@@ -1085,9 +1085,9 @@ div.widgetcombo a:hover {
    if (style == ONLINEHELP) { %>
    
 body, h1, h2, h3, h4, h5, h6, p, td, caption, th, ul, ol, dl, li, dd, dt {
-	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; 
+	font-family: Verdana, Arial, Helvetica, sans-serif; 
 	color: WindowText; 
-	font-size: 12px;
+	font-size: 11px;
 }
 
 body { 
@@ -1159,7 +1159,7 @@ a.navhelphead, a.navhelphead:link, a.navhelphead:visited {
 	display: block; 
 	text-align: left; 
 	border: 1px solid WindowFrame;
-	font-family: Verdana, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	text-decoration: none;
 }
@@ -1182,7 +1182,7 @@ a.navhelp:hover, a.navhelp:active {
 }
 
 .navhelp {
-	font-family: Verdana, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	float: left;
 	background-image: url(<%= cms.link("/system/modules/org.opencms.workplace.help/resources/nav_i.gif") %>);
@@ -1191,7 +1191,7 @@ a.navhelp:hover, a.navhelp:active {
 
 /* current navigation item */
 .navhelpcurrent {
-	font-family: Verdana, sans-serif;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	float: left;
 	background-image: url(<%= cms.link("/system/modules/org.opencms.workplace.help/resources/nav_a.gif") %>);

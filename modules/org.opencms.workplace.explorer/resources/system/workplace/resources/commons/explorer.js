@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/06/10 14:49:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/14 12:19:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -329,8 +329,8 @@ function printList(wo) {
 	+ "document.onclick = top.handleOnClick;"
 	+ "</script>"
 	+ "<style type='text/css'>\n"
-	+ "body { font-family: verdana, sans-serif; font-size: 11px; padding: 0px; margin: 0px; background-color: Window; } "
-	+ "p, td { font-family: verdana, sans-serif; font-size: 11px; white-space: nowrap; } "
+	+ "body { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 0px; margin: 0px; background-color: Window; } "
+	+ "p, td { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; white-space: nowrap; } "
 	+ "td.t { white-space: nowrap; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
 	+ "td.t125 { white-space: nowrap; width: 125px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
 	+ "td.t100 { white-space: nowrap; width: 100px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
@@ -881,8 +881,8 @@ function displayHead(doc, pages, actpage){
 	+ "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + vi.stylePath + "\"></link>\n"
 
 	+ "<style type='text/css'>\n"
-	+ "input.location { font-family: verdana, sans-serif; font-size: 11px; font-weight: normal; width: 99% }\n"
-	+ "select.location { font-family: verdana, sans-serif; font-size: 11px; font-weight: normal; width: 50px }\n"
+	+ "input.location { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; width: 99% }\n"
+	+ "select.location { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; width: 50px }\n"
 	+ "</style>\n"
 	
 	+ "<script type=\"text/javascript\">\n"
