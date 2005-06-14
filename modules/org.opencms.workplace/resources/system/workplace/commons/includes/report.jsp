@@ -503,6 +503,10 @@ function submitActionRefresh(para1, para2, para3) {
  }
 }
 
+    function reloadWorkplace() {
+		window.top.location.href = "/opencms/opencms/system/workplace/views/workplace.jsp";
+    }
+
 //-->
 </script>
 

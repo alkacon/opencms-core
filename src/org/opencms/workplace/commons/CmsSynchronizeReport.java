@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSynchronizeReport.java,v $
- * Date   : $Date: 2005/05/16 17:45:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/14 07:22:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.10
  */
@@ -122,4 +122,40 @@ public class CmsSynchronizeReport extends CmsReport {
             setParamTitle(key("title.sync"));
         }                 
     }
+    
+    /**
+     * Builds a button row with an "Ok", a "Cancel" and a "Details" button.<p>
+     * 
+     * This row is used when a single report is running or after the first report has finished.<p>
+     * 
+     * @param okAttrs optional attributes for the ok button
+     * @param cancelAttrs optional attributes for the cancel button
+     * @param detailsAttrs optional attributes for the details button
+     * @return the button row
+     */
+    public String dialogButtonsOkCancelDetails(String okAttrs, String cancelAttrs, String detailsAttrs) {
+
+        if (okAttrs == null || "".equals(okAttrs.trim())) {
+            okAttrs = "";
+        } else {
+            okAttrs += " ";
+        }
+        
+        if (detailsAttrs == null || "".equals(detailsAttrs.trim())) {
+            detailsAttrs = "";
+        } else {
+            detailsAttrs += " ";
+        }
+
+        if ("true".equals(getParamThreadHasNext()) && !"".equals(getParamReportContinueKey())) {
+            return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {
+                okAttrs + "onclick=\"reloadWorkplace();\"",
+                cancelAttrs,
+                detailsAttrs + "onclick=\"switchOutputFormat();\""});
+        }
+        return dialogButtons(new int[] {BUTTON_OK, BUTTON_DETAILS}, new String[] {
+            okAttrs + "onclick=\"reloadWorkplace();\"",
+            detailsAttrs + "onclick=\"switchOutputFormat();\""});
+    }
+    
 }
