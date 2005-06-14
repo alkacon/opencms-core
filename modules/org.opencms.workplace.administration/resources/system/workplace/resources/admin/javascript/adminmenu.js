@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/adminmenu.js,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/14 12:00:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,49 +78,11 @@ function setActiveItem(id) {
 }
 
 /*
- * Removes a parameter an its value from a given url.
- */
-function removeParam(url, param) {
-    var iniPos = url.indexOf("&" + param + "=");
-    if (iniPos > -1) {
-       var endPos = url.indexOf("&", iniPos + 1);
-       ret = url.substring(0, iniPos);
-       if (endPos > -1) {
-          ret = ret + url.substring(endPos);
-       }
-       return ret;
-    }
-    iniPos = url.indexOf("?" + param + "=");
-    if (iniPos > -1) {
-       var endPos = url.indexOf("&", iniPos + 1);
-       ret = url.substring(0, iniPos);
-       if (endPos > -1) {
-          ret = ret + "?" + url.substring(endPos + 1);
-       }
-       return ret;
-    }
-    return url;
-}
-
-/*
  * Opens a new page in the given frame and activating the given item.
  */
 function openView(id, url, frame) {
     setActiveItem(id);
-    if (url.indexOf("system/workplace/views/admin/admin-main.html")<0) {
-       finalUrl = url;
-    } else {
-        finalUrl = parent.frames[frame].location.href;
-        finalUrl = removeParam(finalUrl, "action");
-        finalUrl = removeParam(finalUrl, "closelink");
-        if (finalUrl.indexOf("?")>-1) {
-            finalUrl = finalUrl + "&";
-        } else {
-            finalUrl = finalUrl + "?";
-        }
-        finalUrl = finalUrl + "action=cancel&closelink=" + encodeURIComponent(url);
-    }
-    parent.frames[frame].location.href = finalUrl;
+    parent.frames[frame].location.href = url;
     return false;
 }
 
