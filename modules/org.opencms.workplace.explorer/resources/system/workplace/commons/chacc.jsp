@@ -73,10 +73,10 @@ function toggleDetail(id) {
     var cl = element.className;
     if (cl == "hide") {
         element.className = "show";
-        icon.setAttribute("src", '<%= wp.getSkinUri() %>buttons/minus.gif');
+        icon.setAttribute("src", '<%= wp.getSkinUri() %>commons/minus.png');
     } else {
         element.className = "hide";
-        icon.setAttribute("src", '<%= wp.getSkinUri() %>buttons/plus.gif');
+        icon.setAttribute("src", '<%= wp.getSkinUri() %>commons/plus.png');
     }
 }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/14 13:34:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public abstract class A_CmsWidget implements I_CmsWidget {
@@ -171,7 +171,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             result.append("\" id=\"img");
             result.append(locKey);
             result.append("\" src=\"");
-            result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.gif"));
+            result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.png"));
             result.append("\" alt=\"\" border=\"0\"");
             result.append(getJsHelpMouseHandler(widgetDialog, locKey));
             result.append("></td>");

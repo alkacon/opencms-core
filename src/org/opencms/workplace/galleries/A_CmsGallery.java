@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/05/13 09:07:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/14 13:34:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.5.2
  */
@@ -613,7 +613,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 return button(
                     "javascript:deleteResource(\'" + getParamResourcePath() + "\');",
                     null,
-                    "deletecontent",
+                    "deletecontent.png",
                     "title.delete",
                     0);
             }
@@ -623,7 +623,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 LOG.error(e);    
             }
         }
-        return button(null, null, "deletecontent_in", "", 0);
+        return button(null, null, "deletecontent_in.png", "", 0);
     }
 
     /**
@@ -1026,11 +1026,11 @@ public abstract class A_CmsGallery extends CmsDialog {
             return button(
                 "javascript:publishResource(\'" + getParamResourcePath() + "\');",
                 null,
-                "publish",
+                "publish.png",
                 "messagebox.title.publishresource",
                 0);
         }
-        return button(null, null, "publish_in", "", 0);
+        return button(null, null, "publish_in.png", "", 0);
     }
 
     /**
@@ -1157,7 +1157,7 @@ public abstract class A_CmsGallery extends CmsDialog {
      */
     public String wizardButton() {
 
-        return button("javascript:wizard();", null, "wizard", OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+        return button("javascript:wizard();", null, "wizard.png", OpenCms.getWorkplaceManager().getExplorerTypeSetting(
             "upload").getKey(), 0);
     }
 

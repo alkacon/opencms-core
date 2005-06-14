@@ -1259,13 +1259,39 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/commons/group_sm.gif</source>
-			<destination>system/workplace/resources/commons/group_sm.gif</destination>
+			<source>system/workplace/resources/commons/group.png</source>
+			<destination>system/workplace/resources/commons/group.png</destination>
 			<type>image</type>
-			<uuidresource>643e79fc-cd1a-11d9-ae53-df98a8463eee</uuidresource>
-			<datelastmodified>Wed, 25 May 2005 12:42:01 GMT</datelastmodified>
+			<uuidresource>02e99b85-dcd1-11d9-8352-0fc796c4637a</uuidresource>
+			<datelastmodified>Tue, 14 Jun 2005 12:37:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 25 May 2005 12:42:01 GMT</datecreated>
+			<datecreated>Tue, 14 Jun 2005 12:37:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/minus.png</source>
+			<destination>system/workplace/resources/commons/minus.png</destination>
+			<type>image</type>
+			<uuidresource>e04564ad-dcd1-11d9-8352-0fc796c4637a</uuidresource>
+			<datelastmodified>Tue, 14 Jun 2005 12:43:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 14 Jun 2005 12:43:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/plus.png</source>
+			<destination>system/workplace/resources/commons/plus.png</destination>
+			<type>image</type>
+			<uuidresource>e05199b0-dcd1-11d9-8352-0fc796c4637a</uuidresource>
+			<datelastmodified>Tue, 14 Jun 2005 12:43:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 14 Jun 2005 12:43:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1290,13 +1316,13 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/commons/user_sm.gif</source>
-			<destination>system/workplace/resources/commons/user_sm.gif</destination>
+			<source>system/workplace/resources/commons/user.png</source>
+			<destination>system/workplace/resources/commons/user.png</destination>
 			<type>image</type>
-			<uuidresource>6444947f-cd1a-11d9-ae53-df98a8463eee</uuidresource>
-			<datelastmodified>Wed, 25 May 2005 12:42:01 GMT</datelastmodified>
+			<uuidresource>02f449e8-dcd1-11d9-8352-0fc796c4637a</uuidresource>
+			<datelastmodified>Tue, 14 Jun 2005 12:37:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 25 May 2005 12:42:01 GMT</datecreated>
+			<datecreated>Tue, 14 Jun 2005 12:37:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

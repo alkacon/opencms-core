@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/09 16:18:20 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/06/14 13:34:31 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -223,7 +223,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             href.append("', ");
             href.append(insertAfter);
             href.append(");");
-            return button(href.toString(), null, "new", Messages.GUI_DIALOG_BUTTON_ADDNEW_0, 0);
+            return button(href.toString(), null, "new.png", Messages.GUI_DIALOG_BUTTON_ADDNEW_0, 0);
         } else {
             return "";
         }
@@ -257,7 +257,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             href.append("', ");
             href.append(index);
             href.append(");");
-            return button(href.toString(), null, "deletecontent", Messages.GUI_DIALOG_BUTTON_DELETE_0, 0);
+            return button(href.toString(), null, "deletecontent.png", Messages.GUI_DIALOG_BUTTON_DELETE_0, 0);
         } else {
             return "";
         }
@@ -855,7 +855,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 // show error message
                 result.append("<tr><td></td><td><img src=\"");
                 result.append(getSkinUri()).append("editors/xmlcontent/");
-                result.append("error.gif");
+                result.append("error.png");
                 result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError\">");
                 Throwable t = p.getError();
                 while (t != null) {
@@ -999,7 +999,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                     Throwable t = (Throwable)i.next();
                     result.append("<tr><td><img src=\"");
                     result.append(getSkinUri()).append("editors/xmlcontent/");
-                    result.append("error.gif");
+                    result.append("error.png");
                     result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError maxwidth\">");
                     while (t != null) {
                         result.append(t.getLocalizedMessage());

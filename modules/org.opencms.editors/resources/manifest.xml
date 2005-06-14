@@ -1449,13 +1449,13 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/xmlcontent/error.gif</source>
-			<destination>system/workplace/resources/editors/xmlcontent/error.gif</destination>
+			<source>system/workplace/resources/editors/xmlcontent/error.png</source>
+			<destination>system/workplace/resources/editors/xmlcontent/error.png</destination>
 			<type>image</type>
-			<uuidresource>85bf93ef-4508-11d9-a4ba-c7395cc0b5af</uuidresource>
-			<datelastmodified>Fri, 03 Dec 2004 11:59:06 GMT+01:00</datelastmodified>
+			<uuidresource>fec47bba-dcd3-11d9-b163-0fc796c4637a</uuidresource>
+			<datelastmodified>Tue, 14 Jun 2005 12:58:25 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 03 Dec 2004 09:51:29 GMT+01:00</datecreated>
+			<datecreated>Tue, 14 Jun 2005 12:58:25 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1474,13 +1474,13 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/xmlcontent/warning.gif</source>
-			<destination>system/workplace/resources/editors/xmlcontent/warning.gif</destination>
+			<source>system/workplace/resources/editors/xmlcontent/warning.png</source>
+			<destination>system/workplace/resources/editors/xmlcontent/warning.png</destination>
 			<type>image</type>
-			<uuidresource>85d4f0b2-4508-11d9-a4ba-c7395cc0b5af</uuidresource>
-			<datelastmodified>Fri, 03 Dec 2004 11:59:12 GMT+01:00</datelastmodified>
+			<uuidresource>fecda37d-dcd3-11d9-b163-0fc796c4637a</uuidresource>
+			<datelastmodified>Tue, 14 Jun 2005 12:58:25 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 03 Dec 2004 09:51:29 GMT+01:00</datecreated>
+			<datecreated>Tue, 14 Jun 2005 12:58:25 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

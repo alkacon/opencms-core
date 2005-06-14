@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/A_CmsImportFromHttp.java,v $
- * Date   : $Date: 2005/06/10 09:08:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/14 13:34:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0
  */
 public abstract class A_CmsImportFromHttp extends CmsDialog {
@@ -190,7 +190,7 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
             result.append("<table border=\"0\">\n");
             result.append("<tr><td><img src=\"");
             result.append(getSkinUri()).append("commons/");
-            result.append("error.gif");
+            result.append("error.png");
             result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError maxwidth\">");
             Throwable t = getException();
             while (t != null) {

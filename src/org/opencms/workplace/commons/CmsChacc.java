@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/05/25 12:50:08 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/14 13:34:31 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -358,11 +358,11 @@ public class CmsChacc extends CmsDialog {
         
         StringBuffer result = new StringBuffer(64);
         // set icon and style class to use: hide user permissions
-        String image = "plus.gif";
+        String image = "plus.png";
         String styleClass = "hide";
         if (getSettings().getUserSettings().getDialogExpandUserPermissions()) {
             // show user permissions
-            image = "minus.gif";
+            image = "minus.png";
             styleClass = "show";
         }
               
@@ -370,7 +370,7 @@ public class CmsChacc extends CmsDialog {
         result.append("<tr>\n");
         result.append("\t<td style=\"vertical-align: bottom; padding-bottom: 2px;\"><a href=\"javascript:toggleDetail('userpermissions');\"><img src=\"");
         result.append(getSkinUri());
-        result.append("buttons/");
+        result.append("commons/");
         result.append(image);
         result.append("\" class=\"noborder\" id=\"ic-userpermissions\"></a></td>\n");
         result.append("\t<td>");
@@ -416,11 +416,11 @@ public class CmsChacc extends CmsDialog {
         StringBuffer result = new StringBuffer(1024);
         
         // set icon and style class to use: hide inherited permissions
-        String image = "plus.gif";
+        String image = "plus.png";
         String styleClass = "hide";
         if (getSettings().getUserSettings().getDialogExpandInheritedPermissions() || getShowInheritedPermissions()) {
             // show inherited permissions if configured in settings or if the view detail was switched
-            image = "minus.gif";
+            image = "minus.png";
             styleClass = "show";
         }
         
@@ -429,7 +429,7 @@ public class CmsChacc extends CmsDialog {
         result.append("<tr>\n");
         result.append("\t<td style=\"vertical-align: bottom; padding-bottom: 2px;\"><a href=\"javascript:toggleDetail('inheritedpermissions');\"><img src=\"");
         result.append(getSkinUri());
-        result.append("buttons/");
+        result.append("commons/");
         result.append(image);
         result.append("\" class=\"noborder\" id=\"ic-inheritedpermissions\"></a></td>\n");
         result.append("\t<td>");
@@ -1139,11 +1139,11 @@ public class CmsChacc extends CmsDialog {
         if (extendedView) {
             // for extended view, add toggle symbol and link to output
             result.append("<a href=\"javascript:toggleDetail('").append(idValue).append("');\">");
-            result.append("<img src=\"").append(getSkinUri()).append("buttons/plus.gif\" class=\"noborder\" id=\"ic-").append(idValue).append("\"></a>");
+            result.append("<img src=\"").append(getSkinUri()).append("commons/plus.png\" class=\"noborder\" id=\"ic-").append(idValue).append("\"></a>");
         }
         result.append("<img src=\"").append(getSkinUri()).append("commons/");
         result.append(typeImg);
-        result.append("_sm.gif\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"");       
+        result.append(".png\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"");       
         result.append(typeLocalized);
         result.append("\" title=\"");      
         result.append(typeLocalized);

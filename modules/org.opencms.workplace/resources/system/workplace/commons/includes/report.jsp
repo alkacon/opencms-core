@@ -227,10 +227,10 @@ var report_running = new Image();
 report_running.src = "<%= wp.getSkinUri() %>commons/wait.gif";
 
 var report_ok = new Image();
-report_ok.src = "<%= wp.getSkinUri() %>commons/ok.gif";
+report_ok.src = "<%= wp.getSkinUri() %>commons/ok.png";
 
 var report_error = new Image();
-report_error.src = "<%= wp.getSkinUri() %>commons/error.gif";
+report_error.src = "<%= wp.getSkinUri() %>commons/error.png";
 
 // toggles between the simple and extended output format
 function switchOutputFormat() {

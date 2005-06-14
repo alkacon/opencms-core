@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2005/06/02 13:57:08 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/14 13:34:31 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.0
  */
@@ -358,10 +358,10 @@ public class CmsDialogElements extends CmsDialog {
                 retValue.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
                 if (page.getStringValue(getCms(), element.getName(), getElementLocale()) != null) {
                     // current element has content that can be deleted
-                    retValue.append(button("javascript:confirmDelete('" + element.getName() + "');", null, "deletecontent", "button.delete", 0));
+                    retValue.append(button("javascript:confirmDelete('" + element.getName() + "');", null, "deletecontent.png", "button.delete", 0));
                 } else {
                     // current element is empty
-                    retValue.append(button(null, null, "deletecontent_in", "button.delete", 0));
+                    retValue.append(button(null, null, "deletecontent_in.png", "button.delete", 0));
                 }
                 retValue.append("</tr></table>");
                 retValue.append("</td>\n");                

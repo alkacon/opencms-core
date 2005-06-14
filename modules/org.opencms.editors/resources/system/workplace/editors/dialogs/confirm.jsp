@@ -47,7 +47,7 @@ function confirmAction(actionValue, theForm) {
 
 <table border="0" cellpadding="4" cellspacing="0">
 <tr>
-    <td style="vertical-align: middle;"><img src="<%= wp.getSkinUri() %>commons/error.gif" border="0"></td>
+    <td style="vertical-align: middle;"><img src="<%= wp.getSkinUri() %>commons/error.png" border="0"></td>
     <td style="vertical-align: middle;"><%= wp.getParamMessage() %></td>
 </tr>
 </table>

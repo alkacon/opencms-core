@@ -86,11 +86,11 @@ if (showDelete) {
 
 	<td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= deleteAction %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
    if (editButtonStyle == 1) { 
-	%><span id="del_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/deletecontent.gif');">&nbsp;<%= wp.key("button.delete") %></span><%
+	%><span id="del_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/deletecontent.png');">&nbsp;<%= wp.key("button.delete") %></span><%
    } else if (editButtonStyle == 2) { 
 	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= wp.key("button.delete") %></span><%
    } else { 
-	%><img border="0" src="<%= wp.getSkinUri() %>buttons/deletecontent.gif" title="<%= wp.key("button.delete") %>" alt=""><%
+	%><img border="0" src="<%= wp.getSkinUri() %>buttons/deletecontent.png" title="<%= wp.key("button.delete") %>" alt=""><%
    } %></span></a></td>   
 <%
 }

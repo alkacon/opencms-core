@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/06/13 12:11:40 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/06/14 13:34:31 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -462,7 +462,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             href.append("', ");
             href.append(insertAfter);
             href.append(");");
-            return button(href.toString(), null, "new", "button.addnew", 0);    
+            return button(href.toString(), null, "new.png", "button.addnew", 0);    
         } else {
             return "<td style=\"width: 22px;\">&nbsp;</td>";
         }
@@ -485,7 +485,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             href.append("', ");
             href.append(index);
             href.append(");");
-            return button(href.toString(), null, "deletecontent", "button.delete", 0);    
+            return button(href.toString(), null, "deletecontent.png", "button.delete", 0);    
         } else {
             return "<td style=\"width: 22px;\">&nbsp;</td>";
         }
@@ -1178,7 +1178,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         // show error message
                         result.append("<tr><td></td><td><img src=\"");
                         result.append(getEditorResourceUri());
-                        result.append("error.gif");
+                        result.append("error.png");
                         result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError\">");
                         result.append(resolveMacros((String)getErrorHandler().getErrors(getElementLocale()).get(key)));
                         result.append("</td><td></td></tr>\n");
@@ -1188,7 +1188,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         // show warning message
                         result.append("<tr><td></td><td><img src=\"");
                         result.append(getEditorResourceUri());
-                        result.append("warning.gif");
+                        result.append("warning.png");
                         result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdWarning\">");
                         result.append(resolveMacros((String)getErrorHandler().getWarnings(getElementLocale()).get(key)));
                         result.append("</td><td></td></tr>\n");
