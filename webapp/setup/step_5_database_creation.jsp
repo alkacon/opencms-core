@@ -84,7 +84,7 @@ OpenCms Setup Wizard - Create database & tables
 						<%= Bean.getHtmlPart("C_BLOCK_START", "Create Database") %>
 						<table border="0" cellpadding="0" cellspacing="0">
 							<tr>
-								<td><img src="resources/warning.gif" border="0"></td>
+								<td><img src="resources/warning.png" border="0"></td>
 								<td>&nbsp;&nbsp;</td>
 								<td>You have not created the OpenCms database.<br>
 									You cannot import the workplace successfully without the database and tables!
@@ -100,7 +100,7 @@ OpenCms Setup Wizard - Create database & tables
 							<%= Bean.getHtmlPart("C_BLOCK_START", "Create Database") %>
 							<table border="0" cellpadding="0" cellspacing="0">
 								<tr>
-									<td><img src="resources/warning.gif" border="0"></td>
+									<td><img src="resources/warning.png" border="0"></td>
 									<td>&nbsp;&nbsp;</td>
 									<td>An existing database has been detected. Drop it ?</td>
 								</tr>
@@ -128,7 +128,7 @@ OpenCms Setup Wizard - Create database & tables
 								db.dropDatabase(Bean.getDatabase(), Bean.getReplacer());
 								if (db.noErrors())	{ %>
 									<tr>
-										<td><img src="resources/ok.gif" border="0"></td>
+										<td><img src="resources/ok.png" border="0"></td>
 										<td>&nbsp;&nbsp;</td>
 										<td style="width: 100%;">Database has been successfully dropped.</td>
 									</tr>									
@@ -140,7 +140,7 @@ OpenCms Setup Wizard - Create database & tables
 									dbError = true;
 								 %>
 									<tr>
-										<td><img src="resources/error.gif" border="0"></td>
+										<td><img src="resources/error.png" border="0"></td>
 										<td>&nbsp;&nbsp;</td>
 										<td style="width: 100%;">
 											<div style="width: 100%; height:70px; overflow: auto;">
@@ -176,7 +176,7 @@ OpenCms Setup Wizard - Create database & tables
 								db.createDatabase(Bean.getDatabase(), Bean.getReplacer());
 								if (db.noErrors())	{ %>
 									<tr>
-										<td><img src="resources/ok.gif" border="0"></td>
+										<td><img src="resources/ok.png" border="0"></td>
 										<td>&nbsp;&nbsp;</td>
 										<td style="width: 100%;">Database has been successfully created.</td>
 									</tr>									
@@ -189,7 +189,7 @@ OpenCms Setup Wizard - Create database & tables
 								%>
 								
 									<tr>
-										<td><img src="resources/error.gif" border="0"></td>
+										<td><img src="resources/error.png" border="0"></td>
 										<td>&nbsp;&nbsp;</td>
 										<td style="width: 100%;">
 											<div style="width: 100%; height:70px; overflow: auto;">
@@ -237,7 +237,7 @@ OpenCms Setup Wizard - Create database & tables
 								if(db.noErrors())	{
 									%>
 									<tr>
-										<td><img src="resources/ok.gif" border="0"></td>
+										<td><img src="resources/ok.png" border="0"></td>
 										<td>&nbsp;&nbsp;</td>
 										<td style="width: 100%;">Tables have been successfully created.</td>
 									</tr>									
@@ -250,7 +250,7 @@ OpenCms Setup Wizard - Create database & tables
 								%>
 								
 									<tr>
-										<td><img src="resources/error.gif" border="0"></td>
+										<td><img src="resources/error.png" border="0"></td>
 										<td>&nbsp;&nbsp;</td>
 										<td style="width: 100%;">
 											<div style="width: 100%; height:70px; overflow: auto;">

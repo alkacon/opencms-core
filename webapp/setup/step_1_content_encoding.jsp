@@ -36,7 +36,7 @@ OpenCms Setup Wizard - Wrong content encoding!
 <%= Bean.getHtmlPart("C_BLOCK_START", "Error") %>
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%;">
 <tr>
-	<td style="vertical-align: middle;" rowspan="2"><img src="resources/error.gif" width="32" height="32" border="0"></td>
+	<td style="vertical-align: middle;" rowspan="2"><img src="resources/error.png" width="32" height="32" border="0"></td>
 	<td style="font-weight: bold;">
 		The encoding of your Java VM is different from the OpenCms encoding!
 	</td>

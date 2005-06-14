@@ -91,7 +91,7 @@ OpenCms Setup Wizard - Component tests
 			<tr>
 				<td style="text-align: left; white-space: nowrap;"><%= testResult.getName() %>:</td>
 				<td style="text-align: left; font-weight:bold; width: 100%;"><%= testResult.getResult() %></td>
-				<td style="text-align: right; width: 40px; height: 16px;"><%= helpIcon %>&nbsp;<img src="resources/<%= resultIcon %>.gif" border="0"></td>
+				<td style="text-align: right; width: 40px; height: 16px;"><%= helpIcon %>&nbsp;<img src="resources/<%= resultIcon %>.png" border="0"></td>
 			</tr>
 <%
 		}	
@@ -108,11 +108,11 @@ OpenCms Setup Wizard - Component tests
 			<tr><td align="center" valign="top">
 			<%
 				if(setupTests.isRed()) {
-					out.print("<img src='resources/error.gif'>");
+					out.print("<img src='resources/error.png'>");
 				} else if (setupTests.isYellow()) {
-					out.print("<img src='resources/warning.gif'>");
+					out.print("<img src='resources/warning.png'>");
 				} else {
-					out.print("<img src='resources/ok.gif'>");
+					out.print("<img src='resources/ok.png'>");
 				}
 			%>
 			</td>

@@ -13,7 +13,7 @@ if (pathPrefix == null) {
 		<%= Bean.getHtmlPart("C_BLOCK_START", "Error") %>
 		<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
 			<tr>
-				<td><img src="<%= pathPrefix %>resources/error.gif" border="0"></td>
+				<td><img src="<%= pathPrefix %>resources/error.png" border="0"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td style="width: 100%;">
 					The OpenCms setup wizard has not been started correctly!<br>

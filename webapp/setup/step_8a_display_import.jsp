@@ -24,7 +24,7 @@ OpenCms Setup Wizard - Import workplace
 		function enable() {
 			enabled = true;
 			parent.data.location.href="step_8b_data_import.jsp";
-			replaceInfo(message, "wait");
+			replaceInfo(message, "wait.gif");
 		}
 
 		// displays the given output 
@@ -50,7 +50,7 @@ OpenCms Setup Wizard - Import workplace
 
 		// displays a message and enables the continue button
 		function finish() {
-			replaceInfo("Finished. Please check the output to see if the workplace has been imported without errors.", "ok");
+			replaceInfo("Finished. Please check the output to see if the workplace has been imported without errors.", "ok.png");
 			document.forms[0].ctn.disabled = false;
 			document.forms[0].bck.disabled = true;
 			finished = true;
@@ -76,7 +76,7 @@ OpenCms Setup Wizard - Import workplace
 			var newTextNode = document.createTextNode(msgString);
 			el.replaceChild(newTextNode, el.firstChild);
 			el = document.getElementById("statusimg");
-			el.src = "resources/" + imgSrc + ".gif";
+			el.src = "resources/" + imgSrc;
 		}
 
 	</script>

@@ -36,7 +36,7 @@ OpenCms Setup Wizard - Import workplace
 		<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
 			
 			<tr>
-				<td><img src="resources/warning.gif" border="0"></td>
+				<td><img src="resources/warning.png" border="0"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td style="width: 100%;">
 					You have not imported the workplace.<br>

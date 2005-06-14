@@ -34,7 +34,7 @@ OpenCms Setup Wizard - Finished
 		<%= Bean.getHtmlPart("C_BLOCK_START", "OpenCms setup finished") %>
 		<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
 			<tr>
-				<td><img src="resources/ok.gif" border="0"></td>
+				<td><img src="resources/ok.png" border="0"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td style="width: 100%;">					
 				    The OpenCms welcome page should display in a newly opened browser window now.<br>
@@ -51,7 +51,7 @@ OpenCms Setup Wizard - Finished
 		<%= Bean.getHtmlPart("C_BLOCK_START", "Wizard locked") %>
 		<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
 			<tr>
-				<td><img src="resources/warning.gif" border="0"></td>
+				<td><img src="resources/warning.png" border="0"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>
 					This setup wizard has now been locked.<br>

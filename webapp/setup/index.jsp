@@ -79,7 +79,7 @@ OpenCms Setup Wizard - License Agreement
 				<%= Bean.getHtmlPart("C_BLOCK_START", "Error starting wizard") %>
 				<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
 					<tr>
-						<td><img src="resources/error.gif" border="0"></td>
+						<td><img src="resources/error.png" border="0"></td>
 						<td>&nbsp;&nbsp;</td>
 						<td>
 							Error starting OpenCms setup wizard.<br>
@@ -107,7 +107,7 @@ OpenCms Setup Wizard - License Agreement
 				<%= Bean.getHtmlPart("C_BLOCK_START", "Wizard locked") %>
 				<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
 					<tr>
-						<td><img src="resources/error.gif" border="0"></td>
+						<td><img src="resources/error.png" border="0"></td>
 						<td>&nbsp;&nbsp;</td>
 						<td style="width: 100%;">
 							The OpenCms setup wizard is not available!<br>
