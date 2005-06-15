@@ -93,37 +93,38 @@
                         <var name="module.package" value="${module.package}@{package}/" />
                     </sequential>
                 </for>
-            	<if>
-            		<available file="${module.input.src.test}" />
-            		<then>
-		            	<for param="file" >
-			            	<fileset dir="${module.input.src.test}">
-			            		<include name="*" />
-			            	</fileset>
-		                    <sequential>
-		                        <var name="notempty" value="true" />
-		                    </sequential>
-						</for>
-            		</then>
-            	</if>
                 <if>
-                	<isset property="notempty" />
-                    <then>
-                        <property name="src.mode" value="shared" />  
-                        <property name="module.input.src" value="${module.input.src.test}" />
-                    </then>
-                    <else>
-                    	<if>
-                    		<isset property="module.packages" />
-                        	<then>
-    	                        <property name="src.mode" value="multishared" />                    
-                                <property name="module.input.src" value="${module.input.src.shared}" />
-                        	</then>
-                        	<else>
-    	                        <property name="src.mode" value="none" />                    
-                        	</else>
-                    	</if>
-                    </else>
+               		<isset property="module.packages" />
+                   	<then>
+                        <echo message="module.packages is set to ${module.packages}"/>
+                        <property name="src.mode" value="multishared" />                    
+                        <property name="module.input.src" value="${module.input.src.shared}" />
+                   	</then>
+                   	<else>
+		            	<if>
+        		    		<available file="${module.input.src.test}" />
+            				<then>
+		            			<for param="file" >
+					            	<fileset dir="${module.input.src.test}">
+					            		<include name="*" />
+					            	</fileset>
+				                    <sequential>
+				                        <var name="notempty" value="true" />
+				                    </sequential>
+								</for>
+		            		</then>
+		            	</if>
+		                <if>
+        		        	<isset property="notempty" />
+                		    <then>
+		                        <property name="src.mode" value="shared" />  
+        		                <property name="module.input.src" value="${module.input.src.test}" />
+		                    </then>
+        		            <else>
+                		        <property name="src.mode" value="none" />                    
+		                    </else>
+        		        </if>
+                   	</else>
                 </if>
             </else>
         </if>
