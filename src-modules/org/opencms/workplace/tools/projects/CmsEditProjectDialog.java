@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/15 14:31:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsEditProjectDialog extends A_CmsProjectDialog {
@@ -130,8 +130,13 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
                 CmsProject currentProject = getCms().getRequestContext().currentProject();
                 // change the current project
                 getCms().getRequestContext().setCurrentProject(m_project);
-                // copy the resources to the current project
+                // store the current site root
+                String currentSite = getCms().getRequestContext().getSiteRoot();
+                // copy the resources to the current project               
                 try {
+                    // switch to the root site
+                    getCms().getRequestContext().setSiteRoot("");
+                    // start copying
                     Iterator it = this.getResources().iterator();
                     while (it.hasNext()) {
                         getCms().copyResourceToProject(it.next().toString());
@@ -144,6 +149,8 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
                     }
                     throw e;
                 } finally {
+                    // switch back to current site and project
+                    getCms().getRequestContext().setSiteRoot(currentSite);
                     getCms().getRequestContext().setCurrentProject(currentProject);
                 }
             } else {
@@ -279,7 +286,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
         addWidget(new CmsWidgetDialogParameter(this, "userGroup", PAGES[0], new CmsSelectWidget(getSelectGroups(false))));
         addWidget(new CmsWidgetDialogParameter(m_project, "deleteAfterPublishing", PAGES[0], new CmsCheckboxWidget()));
         if (isNewProject()) {
-            addWidget(new CmsWidgetDialogParameter(this, "resources", PAGES[0], new CmsVfsFileWidget()));
+            addWidget(new CmsWidgetDialogParameter(this, "resources", PAGES[0], new CmsVfsFileWidget(false, "")));
         }
     }
 
