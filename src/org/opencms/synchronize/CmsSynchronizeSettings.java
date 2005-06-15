@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeSettings.java,v $
- * Date   : $Date: 2005/06/08 15:48:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/15 15:56:52 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.3
  */
 public class CmsSynchronizeSettings implements Serializable {
@@ -91,9 +91,18 @@ public class CmsSynchronizeSettings implements Serializable {
             throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_NO_VFS_SOURCE_0));
         }
         Iterator i = m_sourceListInVfs.iterator();
-        while (i.hasNext()) {
-            // try to read all given resources, this will cause an error if the resource does not exist 
-            cms.readResource((String)i.next());
+        // store the current site root
+        String currentSite = cms.getRequestContext().getSiteRoot();
+        // switch to root site
+        cms.getRequestContext().setSiteRoot("");
+        try {
+            while (i.hasNext()) {
+                // try to read all given resources, this will cause an error if the resource does not exist
+                    cms.readResource((String)i.next());            
+            }
+        } finally {
+            // reset to current site root
+            cms.getRequestContext().setSiteRoot(currentSite);
         }
     }
 

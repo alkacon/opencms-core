@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/CmsSynchronizeSettingsDialog.java,v $
- * Date   : $Date: 2005/06/15 14:46:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/15 15:56:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * Dialog to edit the synchronize settings of the OpenCms Workplace.<p>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  */
@@ -160,7 +160,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(m_synchronizeSettings, "enabled", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_synchronizeSettings, "destinationPathInRfs", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_synchronizeSettings, "sourceListInVfs", "/", PAGES[0], new CmsVfsFileWidget(
-            false, "/"), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));
+            false, ""), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));
         
     }
 
