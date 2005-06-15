@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/Messages.java,v $
- * Date   : $Date: 2005/06/15 12:53:11 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Messages.java,v $
+ * Date   : $Date: 2005/06/15 12:51:24 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.workplace;
+package org.opencms.workplace.tools.workplace.rfsfile;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
@@ -37,70 +37,62 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @author Achim Westermann (a.westermann@alkacon.com)
- * @since 5.7.3
+ * @author  Achim Westermann (a.westermann@alkacon.com)
+ * @version $Revision: 1.1 $
+ * 
+ * @since 6.0
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_LABEL_ACTIVATE_BLOCK_0 = "GUI_EDITOR_LABEL_ACTIVATE_BLOCK_0";
+    public static final String ERR_DOWNLOAD_SERVLET_FILE_ARG_0 = "ERR_DOWNLOAD_SERVLET_FILE_ARG_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_LABEL_ACTIVATE_SYNC_BLOCK_0 = "GUI_EDITOR_LABEL_ACTIVATE_SYNC_BLOCK_0";
+    public static final String ERR_FILE_ACCESS_0 = "ERR_FILE_ACCESS_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_LABEL_CONFIGURATION_BLOCK_0 = "GUI_EDITOR_LABEL_CONFIGURATION_BLOCK_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_CONTROLS_HELP_0 = "GUI_WORKPLACE_LOGVIEW_CONTROLS_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_LABEL_DESTINATION_RFS_BLOCK_0 = "GUI_EDITOR_LABEL_DESTINATION_RFS_BLOCK_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_CONTROLS_NAME_0 = "GUI_WORKPLACE_LOGVIEW_CONTROLS_NAME_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FLMOD_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FLMOD_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_LABEL_SOURCE_LIST_VFS_BLOCK_0 = "GUI_EDITOR_LABEL_SOURCE_LIST_VFS_BLOCK_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FNAME_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FNAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_BASIC_GROUP_0 = "GUI_WORKPLACE_BASIC_GROUP_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FPATH_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FPATH_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_LOGINMESSAGE_HELP_0 = "GUI_WORKPLACE_LOGINMESSAGE_HELP_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FSIZE_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FSIZE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_LOGINMESSAGE_NAME_0 = "GUI_WORKPLACE_LOGINMESSAGE_NAME_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_MSG_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_MSG_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_HELP_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_HELP_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_TITLE_1 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_NAME_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_NAME_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_FILE_CONF_HELP_0 = "GUI_WORKPLACE_LOGVIEW_FILE_CONF_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_LOGVIEW_HELP_0 = "GUI_WORKPLACE_LOGVIEW_HELP_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_FILE_LOG_HELP_0 = "GUI_WORKPLACE_LOGVIEW_FILE_LOG_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_LOGVIEW_NAME_0 = "GUI_WORKPLACE_LOGVIEW_NAME_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_FILE_XMLCONF_HELP_0 = "GUI_WORKPLACE_LOGVIEW_FILE_XMLCONF_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_REINIT_HELP_0 = "GUI_WORKPLACE_REINIT_HELP_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_GROUP_0 = "GUI_WORKPLACE_LOGVIEW_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_REINIT_NAME_0 = "GUI_WORKPLACE_REINIT_NAME_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_SETTINGS_HELP_0 = "GUI_WORKPLACE_LOGVIEW_SETTINGS_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_SYNC_HELP_0 = "GUI_WORKPLACE_SYNC_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_SYNC_NAME_0 = "GUI_WORKPLACE_SYNC_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_TOOL_GROUP_0 = "GUI_WORKPLACE_TOOL_GROUP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_TOOL_HELP_0 = "GUI_WORKPLACE_TOOL_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_TOOL_NAME_0 = "GUI_WORKPLACE_TOOL_NAME_0";
+    public static final String GUI_WORKPLACE_LOGVIEW_SETTINGS_NAME_0 = "GUI_WORKPLACE_LOGVIEW_SETTINGS_NAME_0";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workplace.tools.workplace.messages";
+    private static final String BUNDLE_NAME = "org.opencms.workplace.tools.workplace.rfsfile.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

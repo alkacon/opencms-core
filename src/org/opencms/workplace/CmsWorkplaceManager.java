@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:03 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2005/06/15 12:51:24 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsEditorHandler;
@@ -89,7 +90,7 @@ import org.apache.commons.logging.Log;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * 
  * @since 5.3.1
  */
@@ -162,6 +163,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** Maximum size of an upload file. */
     private int m_fileMaxUploadSize;
 
+    /** The instance used for reading portions of lines of a file to choose. */
+    private CmsRfsFileViewer m_fileViewSettings;
+
     /** The configured workplace galleries. */
     private Map m_galleries;
 
@@ -207,6 +211,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_exportPoints = new HashSet();
         m_editorHandler = new CmsEditorHandler();
         m_fileMaxUploadSize = -1;
+        m_fileViewSettings = new CmsRfsFileViewer();
         m_explorerTypeSettingsFromXml = new ArrayList();
         m_explorerTypeSettingsFromModules = new ArrayList();
         m_defaultPropertiesOnStructure = true;
@@ -461,7 +466,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             // initialize all explorer type settings if not already done
             initExplorerTypeSettings();
         }
-        
+
         return m_explorerTypeSettings;
     }
 
@@ -500,6 +505,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public int getFileMaxUploadSize() {
 
         return m_fileMaxUploadSize;
+    }
+
+    /**
+     * Returns the system-wide file view settings for the workplace.<p>
+     * 
+     * Note that this instance may not modified (invocation of setters) directly or a
+     * <code>{@link org.opencms.main.CmsRuntimeException}</code> will be thrown. 
+     * It has to be cloned first and then may be written back to the workplace settings using 
+     * method {@link #setFileViewSettings(CmsObject, org.opencms.util.CmsRfsFileViewer)}.
+     * 
+     * @return the system-wide file view settings for the workplace
+     */
+    public CmsRfsFileViewer getFileViewSettings() {
+
+        return m_fileViewSettings;
     }
 
     /**
@@ -614,15 +634,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      * The workplace messages are a collection of resource bundles, one for the basic
      * workplace, and (optionally) one for each initialized module.<p>
      * 
-     * If possible in a workplace class, the method <code>{@link CmsWorkplaceSettings#getMessages()}</code> should be 
-     * used, since this gives a better performance. All classes that inherit from <code>{@link CmsWorkplace}</code> should use 
-     * <code>{@link CmsWorkplace#getSettings()}</code> to obtain a settings object.<p>
-     * 
      * @param locale the locale to get the messages for
      * @return the workplace messages for the given locale
-     * 
-     * @see CmsWorkplaceSettings#getMessages()
-     * @see CmsWorkplace#getSettings()
      */
     public CmsMessages getMessages(Locale locale) {
 
@@ -904,7 +917,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         m_editorAction = clazz;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_EDITOR_ACTION_CLASS_1, m_editorAction.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().key(
+                Messages.INIT_EDITOR_ACTION_CLASS_1,
+                m_editorAction.getClass().getName()));
         }
     }
 
@@ -917,7 +932,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
         m_editorDisplayOptions = clazz;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_EDITOR_DISPLAY_OPTS_1, m_editorAction.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().key(
+                Messages.INIT_EDITOR_DISPLAY_OPTS_1,
+                m_editorAction.getClass().getName()));
         }
     }
 
@@ -977,6 +994,23 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             }
 
         }
+    }
+
+    /**
+     * Sets the system-wide file view settings for the workplace.<p>
+     * 
+     * @param cms the CmsObject for ensuring security constraints. 
+     * 
+     * @param fileViewSettings the system-wide file view settings for the workplace to set 
+     * @throws CmsRoleViolationException if the current user does not own the administrator role  ({@link CmsRole#ADMINISTRATOR})  
+     * */
+    public void setFileViewSettings(CmsObject cms, CmsRfsFileViewer fileViewSettings)
+    throws CmsRoleViolationException {
+
+        cms.checkRole(CmsRole.ADMINISTRATOR);
+        m_fileViewSettings = fileViewSettings;
+        // disallow modifications of this "new original"
+        m_fileViewSettings.setFrozen(true);
     }
 
     /**
@@ -1095,7 +1129,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             viewFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_VIEWS);
         } catch (CmsException e) {
             if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING && LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, I_CmsWpConstants.C_VFS_PATH_VIEWS), e);
+                LOG.error(
+                    Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, I_CmsWpConstants.C_VFS_PATH_VIEWS),
+                    e);
             }
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             viewFolders = new ArrayList();

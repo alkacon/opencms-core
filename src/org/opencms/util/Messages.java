@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Messages.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/15 12:51:24 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,24 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_FILE_ARG_ACCESS_1 = "ERR_FILE_ARG_ACCESS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_FILE_ARG_EMPTY_1 = "ERR_FILE_ARG_EMPTY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_FILE_ARG_IS_FOLDER_1 = "ERR_FILE_ARG_IS_FOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_FILE_ARG_NOT_FOUND_1 = "ERR_FILE_ARG_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_FILE_ARG_NOT_READ_1 = "ERR_FILE_ARG_NOT_READ_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_FILE_VIEW_SETTINGS_FROZEN_0 = "ERR_FILE_VIEW_SETTINGS_FROZEN_0";
+
+   /** Message constant for key in the resource bundle. */
     public static final String ERR_CONTROL_STRING_LENGTH_0 = "ERR_CONTROL_STRING_LENGTH_0";
 
     /** Message constant for key in the resource bundle. */
@@ -71,6 +89,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_CLASSLOADER_RESOURCE_2 = "ERR_MISSING_CLASSLOADER_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEUTIL_FILESIZE_BYTES_1 = "GUI_FILEUTIL_FILESIZE_BYTES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEUTIL_FILESIZE_GBYTES_1 = "GUI_FILEUTIL_FILESIZE_GBYTES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEUTIL_FILESIZE_KBYTES_1 = "GUI_FILEUTIL_FILESIZE_KBYTES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILEUTIL_FILESIZE_MBYTES_1 = "GUI_FILEUTIL_FILESIZE_MBYTES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CONVERSION_BYTE_FAILED_0 = "LOG_CONVERSION_BYTE_FAILED_0";

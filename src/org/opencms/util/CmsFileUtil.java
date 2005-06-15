@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/05/31 20:29:38 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/15 12:51:24 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -92,6 +93,46 @@ public final class CmsFileUtil {
 
         in.close();
         out.close();
+    }
+
+    /** 
+     * Returns the formatted filesize to Bytes, KB, MB or GB depending on the given value.<p>
+     * 
+     * @param filesize in bytes 
+     * @param locale the locale of the current OpenCms user or the System's default locale if the first choice 
+     *               is not at hand. 
+     * 
+     * @return the formatted filesize to Bytes, KB, MB or GB depending on the given value 
+     **/
+    public static String formatFilesize(long filesize, Locale locale) {
+
+        String result;
+        filesize = Math.abs(filesize);
+
+        if (Math.abs(filesize) < 1024) {
+            result = Messages.get().key(
+                locale,
+                Messages.GUI_FILEUTIL_FILESIZE_BYTES_1,
+                new Object[] {new Long(filesize)});
+        } else if (Math.abs(filesize) < 1048576) {
+            // 1048576 = 1024.0 * 1024.0
+            result = Messages.get().key(
+                locale,
+                Messages.GUI_FILEUTIL_FILESIZE_KBYTES_1,
+                new Object[] {new Double(filesize / 1024.0)});
+        } else if (Math.abs(filesize) < 1073741824) {
+            // 1024.0^3 =  1073741824
+            result = Messages.get().key(
+                locale,
+                Messages.GUI_FILEUTIL_FILESIZE_MBYTES_1,
+                new Object[] {new Double(filesize / 1048576.0)});
+        } else {
+            result = Messages.get().key(
+                locale,
+                Messages.GUI_FILEUTIL_FILESIZE_GBYTES_1,
+                new Object[] {new Double(filesize / 1073741824.0)});
+        }
+        return result;
     }
 
     /**
@@ -167,11 +208,14 @@ public final class CmsFileUtil {
                 result = result + '/';
             }
         } else {
-           if (LOG.isErrorEnabled()) {
+            if (LOG.isErrorEnabled()) {
                 try {
                     URLClassLoader cl = (URLClassLoader)Thread.currentThread().getContextClassLoader();
                     URL[] paths = cl.getURLs();
-                    LOG.error(Messages.get().key(Messages.ERR_MISSING_CLASSLOADER_RESOURCE_2, fileName, Arrays.asList(paths)));
+                    LOG.error(Messages.get().key(
+                        Messages.ERR_MISSING_CLASSLOADER_RESOURCE_2,
+                        fileName,
+                        Arrays.asList(paths)));
                 } catch (Throwable t) {
                     LOG.error(Messages.get().key(Messages.ERR_MISSING_CLASSLOADER_RESOURCE_1, fileName));
                 }

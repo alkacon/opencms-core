@@ -1,0 +1,11 @@
+<%@ page 
+	buffer="none" 
+	import="org.opencms.workplace.tools.workplace.rfsfile.*" %><%	
+	
+	
+	// initialize the workplace class
+	CmsRfsFileViewDialog wp = new CmsRfsFileViewDialog(pageContext, request, response);
+	
+	// perform the dialog display action	
+	wp.displayDialog();
+%>
