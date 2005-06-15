@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2005/05/10 07:50:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/15 13:46:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -63,7 +65,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsDisplayResource extends CmsDialog {
 
@@ -128,7 +130,12 @@ public class CmsDisplayResource extends CmsDialog {
                 }
             }
         } else {
-            getJsp().getResponse().sendRedirect(url);
+            if (getCms().existsResource(getParamResource(), CmsResourceFilter.DEFAULT)) {
+                getJsp().getResponse().sendRedirect(url);
+            } else {
+                // resource is outside time window, show error message
+                throw new CmsVfsResourceNotFoundException(Messages.get().container(Messages.ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1, getParamResource()));
+            }
         }
     }
 
