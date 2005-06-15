@@ -254,8 +254,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.workplace.help/resources/close.gif</source>
-			<destination>system/modules/org.opencms.workplace.help/resources/close.gif</destination>
+			<source>system/modules/org.opencms.workplace.help/resources/close.png</source>
+			<destination>system/modules/org.opencms.workplace.help/resources/close.png</destination>
 			<type>image</type>
 			<uuidresource>90ad65f7-d1e1-11d9-b78e-01ff5ab8f021</uuidresource>
 			<datelastmodified>Wed, 01 Jun 2005 10:11:00 GMT</datelastmodified>

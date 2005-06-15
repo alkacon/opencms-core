@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/06/02 13:57:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/15 11:25:51 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
 
@@ -639,7 +639,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         result.append(key("button.search"));
         result.append("\"><img class=\"button\" src=\"");
         result.append(getSkinUri());
-        result.append("/buttons/folder.gif\" border=\"0\"></a></td>");
+        result.append("/buttons/folder.png\" border=\"0\"></a></td>");
         result.append("</tr>\n");
         result.append("</table>\n");
         result.append("</td>\n");

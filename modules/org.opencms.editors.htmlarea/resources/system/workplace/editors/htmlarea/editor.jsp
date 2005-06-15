@@ -503,9 +503,9 @@ config.registerButton("oc-exit", "<%= wp.key("button.close") %>", __editor.imgUR
 config.registerButton("oc-save-exit", "<%= wp.key("button.saveclose") %>", __editor.imgURL("images/opencms/save_exit.gif"), true, function(e) { buttonAction(7); });
 config.registerButton("oc-save", "<%= wp.key("button.save") %>", __editor.imgURL("images/opencms/save.gif"), true, function(e) { buttonAction(8); });
 
-config.registerButton("oc-chars", "<%= wp.key("button.specialchars") %>", __editor.imgURL("../../buttons/specialchar.gif"), false, function(e) { buttonAction(10); });
-config.registerButton("oc-anchor", "<%= wp.key("button.anchor") %>", __editor.imgURL("../../buttons/anchor.gif"), false, function(e) { buttonAction(11); });
-config.registerButton("oc-link", "<%= wp.key("button.linkto") %>", __editor.imgURL("../../buttons/link.gif"), false, function(e) { buttonAction(12); });
+config.registerButton("oc-chars", "<%= wp.key("button.specialchars") %>", __editor.imgURL("../../buttons/specialchar.png"), false, function(e) { buttonAction(10); });
+config.registerButton("oc-anchor", "<%= wp.key("button.anchor") %>", __editor.imgURL("../../buttons/anchor.png"), false, function(e) { buttonAction(11); });
+config.registerButton("oc-link", "<%= wp.key("button.linkto") %>", __editor.imgURL("../../buttons/link.png"), false, function(e) { buttonAction(12); });
 
 config.registerButton("imagegallery", "<%= wp.key("button.imagelist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/imagegallery.gif"), false, function(e) { buttonAction(14); });
 config.registerButton("downloadgallery", "<%= wp.key("button.downloadlist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/downloadgallery.gif"), false, function(e) { buttonAction(15); });
@@ -708,7 +708,7 @@ if (options.showElement("option.properties", displayOptions)) {
 out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", "editor.dialog.cleanup.button", buttonStyle));
 %>             
 <td class="maxwidth">&nbsp;</td>
-<%= wp.button("javascript:buttonAction(2);", null, "preview.png", "button.preview", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(2);", null, "preview", "button.preview", buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
 </tr></table>
 </td></tr>

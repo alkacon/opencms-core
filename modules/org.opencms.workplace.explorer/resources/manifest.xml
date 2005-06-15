@@ -31,7 +31,7 @@
 		<resources>
 			<resource uri="/system/workplace/commons/"/>
 			<resource uri="/system/workplace/resources/buttons/back.png"/>
-			<resource uri="/system/workplace/resources/buttons/folder.gif"/>
+			<resource uri="/system/workplace/resources/buttons/folder.png"/>
 			<resource uri="/system/workplace/resources/buttons/folder_up.png"/>
 			<resource uri="/system/workplace/resources/buttons/folder_up_in.png"/>
 			<resource uri="/system/workplace/resources/buttons/upload.png"/>
@@ -1147,18 +1147,18 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/buttons/folder.gif</source>
-			<destination>system/workplace/resources/buttons/folder.gif</destination>
+			<source>system/workplace/resources/buttons/folder.png</source>
+			<destination>system/workplace/resources/buttons/folder.png</destination>
 			<type>image</type>
-			<uuidresource>9dfe0914-20de-11d9-bbae-c726a0fc5cd5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<uuidresource>c497f80b-dd86-11d9-9663-016dc05e1977</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 10:18:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 Aug 2004 12:37:03 CEST</datecreated>
+			<datecreated>Wed, 15 Jun 2005 10:18:07 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
-		</file> 
+		</file>
 		<file>
 			<source>system/workplace/resources/buttons/folder_up.png</source>
 			<destination>system/workplace/resources/buttons/folder_up.png</destination>

@@ -48,17 +48,17 @@ default:
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.newtimestamp") %>
 	<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_NEWTIMESTAMP %>" id="<%= wp.PARAM_NEWTIMESTAMP %>" value="<%= wp.getCurrentDateTime() %>"></td>
-	<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.gif" id="triggercalendar" alt="<%= wp.key("calendar.input.choosedate") %>" title="<%=  wp.key("calendar.input.choosedate") %>" border="0"></td>
+	<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggercalendar" alt="<%= wp.key("calendar.input.choosedate") %>" title="<%=  wp.key("calendar.input.choosedate") %>" border="0"></td>
 </tr>
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.newreleasedate") %>
 	<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_RELEASEDATE %>" id="<%= wp.PARAM_RELEASEDATE %>" value="<%= wp.getCurrentReleaseDate() %>"></td>
-	<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.gif" id="triggernewreleasedate" alt="<%= wp.key("calendar.input.choosedate") %>" title="<%=  wp.key("calendar.input.choosedate") %>" border="0"></td>
+	<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggernewreleasedate" alt="<%= wp.key("calendar.input.choosedate") %>" title="<%=  wp.key("calendar.input.choosedate") %>" border="0"></td>
 </tr>
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.newexpiredate") %>
 	<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_EXPIREDATE %>" id="<%= wp.PARAM_EXPIREDATE %>" value="<%= wp.getCurrentExpireDate() %>"></td>
-	<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.gif" id="triggernewexpiredate" alt="<%= wp.key("calendar.input.choosedate") %>" title="<%=  wp.key("calendar.input.choosedate") %>" border="0"></td>
+	<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggernewexpiredate" alt="<%= wp.key("calendar.input.choosedate") %>" title="<%=  wp.key("calendar.input.choosedate") %>" border="0"></td>
 </tr>
 <%= wp.buildCheckRecursive() %>
 </table>

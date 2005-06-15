@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/14 14:49:46 $
- * Version: $Revision: 1.129 $
+ * Date   : $Date: 2005/06/15 11:25:51 $
+ * Version: $Revision: 1.130 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.129 $
+ * @version $Revision: 1.130 $
  * 
  * @since 5.1
  */
@@ -683,16 +683,11 @@ public abstract class CmsWorkplace {
      */
     public String button(String href, String target, String image, String label, int type, String imagePath) {
 
-        StringBuffer result = new StringBuffer(512);
+        StringBuffer result = new StringBuffer(256);
 
         String anchorStart = "<a href=\"";
         if (href != null && href.toLowerCase().startsWith("javascript:")) {
             anchorStart = "<a href=\"#\" onclick=\"";
-        }
-
-        if (image != null && image.indexOf('.') == -1) {
-            // append default suffix for images
-            image += ".gif";
         }
 
         result.append("<td style=\"vertical-align: top;\">");
@@ -720,6 +715,10 @@ public abstract class CmsWorkplace {
                 result.append("style=\"background-image: url('");
                 result.append(imagePath);
                 result.append(image);
+                if (image != null && image.indexOf('.') == -1) {
+                    // append default suffix for button images
+                    result.append(".png");
+                }
                 result.append("');\">");
                 result.append(shortKey(label));
                 result.append("</span></span>");
@@ -779,6 +778,10 @@ public abstract class CmsWorkplace {
                 result.append("><img class=\"button\" src=\"");
                 result.append(imagePath);
                 result.append(image);
+                if (image != null && image.indexOf('.') == -1) {
+                    // append default suffix for button images
+                    result.append(".png");
+                }
                 result.append("\" alt=\"");
                 result.append(key(label));
                 result.append("\">");

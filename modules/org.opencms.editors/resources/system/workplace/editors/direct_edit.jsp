@@ -73,11 +73,11 @@ if (showEdit) {
 %>
 	<td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= editAction %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
    if (editButtonStyle == 1) { 
-	%><span id="bt_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif');">&nbsp;<%= wp.key("editor.frontend.button.edit") %></span><%
+	%><span id="bt_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.png');">&nbsp;<%= wp.key("editor.frontend.button.edit") %></span><%
    } else if (editButtonStyle == 2) { 
 	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= wp.key("editor.frontend.button.edit") %></span><%
    } else { 
-	%><span id="bt_<%= editId %>" unselectable="on" class="ocms_combobutton" style="padding-left: 15px; padding-right: 1px; background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif'); background-position: 0px 0px;" title="<%= wp.key("editor.frontend.button.edit") %>">&nbsp;</span><%
+	%><span id="bt_<%= editId %>" unselectable="on" class="ocms_combobutton" style="padding-left: 15px; padding-right: 1px; background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.png'); background-position: 0px 0px;" title="<%= wp.key("editor.frontend.button.edit") %>">&nbsp;</span><%
    } %></span></a></td>
 <% 
 }
@@ -125,11 +125,11 @@ if (showNew) {
 <tr>
 	<td style="vertical-align: top;"><span unselectable="on" class="ocms_disabled"><%
    if (editButtonStyle == 1) { 
-	%><span unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_in.gif');">&nbsp;<%= wp.key("editor.frontend.button.locked") %></span><%
+	%><span unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_in.png');">&nbsp;<%= wp.key("editor.frontend.button.locked") %></span><%
    } else if (editButtonStyle == 2) { 
 	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= wp.key("editor.frontend.button.locked") %></span><%
    } else { 
-	%><img border="0" src="<%= wp.getSkinUri() %>buttons/directedit_in.gif" title="<%= wp.key("editor.frontend.button.locked") %>" alt=""><%
+	%><img border="0" src="<%= wp.getSkinUri() %>buttons/directedit_in.png" title="<%= wp.key("editor.frontend.button.locked") %>" alt=""><%
    } %></span></td>
 </table>
 </span>
@@ -227,7 +227,7 @@ function activateOcms(id) {
 	}
 	var bt = document.getElementById("bt_" + id);
 	if (bt != null) {
-		bt.style.backgroundImage = "url(<%= wp.getSkinUri() %>buttons/directedit_op.gif)";
+		bt.style.backgroundImage = "url(<%= wp.getSkinUri() %>buttons/directedit_op.png)";
 	}
 
 }
@@ -238,7 +238,7 @@ function deactivateOcms(id) {
 	}
 	var bt = document.getElementById("bt_" + id);
 	if (bt != null) {
-		bt.style.backgroundImage = "url(<%= wp.getSkinUri() %>buttons/directedit_cl.gif)";
+		bt.style.backgroundImage = "url(<%= wp.getSkinUri() %>buttons/directedit_cl.png)";
 	}
 }
 function submitOcms(id, action, link) {
