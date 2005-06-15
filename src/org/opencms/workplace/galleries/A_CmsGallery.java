@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/06/14 13:34:31 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/15 08:01:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.5.2
  */
@@ -642,7 +642,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 return button(
                     "javascript:editProperty('" + getParamResourcePath() + "');",
                     null,
-                    "edit_property",
+                    "edit.png",
                     "input.editpropertyinfo",
                     0);
             }
@@ -650,7 +650,7 @@ public abstract class A_CmsGallery extends CmsDialog {
             // error checking permissions
             LOG.error(e);
         }
-        return button(null, null, "edit_property_in", "", 0);
+        return button(null, null, "edit_in.png", "", 0);
     }
 
     /**
@@ -1040,7 +1040,7 @@ public abstract class A_CmsGallery extends CmsDialog {
      */
     public String searchButton() {
 
-        return button("javascript:displayGallery();", null, "search", "input.search", 0);
+        return button("javascript:displayGallery();", null, "search.png", "input.search", 0);
     }
 
     /**

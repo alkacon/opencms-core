@@ -117,7 +117,7 @@ if (wp.isHelpEnabled()) {
        
 <td style="width: 100%">&nbsp;</td>
 <%= wp.buttonBarSeparator(5, 0) %>  
-<%= wp.button("../../login/index.html?logout=true", "_top", "logout", "button.exit", buttonStyle) %>
+<%= wp.button("../../login/index.html?logout=true", "_top", "logout.png", "button.exit", buttonStyle) %>
 
 <% if (buttonStyle != 2) {%>
 <td>&nbsp;</td>

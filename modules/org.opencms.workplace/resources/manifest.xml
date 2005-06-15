@@ -977,26 +977,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/buttons/edit_property.gif</source>
-			<destination>system/workplace/resources/buttons/edit_property.gif</destination>
+			<source>system/workplace/resources/buttons/edit.png</source>
+			<destination>system/workplace/resources/buttons/edit.png</destination>
 			<type>image</type>
-			<uuidresource>3cc1d57e-4216-11d9-b334-2360a85223b9</uuidresource>
-			<datelastmodified>Mon, 29 Nov 2004 15:52:06 CET</datelastmodified>
+			<uuidresource>e15fe7f6-dd6e-11d9-8160-016dc05e1977</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 07:27:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 29 Nov 2004 15:52:06 CET</datecreated>
+			<datecreated>Wed, 15 Jun 2005 07:27:08 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/buttons/edit_property_in.gif</source>
-			<destination>system/workplace/resources/buttons/edit_property_in.gif</destination>
+			<source>system/workplace/resources/buttons/edit_in.png</source>
+			<destination>system/workplace/resources/buttons/edit_in.png</destination>
 			<type>image</type>
-			<uuidresource>d0fcaa8e-42ba-11d9-a738-2360a85223b9</uuidresource>
-			<datelastmodified>Tue, 30 Nov 2004 11:30:12 CET</datelastmodified>
+			<uuidresource>0012caf9-dd6f-11d9-8160-016dc05e1977</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 07:27:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 30 Nov 2004 11:30:12 CET</datecreated>
+			<datecreated>Wed, 15 Jun 2005 07:27:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1016,13 +1016,13 @@
 			<accesscontrol/>
 		</file>		
 		<file>
-			<source>system/workplace/resources/buttons/logout.gif</source>
-			<destination>system/workplace/resources/buttons/logout.gif</destination>
+			<source>system/workplace/resources/buttons/logout.png</source>
+			<destination>system/workplace/resources/buttons/logout.png</destination>
 			<type>image</type>
-			<uuidresource>616dfd77-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<uuidresource>43156088-dceb-11d9-8101-016dc05e1977</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 07:21:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 Aug 2004 12:37:04 CEST</datecreated>
+			<datecreated>Tue, 14 Jun 2005 15:44:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1107,26 +1107,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/buttons/search.gif</source>
-			<destination>system/workplace/resources/buttons/search.gif</destination>
+			<source>system/workplace/resources/buttons/search.png</source>
+			<destination>system/workplace/resources/buttons/search.png</destination>
 			<type>image</type>
-			<uuidresource>61f492e3-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<uuidresource>7f44dd13-dd72-11d9-970b-016dc05e1977</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 07:53:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 Aug 2004 12:37:05 CEST</datecreated>
+			<datecreated>Wed, 15 Jun 2005 07:53:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/buttons/search_in.gif</source>
-			<destination>system/workplace/resources/buttons/search_in.gif</destination>
+			<source>system/workplace/resources/buttons/search_in.png</source>
+			<destination>system/workplace/resources/buttons/search_in.png</destination>
 			<type>image</type>
-			<uuidresource>6202c3b7-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<uuidresource>93aa44c8-dd72-11d9-970b-016dc05e1977</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 07:53:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 Aug 2004 12:37:05 CEST</datecreated>
+			<datecreated>Wed, 15 Jun 2005 07:53:35 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
