@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2005/06/15 12:52:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/15 16:01:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Main project management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsProjectsList extends A_CmsListDialog {
@@ -534,6 +534,14 @@ public class CmsProjectsList extends A_CmsListDialog {
      */
     protected void setMultiActions(CmsListMetadata metadata) {
 
+        // add the unlock project multi action
+        CmsListMultiAction unlockProject = new CmsListMultiAction(LIST_ID, LIST_MACTION_UNLOCK);
+        unlockProject.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_NAME_0));
+        unlockProject.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_HELP_0));
+        unlockProject.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_CONF_0));
+        unlockProject.setIconPath(PATH_BUTTONS + "project_unlock.png");
+        metadata.addMultiAction(unlockProject);
+
         // add delete multi action
         CmsListMultiAction deleteMultiAction = new CmsListMultiAction(LIST_ID, LIST_MACTION_DELETE);
         deleteMultiAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_DELETE_NAME_0));
@@ -542,14 +550,6 @@ public class CmsProjectsList extends A_CmsListDialog {
             Messages.GUI_PROJECTS_LIST_MACTION_DELETE_CONF_0));
         deleteMultiAction.setIconPath(ICON_MULTI_DELETE);
         metadata.addMultiAction(deleteMultiAction);
-
-        // add the unlock project multi action
-        CmsListMultiAction unlockProject = new CmsListMultiAction(LIST_ID, LIST_MACTION_UNLOCK);
-        unlockProject.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_NAME_0));
-        unlockProject.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_HELP_0));
-        unlockProject.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_CONF_0));
-        unlockProject.setIconPath(PATH_BUTTONS + "project_unlock.png");
-        metadata.addMultiAction(unlockProject);
     }
 
 }

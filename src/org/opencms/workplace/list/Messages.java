@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/15 16:01:31 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_LIST_COLUMN_EXISTS_1 = "ERR_LIST_COLUMN_EXISTS_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_INTERVAL_FORMAT_0 = "GUI_LIST_INTERVAL_FORMAT_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_LIST_ENUM_PARSE_2 = "ERR_LIST_ENUM_PARSE_2";

@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMacroFormatter.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListTimeFormatter.java,v $
  * Date   : $Date: 2005/06/15 16:01:31 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,34 +28,45 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
+ 
 package org.opencms.workplace.list;
 
-import org.opencms.i18n.CmsMessageContainer;
-
-import java.text.MessageFormat;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Locale;
 
+
 /**
- * This list formatter uses the <code>{@link MessageFormat}</code> class for macro like formatting.<p>
+ * Simple formatter for time.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsListMacroFormatter implements I_CmsListFormatter {
+public class CmsListTimeFormatter implements I_CmsListFormatter {
 
-    /** pattern for <code>{@link MessageFormat}</code>. */
-    private final CmsMessageContainer m_mask;
+    private int m_timeStyle;
+ 
+    /**
+     * Default constructor.<p>
+     * 
+     * Use medium style.<p>
+     */
+    public CmsListTimeFormatter() {
+        
+        m_timeStyle = DateFormat.MEDIUM;
+    }
 
     /**
-     * Default constructor that sets the mask to use.<p>
+     * Customizable constructor.<p>
      * 
-     * @param mask pattern for <code>{@link MessageFormat}</code>
+     * @param timeStyle the style for the time part
+     * 
+     * @see DateFormat
      */
-    public CmsListMacroFormatter(CmsMessageContainer mask) {
-
-        m_mask = mask;
+    public CmsListTimeFormatter(int timeStyle) {
+        
+        m_timeStyle = timeStyle;
     }
 
     /**
@@ -63,21 +74,10 @@ public class CmsListMacroFormatter implements I_CmsListFormatter {
      */
     public String format(Object data, Locale locale) {
 
-        if (data == null) {
-            return null;
+        if (data == null || !(data instanceof Date)) {
+            return "";
         }
-        String locMask = m_mask.key(locale);
-        MessageFormat formatter = new MessageFormat(locMask, locale);
-        return formatter.format(new Object[] {data});
-    }
-
-    /**
-     * Returns the mask.<p>
-     * 
-     * @return the mask
-     */
-    public CmsMessageContainer getMask() {
-
-        return m_mask;
+        DateFormat timeFormat = DateFormat.getTimeInstance(m_timeStyle);
+        return timeFormat.format(data);
     }
 }

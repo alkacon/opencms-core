@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2005/06/15 13:50:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/15 16:01:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemActionIconComparator;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.CmsListTimeIntervalFormatter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Session list for broadcasting messages.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsSessionsList extends A_CmsListDialog {
@@ -178,10 +179,8 @@ public class CmsSessionsList extends A_CmsListDialog {
      */
     public void executeListSingleActions() throws CmsRuntimeException {
 
-        Integer sessionId = new Integer(getSelectedItem().getId());
-
         Map params = new HashMap();
-        params.put(CmsBroadcastMessageDialog.PARAM_SESSIONIDS, sessionId);
+        params.put(CmsBroadcastMessageDialog.PARAM_SESSIONIDS, getSelectedItem().getId());
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
@@ -223,7 +222,7 @@ public class CmsSessionsList extends A_CmsListDialog {
             item.set(LIST_COLUMN_USER, session.getUser().getFullName());
             item.set(LIST_COLUMN_EMAIL, session.getUser().getEmail());
             item.set(LIST_COLUMN_CREATION, new Date(session.getTimeCreated()));
-            item.set(LIST_COLUMN_INACTIVE, new Date(session.getTimeActive()));
+            item.set(LIST_COLUMN_INACTIVE, new Long(session.getTimeActive()));
             try {
                 item.set(LIST_COLUMN_PROJECT, getCms().readProject(session.getProject()).getName());
             } catch (Exception e) {
@@ -326,10 +325,7 @@ public class CmsSessionsList extends A_CmsListDialog {
         CmsListColumnDefinition inactiveCol = new CmsListColumnDefinition(LIST_COLUMN_INACTIVE);
         inactiveCol.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_COLS_INACTIVE_0));
         inactiveCol.setWidth("10%");
-        CmsListDateMacroFormatter inactiveTimeFormatter = new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_SESSIONS_LIST_COLS_INACTIVE_FORMAT_1), Messages.get().container(
-            Messages.GUI_SESSIONS_LIST_COLS_INACTIVE_NEVER_0));
-        inactiveCol.setFormatter(inactiveTimeFormatter);
+        inactiveCol.setFormatter(new CmsListTimeIntervalFormatter(Messages.get().container(Messages.GUI_SESSIONS_LIST_COLS_INACTIVE_FORMAT_4)));
         metadata.addColumn(inactiveCol);
 
         // add column for project
