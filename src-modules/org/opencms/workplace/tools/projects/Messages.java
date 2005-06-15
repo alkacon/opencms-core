@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Messages.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/15 12:52:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -278,12 +278,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_FILES_HELP_0 = "GUI_PROJECTS_LIST_COLS_FILES_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_PROJECTS_LIST_COLS_HISTORY_0 = "GUI_PROJECTS_LIST_COLS_HISTORY_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_PROJECTS_LIST_COLS_HISTORY_HELP_0 = "GUI_PROJECTS_LIST_COLS_HISTORY_HELP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_ICON_0 = "GUI_PROJECTS_LIST_COLS_ICON_0";

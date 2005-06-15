@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/15 12:52:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Main project management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsProjectsList extends A_CmsListDialog {
@@ -494,10 +494,10 @@ public class CmsProjectsList extends A_CmsListDialog {
         CmsListColumnDefinition creationCol = new CmsListColumnDefinition(LIST_COLUMN_CREATION);
         creationCol.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_COLS_CREATION_0));
         creationCol.setWidth("14%");
-        CmsListDateMacroFormatter lastLoginFormatter = new CmsListDateMacroFormatter(Messages.get().container(
+        CmsListDateMacroFormatter creationDateFormatter = new CmsListDateMacroFormatter(Messages.get().container(
             Messages.GUI_PROJECTS_LIST_COLS_CREATION_FORMAT_1), Messages.get().container(
             Messages.GUI_PROJECTS_LIST_COLS_CREATION_NEVER_0));
-        creationCol.setFormatter(lastLoginFormatter);
+        creationCol.setFormatter(creationDateFormatter);
         metadata.addColumn(creationCol);
     }
 
