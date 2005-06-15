@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2005/05/31 15:51:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/15 09:27:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,8 @@ import java.util.Set;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.apache.commons.collections.Buffer;
+import org.apache.commons.collections.BufferUtils;
+import org.apache.commons.collections.buffer.BoundedFifoBuffer;
 import org.apache.commons.logging.Log;
 
 /**
@@ -68,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
 public class CmsSessionManager {
@@ -104,6 +106,10 @@ public class CmsSessionManager {
      */
     public Buffer getBroadcastQueue(String sessionId) {
 
+        if (getSessionInfo(sessionId) == null) {
+            // return empty message buffer if the session is gone
+            return BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(CmsSessionInfo.C_QUEUE_SIZE));
+        }
         return getSessionInfo(sessionId).getBroadcastQueue();
     }
 
@@ -323,8 +329,10 @@ public class CmsSessionManager {
         m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 1 : (m_sessionCountCurrent + 1);
         m_sessionCountTotal++;
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_SESSION_CREATED_2, new Integer(
-                m_sessionCountTotal), new Integer(m_sessionCountCurrent)));
+            LOG.info(Messages.get().key(
+                Messages.LOG_SESSION_CREATED_2,
+                new Integer(m_sessionCountTotal),
+                new Integer(m_sessionCountCurrent)));
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_SESSION_CREATED_1, event.getSession().getId()));
@@ -359,7 +367,9 @@ public class CmsSessionManager {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_SESSION_DESTROYED_2, new Integer(m_sessionCountTotal), 
+            LOG.info(Messages.get().key(
+                Messages.LOG_SESSION_DESTROYED_2,
+                new Integer(m_sessionCountTotal),
                 new Integer(m_sessionCountCurrent)));
         }
         if (LOG.isDebugEnabled()) {

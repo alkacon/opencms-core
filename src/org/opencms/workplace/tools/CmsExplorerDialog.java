@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminDialog.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsExplorerDialog.java,v $
  * Date   : $Date: 2005/06/15 09:27:04 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,14 +29,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.administration;
+package org.opencms.workplace.tools;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.tools.CmsExplorerDialog;
-import org.opencms.workplace.tools.CmsToolManager;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,20 +43,33 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Workplace class for /system/workplace/views/admin/admin-main.html .<p>
+ * Dialog for explorer views in the administration view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsAdminDialog extends CmsDialog {
+public class CmsExplorerDialog extends CmsDialog {
+
+    /** List of explorer tools. */
+    public static final List C_EXPLORER_TOOLS = new ArrayList();
+
+    /* fill the explorer tools list */
+    static {
+        C_EXPLORER_TOOLS.add("/projects/files");
+        C_EXPLORER_TOOLS.add("/galleryoverview/downloadgallery");
+        C_EXPLORER_TOOLS.add("/galleryoverview/htmlgallery");
+        C_EXPLORER_TOOLS.add("/galleryoverview/imagegallery");
+        C_EXPLORER_TOOLS.add("/galleryoverview/linkgallery");
+        C_EXPLORER_TOOLS.add("/galleryoverview/tablegallery");
+    }
 
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsAdminDialog(CmsJspActionElement jsp) {
+    public CmsExplorerDialog(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -69,50 +81,26 @@ public class CmsAdminDialog extends CmsDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsAdminDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsExplorerDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
 
     /**
-     * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
+     * Generates the html code for the title frame.<p>
      * 
      * @throws Exception if writing to the JSP out fails
      */
-    public void displayDialog() throws Exception {
+    public void displayTitle() throws Exception {
 
-        Map params = initAdminTool();
-        
-        // explorer view dialogs
-        if (CmsExplorerDialog.C_EXPLORER_TOOLS.contains(getCurrentToolPath())) {
-            if (getAction()==CmsDialog.ACTION_CANCEL) {
-                actionCloseDialog();
-                return;
-            }
-            getToolManager().jspRedirectPage(this, CmsToolManager.C_ADMINVIEW_ROOT_LOCATION + "/tool-fs.html", params);
-            return;
-        } 
-
-        // real tool
-        if (!getAdminTool().getHandler().getLink().equals(getCms().getRequestContext().getUri())) {
-            getToolManager().jspRedirectPage(this, getAdminTool().getHandler().getLink(), params);
-            return;
-        } 
-
-        // just grouping 
-        if (getAction() == CmsDialog.ACTION_CANCEL) {
-            actionCloseDialog();
-            return;
-        }
-        
         JspWriter out = getJsp().getJspContext().getOut();
-        out.print(htmlStart());
-        out.print(bodyStart(null));
-        out.print(dialogStart());
-        out.print(dialogContentStart(getParamTitle()));
-        out.print(dialogContentEnd());
-        out.print(dialogEnd());
-        out.print(bodyEnd());
-        out.print(htmlEnd());
+        out.println(htmlStart());
+        out.println(bodyStart(null));
+        out.println(dialogStart());
+        out.println(dialogContentStart(getParamTitle()));
+        out.println(dialogContentEnd());
+        out.println(dialogEnd());
+        out.println(bodyEnd());
+        out.println(htmlEnd());
     }
 }

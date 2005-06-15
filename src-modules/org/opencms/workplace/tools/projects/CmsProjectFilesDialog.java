@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2005/06/15 07:37:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/15 09:27:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,20 +34,21 @@ package org.opencms.workplace.tools.projects;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.explorer.CmsExplorer;
+import org.opencms.workplace.tools.CmsExplorerDialog;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Comment for <code>CmsProjectFilesDialog</code>.<p>
+ * Explorer dialog for the project files view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
-public class CmsProjectFilesDialog extends CmsDialog {
+public class CmsProjectFilesDialog extends CmsExplorerDialog {
 
     /** Stores the value of the request parameter for the project id. */
     private String m_paramProjectid;
@@ -63,7 +64,6 @@ public class CmsProjectFilesDialog extends CmsDialog {
     public CmsProjectFilesDialog(CmsJspActionElement jsp) {
 
         super(jsp);
-
     }
 
     /**
@@ -75,8 +75,7 @@ public class CmsProjectFilesDialog extends CmsDialog {
      */
     public CmsProjectFilesDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
-        super(context, req, res);
-
+        this(new CmsJspActionElement(context, req, res));
     }
 
     /**
@@ -86,23 +85,21 @@ public class CmsProjectFilesDialog extends CmsDialog {
      */
     public void displayDialog() throws Exception {
 
-        StringBuffer link = new StringBuffer();
-        link.append("/system/workplace/views/explorer/explorer_files.jsp?mode=projectview");
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamProjectid())) {            
-            link.append("&");
-            link.append(CmsEditProjectDialog.PARAM_PROJECTID);
-            link.append("=");
-            link.append(getParamProjectid());
+        if (getAction() == ACTION_CANCEL) {
+            return;
+        }
+        getSettings().setExplorerMode(CmsExplorer.C_VIEW_PROJECT);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamProjectid())) {
+            getSettings().setExplorerProjectId(new Integer(getParamProjectid()).intValue());
         }
         try {
-            String filter = "&projectfilter=";
-            filter += new CmsUserSettings(getCms().getRequestContext().currentUser()).getProjectSettings().getProjectFilesMode();
-            link.append(filter);
+            String filter = new CmsUserSettings(getCms().getRequestContext().currentUser()).getProjectSettings().getProjectFilesMode().toString();
+            getSettings().setExplorerProjectFilter(filter);
         } catch (Exception e) {
             // ignore, if user has no project settings
         }
 
-        getJsp().getResponse().sendRedirect(getJsp().link(link.toString()));
+        getJsp().getResponse().sendRedirect(getJsp().link(C_FILE_EXPLORER_FILELIST));
     }
 
     /**
@@ -144,5 +141,4 @@ public class CmsProjectFilesDialog extends CmsDialog {
 
         m_paramProjectname = projectName;
     }
-
 }

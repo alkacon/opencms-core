@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/15 09:27:04 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -112,7 +112,7 @@ public class CmsExplorer extends CmsWorkplace {
     private static final String C_VIEW_GALLERY = "galleryview";
 
     /** The "projectview" view selection. */
-    private static final String C_VIEW_PROJECT = "projectview";
+    public static final String C_VIEW_PROJECT = "projectview";
 
     /**
      * Public constructor.<p>

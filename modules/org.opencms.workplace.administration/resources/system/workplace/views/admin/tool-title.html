@@ -1,21 +1,8 @@
-<%@ page import="
-	org.opencms.workplace.CmsDialog,
-	org.opencms.workplace.tools.CmsToolManager,
-	org.opencms.jsp.CmsJspActionElement,
-	java.util.*"
+<%@ page import="org.opencms.workplace.tools.*"
 	buffer="none"
 %>
 <%
-    CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
-    CmsDialog wp = new CmsDialog(jsp);    
+    CmsExplorerDialog wp = new CmsExplorerDialog(pageContext, request, response);    
+    wp.displayTitle();
 %>
-<%= wp.htmlStart() %>
-<%= wp.bodyStart(null) %>
-    <%= wp.dialogStart() %>
-    <%= wp.dialogContentStart(wp.getParamTitle()) %>
-    <%= wp.dialogContentEnd() %>
-    <%= wp.dialogEnd() %>
-<%= wp.bodyEnd() %>
-<%=wp.htmlEnd() %>
-
 
