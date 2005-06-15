@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/06/12 11:18:22 $
- * Version: $Revision: 1.656 $
+ * Date   : $Date: 2005/06/15 14:44:48 $
+ * Version: $Revision: 1.657 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ OpenCms 5.9.2 Corrin (aka 6.0 RC 2) - June 17, 2005
 ! Added Workplace tool to temporarily disable all logins (for system maintainance)
 ! Synchronize settings are now saved on a "per user" basis, and stored in the database
 * Fixed issue with missing locale in XML content that has only optional elements
-- JVM default locale is now set to be Locale.ENGLISH if any other language then English is the default
+- JVM default locale is now set to be Locale.ENGLISH if any other language than English is the default
 ! Account management tool in the (new) Administration finished
 ! Module management tool in the (new) Administration finished
 ! Database management tool in the (new) Administration finished
