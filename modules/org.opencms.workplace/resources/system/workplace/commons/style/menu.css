@@ -406,6 +406,25 @@ hr {
     width: 95%;
 }
 
+span.logfilewidgethead { 
+  font-weight: bold;
+  position: relative;
+  left: 7px;
+  z-index: 1;
+  bottom : -6px;
+  background-color: window;
+}	
+
+div.logfilewidget {
+  position: relative;
+  z-index: 0;
+  padding: 10px;
+  border: 1px solid black;
+  overflow: auto;
+  height: 450px;
+}
+
+
 <%
 /* style definitions valid for WORKLACE, NEW_ADMIN and POPUP style */
 } if(!(style == MENU) && !(style == ONLINEHELP)) { 
