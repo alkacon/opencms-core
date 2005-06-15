@@ -138,6 +138,60 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/workplace/broadcast_message.html</source>
+			<destination>system/workplace/admin/workplace/broadcast_message.html</destination>
+			<type>jsp</type>
+			<uuidresource>7c202038-dd81-11d9-a3c8-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 13:18:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 09:40:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_MESSAGE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_MESSAGE_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/send_message.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_MESSAGE_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit Message to Broadcast]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/workplace/broadcast/messages]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/workplace/loginmessage.jsp</source>
 			<destination>system/workplace/admin/workplace/loginmessage.jsp</destination>
 			<type>jsp</type>
@@ -233,6 +287,114 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Re-Initialize Workplace]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/workplace/send_email.html</source>
+			<destination>system/workplace/admin/workplace/send_email.html</destination>
+			<type>jsp</type>
+			<uuidresource>b803e8d3-dda0-11d9-8944-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 13:35:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 13:23:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_EMAIL_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_EMAIL_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/send_email.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_EMAIL_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit Email to Send]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/workplace/broadcast/email]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/workplace/sessions.html</source>
+			<destination>system/workplace/admin/workplace/sessions.html</destination>
+			<type>jsp</type>
+			<uuidresource>7566ef2b-dd81-11d9-a3c8-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 13:18:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 09:40:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_SESSIONS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_SESSIONS_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/workplace_broadcast.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_SESSIONS_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[List of current active OpenCms Sessions]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/workplace/broadcast]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -506,6 +668,82 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/resources/tools/workplace/buttons</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 15 Jun 2005 12:42:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 12:42:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/buttons/message_notpending.png</source>
+			<destination>system/workplace/resources/tools/workplace/buttons/message_notpending.png</destination>
+			<type>image</type>
+			<uuidresource>131da793-dd9b-11d9-a3c8-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 12:43:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 12:43:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/buttons/message_pending.png</source>
+			<destination>system/workplace/resources/tools/workplace/buttons/message_pending.png</destination>
+			<type>image</type>
+			<uuidresource>132e7076-dd9b-11d9-a3c8-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 12:43:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 12:43:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/buttons/multi_send_email.png</source>
+			<destination>system/workplace/resources/tools/workplace/buttons/multi_send_email.png</destination>
+			<type>image</type>
+			<uuidresource>f9bf7eab-dda1-11d9-8944-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 13:32:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 13:32:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/buttons/multi_send_message.png</source>
+			<destination>system/workplace/resources/tools/workplace/buttons/multi_send_message.png</destination>
+			<type>image</type>
+			<uuidresource>13332b69-dd9b-11d9-a3c8-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 12:43:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 12:43:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/buttons/send_message.png</source>
+			<destination>system/workplace/resources/tools/workplace/buttons/send_message.png</destination>
+			<type>image</type>
+			<uuidresource>133a575c-dd9b-11d9-a3c8-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 12:43:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 12:43:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/tools/workplace/icons</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 06 Jun 2005 09:29:11 GMT</datelastmodified>
@@ -580,6 +818,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/workplace/icons/big/send_email.png</source>
+			<destination>system/workplace/resources/tools/workplace/icons/big/send_email.png</destination>
+			<type>image</type>
+			<uuidresource>f472b3cb-dd9a-11d9-a3c8-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 12:42:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 12:42:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/icons/big/send_message.png</source>
+			<destination>system/workplace/resources/tools/workplace/icons/big/send_message.png</destination>
+			<type>image</type>
+			<uuidresource>29d29fbb-dda2-11d9-8944-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 13:34:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 13:34:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/tools/workplace/icons/big/workplace.png</source>
 			<destination>system/workplace/resources/tools/workplace/icons/big/workplace.png</destination>
 			<type>image</type>
@@ -587,6 +851,19 @@
 			<datelastmodified>Mon, 06 Jun 2005 09:29:55 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 06 Jun 2005 09:29:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/workplace/icons/big/workplace_broadcast.png</source>
+			<destination>system/workplace/resources/tools/workplace/icons/big/workplace_broadcast.png</destination>
+			<type>image</type>
+			<uuidresource>f49b235e-dd9a-11d9-a3c8-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 12:42:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 12:42:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

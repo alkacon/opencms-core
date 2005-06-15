@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserGroupsList.java,v $
- * Date   : $Date: 2005/06/08 16:44:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/15 13:50:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * User groups overview view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsShowUserGroupsList extends A_CmsUserGroupsList {
@@ -63,7 +63,7 @@ public class CmsShowUserGroupsList extends A_CmsUserGroupsList {
     public CmsShowUserGroupsList(CmsJspActionElement jsp) {
 
         super(jsp, LIST_ID, Messages.get().container(Messages.GUI_USERGROUPS_LIST_NAME_0), false);
-        setCacheList(false);
+        refreshList();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/10 15:58:06 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/15 13:50:49 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspWriter;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -159,9 +159,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** Activation decision Flag. */
     private boolean m_active;
 
-    /** Flag to signal that the list should be cached in the session. */
-    private boolean m_cacheList = true;
-
     /** Initialization error. */
     private CmsRuntimeException m_initError;
 
@@ -218,8 +215,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
             }
             // set the number of items per page from the user settings
             getList().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
-            // fill the content
-            fillList();
             // sort the list
             getList().setSortedColumn(sortedColId, getLocale());
             // save the current state of the list
@@ -266,6 +261,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public void actionDialog() throws JspException {
 
+        if (getAction() == ACTION_CANCEL) {
+                // ACTION: cancel button pressed
+                actionCloseDialog();
+                return;
+        }
+        refreshList();        
         switch (getAction()) {
 
             case ACTION_CANCEL:
@@ -309,6 +310,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public String defaultActionHtml() {
 
+        if (getList()!=null && getList().getAllContent().isEmpty()) {
+            refreshList();
+        }
         StringBuffer result = new StringBuffer(2048);
         result.append(defaultActionHtmlStart());
         result.append(defaultActionHtmlContent());
@@ -565,21 +569,14 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Returns the cacheList.<p>
-     *
-     * @return the cacheList
-     */
-    public boolean isCacheList() {
-
-        return m_cacheList;
-    }
-
-    /**
      * This method re-read the rows of the list, the user should call this method after executing an action
      * that add or remove rows to the list. 
      */
     public void refreshList() {
 
+        if (getList() == null) {
+            return;
+        }
         CmsListState ls = getList().getState();
         getList().clear(getLocale());
         fillList();
@@ -606,17 +603,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public void setActive(boolean active) {
 
         m_active = active;
-    }
-
-    /**
-     * Sets the cacheList.<p>
-     *
-     * @param cacheList the cacheList to set
-     */
-    public void setCacheList(boolean cacheList) {
-
-        m_cacheList = cacheList;
-        setListObject(this.getClass(), null);
     }
 
     /**
@@ -838,9 +824,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected synchronized void listSave() {
 
-        if (isCacheList()) {
-            setListObject(this.getClass(), getList());
-        }
+        setListObject(this.getClass(), getList());
     }
 
     /**
