@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/15 15:54:09 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package org.opencms.configuration;
 
 import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDefaultUsers;
+import org.opencms.db.CmsLoginManager;
+import org.opencms.db.CmsLoginMessage;
 import org.opencms.db.I_CmsDbContextFactory;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.i18n.CmsLocaleManager;
@@ -47,6 +49,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
@@ -73,310 +76,344 @@ import org.dom4j.Element;
  * @since 5.3
  */
 public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+    
+    /** The node name for the login message enabled flag. */
+    public static final String N_ENABLED = "enabled";
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
+    /** The node name for the login message login forbidden flag. */
+    public static final String N_LOGINFORBIDDEN = "loginForbidden";
+
+    /** The node name for the login message. */
+    public static final String N_LOGINMESSAGE = "loginmessage";
+
+    /** The node name for the login message text. */
+    public static final String N_MESSAGE = "message";
+
+    /** The node name for the login message end time. */
+    public static final String N_TIMEEND = "timeEnd";
+
+    /** The node name for the login message start time. */
+    public static final String N_TIMESTART = "timeStart";
 
     /** The "server" attribute. */
-    protected static final String A_SERVER = "server";   
-    
+    protected static final String A_SERVER = "server";
+
     /** The name of the DTD for this configuration. */
     protected static final String C_CONFIGURATION_DTD_NAME = "opencms-system.dtd";
-    
+
     /** The name of the default XML file for this configuration. */
-    protected static final String C_DEFAULT_XML_FILE_NAME = "opencms-system.xml";  
-    
+    protected static final String C_DEFAULT_XML_FILE_NAME = "opencms-system.xml";
+
+    /** The node name for the job "active" value. */
+    protected static final String N_ACTIVE = "active";
+
     /** The node name for the alias node. */
     protected static final String N_ALIAS = "alias";
-    
+
     /** The node name for the avgcachebytes node. */
     protected static final String N_AVGCACHEBYTES = "avgcachebytes";
-    
+
+    /** The node name for the browser-based node. */
+    protected static final String N_BROWSER_BASED = "browser-based";
+
     /** The node name for the cache-enabled node. */
     protected static final String N_CACHE_ENABLED = "cache-enabled";
-    
+
     /** The node name for the cache-offline node. */
     protected static final String N_CACHE_OFFLINE = "cache-offline";
 
     /** The node name for a job class. */
-    protected static final String N_CLASS = "class";   
-    
+    protected static final String N_CLASS = "class";
+
     /** The node name for the job context. */
-    protected static final String N_CONTEXT = "context"; 
-    
+    protected static final String N_CONTEXT = "context";
+
     /** The node name for the job cron expression. */
-    protected static final String N_CRONEXPRESSION = "cronexpression"; 
-    
+    protected static final String N_CRONEXPRESSION = "cronexpression";
+
     /** The node name for the defaultcontentencoding node. */
     protected static final String N_DEFAULT_CONTENT_ENCODING = "defaultcontentencoding";
-    
+
     /** The node name for the default-uri node. */
     protected static final String N_DEFAULT_URI = "default-uri";
-    
+
     /** The node name for the defaultusers expression. */
     protected static final String N_DEFAULTUSERS = "defaultusers";
-    
+
     /** The node name for the digest type. */
     protected static final String N_DIGESTTYPE = "digest-type";
     
+    /** The node name for the login account lock minutes.  */
+    protected static final String N_DISABLEMINUTES = "disableMinutes";
+
     /** The node name for the email-interval node. */
     protected static final String N_EMAIL_INTERVAL = "email-interval";
-    
+
     /** The node name for the email-receiver node. */
     protected static final String N_EMAIL_RECEIVER = "email-receiver";
-    
+
     /** The node name for the email-sender node. */
     protected static final String N_EMAIL_SENDER = "email-sender";
-    
+
     /** The node name for the context encoding. */
-    protected static final String N_ENCODING = "encoding";     
-    
+    protected static final String N_ENCODING = "encoding";
+
     /** The node name for the flexcache node. */
     protected static final String N_FLEXCACHE = "flexcache";
     
+    /** The node name for the form-based node. */
+    protected static final String N_FORM_BASED = "form-based";
+
     /** The node name for the group-administrators node. */
     protected static final String N_GROUP_ADMINISTRATORS = "group-administrators";
-    
+
     /** The node name for the group-guests node. */
     protected static final String N_GROUP_GUESTS = "group-guests";
-    
+
     /** The node name for the group-projectmanagers node. */
     protected static final String N_GROUP_PROJECTMANAGERS = "group-projectmanagers";
-    
+
     /** The node name for the group-users node. */
     protected static final String N_GROUP_USERS = "group-users";
-    
+
+    /** The node name for the http-authentication node. */
+    protected static final String N_HTTP_AUTHENTICATION = "http-authentication";
+
     /** The node name for the internationalization node. */
     protected static final String N_I18N = "internationalization";
-    
+
     /** The node name for a job. */
     protected static final String N_JOB = "job";
-    
+
     /** The node name for individual locales. */
     protected static final String N_LOCALE = "locale";
-    
+
     /** The node name for the locale handler. */
     protected static final String N_LOCALEHANDLER = "localehandler";
-    
+
     /** The node name for the configured locales. */
     protected static final String N_LOCALESCONFIGURED = "localesconfigured";
-    
+
     /** The node name for the default locale(s). */
-    protected static final String N_LOCALESDEFAULT = "localesdefault";    
-    
+    protected static final String N_LOCALESDEFAULT = "localesdefault";
+
     /** The node name for the log-interval node. */
     protected static final String N_LOG_INTERVAL = "log-interval";
-    
+
+    /** The node name for the login manager. */
+    protected static final String N_LOGINMANAGER = "loginmanager";
+
     /** The node name for the mail configuration. */
     protected static final String N_MAIL = "mail";
-    
+
     /** The node name for the "mail from" node. */
     protected static final String N_MAILFROM = "mailfrom";
 
     /** The node name for the "mail host" node. */
     protected static final String N_MAILHOST = "mailhost";
     
+    /** The node name for the login manager bad attempt count. */
+    protected static final String N_MAXBADATTEMPTS = "maxBadAttempts";
+
     /** The node name for the maxcachebytes node. */
     protected static final String N_MAXCACHEBYTES = "maxcachebytes";
-    
+
     /** The node name for the maxentrybytes node. */
     protected static final String N_MAXENTRYBYTES = "maxentrybytes";
-    
+
     /** The node name for the maxkeys node. */
     protected static final String N_MAXKEYS = "maxkeys";
-    
+
     /** The node name for the maxusagepercent node. */
     protected static final String N_MAXUSAGE_PERCENT = "maxusagepercent";
-    
+
     /** The node name for the memorymonitor node. */
     protected static final String N_MEMORYMONITOR = "memorymonitor";
-    
+
     /** The node name for the job parameters. */
-    protected static final String N_PARAMETERS = "parameters";     
+    protected static final String N_PARAMETERS = "parameters";
 
     /** The node name for the password encoding. */
     protected static final String N_PASSWORDENCODING = "encoding";
 
     /** The node name for the password handler. */
     protected static final String N_PASSWORDHANDLER = "passwordhandler";
-    
+
     /** The node name for the context project name. */
-    protected static final String N_PROJECT = "project";         
-    
+    protected static final String N_PROJECT = "project";
+
     /** The node name for the memory email receiver. */
     protected static final String N_RECEIVER = "receiver";
-    
+
     /** The node name for the context remote addr. */
-    protected static final String N_REMOTEADDR = "remoteaddr";     
-    
+    protected static final String N_REMOTEADDR = "remoteaddr";
+
     /** The node name for the context requested uri. */
-    protected static final String N_REQUESTEDURI = "requesteduri";   
-    
+    protected static final String N_REQUESTEDURI = "requesteduri";
+
     /** The node name for the request handler classes. */
-    protected static final String N_REQUESTHANDLER = "requesthandler";    
-    
+    protected static final String N_REQUESTHANDLER = "requesthandler";
+
     /** The node name for the request handlers. */
     protected static final String N_REQUESTHANDLERS = "requesthandlers";
-    
+
     /** The node name for the resource init classes. */
     protected static final String N_RESOURCEINIT = "resourceinit";
-    
+
     /** The node name for the resource init classes. */
     protected static final String N_RESOURCEINITHANDLER = "resourceinithandler";
-    
+
     /** The node name for the job "reuseinstance" value. */
-    protected static final String N_REUSEINSTANCE = "reuseinstance"; 
-    
-    /** The node name for the job "active" value. */
-    protected static final String N_ACTIVE = "active"; 
-    
+    protected static final String N_REUSEINSTANCE = "reuseinstance";
+
     /** The node name for the runtime info. */
     protected static final String N_RUNTIMECLASSES = "runtimeclasses";
-    
+
     /** The node name for the runtime info factory. */
-    protected static final String N_RUNTIMEINFO = "runtimeinfo";       
-    
+    protected static final String N_RUNTIMEINFO = "runtimeinfo";
+
     /** The node name for the runtime properties node. */
-    protected static final String N_RUNTIMEPROPERTIES = "runtimeproperties"; 
-    
+    protected static final String N_RUNTIMEPROPERTIES = "runtimeproperties";
+
     /** The node name for the scheduler. */
     protected static final String N_SCHEDULER = "scheduler";
-    
+
     /** The node name for the secure site. */
-    protected static final String N_SECURE = "secure";    
+    protected static final String N_SECURE = "secure";
 
     /** The node name for the context site root. */
-    protected static final String N_SITEROOT = "siteroot"; 
-    
+    protected static final String N_SITEROOT = "siteroot";
+
     /** The node name for the sites node. */
     protected static final String N_SITES = "sites";
-    
+
     /** The main system configuration node name. */
     protected static final String N_SYSTEM = "system";
-    
+
     /** The node name for the user-admin node. */
     protected static final String N_USER_ADMIN = "user-admin";
-    
+
     /** The node name for the user-export node. */
     protected static final String N_USER_EXPORT = "user-export";
-    
+
     /** The node name for the user-guest node. */
     protected static final String N_USER_GUEST = "user-guest";
-    
+
     /** The node name for the context user name. */
-    protected static final String N_USERNAME = "user";     
-        
+    protected static final String N_USERNAME = "user";
+
     /** The node name for the version history. */
     protected static final String N_VERSIONHISTORY = "versionhistory";
-    
+
     /** The node name for the warning-interval node. */
     protected static final String N_WARNING_INTERVAL = "warning-interval";
-    
+
     /** The node name for the workplace-server node. */
     protected static final String N_WORKPLACE_SERVER = "workplace-server";
-    
-    /** The node name for the http-authentication node. */
-    protected static final String N_HTTP_AUTHENTICATION = "http-authentication";
-    
-    /** The node name for the browser-based node. */
-    protected static final String N_BROWSER_BASED = "browser-based";
-    
-    /** The node name for the form-based node. */
-    protected static final String N_FORM_BASED = "form-based";  
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
+
     /** the result cache node. */
     private static final String N_CACHE = "resultcache";
-    
+
     /** The name of the class to generate cache keys. */
     private static final String N_KEYGENERATOR = "keygenerator";
-    
-    /** The size of the driver manager's cache for users. */
-    private static final String N_SIZE_USERS = "size-users";
-    
-    /** The size of the driver manager's cache for groups. */
-    private static final String N_SIZE_GROUPS = "size-groups";
-    
-    /** The size of the driver manager's cache for user/group relations. */
-    private static final String N_SIZE_USERGROUPS = "size-usergroups";
-    
-    /** The size of the driver manager's cache for projects. */
-    private static final String N_SIZE_PROJECTS = "size-projects";
-    
-    /** The size of the driver manager's cache for resources. */
-    private static final String N_SIZE_RESOURCES = "size-resources";
-    
-    /** The size of the driver manager's cache for lists of resources. */
-    private static final String N_SIZE_RESOURCELISTS = "size-resourcelists";
-    
-    /** The size of the driver manager's cache for properties. */
-    private static final String N_SIZE_PROPERTIES = "size-properties";
-    
+
     /** The size of the driver manager's cache for ACLS. */
     private static final String N_SIZE_ACLS = "size-accesscontrollists";
-    
+
+    /** The size of the driver manager's cache for groups. */
+    private static final String N_SIZE_GROUPS = "size-groups";
+
     /** The size of the security manager's cache for permission checks. */
-    private static final String N_SIZE_PERMISSIONS = "size-permissions";    
-    
+    private static final String N_SIZE_PERMISSIONS = "size-permissions";
+
+    /** The size of the driver manager's cache for projects. */
+    private static final String N_SIZE_PROJECTS = "size-projects";
+
+    /** The size of the driver manager's cache for properties. */
+    private static final String N_SIZE_PROPERTIES = "size-properties";
+
+    /** The size of the driver manager's cache for lists of resources. */
+    private static final String N_SIZE_RESOURCELISTS = "size-resourcelists";
+
+    /** The size of the driver manager's cache for resources. */
+    private static final String N_SIZE_RESOURCES = "size-resources";
+
+    /** The size of the driver manager's cache for user/group relations. */
+    private static final String N_SIZE_USERGROUPS = "size-usergroups";
+
+    /** The size of the driver manager's cache for users. */
+    private static final String N_SIZE_USERS = "size-users";
+
+    /** The settings of the driver manager. */
+    private CmsCacheSettings m_cacheSettings;
+
     /** The configured OpenCms default users and groups. */
     private CmsDefaultUsers m_cmsDefaultUsers;
-    
+
     /** The flex cache configuration object. */
     private CmsFlexCacheConfiguration m_cmsFlexCacheConfiguration;
-    
+
     /** The memory monitor configuration. */
     private CmsMemoryMonitorConfiguration m_cmsMemoryMonitorConfiguration;
-    
+
     /** The list of jobs for the scheduler. */
     private List m_configuredJobs;
-    
+
     private String m_defaultContentEncoding;
-    
+
+    /** The HTTP basic authentication settings. */
+    private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;
+
     /** The configured locale manager for multi language support. */
     private CmsLocaleManager m_localeManager;
-    
+
+    /** The configured login manager. */
+    private CmsLoginManager m_loginManager;
+
+    /** The configured login message. */
+    private CmsLoginMessage m_loginMessage;
+
     /** The mail settings. */
     private CmsMailSettings m_mailSettings;
 
     /** The password handler. */
     private I_CmsPasswordHandler m_passwordHandler;
-    
+
     /** A list of instanciated request handler classes. */
-    private List m_requestHandlers;        
-    
+    private List m_requestHandlers;
+
     /** A list of instanciated resource init handler classes. */
     private List m_resourceInitHandlers;
-    
+
     /** The runtime info factory. */
     private I_CmsDbContextFactory m_runtimeInfoFactory;
-    
+
     /** The runtime properties. */
     private Map m_runtimeProperties;
-    
+
     /** The configured schedule manager. */
     private CmsScheduleManager m_scheduleManager;
-    
+
     /** The configured site manager. */
     private CmsSiteManager m_siteManager;
-    
+
     /** The temporary file project id. */
     private int m_tempFileProjectId;
-    
+
     /** Indicates if the version history is enabled. */
     private boolean m_versionHistoryEnabled;
-    
+
     /** The maximum number of entries in the version history (per resource). */
     private int m_versionHistoryMaxCount;
-    
-    /** The HTTP basic authentication settings. */
-    private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;
-    
-    /** The settings of the driver manager. */
-    private CmsCacheSettings m_cacheSettings;    
-    
+
     /**
      * Public constructor, will be called by configuration manager.<p> 
      */
     public CmsSystemConfiguration() {
+
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);
         m_versionHistoryEnabled = true;
         m_versionHistoryMaxCount = 10;
@@ -386,17 +423,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_runtimeProperties = new HashMap();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
-        }          
+        }
     }
-    
+
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
-        
-        m_runtimeProperties.put(paramName, paramValue);        
+
+        m_runtimeProperties.put(paramName, paramValue);
     }
-        
+
     /**
      * Adds a new job description for the scheduler.<p>
      * 
@@ -405,22 +442,23 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void addJobFromConfiguration(CmsScheduledJobInfo jobInfo) {
 
         m_configuredJobs.add(jobInfo);
-        
+
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_SCHEDULER_CONFIG_JOB_3,
                 jobInfo.getJobName(),
                 jobInfo.getClassName(),
                 jobInfo.getContextInfo().getUserName()));
-        }          
-    }    
-    
+        }
+    }
+
     /**
      * Adds a new instance of a request handler class.<p>
      * 
      * @param clazz the class name of the request handler to instanciate and add
      */
     public void addRequestHandler(String clazz) {
+
         Object initClass;
         try {
             initClass = Class.forName(clazz).newInstance();
@@ -433,19 +471,20 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().key(Messages.INIT_REQUEST_HANDLER_SUCCESS_1, clazz));
             }
-        } else {        
+        } else {
             if (CmsLog.INIT.isErrorEnabled()) {
                 CmsLog.INIT.error(Messages.get().key(Messages.INIT_REQUEST_HANDLER_INVALID_1, clazz));
             }
         }
     }
-    
+
     /**
      * Adds a new instance of a resource init handler class.<p>
      * 
      * @param clazz the class name of the resource init handler to instanciate and add
      */
     public void addResourceInitHandler(String clazz) {
+
         Object initClass;
         try {
             initClass = Class.forName(clazz).newInstance();
@@ -456,24 +495,21 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (initClass instanceof I_CmsResourceInit) {
             m_resourceInitHandlers.add(initClass);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get()
-                    .key(Messages.INIT_RESOURCE_INIT_SUCCESS_1, initClass));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_RESOURCE_INIT_SUCCESS_1, initClass));
             }
-        } else {        
+        } else {
             if (CmsLog.INIT.isErrorEnabled()) {
-                CmsLog.INIT.error(Messages.get().key(
-                    Messages.INIT_RESOURCE_INIT_INVALID_CLASS_1,
-                    initClass));
+                CmsLog.INIT.error(Messages.get().key(Messages.INIT_RESOURCE_INIT_INVALID_CLASS_1, initClass));
             }
         }
     }
-    
+
     /**
      * Generates the schedule manager.<p>
      */
     public void addScheduleManager() {
-        
-        m_scheduleManager = new CmsScheduleManager(m_configuredJobs);   
+
+        m_scheduleManager = new CmsScheduleManager(m_configuredJobs);
     } 
 
     /**
@@ -555,7 +591,21 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER + "/" + N_PASSWORDENCODING, "inputEncoding");
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER + "/" + N_DIGESTTYPE, "digestType");
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, "setPasswordHandler");
-
+        
+        // add login manager creation rules
+        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 2);
+        digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_DISABLEMINUTES, 0);
+        digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAXBADATTEMPTS, 1);
+        
+        // add login message creation rules
+        digester.addObjectCreate("*/" + N_LOGINMESSAGE, CmsLoginMessage.class);
+        digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_ENABLED);
+        digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_MESSAGE);
+        digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_LOGINFORBIDDEN);
+        digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_TIMESTART);
+        digester.addBeanPropertySetter("*/" + N_LOGINMESSAGE + "/" + N_TIMEEND);
+        digester.addSetNext("*/" + N_LOGINMESSAGE, "setLoginMessage");   
+        
         // add site configuration rule        
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SITES, CmsSiteManager.class);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_WORKPLACE_SERVER, "setWorkplaceServer", 0);
@@ -660,6 +710,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             // m_resourceInitHandlers instance must be the one from configuration
             // m_requestHandlers instance must be the one from configuration
             m_siteManager = OpenCms.getSiteManager();            
+            m_loginManager = OpenCms.getLoginManager();
+            m_loginMessage = OpenCms.getLoginManager().getLoginMessage();
         }
         
         // i18n nodes
@@ -767,6 +819,27 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
                 Element paramNode = passwordhandlerElement.addElement(N_PARAM);
                 paramNode.addAttribute(A_NAME, name);
                 paramNode.addText(value);
+            }
+        }
+        
+        // login manager
+        if (m_loginManager != null) {
+            Element managerElement = systemElement.addElement(N_LOGINMANAGER);
+            managerElement.addElement(N_DISABLEMINUTES).addText(String.valueOf(m_loginManager.getDisableMinutes()));
+            managerElement.addElement(N_MAXBADATTEMPTS).addText(String.valueOf(m_loginManager.getMaxBadAttempts()));
+        }
+        
+        // login message
+        if (m_loginMessage != null) {
+            Element messageElement = systemElement.addElement(N_LOGINMESSAGE);
+            messageElement.addElement(N_ENABLED).addText(String.valueOf(m_loginMessage.isEnabled()));
+            messageElement.addElement(N_MESSAGE).addCDATA(m_loginMessage.getMessage());
+            messageElement.addElement(N_LOGINFORBIDDEN).addText(String.valueOf(m_loginMessage.isLoginForbidden()));
+            if (m_loginMessage.getTimeStart() != CmsLoginMessage.DEFAULT_TIME_START) {
+                messageElement.addElement(N_TIMESTART).addText(String.valueOf(m_loginMessage.getTimeStart()));
+            }
+            if (m_loginMessage.getTimeEnd() != CmsLoginMessage.DEFAULT_TIME_END) {
+                messageElement.addElement(N_TIMEEND).addText(String.valueOf(m_loginMessage.getTimeEnd()));
             }
         }
         
@@ -897,6 +970,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
     
     /**
+     * Returns the settings of the driver manager.<p>
+     *
+     * @return the settings of the driver manager
+     */
+    public CmsCacheSettings getCacheSettings() {
+
+        return m_cacheSettings;
+    }
+
+    /**
      * Returns the default users.<p>
      *
      * @return the default users
@@ -905,6 +988,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         return m_cmsDefaultUsers;
     }
+
     /**
      * Returns the flexCacheConfiguration.<p>
      *
@@ -914,7 +998,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         return m_cmsFlexCacheConfiguration;
     }
-    
+
     /**
      * Returns the memory monitor configuration.<p>
      *
@@ -922,9 +1006,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public CmsMemoryMonitorConfiguration getCmsMemoryMonitorConfiguration() {
 
-        return m_cmsMemoryMonitorConfiguration;        
+        return m_cmsMemoryMonitorConfiguration;
     }
-     
+
     /**
      * Returns the defaultContentEncoding.<p>
      *
@@ -939,24 +1023,71 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * @see org.opencms.configuration.I_CmsXmlConfiguration#getDtdFilename()
      */
     public String getDtdFilename() {
+
         return C_CONFIGURATION_DTD_NAME;
     }
-    
+
+    /**
+     * Returns the HTTP authentication settings.<p>
+     *
+     * @return the HTTP authentication settings
+     */
+    public CmsHttpAuthenticationSettings getHttpAuthenticationSettings() {
+
+        return m_httpAuthenticationSettings;
+    }
+
     /**
      * Returns the configured locale manager for multi language support.<p>
      * 
      * @return the configured locale manager for multi language support
      */
     public CmsLocaleManager getLocaleManager() {
+
         return m_localeManager;
     }
-    
+
+    /**
+     * Returns the configured login manager.<p>
+     *
+     * @return the configured login manager
+     */
+    public CmsLoginManager getLoginManager() {
+
+        if (m_loginManager == null) {
+            // no login manager configured, create default
+            m_loginManager = new CmsLoginManager(
+                CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT,
+                CmsLoginManager.DISABLE_MINUTES_DEFAULT);
+            if (m_loginMessage != null) {
+                // null OpenCms object is ok during configuration
+                try {
+                    m_loginManager.setLoginMessage(null, m_loginMessage);
+                } catch (CmsRoleViolationException e) {
+                    // this should never happen
+                }
+            }
+        }
+        return m_loginManager;
+    }
+
+    /**
+     * Returns the login message read from the configuration.<p>
+     *
+     * @return the login message read from the configuration
+     */
+    public CmsLoginMessage getLoginMessage() {
+
+        return m_loginMessage;
+    }
+
     /**
      * Returns the configured mail settings.<p>
      * 
      * @return the configured mail settings
      */
     public CmsMailSettings getMailSettings() {
+
         return m_mailSettings;
     }
 
@@ -966,37 +1097,40 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * @return the configured password handler
      */
     public I_CmsPasswordHandler getPasswordHandler() {
+
         return m_passwordHandler;
     }
-    
+
     /**
      * Returns the list of instanciated request handler classes.<p>
      * 
      * @return the list of instanciated request handler classes
      */
     public List getRequestHandlers() {
+
         return m_requestHandlers;
-    }    
-    
+    }
+
     /**
      * Returns the list of instanciated resource init handler classes.<p>
      * 
      * @return the list of instanciated resource init handler classes
      */
     public List getResourceInitHandlers() {
+
         return m_resourceInitHandlers;
     }
-    
+
     /**
      * Returns the runtime info factory instance.<p>
      * 
      * @return the runtime info factory instance
      */
     public I_CmsDbContextFactory getRuntimeInfoFactory() {
-        
+
         return m_runtimeInfoFactory;
     }
-        
+
     /**
      * Returns the runtime Properties.<p>
      *
@@ -1006,7 +1140,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         return m_runtimeProperties;
     }
-    
+
     /**
      * Returns the configured schedule manager.<p>
      *
@@ -1016,6 +1150,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         return m_scheduleManager;
     }
+
     /**
      * Returns the site manager.<p>
      *
@@ -1025,17 +1160,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         return m_siteManager;
     }
-    
+
     /**
      * Returns temporary file project id.<p>
      * 
      * @return temporary file project id
      */
     public int getTempFileProjectId() {
+
         return m_tempFileProjectId;
     }
 
-    
     /**
      * Returns the maximum number of versions that are kept per file in the VFS version history.<p>
      * 
@@ -1045,27 +1180,40 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * @see #isVersionHistoryEnabled()
      */
     public int getVersionHistoryMaxCount() {
+
         return m_versionHistoryMaxCount;
     }
-    
+
     /**
      * Will be called when configuration of this object is finished.<p> 
      */
     public void initializeFinished() {
+
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_SYSTEM_CONFIG_FINISHED_0));
-        }            
-    }   
-    
+        }
+    }
+
     /**
      * Returns if the VFS version history is enabled.<p> 
      * 
      * @return if the VFS version history is enabled
      */
     public boolean isVersionHistoryEnabled() {
+
         return m_versionHistoryEnabled;
-    }  
-    
+    }
+
+    /**
+     * Sets the settings of the driver manager.<p>
+     *
+     * @param settings the settings of the driver manager
+     */
+    public void setCacheSettings(CmsCacheSettings settings) {
+
+        m_cacheSettings = settings;
+    }
+
     /**
      * Sets the CmsDefaultUsers.<p>
      * 
@@ -1096,6 +1244,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             groupUsers,
             groupGuests);
     }
+
     /**
      * Sets the flexCacheConfiguration.<p>
      *
@@ -1105,6 +1254,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         m_cmsFlexCacheConfiguration = flexCacheConfiguration;
     }
+
     /**
      * Sets the cmsMemoryMonitorConfiguration.<p>
      *
@@ -1114,7 +1264,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         m_cmsMemoryMonitorConfiguration = cmsMemoryMonitorConfiguration;
     }
-    
+
     /**
      * Sets the defaultContentEncoding.<p>
      *
@@ -1124,29 +1274,74 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         m_defaultContentEncoding = defaultContentEncoding;
     }
-    
+
+    /**
+     * Sets the HTTP authentication settings.<p>
+     *
+     * @param httpAuthenticationSettings the HTTP authentication settings to set
+     */
+    public void setHttpAuthenticationSettings(CmsHttpAuthenticationSettings httpAuthenticationSettings) {
+
+        m_httpAuthenticationSettings = httpAuthenticationSettings;
+    }
+
     /**
      * Sets the locale manager for multi language support.<p>
      * 
      * @param localeManager the locale manager to set
      */
     public void setLocaleManager(CmsLocaleManager localeManager) {
+
         m_localeManager = localeManager;
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_CONFIG_I18N_FINISHED_0));
-        }                    
+        }
     }
     
+    /**
+     * Sets the configured login manager.<p>
+     *
+     * @param maxBadAttemptsStr the number of allowed bad login attempts
+     * @param disableMinutesStr the time an account gets locked if to many bad logins are attempted
+     */
+    public void setLoginManager(String disableMinutesStr, String maxBadAttemptsStr) {
+
+        int disableMinutes;
+        try {
+            disableMinutes = Integer.valueOf(disableMinutesStr).intValue();
+        } catch (NumberFormatException e) {
+            disableMinutes = CmsLoginManager.DISABLE_MINUTES_DEFAULT;
+        }
+        int maxBadAttempts;
+        try {
+            maxBadAttempts = Integer.valueOf(maxBadAttemptsStr).intValue();
+        } catch (NumberFormatException e) {
+            maxBadAttempts = CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT;
+        }
+        m_loginManager = new CmsLoginManager(disableMinutes, maxBadAttempts);
+    }
+
+    /**
+     * Adds the login message from the configuration.<p>
+     * 
+     * @param message the login message to add
+     */
+    public void setLoginMessage(CmsLoginMessage message) {
+
+        m_loginMessage = message;
+    }
+
     /**
      * Sets the mail settings.<p>
      * 
      * @param mailSettings the mail settings to set.
      */
     public void setMailSettings(CmsMailSettings mailSettings) {
+
         m_mailSettings = mailSettings;
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_MAIL_SETTINGS_1, mailSettings));
-        }          
+        }
     }
 
     /**
@@ -1155,45 +1350,44 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * @param passwordHandler the password handler to set
      */
     public void setPasswordHandler(I_CmsPasswordHandler passwordHandler) {
+
         m_passwordHandler = passwordHandler;
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_PWD_HANDLER_SUCCESS_1,
                 passwordHandler.getClass().getName()));
         }
-    }    
-    
+    }
+
     /**
      * Sets the runtime info factory.<p>
      * 
      * @param className the class name of the configured runtime info factory
      */
     public void setRuntimeInfoFactory(String className) {
-        
+
         Object objectInstance;
-        
+
         try {
             objectInstance = Class.forName(className).newInstance();
         } catch (Throwable t) {
             LOG.error(Messages.get().key(Messages.LOG_RESOURCE_INIT_FAILURE_1, className), t);
             return;
         }
-        
+
         if (objectInstance instanceof I_CmsDbContextFactory) {
             m_runtimeInfoFactory = (I_CmsDbContextFactory)objectInstance;
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(
-                    Messages.INIT_RUNTIME_INFO_FACTORY_SUCCESS_1,
-                    className));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_RUNTIME_INFO_FACTORY_SUCCESS_1, className));
             }
-        } else {        
+        } else {
             if (CmsLog.INIT.isFatalEnabled()) {
                 CmsLog.INIT.fatal(Messages.get().key(Messages.INIT_RUNTIME_INFO_FACTORY_FAILURE_1, className));
             }
-        }        
-        
+        }
+
     }
-    
+
     /**
      * Sets the site manager.<p>
      *
@@ -1204,8 +1398,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_siteManager = siteManager;
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_SITE_CONFIG_FINISHED_0));
-        }          
-    }    
+        }
+    }
 
     /**
      * Sets the temporary file project id.<p>
@@ -1213,18 +1407,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * @param tempFileProjectId the temporary file project id to set
      */
     public void setTempFileProjectId(String tempFileProjectId) {
+
         try {
             m_tempFileProjectId = Integer.valueOf(tempFileProjectId).intValue();
         } catch (Throwable t) {
             m_tempFileProjectId = -1;
         }
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_TEMPFILE_PROJECT_ID_1,
-                new Integer(m_tempFileProjectId)));
-        }             
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_TEMPFILE_PROJECT_ID_1, new Integer(m_tempFileProjectId)));
+        }
     }
-        
+
     /**
      * VFS version history settings are set here.<p>
      * 
@@ -1232,55 +1425,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * @param historyMaxCount the maximum number of versions that are kept per VFS resource
      */
     public void setVersionHistorySettings(String historyEnabled, String historyMaxCount) {
+
         m_versionHistoryEnabled = Boolean.valueOf(historyEnabled).booleanValue();
         m_versionHistoryMaxCount = Integer.valueOf(historyMaxCount).intValue();
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_HISTORY_SETTINGS_2,
-                // is Boolean type localized by underlying java.text.MessageFormat?
-                new Boolean(m_versionHistoryEnabled),
-                new Integer(m_versionHistoryMaxCount)));
-        }             
-    }     
-    
-    /**
-     * Returns the HTTP authentication settings.<p>
-     *
-     * @return the HTTP authentication settings
-     */
-    public CmsHttpAuthenticationSettings getHttpAuthenticationSettings() {
-
-        return m_httpAuthenticationSettings;
-    }
-    
-    /**
-     * Sets the HTTP authentication settings.<p>
-     *
-     * @param httpAuthenticationSettings the HTTP authentication settings to set
-     */
-    public void setHttpAuthenticationSettings(CmsHttpAuthenticationSettings httpAuthenticationSettings) {
-
-        m_httpAuthenticationSettings = httpAuthenticationSettings;
-    }
-    
-    /**
-     * Returns the settings of the driver manager.<p>
-     *
-     * @return the settings of the driver manager
-     */
-    public CmsCacheSettings getCacheSettings() {
-
-        return m_cacheSettings;
-    }
-    
-    /**
-     * Sets the settings of the driver manager.<p>
-     *
-     * @param settings the settings of the driver manager
-     */
-    public void setCacheSettings(CmsCacheSettings settings) {
-
-        m_cacheSettings = settings;
-    }    
-    
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_HISTORY_SETTINGS_2,
+            // is Boolean type localized by underlying java.text.MessageFormat?
+                new Boolean(m_versionHistoryEnabled), new Integer(m_versionHistoryMaxCount)));
+        }
+    }         
 }

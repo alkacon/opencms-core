@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsLoginManager.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/15 15:54:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAuthentificationException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
@@ -53,7 +54,7 @@ import java.util.Hashtable;
  * Also allows to temporarily disallow logins (for example in case of maintainance work on the system).<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  */
@@ -106,7 +107,7 @@ public class CmsLoginManager {
         protected void increaseInvalidLoginCount() {
 
             m_invalidLoginCount++;
-            if (m_invalidLoginCount >= m_attemptThreshold) {
+            if (m_invalidLoginCount >= m_maxBadAttempts) {
                 // threshold for bad login attempts has been reached for this user
                 if (m_disableTimeStart == 0) {
                     // only disable in case this user has not already been disabled
@@ -134,14 +135,20 @@ public class CmsLoginManager {
         }
     }
 
-    /** The number of bad login attempts allowed before an account is temporarily disabled. */
-    protected int m_attemptThreshold;
+    /** Default lock time if treshold for bad login attempts is reached. */
+    public static final int DISABLE_MINUTES_DEFAULT = 15;
+
+    /** Default for bad login attempts. */
+    public static final int MAX_BAD_ATTEMPTS_DEFAULT = 5;
 
     /** The milliseconds to disable an account if the threshold is reached. */
     protected int m_disableMillis;
 
     /** The minutes to disable an account if the threshold is reached. */
     protected int m_disableMinutes;
+
+    /** The number of bad login attempts allowed before an account is temporarily disabled. */
+    protected int m_maxBadAttempts;
 
     /** The storage for the bad login attempts. */
     protected Hashtable m_storage;
@@ -153,12 +160,12 @@ public class CmsLoginManager {
      * Creates a new storage for invalid logins.<p>
      * 
      * @param disableMinutes the minutes to disable an account if the threshold is reached
-     * @param attemptThreshold the number of bad login attempts allowed before an account is temporarily disabled
+     * @param maxBadAttempts the number of bad login attempts allowed before an account is temporarily disabled
      */
-    public CmsLoginManager(int disableMinutes, int attemptThreshold) {
+    public CmsLoginManager(int disableMinutes, int maxBadAttempts) {
 
-        m_attemptThreshold = attemptThreshold;
-        if (m_attemptThreshold >= 0) {
+        m_maxBadAttempts = maxBadAttempts;
+        if (m_maxBadAttempts >= 0) {
             // otherwise the invalid login storage is sisabled
             m_disableMinutes = disableMinutes;
             m_disableMillis = disableMinutes * 60 * 1000;
@@ -199,7 +206,7 @@ public class CmsLoginManager {
      */
     public void checkInvalidLogins(String userName, int type, String remoteAddress) throws CmsAuthentificationException {
 
-        if (m_attemptThreshold < 0) {
+        if (m_maxBadAttempts < 0) {
             // invalid login storage is disabled
             return;
         }
@@ -238,6 +245,16 @@ public class CmsLoginManager {
     }
 
     /**
+     * Returns the minutes an account gets disabled after too many failed login attempts.<p>
+     *
+     * @return the minutes an account gets disabled after too many failed login attempts
+     */
+    public int getDisableMinutes() {
+
+        return m_disableMinutes;
+    }
+
+    /**
      * Returns the current login message that is displayed if a user logs in.<p>
      * 
      * if <code>null</code> is returned, no login message has been currently set.<p>
@@ -247,6 +264,16 @@ public class CmsLoginManager {
     public CmsLoginMessage getLoginMessage() {
 
         return m_loginMessage;
+    }
+
+    /**
+     * Returns the number of bad login attempts allowed before an account is temporarily disabled.<p>
+     *
+     * @return the number of bad login attempts allowed before an account is temporarily disabled
+     */
+    public int getMaxBadAttempts() {
+
+        return m_maxBadAttempts;
     }
 
     /**
@@ -276,7 +303,10 @@ public class CmsLoginManager {
      */
     public void setLoginMessage(CmsObject cms, CmsLoginMessage message) throws CmsRoleViolationException {
 
-        cms.checkRole(CmsRole.ADMINISTRATOR);
+        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
+            // during configuration phase no permission check id required
+            cms.checkRole(CmsRole.ADMINISTRATOR);
+        }
         m_loginMessage = message;
         if (m_loginMessage != null) {
             m_loginMessage.setFrozen();
@@ -294,7 +324,7 @@ public class CmsLoginManager {
      */
     protected void addInvalidLogin(String userName, int type, String remoteAddress) {
 
-        if (m_attemptThreshold < 0) {
+        if (m_maxBadAttempts < 0) {
             // invalid login storage is disabled
             return;
         }
@@ -321,7 +351,7 @@ public class CmsLoginManager {
      */
     protected void removeInvalidLogins(String userName, int type, String remoteAddress) {
 
-        if (m_attemptThreshold < 0) {
+        if (m_maxBadAttempts < 0) {
             // invalid login storage is disabled
             return;
         }

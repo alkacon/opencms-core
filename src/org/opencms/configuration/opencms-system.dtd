@@ -16,6 +16,8 @@
 	resourceinit?,
 	requesthandlers?,
 	passwordhandler,
+	loginmanager?,
+	loginmessage?,
 	sites,
 	runtimeproperties?,
 	runtimeclasses,
@@ -83,6 +85,29 @@
 <!ATTLIST passwordhandler class CDATA #REQUIRED>
 
 <!ELEMENT digest-type (#PCDATA)>
+
+<!--
+# Login manager:
+# The login manager counts the bad logins of a user and disables this user
+# for a given number of minutes in case a certain treshold is reached.
+-->
+<!ELEMENT loginmanager (disableMinutes, maxBadAttempts)>
+
+<!ELEMENT maxBadAttempts (#PCDATA)>
+<!ELEMENT disableMinutes (#PCDATA)>
+
+<!--
+# Login message:
+# This is a message which is displayed to each user upon login.
+# Also, the login can be forbidden for all non-Admin users.
+-->
+<!ELEMENT loginmessage (enabled, message, loginForbidden, timeStart?, timeEnd?)>
+
+<!ELEMENT enabled (#PCDATA)>
+<!ELEMENT message (#PCDATA)>
+<!ELEMENT loginForbidden (#PCDATA)>
+<!ELEMENT timeStart (#PCDATA)>
+<!ELEMENT timeEnd (#PCDATA)>
 
 <!--
 # Scheduler settings:

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/14 13:34:31 $
- * Version: $Revision: 1.194 $
+ * Date   : $Date: 2005/06/15 15:54:09 $
+ * Version: $Revision: 1.195 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -128,7 +128,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.194 $
+ * @version $Revision: 1.195 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -926,10 +926,8 @@ public final class OpenCmsCore {
         // get the password handler
         m_passwordHandler = systemConfiguration.getPasswordHandler();
 
-        // create the login manager
-        int todo = 0;
-        // TODO: read this values from the system configuration
-        m_loginManager = new CmsLoginManager(15, 5);
+        // get the login manager
+        m_loginManager = systemConfiguration.getLoginManager();
 
         // init the OpenCms security manager
         m_securityManager = CmsSecurityManager.newInstance(

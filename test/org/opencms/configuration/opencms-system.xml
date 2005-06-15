@@ -67,7 +67,16 @@
 			<encoding>UTF-8</encoding>
 			<digest-type>MD5</digest-type>
 			<param name="compatibility.convert.digestencoding">false</param>
-		</passwordhandler>		
+		</passwordhandler>
+		<loginmanager>	
+			<disableMinutes>20</disableMinutes>
+			<maxBadAttempts>3</maxBadAttempts>
+		</loginmanager>	
+		<loginmessage>
+			<enabled>false</enabled>
+			<message><![CDATA[This is just a test login message]]></message>
+			<loginForbidden>false</loginForbidden>
+		</loginmessage>
 		<sites>
 			<workplace-server>http://localhost:8080</workplace-server>
 			<default-uri>/sites/default/</default-uri>

@@ -37,7 +37,7 @@
     <property name="opencms.inputlib.codec"        		location="${opencms.input.libs}/commons-codec-1.3.jar" />
     <property name="opencms.inputlib.email"        		location="${opencms.input.libs}/commons-email-1.0-mod.jar" />
     <property name="opencms.inputlib.dbcp"        		location="${opencms.input.libs}/commons-dbcp-1.2.1.jar" />
-    <property name="opencms.inputlib.digester"        	location="${opencms.input.libs}/commons-digester-1.6.jar" />
+    <property name="opencms.inputlib.digester"        	location="${opencms.input.libs}/commons-digester-1.7.jar" />
     <property name="opencms.inputlib.pool"        		location="${opencms.input.libs}/commons-pool-1.2.jar" />    
     <property name="opencms.inputlib.logging"     		location="${opencms.input.libs}/commons-logging-1.0.4.jar" /> 
     <property name="opencms.inputlib.collections"     	location="${opencms.input.libs}/commons-collections-3.1.jar" />
