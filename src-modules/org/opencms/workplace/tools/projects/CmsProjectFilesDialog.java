@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/15 07:37:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,19 +33,18 @@ package org.opencms.workplace.tools.projects;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsWorkplaceSettings;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
  * Comment for <code>CmsProjectFilesDialog</code>.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsProjectFilesDialog extends CmsDialog {
@@ -87,24 +86,20 @@ public class CmsProjectFilesDialog extends CmsDialog {
      */
     public void displayDialog() throws Exception {
 
-        if (getAction() == ACTION_CANCEL) {
-            actionCloseDialog();
-            return;
-        }
-
-        int projectId = new Integer(getParamProjectid()).intValue();
         StringBuffer link = new StringBuffer();
-        link.append("/system/workplace/views/explorer/explorer_files.jsp?");
-        link.append(CmsEditProjectDialog.PARAM_PROJECTID);
-        link.append("=");
-        link.append(projectId);
-        link.append("&mode=projectview");
+        link.append("/system/workplace/views/explorer/explorer_files.jsp?mode=projectview");
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamProjectid())) {            
+            link.append("&");
+            link.append(CmsEditProjectDialog.PARAM_PROJECTID);
+            link.append("=");
+            link.append(getParamProjectid());
+        }
         try {
             String filter = "&projectfilter=";
             filter += new CmsUserSettings(getCms().getRequestContext().currentUser()).getProjectSettings().getProjectFilesMode();
             link.append(filter);
         } catch (Exception e) {
-            // ignore
+            // ignore, if user has no project settings
         }
 
         getJsp().getResponse().sendRedirect(getJsp().link(link.toString()));
@@ -150,25 +145,4 @@ public class CmsProjectFilesDialog extends CmsDialog {
         m_paramProjectname = projectName;
     }
 
-    /**
-     * @see org.opencms.workplace.CmsDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        super.initWorkplaceRequestValues(settings, request);
-        // test the needed parameters
-        try {
-            getCms().readProject(new Integer(getParamProjectid()).intValue()).getName();
-            getCms().readProject(getParamProjectname()).getName();
-        } catch (Exception e) {
-            // redirect to parent if parameters not available
-            setAction(ACTION_CANCEL);
-            try {
-                actionCloseDialog();
-            } catch (JspException e1) {
-                // noop
-            }
-            return;
-        }
-    }
 }
