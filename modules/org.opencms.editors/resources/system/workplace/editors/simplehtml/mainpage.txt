@@ -125,7 +125,7 @@ if (options.showElement("option.properties", displayOptions)) {
 }
 %>		
 <td class="maxwidth">&nbsp;</td>
-<%= wp.button("javascript:buttonAction(2);", null, "preview", "button.preview", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(2);", null, "preview.png", "button.preview", buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
 <%= wp.buttonBar(wp.HTML_END) %>
 <%= wp.buttonBarHorizontalLine() %>

@@ -834,26 +834,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/buttons/apply.gif</source>
-			<destination>system/workplace/resources/buttons/apply.gif</destination>
+			<source>system/workplace/resources/buttons/apply.png</source>
+			<destination>system/workplace/resources/buttons/apply.png</destination>
 			<type>image</type>
-			<uuidresource>b1ef8b2d-3c7b-11d9-b5ac-2360a85223b9</uuidresource>
-			<datelastmodified>Mon, 22 Nov 2004 13:01:13 CET</datelastmodified>
+			<uuidresource>c6cd9a86-dd77-11d9-b0b9-016dc05e1977</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 08:30:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 22 Nov 2004 12:43:14 CET</datecreated>
+			<datecreated>Wed, 15 Jun 2005 08:30:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/buttons/apply_in.gif</source>
-			<destination>system/workplace/resources/buttons/apply_in.gif</destination>
+			<source>system/workplace/resources/buttons/apply_in.png</source>
+			<destination>system/workplace/resources/buttons/apply_in.png</destination>
 			<type>image</type>
-			<uuidresource>f3412437-4792-11d9-9228-b37cba9d1f6d</uuidresource>
-			<datelastmodified>Mon, 06 Dec 2004 15:27:25 CET</datelastmodified>
+			<uuidresource>c6e78b29-dd77-11d9-b0b9-016dc05e1977</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 08:30:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 06 Dec 2004 15:27:25 CET</datecreated>
+			<datecreated>Wed, 15 Jun 2005 08:30:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1055,13 +1055,13 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/buttons/preview.gif</source>
-			<destination>system/workplace/resources/buttons/preview.gif</destination>
+			<source>system/workplace/resources/buttons/preview.png</source>
+			<destination>system/workplace/resources/buttons/preview.png</destination>
 			<type>image</type>
-			<uuidresource>619d4af3-f039-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<uuidresource>c6eabf7c-dd77-11d9-b0b9-016dc05e1977</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 08:30:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 Aug 2004 12:37:04 CEST</datecreated>
+			<datecreated>Wed, 15 Jun 2005 08:30:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1274,13 +1274,13 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/commons/workplace.gif</source>
-			<destination>system/workplace/resources/commons/workplace.gif</destination>
+			<source>system/workplace/resources/commons/workplace.png</source>
+			<destination>system/workplace/resources/commons/workplace.png</destination>
 			<type>image</type>
-			<uuidresource>352e3625-f03a-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Tue, 17 Aug 2004 15:15:49 CEST</datelastmodified>
+			<uuidresource>762624be-dd7a-11d9-9663-016dc05e1977</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 08:50:13 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 17 Aug 2004 12:42:59 CEST</datecreated>
+			<datecreated>Wed, 15 Jun 2005 08:50:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

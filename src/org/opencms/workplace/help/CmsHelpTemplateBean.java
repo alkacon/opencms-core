@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/06/04 08:11:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/15 08:55:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * The bean that provides methods to build the HTML for the single online help frames.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.9.2
  */
@@ -287,11 +287,8 @@ public class CmsHelpTemplateBean extends CmsDialog {
             // display logo
             result.append("<span style=\"display: block; width: 80px; height: 22px; background-image: url(\'");
             result.append(getSkinUri());
-            result.append("commons/workplace.gif");
+            result.append("commons/workplace.png");
             result.append("\'); \"></span>");
-            //result.append("<img src=\"");
-            //result.append(getSkinUri());
-            //result.append("commons/workplace.gif\" border=\"0\" alt=\"\">");
             result.append("</td>");
             result.append("</tr>\n");
             result.append("</table>\n");

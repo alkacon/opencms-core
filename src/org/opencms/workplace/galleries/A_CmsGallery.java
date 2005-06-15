@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/06/15 08:01:14 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/15 08:55:38 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.5.2
  */
@@ -268,7 +268,7 @@ public abstract class A_CmsGallery extends CmsDialog {
 
         if (MODE_VIEW.equals(getParamDialogMode())) {
             // in view mode, show disabled button
-            return button(null, null, "apply_in", "button.paste", 0);
+            return button(null, null, "apply_in.png", "button.paste", 0);
         } else {
             // in editor or widget mode, create enabled button
             String uri = getParamResourcePath();
@@ -278,7 +278,7 @@ public abstract class A_CmsGallery extends CmsDialog {
             return button(
                 "javascript:link('" + uri + "',document.form.title.value, document.form.title.value);",
                 null,
-                "apply",
+                "apply.png",
                 "button.paste",
                 0);
         }
@@ -981,7 +981,7 @@ public abstract class A_CmsGallery extends CmsDialog {
         previewButton.append(button(
             getJsp().link(getCms().getSitePath(getCurrentResource())),
             "_preview",
-            "preview",
+            "preview.png",
             "button.preview",
             0));
         return previewButton.toString();

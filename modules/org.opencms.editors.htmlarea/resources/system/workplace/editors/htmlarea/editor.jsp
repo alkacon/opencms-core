@@ -708,7 +708,7 @@ if (options.showElement("option.properties", displayOptions)) {
 out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", "editor.dialog.cleanup.button", buttonStyle));
 %>             
 <td class="maxwidth">&nbsp;</td>
-<%= wp.button("javascript:buttonAction(2);", null, "preview", "button.preview", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(2);", null, "preview.png", "button.preview", buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
 </tr></table>
 </td></tr>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2005/05/12 09:21:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/15 08:55:38 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.5.2
  */
@@ -93,7 +93,7 @@ public class CmsImageGallery extends A_CmsGallery {
 
         if (MODE_VIEW.equals(getParamDialogMode())) {
             // in view mode, generate disabled button
-            return button(null, null, "apply_in", "button.paste", 0);
+            return button(null, null, "apply_in.png", "button.paste", 0);
         } else {
             // in editor or widget mode, generate enabled button
             String uri = getParamResourcePath();
@@ -104,7 +104,7 @@ public class CmsImageGallery extends A_CmsGallery {
             return button(
                 "javascript:pasteImage('" + uri + "',document.form.title.value, document.form.title.value);",
                 null,
-                "apply",
+                "apply.png",
                 "button.paste",
                 0);
         }

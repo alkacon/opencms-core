@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2005/05/30 15:20:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/15 08:55:38 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.5.2
  */
@@ -102,7 +102,7 @@ public class CmsHtmlGallery extends A_CmsGallery {
 
         if (MODE_VIEW.equals(getParamDialogMode())) {
             // in view mode, generate disabled button
-            return button(null, null, "apply_in", "button.paste", 0);
+            return button(null, null, "apply_in.png", "button.paste", 0);
         } else if (MODE_WIDGET.equals(getParamDialogMode())) {
             // in widget mode, get file content to apply to input field
             String content = "";
@@ -122,10 +122,10 @@ public class CmsHtmlGallery extends A_CmsGallery {
             }
             content = CmsEncoder.escapeXml(content);
             // use javascript function call with content as parameter
-            return button("javascript:pasteContent('" + content + "')", null, "apply", "button.paste", 0);
+            return button("javascript:pasteContent('" + content + "')", null, "apply.png", "button.paste", 0);
         } else {
             // in editor mode, use simple javascript function call
-            return button("javascript:pasteContent()", null, "apply", "button.paste", 0);
+            return button("javascript:pasteContent()", null, "apply.png", "button.paste", 0);
         }
     }
 

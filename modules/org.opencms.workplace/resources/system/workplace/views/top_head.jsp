@@ -121,7 +121,7 @@ if (wp.isHelpEnabled()) {
 
 <% if (buttonStyle != 2) {%>
 <td>&nbsp;</td>
-<td><span style="display: block; width: 80px; height: 22px; background-image: url('<%= wp.getSkinUri() %>commons/workplace.gif'); "></span></td>
+<td><span style="display: block; width: 80px; height: 22px; background-image: url('<%= wp.getSkinUri() %>commons/workplace.png'); "></span></td>
 <% } %>
 <%= wp.buttonBar(wp.HTML_END) %>
 

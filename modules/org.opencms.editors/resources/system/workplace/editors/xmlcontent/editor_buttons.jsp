@@ -78,7 +78,7 @@ if (options.showElement("option.element.language", displayOptions) && wp.showEle
 
 if (wp.isPreviewEnabled()) {
 	// show preview button if enabled
-	out.println(wp.button("javascript:buttonAction(7);", null, "preview", "button.preview", buttonStyle));
+	out.println(wp.button("javascript:buttonAction(7);", null, "preview.png", "button.preview", buttonStyle));
 	out.println(wp.buttonBarSeparator(5, 5));
 }
 
