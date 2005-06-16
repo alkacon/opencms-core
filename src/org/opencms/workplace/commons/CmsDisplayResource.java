@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2005/06/15 13:46:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,20 +65,22 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsDisplayResource extends CmsDialog {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDisplayResource.class);  
-    
     /** Request parameter name for versionid. */
     public static final String PARAM_VERSIONID = "versionid";
-    
-    private String m_paramVersionid;
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDisplayResource.class);
+
+    /** The controller. */
     private CmsFlexController m_controller;
-    
+
+    /** The version id parameter. */
+    private String m_paramVersionid;
+
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -99,7 +101,41 @@ public class CmsDisplayResource extends CmsDialog {
     public CmsDisplayResource(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-        m_controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        m_controller = CmsFlexController.getController(req);
+    }
+
+    /**
+     * Returns the content of a backup resource.<p>
+     * 
+     * @param cms a CmsObject
+     * @param resource the name of the backup resource
+     * @param versionId the version id of the backup resource
+     * @return the content of a backup resource
+     */
+    protected static byte[] getBackupResourceContent(CmsObject cms, String resource, String versionId) {
+
+        if (CmsStringUtil.isNotEmpty(resource) && CmsStringUtil.isNotEmpty(versionId)) {
+
+            // try to load the backup resource
+            CmsBackupResource res = null;
+            try {
+                res = cms.readBackupFile(resource, Integer.parseInt(versionId));
+            } catch (CmsException e) {
+                // can usually be ignored
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
+                }
+                return "".getBytes();
+            }
+            byte[] backupResourceContent = res.getContents();
+            backupResourceContent = CmsEncoder.changeEncoding(
+                backupResourceContent,
+                OpenCms.getSystemInfo().getDefaultEncoding(),
+                cms.getRequestContext().getEncoding());
+            return backupResourceContent;
+        }
+
+        return "".getBytes();
     }
 
     /**
@@ -115,9 +151,12 @@ public class CmsDisplayResource extends CmsDialog {
             byte[] result = getBackupResourceContent(getCms(), getParamResource(), getParamVersionid());
             if (result != null) {
                 // get the top level ressponse to change the content type
-                m_controller.getTopResponse().setContentType(OpenCms.getResourceManager().getMimeType(getParamResource(), getCms().getRequestContext().getEncoding()));              
+                m_controller.getTopResponse().setContentType(
+                    OpenCms.getResourceManager().getMimeType(
+                        getParamResource(),
+                        getCms().getRequestContext().getEncoding()));
                 m_controller.getTopResponse().setContentLength(result.length);
-              
+
                 try {
                     getJsp().getResponse().getOutputStream().write(result);
                     getJsp().getResponse().getOutputStream().flush();
@@ -125,7 +164,7 @@ public class CmsDisplayResource extends CmsDialog {
                     // can usually be ignored
                     if (LOG.isInfoEnabled()) {
                         LOG.info(e.getLocalizedMessage());
-                    }                
+                    }
                     return;
                 }
             }
@@ -134,29 +173,23 @@ public class CmsDisplayResource extends CmsDialog {
                 getJsp().getResponse().sendRedirect(url);
             } else {
                 // resource is outside time window, show error message
-                throw new CmsVfsResourceNotFoundException(Messages.get().container(Messages.ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1, getParamResource()));
+                throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                    Messages.ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1,
+                    getParamResource()));
             }
         }
     }
 
-    /**
-     * @see org.opencms.workplace.CmsDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        fillParamValues(request);
-    }
-    
     /**
      * Returns the paramVersionid.<p>
      *
      * @return the paramVersionid
      */
     public String getParamVersionid() {
-        
+
         return m_paramVersionid;
     }
-    
+
     /**
      * Sets the paramVersionid.<p>
      *
@@ -166,36 +199,12 @@ public class CmsDisplayResource extends CmsDialog {
 
         m_paramVersionid = paramVersionid;
     }
-    
-    /**
-     * Returns the content of a backup resource.<p>
-     * 
-     * @param cms a CmsObject
-     * @param resource the name of the backup resource
-     * @param versionId the version id of the backup resource
-     * @return the content of a backup resource
-     */
-    protected static byte[] getBackupResourceContent(CmsObject cms, String resource, String versionId) {
-        
-        if (CmsStringUtil.isNotEmpty(resource) && CmsStringUtil.isNotEmpty(versionId)) {
-            
-            // try to load the backup resource
-            CmsBackupResource res = null;
-            try {
-                res = cms.readBackupFile(resource, Integer.parseInt(versionId));
-            } catch (CmsException e) { 
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
-                }                
-                return "".getBytes();
-            }            
-            byte[] backupResourceContent = res.getContents();
-            backupResourceContent = CmsEncoder.changeEncoding(backupResourceContent, OpenCms.getSystemInfo().getDefaultEncoding(), cms.getRequestContext().getEncoding());
-            return backupResourceContent;
-        }
-        
-        return "".getBytes();      
-    }   
 
+    /**
+     * @see org.opencms.workplace.CmsDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        fillParamValues(request);
+    }
 }

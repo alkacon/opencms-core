@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2005/06/02 09:36:55 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsJspTagProperty extends TagSupport {
 
@@ -136,20 +136,23 @@ public class CmsJspTagProperty extends TagSupport {
         USE_SEARCH_ELEMENT_URI,
         USE_SEARCH_THIS};
 
-
     /** Array list for fast lookup. */
     // automatic member sorting will cause compilation error. 
     public static final List ACTION_VALUES_LIST = Arrays.asList(ACTION_VALUES);
-    // DEBUG flag
-    private static final int DEBUG = 0;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagProperty.class);
+
+    /** The default value. */
     private String m_defaultValue;
+
+    /** Indicates if HTML should be escaped. */
     private boolean m_escapeHtml;
+
+    /** The file to read the property from. */
     private String m_propertyFile;
 
-    // internal member variables
+    /** The name of the property to read. */
     private String m_propertyName;
 
     /**
@@ -171,19 +174,7 @@ public class CmsJspTagProperty extends TagSupport {
         boolean escape,
         ServletRequest req) throws CmsException {
 
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        if (DEBUG > 0) {
-            System.err.println("propertyTagAction() called!\nproperty="
-                + property
-                + "\naction="
-                + action
-                + "\ndefaultValue="
-                + defaultValue
-                + "\nescape="
-                + escape);
-            System.err.println("propertyTagAction() request URI="
-                + controller.getCmsObject().getRequestContext().getUri());
-        }
+        CmsFlexController controller = CmsFlexController.getController(req);
         String value;
 
         // if action is not set use default
@@ -234,9 +225,6 @@ public class CmsJspTagProperty extends TagSupport {
         }
         if (escape) {
             value = CmsEncoder.escapeHtml(value);
-        }
-        if (DEBUG > 0) {
-            System.err.println("propertyTagAction(): result=" + value);
         }
         return value;
     }

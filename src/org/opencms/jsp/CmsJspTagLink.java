@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2005/06/02 09:36:55 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * export to work properly.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsJspTagLink extends BodyTagSupport {
 
@@ -69,7 +69,7 @@ public class CmsJspTagLink extends BodyTagSupport {
      */
     public static String linkTagAction(String link, ServletRequest req) {
 
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        CmsFlexController controller = CmsFlexController.getController(req);
         if (link.indexOf(':') >= 0) {
             return OpenCms.getLinkManager().substituteLink(controller.getCmsObject(), link);
         } else {

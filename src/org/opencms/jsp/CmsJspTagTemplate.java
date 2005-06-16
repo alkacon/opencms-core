@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2005/05/03 12:17:52 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport {
 
@@ -92,7 +92,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
 
         if (elementlist != null) {
 
-            CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+            CmsFlexController controller = CmsFlexController.getController(req);
             String filename = controller.getCmsObject().getRequestContext().getUri();
 
             I_CmsXmlDocument content = null;

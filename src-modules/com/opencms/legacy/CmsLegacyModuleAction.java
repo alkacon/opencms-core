@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2005/06/01 12:34:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.defaults.master.genericsql.CmsDbAccess;
+import com.opencms.defaults.master.genericsql.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2005/06/02 09:36:55 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * Provides access to the data of the currently logged in user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsJspTagUser extends TagSupport {
 
@@ -88,7 +88,7 @@ public class CmsJspTagUser extends TagSupport {
      */
     public static String userTagAction(String property, ServletRequest req) {
 
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        CmsFlexController controller = CmsFlexController.getController(req);
 
         CmsObject cms = controller.getCmsObject();
         CmsUser user = cms.getRequestContext().currentUser();
@@ -137,10 +137,10 @@ public class CmsJspTagUser extends TagSupport {
                     result += " " + o + "=" + user.getAdditionalInfo((String)o);
                 }
                 break;
-            default: 
+            default:
                 msgContainer = Messages.get().container(Messages.GUI_ERR_INVALID_USER_PROP_1, property);
                 result = Messages.getLocalizedMessage(msgContainer, req);
-            
+
         }
 
         return result;

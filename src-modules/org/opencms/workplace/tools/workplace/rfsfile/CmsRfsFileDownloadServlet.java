@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Attic/CmsRfsFileDownloadServlet.java,v $
- * Date   : $Date: 2005/06/15 12:51:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletResponse;
  * (popup-box with save dialog). <p>
  * 
  * @author  Achim Westermann (a.westermann@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  * 
@@ -95,10 +95,10 @@ public final class CmsRfsFileDownloadServlet extends HttpServlet {
      * Note that the <b>parameter "filePath"</b> is read from the 
      * given <code>{@link HttpServletRequest}</code> for the file name to serve.<p>
      * 
-     * @param request Provided by the servlet container if this servlet is directly used from the container's servlet-mappings or 
+     * @param req Provided by the servlet container if this servlet is directly used from the container's servlet-mappings or 
      *                by the implicit jsp variable "request"
      * 
-     * @param response Provided by the servlet container if this servlet is directly used from the container's servlet-mappings or 
+     * @param res Provided by the servlet container if this servlet is directly used from the container's servlet-mappings or 
      *                 by the implicit jsp variable "response"
      * 
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -106,27 +106,27 @@ public final class CmsRfsFileDownloadServlet extends HttpServlet {
      * @throws ServletException if the needed parameter 'filePath' cannot be found
      * @throws IOException if work related to the download process fails
      */
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
         // find the file: 
-        String fileToFind = request.getParameter("filePath");
+        String fileToFind = req.getParameter("filePath");
         if (CmsStringUtil.isEmpty(fileToFind)) {
             throw new ServletException(Messages.get().key(Messages.ERR_DOWNLOAD_SERVLET_FILE_ARG_0));
         } else {
 
             File downloadFile = new File(fileToFind);
-            response.setHeader("Content-Disposition", new StringBuffer("attachment; filename=\"").append(
+            res.setHeader("Content-Disposition", new StringBuffer("attachment; filename=\"").append(
                 downloadFile.getName()).append("\"").toString());
-            response.setContentLength((int)downloadFile.length());
+            res.setContentLength((int)downloadFile.length());
 
-            CmsFlexController controller = (CmsFlexController)request.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+            CmsFlexController controller = CmsFlexController.getController(req);
             controller.getTopResponse().setContentType("application/download");
 
             InputStream in = null;
             ServletOutputStream outStream = null;
 
             // push the file:
-            outStream = response.getOutputStream();
+            outStream = res.getOutputStream();
             in = new BufferedInputStream(new FileInputStream(downloadFile));
 
             try {

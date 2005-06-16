@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2005/05/03 12:17:52 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexResponse;
 import org.opencms.main.CmsException;
@@ -54,7 +55,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent {
 
@@ -144,7 +145,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         ServletResponse res) throws JspException {
 
         // the Flex controller provides access to the interal OpenCms structures
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        CmsFlexController controller = CmsFlexController.getController(req);
 
         if (target == null) {
             // set target to default
@@ -292,7 +293,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
 
         // This will always be true if the page is called through OpenCms 
         if (CmsFlexController.isCmsRequest(req)) {
-            CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+            CmsObject cms = CmsFlexController.getCmsObject(req);
             String target = null;
 
             // Try to find out what to do
@@ -305,10 +306,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     System.err.println("IncludeTag: property=" + m_property);
                 }
                 try {
-                    String prop = controller.getCmsObject().readPropertyObject(
-                        controller.getCmsObject().getRequestContext().getUri(),
-                        m_property,
-                        true).getValue();
+                    String prop = cms.readPropertyObject(cms.getRequestContext().getUri(), m_property, true).getValue();
                     if (DEBUG) {
                         System.err.println("IncludeTag: property=" + m_property + " is " + prop);
                     }

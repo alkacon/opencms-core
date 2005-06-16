@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspBean.java,v $
- * Date   : $Date: 2005/05/03 12:38:37 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3
  */
@@ -164,7 +164,7 @@ public class CmsJspBean {
      */
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
-        m_controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        m_controller = CmsFlexController.getController(req);
         if (m_controller == null) {
             // controller not found - this request was not initialized properly
             throw new CmsRuntimeException(Messages.get().container(

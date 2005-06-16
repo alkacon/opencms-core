@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/06/02 09:36:55 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {
@@ -90,11 +90,8 @@ public class CmsJspTagContentShow extends TagSupport {
         }
 
         if (content.hasValue(element, locale)) {
-
             // selected element is available in content
-            CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-            CmsObject cms = controller.getCmsObject();
-
+            CmsObject cms = CmsFlexController.getCmsObject(req);
             try {
                 // read the element from the content
                 return content.getStringValue(cms, element, locale);
@@ -113,9 +110,7 @@ public class CmsJspTagContentShow extends TagSupport {
     public int doStartTag() throws JspException {
 
         // initialize a string mapper to resolve EL like strings in tag attributes
-        CmsFlexController controller = (CmsFlexController)pageContext.getRequest().getAttribute(
-            CmsFlexController.ATTRIBUTE_NAME);
-        CmsObject cms = controller.getCmsObject();
+        CmsObject cms = CmsFlexController.getCmsObject(pageContext.getRequest());
 
         // get a reference to the parent "content container" class
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
@@ -142,8 +137,8 @@ public class CmsJspTagContentShow extends TagSupport {
         if (CmsMacroResolver.isMacro(element)) {
             // this is a macro, initialize a macro resolver
             String resourcename = CmsJspTagContentLoad.getResourceName(cms, contentContainer);
-            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setJspPageContext(pageContext)
-                .setResourceName(resourcename).setKeepEmptyMacros(true);
+            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setJspPageContext(pageContext).setResourceName(
+                resourcename).setKeepEmptyMacros(true);
             // resolve the macro
             content = resolver.resolveMacros(element);
         } else if (xmlContent == null) {

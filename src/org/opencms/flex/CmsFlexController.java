@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/06/03 08:44:23 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsFlexController {
 
@@ -131,7 +131,7 @@ public class CmsFlexController {
     }
 
     /**
-     * Returns the wrapped CmsObject form the provided request, or null if the 
+     * Returns the wrapped CmsObject form the provided request, or <code>null</code> if the 
      * request is not running inside OpenCms.<p>
      * 
      * @param req the current request
@@ -145,6 +145,19 @@ public class CmsFlexController {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Returns the controller from the given request, or <code>null</code> if the 
+     * request is not running inside OpenCms.<p>
+     * 
+     * @param req the request to get the controller from
+     * 
+     * @return the controller from the given request, or <code>null</code> if the request is not running inside OpenCms
+     */
+    public static CmsFlexController getController(ServletRequest req) {
+
+        return (CmsFlexController)req.getAttribute(ATTRIBUTE_NAME);
     }
 
     /**
@@ -223,6 +236,17 @@ public class CmsFlexController {
         if (controller != null) {
             controller.clear();
         }
+    }
+
+    /** 
+     * Stores the given controller in the given request (using a request attribute).<p>
+     * 
+     * @param req the request where to store the controller in 
+     * @param controller the controller to store
+     */
+    public static void setController(ServletRequest req, CmsFlexController controller) {
+
+        req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
     }
 
     /**

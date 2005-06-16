@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.jsp;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexResponse;
 import org.opencms.main.I_CmsConstants;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * Implementation of editor tag used to provide settings to include tag.<p>
  * 
- * @version $Revision: 1.14 $ $Date: 2005/04/10 11:00:14 $
+ * @version $Revision: 1.15 $ $Date: 2005/06/16 16:56:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsJspTagEditable extends BodyTagSupport {
@@ -98,14 +99,13 @@ public class CmsJspTagEditable extends BodyTagSupport {
     throws JspException {
 
         try {
-            CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-            if (controller.getCmsObject().getRequestContext().currentProject().getId() != I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            CmsObject cms = CmsFlexController.getCmsObject(req);
+            if (cms.getRequestContext().currentProject().getId() != I_CmsConstants.C_PROJECT_ONLINE_ID) {
                 if (context.getRequest().getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI) == null) {
                     if (filename == null) {
                         filename = I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT;
                     }
-                    context.getRequest()
-                        .setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI, filename);
+                    context.getRequest().setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI, filename);
                     CmsJspTagInclude.includeTagAction(
                         context,
                         filename,
@@ -148,7 +148,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
         ServletRequest req = context.getRequest();
         ServletResponse res = context.getResponse();
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        CmsFlexController controller = CmsFlexController.getController(req);
 
         // check the "direct edit" mode
         String target = null;
@@ -179,15 +179,15 @@ public class CmsJspTagEditable extends BodyTagSupport {
             editTarget,
             true);
         CmsJspTagInclude.addParameter(
-            parameterMap, 
-            I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE, 
-            controller.getCmsObject().getRequestContext().getLocale().toString(), 
+            parameterMap,
+            I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE,
+            controller.getCmsObject().getRequestContext().getLocale().toString(),
             true);
         CmsUserSettings settings = new CmsUserSettings(controller.getCmsObject().getRequestContext().currentUser());
         CmsJspTagInclude.addParameter(
-            parameterMap, 
-            I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE, 
-            String.valueOf(settings.getDirectEditButtonStyle()), 
+            parameterMap,
+            I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE,
+            String.valueOf(settings.getDirectEditButtonStyle()),
             true);
         if (editElement != null) {
             CmsJspTagInclude.addParameter(

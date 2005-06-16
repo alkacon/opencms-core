@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.5.0
  */
 public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer {
@@ -282,18 +282,18 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         // check if the tag contains a param attribute
         if (CmsStringUtil.isEmpty(m_param)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_TAG_CONTENTLOAD_MISSING_PARAM_0));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_TAG_CONTENTLOAD_MISSING_PARAM_0));
         }
 
         // initialize OpenCms access objects
-        m_controller = (CmsFlexController)pageContext.getRequest().getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        m_controller = CmsFlexController.getController(pageContext.getRequest());
         m_cms = m_controller.getCmsObject();
 
         // initialize a string mapper to resolve EL like strings in tag attributes
         String resourcename = getResourceName(m_cms, this);
-        CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(m_cms).setJspPageContext(pageContext)
-            .setResourceName(resourcename).setKeepEmptyMacros(true);
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(m_cms).setJspPageContext(pageContext).setResourceName(
+            resourcename).setKeepEmptyMacros(true);
 
         // resolve the collector name
         String collectorName = resolver.resolveMacros(getCollector());

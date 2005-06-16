@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,16 +104,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.81 $
+ * @version $Revision: 1.82 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
  */
 public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledLoader {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsJspLoader.class);  
-    
     /** Encoding to write JSP files to disk (<code>ISO-8859-1</code>). */
     public static final String C_DEFAULT_JSP_ENCODING = "ISO-8859-1";
 
@@ -131,6 +128,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
     /** Flag for debugging output. Set to 9 for maximum verbosity. */
     private static final int DEBUG = 0;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspLoader.class);
 
     /** The directory to store the generated JSP pages in (absolute path). */
     private static String m_jspRepository;
@@ -193,11 +193,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         String element,
         Locale locale,
         HttpServletRequest req,
-        HttpServletResponse res
-    ) throws ServletException, IOException {
+        HttpServletResponse res) throws ServletException, IOException {
 
         // get the current Flex controller
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        CmsFlexController controller = CmsFlexController.getController(req);
         CmsFlexController oldController = null;
 
         if (controller != null) {
@@ -211,20 +210,20 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             controller = getController(cms, file, req, res, false, false);
             if (element != null) {
                 // add the element parameter to the included request
-                String[] value = new String[]{element};
+                String[] value = new String[] {element};
                 Map parameters = Collections.singletonMap(I_CmsConstants.C_PARAMETER_ELEMENT, value);
                 controller.getCurrentRequest().addParameterMap(parameters);
             }
             // dispatch to the JSP
             result = dispatchJsp(controller);
             // remove temporary controller
-            req.removeAttribute(CmsFlexController.ATTRIBUTE_NAME);
+            CmsFlexController.removeController(req);
         } finally {
             if (oldController != null) {
                 // update "date last modified"
                 oldController.updateDates(controller.getDateLastModified(), controller.getDateExpires());
-                // reset saved controller                
-                req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, oldController);
+                // reset saved controller 
+                CmsFlexController.setController(req, oldController);
             }
         }
 
@@ -234,12 +233,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public byte[] export(
-        CmsObject cms, 
-        CmsResource resource, 
-        HttpServletRequest req, 
-        HttpServletResponse res
-    ) throws ServletException, IOException {
+    public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
+    throws ServletException, IOException {
 
         // get the Flex controller
         CmsFlexController controller = getController(cms, resource, req, res, false, true);
@@ -260,7 +255,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     public Map getConfiguration() {
 
         // return the configuration in an immutable form
-        return Collections.unmodifiableMap(m_configuration);        
+        return Collections.unmodifiableMap(m_configuration);
     }
 
     /**
@@ -289,8 +284,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     public void initConfiguration() {
 
         ExtendedProperties config = new ExtendedProperties();
-        config.putAll(m_configuration);            
-        
+        config.putAll(m_configuration);
+
         m_jspRepository = config.getString("jsp.repository");
         if (m_jspRepository == null) {
             m_jspRepository = OpenCms.getSystemInfo().getWebApplicationRfsPath();
@@ -308,15 +303,13 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         m_errorPagesAreNotCommited = config.getBoolean("jsp.errorpage.committed", true);
 
         // output setup information
-        if (CmsLog.INIT.isInfoEnabled()) { 
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_JSP_REPOSITORY_ABS_PATH_1, m_jspRepository));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WEBAPP_PATH_1, m_jspWebAppRepository));
             CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_JSP_REPOSITORY_ABS_PATH_1, m_jspRepository));
-            CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_WEBAPP_PATH_1, m_jspWebAppRepository));
-            CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_JSP_REPOSITORY_ERR_PAGE_COMMOTED_1, new Boolean(m_errorPagesAreNotCommited)));
-            CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));               
+                Messages.INIT_JSP_REPOSITORY_ERR_PAGE_COMMOTED_1,
+                new Boolean(m_errorPagesAreNotCommited)));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
         }
     }
 
@@ -355,12 +348,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void load(
-        CmsObject cms, 
-        CmsResource file, 
-        HttpServletRequest req, 
-        HttpServletResponse res
-    ) throws ServletException, IOException, CmsException {
+    public void load(CmsObject cms, CmsResource file, HttpServletRequest req, HttpServletResponse res)
+    throws ServletException, IOException, CmsException {
 
         // load and process the JSP         
         boolean streaming = false;
@@ -406,14 +395,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#service(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
-    public void service(
-        CmsObject cms, 
-        CmsResource resource, 
-        ServletRequest req, 
-        ServletResponse res
-    ) throws ServletException, IOException, CmsLoaderException {
+    public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res)
+    throws ServletException, IOException, CmsLoaderException {
 
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        CmsFlexController controller = CmsFlexController.getController(req);
         // get JSP target name on "real" file system
         String target = updateJsp(resource, controller, new HashSet(8));
         // important: Indicate that all output must be buffered
@@ -431,8 +416,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         m_cache = cache;
         // output setup information
-        if (CmsLog.INIT.isInfoEnabled()) { 
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_FLEX_CACHE_0));        
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_FLEX_CACHE_0));
         }
     }
 
@@ -451,8 +436,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         CmsFlexResponse f_res = controller.getCurrentResponse();
 
         try {
-            f_req.getRequestDispatcher(controller.getCmsObject().getSitePath(controller.getCmsResource()))
-                .include(f_req, f_res);
+            f_req.getRequestDispatcher(controller.getCmsObject().getSitePath(controller.getCmsResource())).include(
+                f_req,
+                f_res);
         } catch (SocketException e) {
             // uncritical, might happen if client (browser) does not wait until end of page delivery
             LOG.debug(Messages.get().key(Messages.LOG_IGNORING_EXC_1, e.getClass().getName()), e);
@@ -468,11 +454,11 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
                     // check if the current request was done by a workplace user
                     boolean isWorkplaceUser = CmsWorkplaceManager.isWorkplaceUser(f_req);
-                    
+
                     // check if the content was modified since the last request
                     if (controller.isTop()
-                    && !isWorkplaceUser
-                    && CmsFlexController.isNotModifiedSince(f_req, controller.getDateLastModified())) {
+                        && !isWorkplaceUser
+                        && CmsFlexController.isNotModifiedSince(f_req, controller.getDateLastModified())) {
                         if (f_req.getParameterMap().size() == 0) {
                             // only use "expires" header on pages that have no parameters,
                             // otherwise some browsers (e.g. IE 6) will not even try to request 
@@ -495,8 +481,11 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                         res.setContentLength(result.length);
                         if (isWorkplaceUser) {
                             res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
-                            res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MAX_AGE + "0");
-                            res.addHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
+                            res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MAX_AGE
+                                + "0");
+                            res.addHeader(
+                                I_CmsConstants.C_HEADER_CACHE_CONTROL,
+                                I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
                         } else {
                             // set date last modified header                        
                             CmsFlexController.setDateLastModifiedHeader(res, controller.getDateLastModified());
@@ -506,10 +495,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                                 // otherwise some browsers (e.g. IE 6) will not even try to request 
                                 // updated versions of the page
                                 CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
-                            }       
+                            }
                         }
                         // set response status to "200 - OK" (required for static export "on-demand")
-                        res.setStatus(HttpServletResponse.SC_OK);  
+                        res.setStatus(HttpServletResponse.SC_OK);
                         // proecess the headers
                         CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
                         res.getOutputStream().write(result);
@@ -546,18 +535,17 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         HttpServletRequest req,
         HttpServletResponse res,
         boolean streaming,
-        boolean top
-    ) {
+        boolean top) {
 
         CmsFlexController controller = null;
         if (top) {
             // only check for existing contoller if this is the "top" request/response
-            controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+            controller = CmsFlexController.getController(req);
         }
         if (controller == null) {
             // create new request / response wrappers
             controller = new CmsFlexController(cms, resource, m_cache, req, res, streaming, top);
-            req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
+            CmsFlexController.setController(req, controller);
             CmsFlexRequest f_req = new CmsFlexRequest(req, controller);
             CmsFlexResponse f_res = new CmsFlexResponse(res, controller, streaming, true);
             controller.push(f_req, f_res);
@@ -594,7 +582,12 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @return the modified JSP content
      * @throws UnsupportedEncodingException
      */
-    private byte[] parseJsp(byte[] byteContent, String encoding, CmsFlexController controller, Set includes, boolean isHardInclude) {
+    private byte[] parseJsp(
+        byte[] byteContent,
+        String encoding,
+        CmsFlexController controller,
+        Set includes,
+        boolean isHardInclude) {
 
         String content;
         // make sure encoding is set correctly
@@ -602,31 +595,33 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             content = new String(byteContent, encoding);
         } catch (UnsupportedEncodingException e) {
             // encoding property is not set correctly 
-            LOG.error(Messages.get().key(Messages.LOG_UNSUPPORTED_ENC_1, controller.getCurrentRequest().getElementUri()), e);
+            LOG.error(
+                Messages.get().key(Messages.LOG_UNSUPPORTED_ENC_1, controller.getCurrentRequest().getElementUri()),
+                e);
             try {
                 content = new String(byteContent, C_DEFAULT_JSP_ENCODING);
-                encoding = C_DEFAULT_JSP_ENCODING;                
+                encoding = C_DEFAULT_JSP_ENCODING;
             } catch (UnsupportedEncodingException e2) {
                 // should not happen since ISO-8859-1 is always a valid encoding
                 content = new String(byteContent);
             }
         }
-            
+
         // parse for special <%@cms file="..." %> tag
-        content = parseJspCmsTag(content, controller, includes); 
+        content = parseJspCmsTag(content, controller, includes);
         // parse for included files in tags
-        content = parseJspIncludes(content, controller, includes);     
+        content = parseJspIncludes(content, controller, includes);
         // parse for <%@page pageEncoding="..." %> tag
-        content = parseJspEncoding(content, encoding, isHardInclude);       
+        content = parseJspEncoding(content, encoding, isHardInclude);
         // convert the result to bytes and return it
         try {
             return content.getBytes(encoding);
         } catch (UnsupportedEncodingException e) {
             // should not happen since encoding was already checked
             return content.getBytes();
-        }                
+        }
     }
-    
+
     /**
      * Parses the JSP content for the special <code>&lt;%cms file="..." %&gt;</code> tag.<p>
      * 
@@ -634,7 +629,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @param controller the current JSP controller
      * @param includes a set of already parsed includes
      * @return the parsed JSP content
-     */    
+     */
     private String parseJspCmsTag(String content, CmsFlexController controller, Set includes) {
 
         // check if a JSP directive occurs in the file
@@ -643,10 +638,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             // no directive occurs
             return content;
         }
-        
+
         StringBuffer buf = new StringBuffer(content.length());
         int p0 = 0, i2 = 0, slen = C_DIRECTIVE_START.length(), elen = C_DIRECTIVE_END.length();
-        
+
         while (i1 >= 0) {
             // parse the file and replace JSP filename references 
             i2 = content.indexOf(C_DIRECTIVE_END, i1 + slen);
@@ -656,7 +651,11 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             } else if (i2 > i1) {
                 String directive = content.substring(i1 + slen, i2);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_DIRECTIVE_DETECTED_3, C_DIRECTIVE_START, directive, C_DIRECTIVE_END));
+                    LOG.debug(Messages.get().key(
+                        Messages.LOG_DIRECTIVE_DETECTED_3,
+                        C_DIRECTIVE_START,
+                        directive,
+                        C_DIRECTIVE_END));
                 }
 
                 int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
@@ -697,21 +696,24 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                         directive = jspname;
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(Messages.get().key(
-                                Messages.LOG_DIRECTIVE_CHANGED_3, C_DIRECTIVE_START, directive, C_DIRECTIVE_END));
+                                Messages.LOG_DIRECTIVE_CHANGED_3,
+                                C_DIRECTIVE_START,
+                                directive,
+                                C_DIRECTIVE_END));
                         }
                     }
                     // cms directive was found
                     buf.append(content.substring(p0, i1));
                     buf.append(directive);
                     p0 = i2 + elen;
-                    i1 = content.indexOf(C_DIRECTIVE_START, p0); 
+                    i1 = content.indexOf(C_DIRECTIVE_START, p0);
                 } else {
                     // cms directive was not found
                     buf.append(content.substring(p0, i1 + slen));
                     buf.append(directive);
                     p0 = i2;
                     i1 = content.indexOf(C_DIRECTIVE_START, p0);
-                }              
+                }
             }
         }
         if (i2 > 0) {
@@ -721,7 +723,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
         return content;
     }
-    
+
     /**
      * Parses the JSP content for the  <code>&lt;%page pageEncoding="..." %&gt;</code> tag
      * and ensures that the JSP page encoding is set according to the OpenCms 
@@ -731,20 +733,20 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @param encoding the encoding to use for the JSP
      * @param isHardInclude indicated if this page is actually a "hard" include with <code>&lt;%@ include file="..." &gt;</code>
      * @return the parsed JSP content
-     */    
+     */
     private String parseJspEncoding(String content, String encoding, boolean isHardInclude) {
-        
+
         // check if a JSP directive occurs in the file
         int i1 = content.indexOf(C_DIRECTIVE_START);
         if (i1 < 0) {
             // no directive occurs
             return content;
         }
-        
+
         StringBuffer buf = new StringBuffer(content.length());
         int p0 = 0, i2 = 0, slen = C_DIRECTIVE_START.length();
         boolean found = false;
-        
+
         while (i1 >= 0) {
             // parse the file and set/replace page encoding
             i2 = content.indexOf(C_DIRECTIVE_END, i1 + slen);
@@ -754,7 +756,11 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             } else if (i2 > i1) {
                 String directive = content.substring(i1 + slen, i2);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_DIRECTIVE_DETECTED_3, C_DIRECTIVE_START, directive, C_DIRECTIVE_END));
+                    LOG.debug(Messages.get().key(
+                        Messages.LOG_DIRECTIVE_DETECTED_3,
+                        C_DIRECTIVE_START,
+                        directive,
+                        C_DIRECTIVE_END));
                 }
 
                 int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
@@ -799,7 +805,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     directive = pre + encoding + suf;
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(
-                            Messages.LOG_DIRECTIVE_CHANGED_3, C_DIRECTIVE_START, directive, C_DIRECTIVE_END));
+                            Messages.LOG_DIRECTIVE_CHANGED_3,
+                            C_DIRECTIVE_START,
+                            directive,
+                            C_DIRECTIVE_END));
                     }
                 }
 
@@ -815,7 +824,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
         if (found) {
             content = buf.toString();
-        } else if (! isHardInclude) {
+        } else if (!isHardInclude) {
             // encoding setting was not found
             // if this is not a "hard" include then add the encoding to the top of the page
             // checking for the hard include is important to prevent errors with 
@@ -827,10 +836,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             buf2.append("\" %>");
             buf2.append(buf);
             content = buf2.toString();
-        }        
+        }
         return content;
     }
-    
+
     /**
      * Parses the JSP content for includes and replaces all OpenCms VFS 
      * path information with information for the real FS.<p>
@@ -841,17 +850,17 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @return the parsed JSP content
      */
     private String parseJspIncludes(String content, CmsFlexController controller, Set includes) {
-        
+
         // check if a JSP directive occurs in the file
         int i1 = content.indexOf(C_DIRECTIVE_START);
         if (i1 < 0) {
             // no directive occurs
             return content;
         }
-        
+
         StringBuffer buf = new StringBuffer(content.length());
         int p0 = 0, i2 = 0, slen = C_DIRECTIVE_START.length();
-        
+
         while (i1 >= 0) {
             // parse the file and replace JSP filename references 
             i2 = content.indexOf(C_DIRECTIVE_END, i1 + slen);
@@ -861,7 +870,11 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             } else if (i2 > i1) {
                 String directive = content.substring(i1 + slen, i2);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_DIRECTIVE_DETECTED_3, C_DIRECTIVE_START, directive, C_DIRECTIVE_END));
+                    LOG.debug(Messages.get().key(
+                        Messages.LOG_DIRECTIVE_DETECTED_3,
+                        C_DIRECTIVE_START,
+                        directive,
+                        C_DIRECTIVE_END));
                 }
 
                 int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
@@ -877,7 +890,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     t5 = 6;
                 } else if (directive.startsWith("page", t1)) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "page"));                        
+                        LOG.debug(Messages.get().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "page"));
                     }
                     t2 = directive.indexOf("errorPage", t1 + 4);
                     t5 = 11;
@@ -912,7 +925,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                         directive = pre + jspname + suf;
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(Messages.get().key(
-                                Messages.LOG_DIRECTIVE_CHANGED_3, C_DIRECTIVE_START, directive, C_DIRECTIVE_END));
+                                Messages.LOG_DIRECTIVE_CHANGED_3,
+                                C_DIRECTIVE_START,
+                                directive,
+                                C_DIRECTIVE_END));
                         }
                     }
                 }
@@ -958,25 +974,27 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         try {
             // all JSP must be exported with full "root path" site root information
             cms.getRequestContext().setSiteRoot("");
-            
+
             String jspVfsName = cms.getSitePath(resource);
             String extension;
             boolean isHardInclude;
             int loaderId = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getLoaderId();
-            if ((loaderId == CmsJspLoader.C_RESOURCE_LOADER_ID) 
-                && (! jspVfsName.endsWith(C_JSP_EXTENSION))) {
+            if ((loaderId == CmsJspLoader.C_RESOURCE_LOADER_ID) && (!jspVfsName.endsWith(C_JSP_EXTENSION))) {
                 // this is a true JSP resource that does not end with ".jsp"
-                extension = C_JSP_EXTENSION;     
+                extension = C_JSP_EXTENSION;
                 isHardInclude = false;
             } else {
                 // not a JSP resource or already ends with ".jsp"
                 extension = "";
                 // if this is a JSP we don't treat it as hard include
                 isHardInclude = (loaderId != CmsJspLoader.C_RESOURCE_LOADER_ID);
-            }            
-            
-            String jspTargetName = getJspUri(m_jspWebAppRepository, jspVfsName + extension, controller.getCurrentRequest().isOnline());
-            
+            }
+
+            String jspTargetName = getJspUri(
+                m_jspWebAppRepository,
+                jspVfsName + extension,
+                controller.getCurrentRequest().isOnline());
+
             // check if page was already updated
             if (updates.contains(jspTargetName)) {
                 // no need to write the already included file to the real FS more then once
@@ -984,7 +1002,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             }
             updates.add(jspTargetName);
 
-            String jspPath = getJspUri(m_jspRepository, jspVfsName + extension, controller.getCurrentRequest().isOnline());
+            String jspPath = getJspUri(
+                m_jspRepository,
+                jspVfsName + extension,
+                controller.getCurrentRequest().isOnline());
 
             File d = new File(jspPath).getParentFile();
             if ((d == null) || (d.exists() && !(d.isDirectory() && d.canRead()))) {
@@ -1022,15 +1043,12 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 try {
                     contents = CmsFile.upgrade(resource, cms).getContents();
                     // check the "content-encoding" property for the JSP
-                    encoding = cms.readPropertyObject(
-                        jspVfsName,
-                        I_CmsConstants.C_PROPERTY_CONTENT_ENCODING,
-                        false).getValue(C_DEFAULT_JSP_ENCODING);
+                    encoding = cms.readPropertyObject(jspVfsName, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false).getValue(
+                        C_DEFAULT_JSP_ENCODING);
                     encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
                 } catch (CmsException e) {
                     controller.setThrowable(e, jspVfsName);
-                    throw new ServletException(
-                        Messages.get().key(Messages.ERR_LOADER_JSP_ACCESS_1, jspVfsName), e);
+                    throw new ServletException(Messages.get().key(Messages.ERR_LOADER_JSP_ACCESS_1, jspVfsName), e);
                 }
 
                 try {
@@ -1044,11 +1062,12 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
                     if (LOG.isInfoEnabled()) {
                         LOG.info(Messages.get().key(
-                            Messages.LOG_UPDATED_JSP_2, jspTargetName, cms.getSitePath(resource)));
+                            Messages.LOG_UPDATED_JSP_2,
+                            jspTargetName,
+                            cms.getSitePath(resource)));
                     }
                 } catch (FileNotFoundException e) {
-                    throw new ServletException(
-                        Messages.get().key(Messages.ERR_LOADER_JSP_WRITE_1, f.getName()), e);
+                    throw new ServletException(Messages.get().key(Messages.ERR_LOADER_JSP_WRITE_1, f.getName()), e);
                 }
             }
 
@@ -1073,9 +1092,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @return the file name of the updated JSP in the "real" FS
      */
     private String updateJsp(String vfsName, CmsFlexController controller, Set includes) {
-        String jspVfsName = CmsLinkManager.getAbsoluteUri(
-            vfsName, 
-            controller.getCurrentRequest().getElementRootPath());
+
+        String jspVfsName = CmsLinkManager.getAbsoluteUri(vfsName, controller.getCurrentRequest().getElementRootPath());
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_UPDATE_JSP_1, jspVfsName));
         }
@@ -1086,7 +1104,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             jspRfsName = updateJsp(includeResource, controller, includes);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_NAME_REAL_FS_1, jspRfsName));
-            }            
+            }
         } catch (Exception e) {
             jspRfsName = null;
             if (LOG.isDebugEnabled()) {

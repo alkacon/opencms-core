@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,27 +46,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.I_CmsWpConstants;
 
-import com.opencms.core.CmsRequestHttpServlet;
-import com.opencms.core.CmsResponseHttpServlet;
-import com.opencms.core.CmsSession;
-import com.opencms.core.I_CmsRequest;
-import com.opencms.core.I_CmsResponse;
-import com.opencms.core.I_CmsSession;
-import com.opencms.template.A_CmsXmlContent;
-import com.opencms.template.CmsRootTemplate;
-import com.opencms.template.CmsTemplateCache;
-import com.opencms.template.CmsTemplateClassManager;
-import com.opencms.template.CmsXmlControlFile;
-import com.opencms.template.CmsXmlTemplate;
-import com.opencms.template.I_CmsTemplate;
-import com.opencms.template.I_CmsTemplateCache;
-import com.opencms.template.I_CmsXmlTemplate;
-import com.opencms.template.cache.CmsElementCache;
-import com.opencms.template.cache.CmsElementDefinition;
-import com.opencms.template.cache.CmsElementDefinitionCollection;
-import com.opencms.template.cache.CmsElementDescriptor;
-import com.opencms.template.cache.CmsUri;
-import com.opencms.template.cache.CmsUriDescriptor;
+import com.opencms.core.*;
+import com.opencms.template.*;
+import com.opencms.template.cache.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -106,7 +88,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -876,7 +858,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
      */
     public String includeExtension(String target, String element, boolean editable, Map parameterMap, ServletRequest req, ServletResponse res) throws CmsException {
         // the Flex controller provides access to the interal OpenCms structures
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        CmsFlexController controller = CmsFlexController.getController(req);
         // simple sanity check, controller should never be null here
         if (controller == null) {
             return target;

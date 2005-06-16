@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestKey.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * Describes the caching behaviour (or caching options) for a Flex request.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsFlexRequestKey {
 
@@ -71,17 +71,17 @@ public class CmsFlexRequestKey {
      * the current time etc. etc.
      * All required items are saved in the constructed cache - key.<p>
      * 
-     * @param request the request to construct the key for
+     * @param req the request to construct the key for
      * @param target the requested resource in the OpenCms VFS
      * @param online must be true for an online resource, false for offline resources
      */
-    public CmsFlexRequestKey(HttpServletRequest request, String target, boolean online) {
+    public CmsFlexRequestKey(HttpServletRequest req, String target, boolean online) {
 
         // store the request
-        m_request = request;
+        m_request = req;
 
         // fetch the cms from the request
-        CmsObject cms = ((CmsFlexController)m_request.getAttribute(CmsFlexController.ATTRIBUTE_NAME)).getCmsObject();
+        CmsObject cms = CmsFlexController.getCmsObject(req);
 
         // store the request context
         m_context = cms.getRequestContext();

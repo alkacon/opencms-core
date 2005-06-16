@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/06/16 13:53:12 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 6.0 alpha 3
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
@@ -371,9 +371,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 // the key is a cms property to be read on the current element
 
                 macro = macro.substring(CmsMacroResolver.C_KEY_PROPERTY_ELEMENT.length());
-                CmsFlexController controller = (CmsFlexController)m_jspPageContext.getRequest().getAttribute(
-                    CmsFlexController.ATTRIBUTE_NAME);
-
+                CmsFlexController controller = CmsFlexController.getController(m_jspPageContext.getRequest());
                 try {
                     CmsProperty property = m_cms.readPropertyObject(
                         controller.getCurrentRequest().getElementUri(),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/15 15:54:09 $
- * Version: $Revision: 1.195 $
+ * Date   : $Date: 2005/06/16 16:56:21 $
+ * Version: $Revision: 1.196 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,6 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
-import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -128,7 +127,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.195 $
+ * @version $Revision: 1.196 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1671,6 +1670,9 @@ public final class OpenCmsCore {
      */
     private void errorHandling(CmsObject cms, HttpServletRequest req, HttpServletResponse res, Throwable t) {
 
+        // remove the controller attribute from the request
+        CmsFlexController.removeController(req);
+        
         boolean canWrite = !res.isCommitted() && !res.containsHeader("Location");
         int status = -1;
         boolean isNotGuest = false;
