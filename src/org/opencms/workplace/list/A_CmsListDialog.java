@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/16 14:30:34 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/16 16:32:30 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspWriter;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -536,7 +536,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public CmsListItem getSelectedItem() {
 
-        return m_list.getItem(getParamSelItems());
+        return getList().getItem(getParamSelItems());
     }
 
     /**
@@ -550,7 +550,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         List items = new ArrayList();
         while (it.hasNext()) {
             String id = (String)it.next();
-            items.add(m_list.getItem(id));
+            items.add(getList().getItem(id));
         }
         return items;
     }
@@ -700,7 +700,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected void executeSearch() {
 
-        m_list.setSearchFilter(getParamSearchFilter(), getLocale());
+        getList().setSearchFilter(getParamSearchFilter(), getLocale());
     }
 
     /**
@@ -710,7 +710,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected void executeSelectPage() {
 
         int page = Integer.valueOf(getParamPage()).intValue();
-        m_list.setCurrentPage(page);
+        getList().setCurrentPage(page);
     }
 
     /**
@@ -719,7 +719,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected void executeSort() {
 
-        m_list.setSortedColumn(getParamSortCol(), getLocale());
+        getList().setSortedColumn(getParamSortCol(), getLocale());
     }
 
     /**

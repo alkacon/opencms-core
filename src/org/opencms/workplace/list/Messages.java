@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2005/06/15 16:01:31 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/16 16:32:30 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,10 +43,10 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
-    public static final String ERR_LIST_COLUMN_EXISTS_1 = "ERR_LIST_COLUMN_EXISTS_1";
+    public static final String ERR_DUPLICATED_ID_1 = "ERR_DUPLICATED_ID_1";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_LIST_INTERVAL_FORMAT_0 = "GUI_LIST_INTERVAL_FORMAT_0";
+    public static final String ERR_LIST_COLUMN_EXISTS_1 = "ERR_LIST_COLUMN_EXISTS_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_LIST_ENUM_PARSE_2 = "ERR_LIST_ENUM_PARSE_2";
@@ -116,6 +116,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_EMPTY_0 = "GUI_LIST_EMPTY_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_INTERVAL_FORMAT_0 = "GUI_LIST_INTERVAL_FORMAT_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_PAGING_FILTER_TEXT_3 = "GUI_LIST_PAGING_FILTER_TEXT_3";
