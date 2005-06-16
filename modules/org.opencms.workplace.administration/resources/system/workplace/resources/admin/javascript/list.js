@@ -35,7 +35,7 @@ function listSelect(listId) {
 	return true;
 }
 
-function listMultiAction(listId, action, confirmation, noselectionhelp) {
+function listMAction(listId, action, confirmation, noselectionhelp) {
 	var form = document.forms[listId + '-form'];
 	var count = 0;
 	var listItems = '';
