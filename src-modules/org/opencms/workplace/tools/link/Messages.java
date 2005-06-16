@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/Messages.java,v $
- * Date   : $Date: 2005/06/16 07:31:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/16 08:11:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EXTERNAL_LINK_VALIDATION_0 = "ERR_EXTERNAL_LINK_VALIDATION_0";
     
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECK_INTERNAL_LINK_HELP_0 = "GUI_CHECK_INTERNAL_LINK_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECK_INTERNAL_LINK_NAME_0 = "GUI_CHECK_INTERNAL_LINK_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXTERNALLINK_ADMIN_TOOL_GROUP_0 = "GUI_EXTERNALLINK_ADMIN_TOOL_GROUP_0";
     
     /** Message constant for key in the resource bundle. */
@@ -82,16 +88,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_NEW_EXTERNAL_LINK_CHECK_NAME_0 = "GUI_NEW_EXTERNAL_LINK_CHECK_NAME_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_NEW_EXTERNAL_LINK_VALIDATE_GROUP_0 = "GUI_NEW_EXTERNAL_LINK_VALIDATE_GROUP_0";
-    
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_VALIDATION_YET_0 = "GUI_NO_VALIDATION_YET_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0 = "GUI_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_LINK_VALIDATION_STAT_2 = "RPT_LINK_VALIDATION_STAT_2";
    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.link.messages";
