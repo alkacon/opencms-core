@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListTimeIntervalFormatter.java,v $
- * Date   : $Date: 2005/06/15 16:01:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/16 10:53:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,52 +31,27 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.util.CmsStringUtil;
 
-import java.text.MessageFormat;
-import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * Simple formatter for time.<p>
+ * Simple formatter for time intervals.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
-public class CmsListTimeIntervalFormatter extends CmsListMacroFormatter {
+public class CmsListTimeIntervalFormatter implements I_CmsListFormatter {
 
-    private static final NumberFormat NF2 = NumberFormat.getIntegerInstance();
-    private static final NumberFormat NF3 = NumberFormat.getIntegerInstance();
-    
     /**
      * Default constructor.<p>
      * 
-     * Use hh:mm:ss.mmm style.<p>
+     * Use dd:hh:mm:ss style.<p>
      */
     public CmsListTimeIntervalFormatter() {
-
-        this(Messages.get().container(Messages.GUI_LIST_INTERVAL_FORMAT_0));
-    }
-
-    /**
-     * Customizable constructor.<p>
-     * 
-     * The mask can take up to 4 params:<p> 
-     * <ul>
-     *    <li>Millis</li>
-     *    <li>Seconds</li>
-     *    <li>Minutes</li>
-     *    <li>Hours</li>
-     * </ul><p>
-     * 
-     * @param mask the style for the interval
-     */
-    public CmsListTimeIntervalFormatter(CmsMessageContainer mask) {
-
-        super(mask);
-        NF2.setMinimumIntegerDigits(2);
-        NF3.setMinimumIntegerDigits(3);
+        
+        //noop
     }
 
     /**
@@ -84,25 +59,13 @@ public class CmsListTimeIntervalFormatter extends CmsListMacroFormatter {
      */
     public String format(Object data, Locale locale) {
 
-        if (data == null || !(data instanceof Long)) {
+        if (data == null) {
             return "";
         }
-        long tmp = ((Long)data).longValue();
-        int hrs = (int)(tmp / 3600000);
-        tmp -= hrs * 3600000; // 1000 * 60 * 60
-        int mins = (int)(tmp / 60000);
-        tmp -= mins * 60000; // 1000 * 60
-        int secs = (int)(tmp / 1000);
-        int millis = (int)(tmp - secs * 1000);
-
-        String locMask = getMask().key(locale);
-        MessageFormat formatter = new MessageFormat(locMask, locale);
-        
-        return formatter.format(new Object[] {
-            NF3.format(millis),
-            NF2.format(secs),
-            NF2.format(mins),
-            NF2.format(hrs)});
+        if (!(data instanceof Long)) {
+            return data.toString();
+        }
+        return CmsStringUtil.formatRuntime(((Long)data).longValue());
     }
     
 }
