@@ -997,11 +997,13 @@ body.dialogadmin {
 .xmlTd    { 
 	width: 100%; 
 	height: 22px;
+	padding: 3px;
 }
 
 .xmlTdDisabled {
 	font-style: italic; 
 	border-right: 1px dotted ThreeDShadow;
+	padding: 3px;
 }
 
 .xmlTdErrorHeader {
@@ -1015,12 +1017,14 @@ body.dialogadmin {
 	font-style: normal;
 	font-weight: bold;
 	color: #B40000;
+	padding: 3px;
 }
 
 .xmlTdWarning {
 	font-style: normal;
 	font-weight: bold;
 	color: #EE7700;
+	padding: 3px;
 }
 
 .xmlLabel { 
