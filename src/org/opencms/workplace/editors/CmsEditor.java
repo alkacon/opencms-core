@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/06/13 12:11:40 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/16 08:07:30 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -61,7 +60,7 @@ import org.apache.commons.logging.Log;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1.12
  */
@@ -608,68 +607,36 @@ public abstract class CmsEditor extends CmsDialog {
         // read the selected file
         CmsResource file = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
         
-        // Create the filename of the temporary file
+        // create the filename of the temporary file
         String temporaryFilename = CmsResource.getFolderPath(getCms().getSitePath(file)) + I_CmsConstants.C_TEMP_PREFIX + file.getName();
-        boolean ok = true;
+        
+        // check if the temporary file is already present
+        if (getCms().existsResource(temporaryFilename, CmsResourceFilter.ALL)) {
+            // delete old temporary file
+            if (! getCms().getLock(temporaryFilename).equals(CmsLock.getNullLock())) {
+                // steal lock
+                getCms().changeLock(temporaryFilename);
+            } else {
+                // lock resource to current user
+                getCms().lockResource(temporaryFilename);
+            }           
+            getCms().deleteResource(temporaryFilename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);          
+        }
         
         // switch to the temporary file project
         switchToTempProject();
         
+        // copy the file to edit to a temporary file
         try {
             getCms().copyResource(getCms().getSitePath(file), temporaryFilename, I_CmsConstants.C_COPY_AS_NEW);
             getCms().touch(temporaryFilename, System.currentTimeMillis(), CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT, false);
-        } catch (CmsVfsResourceNotFoundException e) {
-            try {
-                CmsLock tempFileLock = getCms().getLock(temporaryFilename);
-                if (!tempFileLock.equals(CmsLock.getNullLock())) {
-                    if (!tempFileLock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
-                        // the resource is locked by another user- change the lock to the current user
-                        getCms().changeLock(temporaryFilename);
-                    }
-                } else {
-                    // the resource is not locked- create a lock for the current user
-                    getCms().lockResource(temporaryFilename);
-                }
-                
-                // try to re-use the old temporary file
-                getCms().changeLastModifiedProjectId(temporaryFilename);
-            } catch (Exception ex) {
-                // should usually never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(ex);
-                }                           
-                ok = false;
-            }
         } catch (CmsException e) {
             switchToCurrentProject();
             throw e;
         }
-
-        String extendedTempFile = temporaryFilename;
-        int loop = 0;
         
-        while (!ok) {
-            // default temporary file could not be created, try other file names
-            ok = true;
-            extendedTempFile = temporaryFilename + loop;
-    
-            try {
-                getCms().copyResource(getCms().getSitePath(file), extendedTempFile);
-            } catch (CmsVfsResourceNotFoundException e) {
-                // temp file could not be created, try again
-                loop++;
-                ok = false;                
-            } catch (CmsException e) {
-                switchToCurrentProject();
-                // This was not a "file exists" exception. Very bad.
-                // We should not continue here since we may run into an endless loop.
-                throw e;
-            }
-        }
-
+        // switch back to current project
         switchToCurrentProject();
-        // We have found a temporary file!
-        temporaryFilename = extendedTempFile;
 
         return temporaryFilename;
     }
