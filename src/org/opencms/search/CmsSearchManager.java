@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/06/16 09:33:32 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.lucene.search.Similarity;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.43 $ $Date: 2005/06/13 10:00:02 $
+ * @version $Revision: 1.44 $ $Date: 2005/06/16 09:33:32 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -573,17 +573,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if (report == null) {
             report = new CmsLogReport();
         }
-
-        if (report != null) {
             
-            report.print(
-                Messages.get().container(Messages.RPT_SEARCH_INDEXING_BEGIN_0),
-                I_CmsReport.C_FORMAT_HEADLINE);
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1, indexName), I_CmsReport.C_FORMAT_HEADLINE);
-            report.println(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_DOTS_0), I_CmsReport.C_FORMAT_HEADLINE);
-        }
+        report.print(Messages.get().container(Messages.RPT_SEARCH_INDEXING_BEGIN_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
+        report.print(org.opencms.report.Messages.get().container(
+            org.opencms.report.Messages.RPT_ARGUMENT_1, indexName), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(org.opencms.report.Messages.get().container(
+            org.opencms.report.Messages.RPT_DOTS_0), I_CmsReport.C_FORMAT_HEADLINE);
 
         // get the search index by name
         index = getIndex(indexName);
