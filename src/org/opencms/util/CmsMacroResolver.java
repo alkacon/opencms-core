@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/05/24 07:45:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/16 13:53:12 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 6.0 alpha 3
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
@@ -214,7 +214,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      * <code>{@link I_CmsMacroResolver}</code> instance.<p>
      * 
      * If a macro is found that can not be mapped to a value by the given macro resolver,
-     * it is left untoched in the input.<p>
+     * it is left untouched in the input.<p>
      * 
      * @param input the input in which to resolve the macros
      * @param cms the OpenCms user context to use when resolving macros
