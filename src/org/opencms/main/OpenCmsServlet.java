@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/06/01 07:27:25 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/06/16 12:37:34 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
@@ -157,7 +157,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                     cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
                     exportData = OpenCms.getStaticExportManager().getExportData(req, cms);
                 } catch (CmsException e) {
-                    // unlikley to happen 
+                    // unlikely to happen 
                     if (LOG.isWarnEnabled()) {
                         LOG.warn(Messages.get().key(Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2, name, path), e);
                     }
