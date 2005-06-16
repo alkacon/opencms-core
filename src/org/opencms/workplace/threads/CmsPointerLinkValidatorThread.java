@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsPointerLinkValidatorThread extends A_CmsReportThread {
     
@@ -67,7 +67,8 @@ public class CmsPointerLinkValidatorThread extends A_CmsReportThread {
         initHtmlReport(cms.getRequestContext().getLocale());
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
-        m_externLinkValidator = new CmsPointerLinkValidator(getReport());
+        m_externLinkValidator = new CmsPointerLinkValidator();
+        m_externLinkValidator.setReport(getReport());
         start();
     }
     
@@ -85,7 +86,7 @@ public class CmsPointerLinkValidatorThread extends A_CmsReportThread {
     public void run() {
         try {             
             // do the validation                
-            m_externLinkValidator.launch(m_cms, null);         
+            m_externLinkValidator.validateLinks(m_cms);         
         } catch (Exception e) {
             getReport().println(e);
             if (LOG.isErrorEnabled()) {
