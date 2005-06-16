@@ -340,7 +340,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[New error screen]]></value>
+					<value><![CDATA[Errorpage]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
