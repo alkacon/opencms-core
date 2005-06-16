@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/06/15 15:54:09 $
- * Version: $Revision: 1.658 $
+ * Date   : $Date: 2005/06/16 13:05:42 $
+ * Version: $Revision: 1.659 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 5.9.2 Corrin (aka 6.0 RC 2) - June 17, 2005
+* New pointer link validation tool for the (new) Administration
 * Fixed issue that the synchronization report does not return to the workplace after clicking the 'ok'-button
 ! Tool for the (new) Administration to edit the synchronization settings
 - Update of the 'howto_workplace_translation' documentation and its localization tool to the new localization scheme
