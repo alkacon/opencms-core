@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/06/02 13:57:08 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/16 07:33:21 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.threads.CmsHtmlLinkValidatorThread;
+import org.opencms.workplace.threads.CmsXmlDocumentLinkValidatorThread;
 import org.opencms.workplace.threads.CmsPublishThread;
 
 import java.text.DateFormat;
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1.12
  */
@@ -305,7 +305,7 @@ public class CmsPublishProject extends CmsReport {
                     }
                     
                     // start the link validation thread before publishing
-                    CmsHtmlLinkValidatorThread thread = new CmsHtmlLinkValidatorThread(getCms(), publishResource, "true".equals(getParamPublishsiblings()), getSettings());
+                    CmsXmlDocumentLinkValidatorThread thread = new CmsXmlDocumentLinkValidatorThread(getCms(), publishResource, "true".equals(getParamPublishsiblings()), getSettings());
                     setParamAction(REPORT_BEGIN);
                     setParamThread(thread.getUUID().toString());
   

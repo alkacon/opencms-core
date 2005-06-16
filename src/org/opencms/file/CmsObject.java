@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.128 $
+ * Date   : $Date: 2005/06/16 07:28:03 $
+ * Version: $Revision: 1.129 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.128 $
+ * @version $Revision: 1.129 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -2996,7 +2996,7 @@ public class CmsObject {
     /**
      * Validates the HTML links in the unpublished files of the specified
      * publish list, if a file resource type implements the interface 
-     * <code>{@link org.opencms.validation.I_CmsHtmlLinkValidatable}</code>.<p>
+     * <code>{@link org.opencms.validation.I_CmsXmlDocumentLinkValidatable}</code>.<p>
      * 
      * @param publishList an OpenCms publish list
      * @param report a report to write the messages to
@@ -3005,7 +3005,7 @@ public class CmsObject {
      * 
      * @throws Exception if something goes wrong
      * 
-     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
+     * @see org.opencms.validation.I_CmsXmlDocumentLinkValidatable
      */
     public Map validateHtmlLinks(CmsPublishList publishList, I_CmsReport report) throws Exception {
 

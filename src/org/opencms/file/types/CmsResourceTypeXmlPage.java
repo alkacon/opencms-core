@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2005/05/30 15:20:41 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/16 07:28:11 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsHtmlConverter;
-import org.opencms.validation.I_CmsHtmlLinkValidatable;
+import org.opencms.validation.I_CmsXmlDocumentLinkValidatable;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.page.CmsXmlPage;
@@ -64,10 +64,10 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.1
  */
-public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
+public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXmlDocumentLinkValidatable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlPage.class);
@@ -115,7 +115,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
     }
     
     /**
-     * @see org.opencms.validation.I_CmsHtmlLinkValidatable#findLinks(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
+     * @see org.opencms.validation.I_CmsXmlDocumentLinkValidatable#findLinks(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     public List findLinks(CmsObject cms, CmsResource resource) {
 

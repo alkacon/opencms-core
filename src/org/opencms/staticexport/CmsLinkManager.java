@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/04/30 11:15:38 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/06/16 07:28:57 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.validation.CmsPointerLinkValidationResult;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.net.MalformedURLException;
@@ -56,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public class CmsLinkManager {
 
@@ -65,7 +66,10 @@ public class CmsLinkManager {
 
     /** Base URL to calculate absolute links. */
     private static URL m_baseUrl;
-
+    
+    /** Stores the results of a extern link validation. */
+    private CmsPointerLinkValidationResult m_pointerLinkValidationResult;
+    
     /**
      * Public constructor.<p>
      */
@@ -306,6 +310,24 @@ public class CmsLinkManager {
     }
 
     /**
+     * Returns the result of the last extern link validation.<p>
+     * 
+     * @return the result of the last extern link validation
+     */
+    public CmsPointerLinkValidationResult getPointerLinkValidationResult() {
+        return m_pointerLinkValidationResult;   
+    }
+    
+    /**
+     * Sets the result of a extern link validation.<p>
+     * 
+     * @param externLinkValidationResult the result a extern link validation
+     */
+    public void setPointerLinkValidationResult(CmsPointerLinkValidationResult externLinkValidationResult) {
+        m_pointerLinkValidationResult = externLinkValidationResult;   
+    } 
+
+    /**
      * Substitutes the contents of a link by adding the context path and 
      * servlet name, and in the case of the "online" project also according
      * to the configured static export settings.<p>
@@ -479,4 +501,6 @@ public class CmsLinkManager {
         }
         return serverPrefix.concat(resultLink);
     }
+    
+    
 }

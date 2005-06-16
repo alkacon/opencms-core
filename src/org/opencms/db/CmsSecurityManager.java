@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2005/06/16 07:27:31 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.74 $
+ * @version $Revision: 1.75 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -4734,7 +4734,7 @@ public final class CmsSecurityManager {
     /**
      * Validates the HTML links in the unpublished files of the specified
      * publish list, if a file resource type implements the interface 
-     * <code>{@link org.opencms.validation.I_CmsHtmlLinkValidatable}</code>.<p>
+     * <code>{@link org.opencms.validation.I_CmsXmlDocumentLinkValidatable}</code>.<p>
      * 
      * @param cms the current user's Cms object
      * @param publishList an OpenCms publish list

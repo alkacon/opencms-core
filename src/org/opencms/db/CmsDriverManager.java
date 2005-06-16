@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.526 $
+ * Date   : $Date: 2005/06/16 07:27:31 $
+ * Version: $Revision: 1.527 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.validation.CmsHtmlLinkValidator;
+import org.opencms.validation.CmsXmlDocumentLinkValidator;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
@@ -110,7 +110,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.526 $
+ * @version $Revision: 1.527 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -283,7 +283,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     private Map m_groupCache;
 
     /** The HTML link validator. */
-    private CmsHtmlLinkValidator m_htmlLinkValidator;
+    private CmsXmlDocumentLinkValidator m_htmlLinkValidator;
 
     /** The class used for cache key generation. */
     private I_CmsCacheKey m_keyGenerator;
@@ -3034,9 +3034,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Returns the HTML link validator.<p>
      * 
      * @return the HTML link validator
-     * @see CmsHtmlLinkValidator
+     * @see CmsXmlDocumentLinkValidator
      */
-    public CmsHtmlLinkValidator getHtmlLinkValidator() {
+    public CmsXmlDocumentLinkValidator getHtmlLinkValidator() {
 
         return m_htmlLinkValidator;
     }
@@ -3589,7 +3589,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         getProjectDriver().fillDefaults(new CmsDbContext());
 
         // initialize the HTML link validator
-        m_htmlLinkValidator = new CmsHtmlLinkValidator(this);
+        m_htmlLinkValidator = new CmsXmlDocumentLinkValidator(this);
     }
 
     /**
@@ -6653,7 +6653,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Validates the HTML links in the unpublished files of the specified
      * publish list, if a file resource type implements the interface 
-     * <code>{@link org.opencms.validation.I_CmsHtmlLinkValidatable}</code>.<p>
+     * <code>{@link org.opencms.validation.I_CmsXmlDocumentLinkValidatable}</code>.<p>
      * 
      * @param cms the current user's Cms object
      * @param publishList an OpenCms publish list
