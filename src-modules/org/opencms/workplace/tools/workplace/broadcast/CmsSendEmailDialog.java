@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSendEmailDialog.java,v $
- * Date   : $Date: 2005/06/15 13:50:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/16 10:55:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,16 @@
 package org.opencms.workplace.tools.workplace.broadcast;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsSessionInfo;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWidgetDialog;
-import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.CmsTextareaWidget;
+import org.opencms.workplace.CmsWidgetDialogParameter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,26 +49,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Dialog to edit a message to broadcast in the administration view.<p>
+ * Dialog to edit an email to send in the administration view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
-public class CmsSendEmailDialog extends CmsWidgetDialog {
+public class CmsSendEmailDialog extends A_CmsMessageDialog {
 
     /** localized messages Keys prefix. */
-    public static final String C_KEY_PREFIX = "message";
-
-    /** Defines which pages are valid for this dialog. */
-    public static final String[] PAGES = {"page1"};
-
-    /** Request parameter name for the project id. */
-    public static final String PARAM_SESSIONIDS = "sessionids";
-
-    /** Stores the value of the request parameter for the project id. */
-    private String m_paramSessionids;
+    public static final String C_KEY_PREFIX = "email";
 
     /**
      * Public constructor with JSP action element.<p>
@@ -95,30 +91,15 @@ public class CmsSendEmailDialog extends CmsWidgetDialog {
         List errors = new ArrayList();
 
         try {
-            // TODO
+            m_msgInfo.setTo(getEmailAddresses());
+            m_msgInfo.sendEmail(getCms());
         } catch (Throwable t) {
             errors.add(t);
+        } finally {
+            m_msgInfo.setTo(getToNames());
         }
-    }
-
-    /**
-     * Returns the list of session ids parameter value.<p>
-     * 
-     * @return the list of session ids parameter value
-     */
-    public String getParamSessionids() {
-
-        return m_paramSessionids;
-    }
-
-    /**
-     * Sets the list of session ids parameter value.<p>
-     * 
-     * @param sessionIds the list of session ids parameter value
-     */
-    public void setParamSessionids(String sessionIds) {
-
-        m_paramSessionids = sessionIds;
+        // set the list of errors to display when saving failed
+        setCommitErrors(errors);
     }
 
     /**
@@ -134,9 +115,14 @@ public class CmsSendEmailDialog extends CmsWidgetDialog {
 
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
-            //result.append(dialogBlockStart(key(Messages.GUI_PROJECT_EDITOR_LABEL_IDENTIFICATION_BLOCK_0)));
+            result.append(dialogBlockStart(key(Messages.GUI_MESSAGE_EDITOR_LABEL_HEADER_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 4));
+            result.append(createDialogRowsHtml(0, 3));
+            result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
+            result.append(dialogBlockStart(key(Messages.GUI_MESSAGE_EDITOR_LABEL_CONTENT_BLOCK_0)));
+            result.append(createWidgetTableStart());
+            result.append(createDialogRowsHtml(4, 4));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -151,71 +137,44 @@ public class CmsSendEmailDialog extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         // initialize the project object to use for the dialog
-        initProjectObject();
+        initMessageObject();
 
         setKeyPrefix(C_KEY_PREFIX);
 
-        // TODO
+        addWidget(new CmsWidgetDialogParameter(m_msgInfo, "from", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_msgInfo, "to", PAGES[0], new CmsDisplayWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_msgInfo, "cc", PAGES[0], "", new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(m_msgInfo, "subject", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_msgInfo, "msg", PAGES[0], new CmsTextareaWidget()));
     }
 
     /**
-     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
-     */
-    protected String[] getPageArray() {
-
-        return PAGES;
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    protected void initMessages() {
-
-        // add specific dialog resource bundle
-        addMessages(Messages.get().getBundleName());
-        // add default resource bundles
-        super.initMessages();
-    }
-
-    /**
-     * Initializes the project object to work with depending on the dialog state and request parameters.<p>
+     * Returns a semicolon separated list of email addresses.<p>
      * 
-     * Two initializations of the project object on first dialog call are possible:
-     * <ul>
-     * <li>edit an existing project</li>
-     * <li>create a new project</li>
-     * </ul>
+     * @return a semicolon separated list of email addresses
      */
-    protected void initProjectObject() {
+    private String getEmailAddresses() {
 
-        //Object o = null;
-
-        try {
-            // TODO
-        } catch (Exception e) {
-            // TODO
+        List emails = new ArrayList();
+        Iterator itIds = idsList().iterator();
+        while (itIds.hasNext()) {
+            String id = itIds.next().toString();
+            CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(id);
+            if (session != null) {
+                String emailAddress = session.getUser().getEmail();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(emailAddress) && !emails.contains(emailAddress)) {
+                    emails.add(emailAddress);
+                }
+            }
         }
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        // initialize parameters and dialog actions in super implementation
-        super.initWorkplaceRequestValues(settings, request);
-
-        // save the current state of the project (may be changed because of the widget values)
-        //setDialogObject(m_project);
-    }
-
-    /**
-     * Checks if the edited message has to be sent to all sessions.<p>
-     * 
-     * @return <code>true</code> if the edited message has to be sent to all sessions
-     */
-    private boolean isForAll() {
-
-        return CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamSessionids());
+        StringBuffer result = new StringBuffer(256);
+        Iterator itEmails = emails.iterator();
+        while (itEmails.hasNext()) {
+            result.append(itEmails.next().toString());
+            if (itEmails.hasNext()) {
+                result.append("; ");
+            }
+        }
+        return result.toString();
     }
 }

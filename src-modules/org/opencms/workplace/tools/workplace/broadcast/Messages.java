@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/Messages.java,v $
- * Date   : $Date: 2005/06/15 16:01:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/16 10:55:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,10 +43,19 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_EMPTY_STRING_0 = "ERR_EMPTY_STRING_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_SEND_EMAIL_0 = "ERR_SEND_EMAIL_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_SEND_MESSAGE_0 = "ERR_SEND_MESSAGE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_MESSAGE_EDITOR_LABEL_CONTENT_BLOCK_0 = "GUI_MESSAGE_EDITOR_LABEL_CONTENT_BLOCK_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_MESSAGE_EDITOR_LABEL_HEADER_BLOCK_0 = "GUI_MESSAGE_EDITOR_LABEL_HEADER_BLOCK_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_ACTION_MESSAGE_HELP_0 = "GUI_SESSIONS_LIST_ACTION_MESSAGE_HELP_0";
@@ -82,9 +91,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SESSIONS_LIST_COLS_INACTIVE_0 = "GUI_SESSIONS_LIST_COLS_INACTIVE_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_SESSIONS_LIST_COLS_INACTIVE_FORMAT_4 = "GUI_SESSIONS_LIST_COLS_INACTIVE_FORMAT_4";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_COLS_MESSAGE_0 = "GUI_SESSIONS_LIST_COLS_MESSAGE_0";
 
     /** Message contant for key in the resource bundle. */
@@ -106,13 +112,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SESSIONS_LIST_DEFACTION_EMAIL_HELP_0 = "GUI_SESSIONS_LIST_DEFACTION_EMAIL_HELP_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_MESSAGE_EDITOR_LABEL_HEADER_BLOCK_0 = "GUI_MESSAGE_EDITOR_LABEL_HEADER_BLOCK_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_DEFACTION_EMAIL_NAME_0 = "GUI_SESSIONS_LIST_DEFACTION_EMAIL_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_MESSAGE_EDITOR_LABEL_CONTENT_BLOCK_0 = "GUI_MESSAGE_EDITOR_LABEL_CONTENT_BLOCK_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_SESSIONS_LIST_MACTION_EMAIL_CONF_0 = "GUI_SESSIONS_LIST_MACTION_EMAIL_CONF_0";

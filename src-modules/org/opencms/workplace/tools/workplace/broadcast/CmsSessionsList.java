@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2005/06/15 16:01:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/16 10:55:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Session list for broadcasting messages.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsSessionsList extends A_CmsListDialog {
@@ -152,19 +152,28 @@ public class CmsSessionsList extends A_CmsListDialog {
     public void executeListMultiActions() throws CmsRuntimeException {
 
         Map params = new HashMap();
-        params.put(CmsBroadcastMessageDialog.PARAM_SESSIONIDS, getParamSelItems());
+        params.put(A_CmsMessageDialog.PARAM_SESSIONIDS, getParamSelItems());
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
         if (getParamListAction().equals(LIST_MACTION_MESSAGE)) {
             // execute the send message multiaction
             try {
-                // forward to the edit user screen
+                // forward to the edit message screen
                 getToolManager().jspRedirectTool(this, "/workplace/broadcast/message", params);
             } catch (IOException e) {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SEND_MESSAGE_0), e);
             }
+        } else if (getParamListAction().equals(LIST_MACTION_EMAIL)) {
+                // execute the send email multiaction
+                try {
+                    // forward to the edit email screen
+                    getToolManager().jspRedirectTool(this, "/workplace/broadcast/email", params);
+                } catch (IOException e) {
+                    // should never happen
+                    throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SEND_MESSAGE_0), e);
+                }
         } else {
             throwListUnsupportedActionException();
         }
@@ -180,7 +189,7 @@ public class CmsSessionsList extends A_CmsListDialog {
     public void executeListSingleActions() throws CmsRuntimeException {
 
         Map params = new HashMap();
-        params.put(CmsBroadcastMessageDialog.PARAM_SESSIONIDS, getSelectedItem().getId());
+        params.put(A_CmsMessageDialog.PARAM_SESSIONIDS, getSelectedItem().getId());
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
@@ -299,17 +308,22 @@ public class CmsSessionsList extends A_CmsListDialog {
         userCol.setWidth("20%");
         // add it to the list definition
         metadata.addColumn(userCol);
+        // create default edit message action
+        CmsListDefaultAction messageEditAction = new CmsListDefaultAction(LIST_ID, LIST_ACTION_MESSAGE);
+        messageEditAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_MESSAGE_NAME_0));
+        messageEditAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_MESSAGE_HELP_0));
+        userCol.setDefaultAction(messageEditAction);
 
         // add column for email
         CmsListColumnDefinition emailCol = new CmsListColumnDefinition(LIST_COLUMN_EMAIL);
         emailCol.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_COLS_EMAIL_0));
         emailCol.setWidth("30%");
         metadata.addColumn(emailCol);
-        // create default edit action
-        CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_ID, LIST_DEFACTION_EMAIL);
-        defEditAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_DEFACTION_EMAIL_NAME_0));
-        defEditAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_DEFACTION_EMAIL_HELP_0));
-        emailCol.setDefaultAction(defEditAction);
+        // create default edit email action
+        CmsListDefaultAction emailEditAction = new CmsListDefaultAction(LIST_ID, LIST_DEFACTION_EMAIL);
+        emailEditAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_DEFACTION_EMAIL_NAME_0));
+        emailEditAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_DEFACTION_EMAIL_HELP_0));
+        emailCol.setDefaultAction(emailEditAction);
 
         // add column for creation date
         CmsListColumnDefinition creationCol = new CmsListColumnDefinition(LIST_COLUMN_CREATION);
@@ -325,7 +339,7 @@ public class CmsSessionsList extends A_CmsListDialog {
         CmsListColumnDefinition inactiveCol = new CmsListColumnDefinition(LIST_COLUMN_INACTIVE);
         inactiveCol.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_COLS_INACTIVE_0));
         inactiveCol.setWidth("10%");
-        inactiveCol.setFormatter(new CmsListTimeIntervalFormatter(Messages.get().container(Messages.GUI_SESSIONS_LIST_COLS_INACTIVE_FORMAT_4)));
+        inactiveCol.setFormatter(new CmsListTimeIntervalFormatter());
         metadata.addColumn(inactiveCol);
 
         // add column for project
