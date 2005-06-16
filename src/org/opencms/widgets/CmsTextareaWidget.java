@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsTextareaWidget.java,v $
- * Date   : $Date: 2005/05/30 15:47:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/16 14:40:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,18 +41,31 @@ import org.opencms.i18n.CmsEncoder;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.2
  */
 public class CmsTextareaWidget extends A_CmsWidget {
+
+    /** Default number of rows to display. */
+    private static final int C_DEFAULT_ROWS_NUMBER = 4;
 
     /**
      * Creates a new textarea widget.<p>
      */
     public CmsTextareaWidget() {
 
-        // empty constructor is required for class registration
-        this("");
+        // default configuration is to display 4 rows
+        this(C_DEFAULT_ROWS_NUMBER);
+    }
+
+    /**
+     * Creates a new textarea widget with the given number of rows.<p>
+     * 
+     * @param rows the number of rows to display
+     */
+    public CmsTextareaWidget(int rows) {
+
+        super("" + rows);
     }
 
     /**
@@ -72,6 +85,12 @@ public class CmsTextareaWidget extends A_CmsWidget {
 
         String id = param.getId();
         StringBuffer result = new StringBuffer(16);
+        int rows = C_DEFAULT_ROWS_NUMBER;
+        try {
+            rows = new Integer(getConfiguration()).intValue();
+        } catch (Exception e) {
+            // ignore
+        }
 
         result.append("<td class=\"xmlTd\">");
         result.append("<textarea class=\"xmlInput maxwidth");
@@ -80,7 +99,9 @@ public class CmsTextareaWidget extends A_CmsWidget {
         }
         result.append("\" name=\"");
         result.append(id);
-        result.append("\" rows=\"4\" wrap=\"virtual\" style=\"overflow:auto;\">");
+        result.append("\" rows=\"");
+        result.append(rows);
+        result.append("\" wrap=\"virtual\" style=\"overflow:auto;\">");
         result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
         result.append("</textarea>");
         result.append("</td>");

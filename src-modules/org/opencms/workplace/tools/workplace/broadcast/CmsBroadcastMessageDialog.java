@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsBroadcastMessageDialog.java,v $
- * Date   : $Date: 2005/06/16 10:55:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/16 14:40:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.9.1
  */
 public class CmsBroadcastMessageDialog extends A_CmsMessageDialog {
@@ -148,6 +148,6 @@ public class CmsBroadcastMessageDialog extends A_CmsMessageDialog {
 
         addWidget(new CmsWidgetDialogParameter(m_msgInfo, "from", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_msgInfo, "to", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_msgInfo, "msg", PAGES[0], new CmsTextareaWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_msgInfo, "msg", PAGES[0], new CmsTextareaWidget(12)));
     }
 }

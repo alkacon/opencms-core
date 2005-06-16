@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSendEmailDialog.java,v $
- * Date   : $Date: 2005/06/16 10:55:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/16 14:40:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.9.1
  */
 public class CmsSendEmailDialog extends A_CmsMessageDialog {
@@ -145,7 +145,7 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
         addWidget(new CmsWidgetDialogParameter(m_msgInfo, "to", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_msgInfo, "cc", PAGES[0], "", new CmsInputWidget(), 0, 1));
         addWidget(new CmsWidgetDialogParameter(m_msgInfo, "subject", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_msgInfo, "msg", PAGES[0], new CmsTextareaWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_msgInfo, "msg", PAGES[0], new CmsTextareaWidget(12)));
     }
 
     /**
