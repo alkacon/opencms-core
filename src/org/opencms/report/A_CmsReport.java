@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2005/06/01 12:36:12 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/16 07:28:44 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public abstract class A_CmsReport implements I_CmsReport {
 
@@ -163,6 +163,23 @@ public abstract class A_CmsReport implements I_CmsReport {
         println(container.key(getLocale()), C_FORMAT_DEFAULT);
     }
     
+    /**
+     * @see org.opencms.report.I_CmsReport#printMessageWithParam(org.opencms.i18n.CmsMessageContainer,Object)
+     */
+    public synchronized void printMessageWithParam(CmsMessageContainer container, Object param) {
+        print(container, I_CmsReport.C_FORMAT_NOTE);                   
+        print(Messages.get().container(Messages.RPT_ARGUMENT_1, param));
+        print(Messages.get().container(Messages.RPT_DOTS_0));
+    }    
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#printMessageWithParam(int,int,org.opencms.i18n.CmsMessageContainer,Object)
+     */
+    public synchronized void printMessageWithParam(int m, int n, CmsMessageContainer container, Object param) {
+        print(Messages.get().container(Messages.RPT_SUCCESSION_2, 
+            String.valueOf(m), String.valueOf(n)), I_CmsReport.C_FORMAT_NOTE);
+        printMessageWithParam(container, param);
+    }
 
     /**
      * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer, int)
