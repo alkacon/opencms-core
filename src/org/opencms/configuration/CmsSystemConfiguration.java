@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/06/16 14:21:43 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/16 14:35:55 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1059,28 +1059,18 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             m_loginManager = new CmsLoginManager(
                 CmsLoginManager.DISABLE_MINUTES_DEFAULT,
                 CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT);
-            if (m_loginMessage != null) {
-                // null OpenCms object is ok during configuration
-                try {
-                    m_loginManager.setLoginMessage(null, m_loginMessage);
-                } catch (CmsRoleViolationException e) {
-                    // this should never happen
-                }
+        }
+        if (m_loginMessage != null) {
+            // null OpenCms object is ok during configuration
+            try {
+                m_loginManager.setLoginMessage(null, m_loginMessage);
+            } catch (CmsRoleViolationException e) {
+                // this should never happen
             }
         }
         return m_loginManager;
     }
-
-    /**
-     * Returns the login message read from the configuration.<p>
-     *
-     * @return the login message read from the configuration
-     */
-    public CmsLoginMessage getLoginMessage() {
-
-        return m_loginMessage;
-    }
-
+    
     /**
      * Returns the configured mail settings.<p>
      * 
