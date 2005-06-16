@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2005/06/16 07:28:44 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/16 09:33:51 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public interface I_CmsReport {
         
@@ -163,9 +163,9 @@ public interface I_CmsReport {
     void printMessageWithParam(CmsMessageContainer container, Object param);
     
     /**
-     * Prints a localized message, followed by a parametera and dots to the report.<p>
+     * Convenience method to print a localized message, followed by a parameter and dots to the report.<p>
      * 
-     * e.g.: ( 3 / 8 ) Deleting filename.txt ...
+     * The output follows the pattern: ( 3 / 8 ) Deleting filename.txt ...
      * 
      * @param m the number of the report output
      * @param n the total number of report outputs
