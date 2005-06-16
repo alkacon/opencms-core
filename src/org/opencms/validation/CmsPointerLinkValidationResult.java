@@ -42,7 +42,7 @@ import java.util.Map.Entry;
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsPointerLinkValidationResult {
 
@@ -71,18 +71,24 @@ public class CmsPointerLinkValidationResult {
      * @return a Html representation of this external link validation result
      */
     public String toHtml(Locale locale) {
-        StringBuffer result = new StringBuffer(1024);
-        Iterator brokenLinks = m_brokenLinks.entrySet().iterator();
-        result.append(Messages.get().key(locale, Messages.GUI_LINK_VALIDATION_RESULTS_INTRO_1, 
-            new Object[] {m_validationDate})).append("<ul>");
-        while (brokenLinks.hasNext()) {
-            Entry link = (Map.Entry)brokenLinks.next();
-            String linkPath = (String)link.getKey();
-            String linkUrl = (String)link.getValue();
-            String msg = Messages.get().key(locale, Messages.GUI_LINK_POINTING_TO_2, 
-                new Object[] {linkPath, linkUrl});
-            result.append("<li>").append(msg).append("</li>"); 
-        }
-        return result.append("</ul>").toString(); 
+        if (m_brokenLinks.size() > 0) {
+            StringBuffer result = new StringBuffer(1024);
+            Iterator brokenLinks = m_brokenLinks.entrySet().iterator();
+            result.append(
+                Messages.get().key(locale, Messages.GUI_LINK_VALIDATION_RESULTS_INTRO_1,
+                    new Object[] {m_validationDate})).append("<ul>");
+            while (brokenLinks.hasNext()) {
+                Entry link = (Map.Entry)brokenLinks.next();
+                String linkPath = (String)link.getKey();
+                String linkUrl = (String)link.getValue();
+                String msg = Messages.get().key(locale, Messages.GUI_LINK_POINTING_TO_2,
+                    new Object[] {linkPath, linkUrl});
+                result.append("<li>").append(msg).append("</li>");
+            }
+            return result.append("</ul>").toString();
+        } else {
+            return Messages.get().key(locale, Messages.GUI_LINK_VALIDATION_RESULTS_ALL_VALID_1, 
+                new Object[] {m_validationDate});
+        }    
     }
 }
