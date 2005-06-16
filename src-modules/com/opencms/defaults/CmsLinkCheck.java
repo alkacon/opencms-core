@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2005/05/31 15:51:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/16 07:32:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package com.opencms.defaults;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.mail.CmsHtmlMail;
 import org.opencms.mail.CmsMailTransport;
 import org.opencms.mail.CmsSimpleMail;
@@ -41,6 +43,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.I_CmsScheduledJob;
+import org.opencms.validation.CmsPointerLinkValidator;
 
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsRegistry;
@@ -88,28 +91,6 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
      */
     public CmsLinkCheck() {
         // empty
-    }
-
-    /**
-     * Checks if the given url is valid.<p>
-     *
-     * @param url the url to check
-     * @return false if the url could not be accessed
-     */
-    public static boolean checkUrl(String url) {
-        try {
-            URL checkedUrl = new URL(url);
-            if (url.toLowerCase().startsWith("http")) {
-                HttpURLConnection httpcon = (HttpURLConnection)checkedUrl.openConnection();
-                return (httpcon.getResponseCode() == 200);
-            } else {
-                return true;
-            }
-        } catch (MalformedURLException mue) {
-            return false;
-        } catch (IOException ioe) {
-            return false;
-        }
     }
 
     /**
@@ -354,8 +335,8 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
         StringBuffer mailContent = new StringBuffer(template.getProcessedDataValue("single_message"));
 
         // get all links from the database
-        // linkList = new Vector(cms.readFilesByType(1, CmsResourceTypePointer.C_RESOURCE_TYPE_ID));
-        linkList = new Vector();
+        linkList = new Vector(cms.readResources(I_CmsConstants.C_ROOT, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED
+            .addRequireType(CmsResourceTypePointer.getStaticTypeId())));
         for (int i = 0; i < linkList.size(); i++) {
             CmsFile linkElement = (CmsFile)linkList.elementAt(i);
             String linkName = cms.getSitePath(linkElement);
@@ -371,7 +352,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
 
                 // check the url,
                 // if the url is not readable add it to the list of not available urls
-                if (!checkUrl(linkUrl)) {
+                if (!CmsPointerLinkValidator.checkUrl(linkUrl)) {
                     // get the vector of resourcenames from the hashtable of urls
                     Vector inList = null;
                     inList = (Vector)notAvailable.get(linkUrl);
