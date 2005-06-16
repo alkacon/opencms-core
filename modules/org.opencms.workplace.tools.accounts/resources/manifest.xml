@@ -320,11 +320,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_EDITGROUP_ADMIN_TOOL_GROUP_0}]]></value>
+					<value><![CDATA[${key.GUI_EDITGROUP_OVERVIEW_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.GUI_EDITGROUP_ADMIN_TOOL_HELP_0}]]></value>
+					<value><![CDATA[${key.GUI_EDITGROUP_OVERVIEW_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -332,7 +332,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.GUI_EDITGROUP_ADMIN_TOOL_NAME_0}:${key.GUI_EDITGROUP_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+					<value><![CDATA[${key.GUI_EDITGROUP_OVERVIEW_ADMIN_TOOL_NAME_0}:${key.GUI_EDITGROUP_OVERVIEW_ADMIN_TOOL_NAVBARNAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>

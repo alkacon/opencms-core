@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/06/04 08:11:29 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/16 14:30:34 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
@@ -197,6 +197,15 @@ public class CmsListMetadata {
     public List getListColumns() {
 
         return m_columns.elementList();
+    }
+    
+    /**
+     * Returns all detail definitions.<p>
+     * 
+     * @return a list of <code>{@link CmsListItemDetails}</code>.
+     */
+    public List getListDetails() {
+        return m_itemDetails.elementList();
     }
 
     /**

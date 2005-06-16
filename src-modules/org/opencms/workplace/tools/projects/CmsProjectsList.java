@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2005/06/15 16:01:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/16 14:30:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Main project management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsProjectsList extends A_CmsListDialog {
@@ -290,6 +290,32 @@ public class CmsProjectsList extends A_CmsListDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        List projects = getList().getAllContent();
+        Iterator itProjects = projects.iterator();
+        while (itProjects.hasNext()) {
+            CmsListItem item = (CmsListItem)itProjects.next();
+            try {
+                if (detailId.equals(LIST_DETAIL_RESOURCES)) {
+                    CmsProject project = getCms().readProject(new Integer(item.getId()).intValue());
+                    StringBuffer html = new StringBuffer(512);
+                    Iterator resources = getCms().readProjectResources(project).iterator();
+                    while (resources.hasNext()) {
+                        html.append(resources.next().toString());
+                        html.append("<br>");
+                    }
+                    item.set(LIST_DETAIL_RESOURCES, html.toString());
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     protected List getListItems() throws CmsException {
@@ -402,14 +428,19 @@ public class CmsProjectsList extends A_CmsListDialog {
         // publish enabled action
         CmsListDirectAction publishEnabledAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_PUBLISH);
         publishEnabledAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_NAME_0));
-        publishEnabledAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_HELP_0));
-        publishEnabledAction.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_CONF_0));
+        publishEnabledAction.setHelpText(Messages.get().container(
+            Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_HELP_0));
+        publishEnabledAction.setConfirmationMessage(Messages.get().container(
+            Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_CONF_0));
         publishEnabledAction.setIconPath(PATH_BUTTONS + "project_publish.png");
         // publish disabled action
         CmsListDirectAction publishDisabledAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_PUBLISH);
-        publishDisabledAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_NAME_0));
-        publishDisabledAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_HELP_0));
-        publishDisabledAction.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_CONF_0));
+        publishDisabledAction.setName(Messages.get().container(
+            Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_NAME_0));
+        publishDisabledAction.setHelpText(Messages.get().container(
+            Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_HELP_0));
+        publishDisabledAction.setConfirmationMessage(Messages.get().container(
+            Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_CONF_0));
         publishDisabledAction.setIconPath(PATH_BUTTONS + "project_publish_disabled.png");
         publishDisabledAction.setEnabled(false);
         // adds a publish enabled/disabled direct action

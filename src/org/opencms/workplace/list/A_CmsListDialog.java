@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/15 13:50:49 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/16 14:30:34 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspWriter;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -262,11 +262,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public void actionDialog() throws JspException {
 
         if (getAction() == ACTION_CANCEL) {
-                // ACTION: cancel button pressed
-                actionCloseDialog();
-                return;
+            // ACTION: cancel button pressed
+            actionCloseDialog();
+            return;
         }
-        refreshList();        
+        refreshList();
         switch (getAction()) {
 
             case ACTION_CANCEL:
@@ -310,7 +310,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public String defaultActionHtml() {
 
-        if (getList()!=null && getList().getAllContent().isEmpty()) {
+        if (getList() != null && getList().getAllContent().isEmpty()) {
             refreshList();
         }
         StringBuffer result = new StringBuffer(2048);
@@ -417,9 +417,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public void executeListIndepActions() {
 
-        // toogle item details
         if (getList().getMetadata().getItemDetailDefinition(getParamListAction()) != null) {
+            // toogle item details
             getList().getMetadata().toogleDetailState(getParamListAction());
+            // lazzy initialization
+            initializeDetail(getParamListAction());
         }
         listSave();
     }
@@ -721,6 +723,17 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
+     * Lazzy initialization for detail data.<p>
+     * 
+     * Should fill the given detail column for every list item in <code>{@link CmsHtmlList#getAllContent()}</code>
+     * 
+     * Should not throw any kind of exception.<p>
+     * 
+     * @param detailId the id of the detail to initialize
+     */
+    protected abstract void fillDetails(String detailId);
+
+    /**
      * Should generate a list with the list items to be displayed.<p>
      * 
      * @return a list of <code>{@link CmsListItem}</code>s
@@ -907,11 +920,35 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
         try {
             getList().addAllItems(getListItems());
+            // initialize detail columns
+            Iterator itDetails = getList().getMetadata().getListDetails().iterator();
+            while (itDetails.hasNext()) {
+                initializeDetail(((CmsListItemDetails)itDetails.next()).getId());
+            }
         } catch (Exception e) {
             m_initError = new CmsRuntimeException(Messages.get().container(
                 Messages.ERR_LIST_FILL_1,
                 getList().getName().key(getLocale()),
                 null), e);
+        }
+    }
+
+    /**
+     * Lazzy details initialization.<p>
+     * 
+     * @param detailId the id of the detail column
+     */
+    private void initializeDetail(String detailId) {
+
+        // if detail column not visible
+        if (getList().getMetadata().getItemDetailDefinition(detailId).isVisible()) {
+            // if the list is not empty
+            if (!getList().getAllContent().isEmpty()) {
+                // if the detail column has not been previously initialized
+                if (((CmsListItem)getList().getAllContent().get(0)).get(detailId) == null) {
+                    fillDetails(detailId);
+                }
+            }
         }
     }
 }

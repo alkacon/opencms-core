@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/06/08 10:46:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/16 14:30:34 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Main module management view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsModulesList extends A_CmsListDialog {
@@ -243,6 +243,85 @@ public class CmsModulesList extends A_CmsListDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        // get content
+        List moduleNames = getList().getAllContent();
+        Iterator i = moduleNames.iterator();
+        while (i.hasNext()) {
+            CmsListItem item = (CmsListItem)i.next();
+            String moduleName = item.getId();
+            CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+            StringBuffer html = new StringBuffer(32);
+            if (detailId.equals(LIST_DETAIL_AUTHORINFO)) {
+                // author
+                html.append(module.getAuthorName());
+                html.append("&nbsp;(");
+                html.append(module.getAuthorEmail());
+                html.append(")");
+            } else if (detailId.equals(LIST_DETAIL_RESOURCES)) {
+                //resources
+                Iterator j = module.getResources().iterator();
+                while (j.hasNext()) {
+                    String resource = (String)j.next();
+                    html.append(resource);
+                    html.append("<br>");
+                }
+            } else if (detailId.equals(LIST_DETAIL_DEPENDENCIES)) {
+                // dependencies
+                Iterator k = module.getDependencies().iterator();
+                while (k.hasNext()) {
+                    CmsModuleDependency dep = (CmsModuleDependency)k.next();
+                    html.append(dep.getName());
+                    html.append("&nbsp;Version:");
+                    html.append(dep.getVersion());
+                    html.append("<br>");
+                }
+            } else if (detailId.equals(LIST_DETAIL_RESTYPES)) {
+                // resourcetypes
+                StringBuffer restypes = new StringBuffer(32);
+                Iterator l = module.getResourceTypes().iterator();
+                boolean addRestypes = false;
+                while (l.hasNext()) {
+                    addRestypes = true;
+                    I_CmsResourceType resourceType = (I_CmsResourceType)l.next();
+                    restypes.append(Messages.get().key(Messages.GUI_MODULES_LABEL_RESTYPES_DETAIL_0));
+                    restypes.append(":&nbsp;");
+                    restypes.append(resourceType.getTypeName());
+                    restypes.append("&nbsp;ID:");
+                    restypes.append(resourceType.getTypeId());
+                    restypes.append("<br>");
+                }
+                StringBuffer explorersettings = new StringBuffer(32);
+                Iterator m = module.getExplorerTypes().iterator();
+                boolean addExplorersettings = false;
+                while (m.hasNext()) {
+                    addExplorersettings = true;
+                    CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)m.next();
+                    explorersettings.append(Messages.get().key(Messages.GUI_MODULES_LABEL_EXPLORERSETTINGSS_DETAIL_0));
+                    explorersettings.append(":&nbsp;");
+                    explorersettings.append(settings.getName());
+                    explorersettings.append("&nbsp;(");
+                    explorersettings.append(settings.getReference());
+                    explorersettings.append(")<br>");
+                }
+
+                if (addRestypes) {
+                    html.append(restypes);
+                }
+                if (addExplorersettings) {
+                    html.append(explorersettings);
+                }
+            } else {
+                continue;
+            }
+            item.set(detailId, html.toString());
+        }
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     protected List getListItems() {
@@ -259,74 +338,10 @@ public class CmsModulesList extends A_CmsListDialog {
             item.set(LIST_COLUMN_NAME, moduleName);
             // nicename
             item.set(LIST_COLUMN_NICENAME, module.getNiceName());
-            // author
-            StringBuffer author = new StringBuffer(32);
-            author.append(module.getAuthorName());
-            author.append("&nbsp;(");
-            author.append(module.getAuthorEmail());
-            author.append(")");
-            item.set(LIST_DETAIL_AUTHORINFO, author);
             //version
             item.set(LIST_COLUMN_VERSION, module.getVersion());
             //group           
             item.set(LIST_COLUMN_GROUP, module.getGroup());
-            //resources
-            StringBuffer resources = new StringBuffer(32);
-            Iterator j = module.getResources().iterator();
-            while (j.hasNext()) {
-                String resource = (String)j.next();
-                resources.append(resource);
-                resources.append("<br>");
-            }
-            item.set(LIST_DETAIL_RESOURCES, resources);
-            // dependencies
-            StringBuffer dependencies = new StringBuffer(32);
-            Iterator k = module.getDependencies().iterator();
-            while (k.hasNext()) {
-                CmsModuleDependency dep = (CmsModuleDependency)k.next();
-                dependencies.append(dep.getName());
-                dependencies.append("&nbsp;Version:");
-                dependencies.append(dep.getVersion());
-                dependencies.append("<br>");
-            }
-            item.set(LIST_DETAIL_DEPENDENCIES, dependencies);
-            // resourcetypes
-            StringBuffer restypes = new StringBuffer(32);
-            Iterator l = module.getResourceTypes().iterator();
-            boolean addRestypes = false;
-            while (l.hasNext()) {
-                addRestypes = true;
-                I_CmsResourceType resourceType = (I_CmsResourceType)l.next();
-                restypes.append(Messages.get().key(Messages.GUI_MODULES_LABEL_RESTYPES_DETAIL_0));
-                restypes.append(":&nbsp;");
-                restypes.append(resourceType.getTypeName());
-                restypes.append("&nbsp;ID:");
-                restypes.append(resourceType.getTypeId());
-                restypes.append("<br>");
-            }
-            StringBuffer explorersettings = new StringBuffer(32);
-            Iterator m = module.getExplorerTypes().iterator();
-            boolean addExplorersettings = false;
-            while (m.hasNext()) {
-                addExplorersettings = true;
-                CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)m.next();
-                explorersettings.append(Messages.get().key(Messages.GUI_MODULES_LABEL_EXPLORERSETTINGSS_DETAIL_0));
-                explorersettings.append(":&nbsp;");
-                explorersettings.append(settings.getName());
-                explorersettings.append("&nbsp;(");
-                explorersettings.append(settings.getReference());
-                explorersettings.append(")<br>");
-            }
-
-            StringBuffer resExpSettings = new StringBuffer(32);
-            if (addRestypes) {
-                resExpSettings.append(restypes);
-            }
-            if (addExplorersettings) {
-                resExpSettings.append(explorersettings);
-            }
-            item.set(LIST_DETAIL_RESTYPES, resExpSettings);
-
             ret.add(item);
         }
         return ret;

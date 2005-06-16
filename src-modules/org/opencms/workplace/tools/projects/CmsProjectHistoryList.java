@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectHistoryList.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/16 14:30:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * Main project management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsProjectHistoryList extends A_CmsListDialog {
@@ -107,7 +107,12 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
      */
     public CmsProjectHistoryList(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_PROJECTHISTORY_LIST_NAME_0), LIST_COLUMN_PUBLISHED_DATE, null);
+        super(
+            jsp,
+            LIST_ID,
+            Messages.get().container(Messages.GUI_PROJECTHISTORY_LIST_NAME_0),
+            LIST_COLUMN_PUBLISHED_DATE,
+            null);
     }
 
     /**
@@ -145,6 +150,33 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     public void executeListSingleActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        // get content
+        List projects = getList().getAllContent();
+        Iterator itProjects = projects.iterator();
+        while (itProjects.hasNext()) {
+            CmsListItem item = (CmsListItem)itProjects.next();
+            try {
+                if (detailId.equals(LIST_DETAIL_RESOURCES)) {
+                    CmsBackupProject project = getCms().readBackupProject(new Integer(item.getId()).intValue());
+                    StringBuffer html = new StringBuffer(512);
+                    Iterator resources = project.getProjectResources().iterator();
+                    while (resources.hasNext()) {
+                        html.append(resources.next().toString());
+                        html.append("<br>");
+                    }
+                    item.set(LIST_DETAIL_RESOURCES, html.toString());
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
     }
 
     /**
@@ -187,13 +219,6 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
                 // ignore
             }
             item.set(LIST_COLUMN_CREATION, new Date(project.getDateCreated()));
-            StringBuffer html = new StringBuffer(512);
-            Iterator resources = project.getProjectResources().iterator();
-            while (resources.hasNext()) {
-                html.append(resources.next().toString());
-                html.append("<br>");
-            }
-            item.set(LIST_DETAIL_RESOURCES, html.toString());
             ret.add(item);
         }
 
@@ -318,7 +343,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
             metadata.getColumnDefinition(LIST_COLUMN_NAME));
         searchAction.addColumn(metadata.getColumnDefinition(LIST_COLUMN_DESCRIPTION));
         metadata.setSearchAction(searchAction);
-                
+
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2005/06/09 12:49:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/16 14:30:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.JspException;
  * Generalized user groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
@@ -98,6 +98,26 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         boolean searchable) {
 
         super(jsp, listId, listName, LIST_COLUMN_LOGIN, searchable ? LIST_COLUMN_LOGIN : null);
+    }
+
+    /**
+     * Action method for two list dialogs.<p>
+     * 
+     * @param list1 first list
+     * @param list2 second list
+     * 
+     * @throws JspException if something goes wrong
+     */
+    public static void actionDialog(A_CmsGroupUsersList list1, A_CmsGroupUsersList list2) throws JspException {
+
+        A_CmsGroupUsersList wp1 = (list1.isActive() ? (A_CmsGroupUsersList)list1 : (A_CmsGroupUsersList)list2);
+        A_CmsGroupUsersList wp2 = (!list1.isActive() ? (A_CmsGroupUsersList)list1 : (A_CmsGroupUsersList)list2);
+
+        // perform the active list actions
+        wp1.updateGroupList();
+        wp1.actionDialog();
+        wp1.refreshList();
+        wp2.refreshList();
     }
 
     /**
@@ -153,24 +173,13 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     }
 
     /**
-     * Action method for two list dialogs.<p>
-     * 
-     * @param list1 first list
-     * @param list2 second list
-     * 
-     * @throws JspException if something goes wrong
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
-    public static void actionDialog(A_CmsGroupUsersList list1, A_CmsGroupUsersList list2) throws JspException {
+    protected void fillDetails(String detailId) {
 
-        A_CmsGroupUsersList wp1 = (list1.isActive()? (A_CmsGroupUsersList)list1: (A_CmsGroupUsersList)list2);
-        A_CmsGroupUsersList wp2 = (!list1.isActive()? (A_CmsGroupUsersList)list1: (A_CmsGroupUsersList)list2);
-
-        // perform the active list actions
-        wp1.updateGroupList();
-        wp1.actionDialog();
-        wp1.refreshList();
-        wp2.refreshList();
+        // noop
     }
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */

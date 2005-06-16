@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2005/06/16 10:55:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/16 14:30:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Session list for broadcasting messages.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsSessionsList extends A_CmsListDialog {
@@ -106,10 +106,10 @@ public class CmsSessionsList extends A_CmsListDialog {
     public static final String LIST_ID = "sessions";
 
     /** list action id constant. */
-    public static final String LIST_MACTION_MESSAGE = "maction_message";
+    public static final String LIST_MACTION_EMAIL = "maction_email";
 
     /** list action id constant. */
-    public static final String LIST_MACTION_EMAIL = "maction_email";
+    public static final String LIST_MACTION_MESSAGE = "maction_message";
 
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/workplace/buttons/";
@@ -166,14 +166,14 @@ public class CmsSessionsList extends A_CmsListDialog {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SEND_MESSAGE_0), e);
             }
         } else if (getParamListAction().equals(LIST_MACTION_EMAIL)) {
-                // execute the send email multiaction
-                try {
-                    // forward to the edit email screen
-                    getToolManager().jspRedirectTool(this, "/workplace/broadcast/email", params);
-                } catch (IOException e) {
-                    // should never happen
-                    throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SEND_MESSAGE_0), e);
-                }
+            // execute the send email multiaction
+            try {
+                // forward to the edit email screen
+                getToolManager().jspRedirectTool(this, "/workplace/broadcast/email", params);
+            } catch (IOException e) {
+                // should never happen
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SEND_MESSAGE_0), e);
+            }
         } else {
             throwListUnsupportedActionException();
         }
@@ -214,6 +214,14 @@ public class CmsSessionsList extends A_CmsListDialog {
             throwListUnsupportedActionException();
         }
         listSave();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        // no details
     }
 
     /**

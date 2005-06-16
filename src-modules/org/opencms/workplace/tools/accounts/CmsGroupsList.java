@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsList.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/16 14:30:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsGroupsList extends A_CmsListDialog {
@@ -323,38 +323,56 @@ public class CmsGroupsList extends A_CmsListDialog {
             } catch (Exception e) {
                 // ignore
             }
-            // users
-            Iterator itUsers = getCms().getUsersOfGroup(group.getName()).iterator();
-            StringBuffer html = new StringBuffer(512);
-            while (itUsers.hasNext()) {
-                html.append(((CmsUser)itUsers.next()).getFullName());
-                if (itUsers.hasNext()) {
-                    html.append("<br>");
-                }
-                html.append("\n");
-            }
-            item.set(LIST_DETAIL_USERS, html.toString());
-            // childs
-            try {
-                Iterator itChilds = getCms().getChild(group.getName()).iterator();
-                html = new StringBuffer(512);
-                while (itChilds.hasNext()) {
-                    html.append(((CmsGroup)itChilds.next()).getName());
-                    if (itChilds.hasNext()) {
-                        html.append("<br>");
-                    }
-                    html.append("\n");
-                }
-                item.set(LIST_DETAIL_CHILDS, html.toString());
-            } catch (Exception e) {
-                // ignore
-            }
             ret.add(item);
         }
 
         return ret;
     }
 
+    
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        // get content
+        List groups = getList().getAllContent();
+        Iterator itGroups = groups.iterator();
+        while (itGroups.hasNext()) {
+            CmsListItem item = (CmsListItem)itGroups.next();
+            String groupName = item.get(LIST_COLUMN_NAME).toString();
+            StringBuffer html = new StringBuffer(512);
+            try {
+                if (detailId.equals(LIST_DETAIL_USERS)) {
+                    // users
+                    Iterator itUsers = getCms().getUsersOfGroup(groupName).iterator();
+                    while (itUsers.hasNext()) {
+                        html.append(((CmsUser)itUsers.next()).getFullName());
+                        if (itUsers.hasNext()) {
+                            html.append("<br>");
+                        }
+                        html.append("\n");
+                    }
+                } else if (detailId.equals(LIST_DETAIL_CHILDS)) {
+                    // childs
+                    Iterator itChilds = getCms().getChild(groupName).iterator();
+                    while (itChilds.hasNext()) {
+                        html.append(((CmsGroup)itChilds.next()).getName());
+                        if (itChilds.hasNext()) {
+                            html.append("<br>");
+                        }
+                        html.append("\n");
+                    }
+                } else {
+                    continue;
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+            item.set(detailId, html.toString());
+        }
+    }
+    
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2005/06/08 16:44:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/16 14:30:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsUsersList extends A_CmsListDialog {
@@ -329,50 +329,73 @@ public class CmsUsersList extends A_CmsListDialog {
             item.set(LIST_COLUMN_NAME, user.getFullName());
             item.set(LIST_COLUMN_EMAIL, user.getEmail());
             item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
-            // address
-            StringBuffer html = new StringBuffer(512);
-            html.append(user.getAddress());
-            if (user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN) != null) {
-                html.append("<br>");
-                if (user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE) != null) {
-                    html.append(user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE));
-                    html.append(" ");
-                }
-                html.append(user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN));
-            }
-            if (user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_COUNTRY) != null) {
-                html.append("<br>");
-                html.append(user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_COUNTRY));
-            }
-            item.set(LIST_DETAIL_ADDRESS, html.toString());
-            // groups
-            Iterator itGroups = getCms().getGroupsOfUser(user.getName()).iterator();
-            html = new StringBuffer(512);
-            while (itGroups.hasNext()) {
-                html.append(((CmsGroup)itGroups.next()).getName());
-                if (itGroups.hasNext()) {
-                    html.append("<br>");
-                }
-                html.append("\n");
-            }
-            item.set(LIST_DETAIL_GROUPS, html.toString());
-            // roles
-            //            Iterator itRoles = getCms().getGroupsOfUser(user.getName()).iterator();
-            //            html = new StringBuffer(512);
-            //            while (itRoles.hasNext()) {
-            //                html.append(((CmsGroup)itRoles.next()).getName());
-            //                if (itRoles.hasNext()) {
-            //                    html.append("<br>");
-            //                }
-            //                html.append("\n");
-            //            }
-            //            item.set(LIST_DETAIL_ROLES, html.toString());
             ret.add(item);
         }
 
         return ret;
     }
 
+    
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        // get content
+        List users = getList().getAllContent();
+        Iterator itUsers = users.iterator();
+        while (itUsers.hasNext()) {
+            CmsListItem item = (CmsListItem)itUsers.next();
+            String userName = item.get(LIST_COLUMN_LOGIN).toString();
+            StringBuffer html = new StringBuffer(512);
+            try {
+                if (detailId.equals(LIST_DETAIL_ADDRESS)) {
+                    CmsUser user = getCms().readUser(userName);
+                    // address
+                    html.append(user.getAddress());
+                    if (user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN) != null) {
+                        html.append("<br>");
+                        if (user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE) != null) {
+                            html.append(user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE));
+                            html.append(" ");
+                        }
+                        html.append(user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN));
+                    }
+                    if (user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_COUNTRY) != null) {
+                        html.append("<br>");
+                        html.append(user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_COUNTRY));
+                    }
+                } else if (detailId.equals(LIST_DETAIL_GROUPS)) {
+                    // groups
+                    Iterator itGroups = getCms().getGroupsOfUser(userName).iterator();
+                    while (itGroups.hasNext()) {
+                        html.append(((CmsGroup)itGroups.next()).getName());
+                        if (itGroups.hasNext()) {
+                            html.append("<br>");
+                        }
+                        html.append("\n");
+                    }
+                } else {
+                    continue;
+                }
+                // roles
+                //            Iterator itRoles = getCms().getGroupsOfUser(user.getName()).iterator();
+                //            html = new StringBuffer(512);
+                //            while (itRoles.hasNext()) {
+                //                html.append(((CmsGroup)itRoles.next()).getName());
+                //                if (itRoles.hasNext()) {
+                //                    html.append("<br>");
+                //                }
+                //                html.append("\n");
+                //            }
+                //            item.set(LIST_DETAIL_ROLES, html.toString());
+            } catch (Exception e) {
+                // noop
+            }
+            item.set(detailId, html.toString());
+        }
+    }
+    
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */

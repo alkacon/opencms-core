@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/09 12:49:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/16 14:30:34 $
+ * Version: $Revision: 1.4 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * Generalized user groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
@@ -190,6 +190,14 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         if (objects != null) {
             objects.remove(CmsUsersList.class.getName());
         }
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        // noop
     }
 
     /**

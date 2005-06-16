@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesDependenciesList.java,v $
- * Date   : $Date: 2005/06/10 15:14:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/16 14:30:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Module dependencies view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsModulesDependenciesList extends A_CmsListDialog {
@@ -209,6 +209,14 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     public void setParamModule(String paramModule) {
 
         m_paramModule = paramModule;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        // noop
     }
 
     /**
