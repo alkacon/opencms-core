@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2005/05/31 08:04:56 $
- * Version: $Revision: 1.30 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsXmlDocumentLinkValidator.java,v $
+ * Date   : $Date: 2005/06/16 07:34:53 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,10 +62,10 @@ import org.apache.commons.logging.Log;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.30 $ $Date: 2005/05/31 08:04:56 $
+ * @version $Revision: 1.1 $ $Date: 2005/06/16 07:34:53 $
  * @since 5.3.0
  */
-public class CmsHtmlLinkValidator {
+public class CmsXmlDocumentLinkValidator {
 
     /**
      * The driver manager.<p>
@@ -73,14 +73,14 @@ public class CmsHtmlLinkValidator {
     protected CmsDriverManager m_driverManager;
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsHtmlLinkValidator.class);
+    private static final Log LOG = CmsLog.getLog(CmsXmlDocumentLinkValidator.class);
 
     /**
      * Default constructor.<p>
      * 
      * @param driverManager The Cms driver manager
      */
-    public CmsHtmlLinkValidator(CmsDriverManager driverManager) {
+    public CmsXmlDocumentLinkValidator(CmsDriverManager driverManager) {
         m_driverManager = driverManager;
     }
 
@@ -144,7 +144,7 @@ public class CmsHtmlLinkValidator {
             offlineFilesLookup.put(resource.getRootPath(), resource);
 
             try {
-                if ((resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId())) instanceof I_CmsHtmlLinkValidatable) {
+                if ((resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId())) instanceof I_CmsXmlDocumentLinkValidatable) {
                     if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
                         // don't validate links on deleted resources
                         validatableResources.add(resource);
@@ -170,7 +170,7 @@ public class CmsHtmlLinkValidator {
                     org.opencms.report.Messages.RPT_ARGUMENT_1, cms.getRequestContext().removeSiteRoot(resourceName)));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
-                links = ((I_CmsHtmlLinkValidatable) resourceType).findLinks(cms, resource);
+                links = ((I_CmsXmlDocumentLinkValidatable) resourceType).findLinks(cms, resource);
 
                 if (links.size() > 0) {
                     brokenLinks = validateLinks(links, offlineFilesLookup);

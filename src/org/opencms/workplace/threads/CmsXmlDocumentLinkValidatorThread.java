@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsHtmlLinkValidatorThread.java,v $
- * Date   : $Date: 2005/05/31 11:08:23 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsXmlDocumentLinkValidatorThread.java,v $
+ * Date   : $Date: 2005/06/16 07:31:40 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,12 +44,12 @@ import org.apache.commons.logging.Log;
  * A report thread for the HTML link validator.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2005/05/31 11:08:23 $
+ * @version $Revision: 1.1 $ $Date: 2005/06/16 07:31:40 $
  */
-public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
+public class CmsXmlDocumentLinkValidatorThread extends A_CmsReportThread {
     
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsHtmlLinkValidatorThread.class); 
+    private static final Log LOG = CmsLog.getLog(CmsXmlDocumentLinkValidatorThread.class); 
     
     /** A Cms resource to be published directly.<p> */
     private CmsResource m_directPublishResource;
@@ -66,7 +66,7 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
     /**
      * Creates a thread that validates the HTML links (hrefs and images) in all unpublished Cms 
      * files of the current (offline) project, if the files resource types implement the interface 
-     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
+     * {@link org.opencms.validation.I_CmsXmlDocumentLinkValidatable}.<p>
      * 
      * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
      * implement this interface (and so, which file types get validated by the HTML link 
@@ -77,7 +77,7 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
      * @param cms the current OpenCms context object
      * @see org.opencms.file.CmsObject#getPublishList()
      */
-    public CmsHtmlLinkValidatorThread(CmsObject cms) {
+    public CmsXmlDocumentLinkValidatorThread(CmsObject cms) {
         super(cms, Messages.get().key(cms.getRequestContext().getLocale(), 
             Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1, 
             new Object[]{cms.getRequestContext().currentProject().getName()}));
@@ -94,7 +94,7 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
     /**
      * Creates a thread that validates the HTML links (hrefs and images) in the unpublished Cms 
      * file of the current (offline) project, if the file's resource type implements the interface 
-     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
+     * {@link org.opencms.validation.I_CmsXmlDocumentLinkValidatable}.<p>
      * 
      * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
      * implement this interface (and so, which file types get validated by the HTML link 
@@ -110,7 +110,7 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
      * @param settings the current user's workplace settings
      * @see org.opencms.file.CmsObject#getPublishList(CmsResource, boolean)
      */
-    public CmsHtmlLinkValidatorThread(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings, CmsWorkplaceSettings settings) {
+    public CmsXmlDocumentLinkValidatorThread(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings, CmsWorkplaceSettings settings) {
         super(cms, Messages.get().key(
             cms.getRequestContext().getLocale(),
             Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1,

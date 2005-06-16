@@ -13,7 +13,7 @@
 		<nicename><![CDATA[OpenCms 6.0 Link Checking Tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
-		<description><![CDATA[This module contains the OpenCms administration tools for checking internal and external links. (c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
+		<description><![CDATA[This module contains the OpenCms administration tools for validating links in xml documents and pointer links. (c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
 		<version>0.9.5</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
@@ -23,8 +23,8 @@
 		<dependencies/>
 		<exportpoints/>
 		<resources>
-			<resource uri="/system/workplace/admin/linkchecking/"/>
-			<resource uri="/system/workplace/resources/tools/linkchecking/"/>
+			<resource uri="/system/workplace/admin/linkvalidation/"/>
+			<resource uri="/system/workplace/resources/tools/linkvalidation/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -95,11 +95,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/linkchecking</destination>
+			<destination>system/workplace/admin/linkvalidation</destination>
 			<type>folder</type>
-			<datelastmodified>Fri, 10 Jun 2005 13:32:07 GMT</datelastmodified>
+			<datelastmodified>Wed, 15 Jun 2005 15:18:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Jun 2005 10:42:09 GMT</datecreated>
+			<datecreated>Wed, 15 Jun 2005 13:18:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -109,7 +109,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[70.0]]></value>
+					<value><![CDATA[51.0]]></value>
 				</property>
 				<property>
 					<name>default-file</name>
@@ -125,7 +125,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/linkchecking/icons/big/link.png:tools/linkchecking/icons/small/link.png]]></value>
+					<value><![CDATA[tools/linkvalidation/icons/big/link.png:tools/linkvalidation/icons/small/link.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -139,11 +139,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/linkchecking/checkexternal.jsp</source>
-			<destination>system/workplace/admin/linkchecking/checkexternal.jsp</destination>
+			<source>system/workplace/admin/linkvalidation/validateinternallinks.jsp</source>
+			<destination>system/workplace/admin/linkvalidation/validateinternallinks.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>db56d9fb-d9aa-11d9-adac-e7655b3582a8</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2005 15:07:04 GMT</datelastmodified>
+			<datelastmodified>Wed, 15 Jun 2005 15:15:05 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 10 Jun 2005 12:26:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -167,7 +167,7 @@
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/linkchecking/icons/big/link_intern_check.png]]></value>
+					<value><![CDATA[tools/linkvalidation/icons/big/link_intern_validate.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -176,6 +176,130 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Check Internal Links]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/linkvalidation/external</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 15 Jun 2005 15:15:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 13:18:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EXTERNALLINK_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EXTERNALLINK_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/linkvalidation/icons/big/link_extern.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EXTERNALLINK_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Check External Links]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/linkvalidation/external/validateexternallinks.jsp</source>
+			<destination>system/workplace/admin/linkvalidation/external/validateexternallinks.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>09ef3bed-dca8-11d9-bce5-09c4e73e09e8</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 15:15:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 14 Jun 2005 07:43:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_NEW_EXTERNAL_LINK_CHECK_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_NEW_EXTERNAL_LINK_CHECK_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/linkvalidation/icons/big/link_extern_validate.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_NEW_EXTERNAL_LINK_CHECK_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New validation of external links]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/linkvalidation/external/viewresults.jsp</source>
+			<destination>system/workplace/admin/linkvalidation/external/viewresults.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>5c6a40e3-dcec-11d9-b0e3-09c4e73e09e8</uuidresource>
+			<datelastmodified>Wed, 15 Jun 2005 15:15:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 14 Jun 2005 15:52:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EXTERNALLINK_CHECK_VIEW_RESULTS_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_EXTERNALLINK_CHECK_VIEW_RESULTS_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/linkvalidation/icons/big/link_extern_results.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_EXTERNALLINK_CHECK_VIEW_RESULTS_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[View result of external link validation]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -203,41 +327,41 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/linkchecking</destination>
+			<destination>system/workplace/resources/tools/linkvalidation</destination>
 			<type>folder</type>
 			<datelastmodified>Fri, 10 Jun 2005 12:29:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Jun 2005 12:29:03 GMT</datecreated>
+			<datecreated>Wed, 15 Jun 2005 15:13:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/linkchecking/icons</destination>
+			<destination>system/workplace/resources/tools/linkvalidation/icons</destination>
 			<type>folder</type>
 			<datelastmodified>Fri, 10 Jun 2005 12:29:33 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Jun 2005 12:29:33 GMT</datecreated>
+			<datecreated>Wed, 15 Jun 2005 15:13:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/linkchecking/icons/big</destination>
+			<destination>system/workplace/resources/tools/linkvalidation/icons/big</destination>
 			<type>folder</type>
 			<datelastmodified>Fri, 10 Jun 2005 12:29:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Jun 2005 12:29:43 GMT</datecreated>
+			<datecreated>Wed, 15 Jun 2005 15:13:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/linkchecking/icons/big/link.png</source>
-			<destination>system/workplace/resources/tools/linkchecking/icons/big/link.png</destination>
+			<source>system/workplace/resources/tools/linkvalidation/icons/big/link.png</source>
+			<destination>system/workplace/resources/tools/linkvalidation/icons/big/link.png</destination>
 			<type>image</type>
 			<uuidresource>d2c85764-d9ab-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Fri, 10 Jun 2005 12:33:18 GMT</datelastmodified>
@@ -249,8 +373,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/linkchecking/icons/big/link_extern.png</source>
-			<destination>system/workplace/resources/tools/linkchecking/icons/big/link_extern.png</destination>
+			<source>system/workplace/resources/tools/linkvalidation/icons/big/link_extern.png</source>
+			<destination>system/workplace/resources/tools/linkvalidation/icons/big/link_extern.png</destination>
 			<type>image</type>
 			<uuidresource>dc64d237-d9ab-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Fri, 10 Jun 2005 12:33:34 GMT</datelastmodified>
@@ -262,21 +386,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/linkchecking/icons/big/link_extern_check.png</source>
-			<destination>system/workplace/resources/tools/linkchecking/icons/big/link_extern_check.png</destination>
-			<type>image</type>
-			<uuidresource>e76bb27a-d9ab-11d9-adac-e7655b3582a8</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2005 12:33:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Jun 2005 12:33:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/tools/linkchecking/icons/big/link_extern_results.png</source>
-			<destination>system/workplace/resources/tools/linkchecking/icons/big/link_extern_results.png</destination>
+			<source>system/workplace/resources/tools/linkvalidation/icons/big/link_extern_results.png</source>
+			<destination>system/workplace/resources/tools/linkvalidation/icons/big/link_extern_results.png</destination>
 			<type>image</type>
 			<uuidresource>f0f9d56d-d9ab-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Fri, 10 Jun 2005 12:34:08 GMT</datelastmodified>
@@ -288,8 +399,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/linkchecking/icons/big/link_intern.png</source>
-			<destination>system/workplace/resources/tools/linkchecking/icons/big/link_intern.png</destination>
+			<source>system/workplace/resources/tools/linkvalidation/icons/big/link_extern_validate.png</source>
+			<destination>system/workplace/resources/tools/linkvalidation/icons/big/link_extern_validate.png</destination>
+			<type>image</type>
+			<uuidresource>e76bb27a-d9ab-11d9-adac-e7655b3582a8</uuidresource>
+			<datelastmodified>Fri, 10 Jun 2005 12:33:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Jun 2005 12:33:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/linkvalidation/icons/big/link_intern.png</source>
+			<destination>system/workplace/resources/tools/linkvalidation/icons/big/link_intern.png</destination>
 			<type>image</type>
 			<uuidresource>fa0e82a0-d9ab-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Fri, 10 Jun 2005 12:34:24 GMT</datelastmodified>
@@ -301,8 +425,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/linkchecking/icons/big/link_intern_check.png</source>
-			<destination>system/workplace/resources/tools/linkchecking/icons/big/link_intern_check.png</destination>
+			<source>system/workplace/resources/tools/linkvalidation/icons/big/link_intern_validate.png</source>
+			<destination>system/workplace/resources/tools/linkvalidation/icons/big/link_intern_validate.png</destination>
 			<type>image</type>
 			<uuidresource>ffff81a3-d9ab-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Fri, 10 Jun 2005 12:34:34 GMT</datelastmodified>
@@ -314,19 +438,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/linkchecking/icons/small</destination>
+			<destination>system/workplace/resources/tools/linkvalidation/icons/small</destination>
 			<type>folder</type>
 			<datelastmodified>Fri, 10 Jun 2005 12:29:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Jun 2005 12:29:51 GMT</datecreated>
+			<datecreated>Wed, 15 Jun 2005 15:13:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/linkchecking/icons/small/link.png</source>
-			<destination>system/workplace/resources/tools/linkchecking/icons/small/link.png</destination>
+			<source>system/workplace/resources/tools/linkvalidation/icons/small/link.png</source>
+			<destination>system/workplace/resources/tools/linkvalidation/icons/small/link.png</destination>
 			<type>image</type>
 			<uuidresource>0addf256-d9ac-11d9-adac-e7655b3582a8</uuidresource>
 			<datelastmodified>Fri, 10 Jun 2005 12:34:52 GMT</datelastmodified>

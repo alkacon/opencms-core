@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/Messages.java,v $
- * Date   : $Date: 2005/06/10 15:56:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/16 07:31:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,22 +37,64 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @author Achim Westermann (a.westermann@alkacon.com)
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LINK_ADMIN_TOOL_NAME_0 = "GUI_LINK_ADMIN_TOOL_NAME_0";
+    public static final String ERR_EXTERNAL_LINK_VALIDATION_0 = "ERR_EXTERNAL_LINK_VALIDATION_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXTERNALLINK_ADMIN_TOOL_GROUP_0 = "GUI_EXTERNALLINK_ADMIN_TOOL_GROUP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXTERNALLINK_ADMIN_TOOL_HELP_0 = "GUI_EXTERNALLINK_ADMIN_TOOL_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXTERNALLINK_ADMIN_TOOL_NAME_0 = "GUI_EXTERNALLINK_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXTERNALLINK_CHECK_VIEW_RESULTS_GROUP_0 = "GUI_EXTERNALLINK_CHECK_VIEW_RESULTS_GROUP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXTERNALLINK_CHECK_VIEW_RESULTS_HELP_0 = "GUI_EXTERNALLINK_CHECK_VIEW_RESULTS_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXTERNALLINK_CHECK_VIEW_RESULTS_NAME_0 = "GUI_EXTERNALLINK_CHECK_VIEW_RESULTS_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINK_ADMIN_TOOL_GROUP_0 = "GUI_LINK_ADMIN_TOOL_GROUP_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_ADMIN_TOOL_HELP_0 = "GUI_LINK_ADMIN_TOOL_HELP_0";
     
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LINK_ADMIN_TOOL_GROUP_0 = "GUI_LINK_ADMIN_TOOL_GROUP_0";
+    public static final String GUI_LINK_ADMIN_TOOL_NAME_0 = "GUI_LINK_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_EXTERNAL_LINK_CHECK_GROUP_0 = "GUI_NEW_EXTERNAL_LINK_CHECK_GROUP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_EXTERNAL_LINK_CHECK_HELP_0 = "GUI_NEW_EXTERNAL_LINK_CHECK_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_EXTERNAL_LINK_CHECK_NAME_0 = "GUI_NEW_EXTERNAL_LINK_CHECK_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_EXTERNAL_LINK_VALIDATE_GROUP_0 = "GUI_NEW_EXTERNAL_LINK_VALIDATE_GROUP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_VALIDATION_YET_0 = "GUI_NO_VALIDATION_YET_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0 = "GUI_VALIDATE_EXTERNAL_LINKS_CONFIRMATION_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_LINK_VALIDATION_STAT_2 = "RPT_LINK_VALIDATION_STAT_2";
+   
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.workplace.tools.workplace.messages";
+    private static final String BUNDLE_NAME = "org.opencms.workplace.tools.link.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
