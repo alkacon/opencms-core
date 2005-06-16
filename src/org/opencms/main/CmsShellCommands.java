@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/06/09 15:44:50 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2005/06/16 14:21:43 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsLoginMessage;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
@@ -72,7 +73,7 @@ import java.util.StringTokenizer;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -649,6 +650,11 @@ class CmsShellCommands implements I_CmsShellCommands {
                 m_shell.getLocale(),
                 Messages.GUI_SHELL_LOGIN_1,
                 new Object[] {whoami().getName()}));
+            // output the login message if required
+            CmsLoginMessage message = OpenCms.getLoginManager().getLoginMessage();
+            if ((message != null) && (message.isActive())) {
+                System.out.println(message.getMessage());                
+            }
         } catch (Exception exc) {
             System.out.println(Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_LOGIN_FAILED_0, null));
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/CmsEditLoginMessageDialog.java,v $
- * Date   : $Date: 2005/06/10 08:48:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/16 14:21:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools.workplace;
 
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.CmsLoginMessage;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * Dialog to edit the login message of the OpenCms Workplace.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0
  */
@@ -96,6 +97,9 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
         try {
             // set the edited message
             OpenCms.getLoginManager().setLoginMessage(getCms(), m_loginMessage);
+            // update the system configuration
+            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+            // clear the message object
             setDialogObject(null);
         } catch (Throwable t) {
             errors.add(t);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsLoginManager.java,v $
- * Date   : $Date: 2005/06/15 15:54:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/16 14:21:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Hashtable;
  * Also allows to temporarily disallow logins (for example in case of maintainance work on the system).<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  */
@@ -139,7 +139,7 @@ public class CmsLoginManager {
     public static final int DISABLE_MINUTES_DEFAULT = 15;
 
     /** Default for bad login attempts. */
-    public static final int MAX_BAD_ATTEMPTS_DEFAULT = 5;
+    public static final int MAX_BAD_ATTEMPTS_DEFAULT = 3;
 
     /** The milliseconds to disable an account if the threshold is reached. */
     protected int m_disableMillis;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2005/06/01 13:03:17 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/16 14:21:43 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -480,6 +480,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         // instantiate Digester and enable XML validation
         m_digester = new Digester();
+        m_digester.setUseContextClassLoader(true);        
         m_digester.setValidating(true);
         m_digester.setEntityResolver(new CmsXmlEntityResolver(null));
         m_digester.setRuleNamespaceURI(null);

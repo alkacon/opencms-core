@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/06/09 15:44:50 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/16 14:21:43 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2005/06/09 15:44:50 $
+ * @version $Revision: 1.20 $ $Date: 2005/06/16 14:21:43 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
@@ -121,6 +121,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         
         // instantiate Digester and enable XML validation
         Digester digester = new Digester();
+        digester.setUseContextClassLoader(true);
         digester.setValidating(false);
         digester.setRuleNamespaceURI(null);   
         digester.setErrorHandler(new CmsXmlErrorHandler());

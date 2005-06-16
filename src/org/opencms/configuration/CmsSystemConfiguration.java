@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/06/15 15:54:09 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/16 14:21:43 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1057,8 +1057,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (m_loginManager == null) {
             // no login manager configured, create default
             m_loginManager = new CmsLoginManager(
-                CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT,
-                CmsLoginManager.DISABLE_MINUTES_DEFAULT);
+                CmsLoginManager.DISABLE_MINUTES_DEFAULT,
+                CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT);
             if (m_loginMessage != null) {
                 // null OpenCms object is ok during configuration
                 try {
@@ -1319,6 +1319,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             maxBadAttempts = CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT;
         }
         m_loginManager = new CmsLoginManager(disableMinutes, maxBadAttempts);
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
+                Messages.INIT_LOGINMANAGER_2,
+                new Integer(disableMinutes),
+                new Integer(maxBadAttempts)));
+        }
     }
 
     /**
@@ -1329,6 +1335,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void setLoginMessage(CmsLoginMessage message) {
 
         m_loginMessage = message;
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
+                Messages.INIT_LOGINMESSAGE_3,
+                new Boolean(message.isEnabled()),
+                new Boolean(message.isLoginForbidden()),
+                message.getMessage()));
+        }
     }
 
     /**
