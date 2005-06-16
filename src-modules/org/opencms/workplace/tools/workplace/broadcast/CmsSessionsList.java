@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2005/06/16 14:30:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/16 16:31:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Session list for broadcasting messages.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsSessionsList extends A_CmsListDialog {
@@ -239,7 +239,7 @@ public class CmsSessionsList extends A_CmsListDialog {
             item.set(LIST_COLUMN_USER, session.getUser().getFullName());
             item.set(LIST_COLUMN_EMAIL, session.getUser().getEmail());
             item.set(LIST_COLUMN_CREATION, new Date(session.getTimeCreated()));
-            item.set(LIST_COLUMN_INACTIVE, new Long(session.getTimeActive()));
+            item.set(LIST_COLUMN_INACTIVE, new Long(System.currentTimeMillis() - session.getTimeUpdated()));
             try {
                 item.set(LIST_COLUMN_PROJECT, getCms().readProject(session.getProject()).getName());
             } catch (Exception e) {

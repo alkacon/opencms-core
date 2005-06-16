@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSendEmailDialog.java,v $
- * Date   : $Date: 2005/06/16 14:40:58 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/16 16:31:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.workplace.broadcast;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -41,6 +42,7 @@ import org.opencms.widgets.CmsTextareaWidget;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,13 +55,16 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.9.1
  */
 public class CmsSendEmailDialog extends A_CmsMessageDialog {
 
     /** localized messages Keys prefix. */
     public static final String C_KEY_PREFIX = "email";
+
+    /** a warning about excluded users with no email. */
+    private String m_excludedUsers = "";
 
     /**
      * Public constructor with JSP action element.<p>
@@ -90,6 +95,11 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
 
         List errors = new ArrayList();
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_msgInfo.getTo())) {
+            setCommitErrors(Collections.singletonList(new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_NO_SELECTED_USER_WITH_EMAIL_0))));
+            return;
+        }
         try {
             m_msgInfo.setTo(getEmailAddresses());
             m_msgInfo.sendEmail(getCms());
@@ -113,16 +123,21 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
 
+        int n = 4;
+        getToNames(); // need it to fill the exclude users property 
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getExcludedUsers())) {
+            n++;
+        }
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_MESSAGE_EDITOR_LABEL_HEADER_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 3));
+            result.append(createDialogRowsHtml(0, n - 1));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_MESSAGE_EDITOR_LABEL_CONTENT_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(4, 4));
+            result.append(createDialogRowsHtml(n, n));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -142,10 +157,33 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
         setKeyPrefix(C_KEY_PREFIX);
 
         addWidget(new CmsWidgetDialogParameter(m_msgInfo, "from", PAGES[0], new CmsDisplayWidget()));
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getExcludedUsers())) {
+            addWidget(new CmsWidgetDialogParameter(this, "excludedUsers", PAGES[0], new CmsDisplayWidget()));
+        }
         addWidget(new CmsWidgetDialogParameter(m_msgInfo, "to", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_msgInfo, "cc", PAGES[0], "", new CmsInputWidget(), 0, 1));
         addWidget(new CmsWidgetDialogParameter(m_msgInfo, "subject", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_msgInfo, "msg", PAGES[0], new CmsTextareaWidget(12)));
+    }
+
+    /**
+     * Returns a warning if users have been excluded.<p>
+     * 
+     * @return a warning
+     */
+    public String getExcludedUsers() {
+
+        return m_excludedUsers;
+    }
+
+    /**
+     * Sets the warning message if users have been excluded.<p>
+     * 
+     * @param excludedUsers the warning message
+     */
+    public void setExcludedUsers(String excludedUsers) {
+
+        m_excludedUsers = excludedUsers;
     }
 
     /**
@@ -172,6 +210,61 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
         while (itEmails.hasNext()) {
             result.append(itEmails.next().toString());
             if (itEmails.hasNext()) {
+                result.append("; ");
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns a semicolon separated list of user names.<p>
+     * 
+     * @return a semicolon separated list of user names
+     */
+    protected String getToNames() {
+
+        List excluded = new ArrayList();
+        List users = new ArrayList();
+        Iterator itIds = idsList().iterator();
+        while (itIds.hasNext()) {
+            String id = itIds.next().toString();
+            CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(id);
+            if (session != null) {
+                String userName = session.getUser().getFullName();
+                String emailAddress = session.getUser().getEmail();
+                if (!users.contains(userName)) {
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(emailAddress)) {
+                        users.add(userName);
+                    } else {
+                        excluded.add(userName);
+                    }
+                }
+            }
+        }
+        if (!excluded.isEmpty()) {
+            StringBuffer html = new StringBuffer(500);
+            html.append("<it><strong>");
+            html.append(Messages.get().container(Messages.GUI_EXCLUDED_USERS_WARNING_0).key(getLocale()));
+            html.append("<ul>");
+            Iterator it = excluded.iterator();
+            while (it.hasNext()) {
+                html.append("<li>");
+                html.append(it.next());
+                html.append("</li>");
+            }
+            html.append("</ul></strong></it>");
+            setExcludedUsers(html.toString());
+        }
+        if (users.isEmpty()) {
+            setCommitErrors(Collections.singletonList(new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_NO_SELECTED_USER_WITH_EMAIL_0))));
+            return "";
+        }
+        StringBuffer result = new StringBuffer(256);
+        Iterator itUsers = users.iterator();
+        while (itUsers.hasNext()) {
+            result.append(itUsers.next().toString());
+            if (itUsers.hasNext()) {
                 result.append("; ");
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/Messages.java,v $
- * Date   : $Date: 2005/06/16 10:55:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/16 16:31:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,10 +46,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EMPTY_STRING_0 = "ERR_EMPTY_STRING_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_NO_SELECTED_USER_WITH_EMAIL_0 = "ERR_NO_SELECTED_USER_WITH_EMAIL_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_SEND_EMAIL_0 = "ERR_SEND_EMAIL_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_SEND_MESSAGE_0 = "ERR_SEND_MESSAGE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXCLUDED_USERS_WARNING_0 = "GUI_EXCLUDED_USERS_WARNING_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_MESSAGE_EDITOR_LABEL_CONTENT_BLOCK_0 = "GUI_MESSAGE_EDITOR_LABEL_CONTENT_BLOCK_0";
