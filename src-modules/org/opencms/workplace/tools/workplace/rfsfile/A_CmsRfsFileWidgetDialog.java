@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/A_CmsRfsFileWidgetDialog.java,v $
- * Date   : $Date: 2005/06/15 12:51:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/16 10:55:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,17 +32,17 @@
 package org.opencms.workplace.tools.workplace.rfsfile;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.workplace.CmsWidgetDialog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Extending this class enables different 
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  *  
  * 
  * @author  Achim Westermann (a.westermann@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  *  
@@ -64,8 +64,6 @@ public abstract class A_CmsRfsFileWidgetDialog extends CmsWidgetDialog {
     /** The pages array for possible multi-page dialogs. This is a dummy. */
     public static String[] PAGES = {"page1"};
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsRfsFileWidgetDialog.class);
     /**
      * The bean that accesses the underlying file in portions.
      */
@@ -104,11 +102,14 @@ public abstract class A_CmsRfsFileWidgetDialog extends CmsWidgetDialog {
      */
     public void actionCommit() {
 
+        List errors = new ArrayList();
         try {
             OpenCms.getWorkplaceManager().setFileViewSettings(getCms(), m_logView);
         } catch (CmsRoleViolationException e) {
-            LOG.error(e.getMessageContainer().key(getLocale()));
+            errors.add(e);
         }
+        // set the list of errors to display when saving failed
+        setCommitErrors(errors);
     }
 
     /**

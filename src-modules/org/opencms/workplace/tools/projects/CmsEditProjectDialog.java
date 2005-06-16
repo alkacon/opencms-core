@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2005/06/15 14:31:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/16 10:55:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.9.1
  */
 public class CmsEditProjectDialog extends A_CmsProjectDialog {
@@ -166,6 +166,8 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
         } catch (Throwable t) {
             errors.add(t);
         }
+        // set the list of errors to display when saving failed
+        setCommitErrors(errors);
     }
 
     /**

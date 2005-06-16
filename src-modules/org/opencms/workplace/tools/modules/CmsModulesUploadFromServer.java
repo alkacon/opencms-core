@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2005/06/14 12:20:03 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/16 10:55:02 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.9.1
  */
 public class CmsModulesUploadFromServer extends CmsWidgetDialog {
@@ -112,22 +112,12 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
     public void actionCommit() {
 
         List errors = new ArrayList();
-        // refresh the list
-        Map objects = (Map)getSettings().getListObject();
-        if (objects != null) {
-            objects.remove(CmsModulesList.class.getName());
-        }
-
+        CmsModule module = null;
         try {
-            Map param = new HashMap();
-            param.put(CmsModulesList.PARAM_MODULE, m_moduleupload);
-            param.put(PARAM_STYLE, "new");
-            param.put(PARAM_CLOSELINK, getToolManager().linkForPath(getJsp(), "/modules", null));
-
             String importpath = OpenCms.getSystemInfo().getPackagesRfsPath();
             importpath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
                 importpath + "modules/" + m_moduleupload);
-            CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(importpath);
+            module = CmsModuleImportExportHandler.readModuleFromImport(importpath);
 
             // check if all dependencies are fulfilled
             List dependencies = OpenCms.getModuleManager().checkDependencies(
@@ -153,24 +143,39 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
                     new String(dep))));             
             }
 
-            if (errors.isEmpty()) {
+        } catch (CmsConfigurationException e) {
+            errors.add(new CmsRuntimeException(
+                Messages.get().container(Messages.ERR_ACTION_MODULE_UPLOAD_1, m_moduleupload),
+                e));
+        }
 
+        if (errors.isEmpty()) {
+
+            // refresh the list
+            Map objects = (Map)getSettings().getListObject();
+            if (objects != null) {
+                objects.remove(CmsModulesList.class.getName());
+            }
+
+            // redirect
+            Map param = new HashMap();
+            param.put(CmsModulesList.PARAM_MODULE, m_moduleupload);
+            param.put(PARAM_STYLE, "new");
+            param.put(PARAM_CLOSELINK, getToolManager().linkForPath(getJsp(), "/modules", null));
+            try {
                 if (OpenCms.getModuleManager().hasModule(module.getName())) {
                     param.put(PARAM_MODULENAME, module.getName());
                     getToolManager().jspRedirectPage(this, REPLACE_ACTION_REPORT, param);
                 } else {
                     getToolManager().jspRedirectPage(this, IMPORT_ACTION_REPORT, param);
                 }
+            } catch (IOException e) {
+                errors.add(new CmsRuntimeException(
+                    Messages.get().container(Messages.ERR_ACTION_MODULE_UPLOAD_1, m_moduleupload),
+                    e));
             }
-        } catch (IOException e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(Messages.ERR_ACTION_MODULE_UPLOAD_1, m_moduleupload),
-                e);
-        } catch (CmsConfigurationException e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(Messages.ERR_ACTION_MODULE_UPLOAD_1, m_moduleupload),
-                e);
         }
+
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
     }

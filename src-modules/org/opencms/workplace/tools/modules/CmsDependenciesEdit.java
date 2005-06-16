@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsDependenciesEdit.java,v $
- * Date   : $Date: 2005/06/14 15:53:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/16 10:55:02 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.9.1
  */
 public class CmsDependenciesEdit extends CmsWidgetDialog {
@@ -130,19 +130,16 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
             module.setDependencies(newDependencies);
             // update the module
             OpenCms.getModuleManager().updateModule(getCms(), module);
-        } catch (CmsConfigurationException ce) {
-            errors.add(ce);
-        } catch (CmsSecurityException se) {
-            errors.add(se);
-        }
-
-        if (errors.isEmpty()) {
             // refresh the list
             Map objects = (Map)getSettings().getListObject();
             if (objects != null) {
                 objects.remove(CmsModulesList.class.getName());
                 objects.remove(CmsModulesDependenciesList.class.getName());
             }
+        } catch (CmsConfigurationException ce) {
+            errors.add(ce);
+        } catch (CmsSecurityException se) {
+            errors.add(se);
         }
 
         // set the list of errors to display when saving failed

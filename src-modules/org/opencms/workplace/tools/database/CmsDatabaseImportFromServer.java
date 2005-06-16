@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromServer.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/16 10:55:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 6.0
  */
 public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
@@ -152,9 +152,9 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
             // redirect to the report output JSP
             getToolManager().jspRedirectPage(this, IMPORT_ACTION_REPORT, params);
         } catch (IOException e) {
-            throw new CmsRuntimeException(Messages.get().container(
+            errors.add(new CmsRuntimeException(Messages.get().container(
                 Messages.ERR_ACTION_FILE_UPLOAD_1,
-                getImportFile()), e);
+                getImportFile()), e));
         }
         // set the list of errors to display when saving failed
         setCommitErrors(errors);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportDialog.java,v $
- * Date   : $Date: 2005/06/13 10:35:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/16 10:55:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * Widget dialog that sets the export options to export VFS resources to the OpenCms server.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 6.0
  */
 public class CmsDatabaseExportDialog extends CmsWidgetDialog {
@@ -103,6 +103,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
      */
     public void actionCommit() {
 
+        List errors = new ArrayList();
         try {
             // create absolute RFS path and store it in dialog object
             String exportFileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
@@ -119,8 +120,10 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
             // redirect to the report output JSP
             getToolManager().jspRedirectPage(this, EXPORT_ACTION_REPORT, params);
         } catch (IOException e) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ACTION_FILE_EXPORT_0), e);
+            errors.add(new CmsRuntimeException(Messages.get().container(Messages.ERR_ACTION_FILE_EXPORT_0), e));
         }
+        // set the list of errors to display when saving failed
+        setCommitErrors(errors);
     }
 
     /**

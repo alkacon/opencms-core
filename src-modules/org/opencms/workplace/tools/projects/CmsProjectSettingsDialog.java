@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/CmsProjectSettingsDialog.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/16 10:55:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * Comment for <code>CmsProjectSettingsDialog</code>.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
@@ -106,6 +106,8 @@ public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
         } catch (Throwable t) {
             errors.add(t);
         }
+        // set the list of errors to display when saving failed
+        setCommitErrors(errors);
     }
 
     /**
