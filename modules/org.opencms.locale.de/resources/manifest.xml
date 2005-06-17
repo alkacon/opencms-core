@@ -29,6 +29,7 @@
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/db/generic/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/db/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/importexport/messages_de.properties"/>
+			<resource uri="/system/workplace/locales/de/messages/org/opencms/jsp/util/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/module/messages_de.properties"/>
 		    <resource uri="/system/workplace/locales/de/messages/org/opencms/main/messages_de.properties"/>
             <resource uri="/system/workplace/locales/de/messages/org/opencms/report/messages_de.properties"/>
@@ -272,6 +273,46 @@
 			<datelastmodified>Fri, 03 Jun 2005 08:51:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 03 Jun 2005 11:58:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/jsp</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 17 Jun 2005 08:28:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Jun 2005 08:28:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/jsp/util</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 17 Jun 2005 08:28:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Jun 2005 08:28:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/jsp/util/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/jsp/util/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>c5b010fb-df09-11d9-9a72-8bc68da6ac40</uuidresource>
+			<datelastmodified>Fri, 17 Jun 2005 08:36:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Jun 2005 08:28:24 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

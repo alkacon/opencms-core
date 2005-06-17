@@ -143,6 +143,123 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/handler</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 16 Jun 2005 15:29:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Apr 2005 13:30:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/handle404.html</source>
+			<destination>system/handler/handle404.html</destination>
+			<type>jsp</type>
+			<uuidresource>2ec39dda-a50d-11d9-b4c9-b7aef4fd014d</uuidresource>
+			<datelastmodified>Fri, 17 Jun 2005 07:53:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Apr 2005 13:26:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[404 error handler page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/handler/handle500.html</destination>
+			<type>jsp</type>
+			<uuidresource>2ec39dda-a50d-11d9-b4c9-b7aef4fd014d</uuidresource>
+			<datelastmodified>Fri, 17 Jun 2005 07:53:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Apr 2005 13:26:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[500 error handler page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/handler/contents</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 17 Jun 2005 08:13:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Jun 2005 15:05:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/contents/content404.html</source>
+			<destination>system/handler/contents/content404.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>1cad206f-de78-11d9-bedb-8bc68da6ac40</uuidresource>
+			<datelastmodified>Fri, 17 Jun 2005 07:21:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Jun 2005 15:05:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/contents/content500.html</source>
+			<destination>system/handler/contents/content500.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>f189c010-df04-11d9-96f6-8bc68da6ac40</uuidresource>
+			<datelastmodified>Fri, 17 Jun 2005 08:00:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Jun 2005 07:53:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/contents/contentunknown.html</source>
+			<destination>system/handler/contents/contentunknown.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>cebf7284-deff-11d9-8a41-8bc68da6ac40</uuidresource>
+			<datelastmodified>Fri, 17 Jun 2005 07:20:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Jun 2005 07:17:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/login</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>

@@ -77,6 +77,11 @@
       <error-code>404</error-code>
       <location>/opencms/handle404</location>
     </error-page>
+
+	<error-page>
+      <error-code>500</error-code>
+      <location>/opencms/system/handler/handle500.html</location>
+    </error-page>
     
     <taglib>
         <taglib-uri>http://www.opencms.org/taglib/cms</taglib-uri>

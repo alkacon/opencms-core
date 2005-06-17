@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStatusBean.java,v $
- * Date   : $Date: 2005/06/16 12:37:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/17 09:01:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,24 +31,33 @@
  
 package org.opencms.jsp.util;
 
+import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.I_CmsWpConstants;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
  * This bean provides methods to generate customized http status error pages, e.g. to handle 404 (not found) errors.<p>
  * 
- * The JSPs using this bean are placed in the VFS folder /system/handler/.<p>
+ * The JSPs using this bean are placed in the OpenCms VFS folder /system/handler/.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0
  */
 public class CmsJspStatusBean extends CmsJspActionElement {
@@ -68,6 +77,9 @@ public class CmsJspStatusBean extends CmsJspActionElement {
     /** Default name for an unknown error status code. */
     public static final String UNKKNOWN_STATUS_CODE = "unknown";
     
+    /** The OpenCms VFS path containing the handler files. */
+    public static final String VFS_FOLDER_HANDLER = I_CmsWpConstants.C_VFS_PATH_SYSTEM + "handler/";
+    
     /** The error message. */
     private String m_errorMessage;
     
@@ -77,25 +89,36 @@ public class CmsJspStatusBean extends CmsJspActionElement {
     /** The Locale to use for displayed messages. */
     private Locale m_locale;
     
+    /** Contains all possible parameters usable by localized messages. */
+    private Object[] m_localizeParameters;
+    
+    /** The localized messages to use on the page. */
+    private CmsMessages m_messages;
+    
     /** The request URI. */
     private String m_requestUri;
     
     /** The servlet name. */
     private String m_servletName;
     
+    /** The site root of the requested resource. */
+    private String m_siteRoot;
+    
     /** The status code. */
     private Integer m_statusCode;
     
     /** The status code as message. */
     private String m_statusCodeMessage;
-
+    
+    /** The URI used for template part inclusion. */
+    private String m_templateUri;
+    
     /**
      * Empty constructor, required for every JavaBean.
      */
     public CmsJspStatusBean() {
 
         super();
-
     }
     
     /**
@@ -146,6 +169,47 @@ public class CmsJspStatusBean extends CmsJspActionElement {
     }
     
     /**
+     * Returns the locale to use for the error page.<p>
+     *
+     * @return the locale to use for the error page
+     */
+    public Locale getLocale() {
+
+        return m_locale;
+    }
+    
+    /**
+     * Returns the processed output of the specified element of an OpenCms page.<p>
+     * 
+     * The page to get the content from is looked up in the property value "template-elements".
+     * If no value is found, the page is read from the "contents/" subfolder of the handler folder.<p>
+     * 
+     * For each status code, an individual page can be created by naming it "content${STATUSCODE}.html". 
+     * If the individual page can not be found, the content is read from "contentunknown.html".<p>
+     * 
+     * @param element name of the element
+     * @return the processed output of the specified element of an OpenCms page
+     */
+    public String getPageContent(String element) {
+        
+        // Determine the folder to read the contents from
+        String contentFolder = property(I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS, "search", "");
+        if (CmsStringUtil.isEmpty(contentFolder)) {
+            contentFolder = VFS_FOLDER_HANDLER + "contents/";
+        }
+        
+        // determine the file to read the contents from
+        String fileName = "content" + getStatusCodeMessage() + ".html";
+        if (! getCmsObject().existsResource(contentFolder + fileName)) {
+            // special file does not exist, use generic one
+            fileName = "content" + UNKKNOWN_STATUS_CODE + ".html";
+        }
+        
+        // get the content
+        return getContent(contentFolder + fileName, element, getLocale());
+    }
+    
+    /**
      * Returns the absolute path of the requested resource in the VFS of OpenCms.<p>
      *  
      * @return the absolute path of the requested resource in the VFS of OpenCms
@@ -192,6 +256,16 @@ public class CmsJspStatusBean extends CmsJspActionElement {
     }
     
     /**
+     * Returns the site root of the requested resource.<p>
+     *
+     * @return the site root of the requested resource
+     */
+    public String getSiteRoot() {
+
+        return m_siteRoot;
+    }
+    
+    /**
      * Returns the status code.<p>
      *
      * @return the status code
@@ -212,6 +286,167 @@ public class CmsJspStatusBean extends CmsJspActionElement {
     }
     
     /**
+     * Returns the URI used for template part inclusion.<p>
+     *
+     * @return the URI used for template part inclusion
+     */
+    public String getTemplateUri() {
+        
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_templateUri)) {
+            m_templateUri = "/";
+        }
+        return m_templateUri;
+    }
+    
+    /**
+     * Include a template part to display on the error page.<p>
+     * 
+     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
+     * 
+     * @throws JspException in case there were problems including the target
+     */
+     public void includeTemplatePart(String target, String element) throws JspException {
+
+         includeTemplatePart(target, element, null);
+     }
+    
+   /**
+    * Include a template part to display on the error page.<p>
+    * 
+    * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+    * @param element the element (template selector) to display from the target
+    * @param parameterMap a map of the request parameters
+    * 
+    * @throws JspException in case there were problems including the target
+    */
+    public void includeTemplatePart(String target, String element, Map parameterMap) throws JspException {
+        
+        // store current site root and URI
+        String currentSiteRoot = getRequestContext().getSiteRoot();
+        String currentUri = getRequestContext().getUri();
+        
+        // set the Locale in the request parameter Map
+        if (parameterMap == null) {
+            parameterMap = new HashMap(1);
+        }
+        parameterMap.put(I_CmsConstants.C_PARAMETER_LOCALE, getLocale().toString());
+        
+        try {
+            // set site root and URI to display template part correct
+            getRequestContext().setSiteRoot(getSiteRoot());
+            getRequestContext().setUri(getTemplateUri());
+            // include the template part
+            include(target, element, parameterMap);
+        } finally {
+            // reset site root and requested URI to status JSP
+            getRequestContext().setSiteRoot(currentSiteRoot);
+            getRequestContext().setUri(currentUri);
+        }
+    }
+    
+    /**
+     * Returns the localized resource string for a given message key.<p>
+     * 
+     * If the key was not found in the bundle, the return value is
+     * <code>"??? " + keyName + " ???"</code>.<p>
+     * 
+     * The key can use the following parameters for formatting:
+     * <ul>
+     * <li>0: the HTTP status code</li>
+     * <li>1: the requested URI</li>
+     * <li>2: the generated error message</li>
+     * <li>3: the servlet name</li>
+     * <li>4: the date of the request</li>
+     * </ul>
+     * 
+     * @param keyName the key for the desired string 
+     * @return the resource string for the given key 
+     */
+    public String key(String keyName) {
+        
+        return key(keyName, null);
+    }
+    
+    /**
+     * Returns the localized resource string for a given message key.<p>
+     * 
+     * For a detailed parameter description, see {@link CmsJspStatusBean#key(String)}.<p>
+     * 
+     * @param keyName the key for the desired string
+     * @param defaultKeyName the default key for the desired string, used if the keyName delivered no resource string
+     * @return the resource string for the given key 
+     */
+    public String key(String keyName, String defaultKeyName) {
+              
+        String value = getMessages().key(keyName, getLocalizeParameters());
+        if (value.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION) && CmsStringUtil.isNotEmpty(defaultKeyName)) {
+            value = getMessages().key(defaultKeyName, getLocalizeParameters());
+        }
+        return CmsStringUtil.escapeHtml(value);
+    }
+    
+   /**
+    * Returns the localized resource string for a given message key depending on the HTTP status.<p>
+    * 
+    * Automatically adds a status suffix for the key to get, eg. "keyname" gets the suffix "_404" for a 404 status.
+    * For a detailed parameter description, see {@link CmsJspStatusBean#key(String)}.<p>
+    * 
+    * @param keyName the key for the desired string 
+    * @return the resource string for the given key 
+    */
+   public String keyStatus(String keyName) {
+       
+       keyName += "_";
+       return key(keyName + getStatusCodeMessage(), keyName + UNKKNOWN_STATUS_CODE);
+   }
+    
+    /**
+     * Sets the URI used for template part inclusion.<p>
+     *
+     * @param templateUri the URI used for template part inclusion
+     */
+    public void setTemplateUri(String templateUri) {
+
+        m_templateUri = templateUri;
+    }
+    
+    /**
+     * Returns the parameter object for localization.<p>
+     * 
+     * @return the parameter object for localization
+     * 
+     * @see #key(String) for a more detailed object description
+     */
+    protected Object[] getLocalizeParameters() {
+        
+        if (m_localizeParameters == null) {
+            m_localizeParameters = new Object[] {
+                getStatusCodeMessage(),
+                getRequestUri(),
+                getErrorMessage(),
+                getServletName(),
+                new Date(getRequestContext().getRequestTime())
+            };
+        }
+        return m_localizeParameters;
+    }
+    
+    /**
+     * Returns the initialized messages object to read localized messages from.<p>
+     * 
+     * @return the initialized messages object to read localized messages from
+     */
+    protected CmsMessages getMessages() {
+        
+        if (m_messages == null) {
+            // initialize the localized messages
+            m_messages = new CmsMessages(Messages.get().getBundleName(), getLocale().toString());    
+        }
+        return m_messages;
+    }
+    
+    /**
      * Initializes the members of this bean with the information retrieved from the current request.<p>
      * 
      * @param req the JSP request 
@@ -219,16 +454,34 @@ public class CmsJspStatusBean extends CmsJspActionElement {
      */
     protected void initMembers(HttpServletRequest req, Throwable t) {
         
+        // get the status error attribute values from the request
         m_servletName = (String)req.getAttribute(ERROR_SERVLET_NAME);
         m_errorMessage = (String)req.getAttribute(ERROR_MESSAGE);
         m_requestUri = (String)req.getAttribute(ERROR_REQUEST_URI);
         m_statusCode = (Integer)req.getAttribute(ERROR_STATUS_CODE);
+        // get the status code as String
         if (m_statusCode != null) {
             m_statusCodeMessage = String.valueOf(m_statusCode.intValue());
         } else {
             m_statusCodeMessage = UNKKNOWN_STATUS_CODE;    
         }
+        
         m_exception = t;
+        
+        // determine the best locale to use from the users browser settings
+        CmsAcceptLanguageHeaderParser parser = new CmsAcceptLanguageHeaderParser(
+            req,
+            OpenCms.getWorkplaceManager().getDefaultLocale());
+        List acceptedLocales = parser.getAcceptedLocales();
+        List workplaceLocales = OpenCms.getWorkplaceManager().getLocales();
+        m_locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, workplaceLocales);
+        if (m_locale == null) {
+            // no match found - use OpenCms default locale
+            m_locale = OpenCms.getWorkplaceManager().getDefaultLocale();
+        }
+        
+        // store the site root of the request
+        m_siteRoot = OpenCms.getSiteManager().matchRequest(req).getSiteRoot();
     }
     
     /**
@@ -252,6 +505,36 @@ public class CmsJspStatusBean extends CmsJspActionElement {
     }
     
     /**
+     * Sets the locale to use for the error page.<p>
+     *
+     * @param locale the locale to use for the error page
+     */
+    protected void setLocale(Locale locale) {
+
+        m_locale = locale;
+    }
+    
+    /**
+     * Sets the parameter object for localization.<p>
+     * 
+     * @param localizeParameters the parameter object for localization
+     */
+    protected void setLocalizeParameters(Object[] localizeParameters) {
+        
+        m_localizeParameters = localizeParameters;
+    }
+    
+    /**
+     * Sets the initialized messages object to read localized messages from.<p>
+     * 
+     * @param messages the initialized messages object to read localized messages from
+     */
+    protected void setMessages(CmsMessages messages) {
+
+        m_messages = messages;
+    }
+    
+    /**
      * Sets the request Uri.<p>
      *
      * @param requestUri the request Uri to set
@@ -269,6 +552,16 @@ public class CmsJspStatusBean extends CmsJspActionElement {
     protected void setServletName(String servletName) {
 
         m_servletName = servletName;
+    }
+    
+    /**
+     * Sets the site root of the requested resource.<p>
+     *
+     * @param siteRoot the site root of the requested resource
+     */
+    protected void setSiteRoot(String siteRoot) {
+
+        m_siteRoot = siteRoot;
     }
     
     /**
@@ -290,4 +583,5 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
         m_statusCodeMessage = statusCodeMessage;
     }
+    
 }

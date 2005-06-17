@@ -1,0 +1,31 @@
+<%@ page session="false" isErrorPage="true" contentType="text/html" import="java.util.*, org.opencms.jsp.util.*" %><%
+
+// initialize instance of status bean
+CmsJspStatusBean cms = new CmsJspStatusBean(pageContext, request, response, exception);
+
+// get the template to use
+String template = cms.property("template", "search", "/system/modules/org.opencms.welcome/templates/welcome");
+
+// include the template head part
+cms.includeTemplatePart(template, "head");
+
+%>
+<%= cms.getPageContent("head") %>
+
+<!-- Status error messages start -->
+<h4><%= cms.key("error_message_servererror") %></h4>
+<h3><%= cms.keyStatus("error_message") %></h3>
+
+<p><%= cms.keyStatus("error_description") %></p>
+<!-- Status error messages end -->
+
+<%= cms.getPageContent("foot") %>
+<%
+
+// pass request parameter "hideloginform" to included template foot (required only for "welcome" template)
+Map params = new HashMap(2);
+params.put("hideloginform", "true");
+
+// include the template foot part
+cms.includeTemplatePart(template, "foot", params);
+%>

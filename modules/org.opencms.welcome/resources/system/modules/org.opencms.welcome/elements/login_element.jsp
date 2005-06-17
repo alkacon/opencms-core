@@ -7,6 +7,7 @@ CmsJspLoginBean cms = new CmsJspLoginBean(pageContext, request, response);
 String username = request.getParameter("username");
 String password = request.getParameter("password");
 String action = request.getParameter("action");
+boolean hideLoginForm = Boolean.valueOf(request.getParameter("hideloginform")).booleanValue();
 
 // read properties
 String login_project = cms.property("login_project", "search");
@@ -19,7 +20,7 @@ if ("logout".equals(action)) {
 	cms.login(username, password, login_project, login_redirect);
 }
 
-if (! cms.isLoggedIn()) {
+if (! cms.isLoggedIn() && ! hideLoginForm) {
 // current user is not logged in - display the login form
 
 	String message = "Please login:";
@@ -40,7 +41,7 @@ if (! cms.isLoggedIn()) {
 </form>
 <%
 
-} else {
+} else if (! hideLoginForm) {
 
 // current user is already logged in - display the logout form
 %>
