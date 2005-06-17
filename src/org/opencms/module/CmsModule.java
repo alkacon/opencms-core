@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/17 09:59:07 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -253,6 +254,28 @@ public class CmsModule implements Comparable {
 
         // no dependency was found
         return null;
+    }
+
+    /**
+     * Checks if all resources of the module are present.<p>
+     * 
+     * @param cms an initialized OpenCms user context which must have read access to all module recouces
+     * @throws CmsRuntimeException in case not all module resources exist or can be read with the given OpenCms user context
+     */
+    public void checkResources(CmsObject cms) throws CmsRuntimeException {
+
+        StringBuffer result = new StringBuffer(128);
+        Iterator i = getResources().iterator();
+        while (i.hasNext()) {
+            String resource = (String)i.next();
+            if (!cms.existsResource(resource)) {
+                result.append(resource);
+                result.append('\n');
+            }
+        }
+        if (result.length() > 0) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_MISSING_RESOURCES_1, result.toString()));
+        }
     }
 
     /**

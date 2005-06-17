@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditResources.java,v $
- * Date   : $Date: 2005/06/10 09:08:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/17 09:59:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.modules;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
@@ -44,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public class CmsModulesEditResources extends CmsModulesEditBase {
@@ -69,6 +70,22 @@ public class CmsModulesEditResources extends CmsModulesEditBase {
     public CmsModulesEditResources(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.modules.CmsModulesEditBase#actionCommit()
+     */
+    public void actionCommit() {
+
+        try {
+            // validate the module reouces
+            m_module.checkResources(getCms());
+        } catch (CmsRuntimeException e) {
+            addCommitError(e);
+        }
+
+        // now do the committing in the base class
+        super.actionCommit();
     }
 
     /**

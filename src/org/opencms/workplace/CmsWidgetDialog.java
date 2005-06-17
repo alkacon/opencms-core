@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/16 11:26:40 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/06/17 09:59:07 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -694,6 +694,21 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
+     * Adds the given error to the list of errors that are thrown by save actions or form generation.<p>
+     * 
+     * If the error list has not been initilaized yet, this is done automatically.<p>
+     * 
+     * @param error the errors to add
+     */
+    protected void addCommitError(Exception error) {
+
+        if (m_commitErrors == null) {
+            m_commitErrors = new ArrayList();
+        }
+        m_commitErrors.add(error);
+    }
+
+    /**
      * Adds a new widget parameter definition to the list of all widgets of this dialog.<p>
      * 
      * @param param the widget parameter definition to add
@@ -948,7 +963,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         }
         return result.toString();
     }
-    
+
     /**
      * Creates the complete widget dialog end block HTML that finishes a widget block.<p>
      * 
@@ -961,7 +976,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         result.append(dialogBlockEnd());
         return result.toString();
     }
-    
+
     /**
      * Create the complete widget dialog start block HTML that begins a widget block with optional headline.<p>
      * @param headline the headline String for the block
@@ -1002,7 +1017,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                     result.append("error.png");
                     result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError maxwidth\">");
                     while (t != null) {
-                        result.append(t.getLocalizedMessage());
+                        result.append(CmsStringUtil.escapeHtml(t.getLocalizedMessage()));
                         t = t.getCause();
                         if (t != null) {
                             result.append("<br>");
@@ -1395,11 +1410,11 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /**
      * Sets the errors that are thrown by save actions or form generation.<p>
      * 
-     * @param otherErrors the errors that are thrown by save actions or form generation
+     * @param errors the errors that are thrown by save actions or form generation
      */
-    protected void setCommitErrors(List otherErrors) {
+    protected void setCommitErrors(List errors) {
 
-        m_commitErrors = otherErrors;
+        m_commitErrors = errors;
     }
 
     /**
@@ -1451,5 +1466,4 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         }
         return objects;
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditBase.java,v $
- * Date   : $Date: 2005/06/16 10:55:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/17 09:59:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,19 +31,15 @@
 
 package org.opencms.workplace.tools.modules;
 
-import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
-import org.opencms.security.CmsRoleViolationException;
-import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.9.1
  */
 public class CmsModulesEditBase extends CmsWidgetDialog {
@@ -100,39 +96,32 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
      */
     public void actionCommit() {
 
-        List errors = new ArrayList();
-
-        //check if we have to update an existing module or to create a new one
-        Set moduleNames = OpenCms.getModuleManager().getModuleNames();
-        if (moduleNames.contains(m_module.getName())) {
-
-            // update the module information
-            try {
-                OpenCms.getModuleManager().updateModule(getCms(), m_module);
-            } catch (CmsConfigurationException ce) {
-                errors.add(ce);
-            } catch (CmsRoleViolationException re) {
-                errors.add(re);
-            }
-        } else {
-            try {
-                OpenCms.getModuleManager().addModule(getCms(), m_module);
-            } catch (CmsConfigurationException ce) {
-                errors.add(ce);
-            } catch (CmsSecurityException se) {
-                errors.add(se);
+        if (!hasCommitErrors()) {
+            //check if we have to update an existing module or to create a new one
+            Set moduleNames = OpenCms.getModuleManager().getModuleNames();
+            if (moduleNames.contains(m_module.getName())) {
+                // update the module information
+                try {
+                    OpenCms.getModuleManager().updateModule(getCms(), m_module);
+                } catch (CmsException e) {
+                    addCommitError(e);
+                }
+            } else {
+                try {
+                    OpenCms.getModuleManager().addModule(getCms(), m_module);
+                } catch (CmsException e) {
+                    addCommitError(e);
+                }
             }
         }
-        
-        if (errors.isEmpty()) {
+
+        if (!hasCommitErrors()) {
             // refresh the list
             Map objects = (Map)getSettings().getListObject();
             if (objects != null) {
                 objects.remove(CmsModulesList.class.getName());
             }
         }
-        // set the list of errors to display when saving failed
-        setCommitErrors(errors);
     }
 
     /**

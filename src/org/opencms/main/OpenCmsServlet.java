@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/06/16 12:37:34 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/06/17 09:59:07 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
@@ -81,7 +81,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     private static final String C_HANDLE = "/handle";
 
     /** Handler implementation names. */
-    private static final String[] C_HANDLER_NAMES = {"404", "500"};
+    private static final String[] C_HANDLER_NAMES = {"404"};
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(OpenCmsServlet.class);

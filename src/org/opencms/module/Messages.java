@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/Messages.java,v $
- * Date   : $Date: 2005/06/02 12:57:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/17 09:59:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,21 +41,24 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @since 5.9.1
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHECK_DEPENDENCY_INVALID_MODE_1 = "ERR_CHECK_DEPENDENCY_INVALID_MODE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORT_MOD_ALREADY_INSTALLED_1 = "ERR_IMPORT_MOD_ALREADY_INSTALLED_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_VERSION_LENGTH_1 = "ERR_INVALID_VERSION_LENGTH_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_VERSION_SUBNUMBER_1 = "ERR_INVALID_VERSION_SUBNUMBER_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IO_MODULE_IMPORT_0 = "ERR_IO_MODULE_IMPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MISSING_RESOURCES_1 = "ERR_MISSING_RESOURCES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOD_ALREADY_INSTALLED_1 = "ERR_MOD_ALREADY_INSTALLED_1";
@@ -77,16 +80,16 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODULE_FROZEN_1 = "ERR_MODULE_FROZEN_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODULE_IMPORTING_MODULE_1 = "ERR_MODULE_IMPORTING_MODULE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODULE_NAME_1 = "ERR_MODULE_NAME_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODULE_NOT_CONFIGURED_1 = "ERR_MODULE_NOT_CONFIGURED_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODULE_VERSION_NUMBER_0 = "ERR_MODULE_VERSION_NUMBER_0";
 
@@ -98,7 +101,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SAX_MODULE_IMPORT_0 = "ERR_SAX_MODULE_IMPORT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_NAME_IMPORT_MODULE_1 = "GUI_PROJECT_NAME_IMPORT_MODULE_1";
 
@@ -206,25 +209,25 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_PROJECT_1 = "LOG_PUBLISH_PROJECT_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_DELETE_0 = "RPT_DELETE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_EXPORT_MODULE_BEGIN_0 = "RPT_EXPORT_MODULE_BEGIN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_EXPORT_MODULE_END_0 = "RPT_EXPORT_MODULE_END_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IMPORT_MODULE_BEGIN_0 = "RPT_IMPORT_MODULE_BEGIN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IMPORT_MODULE_END_0 = "RPT_IMPORT_MODULE_END_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_PUBLISH_PROJECT_BEGIN_0 = "RPT_PUBLISH_PROJECT_BEGIN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_PUBLISH_PROJECT_END_0 = "RPT_PUBLISH_PROJECT_END_0";
 
