@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/06/15 12:51:24 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2005/06/17 09:24:10 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * 
  * @since 5.3.1
  */
@@ -1004,10 +1004,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      * @param fileViewSettings the system-wide file view settings for the workplace to set 
      * @throws CmsRoleViolationException if the current user does not own the administrator role  ({@link CmsRole#ADMINISTRATOR})  
      * */
-    public void setFileViewSettings(CmsObject cms, CmsRfsFileViewer fileViewSettings)
-    throws CmsRoleViolationException {
+    public void setFileViewSettings(CmsObject cms, CmsRfsFileViewer fileViewSettings) throws CmsRoleViolationException {
 
-        cms.checkRole(CmsRole.ADMINISTRATOR);
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
+            cms.checkRole(CmsRole.ADMINISTRATOR);
+        }
         m_fileViewSettings = fileViewSettings;
         // disallow modifications of this "new original"
         m_fileViewSettings.setFrozen(true);
