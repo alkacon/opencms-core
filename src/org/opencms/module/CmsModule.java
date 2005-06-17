@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/17 09:59:07 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/17 12:38:18 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.module;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -182,7 +184,11 @@ public class CmsModule implements Comparable {
         } else {
             m_description = description;
         }
-        m_version = version;
+        if (CmsStringUtil.isEmpty(description)) {
+            throw new IllegalArgumentException("The version must a valid number");
+        } else {
+            m_version = version;
+        }
         if (CmsStringUtil.isEmpty(authorName)) {
             m_authorName = "";
         } else {
@@ -265,13 +271,18 @@ public class CmsModule implements Comparable {
     public void checkResources(CmsObject cms) throws CmsRuntimeException {
 
         StringBuffer result = new StringBuffer(128);
-        Iterator i = getResources().iterator();
-        while (i.hasNext()) {
-            String resource = (String)i.next();
-            if (!cms.existsResource(resource)) {
-                result.append(resource);
-                result.append('\n');
-            }
+        for (int i = 0; i < m_resources.size(); i++) {
+            String resourcePath = (String)m_resources.get(i);
+            try {
+                CmsResource resource = cms.readResource(resourcePath);
+                // append folder separator, of resource is a file and does not and with a slash
+                if (resource.isFolder() && !resourcePath.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                    m_resources.set(i, resourcePath + I_CmsConstants.C_FOLDER_SEPARATOR);
+                }    
+            } catch (CmsException e) {
+                result.append(resourcePath);
+                result.append('\n');                
+            }    
         }
         if (result.length() > 0) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_MISSING_RESOURCES_1, result.toString()));
