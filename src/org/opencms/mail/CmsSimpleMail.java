@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsSimpleMail.java,v $
- * Date   : $Date: 2005/04/29 15:00:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/17 16:16:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.mail.SimpleEmail;
  * to conveniently generate emails using the OpenCms configuration.<p> 
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsSimpleMail extends SimpleEmail {
@@ -85,4 +85,16 @@ public class CmsSimpleMail extends SimpleEmail {
         }
     }
     
+    
+    /**
+     * Overrides to add a layer for localization of exception / logging.<p>
+     *  
+     * @see org.apache.commons.mail.Email#send()
+     */
+    public void send() throws MessagingException {
+        int todo = 0;
+        // Please localize and check the different suptypes of exception: Tell where to fix the mail configuration...
+            
+        super.send();
+    }
 }
