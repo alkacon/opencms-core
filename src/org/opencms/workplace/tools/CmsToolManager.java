@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/14 15:53:27 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/17 15:12:07 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Manages the registered tools, actualizing its state every time the workplace is reinitialize.<p>
  * 
@@ -57,7 +59,7 @@ import java.util.Map;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -174,7 +176,7 @@ public class CmsToolManager {
         params.put(CmsToolDialog.PARAM_PATH, toolPath);
         return jsp.link(rewriteUrl(C_VIEW_JSPPAGE_LOCATION, params));
     }
-    
+
     /**
      * Returns the tool path for the given url.<p>
      * 
@@ -183,7 +185,7 @@ public class CmsToolManager {
      * @return the associated tool path
      */
     public String getToolPathForUrl(String url) {
-        
+
         return (String)m_urls.getObject(url);
     }
 
@@ -216,7 +218,7 @@ public class CmsToolManager {
                 }
                 link += wp.resolveMacros(adminTool.getHandler().getParameters());
             }
-            
+
             String onClic = "openPage('" + link + "');";
             String buttonHtml = A_CmsHtmlIconButton.defaultButtonHtml(
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
@@ -406,7 +408,7 @@ public class CmsToolManager {
                     int pos = arg.indexOf("=");
                     argMap.put(arg.substring(0, pos), arg.substring(pos + 1));
                 }
-            }                    
+            }
             myParams.put(CmsDialog.PARAM_CLOSELINK, linkForPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
         }
         wp.getJsp().getResponse().sendRedirect(linkForPath(wp.getJsp(), toolPath, myParams));
@@ -450,9 +452,9 @@ public class CmsToolManager {
         StringBuffer link = new StringBuffer(512);
         link.append(baseUrl);
         String sep = "?";
-        if (baseUrl.indexOf('?')>-1) {
+        if (baseUrl.indexOf('?') > -1) {
             sep = "&";
-        } 
+        }
 
         boolean first = true;
         Iterator it = params.keySet().iterator();
@@ -516,27 +518,63 @@ public class CmsToolManager {
         userData.setCurrentToolPath(currentToolPath);
     }
 
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsToolManager.class);
+
     /**
      * Given a string a valid and visible tool path is computed.<p>
      * 
      * @param wp the workplace object
      * @param path the path to repair
      * 
-     * @return a valida and visible tool path
+     * @return a valid and visible tool path
      */
     private String repairPath(CmsWorkplace wp, String path) {
-        
-        // navegate until to reach a valid path
-        while (!validatePath(path, true)) {            
+
+        // navigate until to reach a valid path
+        while (!validatePath(path, true)) {
             path = getParent(wp, path);
         }
-        // navegate until to reach a visible path
-        while (!resolveAdminTool(path).getHandler().isEnabled(wp.getCms())) {
-            path = getParent(wp, path);
+        // navigate to reach a visible path
+        CmsTool adminTool = resolveAdminTool(path);
+        I_CmsToolHandler handler = null;
+        if (adminTool != null) {
+            handler = resolveAdminTool(path).getHandler();
+        } else {
+            LOG.warn(Messages.get().key(wp.getLocale(), Messages.LOG_MISSING_ADMIN_TOOL_1, new Object[] {path}));
         }
+
+        boolean handlerEnabled = false;
+        CmsObject cms = wp.getCms();
+        do {
+            if (handler != null) {
+                handlerEnabled = handler.isEnabled(cms);
+            } else {
+                LOG.warn(Messages.get().key(
+                    wp.getLocale(),
+                    Messages.LOG_MISSING_TOOL_HANDLER_2,
+                    new Object[] {resolveAdminTool(path), path}));
+                if (path.equals("/")) {
+                    handlerEnabled = true;
+                }
+            }
+            if (handlerEnabled) {
+                break;
+            }
+            path = getParent(wp, path);
+            adminTool = resolveAdminTool(path);
+
+            if (adminTool != null) {
+                handler = resolveAdminTool(path).getHandler();
+            } else {
+                LOG.warn(Messages.get().key(wp.getLocale(), Messages.LOG_MISSING_ADMIN_TOOL_1, new Object[] {path}));
+            }
+
+        } while (true);
+
         return path;
     }
-    
+
     /**
      * Sets the root tool path.<p>
      * 
@@ -629,7 +667,7 @@ public class CmsToolManager {
         }
         if (!toolPath.startsWith(C_TOOLPATH_SEPARATOR)) {
             return false;
-        }                                                        
+        }
         List groups = CmsStringUtil.splitAsList(toolPath, C_TOOLPATH_SEPARATOR);
         Iterator itGroups = groups.iterator();
         String subpath = "";
