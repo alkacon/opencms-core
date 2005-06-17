@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2005/05/31 13:06:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/17 15:30:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.3
  */
@@ -845,7 +845,7 @@ public class CmsElementRename extends CmsReport {
 
                     // check if the source element exists in the page
                     if (!page.hasValue(getParamOldElement(), locale)) {
-                        m_report.println(Messages.get().container(Messages.RPT_NONEXISTANT_ELEM_1), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.println(Messages.get().container(Messages.RPT_NONEXISTANT_ELEM_1, getParamOldElement()), I_CmsReport.C_FORMAT_NOTE);
                         continue;
                     }
 
