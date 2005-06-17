@@ -24,7 +24,13 @@
 		<enableadvancedpropertytabs>true</enableadvancedpropertytabs>
 		<maxfileuploadsize>-1</maxfileuploadsize>
 		<labeledfolders/>
-		<explorertypes>
+        <rfsfileviewsettings>
+          <enabled>true</enabled>
+          <fileEncoding>ISO-8859-1</fileEncoding>
+          <isLogfile>true</isLogfile>
+          <windowSize>200</windowSize>
+        </rfsfileviewsettings>
+        <explorertypes>
 			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
 				<newresource uri="newresource_folder.jsp" order="10" autosetnavigation="true" autosettitle="true"/>
 				<accesscontrol>

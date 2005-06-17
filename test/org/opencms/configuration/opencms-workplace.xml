@@ -24,9 +24,10 @@
 		<enableadvancedpropertytabs>true</enableadvancedpropertytabs>
 		<maxfileuploadsize>-1</maxfileuploadsize>
 		<labeledfolders/>
-	    <rfsfileviewsettings>
+        <rfsfileviewsettings>
           <enabled>true</enabled>
-          <fileEncoding>windows-1252</fileEncoding>
+          <fileEncoding>ISO-8859-1</fileEncoding>
+          <isLogfile>true</isLogfile>
           <windowSize>200</windowSize>
         </rfsfileviewsettings>
           <explorertypes>
