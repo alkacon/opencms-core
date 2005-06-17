@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.196 $
+ * Date   : $Date: 2005/06/17 10:55:03 $
+ * Version: $Revision: 1.197 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -127,7 +127,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.196 $
+ * @version $Revision: 1.197 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1705,12 +1705,6 @@ public final class OpenCmsCore {
             }
         }
 
-        if (status < 1) {
-            // error code not set - set "internal server error" (500)
-            status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-        }
-        res.setStatus(status);
-
         try {
             isNotGuest = isNotGuest 
                 || (cms != null 
@@ -1722,6 +1716,12 @@ public final class OpenCmsCore {
         } catch (CmsException e) {
             // result is false
         }
+        
+        if (status < 1 && ! isNotGuest) {
+            // error code not set - set "internal server error" (500)
+            status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+        }
+        res.setStatus(status);
 
         if (canWrite) {
             res.setContentType("text/html");
