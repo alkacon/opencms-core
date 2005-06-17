@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsTableGallery.java,v $
- * Date   : $Date: 2005/05/30 15:20:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/17 15:40:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * Generates the html gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsTableGallery extends CmsHtmlGallery {
 
@@ -93,21 +93,24 @@ public class CmsTableGallery extends CmsHtmlGallery {
     public String buildGalleryItemPreview() {
 
         String cssFile = "";
-        try {
-            cssFile = getJsp().link(
-                getCms().readPropertyObject(getParamResourcePath(), I_CmsConstants.C_PROPERTY_STYLESHEET, true)
-                    .getValue());
-        } catch (CmsException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e);
+        if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
+            try {
+                cssFile = getJsp().link(
+                    getCms().readPropertyObject(getParamResourcePath(), I_CmsConstants.C_PROPERTY_STYLESHEET, true)
+                        .getValue(""));
+            } catch (CmsException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e);
+                }
             }
+            StringBuffer result = new StringBuffer();
+            if (CmsStringUtil.isNotEmpty(cssFile)) {
+                result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(cssFile).append("\">");
+            }
+            result.append(super.buildGalleryItemPreview());
+            return result.toString();
         }
-        StringBuffer result = new StringBuffer();
-        if (CmsStringUtil.isNotEmpty(cssFile)) {
-            result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(cssFile).append("\">");
-        }
-        result.append(super.buildGalleryItemPreview());
-        return result.toString();
+        return "";      
     }
     
     /**
