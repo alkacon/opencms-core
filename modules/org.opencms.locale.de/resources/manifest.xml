@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.locale.de</name>
-		<nicename><![CDATA[German localization for the OpenCms workplace]]></nicename>
+		<nicename><![CDATA[OpenCms 6.0 German Localization for the OpenCms Workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
 		<description><![CDATA[This module contains the German language localization files for the OpenCms workplace.]]></description>
@@ -25,7 +25,6 @@
 			<exportpoint uri="/system/workplace/locales/de/messages/" destination="WEB-INF/classes/"/>
 		</exportpoints>
 		<resources>
-			<resource uri="/system/workplace/locales/de/messages/"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/db/generic/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/db/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/importexport/messages_de.properties"/>
@@ -44,7 +43,7 @@
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/threads/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/accounts/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/cachemessages_de.properties"/>
+			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/cache/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/content/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/database/messages_de.properties"/>
 			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/history/messages_de.properties"/>
