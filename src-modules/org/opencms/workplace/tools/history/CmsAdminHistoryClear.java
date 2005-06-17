@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2005/06/02 13:57:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/17 15:26:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -150,7 +150,7 @@ public class CmsAdminHistoryClear extends CmsReport {
             retValue.append("<td>");
             retValue.append("<input type=\"text\" name=\"date\" id=\"date\">");
             retValue.append("</td>\n<td>");
-            retValue.append("<img src=\"" + getResourceUri() + "ic_timer.gif\" id=\"triggercalendar\" ");
+            retValue.append("<img src=\"" + getSkinUri() + "buttons/calendar.png\" id=\"triggercalendar\" ");
             retValue.append("alt=\"" + key("calendar.input.choosedate") + "\" title=\"" + key("calendar.input.choosedate") + "\">");
             retValue.append("</td>\n");
             retValue.append("</tr>\n");
