@@ -57,7 +57,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[notes_6.0rc1.html]]></value>
+					<value><![CDATA[notes_6.0rc2.html]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -488,6 +488,36 @@ It will also remove the "default" template.</p>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[6.0 RC 1 release notes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/notes_6.0rc2.html</source>
+			<destination>release/notes_6.0rc2.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>9f1adb82-df2d-11d9-8b1a-157a1a2d4854</uuidresource>
+			<datelastmodified>Fri, 17 Jun 2005 13:12:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Jun 2005 12:45:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.01]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[6.0 RC 2 notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[6.0 RC 2 release notes]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
