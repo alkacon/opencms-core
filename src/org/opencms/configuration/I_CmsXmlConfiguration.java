@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2005/06/10 16:02:58 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/17 09:18:17 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,6 +61,9 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
     /** The "from" attribute. */
     String A_FROM = "from";
 
+    /** The "handler" attribute. */
+    String A_HANDLER = "handler";
+
     /** The "icon" attribute. */
     String A_ICON = "icon";
 
@@ -93,9 +96,6 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
 
     /** The "uri" attribute. */
     String A_URI = "uri";
-    
-    /** The "handler" attribute. */
-    String A_HANDLER = "handler";
 
     /** The "user" attribute. */
     String A_USER = "user";
