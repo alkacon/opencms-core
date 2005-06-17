@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2005/06/16 07:32:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/17 07:23:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -352,7 +352,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
 
                 // check the url,
                 // if the url is not readable add it to the list of not available urls
-                if (!CmsPointerLinkValidator.checkUrl(linkUrl)) {
+                if (!CmsPointerLinkValidator.checkUrl(cms, linkUrl)) {
                     // get the vector of resourcenames from the hashtable of urls
                     Vector inList = null;
                     inList = (Vector)notAvailable.get(linkUrl);

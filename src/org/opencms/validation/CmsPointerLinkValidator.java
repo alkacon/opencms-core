@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsPointerLinkValidator.java,v $
- * Date   : $Date: 2005/06/16 09:36:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/17 07:23:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * Class to validate pointer links.<p>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2005/06/16 09:36:21 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/17 07:23:47 $
  * @since 5.9.2
  */
 public class CmsPointerLinkValidator implements I_CmsScheduledJob {
@@ -116,6 +116,7 @@ public class CmsPointerLinkValidator implements I_CmsScheduledJob {
             CmsFile link = cms.readFile(cms.getSitePath((CmsResource)iterator.next()));
             String linkUrl = new String(link.getContents());
             
+            // print to the report
             m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_1, 
                 new Integer(i), new Integer(links.size())), I_CmsReport.C_FORMAT_NOTE);  
             m_report.print(Messages.get().container(Messages.RPT_VALIDATE_LINK_0), I_CmsReport.C_FORMAT_NOTE);                   
@@ -127,7 +128,7 @@ public class CmsPointerLinkValidator implements I_CmsScheduledJob {
             m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));   
             
             // check link and append it to the list of broken links, if test fails
-            if (!checkUrl(linkUrl)) {
+            if (!checkUrl(cms, linkUrl)) {
                 brokenLinks.put(link.getRootPath(), linkUrl);
                 m_report.println(Messages.get().container(
                     Messages.RPT_BROKEN_0), I_CmsReport.C_FORMAT_ERROR);  
@@ -149,16 +150,18 @@ public class CmsPointerLinkValidator implements I_CmsScheduledJob {
      * Checks if the given url is valid.<p>
      *
      * @param url the url to check
+     * @param cms a OpenCms context object
+     * 
      * @return false if the url could not be accessed
      */
-    public static boolean checkUrl(String url) {
+    public static boolean checkUrl(CmsObject cms, String url) {
         try {
-            URL checkedUrl = new URL(url);
-            if (url.toLowerCase().startsWith("http")) {
+            if (url.toLowerCase().startsWith("/")) {
+                return cms.existsResource(cms.getRequestContext().removeSiteRoot(url));
+            } else {
+                URL checkedUrl = new URL(url);
                 HttpURLConnection httpcon = (HttpURLConnection)checkedUrl.openConnection();
                 return (httpcon.getResponseCode() == 200);
-            } else {
-                return true;
             }
         } catch (MalformedURLException mue) {
             return false;
