@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Messages.java,v $
- * Date   : $Date: 2005/06/16 14:21:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/17 13:33:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Constant for message LOG_ADD_CONFIG_PARAM_CALLED_3. */
     public static final String ERR_CONFIG_WITH_UNKNOWN_CLASS_1 = "ERR_CONFIG_WITH_UNKNOWN_CLASS_1";
+
+    /** Constant for message LOG_ADD_CONFIG_PARAM_CALLED_3. */
+    public static final String ERR_LOAD_CLASS_1 = "ERR_LOAD_CLASS_1";
 
     /** Constant for message LOG_ADD_CONFIG_PARAM_CALLED_3. */
     public static final String INIT_CONFIG_I18N_FINISHED_0 = "INIT_CONFIG_I18N_FINISHED_0";

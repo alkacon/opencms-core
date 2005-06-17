@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSetNextRule.java,v $
- * Date   : $Date: 2005/06/17 09:17:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/17 13:33:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,17 +45,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
- 
+ */
 
 package org.opencms.configuration;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsLog;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.Rule;
+import org.apache.commons.logging.Log;
 
 import org.xml.sax.Attributes;
 
@@ -80,7 +81,7 @@ import org.xml.sax.Attributes;
  * 
  * @author Craig McClanahan (original)
  * @author Achim Westermann (modification)(a.westermann@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  * 
@@ -90,6 +91,8 @@ import org.xml.sax.Attributes;
 
 public class CmsSetNextRule extends Rule {
 
+    /** The log object of this class. */
+    private static Log LOG = CmsLog.getLog(CmsSetNextRule.class);
     /**
      * The body text collected from this element.
      */
@@ -149,8 +152,8 @@ public class CmsSetNextRule extends Rule {
     public CmsSetNextRule(String methodName, Class clazz) {
 
         this(methodName, new Class[] {clazz});
-    }   
-    
+    }
+
     /**
      * Construct a "call method" rule with the specified method name 
      * and additional parameters.<p>
@@ -169,7 +172,7 @@ public class CmsSetNextRule extends Rule {
      *
      * @param methodName Method name of the parent method to call
      * @param clazzes an array with all parameter types for the method to invoke at digestion time 
-     */   
+     */
     public CmsSetNextRule(String methodName, Class[] clazzes) {
 
         m_targetOffset = 0;
@@ -178,40 +181,7 @@ public class CmsSetNextRule extends Rule {
         m_paramTypes = new Class[m_paramCount];
         m_paramTypes[0] = CmsObject.class;
         System.arraycopy(clazzes, 0, m_paramTypes, 1, clazzes.length);
-    }   
-
-    /**
-     * Construct a "call method" rule with the specified method name and
-     * parameter types. If <code>paramCount</code> is set to zero the rule
-     * will use the body of this element as the single argument of the
-     * method, unless <code>paramTypes</code> is null or empty, in this
-     * case the rule will call the specified method with no arguments.
-     *
-     * @param methodName Method name of the parent method to call
-     * @param paramCount The number of parameters to collect, or
-     *  zero for a single argument from the body of ths element
-     * @param paramTypes The Java classes that represent the
-     *  parameter types of the method arguments
-     *  (if you wish to use a primitive type, specify the corresonding
-     *  Java wrapper class instead, such as <code>java.lang.Boolean.TYPE</code>
-     *  for a <code>boolean</code> parameter)
-     */
-
-    /**
-     * Construct a "call method" rule with the specified method name and
-     * parameter types. If <code>paramCount</code> is set to zero the rule
-     * will use the body of this element as the single argument of the
-     * method, unless <code>paramTypes</code> is null or empty, in this
-     * case the rule will call the specified method with no arguments.
-     *
-     * @param methodName Method name of the parent method to call
-     * @param paramCount The number of parameters to collect, or
-     *  zero for a single argument from the body of ths element
-     * @param paramTypes The Java class names of the arguments
-     *  (if you wish to use a primitive type, specify the corresonding
-     *  Java wrapper class instead, such as <code>java.lang.Boolean</code>
-     *  for a <code>boolean</code> parameter)
-     */
+    }
 
     /**
      * Process the start of this element.
@@ -223,6 +193,9 @@ public class CmsSetNextRule extends Rule {
      * @throws Exception if something goes wrong
      */
     public void begin(java.lang.String namespace, java.lang.String name, Attributes attributes) throws Exception {
+
+        // not now: 6.0 RC 2
+        //digester.setLogger(CmsLog.getLog(digester.getClass()));
 
         // Push an array to capture the parameter values if necessary
         if (m_paramCount > 0) {
@@ -268,9 +241,9 @@ public class CmsSetNextRule extends Rule {
         Object[] parameters = null;
         if (m_paramCount > 0) {
             parameters = (Object[])digester.popParams();
-            if (digester.getLogger().isTraceEnabled()) {
+            if (LOG.isTraceEnabled()) {
                 for (int i = 0, size = parameters.length; i < size; i++) {
-                    digester.getLogger().trace("[SetNextRuleWithParams](" + i + ")" + parameters[i]);
+                    LOG.trace("[SetNextRuleWithParams](" + i + ")" + parameters[i]);
                 }
             }
 
@@ -346,7 +319,7 @@ public class CmsSetNextRule extends Rule {
         }
 
         // Invoke the required method on the top object
-        if (digester.getLogger().isDebugEnabled()) {
+        if (LOG.isDebugEnabled()) {
             StringBuffer sb = new StringBuffer("[SetNextRuleWithParams]{");
             sb.append(digester.getMatch());
             sb.append("} Call ");
@@ -371,7 +344,7 @@ public class CmsSetNextRule extends Rule {
                 }
             }
             sb.append(")");
-            digester.getLogger().debug(sb.toString());
+            LOG.debug(sb.toString());
         }
 
         Object result = null;
@@ -418,12 +391,15 @@ public class CmsSetNextRule extends Rule {
     /**
      * Set the associated digester.<p>
      * 
+     * The digester gets assigned to use the OpenCms conform logging
+     * 
      * If needed, this class loads the parameter classes from their names.<p>
      * 
      * @param aDigester the associated digester to set
      */
     public void setDigester(Digester aDigester) {
 
+        aDigester.setLogger(CmsLog.getLog(aDigester.getClass()));
         // call superclass
         super.setDigester(aDigester);
         // if necessary, load parameter classes
@@ -434,7 +410,7 @@ public class CmsSetNextRule extends Rule {
                     m_paramTypes[i] = aDigester.getClassLoader().loadClass(m_paramClassNames[i]);
                 } catch (ClassNotFoundException e) {
                     // use the digester log
-                    aDigester.getLogger().error("(CallMethodRule) Cannot load class " + m_paramClassNames[i], e);
+                    LOG.error(Messages.get().key(Messages.ERR_LOAD_CLASS_1, m_paramClassNames[i]), e);
                     m_paramTypes[i] = null; // Will cause NPE later
                 }
             }
