@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/17 16:16:42 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsFlexController {
 
@@ -61,6 +60,9 @@ public class CmsFlexController {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFlexController.class);
+
+    /** Indicates if inclusion loops are allowed for this controller. */
+    private boolean m_allowInclusionLoops;
 
     /** The CmsFlexCache where the result will be cached in, required for the dispatcher. */
     private CmsFlexCache m_cache;
@@ -125,9 +127,9 @@ public class CmsFlexController {
         m_res = res;
         m_streaming = streaming;
         m_top = top;
-        m_flexRequestList = Collections.synchronizedList(new ArrayList());
-        m_flexResponseList = Collections.synchronizedList(new ArrayList());
-        m_flexContextInfoList = Collections.synchronizedList(new ArrayList());
+        m_flexRequestList = new Vector();
+        m_flexResponseList = new Vector();
+        m_flexContextInfoList = new Vector();
     }
 
     /**
@@ -452,6 +454,26 @@ public class CmsFlexController {
     }
 
     /**
+     * Returns <code>true</code> if inclusion loops are allowed for this controller.<p>
+     *
+     * @return <code>true</code> if inclusion loops are allowed for this controller
+     */
+    public boolean isAllowInclusionLoops() {
+
+        return m_allowInclusionLoops;
+    }
+
+    /**
+     * Returns <code>true</code> if the controller does not yet contain any requests.<p>
+     * 
+     * @return <code>true</code> if the controller does not yet contain any requests
+     */
+    public boolean isEmptyRequestList() {
+
+        return (m_flexRequestList != null) && m_flexRequestList.isEmpty();
+    }
+
+    /**
      * Returns <code>true</code> if the generated output of the response should 
      * be written to the stream directly.<p>
      * 
@@ -509,6 +531,21 @@ public class CmsFlexController {
         m_flexResponseList.add(res);
         m_flexContextInfoList.add(new CmsFlexRequestContextInfo());
         updateRequestContextInfo();
+    }
+
+    /**
+     * Sets the value of the "allow inclusion loops" flag.<p>
+     *
+     * The default of this is <code>false</code> which is usually correct.
+     * Only in very special circumstances you need to set this to <code>true</code>.
+     * A use case for this is a JSP that uses the request parameters to decide what to include,
+     * which may call itself multiple times with different parameter values.<p>
+     *
+     * @param allowInclusionLoops the inclusion loop status to set
+     */
+    public void setAllowInclusionLoops(boolean allowInclusionLoops) {
+
+        m_allowInclusionLoops = allowInclusionLoops;
     }
 
     /**

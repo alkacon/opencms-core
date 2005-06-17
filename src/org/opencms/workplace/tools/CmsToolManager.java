@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/17 15:12:07 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/17 16:16:42 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsIdentifiableObjectContainer;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -59,7 +60,7 @@ import org.apache.commons.logging.Log;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -81,6 +82,9 @@ public class CmsToolManager {
 
     /** Location of the admin view jsp page. */
     public static final String C_VIEW_JSPPAGE_LOCATION = C_ADMINVIEW_ROOT_LOCATION + "/admin-main.html";
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsToolManager.class);
 
     /** List of all available tools. */
     private final CmsIdentifiableObjectContainer m_tools = new CmsIdentifiableObjectContainer(true, false);
@@ -157,36 +161,6 @@ public class CmsToolManager {
             }
         }
 
-    }
-
-    /**
-     * Returns a valid link for the given tool path.<p>
-     * 
-     * @param jsp the jsp action element
-     * @param toolPath the tool path
-     * @param params a map of additional parameters
-     * 
-     * @return a valid OpenCms link
-     */
-    public String linkForPath(CmsJspActionElement jsp, String toolPath, Map params) {
-
-        if (params == null) {
-            params = new HashMap();
-        }
-        params.put(CmsToolDialog.PARAM_PATH, toolPath);
-        return jsp.link(rewriteUrl(C_VIEW_JSPPAGE_LOCATION, params));
-    }
-
-    /**
-     * Returns the tool path for the given url.<p>
-     * 
-     * @param url the url of the tool
-     * 
-     * @return the associated tool path
-     */
-    public String getToolPathForUrl(String url) {
-
-        return (String)m_urls.getObject(url);
     }
 
     /**
@@ -310,6 +284,18 @@ public class CmsToolManager {
     }
 
     /**
+     * Returns the tool path for the given url.<p>
+     * 
+     * @param url the url of the tool
+     * 
+     * @return the associated tool path
+     */
+    public String getToolPathForUrl(String url) {
+
+        return (String)m_urls.getObject(url);
+    }
+
+    /**
      * Returns a list of all tools in the given path.<p>
      * 
      * @param toolPath the path
@@ -378,6 +364,31 @@ public class CmsToolManager {
     }
 
     /**
+     * Redirects to the given page with the given parameters.<p>
+     * 
+     * @param wp the workplace object
+     * @param pagePath the path to the page to redirect to
+     * @param params the parameters to send
+     * 
+     * @throws IOException if something goes wrong
+     */
+    public void jspRedirectPage(CmsWorkplace wp, String pagePath, Map params) throws IOException {
+
+        Map myParams = params;
+        if (myParams == null) {
+            myParams = new HashMap();
+        }
+        // put close link if not set
+        if (!myParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
+            myParams.put(CmsDialog.PARAM_CLOSELINK, linkForPath(wp.getJsp(), getCurrentToolPath(wp), null));
+        }
+
+        CmsRequestUtil.sendHtmlRedirect(wp.getJsp().getResponse(), wp.getJsp().link(rewriteUrl(pagePath, myParams)));
+
+        // wp.getJsp().getResponse().sendRedirect(wp.getJsp().link(rewriteUrl(pagePath, myParams)));
+    }
+
+    /**
      * Redirects to the given tool with the given parameters.<p>
      * 
      * @param wp the workplace object
@@ -411,81 +422,28 @@ public class CmsToolManager {
             }
             myParams.put(CmsDialog.PARAM_CLOSELINK, linkForPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
         }
+
+        // CmsRequestUtil.sendJavaScriptRedirect(wp.getJsp().getResponse(), wp.getJsp().link(rewriteUrl(pagePath, myParams)));
+
         wp.getJsp().getResponse().sendRedirect(linkForPath(wp.getJsp(), toolPath, myParams));
     }
 
     /**
-     * Redirects to the given page with the given parameters.<p>
+     * Returns a valid link for the given tool path.<p>
      * 
-     * @param wp the workplace object
-     * @param pagePath the path to the page to redirect to
-     * @param params the parameters to send
-     * 
-     * @throws IOException if something goes wrong
-     */
-    public void jspRedirectPage(CmsWorkplace wp, String pagePath, Map params) throws IOException {
-
-        Map myParams = params;
-        if (myParams == null) {
-            myParams = new HashMap();
-        }
-        // put close link if not set
-        if (!myParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
-            myParams.put(CmsDialog.PARAM_CLOSELINK, linkForPath(wp.getJsp(), getCurrentToolPath(wp), null));
-        }
-        wp.getJsp().getResponse().sendRedirect(wp.getJsp().link(rewriteUrl(pagePath, myParams)));
-    }
-
-    /**
-     * Returns a link for a given baseUrl and parameters.<p>
-     * 
-     * @param baseUrl the base url
+     * @param jsp the jsp action element
+     * @param toolPath the tool path
      * @param params a map of additional parameters
      * 
-     * @return the link
+     * @return a valid OpenCms link
      */
-    private String rewriteUrl(String baseUrl, Map params) {
+    public String linkForPath(CmsJspActionElement jsp, String toolPath, Map params) {
 
         if (params == null) {
-            return baseUrl;
+            params = new HashMap();
         }
-        StringBuffer link = new StringBuffer(512);
-        link.append(baseUrl);
-        String sep = "?";
-        if (baseUrl.indexOf('?') > -1) {
-            sep = "&";
-        }
-
-        boolean first = true;
-        Iterator it = params.keySet().iterator();
-        while (it.hasNext()) {
-            String key = it.next().toString();
-            Object value = params.get(key);
-            if (value instanceof String[]) {
-                for (int j = 0; j < ((String[])value).length; j++) {
-                    String val = CmsEncoder.encode(((String[])value)[j]);
-                    link.append(sep);
-                    link.append(key);
-                    link.append("=");
-                    link.append(val);
-                    if (first) {
-                        sep = "&";
-                        first = false;
-                    }
-                }
-            } else {
-                link.append(sep);
-                link.append(key);
-                link.append("=");
-                link.append(CmsEncoder.encode(value.toString()));
-                if (first) {
-                    sep = "&";
-                    first = false;
-                }
-            }
-        }
-
-        return link.toString();
+        params.put(CmsToolDialog.PARAM_PATH, toolPath);
+        return jsp.link(rewriteUrl(C_VIEW_JSPPAGE_LOCATION, params));
     }
 
     /**
@@ -516,63 +474,6 @@ public class CmsToolManager {
         // use it
         CmsToolUserData userData = getUserData(wp);
         userData.setCurrentToolPath(currentToolPath);
-    }
-
-    /** The static log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsToolManager.class);
-
-    /**
-     * Given a string a valid and visible tool path is computed.<p>
-     * 
-     * @param wp the workplace object
-     * @param path the path to repair
-     * 
-     * @return a valid and visible tool path
-     */
-    private String repairPath(CmsWorkplace wp, String path) {
-
-        // navigate until to reach a valid path
-        while (!validatePath(path, true)) {
-            path = getParent(wp, path);
-        }
-        // navigate to reach a visible path
-        CmsTool adminTool = resolveAdminTool(path);
-        I_CmsToolHandler handler = null;
-        if (adminTool != null) {
-            handler = resolveAdminTool(path).getHandler();
-        } else {
-            LOG.warn(Messages.get().key(wp.getLocale(), Messages.LOG_MISSING_ADMIN_TOOL_1, new Object[] {path}));
-        }
-
-        boolean handlerEnabled = false;
-        CmsObject cms = wp.getCms();
-        do {
-            if (handler != null) {
-                handlerEnabled = handler.isEnabled(cms);
-            } else {
-                LOG.warn(Messages.get().key(
-                    wp.getLocale(),
-                    Messages.LOG_MISSING_TOOL_HANDLER_2,
-                    new Object[] {resolveAdminTool(path), path}));
-                if (path.equals("/")) {
-                    handlerEnabled = true;
-                }
-            }
-            if (handlerEnabled) {
-                break;
-            }
-            path = getParent(wp, path);
-            adminTool = resolveAdminTool(path);
-
-            if (adminTool != null) {
-                handler = resolveAdminTool(path).getHandler();
-            } else {
-                LOG.warn(Messages.get().key(wp.getLocale(), Messages.LOG_MISSING_ADMIN_TOOL_1, new Object[] {path}));
-            }
-
-        } while (true);
-
-        return path;
     }
 
     /**
@@ -650,6 +551,112 @@ public class CmsToolManager {
             registerHandlerList(cms, len + 1, handlers);
         }
 
+    }
+
+    /**
+     * Given a string a valid and visible tool path is computed.<p>
+     * 
+     * @param wp the workplace object
+     * @param path the path to repair
+     * 
+     * @return a valida and visible tool path
+     */
+    private String repairPath(CmsWorkplace wp, String path) {
+
+        // navigate until to reach a valid path
+        while (!validatePath(path, true)) {
+            path = getParent(wp, path);
+        }
+        // navigate to reach a visible path
+        CmsTool adminTool = resolveAdminTool(path);
+        I_CmsToolHandler handler = null;
+        if (adminTool != null) {
+            handler = resolveAdminTool(path).getHandler();
+        } else {
+            LOG.warn(Messages.get().key(wp.getLocale(), Messages.LOG_MISSING_ADMIN_TOOL_1, new Object[] {path}));
+        }
+
+        boolean handlerEnabled = false;
+        CmsObject cms = wp.getCms();
+        do {
+            if (handler != null) {
+                handlerEnabled = handler.isEnabled(cms);
+            } else {
+                LOG.warn(Messages.get().key(
+                    wp.getLocale(),
+                    Messages.LOG_MISSING_TOOL_HANDLER_2,
+                    new Object[] {resolveAdminTool(path), path}));
+                if (path.equals("/")) {
+                    handlerEnabled = true;
+                }
+            }
+            if (handlerEnabled) {
+                break;
+            }
+            path = getParent(wp, path);
+            adminTool = resolveAdminTool(path);
+
+            if (adminTool != null) {
+                handler = resolveAdminTool(path).getHandler();
+            } else {
+                LOG.warn(Messages.get().key(wp.getLocale(), Messages.LOG_MISSING_ADMIN_TOOL_1, new Object[] {path}));
+            }
+
+        } while (true);
+
+        return path;
+    }
+
+    /**
+     * Returns a link for a given baseUrl and parameters.<p>
+     * 
+     * @param baseUrl the base url
+     * @param params a map of additional parameters
+     * 
+     * @return the link
+     */
+    private String rewriteUrl(String baseUrl, Map params) {
+
+        if (params == null) {
+            return baseUrl;
+        }
+        StringBuffer link = new StringBuffer(512);
+        link.append(baseUrl);
+        String sep = "?";
+        if (baseUrl.indexOf('?') > -1) {
+            sep = "&";
+        }
+
+        boolean first = true;
+        Iterator it = params.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next().toString();
+            Object value = params.get(key);
+            if (value instanceof String[]) {
+                for (int j = 0; j < ((String[])value).length; j++) {
+                    String val = CmsEncoder.encode(((String[])value)[j]);
+                    link.append(sep);
+                    link.append(key);
+                    link.append("=");
+                    link.append(val);
+                    if (first) {
+                        sep = "&";
+                        first = false;
+                    }
+                }
+            } else {
+                link.append(sep);
+                link.append(key);
+                link.append("=");
+                link.append(CmsEncoder.encode(value.toString()));
+                if (first) {
+                    sep = "&";
+                    first = false;
+                }
+            }
+        }
+
+        return link.toString();
     }
 
     /**

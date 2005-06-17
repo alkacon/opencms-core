@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/06/08 15:48:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/17 16:16:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.DiskFileUpload;
@@ -55,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0
  */
@@ -104,6 +106,76 @@ public final class CmsRequestUtil {
         result.append(paramName);
         result.append('=');
         result.append(paramValue);
+        return result.toString();
+    }
+
+    /**
+     * Appends a map of request parameters to the given URL.<p>
+     * 
+     * The map can cointains values of <code>String[]</code> or 
+     * simple <code>String</code> values.<p>
+     * 
+     * This method takes care about the adding the parameter as an additional 
+     * parameter (appending <code>&param=value</code>) or as the first parameter
+     * (appending <code>?param=value</code>).<p>
+     * 
+     * @param url the URL where to append the parameter to
+     * @param params the paramters to append
+     * @param encode if <code>true</code>, the parameter values are encoded before they are appended
+     * 
+     * @return the URL with the given parameter appended
+     */
+    public static String appendParameters(String url, Map params, boolean encode) {
+
+        if (CmsStringUtil.isEmpty(url)) {
+            return null;
+        }
+        if ((params == null) || params.isEmpty()) {
+            return url;
+        }
+        int pos = url.indexOf('?');
+        StringBuffer result = new StringBuffer(256);
+        result.append(url);
+        if (pos >= 0) {
+            // url already has parameters
+            result.append('&');
+        } else {
+            // url does not have parameters
+            result.append('?');
+        }
+        Iterator i = params.keySet().iterator();
+        while (i.hasNext()) {
+            String key = (String)i.next();
+            Object value = params.get(key);
+            if (value instanceof String[]) {
+                // String array, common for request parameters
+                String[] values = (String[])value;
+                for (int j = 0; j < values.length; j++) {
+                    String strValue = values[j];
+                    if (encode) {
+                        strValue = CmsEncoder.encode(strValue);
+                    }
+                    result.append(key);
+                    result.append('=');
+                    result.append(strValue);
+                    if ((j + 1) < values.length) {
+                        result.append('&');
+                    }
+                }
+            } else {
+                // single String
+                String strValue = value.toString();
+                if (encode) {
+                    strValue = CmsEncoder.encode(strValue);
+                }
+                result.append(key);
+                result.append('=');
+                result.append(strValue);
+            }
+            if (i.hasNext()) {
+                result.append('&');
+            }
+        }
         return result.toString();
     }
 
@@ -264,5 +336,21 @@ public final class CmsRequestUtil {
             }
         }
         return parameterMap;
+    }
+
+    public static void sendHtmlRedirect(ServletResponse res, String url) {
+
+        StringBuffer buffer = new StringBuffer(128);
+        buffer.append("<script>\n");
+        buffer.append("document.location.href=\"");
+        buffer.append(url);
+        buffer.append("\";\n");
+        buffer.append("</script>\n");
+
+        try {
+            res.getOutputStream().write(buffer.toString().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

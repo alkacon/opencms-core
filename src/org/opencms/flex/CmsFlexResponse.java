@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/06/02 09:36:55 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/17 16:16:42 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
 
@@ -334,8 +334,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     public void addCookie(Cookie cookie) {
 
         if (cookie == null) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_ADD_COOKIE_0));
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_ADD_COOKIE_0));
         }
 
         StringBuffer header = new StringBuffer(128);
@@ -610,9 +609,10 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         }
         int todo = 0;
         // TODO: Check setContentType() implementation
-        // If this is not the "Top-Level" element ignore all settings of content type    
-        // If this is not done an included JSP could reset the type with some unwanted defaults    
-        if (!m_isTopElement) {
+        // only if this is the "Top-Level" element so set the content type    
+        // if this is not checked an included JSP could reset the type with some unwanted defaults  
+        if (m_isTopElement) {
+            super.setContentType(type);
             return;
         }
     }
@@ -828,7 +828,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * @return the generated cache key
      * @throws CmsFlexCacheException in case the value String had a parse error
      */
-    CmsFlexCacheKey setCmsCacheKey(String resourcename, String cacheDirectives, boolean online) throws CmsFlexCacheException {
+    CmsFlexCacheKey setCmsCacheKey(String resourcename, String cacheDirectives, boolean online)
+    throws CmsFlexCacheException {
 
         m_key = new CmsFlexCacheKey(resourcename, cacheDirectives, online);
         if (m_key.hadParseError()) {
@@ -1090,5 +1091,4 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             }
         }
     }
-
 }

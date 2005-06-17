@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/06/17 16:16:42 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
 
@@ -171,7 +171,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         CmsFlexRequest f_req = controller.getCurrentRequest();
         CmsFlexResponse f_res = controller.getCurrentResponse();
 
-        if (f_req.containsIncludeCall(m_vfsTarget)) {
+        if (!controller.isAllowInclusionLoops() && f_req.containsIncludeCall(m_vfsTarget)) {
             // this resource was already included earlier, so we have a (probably endless) inclusion loop
             throw new ServletException(Messages.get().key(
                 Messages.ERR_FLEXREQUESTDISPATCHER_INCLUSION_LOOP_1,

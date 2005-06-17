@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2005/05/17 14:15:09 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/17 16:16:42 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,14 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.staticexport.CmsLinkManager;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -53,12 +60,9 @@ import org.apache.commons.logging.Log;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
-
-    /** Attribute name used for checking if _flex request parameters have already been processed. */
-    public static final String C_ATTRIBUTE_PROCESSED = "__org.opencms.flex.CmsFlexRequest";
 
     /** Request parameter for FlexCache commands. */
     public static final String C_PARAMETER_FLEX = "_flex";
@@ -81,8 +85,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     /** The site root of the requested resource. */
     private String m_elementUriSiteRoot;
 
-    /** Set of all include calls (to prevent an endless inclusion loop). */
-    private Set m_includeCalls;
+    /** List of all include calls (to prevent an endless inclusion loop). */
+    private List m_includeCalls;
 
     /** Flag to check if this request is in the online project or not. */
     private boolean m_isOnline;
@@ -114,7 +118,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         CmsObject cms = m_controller.getCmsObject();
         m_elementUri = cms.getSitePath(m_controller.getCmsResource());
         m_elementUriSiteRoot = cms.getRequestContext().getSiteRoot();
-        m_includeCalls = Collections.synchronizedSet(new HashSet(8));
+        m_includeCalls = new Vector();
         m_parameters = req.getParameterMap();
         m_isOnline = cms.getRequestContext().currentProject().isOnlineProject();
         String[] paras = req.getParameterValues(C_PARAMETER_FLEX);
@@ -123,11 +127,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         if (paras != null) {
             if (cms.hasRole(CmsRole.WORKPLACE_MANAGER)) {
                 List l = Arrays.asList(paras);
-                String context = (String)req.getAttribute(C_ATTRIBUTE_PROCESSED);
-                boolean firstCall = (context == null);
-                if (firstCall) {
-                    req.setAttribute(C_ATTRIBUTE_PROCESSED, "true");
-                }
+                boolean firstCall = controller.isEmptyRequestList();
                 nocachepara = l.contains("nocache");
                 dorecompile = l.contains("recompile");
                 boolean p_on = l.contains("online");
@@ -485,14 +485,16 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * Returns the Set of include calls which will be passed to the next wrapping layer.<p>
+     * Returns the List of include calls which will be passed to the next wrapping layer.<p>
      * 
      * The set of include calls is maintained to dectect 
      * an endless inclusion loop.<p>
      * 
-     * @return the Set of include calls
+     * @return the List of include calls
+     * 
+     * @see CmsFlexController#setAllowInclusionLoops(boolean)
      */
-    protected Set getCmsIncludeCalls() {
+    protected List getCmsIncludeCalls() {
 
         return m_includeCalls;
     }
