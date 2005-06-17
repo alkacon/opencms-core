@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2005/06/15 09:27:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/17 13:59:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * Explorer dialog for the project files view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsProjectFilesDialog extends CmsExplorerDialog {
@@ -99,7 +99,7 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
             // ignore, if user has no project settings
         }
 
-        getJsp().getResponse().sendRedirect(getJsp().link(C_FILE_EXPLORER_FILELIST));
+        getJsp().include(C_FILE_EXPLORER_FILELIST);
     }
 
     /**
