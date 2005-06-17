@@ -513,7 +513,7 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[40]]></value>
+					<value><![CDATA[20]]></value>
 				</property>
 				<property>
 					<name>default-file</name>
@@ -521,7 +521,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[New Administration]]></value>
+					<value><![CDATA[select.admin]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
