@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Messages.java,v $
- * Date   : $Date: 2005/06/15 12:51:24 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/17 09:22:50 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,18 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_CHARSET_ILLEGAL_NAME_1 = "ERR_CHARSET_ILLEGAL_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CHARSET_UNSUPPORTED_1 = "ERR_CHARSET_UNSUPPORTED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONTROL_STRING_LENGTH_0 = "ERR_CONTROL_STRING_LENGTH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONTROL_STRING_START_0 = "ERR_CONTROL_STRING_START_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_FILE_ARG_ACCESS_1 = "ERR_FILE_ARG_ACCESS_1";
 
     /** Message constant for key in the resource bundle. */
@@ -59,12 +71,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FILE_VIEW_SETTINGS_FROZEN_0 = "ERR_FILE_VIEW_SETTINGS_FROZEN_0";
-
-   /** Message constant for key in the resource bundle. */
-    public static final String ERR_CONTROL_STRING_LENGTH_0 = "ERR_CONTROL_STRING_LENGTH_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_CONTROL_STRING_START_0 = "ERR_CONTROL_STRING_START_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_CONVERSION_SPEC_1 = "ERR_INVALID_CONVERSION_SPEC_1";
@@ -91,6 +97,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_MISSING_CLASSLOADER_RESOURCE_2 = "ERR_MISSING_CLASSLOADER_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_FILE_VIEW_NO_PREVIEW_0 = "GUI_FILE_VIEW_NO_PREVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEUTIL_FILESIZE_BYTES_1 = "GUI_FILEUTIL_FILESIZE_BYTES_1";
 
     /** Message constant for key in the resource bundle. */
@@ -107,6 +116,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ENC_MULTIPART_REQ_ERROR_0 = "LOG_ENC_MULTIPART_REQ_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_FILEVIEW_INDEX_EXPIRE_OK_2 = "LOG_FILEVIEW_INDEX_EXPIRE_OK_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MALFORMED_TRANSLATION_RULE_1 = "LOG_MALFORMED_TRANSLATION_RULE_1";
