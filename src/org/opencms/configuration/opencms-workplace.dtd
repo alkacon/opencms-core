@@ -22,6 +22,7 @@
 	enableadvancedpropertytabs,
 	maxfileuploadsize?, 
 	labeledfolders?,
+	rfsfileviewsettings?,
 	explorertypes+,
 	default-preferences )>
 
@@ -125,6 +126,49 @@
 # contains sensitive data.
 -->
 <!ELEMENT labeledfolders (resource*)>
+
+<!--
+# Rfs file view settings:
+# This corresponds to the bean class: org.opencms.util.CmsRfsFileView.
+# The effect of these settings may be seen in OpenCms at: 
+# new Administration -> workplace-tools -> logfile.
+-->	
+<!ELEMENT rfsfileviewsettings (
+    filePath?,
+    enabled?,
+    fileEncoding?,
+    isLogfile?, 
+    windowSize?)>
+
+<!--
+# This element should be non-existant in new files during initialisation. 
+# It is an absolute path to a file that will be shown. 
+-->
+<!ELEMENT filePath (#PCDATA)> 
+<!--
+# Boolean value ("true"|"false") that enables/disables preview of file content. 
+-->
+<!ELEMENT enabled (#PCDATA)>
+<!--
+# One of the charset.name() the local machine's java VM would return by: 
+# Charset.availableCharsets().values() for each charset of that Set. 
+# It depends on the java vendor / Operating System which values are valid but 
+# at least the "Standard Charsets" mentioned in the java API doc for class 
+# java.nio.Charset have to be supported everywhere.
+-->
+<!ELEMENT fileEncoding (#PCDATA)>
+<!-- 
+# Currently unused. In future this information may be used 
+# to display file views  that are marked with isLogfile==true 
+# in a more convenient way as the format is well known. 
+-->
+<!ELEMENT isLogfile (#PCDATA)>
+<!-- 
+# Determines how many lines of text will be previewed. 
+-->
+<!ELEMENT windowSize (#PCDATA)>
+
+
 
 <!--
 # Settings for the new resource dialog and the contextmenus in the explorer view.
