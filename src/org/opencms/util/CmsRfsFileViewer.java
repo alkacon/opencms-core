@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2005/06/15 12:51:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/17 09:20:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,21 +33,29 @@ package org.opencms.util;
 
 import org.opencms.file.CmsRfsException;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -62,7 +70,7 @@ import org.apache.commons.logging.Log;
  * at a position "windowPosition" which is an enumeration of windows in ascending order. <p>
  * 
  * @author  Achim Westermann (a.westermann@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  */
@@ -76,58 +84,24 @@ public class CmsRfsFileViewer implements Cloneable {
      * file content at later line numbers of a file. <p>
      * 
      */
-    private static final class CmsRfsFileLineIndexInfo {
+    private final class CmsRfsFileLineIndexInfo {
 
         /**
-         * A worker for building a line break index for a file.<p> 
+         * The <code>{@link System#currentTimeMillis()}</code> taken when the 
+         * index was created.<p>
          */
-        private final class LineIndexer implements Runnable {
+        protected long m_creationTime;
 
-            private File m_file;
-
-            /**
-             * Creates a new unstarted instance.<p> 
-             * 
-             * @param f the file to build an index on the linebreaks
-             */
-            private LineIndexer(File f) {
-
-                m_file = f;
-            }
-
-            /**
-             * Does the work of building the line break index.<p>
-             * 
-             * @see java.lang.Runnable#run()
-             */
-            public void run() {
-
-                m_buildingIndex = true;
-                try {
-                    long linePos = 0;
-                    LineNumberReader reader = new LineNumberReader(new BufferedReader(new InputStreamReader(
-                        new FileInputStream(m_file))));
-                    String line = null;
-                    while ((line = reader.readLine()) != null) {
-                        linePos += line.length();
-                        CmsRfsFileLineIndexInfo.this.addLineBreakPosition(linePos);
-                        synchronized (CmsRfsFileLineIndexInfo.this) {
-                            CmsRfsFileLineIndexInfo.this.notify();
-                        }
-                    }
-
-                } catch (IOException e) {
-                    LOG.error(e.toString());
-                }
-                m_buildingIndex = false;
-                synchronized (CmsRfsFileLineIndexInfo.this) {
-                    CmsRfsFileLineIndexInfo.this.notify();
-                }
-            }
-        }
-
-        /** As long as the LineIndexer Thread builds this is true.  */
-        protected boolean m_buildingIndex;
+        /**
+         * The timespan in milliseconds after that an line number index for a file will expire. <p>
+         * 
+         * This may be set per file: A log file will update faster (index expires) than a configuration 
+         * file. <p>
+         * 
+         * Default corresponds to 30 seconds. <p>
+         * 
+         */
+        protected int m_maxIndexAge = 60000;
 
         /**
          * The internal list with break positions in bytes.<p>
@@ -137,19 +111,58 @@ public class CmsRfsFileViewer implements Cloneable {
          */
         private List m_breakPositions;
 
-        /**
-         * Constructor with location of the RFS - file to build an line number index for.<p>
-         * 
-         * @param filePath the underlying file to build an index on line breaks for.
-         */
-        protected CmsRfsFileLineIndexInfo(String filePath) {
+        /** The file that is indexed. */
+        private File m_file;
 
-            // first line at 0.
-            m_breakPositions = new ArrayList(200);
-            addLineBreakPosition(0);
-            // use a ThreadPool if available. 
-            LineIndexer indexer = new LineIndexer(new File(filePath));
-            new Thread(indexer).start();
+        /**
+         * Constructor for a line number index to build for the current underlying file 
+         * of the outer class.<p>
+         * 
+         * @param toIndex the file to build the index for. 
+         * 
+         */
+        protected CmsRfsFileLineIndexInfo(File toIndex) {
+
+            // enough space for indexing 2000 lines without re-malloc, will be dropped if expired. 
+            m_breakPositions = new ArrayList(2000);
+            m_file = toIndex;
+            rebuildIndex();
+
+        }
+
+        /**
+         * Log reporting of freed index.<p>
+         * 
+         * Do not invoke explicitly or the log reader gets confused. 
+         * As this method is invoked by the garbage collector without any 
+         * guarantee of runtime behaviour nothing important is done here. Just 
+         * logging to see that the mechanism of dropping indices works correctly.<p>
+         * 
+         * @see java.lang.Object#finalize()
+         */
+        public void finalize() throws Throwable {
+
+            super.finalize();
+            // switch to info!
+            if (LOG.isInfoEnabled()) {
+                // sizeof Long is 16 Bytes
+                LOG.info(Messages.get().key(
+                    Messages.LOG_FILEVIEW_INDEX_EXPIRE_OK_2,
+                    CmsFileUtil.formatFilesize(m_breakPositions.size() * 16, Locale.getDefault()),
+                    m_file.getAbsolutePath()));
+            }
+        }
+
+        /**
+         * Returns the <code>{@link System#currentTimeMillis()}</code> taken when the 
+         * index was created.<p>
+         *  
+         * @return the <code>{@link System#currentTimeMillis()}</code> taken when the 
+         * index was created.
+         */
+        public long getCreationTime() {
+
+            return m_creationTime;
         }
 
         /**
@@ -166,20 +179,8 @@ public class CmsRfsFileViewer implements Cloneable {
          */
         public long getLineBreakPosition(int breakNumber) {
 
-            int sz = 0;
-            synchronized (m_breakPositions) {
-                sz = m_breakPositions.size();
-            }
-            while (breakNumber > sz && m_buildingIndex) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    LOG.warn(e);
-                }
-                synchronized (m_breakPositions) {
-                    sz = m_breakPositions.size();
-                }
-            }
+            int sz = m_breakPositions.size();
+
             if (breakNumber <= sz) {
                 // valid number of line...
                 return ((Number)m_breakPositions.get(breakNumber)).longValue();
@@ -187,6 +188,27 @@ public class CmsRfsFileViewer implements Cloneable {
                 // out of range: don't throw exception, return last 10 lines.
                 return ((Number)m_breakPositions.get(sz - 10)).longValue();
             }
+        }
+
+        /**
+         * Returns the maximum age in milliseconds this line number index may have.<p> 
+         * 
+         * @return the maximum age in milliseconds this line number index may have
+         */
+
+        public int getMaxIndexAge() {
+
+            return m_maxIndexAge;
+        }
+
+        /**
+         * Set the maximum age in milliseconds this line number index may have.<p> 
+         * 
+         * @param maxIndexAge the maximum age in milliseconds this line number index may have to set 
+         */
+        public void setMaxIndexAge(int maxIndexAge) {
+
+            m_maxIndexAge = maxIndexAge;
         }
 
         /**
@@ -205,6 +227,43 @@ public class CmsRfsFileViewer implements Cloneable {
                 m_breakPositions.add(new Long(breakPosition));
             }
         }
+
+        /**
+         * Starts index - creation by a Thread. <p>
+         * 
+         * The old index is completely dropped as over time a file may become 
+         * not only longer but also shorter (e.g. log rotation). <p>
+         */
+        private void rebuildIndex() {
+
+            m_breakPositions.clear();
+            // first line at 0.
+            addLineBreakPosition(0);
+            LineNumberReader reader = null;
+            try {
+                long linePos = 0;
+                reader = new LineNumberReader(new BufferedReader(new InputStreamReader(new FileInputStream(m_file))));
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    linePos += line.length();
+                    CmsRfsFileLineIndexInfo.this.addLineBreakPosition(linePos);
+                    synchronized (CmsRfsFileLineIndexInfo.this) {
+                        CmsRfsFileLineIndexInfo.this.notify();
+                    }
+                }
+
+            } catch (IOException e) {
+                LOG.error(e.toString());
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e1) {
+                        LOG.error(e1);
+                    }
+                }
+            }
+        }
     }
 
     /** The log object for this class. */
@@ -214,10 +273,16 @@ public class CmsRfsFileViewer implements Cloneable {
      *  Maps file paths to instances of 
      * <code>{@link CmsRfsFileLineIndexInfo}</code> instances.
      **/
-    private Map m_fileName2lineIndex;
+    protected Map m_fileName2lineIndex;
 
     /** The path to the underlying file. */
-    private String m_filePath;
+    protected String m_filePath;
+
+    /** Decides whethter the view onto the underlying file via readFilePortion is enabled. */
+    private boolean m_enabled;
+
+    /** The character encoding of the underlying file. */
+    private Charset m_fileEncoding;
 
     /** 
      * If value is <code>true</code>, all setter methods will throw a 
@@ -250,11 +315,17 @@ public class CmsRfsFileViewer implements Cloneable {
     public CmsRfsFileViewer() {
 
         try {
-            setFilePath(OpenCms.getSystemInfo().getLogFileRfsPath());
             m_isLogfile = true;
             m_fileName2lineIndex = new HashMap();
             m_filePath = OpenCms.getSystemInfo().getLogFileRfsPath();
+            // system default charset: see http://java.sun.com/j2se/corejava/intl/reference/faqs/index.html#default-encoding
+            m_fileEncoding = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
+            m_enabled = true;
             m_windowSize = 200;
+            if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
+                // will be null  else
+                setFilePath(OpenCms.getSystemInfo().getLogFileRfsPath());
+            }
         } catch (CmsRfsException ex) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(ex.getLocalizedMessage());
@@ -277,12 +348,31 @@ public class CmsRfsFileViewer implements Cloneable {
         CmsRfsFileViewer clone = new CmsRfsFileViewer();
         // strings are immutable: no outside modification possible.
         clone.m_filePath = m_filePath;
+        clone.m_fileEncoding = m_fileEncoding;
         clone.m_isLogfile = m_isLogfile;
+        clone.m_enabled = m_enabled;
         clone.m_windowPos = m_windowPos;
         clone.m_windowSize = m_windowSize;
         // allow clone-modifications. 
         clone.m_frozen = false;
         return clone;
+    }
+
+    /**
+     * Returns the canonical name of the character encoding of the underlying file.<p>
+     * 
+     * If no special choice is fed into 
+     * <code>{@link #setFileEncoding(String)}</code> before this call 
+     * always the system default character encoding is returned.<p>
+     * 
+     * This value may be ignored outside and will be ignored inside if the 
+     * underlying does not contain textual content.<p>
+     * 
+     * @return the canonical name of the character encoding of the underlying file
+     */
+    public String getFileEncoding() {
+
+        return m_fileEncoding.name();
     }
 
     /**
@@ -332,33 +422,107 @@ public class CmsRfsFileViewer implements Cloneable {
     }
 
     /**
-     * Return the view portion of lines of text from the underlying file.<p>
+     * Returns true if this view upon the underlying file via 
+     * <code>{@link #readFilePortion()}</code> is enabled.<p>
      * 
-     * @return the view portion of lines of text from the underlying file
+     * 
+     * @return true if this view upon the underlying file via 
+     * <code>{@link #readFilePortion()}</code> is enabled.<p>
+     */
+    public boolean isEnabled() {
+
+        return m_enabled;
+    }
+
+    /**
+     * Return the view portion of lines of text from the underlying file or an 
+     * empty String if <code>{@link #isEnabled()}</code> returns <code>false</code>.<p>
+     * 
+     * @return the view portion of lines of text from the underlying file or an 
+     *         empty String if <code>{@link #isEnabled()}</code> returns <code>false</code>
      * @throws CmsRfsException if something goes wrong
      */
     public String readFilePortion() throws CmsRfsException {
 
         CmsRfsFileLineIndexInfo lineInfo = initIndexer(m_filePath);
-        try {
-            Reader reader = new InputStreamReader(new FileInputStream(m_filePath));
-            long skip = lineInfo.getLineBreakPosition(m_windowPos * m_windowSize);
-            reader.skip(skip);
-            LineNumberReader lineReader = new LineNumberReader(reader);
-            StringBuffer ret = new StringBuffer();
-            String read = lineReader.readLine();
-            for (int i = m_windowSize; i > 0 && read != null; i--) {
-                ret.append(lineReader.readLine());
-                ret.append('\n');
-                read = lineReader.readLine();
+        if (m_enabled) {
+            Reader reader = null;
+            try {
+                reader = new InputStreamReader(new FileInputStream(m_filePath), m_fileEncoding);
+                long skip = lineInfo.getLineBreakPosition(m_windowPos * m_windowSize);
+                reader.skip(skip);
+                LineNumberReader lineReader = new LineNumberReader(reader);
+                StringBuffer result = new StringBuffer();
+                String read = lineReader.readLine();
+                for (int i = m_windowSize; i > 0 && read != null; i--) {
+                    result.append(read);
+                    result.append('\n');
+                    read = lineReader.readLine();
+                }
+                return CmsEncoder.escapeXml(result.toString());
+            } catch (IOException ioex) {
+                CmsRfsException ex = new CmsRfsException(Messages.get().container(
+                    Messages.ERR_FILE_ARG_ACCESS_1,
+                    m_filePath), ioex);
+                throw ex;
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        LOG.error(e);
+                    }
+
+                }
             }
-            return CmsEncoder.escapeXml(ret.toString());
-        } catch (IOException ioex) {
-            CmsRfsException ex = new CmsRfsException(Messages.get().container(
-                Messages.ERR_FILE_ARG_ACCESS_1,
-                m_filePath), ioex);
-            throw ex;
+        } else {
+            return Messages.get().key(Messages.GUI_FILE_VIEW_NO_PREVIEW_0);
         }
+
+    }
+
+    /**
+     * Set the boolean that decides if the view to the underlying file via 
+     * <code>{@link #readFilePortion()}</code> is enabled.<p>
+     * 
+     * @param preview the boolean that decides if the view to the underlying file via 
+     *        <code>{@link #readFilePortion()}</code> is enabled
+     */
+    public void setEnabled(boolean preview) {
+
+        m_enabled = preview;
+    }
+
+    /**
+     * Set the character encoding of the underlying file.<p>
+     * 
+     * The given String has to match a valid charset name (canonical or alias) 
+     * of one of the system's supported <code>{@link Charset}</code> instances 
+     * (see <code>{@link Charset#forName(java.lang.String)}</code>).<p>
+     * 
+     * This setting will be used for transcoding the file when portions 
+     * of it are read via <code>{@link CmsRfsFileViewer#readFilePortion()}</code> 
+     * to a String. This enables to correctly display files with text in various encodings 
+     * in UIs.<p>
+     * 
+     * @param fileEncoding the character encoding of the underlying file to set.
+     */
+    public void setFileEncoding(String fileEncoding) {
+
+        checkFrozen();
+        try {
+            m_fileEncoding = Charset.forName(fileEncoding);
+        } catch (IllegalCharsetNameException icne) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_CHARSET_ILLEGAL_NAME_1,
+                fileEncoding));
+        } catch (UnsupportedCharsetException ucse) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_CHARSET_UNSUPPORTED_1,
+                fileEncoding));
+
+        }
+
     }
 
     /**
@@ -377,6 +541,11 @@ public class CmsRfsFileViewer implements Cloneable {
     public void setFilePath(String path) throws CmsRfsException, CmsRuntimeException {
 
         checkFrozen();
+        expireIndices();
+        if (path != null) {
+            // leading whitespace from CmsComboWidget causes exception 
+            path = path.trim();
+        }
         if (CmsStringUtil.isEmpty(path)) {
             throw new CmsRfsException(Messages.get().container(
                 Messages.ERR_FILE_ARG_EMPTY_1,
@@ -399,7 +568,12 @@ public class CmsRfsFileViewer implements Cloneable {
                     Messages.ERR_FILE_ARG_NOT_READ_1,
                     new Object[] {String.valueOf(path)}));
             } else {
-                m_filePath = file.getCanonicalPath();
+                // avoid that the indexing thread is inited but before he opens m_filepath this is changed by a further call.
+                synchronized (this) {
+                    m_filePath = file.getCanonicalPath();
+                    // early indexing.
+                    initIndexer(m_filePath);
+                }
             }
         } catch (FileNotFoundException fnfe) {
             throw new CmsRfsException(Messages.get().container(
@@ -493,10 +667,39 @@ public class CmsRfsFileViewer implements Cloneable {
     }
 
     /**
+     * Checks the internal cache of line number indices for expiration and 
+     * drops those which are too old.<p>
+     */
+    private void expireIndices() {
+
+        synchronized (m_fileName2lineIndex) {
+            CmsRfsFileLineIndexInfo index;
+
+            // cannot use valkues().iterator() because we need remove support on map.
+            Iterator it = m_fileName2lineIndex.entrySet().iterator();
+            Map.Entry entry;
+            long time = System.currentTimeMillis();
+            while (it.hasNext()) {
+                entry = (Map.Entry)it.next();
+                index = (CmsRfsFileLineIndexInfo)entry.getValue();
+                // expired?
+                if (time - index.m_creationTime > index.m_maxIndexAge) {
+                    it.remove();
+                }
+            }
+
+        }
+    }
+
+    /**
      * Return a line number index for the given file path.<p>
      * 
      * Implementation allows control of eventual caching of line number indexes 
      * for files. <p>
+     * 
+     * This compilation unit uses indices (indexes) for fast reading / skipping of files that have 
+     * to be dropped to free memory. Threads had to be avoided so this method will 
+     * also check on all other remaining indices expiration time to drop them.<p>
      * 
      * 
      * @param filePath the String denoting a valid path to a file in the real file system 
@@ -505,15 +708,16 @@ public class CmsRfsFileViewer implements Cloneable {
     private CmsRfsFileLineIndexInfo initIndexer(String filePath) {
 
         synchronized (m_fileName2lineIndex) {
-            CmsRfsFileLineIndexInfo ret = (CmsRfsFileLineIndexInfo)m_fileName2lineIndex.get(filePath);
-            if (ret != null) {
+            CmsRfsFileLineIndexInfo result = (CmsRfsFileLineIndexInfo)m_fileName2lineIndex.get(filePath);
+            if (result != null) {
                 // nop
             } else {
                 // create a new instance, this will be slow: 
-                ret = new CmsRfsFileLineIndexInfo(filePath);
+                result = new CmsRfsFileLineIndexInfo(new File(filePath));
+                m_fileName2lineIndex.put(filePath, result);
 
             }
-            return ret;
+            return result;
         }
     }
 }
