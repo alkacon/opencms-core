@@ -186,7 +186,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[path:/workplace/broadcast/messages]]></value>
+					<value><![CDATA[path:/workplace/broadcast/message]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
