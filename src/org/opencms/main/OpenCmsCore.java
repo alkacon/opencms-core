@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/17 10:55:03 $
- * Version: $Revision: 1.197 $
+ * Date   : $Date: 2005/06/17 12:43:23 $
+ * Version: $Revision: 1.198 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -127,7 +127,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.197 $
+ * @version $Revision: 1.198 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1704,6 +1704,12 @@ public final class OpenCmsCore {
                 t = t.getCause();
             }
         }
+        
+        if (status < 1) {           
+            // error code not set - set "internal server error" (500)
+            status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+        }
+        res.setStatus(status);
 
         try {
             isNotGuest = isNotGuest 
@@ -1716,19 +1722,14 @@ public final class OpenCmsCore {
         } catch (CmsException e) {
             // result is false
         }
-        
-        if (status < 1 && ! isNotGuest) {
-            // error code not set - set "internal server error" (500)
-            status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-        }
-        res.setStatus(status);
 
         if (canWrite) {
             res.setContentType("text/html");
             res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_NO_CACHE);
             res.setHeader(I_CmsConstants.C_HEADER_PRAGMA, I_CmsConstants.C_HEADER_VALUE_NO_CACHE);
-            if (isNotGuest && cms != null) {
+            if (isNotGuest && cms != null && ! cms.getRequestContext().currentProject().isOnlineProject()) {
                 try {
+                    res.setStatus(HttpServletResponse.SC_OK);
                     res.getWriter().print(createErrorBox(t, req, cms));
                 } catch (IOException e) {
                     // can be ignored

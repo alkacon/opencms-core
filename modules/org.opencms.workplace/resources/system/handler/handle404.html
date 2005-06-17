@@ -1,4 +1,4 @@
-<%@ page session="false" isErrorPage="true" contentType="text/html" import="java.util.*, org.opencms.jsp.util.*" %><%
+<%@ page session="false" buffer="none" isErrorPage="true" contentType="text/html" import="java.util.*, org.opencms.jsp.util.*" %><%
 
 // initialize instance of status bean
 CmsJspStatusBean cms = new CmsJspStatusBean(pageContext, request, response, exception);
@@ -17,6 +17,20 @@ cms.includeTemplatePart(template, "head");
 <h3><%= cms.keyStatus("error_message") %></h3>
 
 <p><%= cms.keyStatus("error_description") %></p>
+
+<% if (cms.showException() && cms.getErrorMessage() != null) {
+	// print the error message for developers, if available
+	out.print("<p><b>" + cms.getErrorMessage() + "</b></p>");
+}
+
+if (cms.showException() && cms.getException() != null) { 
+	// print the exception for developers, if available
+%>
+<p><b><%= cms.getException() %></b></p>
+<p><pre>
+<% cms.getException().printStackTrace(new java.io.PrintWriter(out)); %>
+</pre></p>
+<% } %>
 <!-- Status error messages end -->
 
 <%= cms.getPageContent("foot") %>
