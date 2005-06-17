@@ -24,6 +24,9 @@
 		<enableadvancedpropertytabs>true</enableadvancedpropertytabs>
 		<maxfileuploadsize>-1</maxfileuploadsize>
 		<labeledfolders/>
+		<rfsfileviewsettings>
+		  <windowSize>200</windowSize>
+		</rfsfileviewsettings>
 		<explorertypes>
 			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
 				<newresource uri="newresource_folder.jsp" order="5" autosetnavigation="false" autosettitle="false"/>
