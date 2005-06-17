@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialogParameter.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/17 12:54:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.9.1
  */
 public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
@@ -365,11 +365,11 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
         if (m_baseCollection == null) {
 
             PropertyUtilsBean bean = new PropertyUtilsBean();
-            ConvertUtilsBean conveter = new ConvertUtilsBean();
+            ConvertUtilsBean converter = new ConvertUtilsBean();
             Object value = null;
             try {
                 Class type = bean.getPropertyType(m_baseObject, m_baseObjectProperty);
-                value = conveter.convert(m_value, type);
+                value = converter.convert(m_value, type);
                 bean.setNestedProperty(m_baseObject, m_baseObjectProperty, value);
                 setError(null);
             } catch (InvocationTargetException e) {
