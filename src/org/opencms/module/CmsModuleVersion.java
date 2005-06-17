@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleVersion.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/17 13:51:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -167,13 +167,19 @@ public class CmsModuleVersion implements Comparable {
             numbers[i] = "0";
         }
         for (int i = numbers.length - 1; i >= 0; i--) {
-            int number = Integer.valueOf(numbers[numbers.length - i - 1]).intValue();
-            if ((number > 999) || (number < 0)) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_INVALID_VERSION_SUBNUMBER_1,
-                    new Integer(number)));
+            try {
+                int number = Integer.valueOf(numbers[numbers.length - i - 1]).intValue();
+
+                if ((number > 999) || (number < 0)) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.ERR_INVALID_VERSION_SUBNUMBER_1,
+                        new Integer(number)));
+                }
+                m_number = (long)Math.pow(1000.0, i) * number + m_number;
+            } catch (NumberFormatException e) {
+                // no valid version provided
+                throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NOT_NUMBER_0));
             }
-            m_number = (long)Math.pow(1000.0, i) * number + m_number;
         }
 
         setVersion(m_number);

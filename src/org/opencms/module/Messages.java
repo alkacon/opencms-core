@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/Messages.java,v $
- * Date   : $Date: 2005/06/17 09:59:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/17 13:51:34 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_OLD_MOD_ERR_1 = "ERR_OLD_MOD_ERR_1";
-
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NOT_NUMBER_0 = "ERR_NOT_NUMBER_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SAX_MODULE_IMPORT_0 = "ERR_SAX_MODULE_IMPORT_0";
 
