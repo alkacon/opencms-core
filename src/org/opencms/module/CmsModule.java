@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/17 12:38:18 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/17 12:46:30 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -184,11 +184,7 @@ public class CmsModule implements Comparable {
         } else {
             m_description = description;
         }
-        if (CmsStringUtil.isEmpty(description)) {
-            throw new IllegalArgumentException("The version must a valid number");
-        } else {
-            m_version = version;
-        }
+        m_version = version;
         if (CmsStringUtil.isEmpty(authorName)) {
             m_authorName = "";
         } else {
