@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/06/02 13:57:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/18 08:34:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.explorer;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -81,7 +82,7 @@ import org.dom4j.io.DocumentSource;
  * </ul>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.7.3
  */
@@ -92,9 +93,6 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     
     /** Constant for automatically selecting the best fitting delimiter. */
     public static final String BEST_DELIMITER = "best";
-
-    /** Constant for the charset with which the csv-data is encoded. */
-    public static final String CHARSET = "ISO-8859-1";
 
     /** Request parameter name for the CSV content. */
     public static final String PARAM_CSVCONTENT = "csvcontent";
@@ -215,7 +213,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                 newResname = "csvcontent.html";
                 setParamNewResourceName("");
             } else {
-                setParamCsvContent(new String(getFileContentFromUpload(), CHARSET));
+                setParamCsvContent(new String(getFileContentFromUpload(), CmsEncoder.ENCODING_ISO_8859_1));
                 newResname = getCms().getRequestContext().getFileTranslator().translateResource(
                     CmsResource.getName(getParamResource().replace('\\', '/')));
                 newResname = CmsStringUtil.changeFileNameSuffixTo(newResname, "html");

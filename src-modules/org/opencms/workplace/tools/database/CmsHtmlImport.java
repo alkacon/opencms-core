@@ -44,7 +44,6 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportExportException;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -85,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsHtmlImport {
 
@@ -298,7 +297,7 @@ public class CmsHtmlImport {
         m_inputEncoding = encoding;
 
         if (CmsStringUtil.isEmpty(m_inputEncoding)) {
-            m_inputEncoding = CmsJspLoader.C_DEFAULT_JSP_ENCODING;
+            m_inputEncoding = CmsEncoder.ENCODING_ISO_8859_1;
         }
         m_startPattern = startPattern;
         m_endPattern = endPattern;

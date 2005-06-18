@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2005/05/20 15:12:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/18 08:34:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,18 +66,22 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
 public final class CmsEncoder {
-    
-    /** Default encoding for JavaScript decodeUriComponent methods is UTF-8 by w3c standard. */
+
+    /** Default encoding for JavaScript decodeUriComponent methods is <code>UTF-8</code> by w3c standard. */
     public static final String C_UTF8_ENCODING = "UTF-8";
 
+    /** Constant for the standard <code>ISO-8859-1</code> encoding. */
+    public static final String ENCODING_ISO_8859_1 = "ISO-8859-1";
+
+    /** Constant for the standard <code>UTF-8</code> encoding. */
+    public static final String ENCODING_UTF_8 = C_UTF8_ENCODING;
 
     /** The regex pattern to match HTML entities. */
     private static final Pattern C_ENTITIY_PATTERN = Pattern.compile("\\&#\\d+;");
-    
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEncoder.class);
-        
+
     /** A cache for encoding name lookup. */
     private static Map m_encodingCache = new HashMap(16);
 
@@ -85,9 +89,10 @@ public final class CmsEncoder {
      * Constructor.<p>
      */
     private CmsEncoder() {
+
         // empty
     }
-    
+
     /**
      * Adjusts the given String by making sure all characters that can be displayed 
      * in the given charset are contained as chars, whereas all other non-displayable
@@ -101,9 +106,10 @@ public final class CmsEncoder {
      * @return the input with the decoded/encoded HTML entities
      */
     public static String adjustHtmlEncoding(String input, String encoding) {
+
         return encodeHtmlEntities(decodeHtmlEntities(input, encoding), encoding);
     }
-    
+
     /**
      * Changes the encoding of a byte array that represents a String.<p>
      * 
@@ -113,6 +119,7 @@ public final class CmsEncoder {
      * @return byte[] the byte array encoded in the new encoding
      */
     public static byte[] changeEncoding(byte[] input, String oldEncoding, String newEncoding) {
+
         if ((oldEncoding == null) || (newEncoding == null)) {
             return input;
         }
@@ -127,7 +134,7 @@ public final class CmsEncoder {
         }
         return result;
     }
-    
+
     /**
      * Creates a String out of a byte array with the specified encoding, falling back
      * to the system default in case the encoding name is not valid.<p>
@@ -140,6 +147,7 @@ public final class CmsEncoder {
      * @return the bytes decoded to a String
      */
     public static String createString(byte[] bytes, String encoding) {
+
         if (encoding.intern() != OpenCms.getSystemInfo().getDefaultEncoding()) {
             encoding = lookupEncoding(encoding, null);
         }
@@ -158,13 +166,13 @@ public final class CmsEncoder {
                 return new String(bytes, encoding);
             } catch (UnsupportedEncodingException e) {
                 // this can also _never_ happen since the default encoding is always valid
-            }            
+            }
         }
         // this code is unreachable in pratice
         LOG.error(Messages.get().key(Messages.ERR_ENCODING_ISSUES_1, encoding));
         return null;
     }
-    
+
     /**
      * Decodes a String using UTF-8 encoding, which is the standard for http data transmission
      * with GET ant POST requests.<p>
@@ -173,8 +181,9 @@ public final class CmsEncoder {
      * @return String the decoded source String
      */
     public static String decode(String source) {
-        return decode(source, C_UTF8_ENCODING);
-    }    
+
+        return decode(source, ENCODING_UTF_8);
+    }
 
     /**
      * This method is a substitute for <code>URLDecoder.decode()</code>.
@@ -190,23 +199,24 @@ public final class CmsEncoder {
      * @return The decoded source String
      */
     public static String decode(String source, String encoding) {
+
         if (source == null) {
             return null;
         }
         if (encoding != null) {
             try {
-                return URLDecoder.decode(source, encoding); 
+                return URLDecoder.decode(source, encoding);
             } catch (java.io.UnsupportedEncodingException e) {
                 // will fallback to default
-            } 
+            }
         }
         // fallback to default decoding
         try {
-            return URLDecoder.decode(source, C_UTF8_ENCODING); 
+            return URLDecoder.decode(source, ENCODING_UTF_8);
         } catch (java.io.UnsupportedEncodingException e) {
             // ignore
         }
-        return source;     
+        return source;
     }
 
     /**
@@ -220,31 +230,31 @@ public final class CmsEncoder {
      * @see #encodeHtmlEntities(String, String)
      */
     public static String decodeHtmlEntities(String input, String encoding) {
-                
-        Matcher matcher = C_ENTITIY_PATTERN.matcher(input);        
+
+        Matcher matcher = C_ENTITIY_PATTERN.matcher(input);
         StringBuffer result = new StringBuffer(input.length());
         Charset charset = Charset.forName(encoding);
         CharsetEncoder encoder = charset.newEncoder();
-        
-        while (matcher.find()) {            
+
+        while (matcher.find()) {
             String entity = matcher.group();
-            String value = entity.substring(2, entity.length()-1);
+            String value = entity.substring(2, entity.length() - 1);
             int c = Integer.valueOf(value).intValue();
             if (c < 128) {
                 // first 128 chars are contained in almost every charset
-                entity = new String(new char[] {(char)c});                
+                entity = new String(new char[] {(char)c});
                 // this is intendend as performance improvement since 
                 // the canEncode() operation appears quite CPU heavy
             } else if (encoder.canEncode((char)c)) {
                 // encoder can endoce this char
-                entity = new String(new char[] {(char)c});                
+                entity = new String(new char[] {(char)c});
             }
             matcher.appendReplacement(result, entity);
         }
-        matcher.appendTail(result);        
+        matcher.appendTail(result);
         return result.toString();
     }
-    
+
     /**
      * Encodes a String using UTF-8 encoding, which is the standard for http data transmission
      * with GET ant POST requests.<p>
@@ -253,9 +263,10 @@ public final class CmsEncoder {
      * @return String the encoded source String
      */
     public static String encode(String source) {
-        return encode(source, C_UTF8_ENCODING);
+
+        return encode(source, ENCODING_UTF_8);
     }
-    
+
     /**
      * This method is a substitute for <code>URLEncoder.encode()</code>.
      * Use this in all OpenCms core classes to ensure the encoding is
@@ -270,19 +281,20 @@ public final class CmsEncoder {
      * @return the encoded source String
      */
     public static String encode(String source, String encoding) {
+
         if (source == null) {
             return null;
         }
         if (encoding != null) {
             try {
-                return URLEncoder.encode(source, encoding); 
+                return URLEncoder.encode(source, encoding);
             } catch (java.io.UnsupportedEncodingException e) {
                 // will fallback to default
-            } 
+            }
         }
         // fallback to default encoding
         try {
-            return URLEncoder.encode(source, C_UTF8_ENCODING); 
+            return URLEncoder.encode(source, ENCODING_UTF_8);
         } catch (java.io.UnsupportedEncodingException e) {
             // ignore
         }
@@ -304,16 +316,16 @@ public final class CmsEncoder {
      * @see #decodeHtmlEntities(String, String)
      */
     public static String encodeHtmlEntities(String input, String encoding) {
-        
+
         StringBuffer result = new StringBuffer(input.length() * 2);
         CharBuffer buffer = CharBuffer.wrap(input.toCharArray());
         Charset charset = Charset.forName(encoding);
         CharsetEncoder encoder = charset.newEncoder();
-        for (int i = 0; i < buffer.length(); i++) {                        
+        for (int i = 0; i < buffer.length(); i++) {
             int c = buffer.get(i);
             if (c < 128) {
                 // first 128 chars are contained in almost every charset
-                result.append((char)c);                
+                result.append((char)c);
                 // this is intendend as performance improvement since 
                 // the canEncode() operation appears quite CPU heavy
             } else if (encoder.canEncode((char)c)) {
@@ -327,8 +339,8 @@ public final class CmsEncoder {
             }
         }
         return result.toString();
-    }        
-    
+    }
+
     /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
      * 
@@ -337,6 +349,7 @@ public final class CmsEncoder {
      * @return The JavaScript escaped string.
      */
     public static String escape(String source, String encoding) {
+
         StringBuffer ret = new StringBuffer();
 
         // URLEncode the text string. This produces a very similar encoding to JavaSscript
@@ -365,11 +378,12 @@ public final class CmsEncoder {
      * @see #escapeXml(String)
      */
     public static String escapeHtml(String source) {
+
         int terminatorIndex;
         if (source == null) {
             return null;
         }
-        StringBuffer result = new StringBuffer(source.length()*2);
+        StringBuffer result = new StringBuffer(source.length() * 2);
         for (int i = 0; i < source.length(); i++) {
             int ch = source.charAt(i);
             // Avoid escaping already escaped characters;
@@ -405,10 +419,11 @@ public final class CmsEncoder {
      * @see #escapeXml(String)
      */
     public static String escapeNonAscii(String source) {
+
         if (source == null) {
             return null;
         }
-        StringBuffer result = new StringBuffer(source.length()*2);
+        StringBuffer result = new StringBuffer(source.length() * 2);
         for (int i = 0; i < source.length(); i++) {
             int ch = source.charAt(i);
             if (ch > 255) {
@@ -431,6 +446,7 @@ public final class CmsEncoder {
      * @return The JavaScript escaped string.
      */
     public static String escapeWBlanks(String source, String encoding) {
+
         if (source == null) {
             return null;
         }
@@ -467,42 +483,43 @@ public final class CmsEncoder {
      * @see #escapeHtml(String)
      */
     public static String escapeXml(String source) {
+
         if (source == null) {
             return null;
         }
-        StringBuffer result = new StringBuffer(source.length()*2);
+        StringBuffer result = new StringBuffer(source.length() * 2);
         int terminatorIndex;
         for (int i = 0; i < source.length(); ++i) {
             char ch = source.charAt(i);
             switch (ch) {
-                case '<' :
+                case '<':
                     result.append("&lt;");
                     break;
-                case '>' :
+                case '>':
                     result.append("&gt;");
                     break;
-                case '&' :
+                case '&':
                     // Don't escape already escaped international and special characters
                     if ((terminatorIndex = source.indexOf(";", i)) > 0) {
                         if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+")) {
                             result.append(ch);
-                        } else { 
+                        } else {
                             result.append("&amp;");
                         }
                     } else {
                         result.append("&amp;");
                     }
                     break;
-                case '"' :
+                case '"':
                     result.append("&quot;");
                     break;
-                default :
+                default:
                     result.append(ch);
             }
         }
         return new String(result);
-    }   
-    
+    }
+
     /**
      * Checks if a given encoding name is actually supported, and if so
      * resolves it to it's canonical name, if not it returns the given fallback 
@@ -521,12 +538,12 @@ public final class CmsEncoder {
      * @return the resolved encoding name, or the fallback value
      */
     public static String lookupEncoding(String encoding, String fallback) {
-        
+
         String result = (String)m_encodingCache.get(encoding);
         if (result != null) {
             return result;
         }
-        
+
         try {
             result = Charset.forName(encoding).name();
             m_encodingCache.put(encoding, result);
@@ -534,10 +551,10 @@ public final class CmsEncoder {
         } catch (Throwable t) {
             // we will use the default value as fallback
         }
-        
+
         return fallback;
     }
-    
+
     /**
      * Re-decodes a String that has not been correctly decoded and thus has scrambled
      * character bytes.<p>
@@ -549,12 +566,14 @@ public final class CmsEncoder {
      * @return String the converted String
      */
     public static String redecodeUriComponent(String input) {
-       if (input == null) {
-           return input;
-       }
-       return new String(changeEncoding(input.getBytes(), C_UTF8_ENCODING, OpenCms.getSystemInfo().getDefaultEncoding())); 
+
+        if (input == null) {
+            return input;
+        }
+        return new String(
+            changeEncoding(input.getBytes(), ENCODING_UTF_8, OpenCms.getSystemInfo().getDefaultEncoding()));
     }
-    
+
     /**
      * Decodes a String in a way that is compatible with the JavaScript 
      * unescape function.
@@ -564,6 +583,7 @@ public final class CmsEncoder {
      * @return The JavaScript unescaped String.
      */
     public static String unescape(String source, String encoding) {
+
         if (source == null) {
             return null;
         }
