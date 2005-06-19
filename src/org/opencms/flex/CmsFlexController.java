@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/06/17 16:16:42 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/19 10:55:31 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class CmsFlexController {
 
@@ -60,9 +60,6 @@ public class CmsFlexController {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFlexController.class);
-
-    /** Indicates if inclusion loops are allowed for this controller. */
-    private boolean m_allowInclusionLoops;
 
     /** The CmsFlexCache where the result will be cached in, required for the dispatcher. */
     private CmsFlexCache m_cache;
@@ -78,6 +75,9 @@ public class CmsFlexController {
 
     /** List of wrapped CmsFlexResponses. */
     private List m_flexResponseList;
+
+    /** Indicates if this controller is currently in "forward" mode. */
+    private boolean m_forwardMode;
 
     /** Wrapped top request. */
     private HttpServletRequest m_req;
@@ -99,6 +99,28 @@ public class CmsFlexController {
 
     /** Indicates if the request is the top request. */
     private boolean m_top;
+
+    /**
+     * Creates a new controller form the old one, exchaning just the provided OpenCms user context.<p>
+     * 
+     * @param cms the OpenCms user context for this controller
+     * @param base the base controller
+     */
+    public CmsFlexController(CmsObject cms, CmsFlexController base) {
+
+        m_cmsObject = cms;
+        m_resource = base.m_resource;
+        m_cache = base.m_cache;
+        m_req = base.m_req;
+        m_res = base.m_res;
+        m_streaming = base.m_streaming;
+        m_top = base.m_top;
+        m_flexRequestList = base.m_flexRequestList;
+        m_flexResponseList = base.m_flexResponseList;
+        m_flexContextInfoList = base.m_flexContextInfoList;
+        m_forwardMode = base.m_forwardMode;
+        m_throwableResourceUri = base.m_throwableResourceUri;
+    }
 
     /**
      * Default constructor.<p>
@@ -130,6 +152,8 @@ public class CmsFlexController {
         m_flexRequestList = new Vector();
         m_flexResponseList = new Vector();
         m_flexContextInfoList = new Vector();
+        m_forwardMode = false;
+        m_throwableResourceUri = null;
     }
 
     /**
@@ -454,16 +478,6 @@ public class CmsFlexController {
     }
 
     /**
-     * Returns <code>true</code> if inclusion loops are allowed for this controller.<p>
-     *
-     * @return <code>true</code> if inclusion loops are allowed for this controller
-     */
-    public boolean isAllowInclusionLoops() {
-
-        return m_allowInclusionLoops;
-    }
-
-    /**
      * Returns <code>true</code> if the controller does not yet contain any requests.<p>
      * 
      * @return <code>true</code> if the controller does not yet contain any requests
@@ -471,6 +485,16 @@ public class CmsFlexController {
     public boolean isEmptyRequestList() {
 
         return (m_flexRequestList != null) && m_flexRequestList.isEmpty();
+    }
+
+    /**
+     * Returns <code>true</code> if this controller is currently in "forward" mode.<p>
+     *
+     * @return <code>true</code> if this controller is currently in "forward" mode
+     */
+    public boolean isForwardMode() {
+
+        return m_forwardMode;
     }
 
     /**
@@ -534,18 +558,13 @@ public class CmsFlexController {
     }
 
     /**
-     * Sets the value of the "allow inclusion loops" flag.<p>
+     * Sets the value of the "forward mode" flag.<p>
      *
-     * The default of this is <code>false</code> which is usually correct.
-     * Only in very special circumstances you need to set this to <code>true</code>.
-     * A use case for this is a JSP that uses the request parameters to decide what to include,
-     * which may call itself multiple times with different parameter values.<p>
-     *
-     * @param allowInclusionLoops the inclusion loop status to set
+     * @param value the forward mode to set
      */
-    public void setAllowInclusionLoops(boolean allowInclusionLoops) {
+    public void setForwardMode(boolean value) {
 
-        m_allowInclusionLoops = allowInclusionLoops;
+        m_forwardMode = value;
     }
 
     /**

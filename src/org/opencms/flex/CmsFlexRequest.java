@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2005/06/17 16:16:42 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/19 10:55:31 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
 
@@ -491,8 +491,6 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * an endless inclusion loop.<p>
      * 
      * @return the List of include calls
-     * 
-     * @see CmsFlexController#setAllowInclusionLoops(boolean)
      */
     protected List getCmsIncludeCalls() {
 

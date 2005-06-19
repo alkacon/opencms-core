@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/06/17 16:16:42 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/06/19 10:55:31 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,13 @@
 
 package org.opencms.flex;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 
 import java.io.IOException;
 
@@ -63,7 +62,7 @@ import org.apache.commons.logging.Log;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
 
@@ -108,6 +107,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
      */
     public void forward(ServletRequest req, ServletResponse res) throws ServletException, IOException {
 
+        CmsFlexController controller = CmsFlexController.getController(req);
+        controller.setForwardMode(true);
         m_rd.forward(req, res);
     }
 
@@ -123,12 +124,13 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
      * access to it (it is wrapped internally in the JSP pages, which have their own buffer).
      * That leads to a solution where the data is first written to the bufferd stream, 
      * but without includes. Then it is parsed again later 
-     * (in response.processCacheEntry()), enriched with the 
+     * in <code>{@link CmsFlexResponse#processCacheEntry()}</code>, enriched with the 
      * included elements that have been ommitted in the first case.
      * I would love to see a simpler solution, but this works for now.<p>
      *
      * @param req the servlet request
      * @param res the servlet response
+     * 
      * @throws ServletException in case something goes wrong
      * @throws IOException in case something goes wrong
      */
@@ -162,8 +164,94 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
 
         if ((m_extTarget != null) || (controller == null)) {
             includeExternal(req, res);
-            return;
+        } else if (controller.isForwardMode()) {
+            includeInternalNoCache(req, res, resource);
+        } else {
+            includeInternalWithCache(req, res, resource);
         }
+    }
+
+    /**
+     * Include an external (non-OpenCms) file using the standard dispatcher.<p>
+     * 
+     * @param req the servlet request
+     * @param res the servlet response
+     * @throws ServletException in case something goes wrong
+     * @throws IOException in case something goes wrong
+     */
+    private void includeExternal(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+
+        // This is an external include, probably to a JSP page, dispatch with system dispatcher
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUESTDISPATCHER_INCLUDING_EXTERNAL_TARGET_1, m_extTarget));
+        }
+        m_rd.include(req, res);
+    }
+
+    /**
+     * Includes the requested resouce, ignoring the Flex cache.<p>
+     * 
+     * @param req the servlet request
+     * @param res the servlet response
+     * @param resource the requested resource (may be <code>null</code>)
+     * 
+     * @throws ServletException in case something goes wrong
+     * @throws IOException in case something goes wrong
+     */
+    private void includeInternalNoCache(ServletRequest req, ServletResponse res, CmsResource resource)
+    throws ServletException, IOException {
+
+        CmsFlexController controller = CmsFlexController.getController(req);
+        CmsObject cms = controller.getCmsObject();
+
+        // load target with the internal resource loader
+        I_CmsResourceLoader loader;
+
+        try {
+            if (resource == null) {
+                resource = cms.readResource(m_vfsTarget);
+            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(
+                    Messages.LOG_FLEXREQUESTDISPATCHER_LOADING_RESOURCE_TYPE_1,
+                    new Integer(resource.getTypeId())));
+            }
+            loader = OpenCms.getResourceManager().getLoader(resource);
+        } catch (CmsException e) {
+            // file might not exist or no read permissions
+            controller.setThrowable(e, m_vfsTarget);
+            throw new ServletException(Messages.get().key(
+                Messages.ERR_FLEXREQUESTDISPATCHER_ERROR_READING_RESOURCE_1,
+                m_vfsTarget), e);
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUESTDISPATCHER_INCLUDE_RESOURCE_1, m_vfsTarget));
+        }
+        try {
+            loader.service(cms, resource, req, res);
+        } catch (CmsException e) {
+            // an error occured durion access to OpenCms
+            controller.setThrowable(e, m_vfsTarget);
+            throw new ServletException(e);
+        }
+    }
+
+    /**
+     * Includes the requested resouce, using the Flex cache to cache the results.<p>
+     * 
+     * @param req the servlet request
+     * @param res the servlet response
+     * @param resource the requested resource (may be <code>null</code>)
+     * 
+     * @throws ServletException in case something goes wrong
+     * @throws IOException in case something goes wrong
+     */
+    private void includeInternalWithCache(ServletRequest req, ServletResponse res, CmsResource resource)
+    throws ServletException, IOException {
+
+        CmsFlexController controller = CmsFlexController.getController(req);
+        CmsObject cms = controller.getCmsObject();
 
         CmsFlexCache cache = controller.getCmsCache();
 
@@ -171,7 +259,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         CmsFlexRequest f_req = controller.getCurrentRequest();
         CmsFlexResponse f_res = controller.getCurrentResponse();
 
-        if (!controller.isAllowInclusionLoops() && f_req.containsIncludeCall(m_vfsTarget)) {
+        if (f_req.containsIncludeCall(m_vfsTarget)) {
             // this resource was already included earlier, so we have a (probably endless) inclusion loop
             throw new ServletException(Messages.get().key(
                 Messages.ERR_FLEXREQUESTDISPATCHER_INCLUSION_LOOP_1,
@@ -183,6 +271,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         // do nothing if response is already finished (probably as a result of an earlier redirect)
         if (f_res.isSuspended()) {
             // remove this include call if response is suspended (e.g. because of redirect)
+            f_res.setCmsIncludeMode(false);
             f_req.removeIncludeCall(m_vfsTarget);
             return;
         }
@@ -287,8 +376,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 if (w_req.isCacheable()) {
                     variation = w_res.getCmsCacheKey().matchRequestKey(w_req.getCmsCacheKey());
                 }
-                // indicate to the response if caching is not required
-                w_res.setCmsCachingRequired(variation != null);
+                // indicate to the response if caching is not required                
+                w_res.setCmsCachingRequired(!controller.isForwardMode() && (variation != null));
 
                 try {
                     if (resource == null) {
@@ -363,22 +452,5 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
             // pop req/res from controller stack
             controller.pop();
         }
-    }
-
-    /**
-     * Include an external (non-OpenCms) file using the standard dispatcher.<p>
-     * 
-     * @param req the servlet request
-     * @param res the servlet response
-     * @throws ServletException in case something goes wrong
-     * @throws IOException in case something goes wrong
-     */
-    private void includeExternal(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-
-        // This is an external include, probably to a JSP page, dispatch with system dispatcher
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUESTDISPATCHER_INCLUDING_EXTERNAL_TARGET_1, m_extTarget));
-        }
-        m_rd.include(req, res);
     }
 }

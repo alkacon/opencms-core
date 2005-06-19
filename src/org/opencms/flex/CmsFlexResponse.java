@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/06/17 16:16:42 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/06/19 10:55:31 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
 
@@ -266,7 +266,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         m_controller = controller;
         m_encoding = controller.getCurrentResponse().getEncoding();
         m_isTopElement = controller.getCurrentResponse().isTopElement();
-        m_parentWritesOnlyToBuffer = controller.getCurrentResponse().hasIncludeList();
+        m_parentWritesOnlyToBuffer = controller.getCurrentResponse().hasIncludeList() && !controller.isForwardMode();
         setOnlyBuffering(m_parentWritesOnlyToBuffer);
         m_headers = new HashMap(16);
         m_bufferHeaders = new HashMap(8);
@@ -292,7 +292,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         m_controller = controller;
         m_encoding = controller.getCmsObject().getRequestContext().getEncoding();
         m_isTopElement = isTopElement;
-        m_parentWritesOnlyToBuffer = !streaming;
+        m_parentWritesOnlyToBuffer = !streaming && !controller.isForwardMode();
         setOnlyBuffering(m_parentWritesOnlyToBuffer);
         m_headers = new HashMap(16);
         m_bufferHeaders = new HashMap(8);
@@ -607,10 +607,8 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SETTING_CONTENTTYPE_1, type));
         }
-        int todo = 0;
-        // TODO: Check setContentType() implementation
-        // only if this is the "Top-Level" element so set the content type    
-        // if this is not checked an included JSP could reset the type with some unwanted defaults  
+        // only if this is the "Top-Level" element, do set the content type    
+        // otherwise an included JSP could reset the type with some unwanted defaults  
         if (m_isTopElement) {
             super.setContentType(type);
             return;
@@ -683,7 +681,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      */
     public void setOnlyBuffering(boolean value) {
 
-        m_writeOnlyToBuffer = value;
+        m_writeOnlyToBuffer = value && !m_controller.isForwardMode();
 
         if (m_writeOnlyToBuffer) {
             setCmsCachingRequired(true);
@@ -853,7 +851,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      */
     void setCmsCachingRequired(boolean value) {
 
-        m_cachingRequired = value || m_writeOnlyToBuffer;
+        m_cachingRequired = (value || m_writeOnlyToBuffer) && !m_controller.isForwardMode();
     }
 
     /**
@@ -959,7 +957,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             }
         }
         if (m_writer == null) {
-            // encoding project:
             // create a PrintWriter that uses the encoding required for the request context
             m_writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(m_out, m_encoding)), false);
         }
