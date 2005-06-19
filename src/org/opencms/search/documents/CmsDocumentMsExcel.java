@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentMsExcel.java,v $
- * Date   : $Date: 2005/06/02 12:57:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.FileNotFoundException;
  * Lucene document factory class to extract index data from a cms resource 
  * containing MS Excel data.<p>
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDocumentMsExcel extends A_CmsVfsDocument {
@@ -76,17 +76,16 @@ public class CmsDocumentMsExcel extends A_CmsVfsDocument {
             return CmsExtractorMsExcel.getExtractor().extractText(file.getContents());
         } catch (Exception e) {
             if (e instanceof FileNotFoundException) {
-                // Search for the Exception that is tried to be matched 
-                // (see message.properties file) and filter for MessageContainer getKey().
-                int todo=1; 
-                
                 if (e.getMessage() != null && e.getMessage().indexOf("Workbook") > 0) {
                     // special case: catch Excel95 format error
-                    throw new CmsIndexException(Messages.get().container(Messages.ERR_NO_EXCEL_FORMAT_1, resource.getRootPath()), e);
+                    throw new CmsIndexException(Messages.get().container(
+                        Messages.ERR_NO_EXCEL_FORMAT_1,
+                        resource.getRootPath()), e);
                 }
             }
-
-            throw new CmsIndexException(Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
+            throw new CmsIndexException(
+                Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
+                e);
         }
     }
 }

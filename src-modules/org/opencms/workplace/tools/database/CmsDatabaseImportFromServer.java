@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromServer.java,v $
- * Date   : $Date: 2005/06/16 10:55:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/19 10:57:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,13 @@
 package org.opencms.workplace.tools.database;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +48,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 6.0
  */
 public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
@@ -72,14 +73,14 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     public static final String PARAM_IMPORTFILE = "importFile";
 
     /** The import JSP report workplace URI. */
-    protected static final String IMPORT_ACTION_REPORT =  C_PATH_WORKPLACE + "admin/database/reports/import.html";
-    
+    protected static final String IMPORT_ACTION_REPORT = C_PATH_WORKPLACE + "admin/database/reports/import.html";
+
     /** Name of the manifest file used in upload files. */
     private static final String FILE_MANIFEST = "manifest.xml";
-    
+
     /** Name of the subfolder containing the OpenCms module packages. */
     private static final String FOLDER_MODULES = "modules";
-    
+
     /** The import file name stored by the selectbox widget. */
     private String m_importFile;
 
@@ -104,7 +105,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * Returns the list of all uploadable zip files and uploadable folders available on the server.<p>
      * 
@@ -112,9 +113,9 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
      * @return the list of all uploadable zip files and uploadable folders available on the server
      */
     protected static List getFileListFromServer(boolean includeFolders) {
-        
+
         List result = new ArrayList();
-        
+
         // get the RFS package export path
         String exportpath = OpenCms.getSystemInfo().getPackagesRfsPath();
         File folder = new File(exportpath);
@@ -126,36 +127,33 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
             // check this is a file and ends with zip -> this is a database upload file
             if (diskFile.isFile() && diskFile.getName().endsWith(".zip")) {
                 result.add(diskFile.getName());
-            } else if (diskFile.isDirectory() && includeFolders && (!diskFile.getName().equalsIgnoreCase(FOLDER_MODULES)) && ((new File(diskFile + File.separator + FILE_MANIFEST)).exists())) {
+            } else if (diskFile.isDirectory()
+                && includeFolders
+                && (!diskFile.getName().equalsIgnoreCase(FOLDER_MODULES))
+                && ((new File(diskFile + File.separator + FILE_MANIFEST)).exists())) {
                 // this is an unpacked package, add it to uploadable files
                 result.add(diskFile.getName());
             }
         }
-        
+
         return result;
     }
 
-    /** 
-     * Imports the selected file from the server.<p>
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
-    public void actionCommit() {
+    public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
 
-        try {
-            Map params = new HashMap();
-            params.put(PARAM_FILE, getImportFile());
-            // set style to display report in correct layout
-            params.put(PARAM_STYLE, "new");
-            // set close link to get back to overview after finishing the import
-            params.put(PARAM_CLOSELINK, getToolManager().linkForPath(getJsp(), "/database", null));
-            // redirect to the report output JSP
-            getToolManager().jspRedirectPage(this, IMPORT_ACTION_REPORT, params);
-        } catch (IOException e) {
-            errors.add(new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_ACTION_FILE_UPLOAD_1,
-                getImportFile()), e));
-        }
+        Map params = new HashMap();
+        params.put(PARAM_FILE, getImportFile());
+        // set style to display report in correct layout
+        params.put(PARAM_STYLE, "new");
+        // set close link to get back to overview after finishing the import
+        params.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/database"));
+        // redirect to the report output JSP
+        getToolManager().jspForwardPage(this, IMPORT_ACTION_REPORT, params);
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
     }
@@ -169,7 +167,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
         return m_importFile;
     }
-    
+
     /**
      * Sets the importFile parameter.<p>
      *
@@ -217,7 +215,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
         // get available files from server
         List files = getFilesFromServer();
-        
+
         // add the file select box widget
         addWidget(new CmsWidgetDialogParameter(this, PARAM_IMPORTFILE, PAGES[0], new CmsSelectWidget(files)));
     }

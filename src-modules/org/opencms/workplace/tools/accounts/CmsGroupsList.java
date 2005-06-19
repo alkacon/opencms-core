@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsList.java,v $
- * Date   : $Date: 2005/06/16 14:30:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,6 +56,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -64,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsGroupsList extends A_CmsListDialog {
@@ -232,14 +233,9 @@ public class CmsGroupsList extends A_CmsListDialog {
     }
 
     /**
-     * This method should handle every defined list single action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
-     * @throws CmsRuntimeException to signal that an action is not supported or in case an action failed
-     * 
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
-    public void executeListSingleActions() throws CmsRuntimeException {
+    public void executeListSingleActions() throws IOException, ServletException, CmsRuntimeException {
 
         String groupId = getSelectedItem().getId();
         String groupName = getSelectedItem().get(LIST_COLUMN_NAME).toString();
@@ -251,27 +247,12 @@ public class CmsGroupsList extends A_CmsListDialog {
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
         if (getParamListAction().equals(LIST_DEFACTION_EDIT)) {
-            try {
-                // forward to the edit user screen
-                getToolManager().jspRedirectTool(this, "/accounts/groups/edit", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_GROUP_0), e);
-            }
+            // forward to the edit user screen
+            getToolManager().jspForwardTool(this, "/accounts/groups/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_EDIT)) {
-            try {
-                getToolManager().jspRedirectTool(this, "/accounts/groups/edit/group", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_GROUP_0), e);
-            }
+            getToolManager().jspForwardTool(this, "/accounts/groups/edit/group", params);
         } else if (getParamListAction().equals(LIST_ACTION_USERS)) {
-            try {
-                getToolManager().jspRedirectTool(this, "/accounts/groups/edit/users", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_USERS_0), e);
-            }
+            getToolManager().jspForwardTool(this, "/accounts/groups/edit/users", params);
         } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
             // execute the delete action
             try {
@@ -304,32 +285,6 @@ public class CmsGroupsList extends A_CmsListDialog {
         listSave();
     }
 
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
-     */
-    protected List getListItems() throws CmsException {
-
-        List ret = new ArrayList();
-        // get content
-        List groups = getCms().getGroups();
-        Iterator itGroups = groups.iterator();
-        while (itGroups.hasNext()) {
-            CmsGroup group = (CmsGroup)itGroups.next();
-            CmsListItem item = getList().newItem(group.getId().toString());
-            item.set(LIST_COLUMN_NAME, group.getName());
-            item.set(LIST_COLUMN_DESCRIPTION, group.getDescription());
-            try {
-                item.set(LIST_COLUMN_PARENT, getCms().readGroup(group.getParentId()).getName());
-            } catch (Exception e) {
-                // ignore
-            }
-            ret.add(item);
-        }
-
-        return ret;
-    }
-
-    
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
@@ -372,7 +327,32 @@ public class CmsGroupsList extends A_CmsListDialog {
             item.set(detailId, html.toString());
         }
     }
-    
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
+     */
+    protected List getListItems() throws CmsException {
+
+        List ret = new ArrayList();
+        // get content
+        List groups = getCms().getGroups();
+        Iterator itGroups = groups.iterator();
+        while (itGroups.hasNext()) {
+            CmsGroup group = (CmsGroup)itGroups.next();
+            CmsListItem item = getList().newItem(group.getId().toString());
+            item.set(LIST_COLUMN_NAME, group.getName());
+            item.set(LIST_COLUMN_DESCRIPTION, group.getDescription());
+            try {
+                item.set(LIST_COLUMN_PARENT, getCms().readGroup(group.getParentId()).getName());
+            } catch (Exception e) {
+                // ignore
+            }
+            ret.add(item);
+        }
+
+        return ret;
+    }
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */

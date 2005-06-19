@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2005/06/16 10:55:02 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -61,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.9.1
  */
 public class CmsModulesUploadFromServer extends CmsWidgetDialog {
@@ -106,10 +108,10 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
         this(new CmsJspActionElement(context, req, res));
     }
 
-    /** 
-     * Commits the edited module.<p>
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
-    public void actionCommit() {
+    public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
         CmsModule module = null;
@@ -140,13 +142,13 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
                 errors.add(new CmsRuntimeException(Messages.get().container(
                     Messages.ERR_ACTION_MODULE_DEPENDENCY_2,
                     m_moduleupload,
-                    new String(dep))));             
+                    new String(dep))));
             }
 
         } catch (CmsConfigurationException e) {
-            errors.add(new CmsRuntimeException(
-                Messages.get().container(Messages.ERR_ACTION_MODULE_UPLOAD_1, m_moduleupload),
-                e));
+            errors.add(new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_ACTION_MODULE_UPLOAD_1,
+                m_moduleupload), e));
         }
 
         if (errors.isEmpty()) {
@@ -161,18 +163,12 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
             Map param = new HashMap();
             param.put(CmsModulesList.PARAM_MODULE, m_moduleupload);
             param.put(PARAM_STYLE, "new");
-            param.put(PARAM_CLOSELINK, getToolManager().linkForPath(getJsp(), "/modules", null));
-            try {
-                if (OpenCms.getModuleManager().hasModule(module.getName())) {
-                    param.put(PARAM_MODULENAME, module.getName());
-                    getToolManager().jspRedirectPage(this, REPLACE_ACTION_REPORT, param);
-                } else {
-                    getToolManager().jspRedirectPage(this, IMPORT_ACTION_REPORT, param);
-                }
-            } catch (IOException e) {
-                errors.add(new CmsRuntimeException(
-                    Messages.get().container(Messages.ERR_ACTION_MODULE_UPLOAD_1, m_moduleupload),
-                    e));
+            param.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/modules"));
+            if (OpenCms.getModuleManager().hasModule(module.getName())) {
+                param.put(PARAM_MODULENAME, module.getName());
+                getToolManager().jspForwardPage(this, REPLACE_ACTION_REPORT, param);
+            } else {
+                getToolManager().jspForwardPage(this, IMPORT_ACTION_REPORT, param);
             }
         }
 
@@ -302,7 +298,7 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
                 // ignore and continue
             }
         }
-       
+
         return result;
     }
 

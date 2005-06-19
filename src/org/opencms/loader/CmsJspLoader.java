@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.File;
@@ -104,15 +105,12 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.82 $
+ * @version $Revision: 1.83 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
  */
 public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledLoader {
-
-    /** Encoding to write JSP files to disk (<code>ISO-8859-1</code>). */
-    public static final String C_DEFAULT_JSP_ENCODING = "ISO-8859-1";
 
     /** Special JSP directive tag start (<code>%&gt;</code>). */
     public static final String C_DIRECTIVE_END = "%>";
@@ -126,8 +124,11 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /** The id of this loader. */
     public static final int C_RESOURCE_LOADER_ID = 6;
 
-    /** Flag for debugging output. Set to 9 for maximum verbosity. */
-    private static final int DEBUG = 0;
+    /** Property value for "cache" that indicates that the FlexCache should be bypassed. */
+    public static final String CACHE_PROPERTY_BYPASS = "bypass";
+
+    /** Property value for "cache" that indicates that the ouput should be streamed. */
+    public static final String CACHE_PROPERTY_STREAM = "stream";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspLoader.class);
@@ -296,9 +297,6 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
         m_jspRepository = CmsFileUtil.normalizePath(m_jspRepository + m_jspWebAppRepository);
 
-        if (DEBUG > 0) {
-            System.err.println("JspLoader: Setting jsp repository to " + m_jspRepository);
-        }
         // get the "error pages are commited or not" flag from the configuration
         m_errorPagesAreNotCommited = config.getBoolean("jsp.errorpage.committed", true);
 
@@ -355,15 +353,17 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         boolean streaming = false;
         boolean bypass = false;
 
-        // read "stream" property from requested VFS resource                                     
-        String streamProperty = cms.readPropertyObject(
+        // read "cache" property for requested VFS resource to check for special "stream" and "bypass" values                                    
+        String cacheProperty = cms.readPropertyObject(
             cms.getSitePath(file),
-            I_CmsResourceLoader.C_LOADER_STREAMPROPERTY,
+            I_CmsResourceLoader.C_LOADER_CACHEPROPERTY,
             false).getValue();
-        if (streamProperty != null) {
-            if ("yes".equalsIgnoreCase(streamProperty) || "true".equalsIgnoreCase(streamProperty)) {
+        if (cacheProperty != null) {
+            cacheProperty = cacheProperty.trim();
+            if (CACHE_PROPERTY_STREAM.equals(cacheProperty)) {
                 streaming = true;
-            } else if ("bypass".equalsIgnoreCase(streamProperty) || "bypasscache".equalsIgnoreCase(streamProperty)) {
+            } else if (CACHE_PROPERTY_BYPASS.equals(cacheProperty)) {
+                streaming = true;
                 bypass = true;
             }
         }
@@ -371,18 +371,13 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         // get the Flex controller
         CmsFlexController controller = getController(cms, file, req, res, streaming, true);
 
-        if (bypass) {
-            // bypass Flex cache for this page        
-            if (DEBUG > 1) {
-                System.err.println("JspLoader.load() bypassing cache for file " + cms.getSitePath(file));
-            }
-            // update the JSP first if neccessary            
+        if (bypass || controller.isForwardMode()) {
+            // once in forward mode, always in forward mode (for this request)
+            controller.setForwardMode(true);
+            // bypass Flex cache for this page, update the JSP first if neccessary            
             String target = updateJsp(file, controller, new HashSet());
             // dispatch to external JSP
             req.getRequestDispatcher(target).forward(controller.getCurrentRequest(), res);
-            if (DEBUG > 1) {
-                System.err.println("JspLoader.load() cache was bypassed!");
-            }
         } else {
             // Flex cache not bypassed, dispatch to internal JSP  
             dispatchJsp(controller);
@@ -481,11 +476,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                         res.setContentLength(result.length);
                         if (isWorkplaceUser) {
                             res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
-                            res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MAX_AGE
-                                + "0");
-                            res.addHeader(
-                                I_CmsConstants.C_HEADER_CACHE_CONTROL,
-                                I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
+                            CmsRequestUtil.setNoCacheHeaders(res);
                         } else {
                             // set date last modified header                        
                             CmsFlexController.setDateLastModifiedHeader(res, controller.getDateLastModified());
@@ -549,6 +540,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             CmsFlexRequest f_req = new CmsFlexRequest(req, controller);
             CmsFlexResponse f_res = new CmsFlexResponse(res, controller, streaming, true);
             controller.push(f_req, f_res);
+        } else if (controller.isForwardMode()) {
+            // reset CmsObject (because of URI) if in forward mode
+            controller = new CmsFlexController(cms, controller);
+            CmsFlexController.setController(req, controller);
         }
         return controller;
     }
@@ -599,8 +594,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 Messages.get().key(Messages.LOG_UNSUPPORTED_ENC_1, controller.getCurrentRequest().getElementUri()),
                 e);
             try {
-                content = new String(byteContent, C_DEFAULT_JSP_ENCODING);
-                encoding = C_DEFAULT_JSP_ENCODING;
+                content = new String(byteContent, CmsEncoder.ENCODING_ISO_8859_1);
+                encoding = CmsEncoder.ENCODING_ISO_8859_1;
             } catch (UnsupportedEncodingException e2) {
                 // should not happen since ISO-8859-1 is always a valid encoding
                 content = new String(byteContent);
@@ -1044,7 +1039,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     contents = CmsFile.upgrade(resource, cms).getContents();
                     // check the "content-encoding" property for the JSP
                     encoding = cms.readPropertyObject(jspVfsName, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false).getValue(
-                        C_DEFAULT_JSP_ENCODING);
+                        CmsEncoder.ENCODING_ISO_8859_1);
                     encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
                 } catch (CmsException e) {
                     controller.setThrowable(e, jspVfsName);

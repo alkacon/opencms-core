@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2005/06/16 14:30:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,18 +43,20 @@ import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.jsp.JspException;
 
 /**
  * Generalized user groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
@@ -106,9 +108,12 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
      * @param list1 first list
      * @param list2 second list
      * 
-     * @throws JspException if something goes wrong
+     * @throws JspException if dialog actions fail
+     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
+     * @throws ServletException in case of errros forwarding to the required result page
      */
-    public static void actionDialog(A_CmsGroupUsersList list1, A_CmsGroupUsersList list2) throws JspException {
+    public static void actionDialog(A_CmsGroupUsersList list1, A_CmsGroupUsersList list2)
+    throws JspException, IOException, ServletException {
 
         A_CmsGroupUsersList wp1 = (list1.isActive() ? (A_CmsGroupUsersList)list1 : (A_CmsGroupUsersList)list2);
         A_CmsGroupUsersList wp2 = (!list1.isActive() ? (A_CmsGroupUsersList)list1 : (A_CmsGroupUsersList)list2);

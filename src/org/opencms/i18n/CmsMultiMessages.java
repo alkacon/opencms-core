@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2005/05/31 15:51:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/19 10:57:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.i18n;
 
-import org.opencms.file.CmsRfsResourceNotFoundException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 
@@ -39,6 +38,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
 
 import org.apache.commons.logging.Log;
 
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexnader Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.7.3
  */
@@ -100,12 +100,12 @@ public class CmsMultiMessages extends CmsMessages {
      * 
      * @throws CmsIllegalArgumentException if the given <code>List</code> is null or empty
      */
-    public CmsMultiMessages(List messages) throws CmsIllegalArgumentException {
+    public CmsMultiMessages(List messages)
+    throws CmsIllegalArgumentException {
 
         super();
         if ((messages == null) || (messages.size() == 0)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_MULTIMSG_EMPTY_LIST_0));
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_MULTIMSG_EMPTY_LIST_0));
         }
         // use "old" Hashtable since it is the most efficient synchronized HashMap implementation
         m_messageCache = new Hashtable();
@@ -170,21 +170,17 @@ public class CmsMultiMessages extends CmsMessages {
                 try {
                     result = ((CmsMessages)m_messages.get(i)).getString(keyName);
                     // if no exception is thrown here we have found the result
-                } catch (CmsRfsResourceNotFoundException e) {
+                } catch (MissingResourceException e) {
                     // can usually be ignored
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(e);
+                        LOG.debug(e.getMessage(), e);
                     }
                 }
             }
         } else {
             // result was found in cache
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(
-                    Messages.LOG_MESSAGE_KEY_FOUND_CACHED_2,
-                    keyName,
-                    result)
-                );
+                LOG.debug(Messages.get().key(Messages.LOG_MESSAGE_KEY_FOUND_CACHED_2, keyName, result));
             }
             return result;
         }

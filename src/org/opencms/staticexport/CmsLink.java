@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/19 10:57:07 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,9 @@
 package org.opencms.staticexport;
 
 import org.opencms.site.CmsSiteManager;
-import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.xml.page.CmsXmlPage;
 
-import java.net.URI;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,7 +45,7 @@ import org.dom4j.Element;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  */
 public class CmsLink {
 
@@ -165,82 +162,6 @@ public class CmsLink {
         this(null, name, type, target, anchor, query, internal);
     }
 
-    /**
-     * Reads the parameters of the given query into the parameter map.<p>
-     * 
-     * @param query the query of this link
-     * @return the parameter map
-     */
-    private static Map getParameters(String query) {
-
-        if (query == null) {
-            return Collections.EMPTY_MAP;
-        }
-
-        HashMap parameters = new HashMap();
-        String[] params = CmsStringUtil.splitAsArray(query, '&');
-        for (int i = 0; i < params.length; i++) {
-            String[] pair = CmsStringUtil.splitAsArray(params[i], '=');
-            String[] p = (String[])parameters.get(pair[0]);
-            if (p == null) {
-                if (pair.length > 1) {
-                    p = new String[] {pair[1]};
-                } else {
-                    // TODO: Check what that standard API does here
-                    p = new String[0];
-                }
-            } else {
-                String[] p2 = new String[p.length + 1];
-                System.arraycopy(p, 0, p2, 0, p.length);
-                p2[p2.length - 1] = pair[1];
-                p = p2;
-            }
-            parameters.put(pair[0], p);
-        }
-
-        return parameters;
-    }
-
-    /**
-     * Splits the given uri string into its components <code>scheme://authority/path#fragment?query</code>.<p>
-     * 
-     * @param targetUri the uri string to split
-     * @return array of component strings
-     */
-    private static String[] split(String targetUri) {
-
-        URI uri;
-        String[] components = new String[3];
-
-        // malformed uri
-        try {
-            uri = new URI(targetUri);
-            components[0] = ((uri.getScheme() != null) ? uri.getScheme() + ":" : "") + uri.getRawSchemeSpecificPart();
-            components[1] = uri.getRawFragment();
-            components[2] = uri.getRawQuery();
-
-            if (components[0] != null) {
-                int i = components[0].indexOf("?");
-                if (i >= 0) {
-                    components[2] = components[0].substring(i + 1);
-                    components[0] = components[0].substring(0, i);
-                }
-            }
-
-            if (components[1] != null) {
-                int i = components[1].indexOf("?");
-                if (i >= 0) {
-                    components[2] = components[1].substring(i + 1);
-                    components[1] = components[1].substring(0, i);
-                }
-            }
-        } catch (Exception exc) {
-            return null;
-        }
-
-        return components;
-    }
-    
     /**
      * @see java.lang.Object#toString()
      */
@@ -457,7 +378,7 @@ public class CmsLink {
     private void setComponents(String uri) {
 
         // split the uri into its components and store them in an Array 
-        String[] components = split(uri);
+        String[] components = CmsRequestUtil.splitUri(uri);
 
         // set components 
         if (components != null) {
@@ -471,7 +392,7 @@ public class CmsLink {
         }
 
         // initialize the parameter map
-        m_parameters = getParameters(m_query);
+        m_parameters = CmsRequestUtil.createParameterMap(m_query);
     }
 
     /**
@@ -495,7 +416,7 @@ public class CmsLink {
         }
 
         // initialize the parameter map
-        m_parameters = getParameters(query);
+        m_parameters = CmsRequestUtil.createParameterMap(query);
 
         return uri.toString();
     }

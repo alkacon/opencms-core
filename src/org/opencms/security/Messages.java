@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_CANT_DELETE_DEFAULT_USER_1 = "ERR_CANT_DELETE_DEFAULT_USER_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_NEWPWD_0 = "ERR_INVALID_NEWPWD_0";
 
     /** Message constant for key in the resource bundle. */
@@ -65,15 +68,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_FAILED_WITH_MESSAGE_1 = "ERR_LOGIN_FAILED_WITH_MESSAGE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NEWPWD_EMPTY_0 = "ERR_NEWPWD_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NEWPWD_MISMATCH_0 = "ERR_NEWPWD_MISMATCH_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_PERMISSION_OPERATION_2 = "ERR_NO_PERMISSION_OPERATION_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_PERMISSION_RESOURCE_1 = "ERR_NO_PERMISSION_RESOURCE_1";

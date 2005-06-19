@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2005/05/18 12:48:14 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -67,12 +68,12 @@ import org.dom4j.io.SAXReader;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2005/05/18 12:48:14 $
+ * @version $Revision: 1.20 $ $Date: 2005/06/19 10:57:06 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
 public class CmsImportExportManager {
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImportExportManager.class);
 
@@ -110,7 +111,7 @@ public class CmsImportExportManager {
 
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.INIT_IMPORTEXPORT_INITIALIZING_0));
-        }   
+        }
 
         m_importExportHandlers = new ArrayList();
         m_immutableResources = new ArrayList();
@@ -163,10 +164,10 @@ public class CmsImportExportManager {
             saxReader = new SAXReader();
             manifest = saxReader.read(reader);
         } catch (Exception e) {
-            
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ERROR_READING_MANIFEST_1, resource), e);
-            }             
+            }
             manifest = null;
         } finally {
             try {
@@ -190,7 +191,7 @@ public class CmsImportExportManager {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_IGNORING_PROPERTY_1, propertyName));
-        }  
+        }
         m_ignoredProperties.add(propertyName);
     }
 
@@ -204,7 +205,7 @@ public class CmsImportExportManager {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ADDED_IMMUTABLE_RESOURCE_1, immutableResource));
-        } 
+        }
         m_immutableResources.add(immutableResource);
     }
 
@@ -237,12 +238,12 @@ public class CmsImportExportManager {
             m_importGroupTranslations.put(from, to);
             if (LOG.isInfoEnabled()) {
                 LOG.info(Messages.get().key(Messages.INIT_IMPORTEXPORT_ADDED_GROUP_TRANSLATION_2, from, to));
-            } 
+            }
         } else if (type.equalsIgnoreCase(I_CmsPrincipal.C_PRINCIPAL_USER)) {
             m_importUserTranslations.put(from, to);
             if (LOG.isInfoEnabled()) {
                 LOG.info(Messages.get().key(Messages.INIT_IMPORTEXPORT_ADDED_USER_TRANSLATION_2, from, to));
-            } 
+            }
         }
     }
 
@@ -255,7 +256,7 @@ public class CmsImportExportManager {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ADDED_IMPORT_VERSION_1, importVersionClass));
-        } 
+        }
         m_importVersionClasses.add(importVersionClass);
     }
 
@@ -283,7 +284,7 @@ public class CmsImportExportManager {
      */
     public void exportData(CmsObject cms, I_CmsImportExportHandler handler, I_CmsReport report)
     throws CmsConfigurationException, CmsImportExportException, CmsRoleViolationException {
-        
+
         cms.checkRole(CmsRole.EXPORT_DATABASE);
         handler.exportData(cms, report);
     }
@@ -329,11 +330,13 @@ public class CmsImportExportManager {
         File file = new File(importFile);
         if (!file.exists()) {
             // file does not exist
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORT_FILE_DOES_NOT_EXIST_1, importFile);
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_IMPORT_FILE_DOES_NOT_EXIST_1,
+                importFile);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key());
             }
-            
+
             throw new CmsImportExportException(message);
         }
 
@@ -348,12 +351,14 @@ public class CmsImportExportManager {
         }
 
         if (handler == null) {
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_NO_HANDLER_FOUND_1, importFile);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_NO_HANDLER_FOUND_1,
+                importFile);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key());
             }
-            
+
             throw new CmsImportExportException(message);
         }
 
@@ -421,14 +426,17 @@ public class CmsImportExportManager {
      * @param importFile the name (absolute path) of the resource (zipfile or folder) to be imported
      * @param importPath the name (absolute path) of the destination folder in the Cms if required, or null
      * @param report a Cms report to print log messages
+     * 
      * @throws CmsRoleViolationException if the current user is not allowed to import the OpenCms database
      * @throws CmsImportExportException if operation was not successful
      * @throws CmsXmlException if the manifest of the import could not be unmarshalled
+     * @throws CmsException in case of errors accessing the VFS
+     * 
      * @see I_CmsImportExportHandler
      */
     public void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report)
-    throws CmsImportExportException, CmsXmlException, CmsRoleViolationException {
-        
+    throws CmsImportExportException, CmsXmlException, CmsRoleViolationException, CmsException {
+
         // check the required role permissions
         cms.checkRole(CmsRole.IMPORT_DATABASE);
 
@@ -459,8 +467,10 @@ public class CmsImportExportManager {
     public void setConvertToXmlPage(boolean convertToXmlPage) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_SET_CONVERT_PARAMETER_1, Boolean.toString(convertToXmlPage)));
-        }   
+            LOG.debug(Messages.get().key(
+                Messages.LOG_IMPORTEXPORT_SET_CONVERT_PARAMETER_1,
+                Boolean.toString(convertToXmlPage)));
+        }
         m_convertToXmlPage = convertToXmlPage;
     }
 
@@ -486,7 +496,7 @@ public class CmsImportExportManager {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_SET_OLD_WEBAPP_URL_1, webAppUrl));
-        }   
+        }
         m_webAppUrl = webAppUrl;
     }
 
@@ -508,8 +518,10 @@ public class CmsImportExportManager {
     public void setOverwriteCollidingResources(boolean overwriteCollidingResources) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_SET_OVERWRITE_PARAMETER_1, Boolean.toString(overwriteCollidingResources)));
-        }   
+            LOG.debug(Messages.get().key(
+                Messages.LOG_IMPORTEXPORT_SET_OVERWRITE_PARAMETER_1,
+                Boolean.toString(overwriteCollidingResources)));
+        }
         m_overwriteCollidingResources = overwriteCollidingResources;
     }
 

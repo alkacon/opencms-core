@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/A_CmsImportFromHttp.java,v $
- * Date   : $Date: 2005/06/14 13:34:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,11 @@
 package org.opencms.workplace.administration;
 
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsRfsException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRfsException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -62,7 +63,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0
  */
 public abstract class A_CmsImportFromHttp extends CmsDialog {
@@ -102,17 +103,21 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
     }
 
     /**
-     * Imports the selected file from the server.<p>
+     * Performs the import operation after "OK" has been pressed.<p>
+     * 
+     * @throws IOException in case of errros forwarding to the required result page
+     * @throws ServletException in case of errros forwarding to the required result page
      */
-    public abstract void actionCommit();
+    public abstract void actionCommit() throws IOException, ServletException;
 
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
      * 
-     * @throws IOException if writing to the JSP out fails
      * @throws JspException if dialog actions fail
+     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
+     * @throws ServletException in case of errros forwarding to the required result page
      */
-    public void displayDialog() throws IOException, JspException {
+    public void displayDialog() throws IOException, JspException, ServletException {
 
         switch (getAction()) {
 
@@ -175,6 +180,70 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
     public void setParamImportfile(String importfile) {
 
         m_paramImportfile = importfile;
+    }
+
+    /**
+     * Gets a database importfile from the client and copys it to the server.<p>
+     *
+     * @param destination the destination of the file on the server
+     * @return the name of the file or null if something went wrong when importing the file.
+     * 
+     * @throws CmsIllegalArgumentException if the specified file name is invalid
+     * @throws CmsRfsException if generating folders or files on the server fails
+     */
+    protected String copyFileToServer(String destination) throws CmsIllegalArgumentException, CmsRfsException {
+
+        // get the file item from the multipart request
+        Iterator i = getMultiPartFileItems().iterator();
+        FileItem fi = null;
+        while (i.hasNext()) {
+            fi = (FileItem)i.next();
+            if (fi.getName() != null) {
+                // found the file object, leave iteration
+                break;
+            } else {
+                // this is no file object, check next item
+                continue;
+            }
+        }
+
+        String fileName = null;
+
+        if (fi != null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
+            // file name has been specified, upload the file
+            fileName = fi.getName();
+            byte[] content = fi.get();
+            fi.delete();
+            // get the file name without folder information
+            fileName = CmsResource.getName(fileName.replace('\\', '/'));
+            // first create the folder if it does not exist
+            File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+                OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator));
+            if (!discFolder.exists()) {
+                if (!discFolder.mkdir()) {
+                    throw new CmsRfsException(Messages.get().container(Messages.ERR_FOLDER_NOT_CREATED_0));
+                }
+            }
+            // write the file into the packages folder of the OpenCms server
+            File discFile = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+                destination + File.separator + fileName));
+            try {
+                // write the new file to disk
+                OutputStream s = new FileOutputStream(discFile);
+                s.write(content);
+                s.close();
+            } catch (FileNotFoundException e) {
+                throw new CmsRfsException(Messages.get().container(Messages.ERR_FILE_NOT_FOUND_1, fileName, e));
+            } catch (IOException e) {
+                throw new CmsRfsException(Messages.get().container(Messages.ERR_FILE_NOT_WRITTEN_0, e));
+            }
+        } else {
+            // no file name has been specified, throw exception
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_FILE_NOT_SPECIFIED_0));
+        }
+        // set the request parameter to the name of the import file
+        setParamImportfile(fileName);
+        return fileName;
     }
 
     /**
@@ -301,68 +370,5 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
     protected void setException(CmsException exception) {
 
         m_exception = exception;
-    }
-
-    /**
-     * Gets a database importfile from the client and copys it to the server.<p>
-     *
-     * @param destination the destination of the file on the server
-     * @return the name of the file or null if something went wrong when importing the file.
-     * 
-     * @throws CmsIllegalArgumentException if the specified file name is invalid
-     * @throws CmsRfsException if generating folders or files on the server fails
-     */
-    protected String copyFileToServer(String destination) throws CmsIllegalArgumentException, CmsRfsException {
-
-        // get the file item from the multipart request
-        Iterator i = getMultiPartFileItems().iterator();
-        FileItem fi = null;
-        while (i.hasNext()) {
-            fi = (FileItem)i.next();
-            if (fi.getName() != null) {
-                // found the file object, leave iteration
-                break;
-            } else {
-                // this is no file object, check next item
-                continue;
-            }
-        }
-
-        String fileName = null;
-
-        if (fi != null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
-            // file name has been specified, upload the file
-            fileName = fi.getName();
-            byte[] content = fi.get();
-            fi.delete();
-            // get the file name without folder information
-            fileName = CmsResource.getName(fileName.replace('\\', '/'));
-            // first create the folder if it does not exist
-            File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-                OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator));
-            if (!discFolder.exists()) {
-                if (!discFolder.mkdir()) {
-                    throw new CmsRfsException(Messages.get().container(Messages.ERR_FOLDER_NOT_CREATED_0));
-                }
-            }
-            // write the file into the packages folder of the OpenCms server
-            File discFile = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(destination + File.separator + fileName));
-            try {
-                // write the new file to disk
-                OutputStream s = new FileOutputStream(discFile);
-                s.write(content);
-                s.close();
-            } catch (FileNotFoundException e) {
-                throw new CmsRfsException(Messages.get().container(Messages.ERR_FILE_NOT_FOUND_1, fileName, e));
-            } catch (IOException e) {
-                throw new CmsRfsException(Messages.get().container(Messages.ERR_FILE_NOT_WRITTEN_0, e));
-            }
-        } else {
-            // no file name has been specified, throw exception
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_FILE_NOT_SPECIFIED_0));
-        }
-        // set the request parameter to the name of the import file
-        setParamImportfile(fileName);
-        return fileName;
     }
 }

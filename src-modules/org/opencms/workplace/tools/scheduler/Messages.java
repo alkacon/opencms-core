@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Messages.java,v $
- * Date   : $Date: 2005/06/17 07:22:26 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,16 +47,16 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_JOB_1 = "ERR_DELETE_JOB_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EDIT_JOB_1 = "ERR_EDIT_JOB_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SCHEDULE_JOB_1 = "ERR_SCHEDULE_JOB_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNSCHEDULE_JOB_1 = "ERR_UNSCHEDULE_JOB_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITJOB_ADMIN_TOOL_GROUP_0 = "GUI_EDITJOB_ADMIN_TOOL_GROUP_0";
 
@@ -65,40 +65,43 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITJOB_ADMIN_TOOL_NAME_0 = "GUI_EDITJOB_ADMIN_TOOL_NAME_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_CRONCLASS_EXAMPLE1_0 = "GUI_EDITOR_CRONCLASS_EXAMPLE1_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_CRONCLASS_EXAMPLE2_0 = "GUI_EDITOR_CRONCLASS_EXAMPLE2_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_CRONCLASS_EXAMPLE3_0 = "GUI_EDITOR_CRONCLASS_EXAMPLE3_0";
-    
+    public static final String GUI_EDITOR_CRONCLASS_MEMORYMONITOR_0 = "GUI_EDITOR_CRONCLASS_MEMORYMONITOR_0";
+
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_CRONCLASS_EXAMPLE4_0 = "GUI_EDITOR_CRONCLASS_EXAMPLE4_0";
-    
+    public static final String GUI_EDITOR_CRONCLASS_POINTERVALIDATION_0 = "GUI_EDITOR_CRONCLASS_EXAMPLE4_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONCLASS_PUBLISH_0 = "GUI_EDITOR_CRONCLASS_PUBLISH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONCLASS_SEARCHINDEX_0 = "GUI_EDITOR_CRONCLASS_SEARCHINDEX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_CRONCLASS_STATICEXPORT_0 = "GUI_EDITOR_CRONCLASS_EXAMPLE5_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CRONJOB_EXAMPLE1_0 = "GUI_EDITOR_CRONJOB_EXAMPLE1_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CRONJOB_EXAMPLE2_0 = "GUI_EDITOR_CRONJOB_EXAMPLE2_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CRONJOB_EXAMPLE3_0 = "GUI_EDITOR_CRONJOB_EXAMPLE3_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CRONJOB_EXAMPLE4_0 = "GUI_EDITOR_CRONJOB_EXAMPLE4_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CRONJOB_EXAMPLE5_0 = "GUI_EDITOR_CRONJOB_EXAMPLE5_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0 = "GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_LABEL_JOBSETTINGS_BLOCK_0 = "GUI_EDITOR_LABEL_JOBSETTINGS_BLOCK_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0 = "GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0";
 
@@ -110,58 +113,58 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_ADMIN_TOOL_NAME_0 = "GUI_JOBS_ADMIN_TOOL_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_ADMIN_TOOL_SHORTNAME_0 = "GUI_JOBS_ADMIN_TOOL_SHORTNAME_0";
-        
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_CONTEXTINFO_ENCODING_0 = "GUI_JOBS_DETAIL_CONTEXTINFO_ENCODING_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_CONTEXTINFO_FORMAT_0 = "GUI_JOBS_DETAIL_CONTEXTINFO_FORMAT_0";
-        
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_CONTEXTINFO_LOCALE_0 = "GUI_JOBS_DETAIL_CONTEXTINFO_LOCALE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_CONTEXTINFO_PROJECT_0 = "GUI_JOBS_DETAIL_CONTEXTINFO_PROJECT_0";
-        
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_CONTEXTINFO_REMADR_0 = "GUI_JOBS_DETAIL_CONTEXTINFO_REMADR_0";
-        
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_CONTEXTINFO_REQURI_0 = "GUI_JOBS_DETAIL_CONTEXTINFO_REQURI_0";
-        
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_CONTEXTINFO_ROOTSITE_0 = "GUI_JOBS_DETAIL_CONTEXTINFO_ROOTSITE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_CONTEXTINFO_USER_0 = "GUI_JOBS_DETAIL_CONTEXTINFO_USER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_HIDE_CONTEXTINFO_HELP_0 = "GUI_JOBS_DETAIL_HIDE_CONTEXTINFO_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_HIDE_CONTEXTINFO_NAME_0 = "GUI_JOBS_DETAIL_HIDE_CONTEXTINFO_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_HIDE_PARAMETER_HELP_0 = "GUI_JOBS_DETAIL_HIDE_PARAMETER_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_HIDE_PARAMETER_NAME_0 = "GUI_JOBS_DETAIL_HIDE_PARAMETER_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_PARAMETER_FORMAT_0 = "GUI_JOBS_DETAIL_PARAMETER_FORMAT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_SHOW_CONTEXTINFO_HELP_0 = "GUI_JOBS_DETAIL_SHOW_CONTEXTINFO_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_SHOW_CONTEXTINFO_NAME_0 = "GUI_JOBS_DETAIL_SHOW_CONTEXTINFO_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_SHOW_PARAMETER_HELP_0 = "GUI_JOBS_DETAIL_SHOW_PARAMETER_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_DETAIL_SHOW_PARAMETER_NAME_0 = "GUI_JOBS_DETAIL_SHOW_PARAMETER_NAME_0";
 
@@ -182,10 +185,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_COPY_NAME_0 = "GUI_JOBS_LIST_ACTION_COPY_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_DEACTIVATE_CONF_0 = "GUI_JOBS_LIST_ACTION_DEACTIVATE_CONF_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_DEACTIVATE_HELP_0 = "GUI_JOBS_LIST_ACTION_DEACTIVATE_HELP_0";
 
@@ -209,25 +212,25 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_EDIT_NAME_0 = "GUI_JOBS_LIST_ACTION_EDIT_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_MACTIVATE_CONF_0 = "GUI_JOBS_LIST_ACTION_MACTIVATE_CONF_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_MACTIVATE_HELP_0 = "GUI_JOBS_LIST_ACTION_MACTIVATE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_MACTIVATE_NAME_0 = "GUI_JOBS_LIST_ACTION_MACTIVATE_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_MDEACTIVATE_CONF_0 = "GUI_JOBS_LIST_ACTION_MDEACTIVATE_CONF_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_MDEACTIVATE_HELP_0 = "GUI_JOBS_LIST_ACTION_MDEACTIVATE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_MDEACTIVATE_NAME_0 = "GUI_JOBS_LIST_ACTION_MDEACTIVATE_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_ACTION_MDELETE_CONF_0 = "GUI_JOBS_LIST_ACTION_MDELETE_CONF_0";
 
@@ -239,28 +242,28 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_ACTIVE_0 = "GUI_JOBS_LIST_COL_ACTIVE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_ACTIVE_HELP_0 = "GUI_JOBS_LIST_COL_ACTIVE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_CLASS_0 = "GUI_JOBS_LIST_COL_CLASS_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_COPY_0 = "GUI_JOBS_LIST_COL_COPY_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_COPY_HELP_0 = "GUI_JOBS_LIST_COL_COPY_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_DELETE_0 = "GUI_JOBS_LIST_COL_DELETE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_DELETE_HELP_0 = "GUI_JOBS_LIST_COL_DELETE_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_EDIT_0 = "GUI_JOBS_LIST_COL_EDIT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_EDIT_HELP_0 = "GUI_JOBS_LIST_COL_EDIT_HELP_0";
 

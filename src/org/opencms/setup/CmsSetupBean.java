@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/05/18 10:40:29 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/19 10:57:07 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,9 +89,21 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
+
+    /** DB provider constant. */
+    public static final String C_GENERIC_PROVIDER = "generic";
+
+    /** DB provider constant. */
+    public static final String C_MYSQL_PROVIDER = "mysql";
+
+    /** DB provider constant. */
+    public static final String C_ORACLE_PROVIDER = "oracle";
+
+    /** DB provider constant. */
+    public static final String C_POSTGRESQL_PROVIDER = "postgresql";
 
     /** Required files per database server setup. */
     public static final String[] REQUIRED_DB_SETUP_FILES = {
@@ -156,133 +168,12 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     /** The workplace import thread. */
     private CmsSetupWorkplaceImportThread m_workplaceImportThread;
 
-    /** DB provider constant. */
-    public static final String C_MYSQL_PROVIDER = "mysql";
-
-    /** DB provider constant. */
-    public static final String C_GENERIC_PROVIDER = "generic";
-
-    /** DB provider constant. */
-    public static final String C_ORACLE_PROVIDER = "oracle";
-
-    /** DB provider constant. */
-    public static final String C_POSTGRESQL_PROVIDER = "postgresql";
-
     /** 
      * Default constructor.<p>
      */
     public CmsSetupBean() {
 
         initHtmlParts();
-    }
-
-    /**
-     * Sets the needed database parameters.<p> 
-     * 
-     * @param request the http request
-     * @param provider the db provider
-     * 
-     * @return true if already submitted
-     */
-    public boolean setDbParamaters(HttpServletRequest request, String provider) {
-
-        String conStr = request.getParameter("dbCreateConStr");
-        boolean isFormSubmitted = ((request.getParameter("submit") != null) && (conStr != null));
-        String database = "";
-        if (provider.equals(C_MYSQL_PROVIDER)) {
-            database = request.getParameter("db");
-        } else if (provider.equals(C_POSTGRESQL_PROVIDER)) {
-            database = request.getParameter("dbName");
-        }
-        if (provider.equals(C_MYSQL_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
-            isFormSubmitted = (isFormSubmitted && (database != null));
-        }
-
-        if (isInitialized()) {
-            String createDb = request.getParameter("createDb");
-            if (createDb == null) {
-                createDb = "";
-            }
-
-            String createTables = request.getParameter("createTables");
-            if (createTables == null) {
-                createTables = "";
-            }
-
-            if (isFormSubmitted) {
-                if (provider.equals(C_MYSQL_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
-                    if (!conStr.endsWith("/")) {
-                        conStr += "/";
-                    }
-                    conStr += database;
-                }
-                setDbWorkConStr(conStr);
-                if (provider.equals(C_POSTGRESQL_PROVIDER)) {
-                    setDb(database);
-                }
-                String dbCreateUser = request.getParameter("dbCreateUser");
-                String dbCreatePwd = request.getParameter("dbCreatePwd");
-
-                String dbWorkUser = request.getParameter("dbWorkUser");
-                String dbWorkPwd = request.getParameter("dbWorkPwd");
-
-                setDbCreateUser(dbCreateUser);
-                setDbCreatePwd(dbCreatePwd);
-
-                if (dbWorkUser.equals("")) {
-                    dbWorkUser = request.getContextPath();
-                }
-                if (dbWorkUser.equals("")) {
-                    dbWorkUser = "opencms";
-                }
-                if (dbWorkUser.startsWith("/")) {
-                    dbWorkUser = dbWorkUser.substring(1, dbWorkUser.length());
-                }
-                setDbWorkUser(dbWorkUser);
-                setDbWorkPwd(dbWorkPwd);
-
-                if (provider.equals(C_ORACLE_PROVIDER)) {
-                    String dbDefaultTablespace = request.getParameter("dbDefaultTablespace");
-                    String dbTemporaryTablespace = request.getParameter("dbTemporaryTablespace");
-                    String dbIndexTablespace = request.getParameter("dbIndexTablespace");
-
-                    setDbProperty(getDatabase() + ".defaultTablespace", dbDefaultTablespace);
-                    setDbProperty(getDatabase() + ".temporaryTablespace", dbTemporaryTablespace);
-                    setDbProperty(getDatabase() + ".indexTablespace", dbIndexTablespace);
-                }
-                Map replacer = (Map)new HashMap();
-                if (!provider.equals(C_MYSQL_PROVIDER)) {
-                    replacer.put("${user}", dbWorkUser);
-                    replacer.put("${password}", dbWorkPwd);
-                } 
-                if (provider.equals(C_MYSQL_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
-                    replacer.put("${database}", database);
-                } 
-                if (provider.equals(C_ORACLE_PROVIDER)) {
-                    replacer.put("${defaultTablespace}", getDbProperty(getDatabase() + ".defaultTablespace"));
-                    replacer.put("${indexTablespace}", getDbProperty(getDatabase() + ".indexTablespace"));
-                    replacer.put("${temporaryTablespace}", getDbProperty(getDatabase() + ".temporaryTablespace"));
-                }
-                setReplacer(replacer);
-
-                if (provider.equals(C_GENERIC_PROVIDER) || provider.equals(C_ORACLE_PROVIDER)) {
-                    request.getSession().setAttribute("createTables", createTables);
-                }
-                request.getSession().setAttribute("createDb", createDb);
-            } else {
-                String dbName = "opencms";
-                // initialize the database name with the app name
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getContextPath())) {
-                    dbName = request.getContextPath().substring(1);
-                }
-                if (provider.equals(C_ORACLE_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
-                    setDbWorkUser(dbName);
-                } else {
-                    setDb(dbName);
-                }
-            }
-        }
-        return isFormSubmitted;
     }
 
     /**
@@ -1293,6 +1184,115 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     public void setDbDriver(String driver) {
 
         setDbProperty(m_databaseKey + ".driver", driver);
+    }
+
+    /**
+     * Sets the needed database parameters.<p> 
+     * 
+     * @param request the http request
+     * @param provider the db provider
+     * 
+     * @return true if already submitted
+     */
+    public boolean setDbParamaters(HttpServletRequest request, String provider) {
+
+        String conStr = request.getParameter("dbCreateConStr");
+        boolean isFormSubmitted = ((request.getParameter("submit") != null) && (conStr != null));
+        String database = "";
+        if (provider.equals(C_MYSQL_PROVIDER)) {
+            database = request.getParameter("db");
+        } else if (provider.equals(C_POSTGRESQL_PROVIDER)) {
+            database = request.getParameter("dbName");
+        }
+        if (provider.equals(C_MYSQL_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
+            isFormSubmitted = (isFormSubmitted && (database != null));
+        }
+
+        if (isInitialized()) {
+            String createDb = request.getParameter("createDb");
+            if (createDb == null) {
+                createDb = "";
+            }
+
+            String createTables = request.getParameter("createTables");
+            if (createTables == null) {
+                createTables = "";
+            }
+
+            if (isFormSubmitted) {
+                if (provider.equals(C_MYSQL_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
+                    if (!conStr.endsWith("/")) {
+                        conStr += "/";
+                    }
+                    conStr += database;
+                }
+                setDbWorkConStr(conStr);
+                if (provider.equals(C_POSTGRESQL_PROVIDER)) {
+                    setDb(database);
+                }
+                String dbCreateUser = request.getParameter("dbCreateUser");
+                String dbCreatePwd = request.getParameter("dbCreatePwd");
+
+                String dbWorkUser = request.getParameter("dbWorkUser");
+                String dbWorkPwd = request.getParameter("dbWorkPwd");
+
+                setDbCreateUser(dbCreateUser);
+                setDbCreatePwd(dbCreatePwd);
+
+                if (dbWorkUser.equals("")) {
+                    dbWorkUser = request.getContextPath();
+                }
+                if (dbWorkUser.equals("")) {
+                    dbWorkUser = "opencms";
+                }
+                if (dbWorkUser.startsWith("/")) {
+                    dbWorkUser = dbWorkUser.substring(1, dbWorkUser.length());
+                }
+                setDbWorkUser(dbWorkUser);
+                setDbWorkPwd(dbWorkPwd);
+
+                if (provider.equals(C_ORACLE_PROVIDER)) {
+                    String dbDefaultTablespace = request.getParameter("dbDefaultTablespace");
+                    String dbTemporaryTablespace = request.getParameter("dbTemporaryTablespace");
+                    String dbIndexTablespace = request.getParameter("dbIndexTablespace");
+
+                    setDbProperty(getDatabase() + ".defaultTablespace", dbDefaultTablespace);
+                    setDbProperty(getDatabase() + ".temporaryTablespace", dbTemporaryTablespace);
+                    setDbProperty(getDatabase() + ".indexTablespace", dbIndexTablespace);
+                }
+                Map replacer = new HashMap();
+                if (!provider.equals(C_MYSQL_PROVIDER)) {
+                    replacer.put("${user}", dbWorkUser);
+                    replacer.put("${password}", dbWorkPwd);
+                }
+                if (provider.equals(C_MYSQL_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
+                    replacer.put("${database}", database);
+                }
+                if (provider.equals(C_ORACLE_PROVIDER)) {
+                    replacer.put("${defaultTablespace}", getDbProperty(getDatabase() + ".defaultTablespace"));
+                    replacer.put("${indexTablespace}", getDbProperty(getDatabase() + ".indexTablespace"));
+                    replacer.put("${temporaryTablespace}", getDbProperty(getDatabase() + ".temporaryTablespace"));
+                }
+                setReplacer(replacer);
+
+                if (provider.equals(C_GENERIC_PROVIDER) || provider.equals(C_ORACLE_PROVIDER)) {
+                    request.getSession().setAttribute("createTables", createTables);
+                }
+                request.getSession().setAttribute("createDb", createDb);
+            } else {
+                String dbName = "opencms";
+                // initialize the database name with the app name
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getContextPath())) {
+                    dbName = request.getContextPath().substring(1);
+                }
+                if (provider.equals(C_ORACLE_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
+                    setDbWorkUser(dbName);
+                } else {
+                    setDb(dbName);
+                }
+            }
+        }
+        return isFormSubmitted;
     }
 
     /** 

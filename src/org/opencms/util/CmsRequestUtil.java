@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/06/17 16:16:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/19 10:57:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,20 +31,25 @@
 
 package org.opencms.util;
 
+import org.opencms.flex.CmsFlexRequest;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletResponse;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
@@ -57,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0
  */
@@ -143,40 +148,105 @@ public final class CmsRequestUtil {
             // url does not have parameters
             result.append('?');
         }
-        Iterator i = params.keySet().iterator();
+        // ensure all values are of type String[]
+        Map newParams = createParameterMap(params);
+        Iterator i = newParams.keySet().iterator();
         while (i.hasNext()) {
             String key = (String)i.next();
-            Object value = params.get(key);
-            if (value instanceof String[]) {
-                // String array, common for request parameters
-                String[] values = (String[])value;
-                for (int j = 0; j < values.length; j++) {
-                    String strValue = values[j];
-                    if (encode) {
-                        strValue = CmsEncoder.encode(strValue);
-                    }
-                    result.append(key);
-                    result.append('=');
-                    result.append(strValue);
-                    if ((j + 1) < values.length) {
-                        result.append('&');
-                    }
-                }
-            } else {
-                // single String
-                String strValue = value.toString();
+            Object value = newParams.get(key);
+            String[] values = (String[])value;
+            for (int j = 0; j < values.length; j++) {
+                String strValue = values[j];
                 if (encode) {
                     strValue = CmsEncoder.encode(strValue);
                 }
                 result.append(key);
                 result.append('=');
                 result.append(strValue);
+                if ((j + 1) < values.length) {
+                    result.append('&');
+                }
             }
             if (i.hasNext()) {
                 result.append('&');
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Creates a valid request parameter map from the given map,
+     * most notably changing the values form <code>String</code>
+     * to <code>String[]</code> if required.<p>
+     * 
+     * If the given parameter map is <code>null</code>, then <code>null</code> is returned.<p>
+     * 
+     * @param params the map of parameters to create a parameter map from
+     * @return the created parameter map, all values will be instances of <code>String[]</code>
+     */
+    public static Map createParameterMap(Map params) {
+
+        if (params == null) {
+            return null;
+        }
+        HashMap result = new HashMap();
+        Iterator i = params.keySet().iterator();
+        while (i.hasNext()) {
+            String key = i.next().toString();
+            Object values = params.get(key);
+            if (values instanceof String[]) {
+                result.put(key, values);
+            } else {
+                result.put(key, new String[] {values.toString()});
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Parses the parameters of the given request query part and creaes a parameter map out of them.<p>
+     * 
+     * Please note: This does not parse a full request URI/URL, only the query part that 
+     * starts after the "?". For example, in the URI <code>/system/index.html?a=b&amp;c=d</code>,
+     * the query part is <code>a=b&amp;c=d</code>.<p>
+     * 
+     * If the given String is empty, an empty map is returned.<p>
+     * 
+     * @param query the query to parse
+     * @return the parameter map created from the query
+     */
+    public static Map createParameterMap(String query) {
+
+        if (CmsStringUtil.isEmpty(query)) {
+            return Collections.EMPTY_MAP;
+        }
+        HashMap parameters = new HashMap();
+        String[] params = CmsStringUtil.splitAsArray(query, '&');
+        for (int i = 0; i < params.length; i++) {
+            String key = null;
+            String value = null;
+            int pos = params[i].indexOf('=');
+            if (pos > 0) {
+                key = params[i].substring(0, pos);
+                value = params[i].substring(pos + 1);
+            } else if (pos < 0) {
+                key = params[i];
+                value = "";
+            }
+            if (key != null) {
+                String[] values = (String[])parameters.get(key);
+                if (values == null) {
+                    values = new String[] {value};
+                } else {
+                    String[] copy = new String[values.length + 1];
+                    System.arraycopy(values, 0, copy, 0, values.length);
+                    copy[copy.length - 1] = value;
+                    values = copy;
+                }
+                parameters.put(key, values);
+            }
+        }
+        return parameters;
     }
 
     /**
@@ -231,6 +301,63 @@ public final class CmsRequestUtil {
             result = CmsEncoder.encode(uri);
         }
         return result;
+    }
+
+    /**
+     * Forwards the response to the given target, which may contain parameters appended like for example <code>?a=b&amp;c=d</code>.<p>
+     * 
+     * Please note: If possible, use <code>{@link #forwardRequest(String, Map, HttpServletRequest, HttpServletResponse)}</code>
+     * where the parameters are passed as a map, since the parsing of the parameters may introduce issues with encoding
+     * and is in general much less effective.<p>
+     * 
+     * The parsing of parameters will likley fail for "large values" (e.g. full blown web forms with &lt;textarea&gt;
+     * elements etc. Use this method only if you know that the target will just contain up to 3 parameters which 
+     * are relativly short and have no encoding or linebreak issues.<p>
+     * 
+     * @param target the target to forward to (may contain parameters like <code>?a=b&amp;c=d</code>)
+     * @param req the request to forward
+     * @param res the response to forward
+     * 
+     * @throws IOException in case the forwarding fails
+     * @throws ServletException in case the forwarding fails
+     */
+    public static void forwardRequest(String target, HttpServletRequest req, HttpServletResponse res)
+    throws IOException, ServletException {
+
+        // clear the current parameters
+        String[] uri = splitUri(target);
+        Map params = createParameterMap(uri[2]);
+        forwardRequest(uri[0], params, req, res);
+    }
+
+    /**
+     * Forwards the response to the given target, with the provided parameter map.<p>
+     * 
+     * The target uri must NOT have parameters appended like for example <code>?a=b&amp;c=d</code>.
+     * The values in the provided map must be of type <code>String[]</code>. If required, use
+     * <code>{@link #createParameterMap(Map)}</code> before calling this method to make sure
+     * all values are actually of the required array type.<p>
+     * 
+     * @param target the target to forward to (may NOT contain parameters like <code>?a=b&amp;c=d</code>)
+     * @param params the parameter map (the values must be of type <code>String[]</code>
+     * @param req the request to forward
+     * @param res the response to forward
+     * 
+     * @throws IOException in case the forwarding fails
+     * @throws ServletException in case the forwarding fails
+     */
+    public static void forwardRequest(String target, Map params, HttpServletRequest req, HttpServletResponse res)
+    throws IOException, ServletException {
+
+        // cast the request back to a flex request so the parameter map can be accessed
+        CmsFlexRequest f_req = (CmsFlexRequest)req;
+        // set the parameters
+        f_req.setParameterMap(params);
+        if (target.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+            // remove context path (only leave servlet name)
+            target = target.substring(OpenCms.getSystemInfo().getContextPath().length());
+        }
+        f_req.getRequestDispatcher(target).forward(f_req, res);
     }
 
     /**
@@ -338,19 +465,61 @@ public final class CmsRequestUtil {
         return parameterMap;
     }
 
-    public static void sendHtmlRedirect(ServletResponse res, String url) {
+    /**
+     * Sets headers to the given response to prevent client side caching.<p> 
+     * 
+     * The following headers are set:<p>
+     * <code>
+     * Cache-Control: max-age=0<br>
+     * Cache-Control: must-revalidate<br>
+     * Pragma: no-cache
+     * </code>
+     * 
+     * @param res the request where to set the no-cache headers
+     */
+    public static void setNoCacheHeaders(HttpServletResponse res) {
 
-        StringBuffer buffer = new StringBuffer(128);
-        buffer.append("<script>\n");
-        buffer.append("document.location.href=\"");
-        buffer.append(url);
-        buffer.append("\";\n");
-        buffer.append("</script>\n");
+        res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MAX_AGE + "0");
+        res.addHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
+        res.setHeader(I_CmsConstants.C_HEADER_PRAGMA, I_CmsConstants.C_HEADER_VALUE_NO_CACHE);
+    }
 
+    /**
+     * Splits the given uri string into its components <code>scheme://authority/path#fragment?query</code>.<p>
+     * 
+     * The result array will always be of size 3. Position 0 will contain the path, position 1 will contain the 
+     * fragment and position 2 will contain the query part.<p> 
+     * 
+     * If no fragment or query is part of the uri, then position 1 and/or 2 will be <code>null</code>.
+     * 
+     * @param uri the uri string to split
+     * @return the components of the uri in an array of size 3
+     */
+    public static String[] splitUri(String uri) {
+
+        String[] components = new String[3];
         try {
-            res.getOutputStream().write(buffer.toString().getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
+            URI u = new URI(uri);
+            components[0] = ((u.getScheme() != null) ? u.getScheme() + ":" : "") + u.getRawSchemeSpecificPart();
+            components[1] = u.getRawFragment();
+            components[2] = u.getRawQuery();
+            if (components[0] != null) {
+                int i = components[0].indexOf('?');
+                if (i != -1) {
+                    components[2] = components[0].substring(i + 1);
+                    components[0] = components[0].substring(0, i);
+                }
+            }
+            if (components[1] != null) {
+                int i = components[1].indexOf('?');
+                if (i != -1) {
+                    components[2] = components[1].substring(i + 1);
+                    components[1] = components[1].substring(0, i);
+                }
+            }
+        } catch (Exception exc) {
+            return null;
         }
+        return components;
     }
 }

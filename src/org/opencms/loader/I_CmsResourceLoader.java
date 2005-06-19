@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * @since FLEX alpha 1
  * 
  * @see org.opencms.flex.CmsFlexRequest
@@ -73,9 +73,6 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
 
     /** The name of the VFS property that controls the caching. */
     String C_LOADER_CACHEPROPERTY = "cache";
-
-    /** The name of the VFS property that controls the streaming. */
-    String C_LOADER_STREAMPROPERTY = "stream";
 
     /** 
      * Destroys this ResourceLoder.<p>

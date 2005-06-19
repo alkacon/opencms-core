@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesDependenciesList.java,v $
- * Date   : $Date: 2005/06/16 14:30:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -63,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Module dependencies view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsModulesDependenciesList extends A_CmsListDialog {
@@ -155,11 +156,9 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     }
 
     /**
-     * This method should handle every defined list single action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
-    public void executeListSingleActions() {
+    public void executeListSingleActions() throws IOException, ServletException {
 
         String moduleName = getParamModule();
         String dependencyName = getSelectedItem().getId();
@@ -174,15 +173,8 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
             deleteDependency(module, dependencyName);
         } else if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             // edit a dependency from the list
-            try {
-                params.put(PARAM_ACTION, DIALOG_INITIAL);
-                getToolManager().jspRedirectTool(this, "/modules/edit/dependencies/edit", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(
-                    Messages.get().container(Messages.ERR_ACTION_MODULE_EDIT_1, moduleName),
-                    e);
-            }
+            params.put(PARAM_ACTION, DIALOG_INITIAL);
+            getToolManager().jspForwardTool(this, "/modules/edit/dependencies/edit", params);
         }
         // refresh the list
         Map objects = (Map)getSettings().getListObject();

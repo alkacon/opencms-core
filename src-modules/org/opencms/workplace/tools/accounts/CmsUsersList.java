@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2005/06/16 14:30:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,6 +61,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -69,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsUsersList extends A_CmsListDialog {
@@ -169,6 +170,19 @@ public class CmsUsersList extends A_CmsListDialog {
     }
 
     /**
+     * Deletes the user and closes the dialog.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void actionDeleteUser() throws Exception {
+
+        String userName = getJsp().getRequest().getParameter(CmsEditUserDialog.PARAM_USERNAME);
+        getCms().deleteUser(userName);
+        refreshList();
+        actionCloseDialog();
+    }
+
+    /**
      * This method should handle every defined list multi action,
      * by comparing <code>{@link #getParamListAction()}</code> with the id 
      * of the action to execute.<p> 
@@ -234,14 +248,9 @@ public class CmsUsersList extends A_CmsListDialog {
     }
 
     /**
-     * This method should handle every defined list single action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
-     * @throws CmsRuntimeException to signal that an action is not supported or in case an action failed
-     * 
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
-    public void executeListSingleActions() throws CmsRuntimeException {
+    public void executeListSingleActions() throws IOException, ServletException {
 
         String userId = getSelectedItem().getId();
         String userName = getSelectedItem().get(LIST_COLUMN_LOGIN).toString();
@@ -253,34 +262,14 @@ public class CmsUsersList extends A_CmsListDialog {
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
         if (getParamListAction().equals(LIST_DEFACTION_EDIT)) {
-            try {
-                // forward to the edit user screen
-                getToolManager().jspRedirectTool(this, "/accounts/users/edit", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_USER_0), e);
-            }
+            // forward to the edit user screen
+            getToolManager().jspForwardTool(this, "/accounts/users/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_EDIT)) {
-            try {
-                getToolManager().jspRedirectTool(this, "/accounts/users/edit/user", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_USER_0), e);
-            }
+            getToolManager().jspForwardTool(this, "/accounts/users/edit/user", params);
         } else if (getParamListAction().equals(LIST_ACTION_GROUPS)) {
-            try {
-                getToolManager().jspRedirectTool(this, "/accounts/users/edit/groups", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_GROUPS_0), e);
-            }
+            getToolManager().jspForwardTool(this, "/accounts/users/edit/groups", params);
         } else if (getParamListAction().equals(LIST_ACTION_ROLES)) {
-            try {
-                getToolManager().jspRedirectTool(this, "/accounts/users/edit/roles", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_ROLES_0), e);
-            }
+            getToolManager().jspForwardTool(this, "/accounts/users/edit/roles", params);
         } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
             // execute the delete action
             try {
@@ -313,29 +302,6 @@ public class CmsUsersList extends A_CmsListDialog {
         listSave();
     }
 
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
-     */
-    protected List getListItems() throws CmsException {
-
-        List ret = new ArrayList();
-        // get content
-        List users = getCms().getUsers();
-        Iterator itUsers = users.iterator();
-        while (itUsers.hasNext()) {
-            CmsUser user = (CmsUser)itUsers.next();
-            CmsListItem item = getList().newItem(user.getId().toString());
-            item.set(LIST_COLUMN_LOGIN, user.getName());
-            item.set(LIST_COLUMN_NAME, user.getFullName());
-            item.set(LIST_COLUMN_EMAIL, user.getEmail());
-            item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
-            ret.add(item);
-        }
-
-        return ret;
-    }
-
-    
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
@@ -395,7 +361,29 @@ public class CmsUsersList extends A_CmsListDialog {
             item.set(detailId, html.toString());
         }
     }
-    
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
+     */
+    protected List getListItems() throws CmsException {
+
+        List ret = new ArrayList();
+        // get content
+        List users = getCms().getUsers();
+        Iterator itUsers = users.iterator();
+        while (itUsers.hasNext()) {
+            CmsUser user = (CmsUser)itUsers.next();
+            CmsListItem item = getList().newItem(user.getId().toString());
+            item.set(LIST_COLUMN_LOGIN, user.getName());
+            item.set(LIST_COLUMN_NAME, user.getFullName());
+            item.set(LIST_COLUMN_EMAIL, user.getEmail());
+            item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
+            ret.add(item);
+        }
+
+        return ret;
+    }
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
@@ -621,18 +609,4 @@ public class CmsUsersList extends A_CmsListDialog {
         deactivateUser.setIconPath(ICON_MULTI_DEACTIVATE);
         metadata.addMultiAction(deactivateUser);
     }
-
-    /**
-     * Deletes the user and closes the dialog.<p>
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public void actionDeleteUser() throws Exception {
-
-        String userName = getJsp().getRequest().getParameter(CmsEditUserDialog.PARAM_USERNAME);
-        getCms().deleteUser(userName);
-        refreshList();
-        actionCloseDialog();
-    }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/06/17 13:59:01 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,10 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsThrowable;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.tools.CmsToolDialog;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -56,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.77 $
+ * @version $Revision: 1.78 $
  * 
  * @since 5.1
  */
@@ -140,7 +142,7 @@ public class CmsDialog extends CmsToolDialog {
 
     /** Request parameter value for the action: continue. */
     public static final String DIALOG_CONTINUE = "continue";
-    
+
     /** Request parameter value for the action: initial call. */
     public static final String DIALOG_INITIAL = "initial";
 
@@ -294,14 +296,17 @@ public class CmsDialog extends CmsToolDialog {
                 getJsp().include(C_FILE_EXPLORER_FILELIST, null, params);
             }
         } else if (getParamCloseLink() != null) {
-            // close link parameter present, redirect to it...
+            // close link parameter present, forward JSP
             try {
-                getJsp().getResponse().sendRedirect(getParamCloseLink());
-            } catch (IOException e) {
-                // error redirecting, include explorer file list
-                getJsp().include(C_FILE_EXPLORER_FILELIST, null, params);
+                CmsRequestUtil.forwardRequest(getParamCloseLink(), getJsp().getRequest(), getJsp().getResponse());
+            } catch (Exception e) {
+                // forward failed
+                throw new JspException(e.getMessage(), e);
             }
         } else if (getParamFramename() != null) {
+            // legacy backoffice mode 
+            // TODO: remove this if all JSP based pages have been fully ported to the new Administration
+
             // framename parameter found, get URI
             String frameUri = (String)getSettings().getFrameUris().get(getParamFramename());
             if (frameUri != null) {
@@ -311,8 +316,6 @@ public class CmsDialog extends CmsToolDialog {
                     frameUri = frameUri.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
                 if (frameUri.endsWith("administration_content_top.html")) {
-                    int todo = 0;
-                    // TODO: remove this workaround for legacy backoffice
                     String wpClass = this.getClass().getName();
                     String wpPackage = this.getClass().getPackage().getName();
                     if ((wpPackage.endsWith("commons") || wpPackage.endsWith("gallery"))
@@ -364,7 +367,7 @@ public class CmsDialog extends CmsToolDialog {
             }
             html.append("><tr><td>\n<table class=\"dialogbox\" cellpadding=\"0\" cellspacing=\"0\">\n");
             html.append("<tr><td>\n");
-            if (useNewStyle() && getToolManager().getToolPathForUrl(getJsp().getRequestContext().getUri())!=null) {
+            if (useNewStyle() && getToolManager().getToolPathForUrl(getJsp().getRequestContext().getUri()) != null) {
                 html.append(getAdminTool().groupHtml(this));
             }
             return html.toString();
@@ -865,24 +868,24 @@ public class CmsDialog extends CmsToolDialog {
         if (!useNewStyle()) {
             return getDialogRealUri();
         } else {
-            return getToolManager().linkForPath(getJsp(), getCurrentToolPath(), null);
+            return CmsToolManager.linkForToolPath(getJsp(), getCurrentToolPath());
         }
     }
-    
+
     /**
      * Returns the error message to be displayed.<p>
      * 
      * @return the error message to be displayed
      */
     public String getErrorMessage() {
-   
+
         StringBuffer result = new StringBuffer(512);
         Throwable t = (Throwable)getJsp().getRequest().getAttribute("throwable");
         // if a localized message is already set as a parameter, append it.
         if (CmsStringUtil.isNotEmpty(getParamMessage())) {
             result.append(getParamMessage());
             result.append("<br><br>").append(key("label.reason")).append(": ");
-        } 
+        }
         result.append(getMessage(t));
         // recursively append all error reasons to the message
         for (Throwable cause = t.getCause(); cause != null; cause = cause.getCause()) {
@@ -891,7 +894,7 @@ public class CmsDialog extends CmsToolDialog {
         }
         return result.toString().replaceAll("\n", "<br>");
     }
-    
+
     /**
      * Returns the formatted value of the exception.<p>
      * 
@@ -915,7 +918,7 @@ public class CmsDialog extends CmsToolDialog {
                 + "</pre></body></html>";
         }
     }
-    
+
     /** 
      * Returns the localized Message, if the argument is a CmsException, or
      * the message otherwise.<p>
@@ -1126,7 +1129,7 @@ public class CmsDialog extends CmsToolDialog {
 
         return pageHtmlStyle(HTML_START, title, stylesheet);
     }
-    
+
     /**
      * Displays the throwable on the error page and logs the error.<p>
      * 
@@ -1458,5 +1461,4 @@ public class CmsDialog extends CmsToolDialog {
 
         m_action = value;
     }
-
 }

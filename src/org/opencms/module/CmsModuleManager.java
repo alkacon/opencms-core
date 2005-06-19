@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:03 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,8 +49,8 @@ import org.opencms.security.CmsSecurityException;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +95,7 @@ public class CmsModuleManager {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_MOD_MANAGER_CREATED_0));
         }
 
-        m_modules = new HashMap();
+        m_modules = new Hashtable();
         for (int i = 0; i < configuredModules.size(); i++) {
             CmsModule module = (CmsModule)configuredModules.get(i);
             m_modules.put(module.getName(), module);
@@ -107,7 +107,7 @@ public class CmsModuleManager {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_NUM_MODS_CONFIGURED_1, new Integer(m_modules.size())));
         }
-        m_moduleActionInstances = new HashMap();
+        m_moduleActionInstances = new Hashtable();
         m_moduleExportPoints = Collections.EMPTY_SET;
     }
 

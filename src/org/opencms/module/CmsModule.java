@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/17 12:46:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -274,11 +273,11 @@ public class CmsModule implements Comparable {
                 // append folder separator, of resource is a file and does not and with a slash
                 if (resource.isFolder() && !resourcePath.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                     m_resources.set(i, resourcePath + I_CmsConstants.C_FOLDER_SEPARATOR);
-                }    
+                }
             } catch (CmsException e) {
                 result.append(resourcePath);
-                result.append('\n');                
-            }    
+                result.append('\n');
+            }
         }
         if (result.length() > 0) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_MISSING_RESOURCES_1, result.toString()));

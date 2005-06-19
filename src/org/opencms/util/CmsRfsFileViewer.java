@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2005/06/17 09:20:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/19 10:57:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.util;
 
-import org.opencms.file.CmsRfsException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -70,7 +69,7 @@ import org.apache.commons.logging.Log;
  * at a position "windowPosition" which is an enumeration of windows in ascending order. <p>
  * 
  * @author  Achim Westermann (a.westermann@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  */

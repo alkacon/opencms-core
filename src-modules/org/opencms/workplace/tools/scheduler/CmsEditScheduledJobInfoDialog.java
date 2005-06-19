@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/06/17 07:22:26 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.jobs.CmsPublishJob;
+import org.opencms.scheduler.jobs.CmsStaticExportJob;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.validation.CmsPointerLinkValidator;
@@ -64,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.9.1
  */
 public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
@@ -291,25 +292,30 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
         List result = new ArrayList();
         result.add(new CmsSelectWidgetOption(
-            CmsMemoryMonitor.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE1_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsSearchManager.class.getName(),
-            false,
-            null,
-            key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE2_0)));
-        result.add(new CmsSelectWidgetOption(
             CmsPublishJob.class.getName(),
             false,
             null,
-            key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE3_0)));
+            key(Messages.GUI_EDITOR_CRONCLASS_PUBLISH_0)));
+        result.add(new CmsSelectWidgetOption(
+            CmsStaticExportJob.class.getName(),
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONCLASS_STATICEXPORT_0)));
         result.add(new CmsSelectWidgetOption(
             CmsPointerLinkValidator.class.getName(),
             false,
             null,
-            key(Messages.GUI_EDITOR_CRONCLASS_EXAMPLE4_0)));
+            key(Messages.GUI_EDITOR_CRONCLASS_POINTERVALIDATION_0)));
+        result.add(new CmsSelectWidgetOption(
+            CmsMemoryMonitor.class.getName(),
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONCLASS_MEMORYMONITOR_0)));
+        result.add(new CmsSelectWidgetOption(
+            CmsSearchManager.class.getName(),
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONCLASS_SEARCHINDEX_0)));
         return result;
     }
 

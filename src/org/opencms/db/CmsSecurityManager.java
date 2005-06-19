@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/16 07:27:31 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2005/06/19 10:57:07 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -4868,10 +4868,10 @@ public final class CmsSecurityManager {
      * @param project the project that should be written
      * @param context the current request context
      * 
-     * @throws CmsException if operation was not successful
      * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#PROJECT_MANAGER} for the current project. 
+     * @throws CmsException if operation was not successful
      */
-    public void writeProject(CmsRequestContext context, CmsProject project) throws CmsException {
+    public void writeProject(CmsRequestContext context, CmsProject project) throws CmsRoleViolationException, CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -5401,20 +5401,18 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param user the user to be deleted
      * 
-     * @throws CmsException if something goes wrong
      * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#USER_MANAGER}
+     * @throws CmsSecurityException in case the user is a default user 
+     * @throws CmsException if something goes wrong
      */
     private void deleteUser(CmsRequestContext context, CmsUser user) throws CmsException {
 
         if (OpenCms.getDefaultUsers().isDefaultUser(user.getName())) {
             throw new CmsSecurityException(org.opencms.security.Messages.get().container(
-                org.opencms.security.Messages.ERR_NO_PERMISSION_OPERATION_2,
-                user.getName(),
-                "deleteUser(CmsRequestContext, CmsUser)"));
+                org.opencms.security.Messages.ERR_CANT_DELETE_DEFAULT_USER_1,
+                user.getName()));
         }
-
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-
         try {
             checkRole(dbc, CmsRole.USER_MANAGER);
             m_driverManager.deleteUser(dbc, context.currentProject(), user.getId());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
- * Date   : $Date: 2005/06/10 15:58:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.9.1
  */
 public class CmsEditUserDialog extends CmsWidgetDialog {
@@ -165,7 +166,7 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
                 Map argMap = new HashMap();
                 argMap.put("userid", m_user.getId());
                 argMap.put("username", m_user.getName());
-                setParamCloseLink(getToolManager().linkForPath(getJsp(), "/accounts/users/edit", argMap));
+                setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/accounts/users/edit", argMap));
             }
         }
         // set the list of errors to display when saving failed

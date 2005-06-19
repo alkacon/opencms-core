@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/05/23 13:12:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * Implementation of the administration view leftside's menu.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsAdminMenu extends CmsToolDialog {
@@ -60,7 +60,7 @@ public class CmsAdminMenu extends CmsToolDialog {
 
     /** Group container. */
     private I_CmsIdentifiableObjectContainer m_groupContainer = new CmsIdentifiableObjectContainer(true, true);
-    
+
     /**
      * Default Constructor.<p>
      * 
@@ -223,8 +223,9 @@ public class CmsAdminMenu extends CmsToolDialog {
                     tool.getHandler().getGroup(),
                     tool.getHandler().getShortName(),
                     tool.getHandler().getSmallIconPath(),
-                    getToolManager().linkForPath(getJsp(), tool.getHandler().getPath(), null),
-                    tool.getHandler().isEnabled(getCms()) ? tool.getHandler().getHelpText(): tool.getHandler().getDisabledHelpText(),
+                    CmsToolManager.linkForToolPath(getJsp(), tool.getHandler().getPath()),
+                    tool.getHandler().isEnabled(getCms()) ? tool.getHandler().getHelpText()
+                    : tool.getHandler().getDisabledHelpText(),
                     tool.getHandler().isEnabled(getCms()),
                     tool.getHandler().getPosition(),
                     CmsAdminMenu.DEFAULT_TARGET);
@@ -239,5 +240,4 @@ public class CmsAdminMenu extends CmsToolDialog {
 
         fillParamValues(request);
     }
-
 }

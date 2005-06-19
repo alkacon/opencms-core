@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesDelete.java,v $
- * Date   : $Date: 2005/06/10 15:14:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.modules;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an confirm screen for module deleteion.<p> 
  *
  * @author  Michael Emmerich( m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.10
  */
@@ -105,9 +106,9 @@ public class CmsModulesDelete extends CmsDialog {
                     // set style to display report in correct layout
                     params.put(PARAM_STYLE, "new");
                     // set close link to get back to overview after finishing the import
-                    params.put(PARAM_CLOSELINK, getToolManager().linkForPath(getJsp(), "/modules", null));
+                    params.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/modules"));
                     // redirect to the report output JSP
-                    getToolManager().jspRedirectPage(this, DELETE_ACTION_REPORT, params);
+                    getToolManager().jspForwardPage(this, DELETE_ACTION_REPORT, params);
 
                     actionCloseDialog();
                 } catch (Throwable e) {
@@ -157,5 +158,4 @@ public class CmsModulesDelete extends CmsDialog {
             setParamTitle(key(Messages.GUI_DELETEMODULE_ADMIN_TOOL_NAME_0));
         }
     }
-
 }

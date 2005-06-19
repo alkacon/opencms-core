@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/17 12:43:23 $
- * Version: $Revision: 1.198 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.199 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -127,7 +127,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.198 $
+ * @version $Revision: 1.199 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1725,8 +1725,7 @@ public final class OpenCmsCore {
 
         if (canWrite) {
             res.setContentType("text/html");
-            res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_NO_CACHE);
-            res.setHeader(I_CmsConstants.C_HEADER_PRAGMA, I_CmsConstants.C_HEADER_VALUE_NO_CACHE);
+            CmsRequestUtil.setNoCacheHeaders(res);
             if (isNotGuest && cms != null && ! cms.getRequestContext().currentProject().isOnlineProject()) {
                 try {
                     res.setStatus(HttpServletResponse.SC_OK);

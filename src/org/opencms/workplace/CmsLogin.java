@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * Handles the login of Users to the OpenCms workplace.<p> 
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0
  */
@@ -130,8 +130,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
         // this page must never be cached
         res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
-        res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MAX_AGE + "0");
-        res.addHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
+        CmsRequestUtil.setNoCacheHeaders(res);
 
         // divine the best locale from the users browser settings
         CmsAcceptLanguageHeaderParser parser = new CmsAcceptLanguageHeaderParser(

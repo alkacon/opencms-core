@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsProjectFilesModeEnum.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * <p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public final class CmsProjectFilesModeEnum implements Serializable {
@@ -76,8 +76,11 @@ public final class CmsProjectFilesModeEnum implements Serializable {
     /** List of mode constants. */
     public static final List VALUES = Collections.unmodifiableList(Arrays.asList(C_VALUES));
 
-    /** Internal representation. */
+    /** Internal representation. */    
     private final String m_mode;
+    
+    // TODO: Decide what to do with this class
+    int todo = 0;
 
     /**
      * Private constructor.<p>

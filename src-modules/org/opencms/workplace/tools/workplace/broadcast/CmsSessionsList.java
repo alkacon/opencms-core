@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2005/06/16 16:31:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.tools.workplace.broadcast;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
@@ -56,6 +55,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Session list for broadcasting messages.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsSessionsList extends A_CmsListDialog {
@@ -142,14 +142,9 @@ public class CmsSessionsList extends A_CmsListDialog {
     }
 
     /**
-     * This method should handle every defined list multi action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
-     * @throws CmsRuntimeException to signal that an action is not supported
-     * 
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
-    public void executeListMultiActions() throws CmsRuntimeException {
+    public void executeListMultiActions() throws IOException, ServletException {
 
         Map params = new HashMap();
         params.put(A_CmsMessageDialog.PARAM_SESSIONIDS, getParamSelItems());
@@ -158,35 +153,21 @@ public class CmsSessionsList extends A_CmsListDialog {
 
         if (getParamListAction().equals(LIST_MACTION_MESSAGE)) {
             // execute the send message multiaction
-            try {
-                // forward to the edit message screen
-                getToolManager().jspRedirectTool(this, "/workplace/broadcast/message", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SEND_MESSAGE_0), e);
-            }
+            // forward to the edit message screen
+            getToolManager().jspForwardTool(this, "/workplace/broadcast/message", params);
         } else if (getParamListAction().equals(LIST_MACTION_EMAIL)) {
             // execute the send email multiaction
-            try {
-                // forward to the edit email screen
-                getToolManager().jspRedirectTool(this, "/workplace/broadcast/email", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SEND_MESSAGE_0), e);
-            }
+            // forward to the edit email screen
+            getToolManager().jspForwardTool(this, "/workplace/broadcast/email", params);
         } else {
             throwListUnsupportedActionException();
         }
     }
 
     /**
-     * This method should handle every defined list single action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
-     * @throws CmsRuntimeException to signal that an action is not supported or in case an action failed
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
-    public void executeListSingleActions() throws CmsRuntimeException {
+    public void executeListSingleActions() throws IOException, ServletException {
 
         Map params = new HashMap();
         params.put(A_CmsMessageDialog.PARAM_SESSIONIDS, getSelectedItem().getId());
@@ -194,20 +175,10 @@ public class CmsSessionsList extends A_CmsListDialog {
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
         if (getParamListAction().equals(LIST_DEFACTION_EMAIL)) {
-            try {
-                // forward to the edit user screen
-                getToolManager().jspRedirectTool(this, "/workplace/broadcast/email", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SEND_EMAIL_0), e);
-            }
+            // forward to the edit user screen
+            getToolManager().jspForwardTool(this, "/workplace/broadcast/email", params);
         } else if (getParamListAction().equals(LIST_ACTION_MESSAGE)) {
-            try {
-                getToolManager().jspRedirectTool(this, "/workplace/broadcast/message", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_SEND_MESSAGE_0), e);
-            }
+            getToolManager().jspForwardTool(this, "/workplace/broadcast/message", params);
         } else if (getParamListAction().equals(LIST_ACTION_PENDING)) {
             // noop
         } else {

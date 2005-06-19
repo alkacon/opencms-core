@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/06/02 12:01:13 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -66,29 +66,29 @@ public class CmsLinkProcessor {
     /** HTML start. */
     public static final String C_HTML_START = "<html><body>";
 
+    /** End of a macro. */
+    private static final String C_MACRO_END = "}";
+
+    /** Start of a macro. */
+    private static final String C_MACRO_START = "${";
+
     /** Processing mode "process links". */
     private static final int C_PROCESS_LINKS = 1;
 
     /** Processing mode "replace links". */
     private static final int C_REPLACE_LINKS = 0;
 
-    /** Start of a macro. */
-    private static final String C_MACRO_START = "${";
-    
-    /** End of a macro. */
-    private static final String C_MACRO_END = "}";
-    
     /** The current cms instance. */
     private CmsObject m_cms;
+
+    /** The selected encoding. */
+    private String m_encoding;
 
     /** The link table used for link macro replacements. */
     private CmsLinkTable m_linkTable;
 
     /** Current processing mode. */
     private int m_mode;
-
-    /** The selected encoding. */
-    private String m_encoding;
 
     /** Indicates if links should be generated for editing purposes. */
     private boolean m_processEditorLinks;
@@ -109,9 +109,19 @@ public class CmsLinkProcessor {
         m_cms = cms;
         m_linkTable = linkTable;
         m_encoding = encoding;
-        m_processEditorLinks = ((null != m_cms) 
-            && (null != m_cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_EDITOR)));
+        m_processEditorLinks = ((null != m_cms) && (null != m_cms.getRequestContext().getAttribute(
+            CmsRequestContext.ATTRIBUTE_EDITOR)));
         m_relativePath = relativePath;
+    }
+
+    /**
+     * Returns the link table this lik processor was initialized with.<p>
+     * 
+     * @return the link table this lik processor was initialized with
+     */
+    public CmsLinkTable getLinkTable() {
+
+        return m_linkTable;
     }
 
     /**
@@ -151,16 +161,6 @@ public class CmsLinkProcessor {
     }
 
     /**
-     * Returns the link table this lik processor was initialized with.<p>
-     * 
-     * @return the link table this lik processor was initialized with
-     */
-    public CmsLinkTable getLinkTable() {
-
-        return m_linkTable;
-    }
-
-    /**
      * Process an image tag.<p>
      * 
      * @param imageTag the tag to process
@@ -179,15 +179,12 @@ public class CmsLinkProcessor {
                     String title = null;
 
                     if (internalUri != null) {
-                        imageTag.setImageURL(
-                            replaceLink(m_linkTable.addLink(imageTag.getTagName(), internalUri, true)));
+                        imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), internalUri, true)));
 
                         if (!hasAltAttrib && (m_cms != null)) {
                             try {
-                                title = m_cms.readPropertyObject(
-                                    internalUri, 
-                                    I_CmsConstants.C_PROPERTY_TITLE, 
-                                    false).getValue("\"\"");
+                                title = m_cms.readPropertyObject(internalUri, I_CmsConstants.C_PROPERTY_TITLE, false).getValue(
+                                    "\"\"");
                             } catch (CmsException e) {
                                 title = "\"\"";
                             }
@@ -195,8 +192,7 @@ public class CmsLinkProcessor {
                             imageTag.setAttribute("alt", title);
                         }
                     } else {
-                        imageTag.setImageURL(
-                            replaceLink(m_linkTable.addLink(imageTag.getTagName(), targetUri, false)));
+                        imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), targetUri, false)));
 
                         if (!hasAltAttrib) {
                             imageTag.setAttribute("alt", "\"\"");
@@ -277,8 +273,8 @@ public class CmsLinkProcessor {
             if (macro.startsWith(C_MACRO_START) && macro.endsWith(C_MACRO_END)) {
                 // make sure the macro really is a macro
                 return macro.substring(C_MACRO_START.length(), macro.length() - C_MACRO_END.length());
-            }            
-        } 
+            }
+        }
         return "";
     }
 
@@ -329,10 +325,6 @@ public class CmsLinkProcessor {
             InputStream stream = new ByteArrayInputStream(newContent.toString().getBytes(encoding));
             page = new Page(stream, encoding);
         } catch (UnsupportedEncodingException e) {
-            
-            // ParserException is no API-constraint: replace by CmsException?
-            int todo = 0;
-            
             // fall back to default encoding, should not happen since all xml pages must have a valid encoding  
             throw new ParserException(Messages.get().key(Messages.ERR_INVALID_ENCODING_1, encoding));
         }
@@ -341,7 +333,7 @@ public class CmsLinkProcessor {
         parser.visitAllNodesWith(visitor);
         // remove the addition HTML  
         String result = visitor.getHtml();
-        if (result.length() >0) {
+        if (result.length() > 0) {
             return result.substring(C_HTML_START.length(), result.length() - C_HTML_END.length());
         } else {
             return result;

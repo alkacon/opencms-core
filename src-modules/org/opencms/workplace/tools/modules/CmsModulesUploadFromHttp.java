@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromHttp.java,v $
- * Date   : $Date: 2005/06/10 15:14:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,16 +33,17 @@ package org.opencms.workplace.tools.modules;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.administration.A_CmsImportFromHttp;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0
  */
 public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
@@ -86,9 +87,9 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
     }
 
     /**
-     * Imports the selected file from the server.<p>
+     * @see org.opencms.workplace.administration.A_CmsImportFromHttp#actionCommit()
      */
-    public void actionCommit() {
+    public void actionCommit() throws IOException, ServletException {
 
         try {
             copyFileToServer(OpenCms.getSystemInfo().getPackagesRfsPath()
@@ -99,21 +100,14 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
             setException(e);
             return;
         }
-        try {
-            Map params = new HashMap();
-            params.put(PARAM_MODULE, getParamImportfile());
-            // set style to display report in correct layout
-            params.put(PARAM_STYLE, "new");
-            // set close link to get back to overview after finishing the import
-            params.put(PARAM_CLOSELINK, getToolManager().linkForPath(getJsp(), "/modules", null));
-            // redirect to the report output JSP
-            getToolManager().jspRedirectPage(this, CmsModulesUploadFromServer.IMPORT_ACTION_REPORT, params);
-        } catch (IOException e) {
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_ACTION_MODULE_UPLOAD_1,
-                getParamImportfile()), e);
-        }
-
+        Map params = new HashMap();
+        params.put(PARAM_MODULE, getParamImportfile());
+        // set style to display report in correct layout
+        params.put(PARAM_STYLE, "new");
+        // set close link to get back to overview after finishing the import
+        params.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/modules"));
+        // redirect to the report output JSP
+        getToolManager().jspForwardPage(this, CmsModulesUploadFromServer.IMPORT_ACTION_REPORT, params);
     }
 
     /**
@@ -151,5 +145,4 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
         addMessages(org.opencms.workplace.Messages.get().getBundleName());
         addMessages(org.opencms.workplace.tools.Messages.get().getBundleName());
     }
-
 }

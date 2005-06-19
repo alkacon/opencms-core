@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/16 16:32:30 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -55,7 +56,7 @@ import javax.servlet.jsp.JspWriter;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -258,8 +259,10 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * Performs the dialog actions depending on the initialized action.<p>
      * 
      * @throws JspException if dialog actions fail
+     * @throws IOException in case of errros forwarding to the required result page
+     * @throws ServletException in case of errros forwarding to the required result page
      */
-    public void actionDialog() throws JspException {
+    public void actionDialog() throws JspException, ServletException, IOException {
 
         if (getAction() == ACTION_CANCEL) {
             // ACTION: cancel button pressed
@@ -372,10 +375,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
      * 
-     * @throws IOException if writing to the JSP out fails
      * @throws JspException if dialog actions fail
+     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
+     * @throws ServletException in case of errros forwarding to the required result page
      */
-    public void displayDialog() throws IOException, JspException {
+    public void displayDialog() throws JspException, IOException, ServletException {
 
         actionDialog();
         if (getJsp().getResponse().isCommitted()) {
@@ -430,21 +434,23 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * This method should handle every defined list multi action,
      * by comparing <code>{@link #getParamListAction()}</code> with the id 
      * of the action to execute.<p> 
-     * 
+     *
+     * @throws IOException in case of errors when including a required sub-element
+     * @throws ServletException in case of errors when including a required sub-element
      * @throws CmsRuntimeException to signal that an action is not supported
-     * 
      */
-    public abstract void executeListMultiActions() throws CmsRuntimeException;
+    public abstract void executeListMultiActions() throws IOException, ServletException, CmsRuntimeException;
 
     /**
      * This method should handle every defined list single action,
      * by comparing <code>{@link #getParamListAction()}</code> with the id 
      * of the action to execute.<p> 
      * 
-     * @throws CmsRuntimeException to signal that an action is not supported or in case an action failed
-     * 
+     * @throws IOException in case of errors when including a required sub-element
+     * @throws ServletException in case of errors when including a required sub-element
+     * @throws CmsRuntimeException to signal that an action is not supported
      */
-    public abstract void executeListSingleActions() throws CmsRuntimeException;
+    public abstract void executeListSingleActions() throws IOException, ServletException, CmsRuntimeException;
 
     /**
      * Returns the list.<p>

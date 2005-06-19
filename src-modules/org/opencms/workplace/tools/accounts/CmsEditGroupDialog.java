@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.9.1
  */
 public class CmsEditGroupDialog extends CmsWidgetDialog {
@@ -154,7 +155,7 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
                 Map argMap = new HashMap();
                 argMap.put("groupid", m_group.getId());
                 argMap.put("groupname", m_group.getName());
-                setParamCloseLink(getToolManager().linkForPath(getJsp(), "/accounts/groups/edit", argMap));
+                setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/accounts/groups/edit", argMap));
             }
         }
         // set the list of errors to display when saving failed

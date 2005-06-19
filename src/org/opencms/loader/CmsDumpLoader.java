@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 
@@ -59,7 +60,7 @@ import javax.servlet.http.HttpServletResponse;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
 
@@ -168,8 +169,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     public void initConfiguration() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
         }
     }
 
@@ -242,8 +242,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         if (isWorkplaceUser) {
             // prevent caching for Workplace users
             res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
-            res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MAX_AGE + "0");
-            res.addHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
+            CmsRequestUtil.setNoCacheHeaders(res);
         } else {
             // set date last modified header
             res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, file.getDateLastModified());

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2005/06/13 10:00:02 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/06/19 10:57:05 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,21 +35,25 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2005/06/13 10:00:02 $
+ * @version $Revision: 1.6 $ $Date: 2005/06/19 10:57:05 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRfsResourceNotFoundException;
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.Set;
 
 public class CmsXmlLanguageFile { 
 
@@ -189,7 +193,7 @@ public class CmsXmlLanguageFile {
         if (DEBUG > 0) System.err.println("CmsXmlLanguageFile.getEncoding(): looking up encoding for locale " + m_locale);
         try {
             result = m_messages.getString(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
-        } catch (CmsRfsResourceNotFoundException e) {
+        } catch (MissingResourceException e) {
             // exception - just use the default encoding
             result = m_workplaceDefaultEncoding;
         }
@@ -232,7 +236,7 @@ public class CmsXmlLanguageFile {
         if (DEBUG > 2) System.err.println("CmsXmlLanguageFile.getLanguageValue(): looking key " + keyName);
         try {
             return m_messages.getString(keyName);
-        } catch (CmsRfsResourceNotFoundException e) {}
+        } catch (MissingResourceException e) {}
 
         // key was not found in default workplace bundles
         if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getLanguageValue(): '" + keyName + "' not found in workplace messages");

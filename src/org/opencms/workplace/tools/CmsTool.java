@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.7.3
  */
 public class CmsTool {
@@ -112,10 +112,7 @@ public class CmsTool {
         if (!m_handler.isVisible(wp.getCms())) {
             return "";
         }
-        String link = OpenCms.getWorkplaceManager().getToolManager().linkForPath(
-            wp.getJsp(),
-            this.getHandler().getPath(),
-            null);
+        String link = CmsToolManager.linkForToolPath(wp.getJsp(), this.getHandler().getPath());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getHandler().getParameters())) {
             if (!link.endsWith("&")) {
                 link += "&";

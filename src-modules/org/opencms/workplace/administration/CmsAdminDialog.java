@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminDialog.java,v $
- * Date   : $Date: 2005/06/15 09:27:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * Workplace class for /system/workplace/views/admin/admin-main.html .<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsAdminDialog extends CmsDialog {
@@ -82,29 +82,29 @@ public class CmsAdminDialog extends CmsDialog {
     public void displayDialog() throws Exception {
 
         Map params = initAdminTool();
-        
+
         // explorer view dialogs
         if (CmsExplorerDialog.C_EXPLORER_TOOLS.contains(getCurrentToolPath())) {
-            if (getAction()==CmsDialog.ACTION_CANCEL) {
+            if (getAction() == CmsDialog.ACTION_CANCEL) {
                 actionCloseDialog();
                 return;
             }
-            getToolManager().jspRedirectPage(this, CmsToolManager.C_ADMINVIEW_ROOT_LOCATION + "/tool-fs.html", params);
+            getToolManager().jspForwardPage(this, CmsToolManager.C_ADMINVIEW_ROOT_LOCATION + "/tool-fs.html", params);
             return;
-        } 
+        }
 
         // real tool
         if (!getAdminTool().getHandler().getLink().equals(getCms().getRequestContext().getUri())) {
-            getToolManager().jspRedirectPage(this, getAdminTool().getHandler().getLink(), params);
+            getToolManager().jspForwardPage(this, getAdminTool().getHandler().getLink(), params);
             return;
-        } 
+        }
 
         // just grouping 
         if (getAction() == CmsDialog.ACTION_CANCEL) {
             actionCloseDialog();
             return;
         }
-        
+
         JspWriter out = getJsp().getJspContext().getOut();
         out.print(htmlStart());
         out.print(bodyStart(null));

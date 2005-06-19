@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRfsException.java,v $
- * Date   : $Date: 2005/05/20 15:12:41 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsException.java,v $
+ * Date   : $Date: 2005/06/19 10:57:05 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file;
+package org.opencms.util;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
@@ -37,14 +37,12 @@ import org.opencms.main.CmsException;
 /**
  * Used to signal issues with the real local file system (RFS), for example during file access.<p> 
  * 
- * This is the counterpart of {@link CmsVfsException} and a "sibling" of the {@link java.io.IOException}<p>
- * 
  * @author Achim Westermann (a.westermann@alkacon.com)  
  * 
  * @version $Revision: 1.1 $
  * @since 5.7.3
  */
-public class CmsRfsException extends CmsDataAccessException {
+public class CmsRfsException extends CmsException {
 
     /**
      * Creates a new localized Exception.<p>

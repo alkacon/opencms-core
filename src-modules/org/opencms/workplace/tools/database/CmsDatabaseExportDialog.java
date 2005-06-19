@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportDialog.java,v $
- * Date   : $Date: 2005/06/16 10:55:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/19 10:57:05 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.tools.database;
 
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCalendarWidget;
@@ -45,6 +44,7 @@ import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,6 +54,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Widget dialog that sets the export options to export VFS resources to the OpenCms server.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 6.0
  */
 public class CmsDatabaseExportDialog extends CmsWidgetDialog {
@@ -101,27 +102,23 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
-    public void actionCommit() {
+    public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
-        try {
-            // create absolute RFS path and store it in dialog object
-            String exportFileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-                OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + m_exportHandler.getFileName());
-            m_exportHandler.setFileName(exportFileName);
-            setDialogObject(m_exportHandler);
-            Map params = new HashMap();
-            // set the name of this class to get dialog object in report
-            params.put(CmsDatabaseExportReport.PARAM_CLASSNAME, this.getClass().getName());
-            // set style to display report in correct layout
-            params.put(PARAM_STYLE, "new");
-            // set close link to get back to overview after finishing the import
-            params.put(PARAM_CLOSELINK, getToolManager().linkForPath(getJsp(), "/database", null));
-            // redirect to the report output JSP
-            getToolManager().jspRedirectPage(this, EXPORT_ACTION_REPORT, params);
-        } catch (IOException e) {
-            errors.add(new CmsRuntimeException(Messages.get().container(Messages.ERR_ACTION_FILE_EXPORT_0), e));
-        }
+        // create absolute RFS path and store it in dialog object
+        String exportFileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + m_exportHandler.getFileName());
+        m_exportHandler.setFileName(exportFileName);
+        setDialogObject(m_exportHandler);
+        Map params = new HashMap();
+        // set the name of this class to get dialog object in report
+        params.put(CmsDatabaseExportReport.PARAM_CLASSNAME, this.getClass().getName());
+        // set style to display report in correct layout
+        params.put(PARAM_STYLE, "new");
+        // set close link to get back to overview after finishing the import
+        params.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/database"));
+        // redirect to the report output JSP
+        getToolManager().jspForwardPage(this, EXPORT_ACTION_REPORT, params);
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
     }

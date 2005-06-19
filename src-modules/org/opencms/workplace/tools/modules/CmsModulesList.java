@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/06/16 14:30:34 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.tools.modules;
 
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleDependency;
@@ -58,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Main module management view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public class CmsModulesList extends A_CmsListDialog {
@@ -154,90 +154,58 @@ public class CmsModulesList extends A_CmsListDialog {
     }
 
     /**
-     * This method should handle every defined list multi action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
-    public void executeListMultiActions() {
+    public void executeListMultiActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_ACTION_MDELETE)) {
             String moduleList = "";
-            try {
-                // execute the delete multiaction
-                Iterator itItems = getSelectedItems().iterator();
-                StringBuffer modules = new StringBuffer(32);
-                while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
-                    modules.append(listItem.getId());
-                    modules.append(",");
-                }
-                moduleList = new String(modules);
-                moduleList = moduleList.substring(0, moduleList.length() - 1);
-                Map params = new HashMap();
-                params.put(PARAM_MODULE, moduleList);
-                params.put(PARAM_ACTION, DIALOG_INITIAL);
-                params.put(PARAM_STYLE, "new");
-                getToolManager().jspRedirectPage(this, PATH_REPORTS + "delete.html", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(
-                    Messages.get().container(Messages.ERR_ACTION_MODULES_DELETE_1, moduleList),
-                    e);
+            // execute the delete multiaction
+            Iterator itItems = getSelectedItems().iterator();
+            StringBuffer modules = new StringBuffer(32);
+            while (itItems.hasNext()) {
+                CmsListItem listItem = (CmsListItem)itItems.next();
+                modules.append(listItem.getId());
+                modules.append(",");
             }
+            moduleList = new String(modules);
+            moduleList = moduleList.substring(0, moduleList.length() - 1);
+            Map params = new HashMap();
+            params.put(PARAM_MODULE, moduleList);
+            params.put(PARAM_ACTION, DIALOG_INITIAL);
+            params.put(PARAM_STYLE, "new");
+            getToolManager().jspForwardPage(this, PATH_REPORTS + "delete.html", params);
         }
         listSave();
     }
 
     /**
-     * This method should handle every defined list single action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
-    public void executeListSingleActions() {
+    public void executeListSingleActions() throws IOException, ServletException {
 
         String module = getSelectedItem().getId();
         Map params = new HashMap();
         params.put(PARAM_MODULE, module);
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             // forward to the edit module screen  
-            try {
-                // forward to the edit module screen      
-                params.put(PARAM_ACTION, DIALOG_INITIAL);
-                getToolManager().jspRedirectTool(this, "/modules/edit/edit", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ACTION_MODULE_EDIT_1, module), e);
-            }
+            params.put(PARAM_ACTION, DIALOG_INITIAL);
+            getToolManager().jspForwardTool(this, "/modules/edit/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_OVERVIEW)) {
             // edit a module from the list
-            try {
-                // go to the module overview screen                  
-                params.put(PARAM_ACTION, DIALOG_INITIAL);
-                getToolManager().jspRedirectTool(this, "/modules/edit", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ACTION_MODULE_EDIT_1, module), e);
-            }
+            // go to the module overview screen                  
+            params.put(PARAM_ACTION, DIALOG_INITIAL);
+            getToolManager().jspForwardTool(this, "/modules/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
-            try {
-                // forward to the delete module screen   
-                params.put(PARAM_ACTION, DIALOG_INITIAL);
-                params.put(PARAM_STYLE, "new");
-                getToolManager().jspRedirectPage(this, PATH_REPORTS + "delete.html", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ACTION_MODULE_DELETE_1, module), e);
-            }
+            // forward to the delete module screen   
+            params.put(PARAM_ACTION, DIALOG_INITIAL);
+            params.put(PARAM_STYLE, "new");
+            getToolManager().jspForwardPage(this, PATH_REPORTS + "delete.html", params);
         } else if (getParamListAction().equals(LIST_ACTION_EXPORT)) {
-            try {
-                // forward to the delete module screen   
-                params.put(PARAM_ACTION, DIALOG_INITIAL);
-                params.put(PARAM_STYLE, "new");
-                getToolManager().jspRedirectPage(this, "/system/workplace/admin/modules/reports/export.html", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ACTION_MODULE_EXPORT_1, module), e);
-            }
+            // forward to the delete module screen   
+            params.put(PARAM_ACTION, DIALOG_INITIAL);
+            params.put(PARAM_STYLE, "new");
+            getToolManager().jspForwardPage(this, "/system/workplace/admin/modules/reports/export.html", params);
         }
         listSave();
     }

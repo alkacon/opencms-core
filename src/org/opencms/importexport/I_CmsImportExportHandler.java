@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImportExportHandler.java,v $
- * Date   : $Date: 2005/06/02 09:42:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.importexport;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.xml.CmsXmlException;
@@ -55,7 +56,7 @@ import org.dom4j.Document;
  * Use {@link org.opencms.main.OpenCms#getImportExportManager()} to get the Cms import/export manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2005/06/02 09:42:39 $
+ * @version $Revision: 1.10 $ $Date: 2005/06/19 10:57:06 $
  * @since 5.3
  */
 public interface I_CmsImportExportHandler {
@@ -69,7 +70,8 @@ public interface I_CmsImportExportHandler {
      * @throws CmsRoleViolationException if the current user has not the required role 
      * @throws CmsConfigurationException if a specified module to be exproted does not exist
      */
-    void exportData(CmsObject cms, I_CmsReport report) throws CmsConfigurationException, CmsImportExportException, CmsRoleViolationException;
+    void exportData(CmsObject cms, I_CmsReport report)
+    throws CmsConfigurationException, CmsImportExportException, CmsRoleViolationException;
 
     /**
      * Returns the description of this import/export handler.<p>
@@ -86,11 +88,14 @@ public interface I_CmsImportExportHandler {
      * @param importFile the name (absolute path) of the resource (zipfile or folder) to be imported
      * @param importPath the name (absolute path) of the destination folder in the Cms (if required)
      * @param report a Cms report to print log messages
+     * 
      * @throws CmsImportExportException if operation was not successful 
      * @throws CmsRoleViolationException if the current user has not the required role 
      * @throws CmsXmlException if the manifest of the import could not be unmarshalled
+     * @throws CmsException in case of errors accessing the VFS
      */
-    void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsXmlException, CmsImportExportException, CmsRoleViolationException;
+    void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report)
+    throws CmsXmlException, CmsImportExportException, CmsRoleViolationException, CmsException;
 
     /**
      * Checks, if this import/export handler matches with a specified manifest document of an import,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/06/17 13:59:01 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * style of the administration dialogs.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.7.3
  */
 public class CmsToolDialog extends CmsWorkplace {
@@ -120,7 +120,7 @@ public class CmsToolDialog extends CmsWorkplace {
         StringBuffer html = new StringBuffer(512);
         String toolPath = getCurrentToolPath();
         String parentPath = getParentPath();
-        String upLevelLink = getToolManager().linkForPath(getJsp(), parentPath, null);
+        String upLevelLink = CmsToolManager.linkForToolPath(getJsp(), parentPath);
         CmsTool parentTool = getToolManager().resolveAdminTool(parentPath);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(parentTool.getHandler().getParameters())) {
             if (!upLevelLink.endsWith("&")) {
@@ -294,17 +294,17 @@ public class CmsToolDialog extends CmsWorkplace {
      * @return the new modified params array
      */
     public Map initAdminTool() {
-            
+
         Map params = new HashMap(getParameterMap());
         // initialize
         getToolManager().initParams(this, getParamPath(), getParamRoot());
 
         // adjust params if called as default
         if (!useNewStyle()) {
-            params.put(PARAM_STYLE, new String[]{"new"});
+            params.put(PARAM_STYLE, new String[] {"new"});
             setParamStyle("new");
         }
-        
+
         try {
             // a dialog just for the close link param accessors
             CmsDialog wp = (CmsDialog)this;
@@ -321,8 +321,8 @@ public class CmsToolDialog extends CmsWorkplace {
                             int pos = arg.indexOf("=");
                             argMap.put(arg.substring(0, pos), arg.substring(pos + 1));
                         }
-                    }                    
-                    wp.setParamCloseLink(getToolManager().linkForPath(getJsp(), getParentPath(), argMap));
+                    }
+                    wp.setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getParentPath(), argMap));
                     params.put(CmsDialog.PARAM_CLOSELINK, new String[] {wp.getParamCloseLink()});
                 }
             }

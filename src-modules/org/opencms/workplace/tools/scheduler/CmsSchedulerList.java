@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/06/16 14:30:34 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,6 +61,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -72,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.7.3
  */
 public class CmsSchedulerList extends A_CmsListDialog {
@@ -224,45 +225,30 @@ public class CmsSchedulerList extends A_CmsListDialog {
     }
 
     /**
-     * This method should handle every defined list single action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
-     * @throws CmsRuntimeException to signal that an action is not supported or failed
-     * 
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
-    public void executeListSingleActions() throws CmsRuntimeException {
+    public void executeListSingleActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             // edit a job from the list
             String jobId = getSelectedItem().getId();
-            try {
-                // forward to the edit job screen with additional parameters               
-                Map params = new HashMap();
-                params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, jobId);
-                String jobName = (String)getSelectedItem().get(LIST_COLUMN_NAME);
-                params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBNAME, jobName);
-                // set action parameter to initial dialog call
-                params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
-                getToolManager().jspRedirectTool(this, "/scheduler/edit", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EDIT_JOB_1, jobId), e);
-            }
+            // forward to the edit job screen with additional parameters               
+            Map params = new HashMap();
+            params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, jobId);
+            String jobName = (String)getSelectedItem().get(LIST_COLUMN_NAME);
+            params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBNAME, jobName);
+            // set action parameter to initial dialog call
+            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+            getToolManager().jspForwardTool(this, "/scheduler/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_COPY)) {
             // copy a job from the list
             String jobId = getSelectedItem().getId();
-            try {
-                // forward to the edit job screen with additional parameters
-                Map params = new HashMap();
-                params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, jobId);
-                // set action parameter to copy job action
-                params.put(CmsDialog.PARAM_ACTION, CmsEditScheduledJobInfoDialog.DIALOG_COPYJOB);
-                getToolManager().jspRedirectTool(this, "/scheduler/new", params);
-            } catch (IOException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_COPY_JOB_1, jobId), e);
-            }
+            // forward to the edit job screen with additional parameters
+            Map params = new HashMap();
+            params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, jobId);
+            // set action parameter to copy job action
+            params.put(CmsDialog.PARAM_ACTION, CmsEditScheduledJobInfoDialog.DIALOG_COPYJOB);
+            getToolManager().jspForwardTool(this, "/scheduler/new", params);
         } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
             // activate a job from the list
             String jobId = getSelectedItem().getId();
@@ -591,5 +577,4 @@ public class CmsSchedulerList extends A_CmsListDialog {
             refreshList();
         }
     }
-
 }

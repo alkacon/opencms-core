@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/17 16:16:42 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/19 10:57:06 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletException;
+
 import org.apache.commons.logging.Log;
 
 /**
@@ -60,7 +62,7 @@ import org.apache.commons.logging.Log;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -164,6 +166,48 @@ public class CmsToolManager {
     }
 
     /**
+     * Returns the OpenCms link for the given tool path which requires no parameters.<p>
+     * 
+     * @param jsp the jsp action element
+     * @param toolPath the tool path
+     * 
+     * @return the OpenCms link for the given tool path which requires parameters
+     */
+    public static String linkForToolPath(CmsJspActionElement jsp, String toolPath) {
+
+        StringBuffer result = new StringBuffer();
+        result.append(jsp.link(C_VIEW_JSPPAGE_LOCATION));
+        result.append('?');
+        result.append(CmsToolDialog.PARAM_PATH);
+        result.append('=');
+        result.append(CmsEncoder.encode(toolPath));
+        return result.toString();
+    }
+
+    /**
+     * Returns the OpenCms link for the given tool path which requires parameters.<p>
+     * 
+     * Please note: Don't overuse the parameter map because this will likley introduce issues 
+     * with encoding. If possible, don't pass parameters at all, or only very simple parameters
+     * with no special chars that can easily be parsed.<p>
+     * 
+     * @param jsp the jsp action element
+     * @param toolPath the tool path
+     * @param params the map of required tool parameters
+     * 
+     * @return the OpenCms link for the given tool path which requires parameters
+     */
+    public static String linkForToolPath(CmsJspActionElement jsp, String toolPath, Map params) {
+
+        if (params == null) {
+            // no parameters - take the shortcut
+            return linkForToolPath(jsp, toolPath);
+        }
+        params.put(CmsToolDialog.PARAM_PATH, toolPath);
+        return CmsRequestUtil.appendParameters(jsp.link(C_VIEW_JSPPAGE_LOCATION), params, true);
+    }
+
+    /**
      * Returns the navegation bar html code for the given tool path.<p>
      * 
      * @param toolPath the path
@@ -185,7 +229,7 @@ public class CmsToolManager {
             adminTool = resolveAdminTool(parent);
 
             String id = "nav" + adminTool.getId();
-            String link = linkForPath(wp.getJsp(), parent, null);
+            String link = linkForToolPath(wp.getJsp(), parent, null);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(adminTool.getHandler().getParameters())) {
                 if (!link.endsWith("&")) {
                     link += "&";
@@ -370,22 +414,25 @@ public class CmsToolManager {
      * @param pagePath the path to the page to redirect to
      * @param params the parameters to send
      * 
-     * @throws IOException if something goes wrong
+     * @throws IOException in case of errors during forwarding
+     * @throws ServletException in case of errors during forwarding
      */
-    public void jspRedirectPage(CmsWorkplace wp, String pagePath, Map params) throws IOException {
+    public void jspForwardPage(CmsWorkplace wp, String pagePath, Map params) throws IOException, ServletException {
 
-        Map myParams = params;
-        if (myParams == null) {
-            myParams = new HashMap();
+        Map newParams = params;
+        if (newParams == null) {
+            newParams = new HashMap();
         }
         // put close link if not set
-        if (!myParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
-            myParams.put(CmsDialog.PARAM_CLOSELINK, linkForPath(wp.getJsp(), getCurrentToolPath(wp), null));
+        if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
+            newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), null));
         }
-
-        CmsRequestUtil.sendHtmlRedirect(wp.getJsp().getResponse(), wp.getJsp().link(rewriteUrl(pagePath, myParams)));
-
-        // wp.getJsp().getResponse().sendRedirect(wp.getJsp().link(rewriteUrl(pagePath, myParams)));
+        // forward to the requested page uri
+        CmsRequestUtil.forwardRequest(
+            wp.getJsp().link(pagePath),
+            CmsRequestUtil.createParameterMap(newParams),
+            wp.getJsp().getRequest(),
+            wp.getJsp().getResponse());
     }
 
     /**
@@ -395,20 +442,19 @@ public class CmsToolManager {
      * @param toolPath the path to the tool to redirect to
      * @param params the parameters to send
      * 
-     * @throws IOException if something goes wrong
+     * @throws IOException in case of errors during forwarding
+     * @throws ServletException in case of errors during forwarding
      */
-    public void jspRedirectTool(CmsWorkplace wp, String toolPath, Map params) throws IOException {
+    public void jspForwardTool(CmsWorkplace wp, String toolPath, Map params) throws IOException, ServletException {
 
-        Map myParams = params;
-        if (myParams == null) {
-            myParams = new HashMap();
+        Map newParams = params;
+        if (newParams == null) {
+            newParams = new HashMap();
         }
-        // remove path param
-        if (myParams.containsKey(CmsToolDialog.PARAM_PATH)) {
-            myParams.remove(CmsToolDialog.PARAM_PATH);
-        }
+        // update path param
+        newParams.put(CmsToolDialog.PARAM_PATH, toolPath);
         // put close link if not set
-        if (!myParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
+        if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
             Map argMap = new HashMap();
             String toolParams = resolveAdminTool(getCurrentToolPath(wp)).getHandler().getParameters();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(toolParams)) {
@@ -420,30 +466,14 @@ public class CmsToolManager {
                     argMap.put(arg.substring(0, pos), arg.substring(pos + 1));
                 }
             }
-            myParams.put(CmsDialog.PARAM_CLOSELINK, linkForPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
+            newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
         }
-
-        // CmsRequestUtil.sendJavaScriptRedirect(wp.getJsp().getResponse(), wp.getJsp().link(rewriteUrl(pagePath, myParams)));
-
-        wp.getJsp().getResponse().sendRedirect(linkForPath(wp.getJsp(), toolPath, myParams));
-    }
-
-    /**
-     * Returns a valid link for the given tool path.<p>
-     * 
-     * @param jsp the jsp action element
-     * @param toolPath the tool path
-     * @param params a map of additional parameters
-     * 
-     * @return a valid OpenCms link
-     */
-    public String linkForPath(CmsJspActionElement jsp, String toolPath, Map params) {
-
-        if (params == null) {
-            params = new HashMap();
-        }
-        params.put(CmsToolDialog.PARAM_PATH, toolPath);
-        return jsp.link(rewriteUrl(C_VIEW_JSPPAGE_LOCATION, params));
+        // forward to the requested tool uri
+        CmsRequestUtil.forwardRequest(
+            wp.getJsp().link(C_VIEW_JSPPAGE_LOCATION),
+            CmsRequestUtil.createParameterMap(newParams),
+            wp.getJsp().getRequest(),
+            wp.getJsp().getResponse());
     }
 
     /**
@@ -608,58 +638,6 @@ public class CmsToolManager {
     }
 
     /**
-     * Returns a link for a given baseUrl and parameters.<p>
-     * 
-     * @param baseUrl the base url
-     * @param params a map of additional parameters
-     * 
-     * @return the link
-     */
-    private String rewriteUrl(String baseUrl, Map params) {
-
-        if (params == null) {
-            return baseUrl;
-        }
-        StringBuffer link = new StringBuffer(512);
-        link.append(baseUrl);
-        String sep = "?";
-        if (baseUrl.indexOf('?') > -1) {
-            sep = "&";
-        }
-
-        boolean first = true;
-        Iterator it = params.keySet().iterator();
-        while (it.hasNext()) {
-            String key = it.next().toString();
-            Object value = params.get(key);
-            if (value instanceof String[]) {
-                for (int j = 0; j < ((String[])value).length; j++) {
-                    String val = CmsEncoder.encode(((String[])value)[j]);
-                    link.append(sep);
-                    link.append(key);
-                    link.append("=");
-                    link.append(val);
-                    if (first) {
-                        sep = "&";
-                        first = false;
-                    }
-                }
-            } else {
-                link.append(sep);
-                link.append(key);
-                link.append("=");
-                link.append(CmsEncoder.encode(value.toString()));
-                if (first) {
-                    sep = "&";
-                    first = false;
-                }
-            }
-        }
-
-        return link.toString();
-    }
-
-    /**
      * Tests if the full tool path is available.<p>
      * 
      * @param toolPath the path
@@ -696,5 +674,4 @@ public class CmsToolManager {
         }
         return true;
     }
-
 }

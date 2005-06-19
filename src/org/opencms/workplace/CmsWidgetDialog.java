@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/17 09:59:07 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/06/19 10:57:05 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -163,8 +164,11 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Commits the edited object after pressing the "OK" button.<p>
+     * 
+     * @throws IOException in case of errros forwarding to the required result page
+     * @throws ServletException in case of errros forwarding to the required result page
      */
-    public abstract void actionCommit();
+    public abstract void actionCommit() throws IOException, ServletException;
 
     /**
      * Adds or removes an optional element.<p>
@@ -340,10 +344,11 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
      * 
-     * @throws IOException if writing to the JSP out fails
      * @throws JspException if dialog actions fail
+     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
+     * @throws ServletException in case of errros forwarding to the required result page
      */
-    public void displayDialog() throws IOException, JspException {
+    public void displayDialog() throws JspException, IOException, ServletException {
 
         switch (getAction()) {
 
