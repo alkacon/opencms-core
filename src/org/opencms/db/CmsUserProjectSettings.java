@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsUserProjectSettings.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsUserProjectSettings.java,v $
+ * Date   : $Date: 2005/06/20 12:12:22 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file;
+package org.opencms.db;
 
 import org.opencms.util.CmsUUID;
 
@@ -39,7 +39,7 @@ import java.io.Serializable;
  * Bean for holding user specific project settings.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * @since 5.7.3
  */
 public class CmsUserProjectSettings implements Serializable {
@@ -54,14 +54,11 @@ public class CmsUserProjectSettings implements Serializable {
     private CmsUUID m_managerGroup;
 
     /** default mode for the files view. */
-    private CmsProjectFilesModeEnum m_projectFilesMode;
+    private CmsProjectResourcesDisplayMode m_projectFilesMode;
 
     /** id of the default user group. */
     private CmsUUID m_userGroup;
         
-    // TODO: Decide what to do with this class
-    int todo = 0;
-
     /**
      * Default constructor.<p>
      */
@@ -85,7 +82,7 @@ public class CmsUserProjectSettings implements Serializable {
      *
      * @return the project Files Mode
      */
-    public CmsProjectFilesModeEnum getProjectFilesMode() {
+    public CmsProjectResourcesDisplayMode getProjectFilesMode() {
 
         return m_projectFilesMode;
     }
@@ -135,7 +132,7 @@ public class CmsUserProjectSettings implements Serializable {
      *
      * @param projectFilesMode the project Files Mode to set
      */
-    public void setProjectFilesMode(CmsProjectFilesModeEnum projectFilesMode) {
+    public void setProjectFilesMode(CmsProjectResourcesDisplayMode projectFilesMode) {
 
         m_projectFilesMode = projectFilesMode;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/CmsProjectSettingsDialog.java,v $
- * Date   : $Date: 2005/06/16 10:55:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/20 12:12:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package org.opencms.workplace.tools.projects;
 
+import org.opencms.db.CmsProjectResourcesDisplayMode;
+import org.opencms.db.CmsUserProjectSettings;
 import org.opencms.db.CmsUserSettings;
-import org.opencms.file.CmsProjectFilesModeEnum;
-import org.opencms.file.CmsUserProjectSettings;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * Comment for <code>CmsProjectSettingsDialog</code>.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
@@ -99,7 +99,7 @@ public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
         try {
             m_prjSettings.setManagerGroup(getCms().readGroup(getManagerGroup()).getId());
             m_prjSettings.setUserGroup(getCms().readGroup(getUserGroup()).getId());
-            m_prjSettings.setProjectFilesMode(CmsProjectFilesModeEnum.valueOf(getMode()));
+            m_prjSettings.setProjectFilesMode(CmsProjectResourcesDisplayMode.valueOf(getMode()));
             CmsUserSettings settings = new CmsUserSettings(getCms().getRequestContext().currentUser());
             settings.setProjectSettings(m_prjSettings);
             settings.save(getCms());
@@ -127,7 +127,7 @@ public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
      */
     public void setMode(String mode) {
 
-        CmsProjectFilesModeEnum.valueOf(mode);
+        CmsProjectResourcesDisplayMode.valueOf(mode);
         m_mode = mode;
     }
 
@@ -232,20 +232,20 @@ public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
     private List getSelectModes() {
 
         List retVal = new ArrayList();
-        retVal.add(new CmsSelectWidgetOption(CmsProjectFilesModeEnum.ALL_CHANGES.getMode(), true, Messages.get().key(
+        retVal.add(new CmsSelectWidgetOption(CmsProjectResourcesDisplayMode.ALL_CHANGES.getMode(), true, Messages.get().key(
             getLocale(),
             Messages.GUI_PROJECT_MODE_ALLCHANGES_0,
             null)));
-        retVal.add(new CmsSelectWidgetOption(CmsProjectFilesModeEnum.NEW_FILES.getMode(), false, Messages.get().key(
+        retVal.add(new CmsSelectWidgetOption(CmsProjectResourcesDisplayMode.NEW_FILES.getMode(), false, Messages.get().key(
             getLocale(),
             Messages.GUI_PROJECT_MODE_NEWFILES_0,
             null)));
         retVal.add(new CmsSelectWidgetOption(
-            CmsProjectFilesModeEnum.MODIFIED_FILES.getMode(),
+            CmsProjectResourcesDisplayMode.MODIFIED_FILES.getMode(),
             false,
             Messages.get().key(getLocale(), Messages.GUI_PROJECT_MODE_MODFILES_0, null)));
         retVal.add(new CmsSelectWidgetOption(
-            CmsProjectFilesModeEnum.DELETED_FILES.getMode(),
+            CmsProjectResourcesDisplayMode.DELETED_FILES.getMode(),
             false,
             Messages.get().key(getLocale(), Messages.GUI_PROJECT_MODE_DELFILES_0, null)));
         return retVal;

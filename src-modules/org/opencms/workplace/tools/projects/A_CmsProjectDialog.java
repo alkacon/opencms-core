@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/A_CmsProjectDialog.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/20 12:12:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package org.opencms.workplace.tools.projects;
 
+import org.opencms.db.CmsUserProjectSettings;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsUserProjectSettings;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.9.1
  */
 public abstract class A_CmsProjectDialog extends CmsWidgetDialog {
