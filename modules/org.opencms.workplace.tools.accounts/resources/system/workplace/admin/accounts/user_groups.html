@@ -1,32 +1,17 @@
-<%@ page import="org.opencms.workplace.tools.accounts.*,javax.servlet.jsp.JspException" 
+<%@ page import="org.opencms.workplace.tools.accounts.*" 
          buffer="none" %>
 <%     
 
     // start dialog
     CmsUserOverviewDialog wpInfo = new CmsUserOverviewDialog(pageContext, request, response);
 
-    // perform the widget actions
+    // perform the widget actions and display the dialog
     wpInfo.displayDialog();
 
     CmsUserGroupsList wpUserGroups = new CmsUserGroupsList(pageContext, request, response);
     CmsNotUserGroupsList wpNotUserGroups = new CmsNotUserGroupsList(pageContext, request, response);
 
-    A_CmsUserGroupsList.actionDialog(wpUserGroups, wpNotUserGroups); 
+    CmsTwoListsDialog wpTwoLists = new CmsTwoListsDialog(wpUserGroups, wpNotUserGroups);
+    // perform the active list actions & display the 2 lists
+    wpTwoLists.displayDialog();
 %>
-<%= wpUserGroups.getList().listJs() %>
-
-<table align='center' width='100%'>
-<tr>
-<td width='50%' valign='top'>
-<%=wpUserGroups.defaultActionHtmlContent()%>
-</td>
-<td width='20'>&nbsp;</td>
-<td width='50%' valign='top'>
-<%=wpNotUserGroups.defaultActionHtmlContent()%>
-</td>
-</tr>
-</table>
-
-<%= wpUserGroups.dialogEnd() %>
-<%= wpUserGroups.bodyEnd() %>
-<%= wpUserGroups.htmlEnd() %>

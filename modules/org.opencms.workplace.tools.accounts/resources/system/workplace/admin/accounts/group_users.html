@@ -1,7 +1,6 @@
 <%@ page import="org.opencms.workplace.tools.accounts.*" 
          buffer="none" %>
 <%     
-
     // start dialog
     CmsGroupOverviewDialog wpInfo = new CmsGroupOverviewDialog(pageContext, request, response);
 
@@ -11,22 +10,7 @@
     CmsGroupUsersList wpGroupUsers = new CmsGroupUsersList(pageContext, request, response);
     CmsNotGroupUsersList wpNotGroupUsers = new CmsNotGroupUsersList(pageContext, request, response);
 
-    A_CmsGroupUsersList.actionDialog(wpGroupUsers, wpNotGroupUsers);
+    CmsTwoListsDialog wpTwoLists = new CmsTwoListsDialog(wpGroupUsers, wpNotGroupUsers);
+    // perform the active list actions & display the 2 lists
+    wpTwoLists.displayDialog();
 %>
-
-<%= wpGroupUsers.getList().listJs() %>
-
-<table align='center' width='100%'>
-<tr>
-<td width='50%' valign='top'>
-<%=wpGroupUsers.defaultActionHtmlContent()%>
-</td>
-<td width='20'>&nbsp;</td>
-<td width='50%' valign='top'>
-<%=wpNotGroupUsers.defaultActionHtmlContent()%>
-</td>
-</tr>
-</table>
-<%= wpGroupUsers.dialogEnd() %>
-<%= wpGroupUsers.bodyEnd() %>
-<%= wpGroupUsers.htmlEnd() %>

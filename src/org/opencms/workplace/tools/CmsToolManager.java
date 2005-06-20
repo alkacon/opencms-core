@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/20 12:12:49 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -595,45 +595,28 @@ public class CmsToolManager {
 
         // navigate until to reach a valid path
         while (!validatePath(path, true)) {
-            path = getParent(wp, path);
-        }
-        // navigate to reach a visible path
-        CmsTool adminTool = resolveAdminTool(path);
-        I_CmsToolHandler handler = null;
-        if (adminTool != null) {
-            handler = resolveAdminTool(path).getHandler();
-        } else {
+            // log failure
             LOG.warn(Messages.get().key(wp.getLocale(), Messages.LOG_MISSING_ADMIN_TOOL_1, new Object[] {path}));
-        }
-
-        boolean handlerEnabled = false;
-        CmsObject cms = wp.getCms();
-        do {
-            if (handler != null) {
-                handlerEnabled = handler.isEnabled(cms);
-            } else {
-                LOG.warn(Messages.get().key(
-                    wp.getLocale(),
-                    Messages.LOG_MISSING_TOOL_HANDLER_2,
-                    new Object[] {resolveAdminTool(path), path}));
-                if (path.equals("/")) {
-                    handlerEnabled = true;
-                }
-            }
-            if (handlerEnabled) {
-                break;
-            }
+            // try parent
             path = getParent(wp, path);
-            adminTool = resolveAdminTool(path);
-
-            if (adminTool != null) {
-                handler = resolveAdminTool(path).getHandler();
-            } else {
-                LOG.warn(Messages.get().key(wp.getLocale(), Messages.LOG_MISSING_ADMIN_TOOL_1, new Object[] {path}));
-            }
-
-        } while (true);
-
+        }
+        // navigate until to reach a valid tool
+        while (resolveAdminTool(path)==null) {
+            // log failure
+            LOG.warn(Messages.get().key(wp.getLocale(), Messages.LOG_MISSING_ADMIN_TOOL_1, new Object[] {path}));
+            // try parent
+            path = getParent(wp, path);
+        }
+        
+        // navegate until to reach a visible path
+        while (!resolveAdminTool(path).getHandler().isEnabled(wp.getCms())) {
+            LOG.warn(Messages.get().key(
+                wp.getLocale(),
+                Messages.LOG_MISSING_TOOL_HANDLER_2,
+                new Object[] {resolveAdminTool(path), path}));
+            path = getParent(wp, path);
+        }
+        
         return path;
     }
 

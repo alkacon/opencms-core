@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/20 12:12:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,12 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.I_CmsListDirectAction;
 
 import java.util.Iterator;
 import java.util.List;
@@ -52,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * User groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsUserGroupsList extends A_CmsUserGroupsList {
@@ -142,6 +144,32 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#getList()
+     */
+    public CmsHtmlList getList() {
+
+        // assure we have the right username
+        CmsHtmlList list = super.getList();
+        if (list != null) {
+            CmsListColumnDefinition col = list.getMetadata().getColumnDefinition(LIST_COLUMN_STATE);
+            if (col != null) {
+                I_CmsListDirectAction action = col.getDirectAction(LIST_DEFACTION_REMOVE);
+                if (action != null && action instanceof CmsGroupStateAction) {
+                    ((CmsGroupStateAction)action).setUserName(getParamUsername());
+                }
+            }
+            CmsListColumnDefinition col2 = list.getMetadata().getColumnDefinition(LIST_COLUMN_NAME);
+            if (col2 != null) {
+                I_CmsListDirectAction action = col2.getDefaultAction();
+                if (action != null && action instanceof CmsGroupStateAction) {
+                    ((CmsGroupStateAction)action).setUserName(getParamUsername());
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#getGroups()
      */
     protected List getGroups() throws CmsException {
@@ -204,4 +232,5 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
         removeMultiAction.setIconPath(ICON_MULTI_MINUS);
         metadata.addMultiAction(removeMultiAction);
     }
+
 }

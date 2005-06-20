@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupStateAction.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/20 12:12:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * Adds/Removes a user to/from a role.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsGroupStateAction extends CmsListDefaultAction {
@@ -127,4 +127,13 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
         }
     }
 
+    /**
+     * Sets the userName.<p>
+     *
+     * @param userName the userName to set
+     */
+    public void setUserName(String userName) {
+
+        m_userName = userName;
+    }
 }

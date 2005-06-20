@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/20 12:12:49 $
+ * Version: $Revision: 1.6 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Generalized user groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
@@ -105,26 +105,12 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     }
 
     /**
-     * Action method for two list dialogs.<p>
-     * 
-     * @param list1 first list
-     * @param list2 second list
-     * 
-     * @throws JspException if dialog actions fail
-     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
-     * @throws ServletException in case of errros forwarding to the required result page
+     * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
-    public static void actionDialog(A_CmsUserGroupsList list1, A_CmsUserGroupsList list2)
-    throws IOException, JspException, ServletException {
+    public void actionDialog() throws JspException, ServletException, IOException {
 
-        A_CmsUserGroupsList wp1 = (list1.isActive() ? (A_CmsUserGroupsList)list1 : (A_CmsUserGroupsList)list2);
-        A_CmsUserGroupsList wp2 = (!list1.isActive() ? (A_CmsUserGroupsList)list1 : (A_CmsUserGroupsList)list2);
-
-        // perform the active list actions
-        wp1.updateUserList();
-        wp1.actionDialog();
-        wp1.refreshList();
-        wp2.refreshList();
+        updateUserList();
+        super.actionDialog();
     }
 
     /**
@@ -132,7 +118,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
      */
     public CmsHtmlList getList() {
 
-        // assure you have the right username
+        // assure we have the right username
         CmsHtmlList list = super.getList();
         if (list != null) {
             CmsListColumnDefinition col = list.getMetadata().getColumnDefinition(LIST_COLUMN_ICON);

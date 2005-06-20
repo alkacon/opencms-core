@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/06/16 14:30:34 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/20 12:12:49 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -40,12 +41,14 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
@@ -522,6 +525,76 @@ public class CmsListMetadata {
 
         CmsListItemDetails lid = (CmsListItemDetails)m_itemDetails.getObject(itemDetailId);
         lid.setVisible(!lid.isVisible());
+    }
+
+    /**
+     * Throws a runtime exception if there are 2 identical ids.<p> 
+     * 
+     * This includes:<p>
+     * <ul>
+     *      <li><code>{@link CmsListIndependentAction}</code>s</li>
+     *      <li><code>{@link CmsListMultiAction}</code>s</li>
+     *      <li><code>{@link CmsListItemDetails}</code></li>
+     *      <li><code>{@link CmsListColumnDefinition}</code>s</li>
+     *      <li><code>{@link CmsListDefaultAction}</code>s</li>
+     *      <li><code>{@link CmsListDirectAction}</code>s</li>
+     * </ul>
+     */
+    private void checkIds() {
+
+        Set ids = new TreeSet();
+        // indep actions
+        Iterator itIndepActions = getIndependentActions().iterator();
+        while (itIndepActions.hasNext()) {
+            String id = ((CmsListIndependentAction)itIndepActions.next()).getId();
+            if (ids.contains(id)) {
+                throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_DUPLICATED_ID_1, id));
+            }
+            ids.add(id);
+        }
+        // multi actions
+        Iterator itMultiActions = getMultiActions().iterator();
+        while (itMultiActions.hasNext()) {
+            String id = ((CmsListMultiAction)itMultiActions.next()).getId();
+            if (ids.contains(id)) {
+                throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_DUPLICATED_ID_1, id));
+            }
+            ids.add(id);
+        }
+        // details
+        Iterator itItemDetails = getListDetails().iterator();
+        while (itItemDetails.hasNext()) {
+            String id = ((CmsListItemDetails)itItemDetails.next()).getId();
+            if (ids.contains(id)) {
+                throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_DUPLICATED_ID_1, id));
+            }
+            ids.add(id);
+        }
+        // columns
+        Iterator itColumns = getListColumns().iterator();
+        while (itColumns.hasNext()) {
+            CmsListColumnDefinition col = (CmsListColumnDefinition)itColumns.next();
+            if (ids.contains(col.getId())) {
+                throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_DUPLICATED_ID_1, col.getId()));
+            }
+            ids.add(col.getId());
+            // default actions
+            if (col.getDefaultAction() != null) {
+                if (ids.contains(col.getDefaultAction().getId())) {
+                    throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_DUPLICATED_ID_1, col.getDefaultAction().getId()));
+                }
+                ids.add(col.getDefaultAction().getId());
+            }
+            // direct actions
+            Iterator itDirectActions = col.getDirectActions().iterator();
+            while (itDirectActions.hasNext()) {
+                String id = ((CmsListDirectAction)itDirectActions.next()).getId();
+                if (ids.contains(id)) {
+                    throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_DUPLICATED_ID_1, id));
+                }
+                ids.add(id);
+            }
+        }
     }
 
 }
