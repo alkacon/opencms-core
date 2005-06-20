@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/help.js,v $
- * Date   : $Date: 2005/05/24 11:05:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/20 12:54:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,27 @@ function findPosY(obj) {
 
 function showHelp(id) { 
 
+    showHelp(id, id);
+}
+
+function hideHelp(id) {
     var text = document.getElementById("help" + id);
+    text.style.visibility = "hidden";
+    text.style.left = "0px";
+    text.style.top =  "0px";
+    if (browser.isIE) {
+    	// show select boxes which were hidden
+    	for (var i=0; i<selectBoxes.length; i++) {
+    		if (selectBoxes[i].style.display == "none") {
+    			selectBoxes[i].style.display = "";
+    		}
+    	}
+    }
+}
+
+function showHelpX(id, helpId) { 
+
+    var text = document.getElementById("help" + helpId);
     
     // get all select boxes for Internet Explorer
     if (browser.isIE && selectBoxes == null) {
@@ -137,21 +157,6 @@ function showHelp(id) {
     		if (topPos + selectBoxes[i].offsetHeight >= y && topPos <= y + textHeight) {
     			// hide this select box
     			selectBoxes[i].style.display = "none";
-    		}
-    	}
-    }
-}
-
-function hideHelp(id) {
-    var text = document.getElementById("help" + id);
-    text.style.visibility = "hidden";
-    text.style.left = "0px";
-    text.style.top =  "0px";
-    if (browser.isIE) {
-    	// show select boxes which were hidden
-    	for (var i=0; i<selectBoxes.length; i++) {
-    		if (selectBoxes[i].style.display == "none") {
-    			selectBoxes[i].style.display = "";
     		}
     	}
     }
