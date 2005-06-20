@@ -1,7 +1,16 @@
 function listAction(listId, action, confirmation, listItem) {
 	var form = document.forms[listId + '-form'];
-	if (confirmation!='null' && confirmation!='') {
-		if (!confirm(confirmation)) {
+	
+	// use the param content as default
+	var confText = confirmation;
+	try {
+	    // try to user the param as an id of a div tag, and use its content
+		confText = document.getElementById(confirmation).firstChild.nodeValue;
+	} catch (e) {
+	    // ignore
+	}
+	if (confText!='null' && confText!='') {
+		if (!confirm(confText)) {
 			return false;
 		}
 	}
