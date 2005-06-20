@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/06/14 12:19:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/20 14:32:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -925,7 +925,7 @@ function button(href, target, image, label, type) {
 	
 	if (image != null && image.indexOf('.') == -1) {
         // append default suffix for images
-        image += ".gif";
+        image += ".png";
     }
 	
 	var result = "<td>";
@@ -1014,7 +1014,6 @@ function button(href, target, image, label, type) {
 		result += vi.skinPath;
 		result += "buttons/";
 		result += image;
-		result += ".gif";
 		result += "\">";
 		result += "</span>";
 		break;
