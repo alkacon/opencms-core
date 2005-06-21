@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/05/28 17:17:17 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/21 15:04:30 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -45,7 +46,7 @@ import java.util.Locale;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public class CmsException extends Exception implements I_CmsThrowable {
 
@@ -137,5 +138,29 @@ public class CmsException extends Exception implements I_CmsThrowable {
     public CmsMessageContainer getMessageContainer() {
 
         return m_message;
+    }
+    
+    /**
+     * Returns the formatted value of a throwable.<p>
+     * 
+     * The error stack is used by the common error screen 
+     * that is displayed if an error occurs.<p>
+     * 
+     * @param t the throwable to get the errorstack from
+     * @return the formatted value of the errorstack parameter
+     */
+    public static String getFormattedErrorstack(Throwable t) {
+    
+        String stacktrace = CmsException.getStackTraceAsString(t);
+        if (CmsStringUtil.isEmpty(stacktrace)) {
+            return "";
+        } else {
+            stacktrace = CmsStringUtil.escapeJavaScript(stacktrace);
+            stacktrace = CmsStringUtil.substitute(stacktrace, ">", "&gt;");
+            stacktrace = CmsStringUtil.substitute(stacktrace, "<", "&lt;");
+            return "<html><body style='background-color: Window; overflow: scroll;'><pre>"
+                + stacktrace
+                + "</pre></body></html>";
+        }
     }
 }
