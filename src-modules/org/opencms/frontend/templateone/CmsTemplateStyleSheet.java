@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/05/31 15:51:19 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/21 08:30:29 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.frontend.templateone;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -53,7 +52,7 @@ import org.apache.commons.logging.Log;
  * Provides methods to build the dynamic CSS style sheet of template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsTemplateStyleSheet extends CmsJspActionElement {
 
@@ -313,10 +312,7 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
                             C_NODE_OPTIONALCONFIG + "/headlines.set",
                             getRequestContext().getLocale());
                         // get default value String from XSD
-                        selectedValues = value.getContentDefinition().getContentHandler().getDefault(
-                            getCmsObject(),
-                            value,
-                            getRequestContext().getLocale());
+                        selectedValues = value.getContentDefinition().getContentHandler().getConfiguration(value);   
                         // get default size sequence from beginning of String
                         selectedValues = selectedValues.substring(0, selectedValues.indexOf('*'));
                     } else {
