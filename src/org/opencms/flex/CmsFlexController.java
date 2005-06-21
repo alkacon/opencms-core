@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/06/19 10:55:31 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/21 08:26:41 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class CmsFlexController {
 
@@ -187,7 +187,7 @@ public class CmsFlexController {
     }
 
     /**
-     * Provides access to a root cause Exception that might have occured in a complex inlucde scenario.<p>
+     * Provides access to a root cause Exception that might have occured in a complex include scenario.<p>
      * 
      * @param req the current request
      * @return the root cause exception or null if no root cause exception is available
