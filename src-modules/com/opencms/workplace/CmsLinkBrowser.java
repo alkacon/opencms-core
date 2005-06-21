@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsLinkBrowser.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
@@ -50,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -173,7 +174,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
         for(int i = 0;i < allLinks.size();i++) {
             CmsFile file = (CmsFile)allLinks.get(i);
             String filename = file.getName();
-            String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.getSitePath(file), CmsPropertyDefinition.PROPERTY_TITLE);
             boolean filenameFilter = inFilter(filename, filter);
             boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
             if((filenameFilter || titleFilter)) {
@@ -307,7 +308,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
         for(int i = from;i < to;i++) {
             CmsFile file = cms.readFile(cms.getSitePath((CmsFile)filteredLinks.elementAt(i)));
             String filename = file.getName();
-            String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.getSitePath(file), CmsPropertyDefinition.PROPERTY_TITLE);
 
             // If no "Title" property is given, the title will be set to the filename
             // without its postfix

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2005/06/10 13:49:57 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -153,8 +153,8 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
                 return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "wait");
             }else {
                 // thread has come to an end, was there an error?
-                String errordetails = (String)session.getValue(C_SESSION_THREAD_ERROR);
-                session.removeValue(C_SESSION_THREAD_ERROR);
+                String errordetails = (String)session.getValue(com.opencms.core.I_CmsConstants.C_SESSION_THREAD_ERROR);
+                session.removeValue(com.opencms.core.I_CmsConstants.C_SESSION_THREAD_ERROR);
                 if(errordetails == null) {
                     // export ready
                     return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "done");
@@ -169,8 +169,8 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
 
             // start the thread for export
             // first clear the session entry if necessary
-            if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
-                session.removeValue(C_SESSION_THREAD_ERROR);
+            if(session.getValue(com.opencms.core.I_CmsConstants.C_SESSION_THREAD_ERROR) != null) {
+                session.removeValue(com.opencms.core.I_CmsConstants.C_SESSION_THREAD_ERROR);
             }
             A_CmsReportThread doExport = new CmsStaticExportThread(cms);
             doExport.start();

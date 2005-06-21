@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/15 11:25:51 $
- * Version: $Revision: 1.130 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.131 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.130 $
+ * @version $Revision: 1.131 $
  * 
  * @since 5.1
  */
@@ -450,17 +450,17 @@ public abstract class CmsWorkplace {
 
         // save current project
         settings.setProject(cms.getRequestContext().currentProject().getId());
-        
+
         // switch to users preferred site      
         String siteRoot = settings.getUserSettings().getStartSite();
-        if (siteRoot.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+        if (siteRoot.endsWith("/")) {
             // remove trailing slash
             siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
         }
         if (CmsStringUtil.isNotEmpty(siteRoot) && (CmsSiteManager.getSite(siteRoot) == null)) {
             // this is not the root site and the site is not in the list
             siteRoot = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
-            if (siteRoot.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            if (siteRoot.endsWith("/")) {
                 // remove trailing slash
                 siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
             }
@@ -1385,7 +1385,7 @@ public abstract class CmsWorkplace {
 
         return m_settings;
     }
-    
+
     /**
      * Returns the path to the cascading stylesheets.<p>
      * 
@@ -1393,7 +1393,7 @@ public abstract class CmsWorkplace {
      * @return the path to the cascading stylesheets
      */
     public String getStyleUri(String filename) {
-        
+
         return getStyleUri(getJsp(), filename);
     }
 
@@ -1860,7 +1860,7 @@ public abstract class CmsWorkplace {
 
             // get / create the workplace settings 
             m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
-                        
+
             if (m_settings == null) {
                 // create the settings object
                 m_settings = new CmsWorkplaceSettings();
@@ -1869,7 +1869,7 @@ public abstract class CmsWorkplace {
             }
 
             // initialize messages and also store them in settings
-            m_messages = OpenCms.getWorkplaceManager().getMessages(m_settings.getUserSettings().getLocale());                                
+            m_messages = OpenCms.getWorkplaceManager().getMessages(m_settings.getUserSettings().getLocale());
             initMessages();
             if (!m_bundles.isEmpty()) {
                 m_messages = new CmsMultiMessages(m_bundles);

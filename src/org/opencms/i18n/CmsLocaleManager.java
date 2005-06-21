@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.i18n;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
 
@@ -368,7 +369,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         String availableNames = null;
         try {
-            availableNames = cms.readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_AVAILABLE_LOCALES, true).getValue();
+            availableNames = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES, true).getValue();
         } catch (CmsException exc) {
             // noop
         }
@@ -465,7 +466,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         String defaultNames = null;
         try {
-            defaultNames = cms.readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_LOCALE, true).getValue();
+            defaultNames = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
         } catch (CmsException e) {
             LOG.warn(Messages.get().container(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
         }

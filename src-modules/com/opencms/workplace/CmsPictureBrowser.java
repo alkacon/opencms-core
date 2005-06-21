@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
@@ -52,7 +53,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -199,7 +200,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
             CmsFile file = (CmsFile)allPics.get(i);
             if (file.getState() != I_CmsConstants.C_STATE_DELETED) {
                 String filename = file.getName();
-                String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
+                String title = cms.readProperty(cms.getSitePath(file), CmsPropertyDefinition.PROPERTY_TITLE);
                 boolean filenameFilter = inFilter(filename, filter);
                 boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
                 if((filenameFilter || titleFilter) && isImage(filename)) {
@@ -310,7 +311,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
         for(int i = from;i < to;i++) {
             CmsFile file = (CmsFile)filteredPics.elementAt(i);
             String filename = file.getName();
-            String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.getSitePath(file), CmsPropertyDefinition.PROPERTY_TITLE);
 
             // If no "Title" property is given, the title will be set to the filename
             // without its postfix
@@ -341,7 +342,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
             xmlTemplateDocument.setData("filename", filename);
             xmlTemplateDocument.setData("size", file.getLength() + " Byte");
             xmlTemplateDocument.setData("type", type);
-            if ((cms.getPermissions(cms.getSitePath(file)).getPermissions() & I_CmsConstants.C_ACCESS_WRITE) > 0  ) {
+            if ((cms.getPermissions(cms.getSitePath(file)).getPermissions() & com.opencms.core.I_CmsConstants.C_ACCESS_WRITE) > 0  ) {
                 xmlTemplateDocument.setData("delete", xmlTemplateDocument.getProcessedDataValue("deleteentry", this));
             } else {
                 xmlTemplateDocument.setData("delete", "&nbsp;");

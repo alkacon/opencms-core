@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/06/10 16:02:58 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
@@ -77,14 +78,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResource extends CmsDialog {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsNewResource.class);  
     
     /** The value for the resource name form action. */
     public static final int ACTION_NEWFORM = 100;
@@ -116,6 +114,9 @@ public class CmsNewResource extends CmsDialog {
     /** Request parameter name for the new resource uri. */
     public static final String PARAM_NEWRESOURCEURI = "newresourceuri";
     
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewResource.class);  
+    
     private String m_page;
     private String m_paramCurrentFolder;
     private String m_paramNewResourceEditProps; 
@@ -144,6 +145,59 @@ public class CmsNewResource extends CmsDialog {
     public CmsNewResource(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
     }    
+    
+    /**
+     * A factory to return handlers to create new resources.<p>
+     * 
+     * @param type the resource type name to get a new resource handler for, as specified in the explorer type settings
+     * @param defaultClassName a default handler class name, to be used if the handler class specified in the explorer type settings cannot be found
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     * @return a new instance of the handler class
+     * @throws CmsRuntimeException if something goes wrong
+     */
+    public static Object getNewResourceHandler(String type, String defaultClassName, PageContext context, HttpServletRequest req, HttpServletResponse res) throws CmsRuntimeException {
+        
+        if (CmsStringUtil.isEmpty(type)) {            
+            // it's not possible to hardwire the resource type name on the JSP for Xml content types
+            type = req.getParameter(PARAM_NEWRESOURCETYPE);
+        }
+        
+        String className = null; 
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
+        
+        if (CmsStringUtil.isNotEmpty(settings.getNewResourceHandlerClassName())) {
+            className = settings.getNewResourceHandlerClassName();
+        } else {
+            className = defaultClassName;
+        }
+        
+        Class clazz = null;
+        try {
+            clazz = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.ERR_NEW_RES_HANDLER_CLASS_NOT_FOUND_1, className), e);
+            }
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEW_RES_HANDLER_CLASS_NOT_FOUND_1, className));
+        }
+        
+        Object handler = null;
+        try {
+            Constructor constructor = clazz.getConstructor(new Class[] {
+                PageContext.class,
+                HttpServletRequest.class,
+                HttpServletResponse.class});
+            handler = constructor.newInstance(new Object[] {context, req, res});
+        } catch (Exception e) {
+            
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEW_RES_CONSTRUCTOR_NOT_FOUND_1, className));
+        }
+        
+        return handler;
+    }
     
     /**
      * Creates the resource using the specified resource name and the newresourcetype parameter.<p>
@@ -296,6 +350,28 @@ public class CmsNewResource extends CmsDialog {
     }
     
     /**
+     * Returns the value for the Title property from the given resource name.<p>
+     * 
+     * Additionally translates the new resource name according to the file translation rules.<p>
+     * 
+     * @return the value for the Title property from the given resource name
+     */
+    public String computeNewTitleProperty() {
+        
+        String title = getParamResource();
+        int lastDot = title.lastIndexOf('.');
+        // check the mime type for the file extension 
+        if ((lastDot > 0) && (lastDot < (title.length() - 1))) {
+            // remove suffix for Title and NavPos property
+            title = title.substring(0, lastDot);
+        }
+        // translate the resource name to a valid OpenCms VFS file name
+        String resName = CmsResource.getName(getParamResource().replace('\\', '/'));
+        setParamResource(getCms().getRequestContext().getFileTranslator().translateResource(resName));
+        return title;
+    }
+    
+    /**
      * Builds a button row with an "next" and a "cancel" button.<p>
      * 
      * @param nextAttrs optional attributes for the next button
@@ -338,59 +414,6 @@ public class CmsNewResource extends CmsDialog {
      */
     public String getParamNewResourceType() {
         return m_paramNewResourceType;
-    }
-    
-    /**
-     * A factory to return handlers to create new resources.<p>
-     * 
-     * @param type the resource type name to get a new resource handler for, as specified in the explorer type settings
-     * @param defaultClassName a default handler class name, to be used if the handler class specified in the explorer type settings cannot be found
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     * @return a new instance of the handler class
-     * @throws CmsRuntimeException if something goes wrong
-     */
-    public static Object getNewResourceHandler(String type, String defaultClassName, PageContext context, HttpServletRequest req, HttpServletResponse res) throws CmsRuntimeException {
-        
-        if (CmsStringUtil.isEmpty(type)) {            
-            // it's not possible to hardwire the resource type name on the JSP for Xml content types
-            type = req.getParameter(PARAM_NEWRESOURCETYPE);
-        }
-        
-        String className = null; 
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type);
-        
-        if (CmsStringUtil.isNotEmpty(settings.getNewResourceHandlerClassName())) {
-            className = settings.getNewResourceHandlerClassName();
-        } else {
-            className = defaultClassName;
-        }
-        
-        Class clazz = null;
-        try {
-            clazz = Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.ERR_NEW_RES_HANDLER_CLASS_NOT_FOUND_1, className), e);
-            }
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEW_RES_HANDLER_CLASS_NOT_FOUND_1, className));
-        }
-        
-        Object handler = null;
-        try {
-            Constructor constructor = clazz.getConstructor(new Class[] {
-                PageContext.class,
-                HttpServletRequest.class,
-                HttpServletResponse.class});
-            handler = constructor.newInstance(new Object[] {context, req, res});
-        } catch (Exception e) {
-            
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEW_RES_CONSTRUCTOR_NOT_FOUND_1, className));
-        }
-        
-        return handler;
     }
       
     /**
@@ -498,9 +521,9 @@ public class CmsNewResource extends CmsDialog {
                 currentFolder = I_CmsConstants.C_ROOT;
             }
         }           
-        if (!currentFolder.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+        if (!currentFolder.endsWith("/")) {
             // add folder separator to currentFolder
-            currentFolder += I_CmsConstants.C_FOLDER_SEPARATOR;
+            currentFolder += "/";
         }
         return currentFolder;
     }
@@ -519,28 +542,6 @@ public class CmsNewResource extends CmsDialog {
             currentFolder = computeCurrentFolder();
         }
         return currentFolder + getParamResource();
-    }
-    
-    /**
-     * Returns the value for the Title property from the given resource name.<p>
-     * 
-     * Additionally translates the new resource name according to the file translation rules.<p>
-     * 
-     * @return the value for the Title property from the given resource name
-     */
-    public String computeNewTitleProperty() {
-        
-        String title = getParamResource();
-        int lastDot = title.lastIndexOf('.');
-        // check the mime type for the file extension 
-        if ((lastDot > 0) && (lastDot < (title.length() - 1))) {
-            // remove suffix for Title and NavPos property
-            title = title.substring(0, lastDot);
-        }
-        // translate the resource name to a valid OpenCms VFS file name
-        String resName = CmsResource.getName(getParamResource().replace('\\', '/'));
-        setParamResource(getCms().getRequestContext().getFileTranslator().translateResource(resName));
-        return title;
     }
     
     /**
@@ -581,11 +582,11 @@ public class CmsNewResource extends CmsDialog {
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
         if (settings.isAutoSetTitle()) {
             // add the Title property
-            properties.add(createPropertyObject(I_CmsConstants.C_PROPERTY_TITLE, title));
+            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_TITLE, title));
         }
         if (settings.isAutoSetNavigation()) {
             // add the NavText property
-            properties.add(createPropertyObject(I_CmsConstants.C_PROPERTY_NAVTEXT, title));
+            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVTEXT, title));
             // calculate the new navigation position for the resource
             List navList = CmsJspNavBuilder.getNavigationForFolder(getCms(), resourceName);
             float navPos = 1;
@@ -594,7 +595,7 @@ public class CmsNewResource extends CmsDialog {
                 navPos = nav.getNavPosition() + 1;
             }
             // add the NavPos property
-            properties.add(createPropertyObject(I_CmsConstants.C_PROPERTY_NAVPOS, String.valueOf(navPos)));
+            properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(navPos)));
         }
         return properties;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStatusBean.java,v $
- * Date   : $Date: 2005/06/17 12:43:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.jsp.util;
 
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * The JSPs using this bean are placed in the OpenCms VFS folder /system/handler/.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 6.0
  */
 public class CmsJspStatusBean extends CmsJspActionElement {
@@ -194,7 +195,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
     public String getPageContent(String element) {
         
         // Determine the folder to read the contents from
-        String contentFolder = property(I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS, "search", "");
+        String contentFolder = property(CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, "search", "");
         if (CmsStringUtil.isEmpty(contentFolder)) {
             contentFolder = VFS_FOLDER_HANDLER + "contents/";
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAuthentificationException;
 
@@ -61,7 +60,7 @@ import org.apache.commons.logging.Log;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.3
  */
@@ -189,7 +188,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                 userName,
                 password,
                 getRequestContext().getRemoteAddress(),
-                I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+                CmsUser.USER_TYPE_SYSTEMUSER);
 
             // make sure we have a new session after login for security reasons
             session = getRequest().getSession(false);

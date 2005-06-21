@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
@@ -67,7 +69,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -353,7 +355,7 @@ public class CmsFileList extends A_CmsWpElement {
 
     private int getDefaultPreferences(CmsObject cms) {
         int filelist;
-        String explorerSettings = (String)cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS);
+        String explorerSettings = (String)cms.getRequestContext().currentUser().getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_EXPLORERSETTINGS);
         if(explorerSettings != null) {
             filelist = new Integer(explorerSettings).intValue();
         }
@@ -467,7 +469,7 @@ public class CmsFileList extends A_CmsWpElement {
                         // set the folder title
                         title = "";
                         try {
-                            title = CmsEncoder.escapeXml(cms.readProperty(cms.getSitePath(res), I_CmsConstants.C_PROPERTY_TITLE));
+                            title = CmsEncoder.escapeXml(cms.readProperty(cms.getSitePath(res), CmsPropertyDefinition.PROPERTY_TITLE));
                         }
                         catch(CmsException e) {
 
@@ -577,7 +579,7 @@ public class CmsFileList extends A_CmsWpElement {
                         // set the file title
                         title = "";
                         try {
-                            title = CmsEncoder.escapeXml(cms.readProperty(cms.getSitePath(file), I_CmsConstants.C_PROPERTY_TITLE));
+                            title = CmsEncoder.escapeXml(cms.readProperty(cms.getSitePath(file), CmsPropertyDefinition.PROPERTY_TITLE));
                         }
                         catch(CmsException e) {
 

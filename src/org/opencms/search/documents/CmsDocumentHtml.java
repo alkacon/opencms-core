@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentHtml.java,v $
- * Date   : $Date: 2005/04/28 08:29:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,9 @@ package org.opencms.search.documents;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
@@ -48,7 +48,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * containing plain html data.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsDocumentHtml extends A_CmsVfsDocument {
 
@@ -75,12 +75,14 @@ public class CmsDocumentHtml extends A_CmsVfsDocument {
 
         try {
             String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-            CmsProperty encProp = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
+            CmsProperty encProp = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true);
             String encoding = encProp.getValue(OpenCms.getSystemInfo().getDefaultEncoding());
 
             return CmsExtractorHtml.getExtractor().extractText(file.getContents(), encoding);
         } catch (Exception e) {
-            throw new CmsIndexException(Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);            
+            throw new CmsIndexException(
+                Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
+                e);
         }
     }
 }

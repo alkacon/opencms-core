@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/06/17 16:16:42 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.69 $ $Date: 2005/06/17 16:16:42 $
+ * @version $Revision: 1.70 $ $Date: 2005/06/21 15:49:58 $
  */
 public class CmsExport implements Serializable {
 
@@ -233,7 +233,7 @@ public class CmsExport implements Serializable {
 
             // export userdata and groupdata if selected
             if (m_exportUserdata) {
-                Element userGroupData = exportNode.addElement(I_CmsConstants.C_EXPORT_TAG_USERGROUPDATA);
+                Element userGroupData = exportNode.addElement(CmsImportExportManager.N_USERGROUPDATA);
                 getSaxWriter().writeOpen(userGroupData);
 
                 exportGroups(userGroupData);
@@ -417,7 +417,7 @@ public class CmsExport implements Serializable {
         xmlSaxWriter.endDocument();
 
         // create zip entry for the manifest XML document
-        ZipEntry entry = new ZipEntry(I_CmsConstants.C_EXPORT_XMLFILENAME);
+        ZipEntry entry = new ZipEntry(CmsImportExportManager.EXPORT_XMLFILENAME);
         getExportZipStream().putNextEntry(entry);
 
         // complex substring operation is required to ensure handling for very large export manifest files
@@ -537,7 +537,7 @@ public class CmsExport implements Serializable {
      */
     protected String getExportNodeName() {
 
-        return I_CmsConstants.C_EXPORT_TAG_EXPORT;
+        return CmsImportExportManager.N_EXPORT;
     }
 
     /**
@@ -624,15 +624,15 @@ public class CmsExport implements Serializable {
         getSaxWriter().writeOpen(exportNode);
 
         // add the info element. it contains all infos for this export
-        Element info = exportNode.addElement(I_CmsConstants.C_EXPORT_TAG_INFO);
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_CREATOR).addText(
+        Element info = exportNode.addElement(CmsImportExportManager.N_INFO);
+        info.addElement(CmsImportExportManager.N_CREATOR).addText(
             getCms().getRequestContext().currentUser().getName());
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionName());
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_DATE).addText(
+        info.addElement(CmsImportExportManager.N_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionName());
+        info.addElement(CmsImportExportManager.N_DATE).addText(
             CmsDateUtil.getDateTimeShort(System.currentTimeMillis()));
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_PROJECT).addText(
+        info.addElement(CmsImportExportManager.N_PROJECT).addText(
             getCms().getRequestContext().currentProject().getName());
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_VERSION).addText(I_CmsConstants.C_EXPORT_VERSION);
+        info.addElement(CmsImportExportManager.N_VERSION).addText(CmsImportExportManager.EXPORT_VERSION);
 
         // write the XML
         digestElement(exportNode, info);
@@ -843,13 +843,13 @@ public class CmsExport implements Serializable {
             Element propertyElement = null;
 
             // define the file node
-            Element fileElement = m_resourceNode.addElement(I_CmsConstants.C_EXPORT_TAG_FILE);
+            Element fileElement = m_resourceNode.addElement(CmsImportExportManager.N_FILE);
 
             // only write <source> if resource is a file
             String fileName = trimResourceName(getCms().getSitePath(resource));
             if (resource.isFile()) {
                 if (source) {
-                    fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_SOURCE).addText(fileName);
+                    fileElement.addElement(CmsImportExportManager.N_SOURCE).addText(fileName);
                 }
             } else {
                 m_exportCount++;
@@ -876,19 +876,19 @@ public class CmsExport implements Serializable {
             }
 
             // <destination>
-            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DESTINATION).addText(fileName);
+            fileElement.addElement(CmsImportExportManager.N_DESTINATION).addText(fileName);
             // <type>
-            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(
+            fileElement.addElement(CmsImportExportManager.N_TYPE).addText(
                 OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName());
 
             if (resource.isFile()) {
                 //  <uuidresource>
-                fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE).addText(
+                fileElement.addElement(CmsImportExportManager.N_UUIDRESOURCE).addText(
                     resource.getResourceId().toString());
             }
 
             // <datelastmodified>
-            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED).addText(
+            fileElement.addElement(CmsImportExportManager.N_DATELASTMODIFIED).addText(
                 CmsDateUtil.getHeaderDate(resource.getDateLastModified()));
             // <userlastmodified>
             String userNameLastModified = null;
@@ -897,9 +897,9 @@ public class CmsExport implements Serializable {
             } catch (CmsException e) {
                 userNameLastModified = OpenCms.getDefaultUsers().getUserAdmin();
             }
-            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED).addText(userNameLastModified);
+            fileElement.addElement(CmsImportExportManager.N_USERLASTMODIFIED).addText(userNameLastModified);
             // <datecreated>
-            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATECREATED).addText(
+            fileElement.addElement(CmsImportExportManager.N_DATECREATED).addText(
                 CmsDateUtil.getHeaderDate(resource.getDateCreated()));
             // <usercreated>
             String userNameCreated = null;
@@ -908,24 +908,24 @@ public class CmsExport implements Serializable {
             } catch (CmsException e) {
                 userNameCreated = OpenCms.getDefaultUsers().getUserAdmin();
             }
-            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERCREATED).addText(userNameCreated);
+            fileElement.addElement(CmsImportExportManager.N_USERCREATED).addText(userNameCreated);
             // <release>
             if (resource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
-                fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATERELEASED).addText(
+                fileElement.addElement(CmsImportExportManager.N_DATERELEASED).addText(
                     CmsDateUtil.getHeaderDate(resource.getDateReleased()));
             }
             // <expire>
             if (resource.getDateExpired() != CmsResource.DATE_EXPIRED_DEFAULT) {
-                fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATEEXPIRED).addText(
+                fileElement.addElement(CmsImportExportManager.N_DATEEXPIRED).addText(
                     CmsDateUtil.getHeaderDate(resource.getDateExpired()));
             }
             // <flags>
             int resFlags = resource.getFlags();
             resFlags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
-            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(resFlags));
+            fileElement.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(resFlags));
 
             // write the properties to the manifest
-            Element propertiesElement = fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTIES);
+            Element propertiesElement = fileElement.addElement(CmsImportExportManager.N_PROPERTIES);
             List properties = getCms().readPropertyObjects(getCms().getSitePath(resource), false);
             for (int i = 0, n = properties.size(); i < n; i++) {
                 property = (CmsProperty)properties.get(i);
@@ -942,23 +942,23 @@ public class CmsExport implements Serializable {
                     // 1) append shared/resource property value
                     if ((j == 0 && (value = property.getStructureValue()) != null)
                         || (j == 1 && (value = property.getResourceValue()) != null)) {
-                        propertyElement = propertiesElement.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTY);
+                        propertyElement = propertiesElement.addElement(CmsImportExportManager.N_PROPERTY);
 
                         if (j == 1) {
                             // add a type attrib. to the property node in case of a shared/resource property value
                             propertyElement.addAttribute(
-                                I_CmsConstants.C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE,
-                                I_CmsConstants.C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE_SHARED);
+                                CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE,
+                                CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE_SHARED);
                         }
 
-                        propertyElement.addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(key);
-                        propertyElement.addElement(I_CmsConstants.C_EXPORT_TAG_VALUE).addCDATA(value);
+                        propertyElement.addElement(CmsImportExportManager.N_NAME).addText(key);
+                        propertyElement.addElement(CmsImportExportManager.N_VALUE).addCDATA(value);
                     }
                 }
             }
 
             // append the nodes for access control entries
-            Element acl = fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRIES);
+            Element acl = fileElement.addElement(CmsImportExportManager.N_ACCESSCONTROL_ENTRIES);
 
             // read the access control entries
             List fileAcEntries = getCms().getAccessControlEntries(getCms().getSitePath(resource), false);
@@ -967,7 +967,7 @@ public class CmsExport implements Serializable {
             // create xml elements for each access control entry
             while (i.hasNext()) {
                 CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
-                Element a = acl.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
+                Element a = acl.addElement(CmsImportExportManager.N_ACCESSCONTROL_ENTRY);
 
                 // now check if the principal is a group or a user
                 int flags = ace.getFlags();
@@ -985,13 +985,13 @@ public class CmsExport implements Serializable {
                         + getCms().readUser(acePrincipal).getName();
                 }
 
-                a.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
-                a.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(flags));
+                a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
+                a.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(flags));
 
-                Element b = a.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET);
-                b.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS).addText(
+                Element b = a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET);
+                b.addElement(CmsImportExportManager.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).addText(
                     Integer.toString(ace.getAllowedPermissions()));
-                b.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS).addText(
+                b.addElement(CmsImportExportManager.N_ACCESSCONTROL_DENIEDPERMISSIONS).addText(
                     Integer.toString(ace.getDeniedPermissions()));
             }
 
@@ -1102,11 +1102,11 @@ public class CmsExport implements Serializable {
                 parentgroup = getCms().getParent(group.getName()).getName();
             }
 
-            Element e = parent.addElement(I_CmsConstants.C_EXPORT_TAG_GROUPDATA);
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(group.getName());
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION).addCDATA(group.getDescription());
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(group.getFlags()));
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_PARENTGROUP).addText(parentgroup);
+            Element e = parent.addElement(CmsImportExportManager.N_GROUPDATA);
+            e.addElement(CmsImportExportManager.N_NAME).addText(group.getName());
+            e.addElement(CmsImportExportManager.N_DESCRIPTION).addCDATA(group.getDescription());
+            e.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(group.getFlags()));
+            e.addElement(CmsImportExportManager.N_PARENTGROUP).addText(parentgroup);
 
             // write the XML
             digestElement(parent, e);
@@ -1178,23 +1178,23 @@ public class CmsExport implements Serializable {
 
         try {
             // add user node to the manifest.xml
-            Element e = parent.addElement(I_CmsConstants.C_EXPORT_TAG_USERDATA);
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(user.getName());
+            Element e = parent.addElement(CmsImportExportManager.N_USERDATA);
+            e.addElement(CmsImportExportManager.N_NAME).addText(user.getName());
             // encode the password, using a base 64 decoder
             String passwd = new String(Base64.encodeBase64(user.getPassword().getBytes()));
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_PASSWORD).addCDATA(passwd);
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION).addCDATA(user.getDescription());
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_FIRSTNAME).addText(user.getFirstname());
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_LASTNAME).addText(user.getLastname());
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_EMAIL).addText(user.getEmail());
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(user.getFlags()));
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_ADDRESS).addCDATA(user.getAddress());
-            e.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(Integer.toString(user.getType()));
+            e.addElement(CmsImportExportManager.N_PASSWORD).addCDATA(passwd);
+            e.addElement(CmsImportExportManager.N_DESCRIPTION).addCDATA(user.getDescription());
+            e.addElement(CmsImportExportManager.N_FIRSTNAME).addText(user.getFirstname());
+            e.addElement(CmsImportExportManager.N_LASTNAME).addText(user.getLastname());
+            e.addElement(CmsImportExportManager.N_EMAIL).addText(user.getEmail());
+            e.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(user.getFlags()));
+            e.addElement(CmsImportExportManager.N_TAG_ADDRESS).addCDATA(user.getAddress());
+            e.addElement(CmsImportExportManager.N_TYPE).addText(Integer.toString(user.getType()));
             // serialize the hashtable and write the info into a file
             try {
-                String datfileName = "/~" + I_CmsConstants.C_EXPORT_TAG_USERINFO + "/" + user.getName() + ".dat";
+                String datfileName = "/~" + CmsImportExportManager.N_USERINFO + "/" + user.getName() + ".dat";
                 // create tag for userinfo
-                e.addElement(I_CmsConstants.C_EXPORT_TAG_USERINFO).addText(datfileName);
+                e.addElement(CmsImportExportManager.N_USERINFO).addText(datfileName);
                 ByteArrayOutputStream bout = new ByteArrayOutputStream();
                 ObjectOutputStream oout = new ObjectOutputStream(bout);
                 oout.writeObject(user.getAdditionalInfo());
@@ -1214,10 +1214,10 @@ public class CmsExport implements Serializable {
             }
             // append the node for groups of user
             List userGroups = getCms().getDirectGroupsOfUser(user.getName());
-            Element g = e.addElement(I_CmsConstants.C_EXPORT_TAG_USERGROUPS);
+            Element g = e.addElement(CmsImportExportManager.N_USERGROUPS);
             for (int i = 0; i < userGroups.size(); i++) {
                 String groupName = ((CmsGroup)userGroups.get(i)).getName();
-                g.addElement(I_CmsConstants.C_EXPORT_TAG_GROUPNAME).addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(
+                g.addElement(CmsImportExportManager.N_GROUPNAME).addElement(CmsImportExportManager.N_NAME).addText(
                     groupName);
             }
             // write the XML

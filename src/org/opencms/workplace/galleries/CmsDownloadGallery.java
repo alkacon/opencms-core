@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsDownloadGallery.java,v $
- * Date   : $Date: 2005/05/19 13:57:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package org.opencms.workplace.galleries;
 
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,12 +46,12 @@ import javax.servlet.jsp.PageContext;
  * Generates the download gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.5.2
  */
 public class CmsDownloadGallery extends A_CmsGallery {
-    
+
     /** URI of the download gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "download_fs.jsp";
 
@@ -98,16 +98,15 @@ public class CmsDownloadGallery extends A_CmsGallery {
                 CmsResource res = getCms().readResource(getParamResourcePath());
                 if (res != null) {
                     String title = getJsp().property(
-                        I_CmsConstants.C_PROPERTY_TITLE,
+                        CmsPropertyDefinition.PROPERTY_TITLE,
                         getParamResourcePath(),
                         res.getName());
                     String description = getJsp().property(
-                        I_CmsConstants.C_PROPERTY_DESCRIPTION,
+                        CmsPropertyDefinition.PROPERTY_DESCRIPTION,
                         getParamResourcePath());
-                    String keywords = getJsp().property(I_CmsConstants.C_PROPERTY_KEYWORDS, getParamResourcePath());
+                    String keywords = getJsp().property(CmsPropertyDefinition.PROPERTY_KEYWORDS, getParamResourcePath());
                     String lastmodified = getMessages().getDateTime(res.getDateLastModified());
-                    html
-                        .append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: left; width:100%; background-color: ThreeDFace; margin: 0;\">");
+                    html.append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: left; width:100%; background-color: ThreeDFace; margin: 0;\">");
                     // file name
                     html.append("<tr align=\"left\">");
                     html.append("<td width=\"35%\"><b>");

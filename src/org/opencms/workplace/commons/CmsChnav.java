@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2005/06/02 13:57:08 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,10 +28,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
@@ -40,7 +42,6 @@ import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
@@ -66,41 +67,42 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
 public class CmsChnav extends CmsDialog {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsChnav.class);  
-    
-    /** The dialog type. */
-    public static final String DIALOG_TYPE = "chnav";
-    
-    /** The debug flag. */
-    public static final int C_DEBUG = 1;
-    
+
     /** Value for the action: change the navigation. */
     public static final int ACTION_CHNAV = 100;
-    
-    /** Request parameter name for the navigation text. */
-    public static final String PARAM_NAVTEXT = "navtext";   
+
+    /** The debug flag. */
+    public static final int C_DEBUG = 1;
+
+    /** The dialog type. */
+    public static final String DIALOG_TYPE = "chnav";
     /** Request parameter name for the navigation position. */
-    public static final String PARAM_NAVPOS = "navpos"; 
+    public static final String PARAM_NAVPOS = "navpos";
+
+    /** Request parameter name for the navigation text. */
+    public static final String PARAM_NAVTEXT = "navtext";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsChnav.class);
+    private String m_paramNavpos;
 
     private String m_paramNavtext;
-    private String m_paramNavpos;    
-    
+
     /**
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsChnav(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -109,125 +111,143 @@ public class CmsChnav extends CmsDialog {
      * @param res the JSP response
      */
     public CmsChnav(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
-    }
-    
-    /**
-     * Returns the value of the navigation text parameter, 
-     * or null if this parameter was not provided.<p>
-     * 
-     * The navigation text parameter defines the new value for 
-     * the NavText property.<p>
-     * 
-     * @return the value of the target parameter
-     */    
-    public String getParamNavtext() {
-        return m_paramNavtext;
-    }
-    
-    /**
-     * Sets the value of the navigation text parameter.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setParamNavtext(String value) {
-        m_paramNavtext = value;
-    }
-    
-    /**
-     * Returns the value of the navigation position parameter, 
-     * or null if this parameter was not provided.<p>
-     * 
-     * The navigation position parameter defines the new value for 
-     * the NavPos property.<p>
-     * 
-     * @return the value of the target parameter
-     */    
-    public String getParamNavpos() {
-        return m_paramNavpos;
     }
 
     /**
-     * Sets the value of the navigation position parameter.<p>
+     * Builds the HTML for the select box of the navigation position.<p>
      * 
-     * @param value the value to set
-     */
-    public void setParamNavpos(String value) {
-        m_paramNavpos = value;
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_TYPE.equals(getParamAction())) {
-            setAction(ACTION_CHNAV);
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
-            setAction(ACTION_CANCEL);
-        } else {                        
-            setAction(ACTION_DEFAULT);
-            // build title for chnav dialog     
-            setParamTitle(key("explorer.context.chnav") + ": " + CmsResource.getName(getParamResource()));
-        }
-    }
-    
-    /**
-     * Returns the escaped NavText property value of the current resource.<p>
+     * @param cms the CmsObject
+     * @param filename the current file
+     * @param attributes optional attributes for the &lt;select&gt; tag, do not add the "name" atribute!
+     * @param messages the localized workplace messages
      * 
-     * @return the NavText property value of the current resource
+     * @return the HTML for a navigation position select box
      */
-    public String getCurrentNavText() {
+    public static String buildNavPosSelector(CmsObject cms, String filename, String attributes, CmsMessages messages) {
+
+        List navList = new ArrayList();
+        List options = new ArrayList();
+        List values = new ArrayList();
+
+        // get current file navigation element
+        CmsJspNavElement curNav = CmsJspNavBuilder.getNavigationForResource(cms, filename);
+
+        // get the parent folder of the current file
+        filename = CmsResource.getParentFolder(filename);
+
+        // get navigation of the current folder
+        navList = CmsJspNavBuilder.getNavigationForFolder(cms, filename);
+        float maxValue = 0;
+        float nextPos = 0;
+
+        // calculate value for the first navigation position
+        float firstValue = 1;
         try {
-            String navText = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_NAVTEXT, false).getValue();
-            if (navText == null) {
-                navText = "";
-            }
-            return CmsEncoder.escapeXml(navText);
-        } catch (CmsException e) {
-            // can usually be ignored
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
-            }         
-            return "";
+            CmsJspNavElement ne = (CmsJspNavElement)navList.get(0);
+            maxValue = ne.getNavPosition();
+        } catch (Exception e) {
+            // should usually never happen
+            LOG.error(e.getLocalizedMessage());
         }
-        
+
+        if (maxValue != 0) {
+            firstValue = maxValue / 2;
+        }
+
+        // add the first entry: before first element
+        options.add(messages.key("input.firstelement"));
+        values.add(firstValue + "");
+
+        // show all present navigation elements in box
+        for (int i = 0; i < navList.size(); i++) {
+            CmsJspNavElement ne = (CmsJspNavElement)navList.get(i);
+            String navText = ne.getNavText();
+            float navPos = ne.getNavPosition();
+            // get position of next nav element
+            nextPos = navPos + 2;
+            if ((i + 1) < navList.size()) {
+                nextPos = ((CmsJspNavElement)navList.get(i + 1)).getNavPosition();
+            }
+            // calculate new position of current nav element
+            float newPos = (navPos + nextPos) / 2;
+
+            // check new maxValue of positions and increase it
+            if (navPos > maxValue) {
+                maxValue = navPos;
+            }
+
+            // if the element is the current file, mark it in selectbox
+            if (curNav.getNavText().equals(navText) && curNav.getNavPosition() == navPos) {
+                options.add(CmsEncoder.escapeHtml(messages.key("input.currentposition") + " [" + ne.getFileName() + "]"));
+                values.add("-1");
+            } else {
+                options.add(CmsEncoder.escapeHtml(navText + " [" + ne.getFileName() + "]"));
+                values.add(newPos + "");
+            }
+        }
+
+        // add the entry: at the last position
+        options.add(messages.key("input.lastelement"));
+        values.add((maxValue + 1) + "");
+
+        // add the entry: no change
+        options.add(messages.key("input.nochange"));
+        if (curNav.getNavPosition() == Float.MAX_VALUE) {
+            // current resource has no valid position, use "last position"
+            values.add((maxValue + 1) + "");
+        } else {
+            // current resource has valid position, use "-1" for no change
+            values.add("-1");
+        }
+
+        if (attributes != null && !"".equals(attributes.trim())) {
+            attributes = " " + attributes;
+        } else {
+            attributes = "";
+        }
+        return CmsWorkplace.buildSelect(
+            "name=\"" + PARAM_NAVPOS + "\"" + attributes,
+            options,
+            values,
+            values.size() - 1,
+            true);
     }
-        
+
     /**
      * Performs the navigation change.<p>
      * 
      * @throws JspException if including a JSP subelement is not successful
      */
     public void actionChangeNav() throws JspException {
-        
+
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        
+
         // get request parameters
         String filename = getParamResource();
         String newText = getParamNavtext();
         String selectedPosString = getParamNavpos();
-        
-        try { 
+
+        try {
             // lock resource if autolock is enabled
             checkLock(getParamResource());
             // save the new NavText if not null
             if (newText != null) {
                 CmsProperty newNavText = new CmsProperty();
-                newNavText.setName(I_CmsConstants.C_PROPERTY_NAVTEXT);
-                CmsProperty oldNavText = getCms().readPropertyObject(filename, I_CmsConstants.C_PROPERTY_NAVTEXT, false);
+                newNavText.setName(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+                CmsProperty oldNavText = getCms().readPropertyObject(
+                    filename,
+                    CmsPropertyDefinition.PROPERTY_NAVTEXT,
+                    false);
                 if (oldNavText.isNullProperty()) {
                     // property value was not already set
                     if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
                         newNavText.setStructureValue(newText);
                     } else {
                         newNavText.setResourceValue(newText);
-                    }                                         
+                    }
                 } else {
                     if (oldNavText.getStructureValue() != null) {
                         newNavText.setStructureValue(newText);
@@ -236,7 +256,7 @@ public class CmsChnav extends CmsDialog {
                         newNavText.setResourceValue(newText);
                     }
                 }
-                
+
                 String oldStructureValue = oldNavText.getStructureValue();
                 String newStructureValue = newNavText.getStructureValue();
                 if (CmsStringUtil.isEmpty(oldStructureValue)) {
@@ -260,7 +280,7 @@ public class CmsChnav extends CmsDialog {
                     getCms().writePropertyObject(getParamResource(), newNavText);
                 }
             }
-            
+
             // determine the selected position
             float selectedPos = -1;
             try {
@@ -271,19 +291,22 @@ public class CmsChnav extends CmsDialog {
                     LOG.info(e.getLocalizedMessage());
                 }
             }
-            
+
             // only update the position if a change is requested
             if (selectedPos != -1) {
                 CmsProperty newNavPos = new CmsProperty();
-                newNavPos.setName(I_CmsConstants.C_PROPERTY_NAVPOS);
-                CmsProperty oldNavPos = getCms().readPropertyObject(filename, I_CmsConstants.C_PROPERTY_NAVPOS, false);
+                newNavPos.setName(CmsPropertyDefinition.PROPERTY_NAVPOS);
+                CmsProperty oldNavPos = getCms().readPropertyObject(
+                    filename,
+                    CmsPropertyDefinition.PROPERTY_NAVPOS,
+                    false);
                 if (oldNavPos.isNullProperty()) {
                     // property value was not already set
                     if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
                         newNavPos.setStructureValue(selectedPosString);
                     } else {
                         newNavPos.setResourceValue(selectedPosString);
-                    }                                         
+                    }
                 } else {
                     if (oldNavPos.getStructureValue() != null) {
                         newNavPos.setStructureValue(selectedPosString);
@@ -296,114 +319,116 @@ public class CmsChnav extends CmsDialog {
             }
         } catch (Throwable e) {
             // error during chnav, show error dialog
-            includeErrorpage(this, e);  
+            includeErrorpage(this, e);
         }
         // chnav operation was successful, return to workplace
         actionCloseDialog();
     }
-    
-    /**
-     * Builds the HTML for the select box of the navigation position.<p>
-     * 
-     * @param cms the CmsObject
-     * @param filename the current file
-     * @param attributes optional attributes for the &lt;select&gt; tag, do not add the "name" atribute!
-     * @param messages the localized workplace messages
-     * 
-     * @return the HTML for a navigation position select box
-     */
-    public static String buildNavPosSelector(CmsObject cms, String filename, String attributes, CmsMessages messages) {
-        List navList = new ArrayList();
-        List options = new ArrayList();
-        List values = new ArrayList();
-        
-        // get current file navigation element
-        CmsJspNavElement curNav = CmsJspNavBuilder.getNavigationForResource(cms, filename);
-        
-        // get the parent folder of the current file
-        filename = CmsResource.getParentFolder(filename);
-        
-        // get navigation of the current folder
-        navList = CmsJspNavBuilder.getNavigationForFolder(cms, filename);
-        float maxValue = 0;
-        float nextPos = 0;
-        
-        // calculate value for the first navigation position
-        float firstValue = 1;
-        try {
-            CmsJspNavElement ne = (CmsJspNavElement)navList.get(0);
-            maxValue = ne.getNavPosition();
-        } catch (Exception e) {
-            // should usually never happen
-            LOG.error(e.getLocalizedMessage());
-        }
-        
-        if (maxValue != 0) {
-            firstValue = maxValue / 2;
-        }
-        
-        // add the first entry: before first element
-        options.add(messages.key("input.firstelement"));
-        values.add(firstValue+"");      
-        
-        // show all present navigation elements in box
-        for (int i=0; i<navList.size(); i++) {
-            CmsJspNavElement ne = (CmsJspNavElement)navList.get(i);
-            String navText = ne.getNavText();
-            float navPos = ne.getNavPosition();
-            // get position of next nav element
-            nextPos = navPos + 2;
-            if ((i+1) < navList.size()) {
-                nextPos = ((CmsJspNavElement)navList.get(i+1)).getNavPosition();
-            }
-            // calculate new position of current nav element
-            float newPos = (navPos + nextPos) / 2;
-            
-            // check new maxValue of positions and increase it
-            if (navPos > maxValue) {
-                maxValue = navPos;
-            }
-            
-            // if the element is the current file, mark it in selectbox
-            if (curNav.getNavText().equals(navText) && curNav.getNavPosition() == navPos) {
-                options.add(CmsEncoder.escapeHtml(messages.key("input.currentposition")+" ["+ne.getFileName()+"]"));
-                values.add("-1");
-            } else {
-                options.add(CmsEncoder.escapeHtml(navText+" ["+ne.getFileName()+"]"));
-                values.add(newPos + "");
-            }
-        }
-        
-        // add the entry: at the last position
-        options.add(messages.key("input.lastelement"));
-        values.add((maxValue + 1) + "");
-        
-        // add the entry: no change
-        options.add(messages.key("input.nochange"));
-        if (curNav.getNavPosition() == Float.MAX_VALUE) {
-            // current resource has no valid position, use "last position"
-            values.add((maxValue + 1) + "");
-        } else {
-            // current resource has valid position, use "-1" for no change
-            values.add("-1");
-        }
-        
-        if (attributes != null && !"".equals(attributes.trim())) {
-            attributes = " " + attributes;
-        } else {
-            attributes = "";
-        }
-        return CmsWorkplace.buildSelect("name=\""+PARAM_NAVPOS+"\"" + attributes, options, values, values.size()-1, true);  
-    }
-    
+
     /**
      * Builds the HTML for the select box of the navigation position.<p>
      * 
      * @return the HTML for a navigation position select box
      */
     public String buildNavPosSelector() {
+
         synchronized (this) {
             return buildNavPosSelector(getCms(), getParamResource(), null, getMessages());
+        }
+    }
+
+    /**
+     * Returns the escaped NavText property value of the current resource.<p>
+     * 
+     * @return the NavText property value of the current resource
+     */
+    public String getCurrentNavText() {
+
+        try {
+            String navText = getCms().readPropertyObject(
+                getParamResource(),
+                CmsPropertyDefinition.PROPERTY_NAVTEXT,
+                false).getValue();
+            if (navText == null) {
+                navText = "";
+            }
+            return CmsEncoder.escapeXml(navText);
+        } catch (CmsException e) {
+            // can usually be ignored
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
+            }
+            return "";
+        }
+
+    }
+
+    /**
+     * Returns the value of the navigation position parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The navigation position parameter defines the new value for 
+     * the NavPos property.<p>
+     * 
+     * @return the value of the target parameter
+     */
+    public String getParamNavpos() {
+
+        return m_paramNavpos;
+    }
+
+    /**
+     * Returns the value of the navigation text parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The navigation text parameter defines the new value for 
+     * the NavText property.<p>
+     * 
+     * @return the value of the target parameter
+     */
+    public String getParamNavtext() {
+
+        return m_paramNavtext;
+    }
+
+    /**
+     * Sets the value of the navigation position parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamNavpos(String value) {
+
+        m_paramNavpos = value;
+    }
+
+    /**
+     * Sets the value of the navigation text parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamNavtext(String value) {
+
+        m_paramNavtext = value;
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_TYPE.equals(getParamAction())) {
+            setAction(ACTION_CHNAV);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            setAction(ACTION_CANCEL);
+        } else {
+            setAction(ACTION_DEFAULT);
+            // build title for chnav dialog     
+            setParamTitle(key("explorer.context.chnav") + ": " + CmsResource.getName(getParamResource()));
         }
     }
 

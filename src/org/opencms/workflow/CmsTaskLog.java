@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTaskLog.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsUUID;
  * Describes an OpenCms task log entry.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  */
 public class CmsTaskLog {
 
@@ -172,7 +172,7 @@ public class CmsTaskLog {
         result.append(getStartTime());
         result.append(" user:");
         result.append(getUser());
-        if (getType() == I_CmsConstants.C_TASKLOG_SYSTEM) {
+        if (getType() == CmsTaskService.TASKLOG_SYSTEM) {
             result.append(" type:system");
         } else {
             result.append(" type:user");

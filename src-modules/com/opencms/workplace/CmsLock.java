@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsLock.java,v $
-* Date   : $Date: 2005/05/19 08:57:22 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,14 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
+import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -48,7 +50,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/21 15:49:59 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -106,10 +108,10 @@ public class CmsLock extends CmsWorkplaceDefault {
                 filename += "/";
             }
         }
-        Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+        Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_STARTSETTINGS);
         String showLockDialog = "off";
         if(startSettings!=null){
-            showLockDialog = (String)startSettings.get(C_START_LOCKDIALOG);
+            showLockDialog = (String)startSettings.get(I_CmsConstants.C_START_LOCKDIALOG);
         }
         if(lock == null && !"on".equals(showLockDialog)) {
             lock = "true";

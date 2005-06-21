@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2005/05/17 13:47:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/21 15:49:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package com.opencms.workplace;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -52,7 +53,7 @@ import java.util.Vector;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -287,7 +288,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
             CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + getGalleryIconPath(cms) );
         filelistTemplate.setData(C_FILELIST_NAME_VALUE, res.getName());
         filelistTemplate.setData(C_FILELIST_TITLE_VALUE, cms.readProperty(cms.getSitePath(res),
-                C_PROPERTY_TITLE));
+                CmsPropertyDefinition.PROPERTY_TITLE));
     }    
                     
 }

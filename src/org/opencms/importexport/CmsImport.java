@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2005/05/30 15:17:51 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.32 $ $Date: 2005/05/30 15:17:51 $
+ * @version $Revision: 1.33 $ $Date: 2005/06/21 15:49:58 $
  */
 public class CmsImport implements Serializable {
 
@@ -201,15 +201,15 @@ public class CmsImport implements Serializable {
         }
 
         // get all file-nodes
-        fileNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_FILE);
+        fileNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_FILE);
 
         // walk through all files in manifest
         for (int i = 0; i < fileNodes.size(); i++) {
             currentElement = (Element)fileNodes.get(i);
-            source = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
+            source = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_SOURCE);
             destination = CmsImport.getChildElementTextValue(
                 currentElement,
-                I_CmsConstants.C_EXPORT_TAG_DESTINATION);
+                CmsImportExportManager.N_DESTINATION);
             if (source != null) {
                 // only consider files
                 boolean exists = true;
@@ -265,14 +265,14 @@ public class CmsImport implements Serializable {
             }
 
             // get all file-nodes
-            fileNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_FILE);
+            fileNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_FILE);
 
             // walk through all files in manifest
             for (int i = 0; i < fileNodes.size(); i++) {
                 currentElement = (Element)fileNodes.get(i);
                 destination = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_DESTINATION);
+                    CmsImportExportManager.N_DESTINATION);
 
                 // get the resources for a project
                 try {
@@ -496,12 +496,12 @@ public class CmsImport implements Serializable {
         getImportResource();
 
         // read the xml-config file
-        m_docXml = CmsXmlUtils.unmarshalHelper(getFileBytes(I_CmsConstants.C_EXPORT_XMLFILENAME), null);
+        m_docXml = CmsXmlUtils.unmarshalHelper(getFileBytes(CmsImportExportManager.EXPORT_XMLFILENAME), null);
 
         // try to read the export version number
         try {
             m_importVersion = Integer.parseInt(((Element)m_docXml.selectNodes(
-                "//" + I_CmsConstants.C_EXPORT_TAG_VERSION).get(0)).getTextTrim());
+                "//" + CmsImportExportManager.N_VERSION).get(0)).getTextTrim());
         } catch (Exception e) {
             //ignore the exception, the export file has no version nummber (version 0).
         }

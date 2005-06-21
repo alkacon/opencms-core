@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTask.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsUUID;
  * Describes an OpenCms task.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsTask {
 
@@ -632,22 +632,22 @@ public class CmsTask {
         String result = null;
 
         switch (state) {
-            case I_CmsConstants.C_TASK_STATE_PREPARE:
+            case CmsTaskService.TASK_STATE_PREPARE:
                 result = Messages.get().key(Messages.GUI_TASK_STATE_PREPARED_0);
                 break;
-            case I_CmsConstants.C_TASK_STATE_START:
+            case CmsTaskService.TASK_STATE_START:
                 result = Messages.get().key(Messages.GUI_TASK_STATE_START_0);
                 break;
-            case I_CmsConstants.C_TASK_STATE_STARTED:
+            case CmsTaskService.TASK_STATE_STARTED:
                 result = Messages.get().key(Messages.GUI_TASK_STATE_STARTED_0);
                 break;
-            case I_CmsConstants.C_TASK_STATE_NOTENDED:
+            case CmsTaskService.TASK_STATE_NOTENDED:
                 result = Messages.get().key(Messages.GUI_TASK_STATE_RUNNING_0);
                 break;
-            case I_CmsConstants.C_TASK_STATE_ENDED:
+            case CmsTaskService.TASK_STATE_ENDED:
                 result = Messages.get().key(Messages.GUI_TASK_STATE_ENDED_0);
                 break;
-            case I_CmsConstants.C_TASK_STATE_HALTED:
+            case CmsTaskService.TASK_STATE_HALTED:
                 result = Messages.get().key(Messages.GUI_TASK_STATE_HALTED_0);
                 break;
             default:

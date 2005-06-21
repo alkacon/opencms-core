@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/06/21 15:50:00 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
 
@@ -77,7 +76,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -3212,18 +3211,18 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                     for (int i = 0; i < errorCodes.size(); i++) {
                         errorCode = (String)errorCodes.elementAt(i);
                         // try to get an error message that fits thos this error code exactly
-                        if (template.hasData(I_CmsConstants.C_ERRPREFIX + errorCode)) {
-                            error += template.getProcessedDataValue(I_CmsConstants.C_ERRPREFIX + errorCode);
+                        if (template.hasData(com.opencms.core.I_CmsConstants.C_ERRPREFIX + errorCode)) {
+                            error += template.getProcessedDataValue(com.opencms.core.I_CmsConstants.C_ERRPREFIX + errorCode);
                         } else {
                             // now check if there is a general error message for this field
-                            errorField = errorCode.substring(0, errorCode.indexOf(I_CmsConstants.C_ERRSPERATOR));
-                            if (template.hasData(I_CmsConstants.C_ERRPREFIX + errorField)) {
-                                error += template.getProcessedDataValue(I_CmsConstants.C_ERRPREFIX + errorField);
+                            errorField = errorCode.substring(0, errorCode.indexOf(com.opencms.core.I_CmsConstants.C_ERRSPERATOR));
+                            if (template.hasData(com.opencms.core.I_CmsConstants.C_ERRPREFIX + errorField)) {
+                                error += template.getProcessedDataValue(com.opencms.core.I_CmsConstants.C_ERRPREFIX + errorField);
                             } else {
                                 // now check if there is at least a general error messace for the error type
-                                errorType = errorCode.substring(errorCode.indexOf(I_CmsConstants.C_ERRSPERATOR) + 1, errorCode.length());
-                                if (template.hasData(I_CmsConstants.C_ERRPREFIX + errorType)) {
-                                    error += template.getProcessedDataValue(I_CmsConstants.C_ERRPREFIX + errorType);
+                                errorType = errorCode.substring(errorCode.indexOf(com.opencms.core.I_CmsConstants.C_ERRSPERATOR) + 1, errorCode.length());
+                                if (template.hasData(com.opencms.core.I_CmsConstants.C_ERRPREFIX + errorType)) {
+                                    error += template.getProcessedDataValue(com.opencms.core.I_CmsConstants.C_ERRPREFIX + errorType);
                                 } else {
                                     // no error dmessage was found, so generate a default one
                                     error += "[" + errorCode + "]";
@@ -3282,18 +3281,18 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                         errorCode = (String)errorCodes.elementAt(i);
 
                         // try to get an error message that fits thos this error code exactly
-                        if (template.hasData(I_CmsConstants.C_ERRPREFIX + errorCode)) {
-                            error += template.getProcessedDataValue(I_CmsConstants.C_ERRPREFIX + errorCode);
+                        if (template.hasData(com.opencms.core.I_CmsConstants.C_ERRPREFIX + errorCode)) {
+                            error += template.getProcessedDataValue(com.opencms.core.I_CmsConstants.C_ERRPREFIX + errorCode);
                         } else {
                             // now check if there is a general error message for this field
-                            errorField = errorCode.substring(0, errorCode.indexOf(I_CmsConstants.C_ERRSPERATOR));
-                            if (template.hasData(I_CmsConstants.C_ERRPREFIX + errorField)) {
-                                error += template.getProcessedDataValue(I_CmsConstants.C_ERRPREFIX + errorField);
+                            errorField = errorCode.substring(0, errorCode.indexOf(com.opencms.core.I_CmsConstants.C_ERRSPERATOR));
+                            if (template.hasData(com.opencms.core.I_CmsConstants.C_ERRPREFIX + errorField)) {
+                                error += template.getProcessedDataValue(com.opencms.core.I_CmsConstants.C_ERRPREFIX + errorField);
                             } else {
                                 // now check if there is at least a general error messace for the error type
-                                errorType = errorCode.substring(errorCode.indexOf(I_CmsConstants.C_ERRSPERATOR) + 1, errorCode.length());
-                                if (template.hasData(I_CmsConstants.C_ERRPREFIX + errorType)) {
-                                    error += template.getProcessedDataValue(I_CmsConstants.C_ERRPREFIX + errorType);
+                                errorType = errorCode.substring(errorCode.indexOf(com.opencms.core.I_CmsConstants.C_ERRSPERATOR) + 1, errorCode.length());
+                                if (template.hasData(com.opencms.core.I_CmsConstants.C_ERRPREFIX + errorType)) {
+                                    error += template.getProcessedDataValue(com.opencms.core.I_CmsConstants.C_ERRPREFIX + errorType);
                                 } else {
                                     // no error dmessage was found, so generate a default one
                                     error += "[" + errorCode + "]";

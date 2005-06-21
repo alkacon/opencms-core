@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2005/05/31 15:51:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/21 15:49:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Iterator;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -183,16 +183,16 @@ public class CmsLoginNew extends CmsXmlTemplate {
             setStartTaskId(session, startTaskId);            
             
             // set the additional user preferences
-            Hashtable preferences = (Hashtable)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_PREFERENCES);
+            Hashtable preferences = (Hashtable)user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PREFERENCES);
             // check if preferences are existing, otherwise use defaults
             if (preferences == null) {
                 preferences = getDefaultPreferences();
             }
             // check of the users language setting (if he has one)
-            session.removeValue(I_CmsConstants.C_START_LOCALE);
+            session.removeValue(com.opencms.core.I_CmsConstants.C_START_LOCALE);
             
-            preferences.put(I_CmsConstants.C_START_LOCALE, cms.getRequestContext().getLocale().toString());
-            session.putValue(I_CmsConstants.C_ADDITIONAL_INFO_PREFERENCES, preferences);    
+            preferences.put(com.opencms.core.I_CmsConstants.C_START_LOCALE, cms.getRequestContext().getLocale().toString());
+            session.putValue(CmsUserSettings.ADDITIONAL_INFO_PREFERENCES, preferences);    
 
             langFile = new CmsXmlLanguageFile(cms, cms.getRequestContext().getLocale().getLanguage());
             if (DEBUG > 1) System.err.println("CmsLoginNew: encoding: " + langFile.getEncoding());           

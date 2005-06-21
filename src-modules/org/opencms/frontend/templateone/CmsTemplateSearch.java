@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateSearch.java,v $
- * Date   : $Date: 2005/06/02 08:45:04 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,8 +28,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.frontend.templateone;
 
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
@@ -54,23 +56,24 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for the search result JSP page.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsTemplateSearch extends CmsTemplateBean {
-    
+
     /** Request parameter name for the search entire website flag.<p> */
     public static final String C_PARAM_SEARCHALL = "entire";
-    
+
     /** Stores the URI of the page calling the search result page.<p> */
     private String m_pageUri;
-    
+
     /** The search entire website flag.<p> */
     private boolean m_searchAll;
-    
+
     /**
      * Empty constructor, required for every JavaBean.<p>
      */
     public CmsTemplateSearch() {
+
         super();
     }
 
@@ -84,6 +87,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
      * @param res the JSP response 
      */
     public CmsTemplateSearch(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         super();
         init(context, req, res);
     }
@@ -98,11 +102,13 @@ public class CmsTemplateSearch extends CmsTemplateBean {
      * @return the html to display error messages
      */
     public String buildSearchErrorMessages(CmsSearch search, List results) {
+
         StringBuffer result = new StringBuffer(32);
         if (search.getLastException() != null) {
             // the search did not run properly, create error output
             String errorMessage = "";
-            if (((CmsException)search.getLastException()).getMessageContainer().getKey().equals(Messages.ERR_QUERY_TOO_SHORT_1)) {
+            if (((CmsException)search.getLastException()).getMessageContainer().getKey().equals(
+                Messages.ERR_QUERY_TOO_SHORT_1)) {
                 // query String was too short
                 errorMessage = key("search.error.wordlength");
             } else {
@@ -126,20 +132,21 @@ public class CmsTemplateSearch extends CmsTemplateBean {
         }
         return result.toString();
     }
-    
+
     /**
      * Builds the html for the search result page headline.<p>
      * 
      * @return the html for the search result page headline 
      */
     public String buildSearchHeadline() {
-        StringBuffer result = new StringBuffer(32);    
+
+        StringBuffer result = new StringBuffer(32);
         result.append(key("search.headline"));
         if (!isSearchAll() && !"/".equals(getStartFolder())) {
             result.append(key("search.headline.area"));
-            result.append(getAreaName());   
+            result.append(getAreaName());
         } else {
-            result.append(key("search.headline.all"));    
+            result.append(key("search.headline.all"));
         }
         return result.toString();
     }
@@ -151,10 +158,11 @@ public class CmsTemplateSearch extends CmsTemplateBean {
      * @return the html for the links to previous and next search result pages
      */
     public String buildSearchLinks(CmsSearch search) {
+
         StringBuffer result = new StringBuffer(32);
         boolean showPageLinks = false;
         // additional parameters for search result page in module folder
-        StringBuffer additionalParams = new StringBuffer(16);       
+        StringBuffer additionalParams = new StringBuffer(16);
         if (search.getPreviousUrl() != null || search.getNextUrl() != null) {
             // there is at least one previous or next page, build page links
             showPageLinks = true;
@@ -230,6 +238,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
      * @return the html for the search result list
      */
     public String buildSearchResultList(List results) {
+
         StringBuffer result = new StringBuffer(128);
         Iterator iterator = results.iterator();
         while (iterator.hasNext()) {
@@ -248,7 +257,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
                 result.append(fileIcon);
                 result.append("</a>&nbsp;");
             }
-            
+
             result.append("<a href=\"");
             result.append(link(path));
             result.append("\">");
@@ -286,7 +295,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
         }
         return result.toString();
     }
-    
+
     /**
      * Returns the HTML of the file icon for the given resource name or an empty String if no icon can be found.<p>
      * 
@@ -294,17 +303,21 @@ public class CmsTemplateSearch extends CmsTemplateBean {
      * @return the HTML of the file icon for the given resource name or an empty String
      */
     public String getFileIcon(String fileName) {
-    
+
         int lastDot = fileName.lastIndexOf('.');
         String extension = "";
         // get the file extension 
         if ((lastDot > 0) && (lastDot < (fileName.length() - 1))) {
-            extension = fileName.substring(lastDot + 1).toLowerCase();   
-            String iconPath = I_CmsWpConstants.C_VFS_PATH_MODULES + C_MODULE_NAME + "/resources/icons/ic_app_" + extension + ".gif";
+            extension = fileName.substring(lastDot + 1).toLowerCase();
+            String iconPath = I_CmsWpConstants.C_VFS_PATH_MODULES
+                + C_MODULE_NAME
+                + "/resources/icons/ic_app_"
+                + extension
+                + ".gif";
             // check if an icon exists
             if (getCmsObject().existsResource(iconPath)) {
                 StringBuffer result = new StringBuffer(8);
-                String title = property(I_CmsConstants.C_PROPERTY_TITLE, iconPath, "");
+                String title = property(CmsPropertyDefinition.PROPERTY_TITLE, iconPath, "");
                 result.append("<img src=\"");
                 result.append(link(iconPath));
                 result.append("\" border=\"0\" alt=\"");
@@ -313,33 +326,35 @@ public class CmsTemplateSearch extends CmsTemplateBean {
                 result.append(title);
                 result.append("\" align=\"left\" hspace=\"2\">");
                 return result.toString();
-            }          
+            }
         }
         return "";
-        
+
     }
-    
+
     /**
      * Returns the URI of the page calling the search result page.<p>
      * 
      * @return the URI of the page calling the search result page
      */
     public String getPageUri() {
+
         return m_pageUri;
     }
-    
+
     /**
      * Returns the "checked" attribute String if the user checked the "search all" checkbox.<p>
      * 
      * @return the "checked" attribute String or an empty String
      */
     public String getSearchAllChecked() {
-        if (isSearchAll() || "/".equals(getStartFolder()))    {
-            return " checked=\"checked\"";    
+
+        if (isSearchAll() || "/".equals(getStartFolder())) {
+            return " checked=\"checked\"";
         }
         return "";
     }
-    
+
     /**
      * Returns the list of search results depending on the search root and the form data.<p>
      * 
@@ -348,14 +363,15 @@ public class CmsTemplateSearch extends CmsTemplateBean {
      * @param search the instanciated search object
      * @return the results of the entire website or of the search root
      */
-    public List getSearchResults(CmsSearch search) {       
+    public List getSearchResults(CmsSearch search) {
+
         List result;
         if (isSearchAll()) {
             // set search root to root folder to get all search results
-            search.setSearchRoot("/");    
+            search.setSearchRoot("/");
         } else {
             // set search root to start folder
-            search.setSearchRoot(getStartFolder());                         
+            search.setSearchRoot(getStartFolder());
         }
         String queryString = search.getQuery();
         try {
@@ -373,9 +389,9 @@ public class CmsTemplateSearch extends CmsTemplateBean {
             // reset URI to page
             getRequestContext().setUri(getPageUri());
         }
-        return result;    
+        return result;
     }
-    
+
     /**
      * Includes the specified template element with the page URI specified in the request parameter "uri".<p>
      * 
@@ -385,7 +401,8 @@ public class CmsTemplateSearch extends CmsTemplateBean {
      * @throws JspException if including the target fails
      */
     public void includeWithPageUri(String element) throws JspException {
-        String template = property(I_CmsConstants.C_PROPERTY_TEMPLATE, "search", null);
+
+        String template = property(CmsPropertyDefinition.PROPERTY_TEMPLATE, "search", null);
         // include target
         include(template, element);
     }
@@ -401,6 +418,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
      * @param res the JSP response 
      */
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         // call initialization of super class
         super.init(context, req, res);
         // initialize members from request
@@ -409,8 +427,8 @@ public class CmsTemplateSearch extends CmsTemplateBean {
             m_pageUri = getRequestContext().getUri();
         }
         m_searchAll = Boolean.valueOf(req.getParameter(C_PARAM_SEARCHALL)).booleanValue();
-       // change URI to point at page that called the search          
-       getRequestContext().setUri(m_pageUri);   
+        // change URI to point at page that called the search          
+        getRequestContext().setUri(m_pageUri);
     }
 
     /**
@@ -419,24 +437,27 @@ public class CmsTemplateSearch extends CmsTemplateBean {
      * @return true if the entire website should be searched, otherwise false
      */
     public boolean isSearchAll() {
+
         return m_searchAll;
     }
-    
+
     /**
      * Returns true if the checkbox to search the entire website should be displayed.<p>
      * 
      * @return true if the checkbox to search the entire website should be displayed, otherwise false
      */
     public boolean isSearchAllDisplayed() {
-        return !"/".equals(getStartFolder());    
+
+        return !"/".equals(getStartFolder());
     }
-    
+
     /**
      * Sets if the entire website should be searched.<p>
      *
      * @param searchAll true if the entire website should be searched, otherwise false
      */
     public void setSearchAll(boolean searchAll) {
+
         m_searchAll = searchAll;
     }
 

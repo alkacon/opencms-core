@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2005/06/21 15:49:59 $
+ * Version: $Revision: 1.100 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.99 $
+ * @version $Revision: 1.100 $
  * @since 5.1
  */
 public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
@@ -594,13 +594,13 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
         }
 
-        m_digestAlgorithm = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
+        m_digestAlgorithm = config.getString(CmsDriverManager.CONFIGURATION_DB + ".user.digest.type", "MD5");
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_DIGEST_ALGORITHM_1, m_digestAlgorithm));
         }
 
         m_digestFileEncoding = config.getString(
-            I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding",
+            CmsDriverManager.CONFIGURATION_DB + ".user.digest.encoding",
             CmsEncoder.C_UTF8_ENCODING);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_DIGEST_ENCODING_1, m_digestFileEncoding));
@@ -1624,7 +1624,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             I_CmsConstants.C_FLAG_ENABLED,
             new Hashtable(),
             " ",
-            I_CmsConstants.C_USER_TYPE_SYSTEMUSER,
+            CmsUser.USER_TYPE_SYSTEMUSER,
             null);
         admin = importUser(
             dbc,
@@ -1639,7 +1639,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             I_CmsConstants.C_FLAG_ENABLED,
             new Hashtable(),
             " ",
-            I_CmsConstants.C_USER_TYPE_SYSTEMUSER,
+            CmsUser.USER_TYPE_SYSTEMUSER,
             null);
 
         createUserInGroup(dbc, guest.getId(), guests.getId(), null);
@@ -1661,7 +1661,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 I_CmsConstants.C_FLAG_ENABLED,
                 Collections.EMPTY_MAP,
                 " ",
-                I_CmsConstants.C_USER_TYPE_SYSTEMUSER,
+                CmsUser.USER_TYPE_SYSTEMUSER,
                 null);
             createUserInGroup(dbc, export.getId(), guests.getId(), null);
         }

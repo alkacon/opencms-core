@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/06/16 07:28:03 $
- * Version: $Revision: 1.129 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.130 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.129 $
+ * @version $Revision: 1.130 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1700,7 +1700,7 @@ public class CmsObject {
      */
     public String loginUser(String username, String password, String remoteAddress) throws CmsException {
 
-        return loginUser(username, password, remoteAddress, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        return loginUser(username, password, remoteAddress, CmsUser.USER_TYPE_SYSTEMUSER);
     }
 
     /**
@@ -1744,7 +1744,7 @@ public class CmsObject {
      */
     public String loginWebUser(String username, String password) throws CmsException {
 
-        return loginUser(username, password, m_context.getRemoteAddress(), I_CmsConstants.C_USER_TYPE_WEBUSER);
+        return loginUser(username, password, m_context.getRemoteAddress(), CmsUser.USER_TYPE_WEBUSER);
     }
 
     /**
@@ -1950,7 +1950,7 @@ public class CmsObject {
      */
     public List readAllPropertyDefinitions() throws CmsException {
 
-        return m_securityManager.readAllPropertyDefinitions(m_context, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+        return m_securityManager.readAllPropertyDefinitions(m_context, CmsPropertyDefinition.PROPERYDEFINITION_RESOURCE);
     }
 
     /**

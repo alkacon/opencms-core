@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.228 $
+ * Date   : $Date: 2005/06/21 15:49:59 $
+ * Version: $Revision: 1.229 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,6 +64,7 @@ import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
+import org.opencms.workflow.CmsTaskService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -86,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.228 $
+ * @version $Revision: 1.229 $
  * @since 5.1
  */
 public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
@@ -433,7 +434,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             I_CmsConstants.C_PROJECT_ONLINE,
             new java.sql.Timestamp(new java.util.Date().getTime()),
             new java.sql.Timestamp(new java.util.Date().getTime()),
-            I_CmsConstants.C_TASK_PRIORITY_NORMAL);
+            CmsTaskService.TASK_PRIORITY_NORMAL);
         CmsProject onlineProject = createProject(
             dbc,
             admin,
@@ -496,7 +497,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             "_setupProject",
             new java.sql.Timestamp(new java.util.Date().getTime()),
             new java.sql.Timestamp(new java.util.Date().getTime()),
-            I_CmsConstants.C_TASK_PRIORITY_NORMAL);
+            CmsTaskService.TASK_PRIORITY_NORMAL);
 
         // important: must access through driver manager to ensure proper cascading        
         CmsProject setupProject = m_driverManager.getProjectDriver().createProject(

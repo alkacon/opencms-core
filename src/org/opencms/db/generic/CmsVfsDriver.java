@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.245 $
+ * Date   : $Date: 2005/06/21 15:49:59 $
+ * Version: $Revision: 1.246 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.245 $ 
+ * @version $Revision: 1.246 $ 
  * @since 5.1
  */
 public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
@@ -108,7 +108,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         int l = path.length();
         if ((l == 0) || (path.charAt(l - 1) != '/')) {
-            return path.concat(I_CmsConstants.C_FOLDER_SEPARATOR);
+            return path.concat("/");
         } else {
             return path;
         }
@@ -367,7 +367,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // check if the parent folder of the resource exists and is not deleted
-        if (!resource.getRootPath().equals(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+        if (!resource.getRootPath().equals("/")) {
             String parentFolderName = CmsResource.getParentFolder(resource.getRootPath());
             CmsFolder parentFolder = readFolder(dbc, project.getId(), parentFolderName);
             if (parentFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
@@ -742,8 +742,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         String resourceName = resource.getRootPath();
 
         // add folder separator to folder name if it is not present
-        if (resource.isFolder() && !resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-            resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
+        if (resource.isFolder() && !resourceName.endsWith("/")) {
+            resourceName += "/";
         }
 
         try {
@@ -1307,8 +1307,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         int resultSize = 0;
 
         String resourceName = resource.getRootPath();
-        if ((resource.isFolder()) && (!resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))) {
-            resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
+        if ((resource.isFolder()) && (!resourceName.endsWith("/"))) {
+            resourceName += "/";
         }
         try {
             conn = m_sqlManager.getConnection(dbc, project.getId());
@@ -1376,8 +1376,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         CmsProperty property = null;
 
         String resourceName = resource.getRootPath();
-        if ((resource.isFolder()) && (!resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))) {
-            resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
+        if ((resource.isFolder()) && (!resourceName.endsWith("/"))) {
+            resourceName += "/";
         }
 
         try {
@@ -1531,7 +1531,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc, projectId);
-            if (mode == I_CmsConstants.C_READMODE_MATCHSTATE) {
+            if (mode == CmsDriverManager.READMODE_MATCHSTATE) {
                 stmt = m_sqlManager.getPreparedStatement(
                     conn,
                     projectId,
@@ -1541,7 +1541,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setInt(3, state);
                 stmt.setInt(4, state);
                 stmt.setInt(5, state);
-            } else if (mode == I_CmsConstants.C_READMODE_UNMATCHSTATE) {
+            } else if (mode == CmsDriverManager.READMODE_UNMATCHSTATE) {
                 stmt = m_sqlManager.getPreparedStatement(
                     conn,
                     projectId,
@@ -2109,8 +2109,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         String resourceName = resource.getRootPath();
-        if (resource.isFolder() && !resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-            resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
+        if (resource.isFolder() && !resourceName.endsWith("/")) {
+            resourceName += "/";
         }
 
         try {
@@ -2469,7 +2469,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     protected String internalReadParentId(CmsDbContext dbc, int projectId, String resourcename)
     throws CmsDataAccessException {
 
-        if (I_CmsConstants.C_FOLDER_SEPARATOR.equalsIgnoreCase(resourcename)) {
+        if ("/".equalsIgnoreCase(resourcename)) {
             return CmsUUID.getNullUUID().toString();
         }
 
@@ -2581,7 +2581,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             return;
         }
 
-        if ((mode & I_CmsConstants.C_READMODE_EXCLUDE_TREE) > 0) {
+        if ((mode & CmsDriverManager.READMODE_EXCLUDE_TREE) > 0) {
             // only return immediate children - use UUID optimization            
             conditions.append(C_BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PARENT_UUID"));
@@ -2590,7 +2590,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             return;
         }
 
-        if (I_CmsConstants.C_FOLDER_SEPARATOR.equalsIgnoreCase(parent)) {
+        if ("/".equalsIgnoreCase(parent)) {
             // if root folder is parent, no additional condition is needed since all resource match anyway
             return;
         }
@@ -2612,7 +2612,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      */
     private void prepareProjectCondition(int projectId, int mode, StringBuffer conditions, List params) {
 
-        if ((mode & I_CmsConstants.C_READMODE_INCLUDE_PROJECT) > 0) {
+        if ((mode & CmsDriverManager.READMODE_INCLUDE_PROJECT) > 0) {
             // C_READMODE_INCLUDE_PROJECT: add condition to match the PROJECT_ID
             conditions.append(C_BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PROJECT_LASTMODIFIED"));
@@ -2623,12 +2623,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
     private void prepareResourceCondition(int projectId, int mode, StringBuffer conditions) {
 
-        if ((mode & I_CmsConstants.C_READMODE_ONLY_FOLDERS) > 0) {
+        if ((mode & CmsDriverManager.READMODE_ONLY_FOLDERS) > 0) {
             // C_READMODE_ONLY_FOLDERS: add condition to match only folders
             conditions.append(C_BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_ONLY_FOLDERS"));
             conditions.append(C_END_CONDITION);
-        } else if ((mode & I_CmsConstants.C_READMODE_ONLY_FILES) > 0) {
+        } else if ((mode & CmsDriverManager.READMODE_ONLY_FILES) > 0) {
             // C_READMODE_ONLY_FILES: add condition to match only files
             conditions.append(C_BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_ONLY_FILES"));
@@ -2648,7 +2648,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     private void prepareStateCondition(int projectId, int state, int mode, StringBuffer conditions, List params) {
 
         if (state != I_CmsConstants.C_READ_IGNORE_STATE) {
-            if ((mode & I_CmsConstants.C_READMODE_EXCLUDE_STATE) > 0) {
+            if ((mode & CmsDriverManager.READMODE_EXCLUDE_STATE) > 0) {
                 // C_READ_MODIFIED_STATES: add condition to match against any state but not given state
                 conditions.append(C_BEGIN_EXCLUDE_CONDITION);
                 conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_STATE"));
@@ -2711,7 +2711,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     private void prepareTypeCondition(int projectId, int type, int mode, StringBuffer conditions, List params) {
 
         if (type != I_CmsConstants.C_READ_IGNORE_TYPE) {
-            if ((mode & I_CmsConstants.C_READMODE_EXCLUDE_TYPE) > 0) {
+            if ((mode & CmsDriverManager.READMODE_EXCLUDE_TYPE) > 0) {
                 // C_READ_FILE_TYPES: add condition to match against any type, but not given type
                 conditions.append(C_BEGIN_EXCLUDE_CONDITION);
                 conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));

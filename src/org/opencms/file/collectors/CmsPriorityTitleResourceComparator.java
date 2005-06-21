@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityTitleResourceComparator.java,v $
- * Date   : $Date: 2005/05/11 10:58:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,9 @@ package org.opencms.file.collectors;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Comparator;
@@ -50,7 +50,7 @@ import java.util.Map;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.7.2 
  * 
@@ -60,14 +60,14 @@ public class CmsPriorityTitleResourceComparator implements Comparator {
     /** The current OpenCms user context. */
     private CmsObject m_cms;
 
-    /** The title of this comparator key. */
-    private String m_title;
-    
     /** The interal map of comparator keys. */
     private Map m_keys;
 
     /** The priority of this comparator key. */
     private int m_priority;
+
+    /** The title of this comparator key. */
+    private String m_title;
 
     /**
      * Creates a new instance of this comparator key.<p>
@@ -106,7 +106,7 @@ public class CmsPriorityTitleResourceComparator implements Comparator {
 
         CmsResource res0 = (CmsResource)arg0;
         CmsResource res1 = (CmsResource)arg1;
-        
+
         CmsPriorityTitleResourceComparator key0 = (CmsPriorityTitleResourceComparator)m_keys.get(res0.getStructureId());
         CmsPriorityTitleResourceComparator key1 = (CmsPriorityTitleResourceComparator)m_keys.get(res1.getStructureId());
 
@@ -133,16 +133,6 @@ public class CmsPriorityTitleResourceComparator implements Comparator {
     }
 
     /**
-     * Returns the title of this resource comparator key.<p>
-     * 
-     * @return the title of this resource comparator key
-     */
-    public String getTitle() {
-
-        return m_title;
-    }
-
-    /**
      * Returns the priority of this resource comparator key.<p>
      * 
      * @return the priority of this resource comparator key
@@ -150,6 +140,16 @@ public class CmsPriorityTitleResourceComparator implements Comparator {
     public int getPriority() {
 
         return m_priority;
+    }
+
+    /**
+     * Returns the title of this resource comparator key.<p>
+     * 
+     * @return the title of this resource comparator key
+     */
+    public String getTitle() {
+
+        return m_title;
     }
 
     /**
@@ -163,9 +163,8 @@ public class CmsPriorityTitleResourceComparator implements Comparator {
         Map properties = null;
 
         try {
-            properties = CmsProperty.toMap(
-                cms.readPropertyObjects(
-                    cms.getRequestContext().removeSiteRoot(resource.getRootPath()), false));
+            properties = CmsProperty.toMap(cms.readPropertyObjects(cms.getRequestContext().removeSiteRoot(
+                resource.getRootPath()), false));
         } catch (CmsException e) {
             m_priority = 0;
             m_title = "";
@@ -178,11 +177,11 @@ public class CmsPriorityTitleResourceComparator implements Comparator {
             m_priority = CmsPriorityResourceCollector.C_PRIORITY_STANDARD;
         }
 
-        m_title = (String)properties.get(I_CmsConstants.C_PROPERTY_TITLE);
+        m_title = (String)properties.get(CmsPropertyDefinition.PROPERTY_TITLE);
         if (CmsStringUtil.isEmpty(m_title)) {
             m_title = "";
         }
-       
+
     }
 
 }

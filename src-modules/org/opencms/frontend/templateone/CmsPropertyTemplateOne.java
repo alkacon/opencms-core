@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/06/16 12:37:34 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.frontend.templateone;
 
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeBinary;
@@ -70,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
 
@@ -100,7 +101,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      */
     private static final String[] C_DEFAULT_PROPERTIES = {
 
-    I_CmsConstants.C_PROPERTY_TITLE, I_CmsConstants.C_PROPERTY_DESCRIPTION};
+    CmsPropertyDefinition.PROPERTY_TITLE, CmsPropertyDefinition.PROPERTY_DESCRIPTION};
 
     /** Mode used for switching between different radio types. */
     private static final String C_ENABLE = "enable";
@@ -408,7 +409,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
             String template = jsp.getCmsObject().readPropertyObject(
                 jsp.getCmsObject().getSitePath(res),
-                I_CmsConstants.C_PROPERTY_TEMPLATE,
+                CmsPropertyDefinition.PROPERTY_TEMPLATE,
                 true).getValue("");
             if (!res.isFolder()
                 && res.getTypeId() != CmsResourceTypeBinary.getStaticTypeId()
@@ -484,16 +485,16 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
                 paramValue = request.getParameter("navpos");
                 if (!"-1".equals(paramValue)) {
                     // update the property only when it is different from "-1" (meaning no change)
-                    oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVPOS);
-                    writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, paramValue, oldValue);
+                    oldValue = request.getParameter(PREFIX_HIDDEN + CmsPropertyDefinition.PROPERTY_NAVPOS);
+                    writeProperty(CmsPropertyDefinition.PROPERTY_NAVPOS, paramValue, oldValue);
                 }
-                paramValue = request.getParameter(PREFIX_VALUE + I_CmsConstants.C_PROPERTY_NAVTEXT);
-                oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVTEXT);
-                writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, paramValue, oldValue);
+                paramValue = request.getParameter(PREFIX_VALUE + CmsPropertyDefinition.PROPERTY_NAVTEXT);
+                oldValue = request.getParameter(PREFIX_HIDDEN + CmsPropertyDefinition.PROPERTY_NAVTEXT);
+                writeProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT, paramValue, oldValue);
             } else {
                 // navigation disabled, delete property values
-                writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, null, null);
-                writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, null, null);
+                writeProperty(CmsPropertyDefinition.PROPERTY_NAVPOS, null, null);
+                writeProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT, null, null);
             }
         } finally {
             if (useTempfileProject) {
@@ -710,7 +711,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             // determine description to show for layout
             String description = "";
             try {
-                description = getCms().readPropertyObject(path, I_CmsConstants.C_PROPERTY_DESCRIPTION, false).getValue(
+                description = getCms().readPropertyObject(path, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue(
                     path);
             } catch (CmsException e) {
                 // should never happen

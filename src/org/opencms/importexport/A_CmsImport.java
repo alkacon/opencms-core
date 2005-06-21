@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/06/10 08:57:28 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,11 @@
 
 package org.opencms.importexport;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.i18n.CmsMessageContainer;
@@ -436,7 +438,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      */
     protected Locale getLocale(String destination, List properties) {
 
-        String localeName = CmsProperty.get(I_CmsConstants.C_PROPERTY_LOCALE, properties)
+        String localeName = CmsProperty.get(CmsPropertyDefinition.PROPERTY_LOCALE, properties)
             .getValue();
 
         if (localeName != null) {
@@ -502,10 +504,10 @@ public abstract class A_CmsImport implements I_CmsImport {
                 && (parentGroup == null)) {
                 // cannot create group, put on stack and try to create later
                 Hashtable groupData = new Hashtable();
-                groupData.put(I_CmsConstants.C_EXPORT_TAG_NAME, name);
-                groupData.put(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION, description);
-                groupData.put(I_CmsConstants.C_EXPORT_TAG_FLAGS, flags);
-                groupData.put(I_CmsConstants.C_EXPORT_TAG_PARENTGROUP, parentgroupName);
+                groupData.put(CmsImportExportManager.N_NAME, name);
+                groupData.put(CmsImportExportManager.N_DESCRIPTION, description);
+                groupData.put(CmsImportExportManager.N_FLAGS, flags);
+                groupData.put(CmsImportExportManager.N_PARENTGROUP, parentgroupName);
                 m_groupsToCreate.push(groupData);
             } else {
                 try {
@@ -554,23 +556,23 @@ public abstract class A_CmsImport implements I_CmsImport {
         String name, description, flags, parentgroup;
         try {
             // getAll group nodes
-            groupNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_GROUPDATA);
+            groupNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_GROUPDATA);
             // walk through all groups in manifest
             for (int i = 0; i < groupNodes.size(); i++) {
                 currentElement = (Element)groupNodes.get(i);
                 name = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_NAME);
+                    CmsImportExportManager.N_NAME);
                 name = OpenCms.getImportExportManager().translateGroup(name);
                 description = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
+                    CmsImportExportManager.N_DESCRIPTION);
                 flags = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                    CmsImportExportManager.N_FLAGS);
                 parentgroup = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_PARENTGROUP);
+                    CmsImportExportManager.N_PARENTGROUP);
                 if ((parentgroup != null) && (parentgroup.length() > 0)) {
                     parentgroup = OpenCms.getImportExportManager().translateGroup(parentgroup);
                 }
@@ -585,10 +587,10 @@ public abstract class A_CmsImport implements I_CmsImport {
                 m_groupsToCreate = new Stack();
                 while (tempStack.size() > 0) {
                     Hashtable groupdata = (Hashtable)tempStack.pop();
-                    name = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_NAME);
-                    description = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
-                    flags = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_FLAGS);
-                    parentgroup = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_PARENTGROUP);
+                    name = (String)groupdata.get(CmsImportExportManager.N_NAME);
+                    description = (String)groupdata.get(CmsImportExportManager.N_DESCRIPTION);
+                    flags = (String)groupdata.get(CmsImportExportManager.N_FLAGS);
+                    parentgroup = (String)groupdata.get(CmsImportExportManager.N_PARENTGROUP);
                     // try to import the group
                     importGroup(name, description, flags, parentgroup);
                 }
@@ -709,47 +711,47 @@ public abstract class A_CmsImport implements I_CmsImport {
         //getImportResource();
         try {
             // getAll user nodes
-            userNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_USERDATA);
+            userNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_USERDATA);
             // walk threw all groups in manifest
             for (int i = 0; i < userNodes.size(); i++) {
                 currentElement = (Element)userNodes.get(i);
                 name = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_NAME);
+                    CmsImportExportManager.N_NAME);
                 name = OpenCms.getImportExportManager().translateUser(name);
                 // decode passwords using base 64 decoder
                 pwd = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_PASSWORD);
+                    CmsImportExportManager.N_PASSWORD);
                 password = new String(Base64.decodeBase64(pwd.trim().getBytes()));
                 description = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
+                    CmsImportExportManager.N_DESCRIPTION);
                 flags = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                    CmsImportExportManager.N_FLAGS);
                 firstname = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_FIRSTNAME);
+                    CmsImportExportManager.N_FIRSTNAME);
                 lastname = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_LASTNAME);
+                    CmsImportExportManager.N_LASTNAME);
                 email = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_EMAIL);
+                    CmsImportExportManager.N_EMAIL);
                 address = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_ADDRESS);
+                    CmsImportExportManager.N_TAG_ADDRESS);
                 type = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_TYPE);
+                    CmsImportExportManager.N_TYPE);
                 defaultGroup = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_DEFAULTGROUP);
+                    CmsImportExportManager.N_DEFAULTGROUP);
                 // get the userinfo and put it into the hashtable
                 infoNode = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_USERINFO);
+                    CmsImportExportManager.N_USERINFO);
                 try {
                     // read the userinfo from the dat-file
                     byte[] value = getFileBytes(infoNode);
@@ -763,19 +765,19 @@ public abstract class A_CmsImport implements I_CmsImport {
 
                 // get the groups of the user and put them into the vector
                 groupNodes = currentElement.selectNodes("*/"
-                    + I_CmsConstants.C_EXPORT_TAG_GROUPNAME);
+                    + CmsImportExportManager.N_GROUPNAME);
                 userGroups = new Vector();
                 for (int j = 0; j < groupNodes.size(); j++) {
                     currentGroup = (Element)groupNodes.get(j);
                     String userInGroup = CmsImport.getChildElementTextValue(
                         currentGroup,
-                        I_CmsConstants.C_EXPORT_TAG_NAME);
+                        CmsImportExportManager.N_NAME);
                     userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);
                     userGroups.addElement(userInGroup);
                 }
 
                 if (defaultGroup != null && !"".equalsIgnoreCase(defaultGroup)) {
-                    userInfo.put(I_CmsConstants.C_ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
+                    userInfo.put(CmsUserSettings.ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                 }
 
                 // import this user
@@ -840,9 +842,9 @@ public abstract class A_CmsImport implements I_CmsImport {
         Map properties = new HashMap();
         CmsProperty property = null;
         List propertyElements = parentElement.selectNodes("./"
-            + I_CmsConstants.C_EXPORT_TAG_PROPERTIES
+            + CmsImportExportManager.N_PROPERTIES
             + "/"
-            + I_CmsConstants.C_EXPORT_TAG_PROPERTY);
+            + CmsImportExportManager.N_PROPERTY);
         Element propertyElement = null;
         String key = null, value = null;
         Attribute attrib = null;
@@ -856,7 +858,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             propertyElement = (Element)propertyElements.get(i);
             key = CmsImport.getChildElementTextValue(
                 propertyElement,
-                I_CmsConstants.C_EXPORT_TAG_NAME);
+                CmsImportExportManager.N_NAME);
 
             if (key == null || ignoredPropertyKeys.contains(key)) {
                 // continue if the current property (key) should be ignored or is null
@@ -873,14 +875,14 @@ public abstract class A_CmsImport implements I_CmsImport {
 
             if ((value = CmsImport.getChildElementTextValue(
                 propertyElement,
-                I_CmsConstants.C_EXPORT_TAG_VALUE)) == null) {
+                CmsImportExportManager.N_VALUE)) == null) {
                 value = "";
             }
 
             if ((attrib = propertyElement
-                .attribute(I_CmsConstants.C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE)) != null
+                .attribute(CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE)) != null
                 && attrib.getValue()
-                    .equals(I_CmsConstants.C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE_SHARED)) {
+                    .equals(CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE_SHARED)) {
                 // it is a shared/resource property value
                 property.setResourceValue(value);
             } else {

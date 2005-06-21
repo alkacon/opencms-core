@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
@@ -52,7 +53,7 @@ import org.apache.commons.logging.Log;
  * {@link org.opencms.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @see org.opencms.jsp.CmsJspNavElement
  * 
@@ -83,7 +84,7 @@ public class CmsJspNavBuilder {
                 cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
                 m_title = cms.readPropertyObject(
                     cms.getSitePath(res),
-                    org.opencms.main.I_CmsConstants.C_PROPERTY_TITLE,
+                    org.opencms.file.CmsPropertyDefinition.PROPERTY_TITLE,
                     false).getValue();
                 cms.getRequestContext().restoreSiteRoot();
             } catch (Exception e) {
@@ -250,7 +251,7 @@ public class CmsJspNavBuilder {
         if (folder.endsWith("/")) {
             List defaultFolders = new ArrayList();
             try {
-                CmsProperty p = cms.readPropertyObject(folder, I_CmsConstants.C_PROPERTY_DEFAULT_FILE, false);
+                CmsProperty p = cms.readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_DEFAULT_FILE, false);
                 defaultFolders.add(p.getValue());
             } catch (CmsException exc) {
                 // noop

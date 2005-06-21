@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/06/21 09:54:27 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -48,7 +49,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -91,10 +92,20 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Defines if the user is a webuser or a systemuser.<p>
      * 
-     * C_USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
-     * C_USER_TYPE_WEBUSER for webuser.
+     * USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
+     * USER_TYPE_WEBUSER for webuser.
      */
     private int m_type;
+
+    /**
+     * A user-type system user.
+     */
+    public static final int USER_TYPE_SYSTEMUSER = 0;
+
+    /**
+     * A user-type web user.
+     */
+    public static final int USER_TYPE_WEBUSER = 2;
 
     /**
      * Creates a new empty CmsUser object.<p>
@@ -357,7 +368,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public String getCity() {
 
-        return (String)getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
+        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN);
     }
 
     /**
@@ -367,7 +378,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public String getCountry() {
 
-        return (String)getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_COUNTRY);
+        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_COUNTRY);
     }
 
     /**
@@ -513,7 +524,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public String getZipcode() {
 
-        return (String)getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
+        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE);
     }
 
     /**
@@ -610,7 +621,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setCity(String city) {
 
-        setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN, city);
+        setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN, city);
     }
 
     /**
@@ -620,7 +631,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setCountry(String country) {
 
-        setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_COUNTRY, country);
+        setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_COUNTRY, country);
     }
 
     /**
@@ -749,7 +760,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
 
         checkZipCode(zipcode);
         zipcode = zipcode.toUpperCase();
-        setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE, zipcode);
+        setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE, zipcode);
     }
 
     /**

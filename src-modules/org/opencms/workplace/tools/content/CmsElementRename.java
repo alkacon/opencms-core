@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2005/06/17 15:30:07 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.content;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
@@ -42,7 +43,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.5.3
  */
@@ -516,28 +516,27 @@ public class CmsElementRename extends CmsReport {
 
         // localisation  
         Locale locale = getLocale();
-        
 
         StringBuffer validationErrors = new StringBuffer();
         if (CmsStringUtil.isEmpty(getParamResource())) {
-            validationErrors.append(Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_RESOURCE_FOLDER_0, null))
-                .append("<br>");
+            validationErrors.append(
+                Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_RESOURCE_FOLDER_0, null)).append("<br>");
         }
         if (CmsStringUtil.isEmpty(getParamTemplate())) {
-            validationErrors.append(Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_SELECT_TEMPLATE_0, null))
-                .append("<br>");
+            validationErrors.append(
+                Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_SELECT_TEMPLATE_0, null)).append("<br>");
         }
         if (CmsStringUtil.isEmpty(getParamLocale())) {
-            validationErrors.append(Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_SELECT_LANGUAGE_0, null))
-                .append("<br>");
+            validationErrors.append(
+                Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_SELECT_LANGUAGE_0, null)).append("<br>");
         }
         if (CmsStringUtil.isEmpty(getParamOldElement())) {
-            validationErrors.append(Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_ENTER_OLD_ELEM_0, null))
-                .append("<br>");
+            validationErrors.append(
+                Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_ENTER_OLD_ELEM_0, null)).append("<br>");
         }
         if (CmsStringUtil.isEmpty(getParamNewElement())) {
-            validationErrors.append(Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_ENTER_NEW_ELEM_0, null))
-                .append("<br>");
+            validationErrors.append(
+                Messages.get().key(locale, Messages.GUI_ELEM_RENAME_VALIDATE_ENTER_NEW_ELEM_0, null)).append("<br>");
         }
         if (!isValidElement(getParamNewElement())) {
             validationErrors.append(
@@ -609,7 +608,7 @@ public class CmsElementRename extends CmsReport {
                 try {
                     templateProperty = getCms().readPropertyObject(
                         getCms().getSitePath(currentPage),
-                        I_CmsConstants.C_PROPERTY_TEMPLATE,
+                        CmsPropertyDefinition.PROPERTY_TEMPLATE,
                         false);
                 } catch (CmsException e2) {
                     if (LOG.isErrorEnabled()) {
@@ -648,7 +647,7 @@ public class CmsElementRename extends CmsReport {
                 // read the property from the template file
                 elements = getCms().readPropertyObject(
                     currentTemplate,
-                    I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS,
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
                     false).getValue(null);
             } catch (CmsException e) {
                 if (LOG.isWarnEnabled()) {
@@ -692,8 +691,7 @@ public class CmsElementRename extends CmsReport {
 
         boolean isRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
         // filterdefinition to read only the required resources 
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(CmsResourceTypeXmlPage
-            .getStaticTypeId());
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(CmsResourceTypeXmlPage.getStaticTypeId());
         // trying to read the resources
         List xmlPages = null;
 
@@ -739,9 +737,10 @@ public class CmsElementRename extends CmsReport {
         CmsFile file = page.getFile();
         String template;
         try {
-            template = getCms()
-                .readPropertyObject(getCms().getSitePath(file), I_CmsConstants.C_PROPERTY_TEMPLATE, true)
-                .getValue(null);
+            template = getCms().readPropertyObject(
+                getCms().getSitePath(file),
+                CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                true).getValue(null);
         } catch (CmsException e) {
             return false;
         }
@@ -802,7 +801,9 @@ public class CmsElementRename extends CmsReport {
         boolean validateNewElement = Boolean.valueOf(getParamValidateNewElement()).booleanValue();
         // the list including at least one resource
         if (xmlPages != null && xmlPages.size() > 0) {
-            m_report.println(Messages.get().container(Messages.RPT_RENAME_LANG_1, locale.getLanguage()), I_CmsReport.C_FORMAT_HEADLINE);
+            m_report.println(
+                Messages.get().container(Messages.RPT_RENAME_LANG_1, locale.getLanguage()),
+                I_CmsReport.C_FORMAT_HEADLINE);
             // if user has not selected ALL templates, then retain pages with specified template
             if (!C_ALL.equals(getParamTemplate())) {
                 xmlPages = getRetainedPagesWithTemplate(xmlPages);
@@ -818,12 +819,15 @@ public class CmsElementRename extends CmsReport {
                     // next file from the list
                     CmsResource res = (CmsResource)i.next();
                     CmsFile file;
-                    
-                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
-                        String.valueOf(m), String.valueOf(n)), I_CmsReport.C_FORMAT_NOTE);
+
+                    m_report.print(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(m),
+                        String.valueOf(n)), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(Messages.get().container(Messages.RPT_PROCESSING_PAGE_0), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1, getCms().getSitePath(res)));
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        getCms().getSitePath(res)));
                     m_report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                     try {
@@ -845,7 +849,9 @@ public class CmsElementRename extends CmsReport {
 
                     // check if the source element exists in the page
                     if (!page.hasValue(getParamOldElement(), locale)) {
-                        m_report.println(Messages.get().container(Messages.RPT_NONEXISTANT_ELEM_1, getParamOldElement()), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.println(
+                            Messages.get().container(Messages.RPT_NONEXISTANT_ELEM_1, getParamOldElement()),
+                            I_CmsReport.C_FORMAT_NOTE);
                         continue;
                     }
 
@@ -853,15 +859,18 @@ public class CmsElementRename extends CmsReport {
                     if (page.hasValue(getParamNewElement(), locale)) {
                         // the page contains already the new element with speicific content. 
                         // renaming the old will invalid the xml page
-                        m_report.println(Messages.get().container(Messages.RPT_NEW_ELEM_EXISTS_0), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.println(
+                            Messages.get().container(Messages.RPT_NEW_ELEM_EXISTS_0),
+                            I_CmsReport.C_FORMAT_NOTE);
                         continue;
                     }
 
                     if (validateNewElement) {
                         // check if the target element is valid for the template
                         if (!isValidElement(page, getParamNewElement())) {
-                              m_report.println(Messages.get().container(Messages.RPT_INVALID_ARGUMENT_1, 
-                                  getParamNewElement()), I_CmsReport.C_FORMAT_NOTE);
+                            m_report.println(Messages.get().container(
+                                Messages.RPT_INVALID_ARGUMENT_1,
+                                getParamNewElement()), I_CmsReport.C_FORMAT_NOTE);
                             continue;
                         }
                     }
@@ -918,8 +927,9 @@ public class CmsElementRename extends CmsReport {
                     page.removeValue(currElement, locale);
                     try {
                         writePageAndReport(page, false);
-                        m_report.println(Messages.get().container(Messages.RPT_REMOVE_INVALID_EMPTY_ELEM_1, 
-                            currElement), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.println(
+                            Messages.get().container(Messages.RPT_REMOVE_INVALID_EMPTY_ELEM_1, currElement),
+                            I_CmsReport.C_FORMAT_NOTE);
                     } catch (CmsException e) {
                         // ignore
                     }
@@ -950,7 +960,9 @@ public class CmsElementRename extends CmsReport {
             // unlock the page
             getCms().unlockResource(getCms().getSitePath(file));
             if (report) {
-                m_report.println(Messages.get().container(Messages.RPT_ELEM_RENAME_2, getParamOldElement(), 
+                m_report.println(Messages.get().container(
+                    Messages.RPT_ELEM_RENAME_2,
+                    getParamOldElement(),
                     getParamNewElement()), I_CmsReport.C_FORMAT_OK);
             }
         }

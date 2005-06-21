@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
- * Date   : $Date: 2005/05/17 13:47:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@ package com.opencms.defaults;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
 
@@ -46,7 +45,7 @@ import java.util.Vector;
  * Creation date: (27.10.00 10:04:42)
  * 
  * @author Michael Knoll
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -317,9 +316,9 @@ public abstract class A_CmsContentDefinition implements I_CmsContent {
 
         CmsUser currentUser = cms.getRequestContext().currentUser();
 
-        if (!accessOther(I_CmsConstants.C_ACCESS_PUBLIC_READ)
+        if (!accessOther(com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_READ)
             && !accessOwner(cms, currentUser, CmsPermissionSet.PERMISSION_READ)
-            && !accessGroup(cms, currentUser, I_CmsConstants.C_ACCESS_GROUP_READ)) {
+            && !accessGroup(cms, currentUser, com.opencms.core.I_CmsConstants.C_ACCESS_GROUP_READ)) {
             return false;
         }
         return true;
@@ -343,11 +342,11 @@ public abstract class A_CmsContentDefinition implements I_CmsContent {
         }
 
         // check the rights for the current resource
-        if (!(accessOther(I_CmsConstants.C_ACCESS_PUBLIC_WRITE)
+        if (!(accessOther(com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_WRITE)
             || accessOwner(cms, currentUser, CmsPermissionSet.PERMISSION_WRITE) || accessGroup(
             cms,
             currentUser,
-            I_CmsConstants.C_ACCESS_GROUP_WRITE))) {
+            com.opencms.core.I_CmsConstants.C_ACCESS_GROUP_WRITE))) {
             // no write access to this resource!
             return false;
         }
@@ -365,14 +364,14 @@ public abstract class A_CmsContentDefinition implements I_CmsContent {
      * @throws CmsException if something goes wrong
      */
     protected boolean accessOwner(CmsObject cms, CmsUser currentUser, int flags) throws CmsException {
-        
+
         // is the resource owned by this user?
         if (currentUser.getId().equals(getOwner())) {
             if ((getAccessFlags() & flags) == flags) {
                 return true;
             }
         }
-        
+
         // the resource isn't accesible by the user.
         return false;
     }
@@ -395,7 +394,7 @@ public abstract class A_CmsContentDefinition implements I_CmsContent {
                 return true;
             }
         }
-        
+
         // the resource isn't accesible by the user.
         return false;
     }

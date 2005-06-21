@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2005/05/19 08:57:24 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/21 15:49:58 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,8 +30,9 @@ package com.opencms.template.cache;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
+import org.opencms.workplace.editors.CmsDefaultPageEditor;
 
+import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsResponse;
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -129,11 +130,11 @@ public class CmsUri {
                 String name = (String)elementNames.nextElement();
                 CmsElementDefinition currentDef = m_elementDefinitions.get(name);
                 
-                if (I_CmsConstants.C_XML_BODY_ELEMENT.equalsIgnoreCase(name)) {
+                if (CmsDefaultPageEditor.XML_BODY_ELEMENT.equalsIgnoreCase(name)) {
                     // need to check for the body template here so that non-XMLTemplate templates
                     // like JSPs know where to find the body defined in the XMLTemplate
                     if (currentDef.getTemplateName() != null) {
-                        cms.getRequestContext().setAttribute(I_CmsConstants.C_XML_BODY_ELEMENT, currentDef.getTemplateName());
+                        cms.getRequestContext().setAttribute(CmsDefaultPageEditor.XML_BODY_ELEMENT, currentDef.getTemplateName());
                     }
                 }
                                 
@@ -153,7 +154,7 @@ public class CmsUri {
             // only if the resource is cacheable and if the current project is online,
             // then the browser may cache the resource
             if(proxySettings.isProxyPrivateCacheable()
-                        && cms.getRequestContext().currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID){
+                        && cms.getRequestContext().currentProject().getId() == org.opencms.main.I_CmsConstants.C_PROJECT_ONLINE_ID){
                 // set max-age to 5 minutes. In this time a proxy may cache this content.
                 resp.setHeader("Cache-Control", "max-age=300");
                 if(!proxySettings.isProxyPublicCacheable()){
@@ -169,7 +170,7 @@ public class CmsUri {
         }
 
 
-        return elem.getContent(elementCache, cms, m_elementDefinitions, I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters, null);
+        return elem.getContent(elementCache, cms, m_elementDefinitions, com.opencms.core.I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters, null);
     }
     /**
      * checks the read access.

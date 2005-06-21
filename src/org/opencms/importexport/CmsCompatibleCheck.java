@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.importexport;
 
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.List;
@@ -49,9 +48,12 @@ import org.dom4j.Node;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsCompatibleCheck {
+
+    /** Default class for templates. */
+    public static final String XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";
 
     /**
      * Constructor, does nothing.<p> 
@@ -184,7 +186,7 @@ public class CmsCompatibleCheck {
         }
         // now the templateclass only the standard class is allowed
         String elClass = CmsImport.getChildElementTextValue(el, "CLASS");
-        if (!I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS.equals(elClass)) {
+        if (!CmsCompatibleCheck.XML_CONTROL_DEFAULT_CLASS.equals(elClass)) {
             return false;
         }
         String elTemplate = CmsImport.getChildElementTextValue(el, "TEMPLATE");

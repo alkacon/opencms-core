@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -11,7 +11,7 @@
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
 * License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
 *
 * This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -29,7 +29,6 @@
 package com.opencms.core;
 
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsResourceTranslator;
 
@@ -66,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -135,7 +134,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
     /**
      * The type of theis CmsRequest.
      */
-    private int m_type = I_CmsConstants.C_REQUEST_HTTP;
+    private int m_type = com.opencms.core.I_CmsConstants.C_REQUEST_HTTP;
 
     /**
      * The data from the original request. We save them to get them after the
@@ -181,7 +180,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
                     ? new CmsSession(httpSession) : null;
                 if (session != null) {
                     encoding = (String)session.getValue(
-                        I_CmsConstants.C_SESSION_CONTENT_ENCODING);
+                        com.opencms.core.I_CmsConstants.C_SESSION_CONTENT_ENCODING);
                 }
                 // If encoding not found in session - use default one
                 if (encoding == null) {

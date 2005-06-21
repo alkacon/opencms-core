@@ -30,9 +30,10 @@
  */
 
 package org.opencms.workplace.tools.database;
+
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
@@ -63,7 +64,7 @@ import org.w3c.tidy.Tidy;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsHtmlImportConverter {
 
@@ -72,7 +73,7 @@ public class CmsHtmlImportConverter {
 
     /** defintition of the content attribute. */
     private static final String C_ATTRIB_CONTENT = "content";
-    
+
     /** defintition of the href attribute.  */
     private static final String C_ATTRIB_HREF = "href";
 
@@ -136,11 +137,12 @@ public class CmsHtmlImportConverter {
      * @param xmlMode switch for setting the import to HTML or XML mode
      */
     public CmsHtmlImportConverter(CmsHtmlImport htmlImport, boolean xmlMode) {
+
         m_tidy.setTidyMark(false);
         m_tidy.setShowWarnings(false);
         m_tidy.setQuiet(true);
         m_tidy.setForceOutput(true);
-        
+
         if (xmlMode) {
             m_tidy.setXmlTags(xmlMode);
             m_tidy.setXmlSpace(true);
@@ -148,6 +150,42 @@ public class CmsHtmlImportConverter {
 
         initialiseTags();
         m_htmlImport = htmlImport;
+    }
+
+    /**
+     * Extracts the content of a HTML page.<p>
+     * 
+     * This method should be pretty robust and work even if the input HTML does not contains
+     * the specified matchers.<p> 
+     * 
+     * @param content the content to extract the body from
+     * @param startpoint the point where matching starts
+     * @param endpoint the point where matching ends
+     * @return the extracted body tag content
+     */
+    public static String extractHtml(String content, String startpoint, String endpoint) {
+
+        /** Regex that matches a start body tag. */
+        Pattern startPattern = Pattern.compile(startpoint, Pattern.CASE_INSENSITIVE);
+
+        /** Regex that matches an end body tag. */
+        Pattern endPattern = Pattern.compile(endpoint, Pattern.CASE_INSENSITIVE);
+
+        Matcher startMatcher = startPattern.matcher(content);
+        Matcher endMatcher = endPattern.matcher(content);
+
+        int start = 0;
+        int end = content.length();
+
+        if (startMatcher.find()) {
+            start = startMatcher.end();
+        }
+
+        if (endMatcher.find(start)) {
+            end = endMatcher.start();
+        }
+
+        return content.substring(start, end);
     }
 
     /**
@@ -160,6 +198,7 @@ public class CmsHtmlImportConverter {
      * @param properties the file properties
      */
     public void convertHTML(Reader input, Writer output, String startPattern, String endPattern, Hashtable properties) {
+
         /* local variables */
         StringBuffer htmlString = new StringBuffer();
         Node node;
@@ -174,58 +213,58 @@ public class CmsHtmlImportConverter {
         } catch (IOException e) {
             if (CmsLog.INIT.isWarnEnabled()) {
                 CmsLog.INIT.warn(Messages.get().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_0, e.getLocalizedMessage()));
-            } 
+            }
             return;
         }
         outString = htmlString.toString();
         // extract from html if even both patterns are defined
         if (CmsStringUtil.isNotEmpty(startPattern) && CmsStringUtil.isNotEmpty(endPattern)) {
             String extractMain = extractHtml(outString, startPattern, endPattern);
-            if (extractMain.length()!=outString.length()) {
-                String extractHead = extractHtml(outString, "<html>", CmsStringUtil.C_BODY_START_REGEX);                
+            if (extractMain.length() != outString.length()) {
+                String extractHead = extractHtml(outString, "<html>", CmsStringUtil.C_BODY_START_REGEX);
                 //String extractHead = extractHtml(extractMain, "<html>", CmsStringUtil.C_BODY_START_REGEX);     
-                StringBuffer buffer = new StringBuffer(extractHead.length()+extractMain.length()+255);                
+                StringBuffer buffer = new StringBuffer(extractHead.length() + extractMain.length() + 255);
                 buffer.append("<html>");
                 buffer.append(extractHead);
                 buffer.append("<body>");
                 buffer.append(extractMain);
                 buffer.append("</body></html>");
-                outString = buffer.toString();                
+                outString = buffer.toString();
             }
         }
 
         /* convert htmlString in InputStream for parseDOM */
         InputStream in;
         try {
-            in = new ByteArrayInputStream(outString.getBytes(CmsEncoder.C_UTF8_ENCODING));            
+            in = new ByteArrayInputStream(outString.getBytes(CmsEncoder.C_UTF8_ENCODING));
         } catch (UnsupportedEncodingException e) {
             // this should never happen since UTF-8 is always supported
-            in = new ByteArrayInputStream(outString.getBytes());            
+            in = new ByteArrayInputStream(outString.getBytes());
         }
         m_tidy.setInputEncoding(CmsEncoder.C_UTF8_ENCODING);
         m_tidy.setOutputEncoding(CmsEncoder.C_UTF8_ENCODING);
-        
+
         // hold tidy error information into a new PrintWriter Object
         PrintWriter errorLog = new PrintWriter(new ByteArrayOutputStream(), true);
-        m_tidy.setErrout(errorLog);       
-        
-        node = m_tidy.parseDOM(in, null);        
+        m_tidy.setErrout(errorLog);
+
+        node = m_tidy.parseDOM(in, null);
         /* check if html code has errors */
         if (m_tidy.getParseErrors() != 0) {
             if (CmsLog.INIT.isWarnEnabled()) {
-                CmsLog.INIT.warn(Messages.get().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_0));                
-            }            
+                CmsLog.INIT.warn(Messages.get().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_0));
+            }
         }
         /* second step: create transformed output with printDocument from DOM */
         this.printDocument(node, properties);
-        
+
         try {
-            String content = m_tempString.toString();             
+            String content = m_tempString.toString();
             content = CmsStringUtil.substitute(content, "<br></br>", "<br>");
             content = CmsStringUtil.substitutePerl(content, "</a>(\\w+)", "</a> $1", "g");
             output.write(content);
             output.close();
-            
+
         } catch (IOException e) {
             if (CmsLog.INIT.isWarnEnabled()) {
                 CmsLog.INIT.warn(Messages.get().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_1, e.getLocalizedMessage()));
@@ -244,8 +283,13 @@ public class CmsHtmlImportConverter {
      * @param properties the file properties
      * @return String with transformed code
      */
-    public String convertHTML(String filename, String inString, String startPattern, String endPattern, Hashtable properties) {
-        
+    public String convertHTML(
+        String filename,
+        String inString,
+        String startPattern,
+        String endPattern,
+        Hashtable properties) {
+
         m_tempString = new StringBuffer();
         m_write = true;
         m_filename = filename.replace('\\', '/');
@@ -259,7 +303,10 @@ public class CmsHtmlImportConverter {
      * Initialises Vector m_enterTags with tag names.<p>
      */
     private void initialiseTags() {
-        StringTokenizer T = new StringTokenizer("p,table,tr,td,body,head,script,pre,title,style,h1,h2,h3,h4,h5,h6,ul,ol,li", ",");
+
+        StringTokenizer T = new StringTokenizer(
+            "p,table,tr,td,body,head,script,pre,title,style,h1,h2,h3,h4,h5,h6,ul,ol,li",
+            ",");
         while (T.hasMoreTokens()) {
             m_enterTags.add(new String(T.nextToken()));
         }
@@ -272,6 +319,7 @@ public class CmsHtmlImportConverter {
      * @param properties the file properties
      */
     private void printDocument(Node node, Hashtable properties) {
+
         // if node is empty do nothing... (Recursion)
         if (node == null) {
             return;
@@ -279,14 +327,14 @@ public class CmsHtmlImportConverter {
         // initialise local variables
         int type = node.getNodeType();
         String name = node.getNodeName();
-        
+
         // detect node type
         switch (type) {
-            case Node.DOCUMENT_NODE :
+            case Node.DOCUMENT_NODE:
 
                 this.printDocument(((Document)node).getDocumentElement(), properties);
                 break;
-            case Node.ELEMENT_NODE :
+            case Node.ELEMENT_NODE:
 
                 // check if its the <head> node. Nothing inside the <head> node
                 // must be
@@ -299,7 +347,7 @@ public class CmsHtmlImportConverter {
                 // scan element node; if a block has to be removed or replaced,
                 // break and discard child nodes
                 transformStartElement(node, properties);
-                
+
                 // test if node has children
                 NodeList children = node.getChildNodes();
                 if (children != null) {
@@ -310,30 +358,30 @@ public class CmsHtmlImportConverter {
                     }
                 }
                 break;
-            case Node.TEXT_NODE :
+            case Node.TEXT_NODE:
 
                 // replace subStrings in text nodes
                 transformTextNode(node);
                 break;
-            default :
+            default:
 
                 break;
         }
         // end of recursion, add eventual endtags and suffixes
         switch (type) {
-            case Node.ELEMENT_NODE :
+            case Node.ELEMENT_NODE:
                 // analyse endtags and add them to output
                 transformEndElement(node);
                 if (node.getNodeName().equals(C_NODE_HEAD)) {
                     m_write = true;
                 }
                 break;
-            case Node.DOCUMENT_NODE :
+            case Node.DOCUMENT_NODE:
                 break;
-            default :
+            default:
                 break;
         }
-    }   
+    }
 
     /**
      * Transform element nodes and create end tags in output.<p>
@@ -341,6 +389,7 @@ public class CmsHtmlImportConverter {
      * @param node actual element node
      */
     private void transformEndElement(Node node) {
+
         // check hat kind of node we have
         String nodeName = node.getNodeName();
 
@@ -369,6 +418,7 @@ public class CmsHtmlImportConverter {
      * @param properties the file properties
      */
     private void transformStartElement(Node node, Hashtable properties) {
+
         // check hat kind of node we have
         String nodeName = node.getNodeName();
 
@@ -376,15 +426,15 @@ public class CmsHtmlImportConverter {
         if (nodeName.equals(C_NODE_HTML) || nodeName.equals(C_NODE_BODY)) {
             // the <TITLE> node must be read and its value set as properties to
             // the imported file
-        
+
         } else if (nodeName.equals(C_NODE_TITLE)) {
-            
+
             writeTitleProperty(node, properties);
-            
-        } else if (nodeName.equals(C_NODE_META)) { 
-            
+
+        } else if (nodeName.equals(C_NODE_META)) {
+
             writeMetaTagProperty(node, properties);
-            
+
         } else if (nodeName.equals(C_NODE_HREF)) {
 
             // only do some output if we are in writing mode
@@ -407,13 +457,15 @@ public class CmsHtmlImportConverter {
                         } else if (!value.startsWith("mailto:") && !value.startsWith("javascript:")) {
 
                             // save an existing anchor link for later use
-//                            if (value.indexOf("#") > 0) {
-//                                String anchor = value.substring(value.indexOf("#"), value.length());
-//                            }
+                            //                            if (value.indexOf("#") > 0) {
+                            //                                String anchor = value.substring(value.indexOf("#"), value.length());
+                            //                            }
                             // get the new link into the VFS
-                            String internalUri = m_htmlImport.getAbsoluteUri(value, m_filename.substring(0, m_filename.lastIndexOf("/") + 1));
+                            String internalUri = m_htmlImport.getAbsoluteUri(value, m_filename.substring(
+                                0,
+                                m_filename.lastIndexOf("/") + 1));
 
-                            value = m_htmlImport.translateLink(internalUri);                            
+                            value = m_htmlImport.translateLink(internalUri);
                         }
                     }
 
@@ -445,8 +497,10 @@ public class CmsHtmlImportConverter {
                         // external image.
                         // if not, we must get the correct location in the VFS
                         if (value.indexOf("://") <= 0) {
-                            imagename = m_htmlImport.getAbsoluteUri(value, m_filename.substring(0, m_filename.lastIndexOf("/") + 1));
-                            value = m_htmlImport.translateLink(imagename);                            
+                            imagename = m_htmlImport.getAbsoluteUri(value, m_filename.substring(
+                                0,
+                                m_filename.lastIndexOf("/") + 1));
+                            value = m_htmlImport.translateLink(imagename);
                         }
                     } else if (name.equals(C_ATTRIB_ALT)) {
                         altText = value;
@@ -481,45 +535,28 @@ public class CmsHtmlImportConverter {
             }
         }
     }
-    
+
     /**
-     * Sets the Property title by analyzing the title node.<p>
+     * Private method to transform text nodes.<p>
      * 
-     * @param node the title node in html document
-     * @param properties the properties hashtable
+     * @param node actual text node
      */
-    private void writeTitleProperty(Node node, Hashtable properties) {        
+    private void transformTextNode(Node node) {
 
-        String title = "";
-        // the title string is stored in the first child node
-        NodeList children = node.getChildNodes();
-        if (children != null) {
-            Node titleNode = children.item(0);
-            if (titleNode != null) {
-                title = titleNode.getNodeValue();
-            }
+        // only do some output if we are in writing mode
+        if (m_write) {
+            String helpString = node.getNodeValue();
+            m_tempString.append(helpString);
         }
-        // add the title property if we have one
-        if ((title != null) && (title.length() > 0)) {
-
-            properties.put(I_CmsConstants.C_PROPERTY_TITLE, title);
-            // the title will be used as navtext if no other navtext is
-            // given
-            if (properties.get(I_CmsConstants.C_PROPERTY_NAVTEXT) == null) {
-                properties.put(I_CmsConstants.C_PROPERTY_NAVTEXT, title);
-            }
-        }       
-        
     }
-    
-    
+
     /**
      * Writes meta tags as cms properties by analyzing the meta tags nodes.<p>
      * 
      * @param node the meta tag node in html document
      * @param properties the properties hashtable
      */
-    private void writeMetaTagProperty(Node node, Hashtable properties) {        
+    private void writeMetaTagProperty(Node node, Hashtable properties) {
 
         NamedNodeMap attrs = node.getAttributes();
         String metaName = "";
@@ -538,57 +575,37 @@ public class CmsHtmlImportConverter {
         // in the properties
         if (metaName.length() > 0 && metaContent.length() > 0) {
             properties.put(metaName, metaContent);
-        }          
-    }
-    
-
-    /**
-     * Private method to transform text nodes.<p>
-     * 
-     * @param node actual text node
-     */
-    private void transformTextNode(Node node) {
-        // only do some output if we are in writing mode
-        if (m_write) {
-            String helpString = node.getNodeValue();
-            m_tempString.append(helpString);
         }
     }
-    
+
     /**
-     * Extracts the content of a HTML page.<p>
+     * Sets the Property title by analyzing the title node.<p>
      * 
-     * This method should be pretty robust and work even if the input HTML does not contains
-     * the specified matchers.<p> 
-     * 
-     * @param content the content to extract the body from
-     * @param startpoint the point where matching starts
-     * @param endpoint the point where matching ends
-     * @return the extracted body tag content
+     * @param node the title node in html document
+     * @param properties the properties hashtable
      */
-    public static String extractHtml(String content, String startpoint, String endpoint) {
+    private void writeTitleProperty(Node node, Hashtable properties) {
 
-        /** Regex that matches a start body tag. */
-        Pattern startPattern = Pattern.compile(startpoint, Pattern.CASE_INSENSITIVE);
+        String title = "";
+        // the title string is stored in the first child node
+        NodeList children = node.getChildNodes();
+        if (children != null) {
+            Node titleNode = children.item(0);
+            if (titleNode != null) {
+                title = titleNode.getNodeValue();
+            }
+        }
+        // add the title property if we have one
+        if ((title != null) && (title.length() > 0)) {
 
-        /** Regex that matches an end body tag. */
-        Pattern endPattern = Pattern.compile(endpoint, Pattern.CASE_INSENSITIVE);
-
-        Matcher startMatcher = startPattern.matcher(content);
-        Matcher endMatcher = endPattern.matcher(content);
-        
-        int start = 0;
-        int end = content.length();
-
-        if (startMatcher.find()) {
-            start = startMatcher.end();
+            properties.put(CmsPropertyDefinition.PROPERTY_TITLE, title);
+            // the title will be used as navtext if no other navtext is
+            // given
+            if (properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) == null) {
+                properties.put(CmsPropertyDefinition.PROPERTY_NAVTEXT, title);
+            }
         }
 
-        if (endMatcher.find(start)) {
-            end = endMatcher.start();
-        }
-
-        return content.substring(start, end);
     }
 
 }

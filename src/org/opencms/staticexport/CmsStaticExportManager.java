@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:03 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.107 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeJsp;
@@ -81,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.106 $
+ * @version $Revision: 1.107 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1115,7 +1116,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // check if the resource folder (or a parent folder) has the "exportname" property set
             CmsProperty exportNameProperty = cms.readPropertyObject(
                 CmsResource.getFolderPath(rfsName),
-                I_CmsConstants.C_PROPERTY_EXPORTNAME,
+                CmsPropertyDefinition.PROPERTY_EXPORTNAME,
                 true);
 
             if (exportNameProperty.isNullProperty()) {
@@ -1136,7 +1137,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 do {
                     // find out where the export name was set, to replace these parent folders in the RFS name
                     try {
-                        value = cms.readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_EXPORTNAME, false).getValue();
+                        value = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_EXPORTNAME, false).getValue();
                         cont = (value == null) && (resourceName.length() > 1);
                     } catch (CmsVfsResourceNotFoundException e) {
                         // this is for publishing deleted resources 
@@ -1168,7 +1169,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 isJsp = res.getTypeId() == CmsResourceTypeJsp.getStaticTypeId();
                 // if the resource is a plain resouce then no change in suffix is required
                 if (isJsp) {
-                    String suffix = cms.readPropertyObject(vfsName, I_CmsConstants.C_PROPERTY_EXPORTSUFFIX, true).getValue(
+                    String suffix = cms.readPropertyObject(vfsName, CmsPropertyDefinition.PROPERTY_EXPORTSUFFIX, true).getValue(
                         ".html");
                     if (!extension.equals(suffix.toLowerCase())) {
                         rfsName += suffix;
@@ -1396,13 +1397,19 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             if (isStaticExportEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_ENABLED_0));                
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_DEFAULT_1, new Boolean(getExportPropertyDefault())));
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_ENABLED_0));
+                CmsLog.INIT.info(Messages.get().key(
+                    Messages.INIT_EXPORT_DEFAULT_1,
+                    new Boolean(getExportPropertyDefault())));
                 CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_PATH_1, getExportPath()));
                 CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_RFS_PREFIX_1, getRfsPrefix()));
                 CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_VFS_PREFIX_1, getVfsPrefix()));
-                CmsLog.INIT.info(Messages.get().key(relativLinksInExport() ? Messages.INIT_EXPORT_LINK_STYLE_RELATIVE_0 : Messages.INIT_EXPORT_LINK_STYLE_ABSOLUTE_0));
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_EXPORT_HANDLER_1, getHandler().getClass().getName()));
+                CmsLog.INIT.info(Messages.get().key(
+                    relativLinksInExport() ? Messages.INIT_EXPORT_LINK_STYLE_RELATIVE_0
+                    : Messages.INIT_EXPORT_LINK_STYLE_ABSOLUTE_0));
+                CmsLog.INIT.info(Messages.get().key(
+                    Messages.INIT_EXPORT_EXPORT_HANDLER_1,
+                    getHandler().getClass().getName()));
                 CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_URL_1, getExportUrl()));
                 CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_OPTIMIZATION_1, getPlainExportOptimization()));
                 CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
@@ -1442,7 +1449,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
                     exportCms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
                     // let's look up export property in VFS
-                    String exportValue = exportCms.readPropertyObject(vfsName, I_CmsConstants.C_PROPERTY_EXPORT, true).getValue();
+                    String exportValue = exportCms.readPropertyObject(
+                        vfsName,
+                        CmsPropertyDefinition.PROPERTY_EXPORT,
+                        true).getValue();
                     if (exportValue == null) {
                         // no setting found for "export" property
                         if (getExportPropertyDefault()) {
@@ -1493,7 +1503,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             vfsName));
         if (secureResource == null) {
             try {
-                String secureProp = cms.readPropertyObject(vfsName, I_CmsConstants.C_PROPERTY_SECURE, true).getValue();
+                String secureProp = cms.readPropertyObject(vfsName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
                 secureResource = Boolean.valueOf(secureProp);
                 // only cache result if read was successfull
                 m_cacheSecureLinks.put(getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName), secureResource);
@@ -2143,7 +2153,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         CmsObject cms = null;
         try {
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-            resources = cms.readResourcesWithProperty(I_CmsConstants.C_PROPERTY_EXPORTNAME);
+            resources = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
         } catch (CmsException e) {
             resources = Collections.EMPTY_LIST;
         }
@@ -2153,7 +2163,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             CmsResource res = (CmsResource)resources.get(i);
             try {
                 String foldername = cms.getSitePath(res);
-                String exportname = cms.readPropertyObject(foldername, I_CmsConstants.C_PROPERTY_EXPORTNAME, false).getValue();
+                String exportname = cms.readPropertyObject(foldername, CmsPropertyDefinition.PROPERTY_EXPORTNAME, false).getValue();
                 if (exportname != null) {
                     if (!exportname.endsWith("/")) {
                         exportname = exportname + "/";

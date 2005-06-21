@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
@@ -52,7 +53,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.5 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.6 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -307,9 +308,9 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                 newUser.setFirstname(firstname);
                                 newUser.setLastname(userLastname);
                                 newUser.setAddress(street);
-                                newUser.setAdditionalInfo(C_ADDITIONAL_INFO_ZIPCODE, zipcode);
-                                newUser.setAdditionalInfo(C_ADDITIONAL_INFO_TOWN, town);
-                                newUser.setAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
+                                newUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE, zipcode);
+                                newUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN, town);
+                                newUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                                 for(int z = 0;z < selectedGroups.size();z++) {
                                     String groupname = (String)selectedGroups.elementAt(z);
                                     cms.addUserToGroup(user, groupname);
@@ -382,9 +383,9 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     userLastname = theUser.getLastname();
                     email = theUser.getEmail();
                     disabled = theUser.getDisabled();
-                    zipcode = (String)theUser.getAdditionalInfo(C_ADDITIONAL_INFO_ZIPCODE);
-                    town = (String)theUser.getAdditionalInfo(C_ADDITIONAL_INFO_TOWN);
-                    defaultGroup = (String)theUser.getAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP);
+                    zipcode = (String)theUser.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE);
+                    town = (String)theUser.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN);
+                    defaultGroup = (String)theUser.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DEFAULTGROUP);
                     List groups = cms.getDirectGroupsOfUser(user);
                     if(groups != null) {
                         selectedGroups = new Vector();
@@ -458,9 +459,9 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                     theUser.setFirstname(firstname);
                                     theUser.setLastname(userLastname);
                                     theUser.setAddress(street);
-                                    theUser.setAdditionalInfo(C_ADDITIONAL_INFO_ZIPCODE, zipcode);
-                                    theUser.setAdditionalInfo(C_ADDITIONAL_INFO_TOWN, town);
-                                    theUser.setAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
+                                    theUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE, zipcode);
+                                    theUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN, town);
+                                    theUser.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                                     if((OpenCms.getDefaultUsers().getUserAdmin().equals(theUser.getName()))
                                             && (!selectedGroups.contains(OpenCms.getDefaultUsers().getGroupAdministrators()))) {
                                         throw new CmsLegacyException("cant remove Admin from "

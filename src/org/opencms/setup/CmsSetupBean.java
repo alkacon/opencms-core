@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/06/21 15:05:10 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 
@@ -368,9 +368,9 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     public String getDatabaseConfigPage(String key) {
 
         return "database"
-            + I_CmsConstants.C_FOLDER_SEPARATOR
+            + "/"
             + key
-            + I_CmsConstants.C_FOLDER_SEPARATOR
+            + "/"
             + "step_4_database_setup.jsp";
     }
 
@@ -595,7 +595,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         return getExtProperty("defaultContentEncoding");
     }
 
-    /**
+    /** 
      * Returns the name of the default web application, configured in <code>web.xml</code>.<p>
      *
      * By default this is <code>"ROOT"</code>.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskHead.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.workflow.CmsTaskService;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -47,7 +48,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -168,68 +169,68 @@ public class CmsTaskHead extends CmsWorkplaceDefault {
         String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
         int selected = 0;
         names.addElement("a1");
-        values.addElement(lang.getLanguageValue(C_TASK_FILTER + "a1"));
+        values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "a1"));
         if("a1".equals(filter)) {
             selected = 0;
         }
         names.addElement("b1");
-        values.addElement(lang.getLanguageValue(C_TASK_FILTER + "b1"));
+        values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "b1"));
         if("b1".equals(filter)) {
             selected = 1;
         }
         names.addElement("c1");
-        values.addElement(lang.getLanguageValue(C_TASK_FILTER + "c1"));
+        values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "c1"));
         if("c1".equals(filter)) {
             selected = 2;
         }
         names.addElement("-");
         values.addElement(C_SPACER);
         names.addElement("a2");
-        values.addElement(lang.getLanguageValue(C_TASK_FILTER + "a2"));
+        values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "a2"));
         if("a2".equals(filter)) {
             selected = 4;
         }
         names.addElement("b2");
-        values.addElement(lang.getLanguageValue(C_TASK_FILTER + "b2"));
+        values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "b2"));
         if("b2".equals(filter)) {
             selected = 5;
         }
         names.addElement("c2");
-        values.addElement(lang.getLanguageValue(C_TASK_FILTER + "c2"));
+        values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "c2"));
         if("c2".equals(filter)) {
             selected = 6;
         }
         names.addElement("-");
         values.addElement(C_SPACER);
         names.addElement("a3");
-        values.addElement(lang.getLanguageValue(C_TASK_FILTER + "a3"));
+        values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "a3"));
         if("a3".equals(filter)) {
             selected = 8;
         }
         names.addElement("b3");
-        values.addElement(lang.getLanguageValue(C_TASK_FILTER + "b3"));
+        values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "b3"));
         if("b3".equals(filter)) {
             selected = 9;
         }
         names.addElement("c3");
-        values.addElement(lang.getLanguageValue(C_TASK_FILTER + "c3"));
+        values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "c3"));
         if("c3".equals(filter)) {
             selected = 10;
         }
         names.addElement("-");
         values.addElement(C_SPACER);
         names.addElement("d1");
-        values.addElement(lang.getLanguageValue(C_TASK_FILTER + "d1"));
+        values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "d1"));
         if("d1".equals(filter)) {
             selected = 12;
         }
         names.addElement("d2");
-        values.addElement(lang.getLanguageValue(C_TASK_FILTER + "d2"));
+        values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "d2"));
         if("d2".equals(filter)) {
             selected = 13;
         }
         names.addElement("d3");
-        values.addElement(lang.getLanguageValue(C_TASK_FILTER + "d3"));
+        values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "d3"));
         if("d3".equals(filter)) {
             selected = 14;
         }

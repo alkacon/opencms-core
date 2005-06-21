@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlPage.java,v $
- * Date   : $Date: 2005/04/28 08:29:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,10 @@ package org.opencms.search.documents;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
@@ -55,7 +55,7 @@ import java.util.Locale;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypeXmlPage</code>.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2005/04/28 08:29:21 $
+ * @version $Revision: 1.6 $ $Date: 2005/06/21 15:49:58 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDocumentXmlPage extends A_CmsVfsDocument {
@@ -83,7 +83,7 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
 
         try {
             String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-            
+
             CmsFile file = CmsFile.upgrade(resource, cms);
             String absolutePath = cms.getSitePath(file);
             CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
@@ -108,10 +108,13 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
 
             result = CmsHtmlExtractor.extractText(content.toString(), page.getEncoding());
 
-            CmsProperty extractionClass = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_SEARCH_EXTRACTIONCLASS, true);            
+            CmsProperty extractionClass = cms.readPropertyObject(
+                path,
+                CmsPropertyDefinition.PROPERTY_SEARCH_EXTRACTIONCLASS,
+                true);
             if (extractionClass != CmsProperty.getNullProperty()) {
                 Object ext = Class.forName(extractionClass.getValue()).newInstance();
-                
+
                 if (ext instanceof I_CmsSearchExtractor) {
                     I_CmsSearchExtractor extra = (I_CmsSearchExtractor)ext;
                     result = result + "\n" + extra.extractContent(cms, indexResource, language).getContent();
@@ -121,13 +124,14 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
                         resource.getRootPath(),
                         ext.getClass().getName()));
                 }
-            } 
-            
+            }
+
             return new CmsExtractionResult(result);
-            
+
         } catch (Exception e) {
-            throw new CmsIndexException(Messages.get()
-                .container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
+            throw new CmsIndexException(
+                Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
+                e);
         }
     }
 }

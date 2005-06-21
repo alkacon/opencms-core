@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2005/05/19 08:57:22 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.workplace;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.i18n.CmsEncoder;
@@ -60,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/21 15:49:59 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -227,7 +228,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                         checkurl=true;
                         if(checkurl){
                             cms.writeFile(editFile);
-                            cms.writeProperty(filename, C_PROPERTY_TITLE, title);
+                            cms.writeProperty(filename, CmsPropertyDefinition.PROPERTY_TITLE, title);
                         }
                         linkResource = editFile;
                     } else {
@@ -235,7 +236,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                         List properties = null;
                         if (title != null) {
                             properties = new ArrayList();
-                            properties.add(new org.opencms.file.CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, title, null));
+                            properties.add(new org.opencms.file.CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null));
                         } else {
                             properties = Collections.EMPTY_LIST;
                         } 
@@ -252,7 +253,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                     }
                     // now check if navigation informations have to be added to the new page.
                     if(addToNav && checkurl) {
-                        cms.writeProperty(cms.getSitePath(linkResource), C_PROPERTY_NAVTEXT, navtitle);
+                        cms.writeProperty(cms.getSitePath(linkResource), CmsPropertyDefinition.PROPERTY_NAVTEXT, navtitle);
                         // update the navposition.
                         if(navpos != null) {
                             updateNavPos(cms, linkResource, navpos);
@@ -484,11 +485,11 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
 
                 // check if the resource is not marked as deleted
                 if(res.getState() != C_STATE_DELETED) {
-                    String navpos = cms.readProperty(cms.getSitePath(res), C_PROPERTY_NAVPOS);
+                    String navpos = cms.readProperty(cms.getSitePath(res), CmsPropertyDefinition.PROPERTY_NAVPOS);
 
                     // check if there is a navpos for this file/folder
                     if(navpos != null) {
-                        nicename = cms.readProperty(cms.getSitePath(res), C_PROPERTY_NAVTEXT);
+                        nicename = cms.readProperty(cms.getSitePath(res), CmsPropertyDefinition.PROPERTY_NAVTEXT);
                         if(nicename == null) {
                             nicename = res.getName();
                         }
@@ -597,6 +598,6 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
         else {
             newPos = 1;
         }
-        cms.writeProperty(cms.getSitePath(newfile), C_PROPERTY_NAVPOS, new Float(newPos).toString());
+        cms.writeProperty(cms.getSitePath(newfile), CmsPropertyDefinition.PROPERTY_NAVPOS, new Float(newPos).toString());
     }
 }

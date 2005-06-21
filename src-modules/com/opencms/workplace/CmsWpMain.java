@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -52,7 +53,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -342,9 +343,9 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		Hashtable startSettings = null;
 
 		// check out the user infor1ation if a default view is stored there.
-		startSettings = (Hashtable) reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+		startSettings = (Hashtable) reqCont.currentUser().getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_STARTSETTINGS);
 		if (startSettings != null) {
-			currentView = (String) startSettings.get(C_START_VIEW);
+			currentView = (String) startSettings.get(com.opencms.core.I_CmsConstants.C_START_VIEW);
 		}
 
 		// If there is a session, let's see if it has a view stored

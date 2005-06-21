@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.util;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -39,7 +40,6 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.util.Arrays;
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 6.0 alpha 3
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
@@ -481,13 +481,13 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             if (CmsMacroResolver.KEY_CURRENT_USER_ZIP.equals(macro)) {
                 // the key is the current users zip code
                 return (String)m_cms.getRequestContext().currentUser().getAdditionalInfo(
-                    I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
+                    CmsUserSettings.ADDITIONAL_INFO_ZIPCODE);
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_CITY.equals(macro)) {
                 // the key is the current users city
                 return (String)m_cms.getRequestContext().currentUser().getAdditionalInfo(
-                    I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
+                    CmsUserSettings.ADDITIONAL_INFO_TOWN);
             }
 
             if (CmsMacroResolver.KEY_REQUEST_URI.equals(macro)) {

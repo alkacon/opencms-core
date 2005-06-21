@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.io.SAXReader;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $ $Date: 2005/06/19 10:57:06 $
+ * @version $Revision: 1.21 $ $Date: 2005/06/21 15:49:58 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
@@ -103,6 +103,267 @@ public class CmsImportExportManager {
 
     /** The URL of a 4.x OpenCms app. to import content correct into 5.x OpenCms apps. */
     private String m_webAppUrl;
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_ACCESS = "access";
+
+    /**
+     * Tag to identify allowed permissions.
+     */
+    public static final String N_ACCESSCONTROL_ALLOWEDPERMISSIONS = "allowed";
+
+    /**
+     * Tag to identify denied permissions.
+     */
+    public static final String N_ACCESSCONTROL_DENIEDPERMISSIONS = "denied";
+
+    /**
+     * Tag to identify access control entries .
+     */
+    public static final String N_ACCESSCONTROL_ENTRIES = "accesscontrol";
+
+    /**
+     * Tag to identify a single access control entry.
+     */
+    public static final String N_ACCESSCONTROL_ENTRY = "accessentry";
+
+    /**
+     * Tag to identify a permission set.
+     */
+    public static final String N_ACCESSCONTROL_PERMISSIONSET = "permissionset";
+
+    /**
+     * Tag to identify a principal set.
+     */
+    public static final String N_ACCESSCONTROL_PRINCIPAL = "uuidprincipal";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_TAG_ADDRESS = "address";
+
+    /**
+     * A tag in the export manifest-file, used as subtag of C_EXPORT_TAG_INFO.
+     */
+    public static final String N_CREATOR = "creator";
+
+    /**
+     * A tag in the export manifest-file, used as subtag of C_EXPORT_TAG_INFO.
+     */
+    public static final String N_DATE = "createdate";
+
+    /**
+     * The "datecreated" tag in the manifest-file.
+     */
+    public static final String N_DATECREATED = "datecreated";
+
+    /**
+     * The "expire" tag in the manifest-file.
+     */
+    public static final String N_DATEEXPIRED = "dateexpired";
+
+    /**
+     * The "datelastmodified" tag in the manifest-file.
+     */
+    public static final String N_DATELASTMODIFIED = "datelastmodified";
+
+    /**
+     * The "release" tag in the manifest-file.
+     */
+    public static final String N_DATERELEASED = "datereleased";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_DEFAULTGROUP = "defaultgroup";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_DESCRIPTION = "description";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_DESTINATION = "destination";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_EMAIL = "email";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_EXPORT = "export";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_FILE = "file";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_FIRSTNAME = "firstname";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_FLAGS = "flags";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_GROUPNAME = "groupname";
+
+    /**
+     * Tag to identify a generic id.
+     */
+    public static final String N_ID = "id";
+
+    /**
+     * A tag in the export manifest-file.
+     */
+    public static final String N_INFO = "info";
+
+    /**
+     * The "lastmodified" tag in the manifest-file.
+     */
+    public static final String N_LASTMODIFIED = "lastmodified";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_LASTNAME = "lastname";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_NAME = "name";
+
+    /**
+     * A tag in the export manifest-file, used as subtag of C_EXPORT_TAG_INFO.
+     */
+    public static final String N_OC_VERSION = "opencms_version";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_PARENTGROUP = "parentgroup";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_PASSWORD = "password";
+
+    /**
+     * A tag in the manifest-file, used as subtag of C_EXPORT_TAG_INFO.
+     */
+    public static final String N_PROJECT = "project";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_PROPERTIES = "properties";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_PROPERTY = "property";
+
+    /**
+     * Key for the type attrib. of a property element.<p>
+     */
+    public static final String N_PROPERTY_ATTRIB_TYPE = "type";
+
+    /**
+     * Value for the "shared" type attrib. of a property element.<p>
+     */
+    public static final String N_PROPERTY_ATTRIB_TYPE_SHARED = "shared";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_SOURCE = "source";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_TYPE = "type";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_USER = "user";
+
+    /**
+     * The "usercreated" tag in the manifest-file.
+     */
+    public static final String N_USERCREATED = "usercreated";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_USERDATA = "userdata";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_USERGROUPDATA = "usergroupdata";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_USERGROUPS = "usergroups";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_USERINFO = "userinfo";
+
+    /**
+     * The "userlastmodified" tag in the manifest-file.
+     */
+    public static final String N_USERLASTMODIFIED = "userlastmodified";
+
+    /**
+     * The "uuidresource" tag in the manifest-file.
+     */
+    public static final String N_UUIDRESOURCE = "uuidresource";
+
+    /**
+     * The "uuid" tag in the manifest-file.
+     */
+    public static final String N_UUIDSTRUCTURE = "uuidstructure";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_VALUE = "value";
+
+    /**
+     * A tag in the export manifest-file, used as subtag of C_EXPORT_TAG_INFO.
+     */
+    public static final String N_VERSION = "export_version";
+
+    /**
+     * The version of the opencms export (appears in the export manifest-file).
+     */
+    public static final String EXPORT_VERSION = "4";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_GROUPDATA = "groupdata";
+
+    /** 
+     * The filename of the xml manifest.
+     */
+    // used 2 times in org.opencms.importexport
+    public static final String EXPORT_XMLFILENAME = "manifest.xml";
 
     /**
      * Creates a new instance for the import/export manager, will be called by the import/export configuration manager.

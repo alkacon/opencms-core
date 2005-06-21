@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/04/07 15:25:18 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
 
 package org.opencms.frontend.templateone;
 
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
@@ -73,91 +73,91 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
 
     /** Request parameter name for the head navigation start folder. */
     public static final String C_PARAM_HEADNAV_FOLDER = "headnavfolder";
-    
+
     /** Request parameter name for the head navigation flag to use images on 1st level. */
     public static final String C_PARAM_HEADNAV_IMAGES = "headnavimages";
-    
+
     /** Request parameter name for the head navigation flag to mark the current top level folder. */
     public static final String C_PARAM_HEADNAV_MARKCURRENT = "headnavmarkcurrent";
-    
+
     /** Request parameter name for the head navigation flag to expand the submenus on click (true) or mouseover (false). */
     public static final String C_PARAM_HEADNAV_MENUCLICK = "headnavmenuclick";
-    
+
     /** Request parameter name for the head navigation sub menu depth. */
     public static final String C_PARAM_HEADNAV_MENUDEPTH = "headnavmenudepth";
-    
+
     /** Request parameter name for the current locale. */
     public static final String C_PARAM_LOCALE = "locale";
-    
+
     /** Request parameter name for the left navigation editable include element uri. */
     public static final String C_PARAM_NAVLEFT_ELEMENTURI = "navleftelementuri";
-    
+
     /** Request parameter name for the flag if the left navigation should display only the selected resources. */
     public static final String C_PARAM_NAVLEFT_SHOWSELECTED = "navleftselected";
-    
+
     /** Request parameter name for the flag if the left navigation tree should be displayed. */
     public static final String C_PARAM_NAVLEFT_SHOWTREE = "navleftshowtree";
-    
+
     /** Request parameter name for the current resource path. */
     public static final String C_PARAM_RESPATH = "respath";
-    
+
     /** Request parameter name for the flag if the head navigation menus should be shown. */
     public static final String C_PARAM_SHOWMENUS = "showmenus";
-    
+
     /** Request parameter name for the current start folder. */
     public static final String C_PARAM_STARTFOLDER = "startfolder";
 
     /** Name of the property key to determine if the current element is shown in headnav. */
     public static final String C_PROPERTY_HEADNAV_USE = "style_head_nav_showitem";
-    
+
     /** Indicates if accessible version is shown. */
     private boolean m_showAccessibleVersion;
 
     /** Stores the path to the head navigation start folder. */
     private String m_headNavFolder;
-    
+
     /** The default behaviour to include items in head navigation menu if property <code>style_head_nav_showitem</code> is not set. */
     private boolean m_headNavItemDefaultValue;
-    
+
     /** Determines if the currently active top folder should be marked in the head navigation. */
     private boolean m_headNavMarkCurrent;
-    
+
     /** Determines if the submenus are expanded on click (true) or mouseover (false). */
     private boolean m_headNavMenuClick;
-    
+
     /** Stores the current locale value. */
     private String m_locale;
-    
+
     /** The maximum depth of the sub menus in the head navigation. */
     private int m_menuDepth;
-    
+
     /** Stores the localized resource Strings. */
     private CmsMessages m_messages;
-    
+
     /** Stores the left navigation include element uri. */
     private String m_navLeftElementUri;
-    
+
     /** Flag if the left navigation should display only the selected resources. */
     private boolean m_navLeftShowSelected;
-    
+
     /** Flag if the left navigation tree should be displayed. */
     private boolean m_navLeftShowTree;
-    
+
     /** Stores the substituted path to the modules resources. */
     private String m_resPath;
-    
+
     /** Flag that determines if the head navigation 1st row should use images instead of text links. */
     private boolean m_showHeadNavImages;
-    
+
     /** Flag to determine if the DHTML menus (2nd level) of the head navigation should be shown. */
     private boolean m_showMenus;
-    
+
     /** Stores the path to the start folder for navigation and search. */
     private String m_startFolder;
 
@@ -466,7 +466,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         if (showNavLeftTree()) {
             // create navigation tree
             result.append("<!-- Start navigation left -->\n");
-            if (! showAccessibleVersion()) {
+            if (!showAccessibleVersion()) {
                 result.append("\t<div style=\"line-height: 1px; font-size: 1px; display: block; height: 4px;\">&nbsp;</div>\n");
             }
             // get start and end level of the displayed tree
@@ -693,7 +693,9 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             StringBuffer openTag = new StringBuffer(8);
             if ("menu0".equals(prefix) && showAccessibleVersion()) {
                 // create div that is displayed for accessible version
-                CmsMessages messages = new CmsMessages(CmsTemplateBean.C_MESSAGE_BUNDLE, getRequestContext().getLocale());
+                CmsMessages messages = new CmsMessages(
+                    CmsTemplateBean.C_MESSAGE_BUNDLE,
+                    getRequestContext().getLocale());
                 openTag.append("<div style=\"visibility: hidden; display:none;\">");
                 openTag.append("<h3>").append(messages.key("headline.accessible.nav.headline")).append("</h3>");
                 openTag.append("<p>").append(messages.key("headline.accessible.nav.text")).append("</p>");
@@ -774,7 +776,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         // initialize members from request
         m_locale = req.getParameter(C_PARAM_LOCALE);
         if (m_locale == null) {
-            m_locale = property(I_CmsConstants.C_PROPERTY_LOCALE, "search", "en").toLowerCase();
+            m_locale = property(CmsPropertyDefinition.PROPERTY_LOCALE, "search", "en").toLowerCase();
         }
         m_showAccessibleVersion = Boolean.valueOf(req.getParameter(CmsTemplateBean.C_PARAM_ACCESSIBLE)).booleanValue();
         m_headNavFolder = req.getParameter(C_PARAM_HEADNAV_FOLDER);
@@ -828,7 +830,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
 
         m_headNavItemDefaultValue = defaultValue;
     }
-    
+
     /**
      * Returns if the accessible version of the page should be shown.<p>
      * 
@@ -938,7 +940,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                 // check if the "default-file" property was used on the folder
                 String defaultFileName = getCmsObject().readPropertyObject(
                     folderName,
-                    I_CmsConstants.C_PROPERTY_DEFAULT_FILE,
+                    CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
                     false).getValue();
                 if (defaultFileName != null && fileName.equals(defaultFileName)) {
                     // property was set and the requested file name matches the default file name

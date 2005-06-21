@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsTableGallery.java,v $
- * Date   : $Date: 2005/06/17 15:40:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@
 
 package org.opencms.workplace.galleries;
 
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * Generates the html gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsTableGallery extends CmsHtmlGallery {
 
@@ -96,8 +96,8 @@ public class CmsTableGallery extends CmsHtmlGallery {
         if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
             try {
                 cssFile = getJsp().link(
-                    getCms().readPropertyObject(getParamResourcePath(), I_CmsConstants.C_PROPERTY_STYLESHEET, true)
-                        .getValue(""));
+                    getCms().readPropertyObject(getParamResourcePath(), CmsPropertyDefinition.PROPERTY_STYLESHEET, true).getValue(
+                        ""));
             } catch (CmsException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e);
@@ -110,9 +110,9 @@ public class CmsTableGallery extends CmsHtmlGallery {
             result.append(super.buildGalleryItemPreview());
             return result.toString();
         }
-        return "";      
+        return "";
     }
-    
+
     /**
      * Returns the height of the head frameset.<p>
      * 
@@ -121,7 +121,7 @@ public class CmsTableGallery extends CmsHtmlGallery {
     public String getHeadFrameSetHeight() {
 
         return "440";
-    }    
+    }
 
     /**
      * Builds the HTML for the wizard button.<p>
@@ -131,11 +131,18 @@ public class CmsTableGallery extends CmsHtmlGallery {
     public String wizardButton() {
 
         StringBuffer uploadUrl = new StringBuffer(512);
-        uploadUrl.append(getJsp().link(C_PATH_DIALOGS + OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri()).replaceFirst("newresource", "newcsvfile"));
+        uploadUrl.append(getJsp().link(
+            C_PATH_DIALOGS + OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri()).replaceFirst(
+            "newresource",
+            "newcsvfile"));
         uploadUrl.append("?redirecturl=/system/workplace/galleries/gallery_list.jsp&targetframe=gallery_list&currentfolder=");
         uploadUrl.append(getParamGalleryPath());
-        return button(uploadUrl.toString(), "gallery_fs", "wizard", OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload")
-            .getKey(), 0);
+        return button(
+            uploadUrl.toString(),
+            "gallery_fs",
+            "wizard",
+            OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getKey(),
+            0);
     }
 
 }

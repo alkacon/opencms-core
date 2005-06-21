@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/A_CmsCacheDirectives.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/21 15:49:58 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@ package com.opencms.template;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
-import org.opencms.main.I_CmsConstants;
 
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.cache.CmsTimeout;
@@ -238,7 +237,7 @@ public abstract class A_CmsCacheDirectives {
         String elementName = (String)parameters.get("_ELEMENT_");
         if (elementName == null) {
             // this is the root-template
-            elementName = I_CmsConstants.C_ROOT_TEMPLATE_NAME;
+            elementName = com.opencms.core.I_CmsConstants.C_ROOT_TEMPLATE_NAME;
         }
         Enumeration paramKeys = parameters.keys();
         while (paramKeys.hasMoreElements()) {

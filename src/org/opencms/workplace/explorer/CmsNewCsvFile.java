@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/06/18 08:34:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,13 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceException;
@@ -82,17 +82,17 @@ import org.dom4j.io.DocumentSource;
  * </ul>
  * 
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.7.3
  */
 public class CmsNewCsvFile extends CmsNewResourceUpload {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsNewCsvFile.class);  
-    
     /** Constant for automatically selecting the best fitting delimiter. */
     public static final String BEST_DELIMITER = "best";
+
+    /** Constant for the height of the dialog frame. */
+    public static final String FRAMEHEIGHT = "450";
 
     /** Request parameter name for the CSV content. */
     public static final String PARAM_CSVCONTENT = "csvcontent";
@@ -112,11 +112,42 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     /** The delimiter to separate the text. */
     public static final char TEXT_DELIMITER = '"';
 
-    /** Constant for the height of the dialog frame. */
-    public static final String FRAMEHEIGHT = "450";
-
     /** the delimiters, the csv data can be separated with.*/
     static final String[] C_DELIMITERS = {";", ",", "\t"};
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewCsvFile.class);
+
+    /** The pasted CSV content. */
+    private String m_paramCsvContent;
+
+    /** The delimiter to separate the CSV values. */
+    private String m_paramDelimiter;
+
+    /** The XSLT File to transform the table with. */
+    private String m_paramXsltFile;
+
+    /**
+     * Public constructor with JSP action element.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     */
+    public CmsNewCsvFile(CmsJspActionElement jsp) {
+
+        super(jsp);
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsNewCsvFile(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        this(new CmsJspActionElement(context, req, res));
+    }
 
     /**
      * Converts CSV data to xml.<p>
@@ -167,37 +198,6 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         return k;
     }
 
-    /** The pasted CSV content. */
-    private String m_paramCsvContent;
-
-    /** The delimiter to separate the CSV values. */
-    private String m_paramDelimiter;
-
-    /** The XSLT File to transform the table with. */
-    private String m_paramXsltFile;
-
-    /**
-     * Public constructor with JSP action element.<p>
-     * 
-     * @param jsp an initialized JSP action element
-     */
-    public CmsNewCsvFile(CmsJspActionElement jsp) {
-
-        super(jsp);
-    }
-
-    /**
-     * Public constructor with JSP variables.<p>
-     * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public CmsNewCsvFile(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        this(new CmsJspActionElement(context, req, res));
-    }
-
     /**
      * Uploads the specified file and transforms it to HTML.<p>
      * 
@@ -235,13 +235,16 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             try {
                 xmlContent = convertCsvToXml(getParamCsvContent(), getParamDelimiter());
             } catch (IOException e) {
-                throw new CmsXmlException(Messages.get().container(Messages.ERR_CSV_XML_TRANSFORMATION_FAILED_0));    
-            }    
+                throw new CmsXmlException(Messages.get().container(Messages.ERR_CSV_XML_TRANSFORMATION_FAILED_0));
+            }
 
             if (CmsStringUtil.isNotEmpty(getParamXsltFile())) {
 
                 xmlContent = applyXslTransformation(getParamXsltFile(), xmlContent);
-                styleProp = getCms().readPropertyObject(getParamXsltFile(), I_CmsConstants.C_PROPERTY_STYLESHEET, true);
+                styleProp = getCms().readPropertyObject(
+                    getParamXsltFile(),
+                    CmsPropertyDefinition.PROPERTY_STYLESHEET,
+                    true);
             }
             byte[] content = xmlContent.getBytes();
 
@@ -254,13 +257,116 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                 getCms().replaceResource(getParamResource(), resTypeId, content, null);
             }
             // copy xslt stylesheet-property to the new resource
-            if (!styleProp.isNullProperty()) { 
+            if (!styleProp.isNullProperty()) {
                 getCms().writePropertyObject(getParamResource(), styleProp);
             }
         } catch (Throwable e) {
             // error uploading file, show error dialog
             setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_TABLE_IMPORT_FAILED_0));
-            includeErrorpage(this, e);  
+            includeErrorpage(this, e);
+        }
+    }
+
+    /**
+     * Applies a XSLT Transformation to the xmlContent.<p>
+     * 
+     * @param xsltFile the XSLT transformation file
+     * @param xmlContent the XML content to transform
+     * @return the transformed xml
+     */
+    public String applyXslTransformation(String xsltFile, String xmlContent) {
+
+        try {
+            TransformerFactory factory = TransformerFactory.newInstance();
+
+            InputStream stylesheet = new ByteArrayInputStream(getCms().readFile(xsltFile).getContents());
+            Transformer transformer = factory.newTransformer(new StreamSource(stylesheet));
+            Document document = DocumentHelper.parseText(xmlContent);
+            DocumentSource source = new DocumentSource(document);
+            DocumentResult streamResult = new DocumentResult();
+            // transform the xml with the xslt stylesheet
+            transformer.transform(source, streamResult);
+            return streamResult.getDocument().asXML();
+
+        } catch (Exception e) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(e);
+            }
+            return "";
+        }
+    }
+
+    /**
+     * Builds a html select for Delimiters.
+     * 
+     * @return html select code with the possible available xslt files
+     */
+    public String buildDelimiterSelect() {
+
+        Object[] optionStrings = new Object[] {
+            key("input.bestmatching"),
+            key("input.semicolon"),
+            key("input.comma"),
+            key("input.tab")};
+        List options = new ArrayList(Arrays.asList(optionStrings));
+        List values = new ArrayList(Arrays.asList(new Object[] {"best", ";", ",", "tab"}));
+        String parameters = "name=\"" + PARAM_DELIMITER + "\" class=\"maxwidth\"";
+        return buildSelect(parameters, options, values, 0);
+    }
+
+    /**
+     * Builds a html select for the XSLT files.
+     * 
+     * @return html select code with the possible available xslt files
+     */
+    public String buildXsltSelect() {
+
+        // read all xslt files
+        List xsltFiles = getXsltFiles();
+        if (xsltFiles.size() > 0) {
+            List options = new ArrayList();
+            List values = new ArrayList();
+
+            options.add(key("input.nostyle"));
+            values.add("");
+
+            CmsResource resource;
+            CmsProperty titleProp = null;
+
+            Iterator i = xsltFiles.iterator();
+            while (i.hasNext()) {
+
+                resource = (CmsResource)i.next();
+                try {
+                    titleProp = getCms().readPropertyObject(
+                        resource.getRootPath(),
+                        CmsPropertyDefinition.PROPERTY_TITLE,
+                        false);
+                } catch (CmsException e) {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(e);
+                    }
+                }
+                values.add(resource.getRootPath());
+                // display the title if set or otherwise the filename
+                if (titleProp.isNullProperty()) {
+                    options.add("[" + resource.getName() + "]");
+                } else {
+                    options.add(titleProp.getValue());
+                }
+            }
+
+            StringBuffer result = new StringBuffer(512);
+            // build a select box and a table row around
+            result.append("<tr><td style=\"white-space: nowrap;\" unselectable=\"on\">");
+            result.append(key("input.xsltfile"));
+            result.append("</td><td class=\"maxwidth\">");
+            String parameters = "class=\"maxwidth\" name=\"" + PARAM_XSLTFILE + "\"";
+            result.append(buildSelect(parameters, options, values, 0));
+            result.append("</td><tr>");
+            return result.toString();
+        } else {
+            return "";
         }
     }
 
@@ -296,7 +402,8 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             // check file size
             if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
                 throw new CmsWorkplaceException(Messages.get().container(
-                    Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1, new Long(maxFileSizeBytes / 1024)));
+                    Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1,
+                    new Long(maxFileSizeBytes / 1024)));
             }
             content = fi.get();
             fi.delete();
@@ -306,109 +413,6 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             throw new CmsWorkplaceException(Messages.get().container(Messages.ERR_UPLOAD_FILE_NOT_FOUND_0));
         }
         return content;
-    }
-
-    /**
-     * Applies a XSLT Transformation to the xmlContent.<p>
-     * 
-     * @param xsltFile the XSLT transformation file
-     * @param xmlContent the XML content to transform
-     * @return the transformed xml
-     */
-    public String applyXslTransformation(String xsltFile, String xmlContent) {
-
-        try {
-            TransformerFactory factory = TransformerFactory.newInstance();
-
-            InputStream stylesheet = new ByteArrayInputStream(getCms().readFile(xsltFile).getContents());
-            Transformer transformer = factory.newTransformer(new StreamSource(stylesheet));
-            Document document = DocumentHelper.parseText(xmlContent);
-            DocumentSource source = new DocumentSource(document);
-            DocumentResult streamResult = new DocumentResult();
-            // transform the xml with the xslt stylesheet
-            transformer.transform(source, streamResult);
-            return streamResult.getDocument().asXML();
-
-        } catch (Exception e) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(e);
-            }
-            return "";
-        }
-    }
-
-    /**
-     * Builds a html select for the XSLT files.
-     * 
-     * @return html select code with the possible available xslt files
-     */
-    public String buildXsltSelect() {
-
-        // read all xslt files
-        List xsltFiles = getXsltFiles();
-        if (xsltFiles.size() > 0) {
-            List options = new ArrayList();
-            List values = new ArrayList();
-
-            options.add(key("input.nostyle"));
-            values.add("");
-
-            CmsResource resource;
-            CmsProperty titleProp = null;
-
-            Iterator i = xsltFiles.iterator();
-            while (i.hasNext()) {
-
-                resource = (CmsResource)i.next();
-                try {
-                    titleProp = getCms().readPropertyObject(
-                        resource.getRootPath(),
-                        I_CmsConstants.C_PROPERTY_TITLE,
-                        false);
-                } catch (CmsException e) {
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(e);
-                    }    
-                }
-                values.add(resource.getRootPath());
-                // display the title if set or otherwise the filename
-                if (titleProp.isNullProperty()) {
-                    options.add("[" + resource.getName() + "]");
-                } else {
-                    options.add(titleProp.getValue());
-                }
-            }
-
-            StringBuffer result = new StringBuffer(512);
-            // build a select box and a table row around
-            result.append("<tr><td style=\"white-space: nowrap;\" unselectable=\"on\">");
-            result.append(key("input.xsltfile"));
-            result.append("</td><td class=\"maxwidth\">");
-            String parameters = "class=\"maxwidth\" name=\"" + PARAM_XSLTFILE + "\"";
-            result.append(buildSelect(parameters, options, values, 0));
-            result.append("</td><tr>");
-            return result.toString();
-        } else {
-            return "";
-        }
-    }
-
-    /**
-     * Builds a html select for Delimiters.
-     * 
-     * @return html select code with the possible available xslt files
-     */
-    public String buildDelimiterSelect() {
-
-        Object[] optionStrings = new Object[] {
-            key("input.bestmatching"),
-            key("input.semicolon"),
-            key("input.comma"),
-            key("input.tab")};
-        List options = new ArrayList(Arrays.asList(optionStrings));
-        List values = new ArrayList(Arrays.asList(new Object[] {"best", ";", ",", "tab"}));
-        String parameters = "name=\"" + PARAM_DELIMITER + "\" class=\"maxwidth\"";
-        return buildSelect(parameters, options, values, 0);
     }
 
     /**

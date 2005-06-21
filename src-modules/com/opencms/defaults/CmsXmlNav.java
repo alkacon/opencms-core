@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2005/05/19 08:57:23 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/21 15:50:00 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.defaults;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
@@ -54,7 +55,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.2 $ $Date: 2005/05/19 08:57:23 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/21 15:50:00 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -455,8 +456,8 @@ public class CmsXmlNav extends A_CmsNavBase {
         for (int i=0; i<size; i++) {
             CmsResource currentResource = (CmsResource)resources.get(i);
             String path = cms.getSitePath(currentResource);
-            String pos = cms.readProperty(path, I_CmsConstants.C_PROPERTY_NAVPOS);
-            String text = cms.readProperty(path, I_CmsConstants.C_PROPERTY_NAVTEXT);
+            String pos = cms.readProperty(path, CmsPropertyDefinition.PROPERTY_NAVPOS);
+            String text = cms.readProperty(path, CmsPropertyDefinition.PROPERTY_NAVTEXT);
             // Only list folders in the nav bar if they are not deleted!
             if (currentResource.getState() != I_CmsConstants.C_STATE_DELETED) {
                 // don't list the temporary folders in the nav bar!

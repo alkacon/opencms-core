@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/06/18 08:34:55 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,10 +51,13 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * @since 5.3
  */
 public class CmsSystemInfo {
+
+    /** Path to the "packages" folder relative to the "WEB-INF" directory of the application. */
+    public static final String PACKAGES_FOLDER = "packages/";
 
     /** Default encoding. */
     private static final String C_DEFAULT_ENCODING = CmsEncoder.C_UTF8_ENCODING;
@@ -302,7 +305,7 @@ public class CmsSystemInfo {
     public String getPackagesRfsPath() {
 
         if (m_packagesRfsPath == null) {
-            m_packagesRfsPath = getAbsoluteRfsPathRelativeToWebInf(I_CmsConstants.C_PACKAGES_FOLDER);
+            m_packagesRfsPath = getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.PACKAGES_FOLDER);
         }
         return m_packagesRfsPath;
     }

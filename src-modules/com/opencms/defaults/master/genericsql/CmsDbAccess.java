@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/06/21 15:50:00 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.defaults.master.genericsql;
 
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -212,7 +213,7 @@ public class CmsDbAccess {
         
         try {
             defaultGroupName = (String)cms.getRequestContext().currentUser().getAdditionalInfo(
-                I_CmsConstants.C_ADDITIONAL_INFO_DEFAULTGROUP);
+                CmsUserSettings.ADDITIONAL_INFO_DEFAULTGROUP);
             
             if (defaultGroupName == null || "".equalsIgnoreCase(defaultGroupName)) {
                 if (CmsLog.getLog(this).isWarnEnabled()) {

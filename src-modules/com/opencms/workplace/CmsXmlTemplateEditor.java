@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,20 +31,22 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.importexport.CmsCompatibleCheck;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceAction;
 
+import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -69,7 +71,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.6 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -105,7 +107,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         cms.getRequestContext().setCurrentProject(cms.readProject(tempProject));
         
         try {
-            cms.copyResource(cms.getSitePath(file), temporaryFilename, I_CmsConstants.C_COPY_AS_NEW);
+            cms.copyResource(cms.getSitePath(file), temporaryFilename, org.opencms.main.I_CmsConstants.C_COPY_AS_NEW);
             // cms.chmod(temporaryFilename, 91);
         } catch (CmsException e) {
             if ((e instanceof CmsVfsResourceAlreadyExistsException) || ((e instanceof CmsLegacyException) && (((CmsLegacyException)e).getType() != CmsLegacyException.C_SQL_ERROR))) {
@@ -180,7 +182,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             // now add the current template
             String name = (String)parameters.get("template");
             try { // to read the title of this template
-                name = cms.readProperty(name, C_PROPERTY_TITLE);
+                name = cms.readProperty(name, CmsPropertyDefinition.PROPERTY_TITLE);
             } catch(CmsException exc) {
                 // ignore this exception - the title for this template was not readable
             }
@@ -378,7 +380,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         parameters.put("filename_for_relative_template", file);
         
         // Simple page support
-        String templateProp = cms.readProperty(file, C_PROPERTY_TEMPLATE);
+        String templateProp = cms.readProperty(file, CmsPropertyDefinition.PROPERTY_TEMPLATE);
         boolean isSimplePage = (templateProp != null);
 
         // Check, if the selected page file is locked
@@ -392,9 +394,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             
             if (isSimplePage) {
                 
-                bodyElementClassName = C_XML_CONTROL_DEFAULT_CLASS;
+                bodyElementClassName = CmsCompatibleCheck.XML_CONTROL_DEFAULT_CLASS;
                 bodyElementFilename = file;
-                layoutTemplateClassName = C_XML_CONTROL_DEFAULT_CLASS;
+                layoutTemplateClassName = CmsCompatibleCheck.XML_CONTROL_DEFAULT_CLASS;
                 layoutTemplateFilename = templateProp;
                 layoutTemplatFilenameRelative = templateProp;
                 
@@ -445,7 +447,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             }
 
             // And finally the document title
-            title = cms.readProperty(file, C_PROPERTY_TITLE);
+            title = cms.readProperty(file, CmsPropertyDefinition.PROPERTY_TITLE);
             if(title == null) {
                 title = "";
             }
@@ -485,7 +487,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             layoutBuffer.append("</stylesheet>\n<template><element name=\"jsptemplate\"/></template>\n<elementdef name=\"jsptemplate\">\n<class>com.opencms.flex.CmsJspTemplate</class>\n<template>");
             layoutBuffer.append(templateFile);
             layoutBuffer.append("</template>\n</elementdef>\n</xmltemplate>\n");
-            layoutTemplateFile = new CmsXmlTemplateFile(cms, templateFile + C_XML_CONTROL_FILE_SUFFIX, layoutBuffer.toString());
+            layoutTemplateFile = new CmsXmlTemplateFile(cms, templateFile + com.opencms.core.I_CmsConstants.C_XML_CONTROL_FILE_SUFFIX, layoutBuffer.toString());
         } else {
             tempObj = CmsTemplateClassManager.getClassInstance(layoutTemplateClassName);
             CmsXmlTemplate layoutTemplateClassObject = (CmsXmlTemplate)tempObj;
@@ -513,7 +515,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             }
             bodytitle = body.equals("(default)") ? "" : body;
             if (isSimplePage) {
-                style = cms.readProperty(layoutTemplateFilename, C_PROPERTY_TEMPLATE);
+                style = cms.readProperty(layoutTemplateFilename, CmsPropertyDefinition.PROPERTY_TEMPLATE);
                 if (style != null) {
                     style =  hostName + OpenCms.getSystemInfo().getOpenCmsContext() + style;
                 } else {
@@ -543,12 +545,12 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                 // The user entered a new document title
                 try {
                     cms.getRequestContext().setCurrentProject(cms.readProject(tempProject));
-                    cms.writeProperty(tempPageFilename, C_PROPERTY_TITLE, title);
+                    cms.writeProperty(tempPageFilename, CmsPropertyDefinition.PROPERTY_TITLE, title);
                     cms.getRequestContext().setCurrentProject(cms.readProject(curProject));
                 }catch(CmsException e) {
                     cms.getRequestContext().setCurrentProject(cms.readProject(curProject));
                     if(CmsLog.getLog(this).isErrorEnabled() ) {
-                        CmsLog.getLog(this).error("Could not write property " + C_PROPERTY_TITLE + " for file " + file, e);
+                        CmsLog.getLog(this).error("Could not write property " + CmsPropertyDefinition.PROPERTY_TITLE + " for file " + file, e);
                     }
                 }
             }
@@ -556,9 +558,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                 // The user requested a change of the layout template
                 if (isSimplePage) {
                     cms.getRequestContext().setCurrentProject(cms.readProject(tempProject));
-                    cms.writeProperty(tempPageFilename, C_PROPERTY_TEMPLATE, layoutTemplatFilenameRelative);
+                    cms.writeProperty(tempPageFilename, CmsPropertyDefinition.PROPERTY_TEMPLATE, layoutTemplatFilenameRelative);
                     cms.getRequestContext().setCurrentProject(cms.readProject(curProject));         
-                    style = cms.readProperty(layoutTemplateFilename, C_PROPERTY_TEMPLATE);    
+                    style = cms.readProperty(layoutTemplateFilename, CmsPropertyDefinition.PROPERTY_TEMPLATE);    
                     if (style != null) {
                         style = hostName + OpenCms.getSystemInfo().getOpenCmsContext() + style;
                     } else {
@@ -629,7 +631,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             }
             
             // check for C_PROPERTY_RELATIVEROOT property (with directory search)
-            String relativeRoot = cms.readProperty(file, C_PROPERTY_RELATIVEROOT, true);
+            String relativeRoot = cms.readProperty(file, org.opencms.file.CmsPropertyDefinition.PROPERTY_RELATIVEROOT, true);
             
             // save file contents to our temporary file.
             content = CmsEncoder.unescape(content, CmsEncoder.C_UTF8_ENCODING);
@@ -660,10 +662,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             try{
                 commitTemporaryFile(cms, bodyElementFilename, tempBodyFilename, tempProject, curProject);
                 cms.getRequestContext().setCurrentProject(cms.readProject(tempProject));
-                title = cms.readProperty(tempPageFilename, C_PROPERTY_TITLE);
+                title = cms.readProperty(tempPageFilename, CmsPropertyDefinition.PROPERTY_TITLE);
                 cms.getRequestContext().setCurrentProject(cms.readProject(curProject));
                 if(title != null && !"".equals(title)) {
-                    cms.writeProperty(file, C_PROPERTY_TITLE, title);
+                    cms.writeProperty(file, CmsPropertyDefinition.PROPERTY_TITLE, title);
                 }
                 if (! isSimplePage) {
                     CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
@@ -715,7 +717,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             bodyTemplateFile.removeFromFileCache();
             // deleting the pagefile will delete the bodyfile too
             cms.getRequestContext().setCurrentProject(cms.readProject(tempProject));
-            cms.deleteResource(tempPageFilename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+            cms.deleteResource(tempPageFilename, org.opencms.main.I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
             cms.getRequestContext().setCurrentProject(cms.readProject(curProject));
             try {
                 CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(CmsWorkplaceAction.getWorkplaceUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));
@@ -909,10 +911,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         try {
             I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
             String file = (String)session.getValue("te_file");
-            prop = cms.readProperty(file, C_PROPERTY_CONTENT_ENCODING);
+            prop = cms.readProperty(file, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING);
             while ((prop == null) && (! "".equals(file))) {
                 file = file.substring(0, file.lastIndexOf("/"));
-                prop = cms.readProperty(file + "/", C_PROPERTY_CONTENT_ENCODING);
+                prop = cms.readProperty(file + "/", CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING);
             } 
         } catch (Exception e) {}
         if (prop == null) prop = OpenCms.getSystemInfo().getDefaultEncoding();

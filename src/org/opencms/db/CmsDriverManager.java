@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/16 07:27:31 $
- * Version: $Revision: 1.527 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.528 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,6 +83,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.validation.CmsXmlDocumentLinkValidator;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
+import org.opencms.workflow.CmsTaskService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.527 $
+ * @version $Revision: 1.528 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -261,6 +262,44 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /** Key to indicate update of structure state. */
     public static final int C_UPDATE_STRUCTURE_STATE = 2;
 
+    /**
+     * A string in the configuration-file.
+     */
+    public static final String CONFIGURATION_CACHE = "cache";
+
+    /** "driver.user" string in the configuration-file. */
+    public static final String CONFIGURATION_USER = "driver.user";
+
+    /** Indicates to match resources NOT having the given state. */
+    public static final int READMODE_EXCLUDE_STATE = 8;
+
+    /** Indicates to match immediate children only. */
+    public static final int READMODE_EXCLUDE_TREE = 1;
+
+    /** Indicates to match resources NOT having the given type. */
+    public static final int READMODE_EXCLUDE_TYPE = 4;
+
+    /** Mode for reading project resources from the db. */
+    public static final int READMODE_IGNORESTATE = 0;
+
+    /** Indicates to match resources in given project only. */
+    public static final int READMODE_INCLUDE_PROJECT = 2;
+
+    /** Indicates to match all successors. */
+    public static final int READMODE_INCLUDE_TREE = 0;
+
+    /** Mode for reading project resources from the db. */
+    public static final int READMODE_MATCHSTATE = 1;
+
+    /** Indicates if only file resources should be read. */
+    public static final int READMODE_ONLY_FILES = 128;
+
+    /** Indicates if only folder resources should be read. */
+    public static final int READMODE_ONLY_FOLDERS = 64;
+
+    /** Mode for reading project resources from the db. */
+    public static final int READMODE_UNMATCHSTATE = 2;
+
     /** Separator for user cache. */
     private static final char C_USER_CACHE_SEP = '\u0000';
 
@@ -272,7 +311,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /** The backup driver. */
     private I_CmsBackupDriver m_backupDriver;
-    
+
     /** The configuration of the property-file. */
     private Map m_configuration;
 
@@ -326,6 +365,25 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /** The workflow driver. */
     private I_CmsWorkflowDriver m_workflowDriver;
+
+    /**
+     * 
+     */
+    public static final String CONFIGURATION_BACKUP = "driver.backup";
+
+    /**
+     * A string in the configuration-file.
+     */
+    public static final String CONFIGURATION_DB = "db";
+
+    /** "driver.project" string in the configuration-file. */
+    public static final String CONFIGURATION_PROJECT = "driver.project";
+
+    /** "driver.vfs" string in the configuration-file. */
+    public static final String CONFIGURATION_VFS = "driver.vfs";
+
+    /** "driver.workflow" string in the configuration-file. */
+    public static final String CONFIGURATION_WORKFLOW = "driver.workflow";
 
     /**
      * Private constructor, initializes some required member variables.<p> 
@@ -412,7 +470,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         // read the pool names to initialize
-        String[] driverPoolNames = config.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
+        String[] driverPoolNames = config.getStringArray(CmsDriverManager.CONFIGURATION_DB + ".pools");
         if (CmsLog.INIT.isInfoEnabled()) {
             String names = "";
             for (int p = 0; p < driverPoolNames.length; p++) {
@@ -436,31 +494,31 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         // read the vfs driver class properties and initialize a new instance 
-        drivers = Arrays.asList(config.getStringArray(I_CmsConstants.C_CONFIGURATION_VFS));
+        drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_VFS));
         driverName = config.getString((String)drivers.get(0) + ".vfs.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         vfsDriver = (I_CmsVfsDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
         // read the user driver class properties and initialize a new instance 
-        drivers = Arrays.asList(config.getStringArray(I_CmsConstants.C_CONFIGURATION_USER));
+        drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_USER));
         driverName = config.getString((String)drivers.get(0) + ".user.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         userDriver = (I_CmsUserDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
         // read the project driver class properties and initialize a new instance 
-        drivers = Arrays.asList(config.getStringArray(I_CmsConstants.C_CONFIGURATION_PROJECT));
+        drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_PROJECT));
         driverName = config.getString((String)drivers.get(0) + ".project.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         projectDriver = (I_CmsProjectDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
         // read the workflow driver class properties and initialize a new instance 
-        drivers = Arrays.asList(config.getStringArray(I_CmsConstants.C_CONFIGURATION_WORKFLOW));
+        drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_WORKFLOW));
         driverName = config.getString((String)drivers.get(0) + ".workflow.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         workflowDriver = (I_CmsWorkflowDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
         // read the backup driver class properties and initialize a new instance 
-        drivers = Arrays.asList(config.getStringArray(I_CmsConstants.C_CONFIGURATION_BACKUP));
+        drivers = Arrays.asList(config.getStringArray(CmsDriverManager.CONFIGURATION_BACKUP));
         driverName = config.getString((String)drivers.get(0) + ".backup.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         backupDriver = (I_CmsBackupDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
@@ -549,11 +607,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     m_userGroupsCache.clear();
                 } else {
                     throw new CmsDbEntryNotFoundException(Messages.get().container(
-                        Messages.ERR_UNKNOWN_GROUP_1, groupname));
+                        Messages.ERR_UNKNOWN_GROUP_1,
+                        groupname));
                 }
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_UNKNOWN_USER_1, user.getName()));
+                    Messages.ERR_UNKNOWN_USER_1,
+                    user.getName()));
             }
         }
     }
@@ -611,11 +671,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 I_CmsConstants.C_FLAG_ENABLED,
                 additionalInfos,
                 " ",
-                I_CmsConstants.C_USER_TYPE_WEBUSER);
+                CmsUser.USER_TYPE_WEBUSER);
             CmsUser user;
             CmsGroup usergroup;
 
-            user = m_userDriver.readUser(dbc, newUser.getName(), I_CmsConstants.C_USER_TYPE_WEBUSER);
+            user = m_userDriver.readUser(dbc, newUser.getName(), CmsUser.USER_TYPE_WEBUSER);
 
             //check if the user exists
             if (user != null) {
@@ -638,7 +698,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             return newUser;
         } else {
             throw new CmsIllegalArgumentException(org.opencms.main.Messages.get().container(
-                Messages.ERR_BAD_USER_1, name));
+                Messages.ERR_BAD_USER_1,
+                name));
         }
 
     }
@@ -695,12 +756,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 I_CmsConstants.C_FLAG_ENABLED,
                 additionalInfos,
                 " ",
-                I_CmsConstants.C_USER_TYPE_WEBUSER);
+                CmsUser.USER_TYPE_WEBUSER);
             CmsUser user;
             CmsGroup usergroup;
             CmsGroup addGroup;
 
-            user = m_userDriver.readUser(dbc, newUser.getName(), I_CmsConstants.C_USER_TYPE_WEBUSER);
+            user = m_userDriver.readUser(dbc, newUser.getName(), CmsUser.USER_TYPE_WEBUSER);
             //check if the user exists
             if (user != null) {
                 usergroup = readGroup(dbc, group);
@@ -730,7 +791,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 }
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_UNKNOWN_USER_1, user.getName()));
+                    Messages.ERR_UNKNOWN_USER_1,
+                    user.getName()));
             }
             return newUser;
         } else {
@@ -1365,7 +1427,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             name,
             group.getName(),
             System.currentTimeMillis(),
-            I_CmsConstants.C_TASK_PRIORITY_NORMAL);
+            CmsTaskService.TASK_PRIORITY_NORMAL);
 
         return m_projectDriver.createProject(
             dbc,
@@ -1832,7 +1894,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         long timeout,
         int priority) throws CmsException {
 
-        CmsUser agent = readUser(dbc, agentName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser agent = readUser(dbc, agentName, CmsUser.USER_TYPE_SYSTEMUSER);
         CmsGroup role = m_userDriver.readGroup(dbc, roleName);
         java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
@@ -1854,7 +1916,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         if (CmsStringUtil.isNotEmpty(taskComment)) {
             m_workflowDriver.writeTaskLog(dbc, task.getId(), currentUser.getId(), new java.sql.Timestamp(
-                System.currentTimeMillis()), taskComment, I_CmsConstants.C_TASKLOG_USER);
+                System.currentTimeMillis()), taskComment, CmsTaskService.TASKLOG_USER);
         }
 
         return task;
@@ -1897,7 +1959,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsUUID agentId = CmsUUID.getNullUUID();
         validTaskname(taskname); // check for valid Filename
         try {
-            agentId = readUser(dbc, agentName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId();
+            agentId = readUser(dbc, agentName, CmsUser.USER_TYPE_SYSTEMUSER).getId();
         } catch (Exception e) {
             // ignore that this user doesn't exist and create a task for the role
         }
@@ -1926,7 +1988,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             I_CmsProjectDriver.C_TEMP_FILE_PROJECT_NAME,
             projectUserGroup.getName(),
             System.currentTimeMillis(),
-            I_CmsConstants.C_TASK_PRIORITY_NORMAL);
+            CmsTaskService.TASK_PRIORITY_NORMAL);
 
         CmsProject tempProject = m_projectDriver.createProject(
             dbc,
@@ -1935,7 +1997,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             projectManagerGroup,
             task,
             I_CmsProjectDriver.C_TEMP_FILE_PROJECT_NAME,
-            Messages.get().key(dbc.getRequestContext().getLocale(), Messages.GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0, null),
+            Messages.get().key(
+                dbc.getRequestContext().getLocale(),
+                Messages.GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0,
+                null),
             I_CmsConstants.C_PROJECT_STATE_INVISIBLE,
             I_CmsConstants.C_PROJECT_STATE_INVISIBLE,
             null);
@@ -1986,7 +2051,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             I_CmsConstants.C_FLAG_ENABLED,
             additionalInfos,
             " ",
-            I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+            CmsUser.USER_TYPE_SYSTEMUSER);
 
         return newUser;
 
@@ -2120,13 +2185,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         while (i.hasNext()) {
             // now check get a single backup resource
             CmsBackupResource res = (CmsBackupResource)i.next();
-            
-            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
-                String.valueOf(counter), String.valueOf(size)), I_CmsReport.C_FORMAT_NOTE);
+
+            report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_2,
+                String.valueOf(counter),
+                String.valueOf(size)), I_CmsReport.C_FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_CHECKING_0), I_CmsReport.C_FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1, res.getRootPath()));
-            
+                org.opencms.report.Messages.RPT_ARGUMENT_1,
+                res.getRootPath()));
+
             //report.printItem(counter, size, Messages.get().container(Messages.RPT_CHECKING_0), res.getRootPath());
 
             // now delete all versions of this resource that have more than the maximun number
@@ -2143,9 +2211,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 report.print(Messages.get().container(Messages.RPT_DELETE_NOTHING_0), I_CmsReport.C_FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             }
-            
-            report.println(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+
+            report.println(
+                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                I_CmsReport.C_FORMAT_OK);
             counter++;
 
             // TODO: delete the old backup projects as well
@@ -2175,7 +2244,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // get all users in this group
         users = getUsersOfGroup(dbc, name);
         // delete group only if it has no childs and there are no users in this group.
-        if ((childs == null || childs.size()==0) && ((users == null) || (users.size() == 0))) {
+        if ((childs == null || childs.size() == 0) && ((users == null) || (users.size() == 0))) {
             CmsProject onlineProject = readProject(dbc, I_CmsConstants.C_PROJECT_ONLINE_ID);
             m_userDriver.deleteGroup(dbc, name);
             m_userDriver.removeAccessControlEntriesForPrincipal(dbc, dbc.currentProject(), onlineProject, group.getId());
@@ -2499,7 +2568,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
                     // add the project id as a property, this is later used for publishing
                     m_vfsDriver.writePropertyObject(dbc, dbc.currentProject(), currentResource, new CmsProperty(
-                        I_CmsConstants.C_PROPERTY_INTERNAL,
+                        CmsPropertyDefinition.PROPERTY_INTERNAL,
                         String.valueOf(dbc.currentProject().getId()),
                         null));
 
@@ -2677,7 +2746,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if (CmsStringUtil.isEmpty(newUserName)) {
             newUser = readUser(dbc, m_workflowDriver.readAgent(dbc, newRole.getId()));
         } else {
-            newUser = readUser(dbc, newUserName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+            newUser = readUser(dbc, newUserName, CmsUser.USER_TYPE_SYSTEMUSER);
         }
 
         m_workflowDriver.forwardTask(dbc, taskid, newRole.getId(), newUser.getId());
@@ -3162,10 +3231,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 I_CmsConstants.C_STATE_UNCHANGED,
                 I_CmsConstants.C_READ_IGNORE_TIME,
                 I_CmsConstants.C_READ_IGNORE_TIME,
-                I_CmsConstants.C_READMODE_INCLUDE_TREE
-                    | I_CmsConstants.C_READMODE_INCLUDE_PROJECT
-                    | I_CmsConstants.C_READMODE_EXCLUDE_STATE
-                    | I_CmsConstants.C_READMODE_ONLY_FOLDERS);
+                CmsDriverManager.READMODE_INCLUDE_TREE
+                    | CmsDriverManager.READMODE_INCLUDE_PROJECT
+                    | CmsDriverManager.READMODE_EXCLUDE_STATE
+                    | CmsDriverManager.READMODE_ONLY_FOLDERS);
 
             publishList.addFolders(filterResources(dbc, folderList, folderList));
 
@@ -3177,10 +3246,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 I_CmsConstants.C_STATE_UNCHANGED,
                 I_CmsConstants.C_READ_IGNORE_TIME,
                 I_CmsConstants.C_READ_IGNORE_TIME,
-                I_CmsConstants.C_READMODE_INCLUDE_TREE
-                    | I_CmsConstants.C_READMODE_INCLUDE_PROJECT
-                    | I_CmsConstants.C_READMODE_EXCLUDE_STATE
-                    | I_CmsConstants.C_READMODE_ONLY_FILES);
+                CmsDriverManager.READMODE_INCLUDE_TREE
+                    | CmsDriverManager.READMODE_INCLUDE_PROJECT
+                    | CmsDriverManager.READMODE_EXCLUDE_STATE
+                    | CmsDriverManager.READMODE_ONLY_FILES);
 
             publishList.addFiles(filterResources(dbc, publishList.getFolderList(), fileList));
 
@@ -3203,10 +3272,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 I_CmsConstants.C_STATE_UNCHANGED,
                 I_CmsConstants.C_READ_IGNORE_TIME,
                 I_CmsConstants.C_READ_IGNORE_TIME,
-                I_CmsConstants.C_READMODE_INCLUDE_TREE
-                    | I_CmsConstants.C_READMODE_INCLUDE_PROJECT
-                    | I_CmsConstants.C_READMODE_EXCLUDE_STATE
-                    | I_CmsConstants.C_READMODE_ONLY_FOLDERS);
+                CmsDriverManager.READMODE_INCLUDE_TREE
+                    | CmsDriverManager.READMODE_INCLUDE_PROJECT
+                    | CmsDriverManager.READMODE_EXCLUDE_STATE
+                    | CmsDriverManager.READMODE_ONLY_FOLDERS);
 
             publishList.addFolders(filterResources(dbc, publishList.getFolderList(), folderList));
 
@@ -3218,10 +3287,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 I_CmsConstants.C_STATE_UNCHANGED,
                 I_CmsConstants.C_READ_IGNORE_TIME,
                 I_CmsConstants.C_READ_IGNORE_TIME,
-                I_CmsConstants.C_READMODE_INCLUDE_TREE
-                    | I_CmsConstants.C_READMODE_INCLUDE_PROJECT
-                    | I_CmsConstants.C_READMODE_EXCLUDE_STATE
-                    | I_CmsConstants.C_READMODE_ONLY_FILES);
+                CmsDriverManager.READMODE_INCLUDE_TREE
+                    | CmsDriverManager.READMODE_INCLUDE_PROJECT
+                    | CmsDriverManager.READMODE_EXCLUDE_STATE
+                    | CmsDriverManager.READMODE_ONLY_FILES);
 
             publishList.addFiles(filterResources(dbc, publishList.getFolderList(), fileList));
 
@@ -3285,7 +3354,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             I_CmsConstants.C_READ_IGNORE_STATE,
             starttime,
             endtime,
-            I_CmsConstants.C_READMODE_INCLUDE_TREE);
+            CmsDriverManager.READMODE_INCLUDE_TREE);
     }
 
     /**
@@ -3350,7 +3419,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public List getUsers(CmsDbContext dbc) throws CmsException {
 
-        return m_userDriver.readUsers(dbc, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        return m_userDriver.readUsers(dbc, CmsUser.USER_TYPE_SYSTEMUSER);
     }
 
     /**
@@ -3380,7 +3449,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public List getUsersOfGroup(CmsDbContext dbc, String groupname) throws CmsException {
 
-        return m_userDriver.readUsersOfGroup(dbc, groupname, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        return m_userDriver.readUsersOfGroup(dbc, groupname, CmsUser.USER_TYPE_SYSTEMUSER);
     }
 
     /**
@@ -3858,7 +3927,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             if (userExists) {
                 if (dbc.currentUser().isGuestUser()) {
                     // add an invalid login attempt for this user to the storage
-                    OpenCms.getLoginManager().addInvalidLogin(userName, userType, remoteAddress);                    
+                    OpenCms.getLoginManager().addInvalidLogin(userName, userType, remoteAddress);
                 }
                 throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                     org.opencms.security.Messages.ERR_LOGIN_FAILED_3,
@@ -3890,8 +3959,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             // test successful, remove all previous invalid login attempts for this user from the storage
             OpenCms.getLoginManager().removeInvalidLogins(userName, userType, remoteAddress);
         }
-        
-        if (! m_securityManager.hasRole(dbc, newUser, CmsRole.ADMINISTRATOR)) {
+
+        if (!m_securityManager.hasRole(dbc, newUser, CmsRole.ADMINISTRATOR)) {
             // new user is not Administrator, check if login is currently allowed
             OpenCms.getLoginManager().checkLoginAllowed();
         }
@@ -3967,7 +4036,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         try {
-            CmsUser user = readUser(dbc, principalName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+            CmsUser user = readUser(dbc, principalName, CmsUser.USER_TYPE_SYSTEMUSER);
             if (user != null) {
                 return user;
             }
@@ -3999,7 +4068,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @see CmsObject#moveToLostAndFound(String)
      * @see CmsObject#getLostAndFoundName(String)
      */
-    public String moveToLostAndFound(CmsDbContext dbc, String resourcename, boolean returnNameOnly) throws CmsException, CmsIllegalArgumentException {
+    public String moveToLostAndFound(CmsDbContext dbc, String resourcename, boolean returnNameOnly)
+    throws CmsException, CmsIllegalArgumentException {
 
         CmsRequestContext context = dbc.getRequestContext();
         String siteRoot = context.getSiteRoot();
@@ -4193,7 +4263,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
             throw new CmsInitException(message, e);
         }
-        
+
         m_connectionPools.add(driver);
     }
 
@@ -4238,7 +4308,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                         CmsResource.getParentFolder(publishList.getDirectPublishResource().getRootPath()));
                 } catch (CmsException e) {
                     report.println(Messages.get().container(
-                        Messages.RPT_PARENT_FOLDER_NOT_PUBLISHED_1, publishList.getDirectPublishResource().getRootPath()), I_CmsReport.C_FORMAT_ERROR);
+                        Messages.RPT_PARENT_FOLDER_NOT_PUBLISHED_1,
+                        publishList.getDirectPublishResource().getRootPath()), I_CmsReport.C_FORMAT_ERROR);
                     return;
                 }
             }
@@ -4268,7 +4339,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 try {
                     m_projectDriver.deleteProject(dbc, dbc.currentProject());
                 } catch (CmsException e) {
-                    LOG.error(Messages.get().key(Messages.LOG_DELETE_TEMP_PROJECT_FAILED_1, new Integer(publishProjectId)));
+                    LOG.error(Messages.get().key(
+                        Messages.LOG_DELETE_TEMP_PROJECT_FAILED_1,
+                        new Integer(publishProjectId)));
                 }
                 // if project was temporary set context to online project
                 cms.getRequestContext().setCurrentProject(readProject(dbc, I_CmsConstants.C_PROJECT_ONLINE_ID));
@@ -4291,7 +4364,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Reactivates a task.<p>
      * 
-     * Setting its state to <code>{@link I_CmsConstants#C_TASK_STATE_STARTED}</code> and
+     * Setting its state to <code>{@link CmsTaskService#TASK_STATE_STARTED}</code> and
      * the percentage to <b>zero</b>.<p>
      *
      * @param dbc the current database context
@@ -4302,7 +4375,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void reactivateTask(CmsDbContext dbc, int taskId) throws CmsException {
 
         CmsTask task = m_workflowDriver.readTask(dbc, taskId);
-        task.setState(I_CmsConstants.C_TASK_STATE_STARTED);
+        task.setState(CmsTaskService.TASK_STATE_STARTED);
         task.setPercentage(0);
         task = m_workflowDriver.writeTask(dbc, task);
         m_workflowDriver.writeSystemTaskLog(dbc, taskId, "Task was reactivated from "
@@ -4624,10 +4697,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
      * @param dbc the current database context
@@ -4867,14 +4940,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // key to cache the resources
         String cacheKey = null;
 
-        tokens = new StringTokenizer(path, I_CmsConstants.C_FOLDER_SEPARATOR);
+        tokens = new StringTokenizer(path, "/");
 
         // the root folder is no token in the path but a resource which has to be added to the path
         count = tokens.countTokens() + 1;
         pathList = new ArrayList(count);
 
         folderCount = count;
-        if (!path.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+        if (!path.endsWith("/")) {
             folderCount--;
             lastResourceIsFile = true;
         }
@@ -4899,7 +4972,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // read the folder resources in the path /a/b/c/
         for (i = 1; i < folderCount; i++) {
-            currentPath += currentResourceName + I_CmsConstants.C_FOLDER_SEPARATOR;
+            currentPath += currentResourceName + "/";
 
             // read the folder
             cacheKey = getCacheKey(null, projectId, currentPath);
@@ -5062,14 +5135,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             || (state == I_CmsConstants.C_STATE_CHANGED)
             || (state == I_CmsConstants.C_STATE_DELETED)) {
             // get all resources form the database that match the selected state
-            resources = m_vfsDriver.readResources(dbc, projectId, state, I_CmsConstants.C_READMODE_MATCHSTATE);
+            resources = m_vfsDriver.readResources(dbc, projectId, state, CmsDriverManager.READMODE_MATCHSTATE);
         } else {
             // get all resources form the database that are somehow changed (i.e. not unchanged)
             resources = m_vfsDriver.readResources(
                 dbc,
                 projectId,
                 I_CmsConstants.C_STATE_UNCHANGED,
-                I_CmsConstants.C_READMODE_UNMATCHSTATE);
+                CmsDriverManager.READMODE_UNMATCHSTATE);
         }
 
         List result = new ArrayList(resources.size());
@@ -5409,11 +5482,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             filter.getState(),
             filter.getModifiedAfter(),
             filter.getModifiedBefore(),
-            (readTree ? I_CmsConstants.C_READMODE_INCLUDE_TREE : I_CmsConstants.C_READMODE_EXCLUDE_TREE)
-                | (filter.excludeType() ? I_CmsConstants.C_READMODE_EXCLUDE_TYPE : 0)
-                | (filter.excludeState() ? I_CmsConstants.C_READMODE_EXCLUDE_STATE : 0)
-                | ((filter.getOnlyFolders() != null) ? (filter.getOnlyFolders().booleanValue() ? I_CmsConstants.C_READMODE_ONLY_FOLDERS
-                : I_CmsConstants.C_READMODE_ONLY_FILES)
+            (readTree ? CmsDriverManager.READMODE_INCLUDE_TREE : CmsDriverManager.READMODE_EXCLUDE_TREE)
+                | (filter.excludeType() ? CmsDriverManager.READMODE_EXCLUDE_TYPE : 0)
+                | (filter.excludeState() ? CmsDriverManager.READMODE_EXCLUDE_STATE : 0)
+                | ((filter.getOnlyFolders() != null) ? (filter.getOnlyFolders().booleanValue() ? CmsDriverManager.READMODE_ONLY_FOLDERS
+                : CmsDriverManager.READMODE_ONLY_FILES)
                 : 0));
 
         for (int i = 0; i < subResources.size(); i++) {
@@ -5612,10 +5685,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
      * @param dbc the current database context
@@ -5645,10 +5718,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
      * @param dbc the current database context
@@ -5690,10 +5763,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
      * @param dbc the current database context
@@ -5715,7 +5788,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         String orderBy,
         String sort) throws CmsException {
 
-        CmsUser user = readUser(dbc, userName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser user = readUser(dbc, userName, CmsUser.USER_TYPE_SYSTEMUSER);
         CmsProject project = null;
         // try to read the project, if projectId == -1 we must return the tasks of all projects
         if (projectId != I_CmsConstants.C_UNKNOWN_ID) {
@@ -5757,7 +5830,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public CmsUser readUser(CmsDbContext dbc, String username) throws CmsDataAccessException {
 
-        return readUser(dbc, username, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        return readUser(dbc, username, CmsUser.USER_TYPE_SYSTEMUSER);
     }
 
     /**
@@ -5800,7 +5873,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public CmsUser readUser(CmsDbContext dbc, String username, String password) throws CmsException {
 
         // don't read user from cache here because password may have changed
-        CmsUser user = m_userDriver.readUser(dbc, username, password, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser user = m_userDriver.readUser(dbc, username, password, CmsUser.USER_TYPE_SYSTEMUSER);
         putUserInCache(user);
         return user;
     }
@@ -5817,7 +5890,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public CmsUser readWebUser(CmsDbContext dbc, String username) throws CmsException {
 
-        return readUser(dbc, username, I_CmsConstants.C_USER_TYPE_WEBUSER);
+        return readUser(dbc, username, CmsUser.USER_TYPE_WEBUSER);
     }
 
     /**
@@ -5836,7 +5909,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public CmsUser readWebUser(CmsDbContext dbc, String username, String password) throws CmsException {
 
         // don't read user from cache here because password may have changed
-        CmsUser user = m_userDriver.readUser(dbc, username, password, I_CmsConstants.C_USER_TYPE_WEBUSER);
+        CmsUser user = m_userDriver.readUser(dbc, username, password, CmsUser.USER_TYPE_WEBUSER);
         putUserInCache(user);
         return user;
     }
@@ -5896,7 +5969,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 groupname));
         }
 
-        if (username.equals(CmsDefaultUsers.C_DEFAULT_USER_ADMIN) && groupname.equals(CmsDefaultUsers.C_DEFAULT_GROUP_ADMINISTRATORS)) {
+        if (username.equals(CmsDefaultUsers.C_DEFAULT_USER_ADMIN)
+            && groupname.equals(CmsDefaultUsers.C_DEFAULT_GROUP_ADMINISTRATORS)) {
             // the admin user cannot be removed from the administrators group, throw exception
             throw new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_ADMIN_REMOVED_FROM_ADMINISTRATORS_0));
@@ -5996,10 +6070,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
             // read the user as a system user to verify that the specified old password is correct
             try {
-                user = m_userDriver.readUser(dbc, username, oldPassword, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+                user = m_userDriver.readUser(dbc, username, oldPassword, CmsUser.USER_TYPE_SYSTEMUSER);
             } catch (CmsDbEntryNotFoundException e) {
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_RESET_PASSWORD_1, username), e);
+                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username), e);
             }
 
             // dito as a web user
@@ -6008,15 +6081,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     dbc,
                     username,
                     oldPassword,
-                    I_CmsConstants.C_USER_TYPE_WEBUSER);
+                    CmsUser.USER_TYPE_WEBUSER);
             } catch (CmsDbEntryNotFoundException e) {
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_RESET_PASSWORD_1, username), e);
+                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username), e);
             }
 
             if (user == null) {
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_RESET_PASSWORD_1, username));
+                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username));
             }
 
             m_userDriver.writePassword(dbc, username, user.getType(), oldPassword, newPassword);
@@ -6173,14 +6244,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // read the user as a system user to verify that the specified old password is correct
         try {
-            user = m_userDriver.readUser(dbc, username, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+            user = m_userDriver.readUser(dbc, username, CmsUser.USER_TYPE_SYSTEMUSER);
         } catch (CmsDbEntryNotFoundException confe) {
             // only continue if not found and read user from web might succeed
         }
 
         // dito as a web user
         // this time don't catch CmsObjectNotFoundException (user not found)
-        user = (user != null) ? user : m_userDriver.readUser(dbc, username, I_CmsConstants.C_USER_TYPE_WEBUSER);
+        user = (user != null) ? user : m_userDriver.readUser(dbc, username, CmsUser.USER_TYPE_WEBUSER);
         m_userDriver.writePassword(dbc, username, user.getType(), null, newPassword);
     }
 
@@ -6588,9 +6659,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                         filter.getState(),
                         filter.getModifiedAfter(),
                         filter.getModifiedBefore(),
-                        I_CmsConstants.C_READMODE_INCLUDE_TREE
-                            | (filter.excludeType() ? I_CmsConstants.C_READMODE_EXCLUDE_TYPE : 0)
-                            | (filter.excludeState() ? I_CmsConstants.C_READMODE_EXCLUDE_STATE : 0));
+                        CmsDriverManager.READMODE_INCLUDE_TREE
+                            | (filter.excludeType() ? CmsDriverManager.READMODE_EXCLUDE_TYPE : 0)
+                            | (filter.excludeState() ? CmsDriverManager.READMODE_EXCLUDE_STATE : 0));
 
                     Iterator j = resources.iterator();
                     while (j.hasNext()) {
@@ -6837,8 +6908,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
                 if (currentExportPoint != null) {
                     if (!printReportHeaders) {
-                        report.println(Messages.get().container(
-                            Messages.RPT_EXPORT_POINTS_WRITE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+                        report.println(
+                            Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_BEGIN_0),
+                            I_CmsReport.C_FORMAT_HEADLINE);
                         printReportHeaders = true;
                     }
 
@@ -6866,21 +6938,29 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
                     // print some report messages
                     if (currentPublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
-                        
-                        report.print(Messages.get().container(Messages.RPT_EXPORT_POINTS_DELETE_0), I_CmsReport.C_FORMAT_NOTE);
+
+                        report.print(
+                            Messages.get().container(Messages.RPT_EXPORT_POINTS_DELETE_0),
+                            I_CmsReport.C_FORMAT_NOTE);
                         report.print(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_ARGUMENT_1, currentPublishedResource.getRootPath()));
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            currentPublishedResource.getRootPath()));
                         report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-                        report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+                        report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                            I_CmsReport.C_FORMAT_OK);
                     } else {
-                        
-                        report.print(Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_0), I_CmsReport.C_FORMAT_NOTE);
+
+                        report.print(
+                            Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_0),
+                            I_CmsReport.C_FORMAT_NOTE);
                         report.print(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_ARGUMENT_1, currentPublishedResource.getRootPath()));
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            currentPublishedResource.getRootPath()));
                         report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-                        report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+                        report.println(
+                            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                            I_CmsReport.C_FORMAT_OK);
                     }
                 }
             }
@@ -6890,8 +6970,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
         } finally {
             if (printReportHeaders) {
-                report.println(Messages.get().container(
-                    Messages.RPT_EXPORT_POINTS_WRITE_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+                report.println(
+                    Messages.get().container(Messages.RPT_EXPORT_POINTS_WRITE_END_0),
+                    I_CmsReport.C_FORMAT_HEADLINE);
             }
         }
     }
@@ -6976,7 +7057,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         m_projectCache.put(project.getName(), project);
         m_projectCache.put(new Integer(project.getId()), project);
     }
-    
+
     /**
      * Writes a property for a specified resource.<p>
      * 
@@ -7141,7 +7222,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public void writeTaskLog(CmsDbContext dbc, int taskid, String comment) throws CmsException {
 
         m_workflowDriver.writeTaskLog(dbc, taskid, dbc.currentUser().getId(), new java.sql.Timestamp(
-            System.currentTimeMillis()), comment, I_CmsConstants.C_TASKLOG_USER);
+            System.currentTimeMillis()), comment, CmsTaskService.TASKLOG_USER);
     }
 
     /**
@@ -7359,7 +7440,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 && (c != '&')
                 && (c != ';')) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_TASKNAME_ILLEGAL_CHARACTERS_1, taskname));
+                    Messages.ERR_TASKNAME_ILLEGAL_CHARACTERS_1,
+                    taskname));
             }
         }
     }

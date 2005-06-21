@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/21 15:49:58 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 
 import com.opencms.core.I_CmsResponse;
 import com.opencms.legacy.CmsLegacyException;
@@ -46,7 +45,7 @@ import java.util.Hashtable;
  * the content of a master template.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/21 15:49:58 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -74,7 +73,7 @@ public class CmsRootTemplate {
 
         String masterTemplateUri = cms.getSitePath(masterTemplate);
         // Collect cache directives from subtemplates
-        CmsCacheDirectives cd = templateClass.collectCacheDirectives(cms, masterTemplateUri, I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters, null);
+        CmsCacheDirectives cd = templateClass.collectCacheDirectives(cms, masterTemplateUri, com.opencms.core.I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters, null);
 
         /*System.err.println("******************************************************************");
         System.err.println("* Cache directives Summary");
@@ -116,11 +115,11 @@ public class CmsRootTemplate {
             }
         }
 
-        if (cacheable && cache.has(cacheKey) && !templateClass.shouldReload(cms, masterTemplateUri, I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters, null)) {
+        if (cacheable && cache.has(cacheKey) && !templateClass.shouldReload(cms, masterTemplateUri, com.opencms.core.I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters, null)) {
             result = cache.get(cacheKey);
         } else {
             try {
-                result = templateClass.getContent(cms, masterTemplateUri, I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters);
+                result = templateClass.getContent(cms, masterTemplateUri, com.opencms.core.I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters);
             } catch (CmsException e) {
                 cache.clearCache(cacheKey);
                 if (CmsLog.getLog(this).isWarnEnabled() && (e instanceof CmsLegacyException) && (((CmsLegacyException)e).getType() == CmsLegacyException.C_NO_USER)) {

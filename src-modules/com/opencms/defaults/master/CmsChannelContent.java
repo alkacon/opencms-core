@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/21 15:50:00 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.defaults.master;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
@@ -61,8 +62,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.3 $
- * $Date: 2005/05/31 15:51:19 $
+ * $Revision: 1.4 $
+ * $Date: 2005/06/21 15:50:00 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -172,10 +173,10 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         // m_accessflags = resource.getAccessFlags();
         try{
             m_properties = cms.readProperties(fullName);
-            channelId = (String)m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
+            channelId = (String)m_properties.get(CmsPropertyDefinition.PROPERTY_CHANNELID);
         } catch (CmsException exc){
             m_properties = new Hashtable();
-            m_properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, I_CmsConstants.C_UNKNOWN_ID+"");
+            m_properties.put(CmsPropertyDefinition.PROPERTY_CHANNELID, I_CmsConstants.C_UNKNOWN_ID+"");
         } finally {
             if(channelId == null || "".equals(channelId)){
                 channelId = I_CmsConstants.C_UNKNOWN_ID+"";
@@ -191,7 +192,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         m_channelId = I_CmsConstants.C_UNKNOWN_ID+"";
         m_channelname = "";
         m_parentchannel = "";
-        m_accessflags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
+        m_accessflags = com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         // create the resource object for the channel:
         m_channel = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(),
                                      "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, true, 0,
@@ -354,12 +355,12 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
                 newChannel =  cms.readFolder(m_parentchannel+m_channelname+"/");
                 lock = cms.getLock(newChannel);
                 // update the title of the channel
-                String propTitle = cms.readProperty(cms.getSitePath(newChannel), I_CmsConstants.C_PROPERTY_TITLE);
+                String propTitle = cms.readProperty(cms.getSitePath(newChannel), CmsPropertyDefinition.PROPERTY_TITLE);
                 if (propTitle == null){
                     propTitle = "";
                 }
                 if (!propTitle.equals(this.getTitle())){
-                    cms.writeProperty(cms.getSitePath(newChannel), I_CmsConstants.C_PROPERTY_TITLE, this.getTitle());
+                    cms.writeProperty(cms.getSitePath(newChannel), CmsPropertyDefinition.PROPERTY_TITLE, this.getTitle());
                 }
                 // check if the lockstate has changed
                 if(!lock.getUserId().equals(this.getLockstate()) ||
@@ -460,7 +461,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * sets the unique channel Id of a content definition instance
      */
     public void setChannelId(String id) {
-        m_properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, id);
+        m_properties.put(CmsPropertyDefinition.PROPERTY_CHANNELID, id);
         m_channelId = id;
     }
 
@@ -468,7 +469,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * Gets the title of the channel
      */
     public String getTitle(){
-        String title = (String)m_properties.get(I_CmsConstants.C_PROPERTY_TITLE);
+        String title = (String)m_properties.get(CmsPropertyDefinition.PROPERTY_TITLE);
         if (title == null){
             title = "";
         }
@@ -479,7 +480,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * sets the title of a content definition instance
      */
     public void setTitle(String title) {
-        m_properties.put(I_CmsConstants.C_PROPERTY_TITLE, title);
+        m_properties.put(CmsPropertyDefinition.PROPERTY_TITLE, title);
     }
 
     /**
@@ -785,12 +786,12 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         buf.append(((accessFlags & I_CmsExtendedContentDefinition.C_PERMISSION_READ) > 0 ? "r" : "-"));
         buf.append(((accessFlags & I_CmsExtendedContentDefinition.C_PERMISSION_WRITE) > 0 ? "w" : "-"));
         buf.append(((accessFlags & I_CmsExtendedContentDefinition.C_PERMISSION_VIEW) > 0 ? "v" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_GROUP_READ) > 0 ? "r" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_GROUP_WRITE) > 0 ? "w" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_GROUP_VISIBLE) > 0 ? "v" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_READ) > 0 ? "r" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_WRITE) > 0 ? "w" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE) > 0 ? "v" : "-"));
+        buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_GROUP_READ) > 0 ? "r" : "-"));
+        buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_GROUP_WRITE) > 0 ? "w" : "-"));
+        buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_GROUP_VISIBLE) > 0 ? "v" : "-"));
+        buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_READ) > 0 ? "r" : "-"));
+        buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_WRITE) > 0 ? "w" : "-"));
+        buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE) > 0 ? "v" : "-"));
         buf.append(((accessFlags & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0 ? "i" : "-"));
 
         return buf.toString();
@@ -814,8 +815,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * Sets the channelId of a new channel
      */
     private void setNewChannelId() throws CmsException{
-        int newChannelId = org.opencms.db.CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
-        m_properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId+"");
+        int newChannelId = org.opencms.db.CmsDbUtil.nextId(com.opencms.core.I_CmsConstants.C_TABLE_CHANNELID);
+        m_properties.put(CmsPropertyDefinition.PROPERTY_CHANNELID, newChannelId+"");
         m_channelId = newChannelId+"";
     }
 
@@ -935,11 +936,11 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         Vector errorCodes = new Vector();
         //check the channelname
         if (m_channelname == null || "".equals(m_channelname)) {
-            errorCodes.addElement(C_CHANNELNAME_ERRFIELD+I_CmsConstants.C_ERRSPERATOR+C_ERRCODE_EMPTY);
+            errorCodes.addElement(C_CHANNELNAME_ERRFIELD+com.opencms.core.I_CmsConstants.C_ERRSPERATOR+C_ERRCODE_EMPTY);
         }
         //check the parentchannel
         if (m_parentchannel == null || "".equals(m_parentchannel)) {
-            errorCodes.addElement(C_PARENT_ERRFIELD+I_CmsConstants.C_ERRSPERATOR+C_ERRCODE_EMPTY);
+            errorCodes.addElement(C_PARENT_ERRFIELD+com.opencms.core.I_CmsConstants.C_ERRSPERATOR+C_ERRCODE_EMPTY);
         }
         // now test if there was an error message and throw an exception
         if (errorCodes.size()>0) {

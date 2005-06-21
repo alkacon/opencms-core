@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2005/06/09 12:46:16 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1.4
  * 
@@ -369,8 +369,7 @@ public final class CmsLockManager {
         }
 
         if (!forceUnlock
-            && (!lock.getUserId().equals(dbc.currentUser().getId()) || lock.getProjectId() != dbc.currentProject()
-                .getId())) {
+            && (!lock.getUserId().equals(dbc.currentUser().getId()) || lock.getProjectId() != dbc.currentProject().getId())) {
             // the resource is locked by another user
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_RESOURCE_UNLOCK_1,
@@ -531,9 +530,7 @@ public final class CmsLockManager {
         for (int i = 0; i < keys.size(); i++) {
             lockedPath = (String)keys.get(i);
 
-            if (resourcename.startsWith(lockedPath)
-                && !resourcename.equals(lockedPath)
-                && lockedPath.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            if (resourcename.startsWith(lockedPath) && !resourcename.equals(lockedPath) && lockedPath.endsWith("/")) {
                 return (CmsLock)m_exclusiveLocks.get(lockedPath);
             }
 

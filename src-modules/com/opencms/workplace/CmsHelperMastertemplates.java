@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.workplace;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -44,7 +45,7 @@ import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/21 15:49:59 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -122,7 +123,7 @@ public class CmsHelperMastertemplates {
         while(en.hasNext()) {
             CmsFile file = (CmsFile)en.next();
             if(file.getState() != I_CmsConstants.C_STATE_DELETED && checkVisible(cms, file)) {
-                String nicename = cms.readProperty(cms.getSitePath(file), I_CmsConstants.C_PROPERTY_TITLE);
+                String nicename = cms.readProperty(cms.getSitePath(file), CmsPropertyDefinition.PROPERTY_TITLE);
                 if(nicename == null) {
                     nicename = file.getName();
                 }

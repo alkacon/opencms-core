@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2005/06/13 10:00:02 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/21 15:49:58 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 
@@ -116,7 +115,7 @@ public class CmsElementCache extends Object implements I_CmsEventListener {
             for (int i = 0; i < changedResources.size(); i++) {
                 String current = (String) changedResources.elementAt(i);
                 resForUpdate.add(current);
-                resForUpdate.add(current + I_CmsConstants.C_XML_CONTROL_FILE_SUFFIX);
+                resForUpdate.add(current + com.opencms.core.I_CmsConstants.C_XML_CONTROL_FILE_SUFFIX);
             }
         }
         m_uriLocator.deleteUris(resForUpdate);

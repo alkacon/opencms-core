@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2005/06/01 12:34:42 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2005/06/21 15:50:00 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,9 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlException;
 
-import com.opencms.defaults.master.*;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.CmsMasterMedia;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -77,7 +79,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.7 $ $Date: 2005/06/01 12:34:42 $
+ * @version $Revision: 1.8 $ $Date: 2005/06/21 15:50:00 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -351,7 +353,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         try {
             newDataset.m_accessFlags = Integer.parseInt(accessFlags);
         } catch (Exception e) {
-            newDataset.m_accessFlags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
+            newDataset.m_accessFlags = com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         }
         // set the publication date
         publicationDate = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PUBLICATIONDATE);

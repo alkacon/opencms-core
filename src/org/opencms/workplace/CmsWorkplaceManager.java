@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/06/17 09:24:10 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.I_CmsResourceType;
@@ -49,7 +50,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.I_CmsLocaleHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * 
  * @since 5.3.1
  */
@@ -1144,9 +1144,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             String folderPath = cms.getSitePath(folder);
             try {
                 // get view information from folder properties
-                String order = cms.readPropertyObject(folderPath, I_CmsConstants.C_PROPERTY_NAVPOS, false).getValue();
-                String key = cms.readPropertyObject(folderPath, I_CmsConstants.C_PROPERTY_NAVTEXT, false).getValue();
-                String viewUri = cms.readPropertyObject(folderPath, I_CmsConstants.C_PROPERTY_DEFAULT_FILE, false).getValue();
+                String order = cms.readPropertyObject(folderPath, CmsPropertyDefinition.PROPERTY_NAVPOS, false).getValue();
+                String key = cms.readPropertyObject(folderPath, CmsPropertyDefinition.PROPERTY_NAVTEXT, false).getValue();
+                String viewUri = cms.readPropertyObject(folderPath, CmsPropertyDefinition.PROPERTY_DEFAULT_FILE, false).getValue();
                 if (viewUri == null) {
                     // no view URI found
                     viewUri = folderPath;

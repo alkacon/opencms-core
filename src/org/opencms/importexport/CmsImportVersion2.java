@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/06/02 09:36:55 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.102 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -525,7 +525,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         try {
             // get all file-nodes
-            fileNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_FILE);
+            fileNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_FILE);
             int importSize = fileNodes.size();
 
             // walk through all files in manifest
@@ -538,12 +538,12 @@ public class CmsImportVersion2 extends A_CmsImport {
                 currentElement = (Element)fileNodes.get(i);
 
                 // get all information for a file-import
-                source = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
+                source = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_SOURCE);
                 destination = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_DESTINATION);
+                    CmsImportExportManager.N_DESTINATION);
 
-                resourceTypeName = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
+                resourceTypeName = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TYPE);
                 if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(resourceTypeName)) {
                     resourceTypeId = C_RESOURCE_TYPE_NEWPAGE_ID;
                 } else if (C_RESOURCE_TYPE_LEGACY_PAGE_NAME.equals(resourceTypeName)) {
@@ -558,14 +558,14 @@ public class CmsImportVersion2 extends A_CmsImport {
                     resourceTypeId = type.getTypeId();
                 }
 
-                uuid = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
+                uuid = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_UUIDSTRUCTURE);
                 uuidresource = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
+                    CmsImportExportManager.N_UUIDRESOURCE);
 
                 if ((timestamp = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_LASTMODIFIED)) != null) {
+                    CmsImportExportManager.N_LASTMODIFIED)) != null) {
                     lastmodified = Long.parseLong(timestamp);
                 } else {
                     lastmodified = System.currentTimeMillis();
@@ -584,7 +584,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(resourceTypeName)) {
                     // ensure folders end with a "/"
                     if (!CmsResource.isFolder(translatedName)) {
-                        translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
+                        translatedName += "/";
                     }
                 }
                 
@@ -633,21 +633,21 @@ public class CmsImportVersion2 extends A_CmsImport {
                         List aceList = new ArrayList();
                         // write all imported access control entries for this file
                         acentryNodes = currentElement.selectNodes("*/"
-                            + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
+                            + CmsImportExportManager.N_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
                         for (int j = 0; j < acentryNodes.size(); j++) {
                             currentEntry = (Element)acentryNodes.get(j);
                             // get the data of the access control entry
-                            String id = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_ID);
+                            String id = CmsImport.getChildElementTextValue(currentEntry, CmsImportExportManager.N_ID);
                             String acflags = CmsImport.getChildElementTextValue(
                                 currentEntry,
-                                I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                                CmsImportExportManager.N_FLAGS);
                             String allowed = CmsImport.getChildElementTextValue(
                                 currentEntry,
-                                I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
+                                CmsImportExportManager.N_ACCESSCONTROL_ALLOWEDPERMISSIONS);
                             String denied = CmsImport.getChildElementTextValue(
                                 currentEntry,
-                                I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
+                                CmsImportExportManager.N_ACCESSCONTROL_DENIEDPERMISSIONS);
 
                             // add the entry to the list
                             aceList.add(getImportAccessControlEntry(res, id, allowed, denied, acflags));
@@ -768,14 +768,14 @@ public class CmsImportVersion2 extends A_CmsImport {
                 String channelId = null;
                 try {
                     if ((resourceTypeName.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME))
-                        && (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))) {
-                        destination += I_CmsConstants.C_FOLDER_SEPARATOR;
+                        && (!destination.endsWith("/"))) {
+                        destination += "/";
                     }
                     CmsResource channel = m_cms.readResource(I_CmsConstants.C_ROOT + destination);
 
                     channelId = m_cms.readPropertyObject(
                         m_cms.getSitePath(channel),
-                        I_CmsConstants.C_PROPERTY_CHANNELID,
+                        CmsPropertyDefinition.PROPERTY_CHANNELID,
                         false).getValue();
 
                 } catch (Exception e) {
@@ -783,7 +783,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
 
                 if (channelId != null) {
-                    properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CHANNELID, channelId, null));
+                    properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CHANNELID, channelId, null));
                 }
             }
 
@@ -997,7 +997,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 CmsFile bodyfile = m_cms.readFile(bodyname, CmsResourceFilter.IGNORE_EXPIRATION);
     
                 //get the encoding
-                String encoding = CmsProperty.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, properties).getValue();
+                String encoding = CmsProperty.get(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, properties).getValue();
                 if (encoding == null) {
                     encoding = OpenCms.getSystemInfo().getDefaultEncoding();
                 }
@@ -1024,14 +1024,14 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
     
                 // add the template and other required properties
-                CmsProperty newProperty = new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, null);
+                CmsProperty newProperty = new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE, mastertemplate, null);
                 // property lists must not contain equal properties
                 properties.remove(newProperty);
                 properties.add(newProperty);
     
                 // if set, add the bodyclass as property
                 if (bodyclass != null && !"".equals(bodyclass)) {
-                    newProperty = new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, null);
+                    newProperty = new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE, mastertemplate, null);
                     newProperty.setAutoCreatePropertyDefinition(true);
                     properties.remove(newProperty);
                     properties.add(newProperty);
@@ -1119,10 +1119,10 @@ public class CmsImportVersion2 extends A_CmsImport {
         try {
             // check if the template property exists. If not, create it.
             try {
-                m_cms.readPropertyDefinition(I_CmsConstants.C_PROPERTY_TEMPLATE);
+                m_cms.readPropertyDefinition(CmsPropertyDefinition.PROPERTY_TEMPLATE);
             } catch (CmsException e) {
                 // the template propertydefintion does not exist. So create it.
-                m_cms.createPropertyDefinition(I_CmsConstants.C_PROPERTY_TEMPLATE);
+                m_cms.createPropertyDefinition(CmsPropertyDefinition.PROPERTY_TEMPLATE);
             }
             
             // copy all propertydefinitions of the old page to the new page

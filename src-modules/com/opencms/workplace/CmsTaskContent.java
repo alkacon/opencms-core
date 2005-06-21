@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskContent.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.workflow.CmsTaskService;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -47,7 +48,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -170,55 +171,55 @@ public class CmsTaskContent extends CmsWorkplaceDefault {
         String userName = cms.getRequestContext().currentUser().getName();
         switch(filterNum) {
         case 0xa1:
-            retValue = cms.getTaskService().readTasksForUser(project, userName, C_TASKS_NEW, orderBy, groupBy);
+            retValue = cms.getTaskService().readTasksForUser(project, userName, CmsTaskService.TASKS_NEW, orderBy, groupBy);
             break;
         
         case 0xa2:
-            retValue = cms.getTaskService().readTasksForUser(project, userName, C_TASKS_ACTIVE, orderBy, groupBy);
+            retValue = cms.getTaskService().readTasksForUser(project, userName, CmsTaskService.TASKS_ACTIVE, orderBy, groupBy);
             break;
         
         case 0xa3:
-            retValue = cms.getTaskService().readTasksForUser(project, userName, C_TASKS_DONE, orderBy, groupBy);
+            retValue = cms.getTaskService().readTasksForUser(project, userName, CmsTaskService.TASKS_DONE, orderBy, groupBy);
             break;
         
         case 0xb1:
-            retValue = readTasksForRole(cms, project, C_TASKS_NEW, orderBy, groupBy);
+            retValue = readTasksForRole(cms, project, CmsTaskService.TASKS_NEW, orderBy, groupBy);
             break;
         
         case 0xb2:
-            retValue = readTasksForRole(cms, project, C_TASKS_ACTIVE, orderBy, groupBy);
+            retValue = readTasksForRole(cms, project, CmsTaskService.TASKS_ACTIVE, orderBy, groupBy);
             break;
         
         case 0xb3:
-            retValue = readTasksForRole(cms, project, C_TASKS_DONE, orderBy, groupBy);
+            retValue = readTasksForRole(cms, project, CmsTaskService.TASKS_DONE, orderBy, groupBy);
             break;
         
         case 0xc1:
-            retValue = cms.getTaskService().readTasksForProject(project, C_TASKS_NEW, orderBy, groupBy);
+            retValue = cms.getTaskService().readTasksForProject(project, CmsTaskService.TASKS_NEW, orderBy, groupBy);
             break;
         
         case 0xc2:
-            retValue = cms.getTaskService().readTasksForProject(project, C_TASKS_ACTIVE, orderBy, groupBy);
+            retValue = cms.getTaskService().readTasksForProject(project, CmsTaskService.TASKS_ACTIVE, orderBy, groupBy);
             break;
         
         case 0xc3:
-            retValue = cms.getTaskService().readTasksForProject(project, C_TASKS_DONE, orderBy, groupBy);
+            retValue = cms.getTaskService().readTasksForProject(project, CmsTaskService.TASKS_DONE, orderBy, groupBy);
             break;
         
         case 0xd1:
-            retValue = cms.getTaskService().readGivenTasks(project, userName, C_TASKS_NEW, orderBy, groupBy);
+            retValue = cms.getTaskService().readGivenTasks(project, userName, CmsTaskService.TASKS_NEW, orderBy, groupBy);
             break;
         
         case 0xd2:
-            retValue = cms.getTaskService().readGivenTasks(project, userName, C_TASKS_ACTIVE, orderBy, groupBy);
+            retValue = cms.getTaskService().readGivenTasks(project, userName, CmsTaskService.TASKS_ACTIVE, orderBy, groupBy);
             break;
         
         case 0xd3:
-            retValue = cms.getTaskService().readGivenTasks(project, userName, C_TASKS_DONE, orderBy, groupBy);
+            retValue = cms.getTaskService().readGivenTasks(project, userName, CmsTaskService.TASKS_DONE, orderBy, groupBy);
             break;
         
         default:
-            retValue = cms.getTaskService().readTasksForUser(project, userName, C_TASKS_ALL, orderBy, groupBy);
+            retValue = cms.getTaskService().readTasksForUser(project, userName, CmsTaskService.TASKS_ALL, orderBy, groupBy);
             break;
         }
         if(retValue == null) {

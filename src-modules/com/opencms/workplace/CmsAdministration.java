@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.workplace;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
@@ -58,7 +59,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.5 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Name:  $ $Revision: 1.6 $ $Date: 2005/06/21 15:49:59 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -225,7 +226,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
-        String navPos = (String)session.getValue(C_SESSION_ADMIN_POS);
+        String navPos = (String)session.getValue(com.opencms.core.I_CmsConstants.C_SESSION_ADMIN_POS);
         templateDocument.setData("emptyPic", (String)resourcesUri(cms, "empty.gif", null, null));
         CmsXmlWpConfigFile confFile = new CmsXmlWpConfigFile(cms);
         String sentBy = (String)parameters.get("sender");      
@@ -283,7 +284,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
         else {
             iconVector = cms.getSubFolders(sentBy);
         }
-        session.putValue(C_SESSION_ADMIN_POS, sentBy);
+        session.putValue(com.opencms.core.I_CmsConstants.C_SESSION_ADMIN_POS, sentBy);
         List iconVector2 = cms.getFilesInFolder(sentBy);
         int numFolders = iconVector.size();
         if(numFolders > 0) {
@@ -301,14 +302,14 @@ public class CmsAdministration extends CmsWorkplaceDefault {
                     Map propertyinfos = cms.readProperties(cms.getSitePath(aktIcon));
                     iconNames[i] = cms.getSitePath(aktIcon);
                     index[i] = i;
-                    folderLangKeys[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_NAVTEXT));
-                    folderTitles[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_TITLE));
-                    folderPos[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_NAVPOS));
+                    folderLangKeys[i] = getStringValue((String)propertyinfos.get(CmsPropertyDefinition.PROPERTY_NAVTEXT));
+                    folderTitles[i] = getStringValue((String)propertyinfos.get(CmsPropertyDefinition.PROPERTY_TITLE));
+                    folderPos[i] = getStringValue((String)propertyinfos.get(CmsPropertyDefinition.PROPERTY_NAVPOS));
                     if(folderPos[i].equals("")) {
                         folderPos[i] = "101";
                     }
-                    folderVisible[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_VISIBLE));
-                    folderActiv[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_ACTIV));
+                    folderVisible[i] = getStringValue((String)propertyinfos.get(org.opencms.file.CmsPropertyDefinition.PROPERTY_VISIBLE));
+                    folderActiv[i] = getStringValue((String)propertyinfos.get(org.opencms.file.CmsPropertyDefinition.PROPERTY_ACTIV));
                     accessVisible[i] = new Boolean(checkVisible(cms, aktIcon)).toString();
                 } catch(CmsSecurityException e) {
                     // ignore all "access denied" type exceptions

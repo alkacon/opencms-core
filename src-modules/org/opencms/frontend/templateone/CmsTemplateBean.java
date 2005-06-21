@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/06/16 12:37:34 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.frontend.templateone;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessages;
@@ -42,7 +43,6 @@ import org.opencms.jsp.util.CmsTemplateContentListItem;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -328,7 +328,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         String name = getConfigurationValue("area.name", null);
         if (name == null) {
             String startFolder = getStartFolder();
-            name = property(I_CmsConstants.C_PROPERTY_TITLE, startFolder, CmsResource.getName(startFolder));
+            name = property(CmsPropertyDefinition.PROPERTY_TITLE, startFolder, CmsResource.getName(startFolder));
         }
         return name;
     }
@@ -404,7 +404,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         if (defaultValue == null) {
             defaultValue = "";
         }
-        return property(I_CmsConstants.C_PROPERTY_DESCRIPTION, "search", defaultValue);
+        return property(CmsPropertyDefinition.PROPERTY_DESCRIPTION, "search", defaultValue);
     }
 
     /**
@@ -414,8 +414,10 @@ public class CmsTemplateBean extends CmsJspActionElement {
      */
     public String getEncoding() {
 
-        return property(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, "search", OpenCms.getSystemInfo()
-            .getDefaultEncoding());
+        return property(
+            CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+            "search",
+            OpenCms.getSystemInfo().getDefaultEncoding());
     }
 
     /**
@@ -433,7 +435,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
             I_CmsWpConstants.C_VFS_PATH_MODULES + C_MODULE_NAME,
             C_PROPERTY_VALUE_NONE);
         if (LOG.isDebugEnabled()) {
-           LOG.debug(Messages.get().key(Messages.LOG_EXT_MODULE_PROP_VALUE_1, configModule));
+            LOG.debug(Messages.get().key(Messages.LOG_EXT_MODULE_PROP_VALUE_1, configModule));
         }
         if (!C_PROPERTY_VALUE_NONE.equals(configModule)) {
             // extension module name found, check presence of file
@@ -546,7 +548,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         if (defaultValue == null) {
             defaultValue = "";
         }
-        return property(I_CmsConstants.C_PROPERTY_KEYWORDS, "search", defaultValue);
+        return property(CmsPropertyDefinition.PROPERTY_KEYWORDS, "search", defaultValue);
     }
 
     /**
@@ -727,7 +729,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         if (defaultValue == null) {
             defaultValue = "";
         }
-        return property(I_CmsConstants.C_PROPERTY_TITLE, "search", defaultValue);
+        return property(CmsPropertyDefinition.PROPERTY_TITLE, "search", defaultValue);
     }
 
     /**

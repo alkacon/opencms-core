@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
@@ -50,7 +51,7 @@ import java.util.List;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -147,7 +148,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
                     String superfolder = getConfigFile(cms).getHtmlGalleryPath();
                     CmsResource folder = cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     if(title != null) {
-                        cms.writeProperty(cms.getSitePath(folder), C_PROPERTY_TITLE, title);
+                        cms.writeProperty(cms.getSitePath(folder), CmsPropertyDefinition.PROPERTY_TITLE, title);
                     }
 //                  TODO: check how to set the appropriate access using acl
                     /*                    
@@ -216,7 +217,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
                     List properties = null;
                     if (pagetitle != null) {
                         properties = new ArrayList();
-                        properties.add(new org.opencms.file.CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, pagetitle, null));
+                        properties.add(new org.opencms.file.CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, pagetitle, null));
                     } else {
                         properties = Collections.EMPTY_LIST;
                     }                    

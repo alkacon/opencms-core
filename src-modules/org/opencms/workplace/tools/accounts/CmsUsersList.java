@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsUsersList extends A_CmsListDialog {
@@ -319,17 +319,17 @@ public class CmsUsersList extends A_CmsListDialog {
                     CmsUser user = getCms().readUser(userName);
                     // address
                     html.append(user.getAddress());
-                    if (user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN) != null) {
+                    if (user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN) != null) {
                         html.append("<br>");
-                        if (user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE) != null) {
-                            html.append(user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE));
+                        if (user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE) != null) {
+                            html.append(user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE));
                             html.append(" ");
                         }
-                        html.append(user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN));
+                        html.append(user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN));
                     }
-                    if (user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_COUNTRY) != null) {
+                    if (user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_COUNTRY) != null) {
                         html.append("<br>");
-                        html.append(user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_COUNTRY));
+                        html.append(user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_COUNTRY));
                     }
                 } else if (detailId.equals(LIST_DETAIL_GROUPS)) {
                     // groups

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2005/06/02 13:57:07 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
@@ -62,29 +61,30 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.3
  */
 public class CmsNewResourceFolder extends CmsNewResource {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsNewResourceFolder.class);  
-    
+
     /** Request parameter name for the create index file flag. */
     public static final String PARAM_CREATEINDEX = "createindex";
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewResourceFolder.class);
+
     private String m_paramCreateIndex;
-       
+
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsNewResourceFolder(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -93,29 +93,39 @@ public class CmsNewResourceFolder extends CmsNewResource {
      * @param res the JSP response
      */
     public CmsNewResourceFolder(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
-    }    
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_OK.equals(getParamAction())) {
-            setAction(ACTION_OK);                            
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {
-            setAction(ACTION_CANCEL);
-        } else {                        
-            setAction(ACTION_DEFAULT);
-            // build title for new resource dialog     
-            setParamTitle(key("title.newfolder"));
-        }      
     }
-    
+
+    /**
+     * Creates the folder using the specified resource name.<p>
+     * 
+     * @throws JspException if inclusion of error dialog fails
+     */
+    public void actionCreateResource() throws JspException {
+
+        try {
+            // calculate the new resource Title property value
+            String title = computeNewTitleProperty();
+            // get the full resource name
+            String fullResourceName = computeFullResourceName();
+            // create the Title and Navigation properties if configured
+            List properties = createResourceProperties(
+                fullResourceName,
+                CmsResourceTypeFolder.getStaticTypeName(),
+                title);
+            // create the folder            
+            getCms().createResource(fullResourceName, CmsResourceTypeFolder.getStaticTypeId(), null, properties);
+            setParamResource(fullResourceName);
+            setResourceCreated(true);
+        } catch (Throwable e) {
+            // error creating folder, show error dialog
+            setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_CREATE_FOLDER_0));
+            includeErrorpage(this, e);
+        }
+
+    }
+
     /**
      * Redirects to the property dialog if the resourceeditprops parameter is true.<p>
      * 
@@ -125,6 +135,7 @@ public class CmsNewResourceFolder extends CmsNewResource {
      * @throws JspException if an inclusion fails
      */
     public void actionEditProperties() throws IOException, JspException {
+
         boolean editProps = Boolean.valueOf(getParamNewResourceEditProps()).booleanValue();
         boolean createIndex = Boolean.valueOf(getParamCreateIndex()).booleanValue();
         if (editProps || createIndex) {
@@ -132,7 +143,10 @@ public class CmsNewResourceFolder extends CmsNewResource {
             String params = "?" + PARAM_RESOURCE + "=" + CmsEncoder.encode(getParamResource());
             if (createIndex) {
                 // set dialogmode to wizard - create index page to indicate the creation of the index page
-                params += "&" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX;
+                params += "&"
+                    + CmsPropertyAdvanced.PARAM_DIALOGMODE
+                    + "="
+                    + CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX;
             } else {
                 // set dialogmode to wizard
                 params += "&" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD;
@@ -143,53 +157,32 @@ public class CmsNewResourceFolder extends CmsNewResource {
             } else if (createIndex) {
                 // create an index file in the new folder, redirect to new xmlpage dialog              
                 String newFolder = getParamResource();
-                if (!newFolder.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-                    newFolder += I_CmsConstants.C_FOLDER_SEPARATOR;
+                if (!newFolder.endsWith("/")) {
+                    newFolder += "/";
                 }
                 // set the current explorer resource to the new created folder
                 getSettings().setExplorerResource(newFolder);
 
-                String newUri = OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.getStaticTypeName()).getNewResourceUri();
-                newUri += "?" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX;
+                String newUri = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    CmsResourceTypeXmlPage.getStaticTypeName()).getNewResourceUri();
+                newUri += "?"
+                    + CmsPropertyAdvanced.PARAM_DIALOGMODE
+                    + "="
+                    + CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX;
                 try {
                     // redirect to new xmlpage dialog
                     sendCmsRedirect(C_PATH_DIALOGS + newUri);
                     return;
                 } catch (IOException e) {
-                    LOG.error(Messages.get().key(Messages.LOG_REDIRECT_XMLPAGE_FAILED_1, C_PATH_DIALOGS + newUri));     
+                    LOG.error(Messages.get().key(Messages.LOG_REDIRECT_XMLPAGE_FAILED_1, C_PATH_DIALOGS + newUri));
                 }
             }
-        } 
+        }
         // edit properties and create index file not checked, close the dialog and update tree
         List folderList = new ArrayList(1);
         folderList.add(CmsResource.getParentFolder(getParamResource()));
         getJsp().getRequest().setAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE, folderList);
-        actionCloseDialog();     
-    }
-    
-    /**
-     * Creates the folder using the specified resource name.<p>
-     * 
-     * @throws JspException if inclusion of error dialog fails
-     */
-    public void actionCreateResource() throws JspException {
-        try {
-            // calculate the new resource Title property value
-            String title = computeNewTitleProperty();
-            // get the full resource name
-            String fullResourceName = computeFullResourceName();
-            // create the Title and Navigation properties if configured
-            List properties = createResourceProperties(fullResourceName, CmsResourceTypeFolder.getStaticTypeName(),  title);
-            // create the folder            
-            getCms().createResource(fullResourceName, CmsResourceTypeFolder.getStaticTypeId(), null, properties);           
-            setParamResource(fullResourceName);   
-            setResourceCreated(true);
-        } catch (Throwable e) {
-            // error creating folder, show error dialog
-            setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_CREATE_FOLDER_0));
-            includeErrorpage(this, e);   
-        }
-
+        actionCloseDialog();
     }
 
     /**
@@ -198,6 +191,7 @@ public class CmsNewResourceFolder extends CmsNewResource {
      * @return the create index file parameter value
      */
     public String getParamCreateIndex() {
+
         return m_paramCreateIndex;
     }
 
@@ -207,7 +201,29 @@ public class CmsNewResourceFolder extends CmsNewResource {
      * @param createIndex the create index file parameter value
      */
     public void setParamCreateIndex(String createIndex) {
+
         m_paramCreateIndex = createIndex;
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_OK.equals(getParamAction())) {
+            setAction(ACTION_OK);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            setAction(ACTION_CANCEL);
+        } else {
+            setAction(ACTION_DEFAULT);
+            // build title for new resource dialog     
+            setParamTitle(key("title.newfolder"));
+        }
     }
 
 }

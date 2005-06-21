@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/19 10:57:07 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.77 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -605,12 +605,10 @@ public final class CmsSecurityManager {
                 CmsResource parent = readResource(context, parentFolder, CmsResourceFilter.ALL);
                 if (parent.getState() == I_CmsConstants.C_STATE_DELETED) {
                     // parent folder is deleted - direct publish not allowed
-                    throw new CmsVfsException(Messages.get()
-                        .container(
-                            Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
-                            dbc.getRequestContext().removeSiteRoot(
-                                directPublishResource.getRootPath()),
-                            parentFolder));
+                    throw new CmsVfsException(Messages.get().container(
+                        Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
+                        dbc.getRequestContext().removeSiteRoot(directPublishResource.getRootPath()),
+                        parentFolder));
                 }
                 if (parent.getState() == I_CmsConstants.C_STATE_NEW) {
                     // parent folder is new - direct publish not allowed
@@ -1471,7 +1469,7 @@ public final class CmsSecurityManager {
      */
     public void deleteUser(CmsRequestContext context, String username) throws CmsException {
 
-        CmsUser user = readUser(context, username, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser user = readUser(context, username, CmsUser.USER_TYPE_SYSTEMUSER);
         deleteUser(context, user);
     }
 
@@ -2061,7 +2059,11 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             // todo: possibly the folder arg is a root path, then use         
             //       context.removeSiteRoot(folder) before output. 
-            dbc.report(null, Messages.get().container(Messages.ERR_GET_RESOURCES_IN_TIME_RANGE_3, folder, new Date(starttime), new Date(endtime)), e);
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_GET_RESOURCES_IN_TIME_RANGE_3,
+                folder,
+                new Date(starttime),
+                new Date(endtime)), e);
         } finally {
             dbc.clear();
         }
@@ -2096,10 +2098,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getTaskPar(dbc, taskId, parName);
         } catch (Exception e) {
-            dbc.report(
-                null,
-                Messages.get().container(Messages.ERR_GET_TASK_PARAM_2, parName, new Integer(taskId)),
-                e);
+            dbc.report(null, Messages.get().container(Messages.ERR_GET_TASK_PARAM_2, parName, new Integer(taskId)), e);
         } finally {
             dbc.clear();
         }
@@ -2327,7 +2326,7 @@ public final class CmsSecurityManager {
 
         return hasRole(dbc, dbc.currentUser(), role);
     }
-    
+
     /**
      * Checks if the given user is a member of the given role.<p>
      *  
@@ -2343,10 +2342,7 @@ public final class CmsSecurityManager {
         // read all groups of the current user
         List groups;
         try {
-            groups = m_driverManager.getGroupsOfUser(
-                dbc,
-                user.getName(),
-                dbc.getRequestContext().getRemoteAddress());
+            groups = m_driverManager.getGroupsOfUser(dbc, user.getName(), dbc.getRequestContext().getRemoteAddress());
         } catch (CmsException e) {
             // any exception: return false
             return false;
@@ -2803,7 +2799,7 @@ public final class CmsSecurityManager {
     /**
      * Reactivates a task.<p>
      * 
-     * Setting its state to <code>{@link I_CmsConstants#C_TASK_STATE_STARTED}</code> and
+     * Setting its state to <code>{@link CmsTaskService#TASK_STATE_STARTED}</code> and
      * the percentage to <b>zero</b>.<p>
      *
      * @param context the current request context
@@ -3127,10 +3123,10 @@ public final class CmsSecurityManager {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
      * @param context the current request context
@@ -3377,9 +3373,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readOwner(dbc, log);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_OWNER_FOR_TASKLOG_1,
-                new Integer(log.getId())), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_OWNER_FOR_TASKLOG_1, new Integer(log.getId())),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3406,9 +3403,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readPath(dbc, projectId, path, filter);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_PATH_2, new Integer(projectId),
-                path), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_PATH_2, new Integer(projectId), path), e);
         } finally {
             dbc.clear();
         }
@@ -3510,9 +3505,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readProjectLogs(dbc, projectId);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_TASKLOGS_FOR_PROJECT_1,
-                new Integer(projectId)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_TASKLOGS_FOR_PROJECT_1, new Integer(projectId)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3748,7 +3744,10 @@ public final class CmsSecurityManager {
         try {
             result = readResource(dbc, resourcePath, filter);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_RESOURCE_1, dbc.removeSiteRoot(resourcePath)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_RESOURCE_1, dbc.removeSiteRoot(resourcePath)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3997,10 +3996,10 @@ public final class CmsSecurityManager {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
      * @param context the current request context
@@ -4037,10 +4036,10 @@ public final class CmsSecurityManager {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
      * @param context the current request context
@@ -4084,10 +4083,10 @@ public final class CmsSecurityManager {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
      * @param context the current request context
@@ -4605,16 +4604,13 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.touch(dbc, resource, dateLastModified, dateReleased, dateExpired);
         } catch (Exception e) {
-            dbc.report(
-                null,
-                Messages.get().container(
-                    Messages.ERR_TOUCH_RESOURCE_4,
-                    new Object[] {
-                        new Date(dateLastModified),
-                        new Date(dateReleased),
-                        new Date(dateExpired),
-                        context.getSitePath(resource)}),
-                e);
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_TOUCH_RESOURCE_4,
+                new Object[] {
+                    new Date(dateLastModified),
+                    new Date(dateReleased),
+                    new Date(dateExpired),
+                    context.getSitePath(resource)}), e);
         } finally {
             dbc.clear();
         }
@@ -4871,7 +4867,8 @@ public final class CmsSecurityManager {
      * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#PROJECT_MANAGER} for the current project. 
      * @throws CmsException if operation was not successful
      */
-    public void writeProject(CmsRequestContext context, CmsProject project) throws CmsRoleViolationException, CmsException {
+    public void writeProject(CmsRequestContext context, CmsProject project)
+    throws CmsRoleViolationException, CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -5006,7 +5003,11 @@ public final class CmsSecurityManager {
         try {
             m_driverManager.writeStaticExportPublishedResource(dbc, resourceName, linkType, linkParameter, timestamp);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_WRITE_STATEXP_PUBLISHED_RESOURCES_3, resourceName, linkParameter, new Date(timestamp)), e);
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_WRITE_STATEXP_PUBLISHED_RESOURCES_3,
+                resourceName,
+                linkParameter,
+                new Date(timestamp)), e);
         } finally {
             dbc.clear();
         }

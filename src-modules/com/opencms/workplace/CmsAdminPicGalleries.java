@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2005/05/19 08:57:22 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import org.opencms.db.CmsImportFolder;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeImage;
@@ -52,7 +53,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -173,7 +174,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                     String superfolder = getConfigFile(cms).getPicGalleryPath();
                     CmsResource folder = cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     if(title != null) {
-                        cms.writeProperty(cms.getSitePath(folder), C_PROPERTY_TITLE, title);
+                        cms.writeProperty(cms.getSitePath(folder), CmsPropertyDefinition.PROPERTY_TITLE, title);
                     }
 //                  TODO: check how to set the appropriate access using acl
                     /*
@@ -318,11 +319,11 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                                 CmsFile file = (CmsFile)cms.createResource(foldername + filename, CmsResourceTypeImage.getStaticTypeId(), filecontent, null);
                                 if(title != null) {
                                     String filepath = cms.getSitePath(file);
-                                    cms.writeProperty(filepath, C_PROPERTY_TITLE, title);
+                                    cms.writeProperty(filepath, CmsPropertyDefinition.PROPERTY_TITLE, title);
                                 }
                                 if(imagedescription != null) {
                                     String filepath = cms.getSitePath(file);
-                                    cms.writeProperty(filepath, C_PROPERTY_DESCRIPTION, imagedescription);
+                                    cms.writeProperty(filepath, CmsPropertyDefinition.PROPERTY_DESCRIPTION, imagedescription);
                                 }
                             }
                             catch(CmsException ex) {

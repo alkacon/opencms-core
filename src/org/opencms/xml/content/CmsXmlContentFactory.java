@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2005/05/23 09:36:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,12 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public final class CmsXmlContentFactory {
@@ -150,7 +150,7 @@ public final class CmsXmlContentFactory {
 
         String encoding = null;
         try {
-            encoding = cms.readPropertyObject(filename, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue();
+            encoding = cms.readPropertyObject(filename, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
         } catch (CmsException e) {
             // encoding will be null 
         }
@@ -159,9 +159,7 @@ public final class CmsXmlContentFactory {
         } else {
             encoding = CmsEncoder.lookupEncoding(encoding, null);
             if (encoding == null) {
-                throw new CmsXmlException(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_INVALID_ENC_1,
-                    filename));
+                throw new CmsXmlException(Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ENC_1, filename));
             }
         }
 
@@ -179,9 +177,7 @@ public final class CmsXmlContentFactory {
                     content = unmarshal(contentStr, encoding, new CmsXmlEntityResolver(cms));
                 } catch (UnsupportedEncodingException e) {
                     // this will not happen since the encodig has already been validated
-                    throw new CmsXmlException(Messages.get().container(
-                        Messages.ERR_XMLCONTENT_INVALID_ENC_1,
-                        filename));
+                    throw new CmsXmlException(Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ENC_1, filename));
                 }
             }
         } else {
@@ -210,7 +206,7 @@ public final class CmsXmlContentFactory {
      * @throws CmsXmlException if the given <code>resource</code> is not of type xml content
      */
     public static CmsXmlContent unmarshal(CmsObject cms, CmsResource resource, ServletRequest req)
-    throws  CmsXmlException, CmsLoaderException, CmsException {
+    throws CmsXmlException, CmsLoaderException, CmsException {
 
         String rootPath = resource.getRootPath();
 

@@ -1,34 +1,34 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
+ * Date   : $Date: 2005/06/21 15:49:59 $
+ * Version: $Revision: 1.3 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2001  The OpenCms Group
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
@@ -65,12 +65,18 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
      * @param templateSelector template section that should be processed.
      */
 
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName,
-            Hashtable parameters, String templateSelector) throws CmsException {
-        if(CmsLog.getLog(this).isDebugEnabled() && C_DEBUG) {
-            CmsLog.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
+    public byte[] getContent(
+        CmsObject cms,
+        String templateFile,
+        String elementName,
+        Hashtable parameters,
+        String templateSelector) throws CmsException {
+
+        if (CmsLog.getLog(this).isDebugEnabled() && C_DEBUG) {
+            CmsLog.getLog(this).debug("Getting content of element " + ((elementName == null) ? "<root>" : elementName));
             CmsLog.getLog(this).debug("Template file is: " + templateFile);
-            CmsLog.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+            CmsLog.getLog(this).debug(
+                "Selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
@@ -94,10 +100,15 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
         jsOutput.append(lang.getLanguageValue("title.group") + "\",\"");
         jsOutput.append(lang.getLanguageValue("title.access") + "\",\"");
         jsOutput.append(lang.getLanguageValue("title.locked") + "\");\n");
-        jsOutput.append(" this.actProject; \n this.onlineProject;\n this.lockedBy=\"" + lang.getLanguageValue("title.locked"));
-        jsOutput.append("\";\n this.titleString=\"" + lang.getLanguageValue("label.wptitle") + "\" \n this.actDirectory;");
+        jsOutput.append(" this.actProject; \n this.onlineProject;\n this.lockedBy=\""
+            + lang.getLanguageValue("title.locked"));
+        jsOutput.append("\";\n this.titleString=\""
+            + lang.getLanguageValue("label.wptitle")
+            + "\" \n this.actDirectory;");
         jsOutput.append("\n this.userName = \"" + cms.getRequestContext().currentUser().getName() + "\";\n");
-        jsOutput.append("\n this.serverName = \"" + ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getServerName() + "\";\n");
+        jsOutput.append("\n this.serverName = \""
+            + ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getServerName()
+            + "\";\n");
         jsOutput.append(" this.langback=\"" + lang.getLanguageValue("button.back") + "\";\n");
         jsOutput.append(" this.langsearch=\"" + lang.getLanguageValue("button.search") + "\";\n");
         jsOutput.append(" this.langup=\"" + lang.getLanguageValue("button.parent") + "\";\n");
@@ -114,17 +125,19 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
         jsOutput.append(" this.actDirId;\n} \n");
 
         // function initialize_resources
-        jsOutput.append("function initialize_resources() {\n vi.iconPath=\"" + (String)resourcesUri(cms, "", null, null) + "\";\n");
+        jsOutput.append("function initialize_resources() {\n vi.iconPath=\""
+            + (String)resourcesUri(cms, "", null, null)
+            + "\";\n");
 
         // get the resources from /system/workplace/restypes/
         List resTypes = cms.getFilesInFolder(C_RESTYPES_FOLDER);
-        for(int i = 0;i < resTypes.size();i++) {
+        for (int i = 0; i < resTypes.size(); i++) {
             CmsFile resourceTyp = (CmsFile)resTypes.get(i);
             try {
                 int resId = resourceTyp.getTypeId();
-                jsOutput.append(getResourceEntry(lang, new String(cms.readFile(cms.getSitePath(resourceTyp)).getContents()), resId));
-            }
-            catch(CmsException e) {
+                jsOutput.append(getResourceEntry(lang, new String(
+                    cms.readFile(cms.getSitePath(resourceTyp)).getContents()), resId));
+            } catch (CmsException e) {
 
             }
         }
@@ -141,12 +154,13 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
      */
 
     private int getDefaultPreferences(CmsObject cms) {
+
         int filelist;
-        String explorerSettings = (String)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_EXPLORERSETTINGS);
-        if(explorerSettings != null) {
+        String explorerSettings = (String)cms.getRequestContext().currentUser().getAdditionalInfo(
+            CmsUserSettings.ADDITIONAL_INFO_EXPLORERSETTINGS);
+        if (explorerSettings != null) {
             filelist = new Integer(explorerSettings).intValue();
-        }
-        else {
+        } else {
             filelist = C_FILELIST_NAME + C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_DATE_LASTMODIFIED;
         }
         return filelist;
@@ -162,6 +176,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
      */
 
     private String getResourceEntry(CmsXmlLanguageFile lang, String data, int id) {
+
         StringBuffer result = new StringBuffer();
         String resId = Integer.toString(id);
 
@@ -169,7 +184,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
         int index = 0;
         String myToken = "resource_id";
         int foundAt = data.indexOf(myToken, index);
-        while(foundAt != -1) {
+        while (foundAt != -1) {
             result.append(data.substring(index, foundAt) + resId);
             index = foundAt + myToken.length();
             foundAt = data.indexOf(myToken, index);
@@ -182,7 +197,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
         myToken = "language_key";
         index = 0;
         foundAt = data.indexOf(myToken, index);
-        while(foundAt != -1) {
+        while (foundAt != -1) {
             int endIndex = data.indexOf(")", foundAt);
             String langKey = data.substring(data.indexOf("(", foundAt) + 1, endIndex);
             langKey = lang.getLanguageValue(langKey);
@@ -198,12 +213,12 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
         myToken = "rules_key";
         index = 0;
         foundAt = data.indexOf(myToken, index);
-        while(foundAt != -1) {
+        while (foundAt != -1) {
             int endIndex = data.indexOf(")", foundAt);
             String rulesKey = data.substring(data.indexOf("(", foundAt) + 1, endIndex).trim();
             int nextSpace = rulesKey.indexOf(" ");
-            while(nextSpace > -1){
-                rulesKey = rulesKey.substring(0, nextSpace)+rulesKey.substring(nextSpace+1);
+            while (nextSpace > -1) {
+                rulesKey = rulesKey.substring(0, nextSpace) + rulesKey.substring(nextSpace + 1);
                 nextSpace = rulesKey.indexOf(" ");
             }
             result.append(data.substring(index, foundAt) + rulesKey);
@@ -226,8 +241,13 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
 
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
-            Hashtable parameters, String templateSelector) {
+    public boolean isCacheable(
+        CmsObject cms,
+        String templateFile,
+        String elementName,
+        Hashtable parameters,
+        String templateSelector) {
+
         return false;
     }
 }

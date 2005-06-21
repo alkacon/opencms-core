@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlContentLoader.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.loader;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -56,7 +57,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.3
  */
 public class CmsXmlContentLoader implements I_CmsResourceLoader {
@@ -118,7 +119,7 @@ public class CmsXmlContentLoader implements I_CmsResourceLoader {
         CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
             cms,
             resource,
-            I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS);
+            CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS);
         return loaderFacade.getLoader().export(cms, loaderFacade.getLoaderStartResource(), req, res);
     }
 
@@ -204,7 +205,7 @@ public class CmsXmlContentLoader implements I_CmsResourceLoader {
         CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
             cms,
             resource,
-            I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS);
+            CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS);
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
     }
 

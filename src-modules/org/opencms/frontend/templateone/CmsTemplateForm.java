@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateForm.java,v $
- * Date   : $Date: 2005/03/04 17:12:56 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.frontend.templateone;
 
-import org.opencms.main.I_CmsConstants;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
@@ -48,7 +48,7 @@ import org.apache.commons.httpclient.util.URIUtil;
  * Provides methods to build interactive JSP forms.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public abstract class CmsTemplateForm extends CmsTemplateBean {
 
@@ -234,7 +234,7 @@ public abstract class CmsTemplateForm extends CmsTemplateBean {
      */
     public String getPageTitle() {
 
-        String title = property(I_CmsConstants.C_PROPERTY_TITLE, getPageUri(true), "");
+        String title = property(CmsPropertyDefinition.PROPERTY_TITLE, getPageUri(true), "");
         if ("".equals(title)) {
             title = getPageUri(true);
         }

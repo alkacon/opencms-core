@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/05/30 15:17:51 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
@@ -259,7 +260,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
         try {
             // get all file-nodes
-            fileNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_FILE);
+            fileNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_FILE);
 
             int importSize = fileNodes.size();
             // walk through all files in manifest
@@ -271,25 +272,25 @@ public class CmsImportVersion3 extends A_CmsImport {
                 currentElement = (Element)fileNodes.get(i);
                 // get all information for a file-import
                 // <source>
-                source = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
+                source = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_SOURCE);
                 // <destintion>
                 destination = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_DESTINATION);
+                    CmsImportExportManager.N_DESTINATION);
                 // <type>
-                type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
+                type = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TYPE);
                 // <uuidstructure>
                 uuidstructure = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
+                    CmsImportExportManager.N_UUIDSTRUCTURE);
                 // <uuidresource>
                 uuidresource = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
+                    CmsImportExportManager.N_UUIDRESOURCE);
                 // <datelastmodified>
                 if ((timestamp = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED)) != null) {
+                    CmsImportExportManager.N_DATELASTMODIFIED)) != null) {
                     datelastmodified = Long.parseLong(timestamp);
                 } else {
                     datelastmodified = System.currentTimeMillis();
@@ -297,11 +298,11 @@ public class CmsImportVersion3 extends A_CmsImport {
                 // <userlastmodified>
                 userlastmodified = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED);
+                    CmsImportExportManager.N_USERLASTMODIFIED);
                 // <datecreated>
                 if ((timestamp = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_DATECREATED)) != null) {
+                    CmsImportExportManager.N_DATECREATED)) != null) {
                     datecreated = Long.parseLong(timestamp);
                 } else {
                     datecreated = System.currentTimeMillis();
@@ -309,13 +310,13 @@ public class CmsImportVersion3 extends A_CmsImport {
                 // <usercreated>
                 usercreated = CmsImport.getChildElementTextValue(
                     currentElement,
-                    I_CmsConstants.C_EXPORT_TAG_USERCREATED);
+                    CmsImportExportManager.N_USERCREATED);
                 // <flags>              
-                flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                flags = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_FLAGS);
 
                 String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
-                    translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
+                    translatedName += "/";
                 }
                 // translate the name during import
                 translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
@@ -361,23 +362,23 @@ public class CmsImportVersion3 extends A_CmsImport {
 
                         // write all imported access control entries for this file
                         acentryNodes = currentElement.selectNodes("*/"
-                            + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
+                            + CmsImportExportManager.N_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
                         for (int j = 0; j < acentryNodes.size(); j++) {
                             currentEntry = (Element)acentryNodes.get(j);
                             // get the data of the access control entry
                             String id = CmsImport.getChildElementTextValue(
                                 currentEntry,
-                                I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL);
+                                CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL);
                             String acflags = CmsImport.getChildElementTextValue(
                                 currentEntry,
-                                I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                                CmsImportExportManager.N_FLAGS);
                             String allowed = CmsImport.getChildElementTextValue(
                                 currentEntry,
-                                I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS);
+                                CmsImportExportManager.N_ACCESSCONTROL_ALLOWEDPERMISSIONS);
                             String denied = CmsImport.getChildElementTextValue(
                                 currentEntry,
-                                I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS);
+                                CmsImportExportManager.N_ACCESSCONTROL_DENIEDPERMISSIONS);
 
                             // add the entry to the list
                             aceList.add(getImportAccessControlEntry(res, id, allowed, denied, acflags));
@@ -469,19 +470,19 @@ public class CmsImportVersion3 extends A_CmsImport {
                 String channelId = null;
                 try {
                     if ((type.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME))
-                        && (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))) {
-                        destination += I_CmsConstants.C_FOLDER_SEPARATOR;
+                        && (!destination.endsWith("/"))) {
+                        destination += "/";
                     }
                     CmsResource channel = m_cms.readResource(I_CmsConstants.C_ROOT + destination);
                     channelId = m_cms.readPropertyObject(
                         m_cms.getSitePath(channel),
-                        I_CmsConstants.C_PROPERTY_CHANNELID,
+                        CmsPropertyDefinition.PROPERTY_CHANNELID,
                         false).getValue();
                 } catch (Exception e) {
                     // ignore the exception, a new channel id will be generated
                 }
                 if (channelId != null) {
-                    properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CHANNELID, channelId, null));
+                    properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CHANNELID, channelId, null));
                 }
             }
             // get the file content
@@ -525,7 +526,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
                     //get the encoding
                     String encoding = null;
-                    encoding = CmsProperty.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, properties).getValue();
+                    encoding = CmsProperty.get(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, properties).getValue();
                     if (encoding == null) {
                         encoding = OpenCms.getSystemInfo().getDefaultEncoding();
                     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 
 package org.opencms.jsp;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * Provides access to the data of the currently logged in user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsJspTagUser extends TagSupport {
 
@@ -115,10 +115,10 @@ public class CmsJspTagUser extends TagSupport {
                 result = user.getAddress();
                 break;
             case 5: // zip
-                result = (String)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
+                result = (String)user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE);
                 break;
             case 6: // city
-                result = (String)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
+                result = (String)user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN);
                 break;
             case 7: // description
                 result = user.getDescription();

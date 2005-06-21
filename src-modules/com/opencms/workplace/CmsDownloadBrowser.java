@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
@@ -49,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -202,7 +203,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
         filelistTemplate.setData("fullpath", downloadPath);
         filelistTemplate.setData("name_value", res.getName());
         filelistTemplate.setData("filepath", cms.getSitePath(res));
-        if ((cms.getPermissions(cms.getSitePath(res)).getPermissions() & I_CmsConstants.C_ACCESS_WRITE) > 0  ) {
+        if ((cms.getPermissions(cms.getSitePath(res)).getPermissions() & com.opencms.core.I_CmsConstants.C_ACCESS_WRITE) > 0  ) {
             filelistTemplate.setData("delete", filelistTemplate.getProcessedDataValue("deleteentry", this));
         } else {
             filelistTemplate.setData("delete", "&nbsp;");
@@ -210,7 +211,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
 
         String title = "";
         try {
-            title = cms.readProperty(cms.getSitePath(res), C_PROPERTY_TITLE);
+            title = cms.readProperty(cms.getSitePath(res), CmsPropertyDefinition.PROPERTY_TITLE);
         }
         catch(CmsException e) {
 
@@ -293,7 +294,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
             CmsFile file = (CmsFile)allFiles.get(i);
             if (file.getState() != I_CmsConstants.C_STATE_DELETED) {
                 String filename = file.getName();
-                String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
+                String title = cms.readProperty(cms.getSitePath(file), CmsPropertyDefinition.PROPERTY_TITLE);
                 boolean filenameFilter = inFilter(filename, filter);
                 boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
                 if (filenameFilter || titleFilter) {

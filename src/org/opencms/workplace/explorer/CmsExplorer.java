@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/06/15 09:27:04 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -72,15 +73,15 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
 public class CmsExplorer extends CmsWorkplace {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsExplorer.class);  
-    
+    /** The "projectview" view selection. */
+    public static final String C_VIEW_PROJECT = "projectview";
+
     /** The "vfslink:" location prefix for VFS link display. */
     private static final String C_LOCATION_VFSLINK = "vfslink:";
 
@@ -111,8 +112,8 @@ public class CmsExplorer extends CmsWorkplace {
     /** The "galleryview" view selection. */
     private static final String C_VIEW_GALLERY = "galleryview";
 
-    /** The "projectview" view selection. */
-    public static final String C_VIEW_PROJECT = "projectview";
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExplorer.class);
 
     /**
      * Public constructor.<p>
@@ -185,7 +186,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.showlinks=");
         content.append(showVfsLinks);
         content.append(";\n");
-        
+
         // the resource id of plain resources
         content.append("top.plainresid=");
         content.append(CmsResourceTypePlain.getStaticTypeId());
@@ -333,7 +334,7 @@ public class CmsExplorer extends CmsWorkplace {
                 try {
                     title = getCms().readPropertyObject(
                         getCms().getSitePath(res),
-                        I_CmsConstants.C_PROPERTY_TITLE,
+                        CmsPropertyDefinition.PROPERTY_TITLE,
                         false).getValue();
                 } catch (CmsException e) {
                     // should usually never happen
@@ -394,9 +395,11 @@ public class CmsExplorer extends CmsWorkplace {
 
             // position 9: project
             int projectId = res.getProjectLastModified();
-            if (! lock.isNullLock() && lock.getType() != CmsLock.C_TYPE_INHERITED && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED) {
+            if (!lock.isNullLock()
+                && lock.getType() != CmsLock.C_TYPE_INHERITED
+                && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED) {
                 // use lock project ID only if lock is not inherited
-                projectId = lock.getProjectId();    
+                projectId = lock.getProjectId();
             }
             content.append(projectId);
             content.append(",");
@@ -598,8 +601,7 @@ public class CmsExplorer extends CmsWorkplace {
             settings.setExplorerMode(mode);
         } else {
             // null argument, use explorer view if no other view currently specified
-            if (!(C_VIEW_PROJECT.equals(settings.getExplorerMode()) || C_VIEW_GALLERY
-                .equals(settings.getExplorerMode()))) {
+            if (!(C_VIEW_PROJECT.equals(settings.getExplorerMode()) || C_VIEW_GALLERY.equals(settings.getExplorerMode()))) {
                 settings.setExplorerMode(C_VIEW_EXPLORER);
             }
         }
@@ -736,8 +738,8 @@ public class CmsExplorer extends CmsWorkplace {
                 }
                 return Collections.EMPTY_LIST;
             }
-        }  else if (C_VIEW_GALLERY.equals(getSettings().getExplorerMode())) { 
-        
+        } else if (C_VIEW_GALLERY.equals(getSettings().getExplorerMode())) {
+
             // select galleries
             A_CmsGallery gallery = A_CmsGallery.createInstance(getSettings().getGalleryType(), getJsp());
             return gallery.getGalleries();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTaskService.java,v $
- * Date   : $Date: 2005/04/14 10:44:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,10 +47,78 @@ import java.util.List;
  * @author Michael Moossen (m.moossen@alkacon.com) 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsTaskService {
+
+    /** Task preferences filter. */
+    public static final String TASK_FILTER = "task.filter.";
+
+    /** Task preferences message flags. */
+    public static final String TASK_MESSAGES = "TaskMessages";
+
+    /** state values of task messages when accepted. */
+    public static final int TASK_MESSAGES_ACCEPTED = 1;
+
+    /** state values of task messages when completed. */
+    public static final int TASK_MESSAGES_COMPLETED = 4;
+
+    /** state values of task messages when forwarded. */
+    public static final int TASK_MESSAGES_FORWARDED = 2;
+
+    /** state values of task messages when members. */
+    public static final int TASK_MESSAGES_MEMBERS = 8;
+
+    /** Task priority high. */
+    public static final int TASK_PRIORITY_HIGH = 1;
+
+    /** Task priority low. */
+    public static final int TASK_PRIORITY_LOW = 3;
+
+    /** 
+     * Task priority normal.
+     **/
+    public static final int TASK_PRIORITY_NORMAL = 2;
+
+    /** state values of a task ended. */
+    public static final int TASK_STATE_ENDED = 4;
+
+    /** state values of a task halted. */
+    public static final int TASK_STATE_HALTED = 5;
+
+    /** state values of a task ready to end. */
+    public static final int TASK_STATE_NOTENDED = 3;
+
+    /** state values of a task prepared to start. */
+    public static final int TASK_STATE_PREPARE = 0;
+
+    /** state values of a task ready to start. */
+    public static final int TASK_STATE_START = 1;
+
+    /** state values of a task started. */
+    public static final int TASK_STATE_STARTED = 2;
+
+    /**System type values for the task log. */
+    public static final int TASKLOG_SYSTEM = 0;
+
+    /**User type value for the task log. */
+    public static final int TASKLOG_USER = 1;
+
+    /** Task type value of getting active tasks. */
+    public static final int TASKS_ACTIVE = 4;
+
+    /** Task type value of getting all tasks. */
+    public static final int TASKS_ALL = 1;
+
+    /** Task type value of getting done tasks. */
+    public static final int TASKS_DONE = 5;
+
+    /** Task type value of getting new tasks. */
+    public static final int TASKS_NEW = 2;
+
+    /** Task type value of getting open tasks. */
+    public static final int TASKS_OPEN = 3;
 
     /** The request context.     */
     protected CmsRequestContext m_context;
@@ -205,6 +273,21 @@ public class CmsTaskService {
     }
 
     /**
+     * Reactivates a task.<p>
+     * 
+     * Setting its state to <code>{@link org.opencms.workflow.CmsTaskService#TASK_STATE_STARTED}</code> and
+     * the percentage to <b>zero</b>.<p>
+     *
+     * @param taskId the id of the task to reactivate
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void reactivateTask(int taskId) throws CmsException {
+
+        m_securityManager.reactivateTask(m_context, taskId);
+    }
+
+    /**
      * Reads the agent of a task.<p>
      *
      * @param task the task to read the agent from
@@ -224,10 +307,10 @@ public class CmsTaskService {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
      * @param projectId the id of the project in which the tasks are defined
@@ -364,10 +447,10 @@ public class CmsTaskService {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values are:<br>
      * <ul>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
      * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks
@@ -390,10 +473,10 @@ public class CmsTaskService {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
      * @param projectId the id of the Project in which the tasks are defined
@@ -418,10 +501,10 @@ public class CmsTaskService {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
      * @param projectId the id of the Project in which the tasks are defined
@@ -438,21 +521,6 @@ public class CmsTaskService {
     throws CmsException {
 
         return m_securityManager.readTasksForUser(m_context, projectId, userName, tasktype, orderBy, sort);
-    }
-
-    /**
-     * Reactivates a task.<p>
-     * 
-     * Setting its state to <code>{@link org.opencms.main.I_CmsConstants#C_TASK_STATE_STARTED}</code> and
-     * the percentage to <b>zero</b>.<p>
-     *
-     * @param taskId the id of the task to reactivate
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public void reactivateTask(int taskId) throws CmsException {
-
-        m_securityManager.reactivateTask(m_context, taskId);
     }
 
     /**

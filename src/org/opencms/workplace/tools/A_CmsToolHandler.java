@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,11 @@ package org.opencms.workplace.tools;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
@@ -48,7 +48,7 @@ import java.util.Map;
  * Helper class to build easily other admin tool handlers.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.7.3
  */
 public abstract class A_CmsToolHandler implements I_CmsToolHandler {
@@ -309,17 +309,17 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
      * 
      * It takes the icon path from <code>{@link org.opencms.jsp.CmsJspNavElement#C_PROPERTY_NAVIMAGE}</code> property, 
      * or uses a default icon if undefined, the name is taken from the 
-     * <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_NAVTEXT}</code> property, 
-     * or uses the <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_TITLE}</code> property if undefined, 
+     * <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVTEXT}</code> property, 
+     * or uses the <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_TITLE}</code> property if undefined, 
      * or an default text, if still undefined. if you want 2 different names, one for the big icon tools and one for 
      * the menu/navbar entries, use a <code>{@link A_CmsToolHandler#C_VALUE_SEPARATOR}</code> to separate them in the property.
      * (if you do so, the first one is for big icons and the second one for menu/navbar entries). the help text is taken from the 
-     * <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_DESCRIPTION}</code> property or a
+     * <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_DESCRIPTION}</code> property or a
      * default text if undefined, if you want to custumize a help text while disabled, use a 
      * <code>{@link A_CmsToolHandler#C_VALUE_SEPARATOR}</code> as a separator in the same property.<p> 
      * 
      * The group is taken from the <code>{@link org.opencms.jsp.CmsJspNavElement#C_PROPERTY_NAVINFO}</code> property,
-     * the position from the <code>{@link org.opencms.main.I_CmsConstants#C_PROPERTY_NAVPOS}</code>
+     * the position from the <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVPOS}</code>
      * and the install path is given by the folder structure if the <code>{@link #C_ARGS_PROPERTY_DEFINITION}</code>
      * property does not include path information.<p>
      * 
@@ -394,7 +394,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
             link = CmsToolManager.C_VIEW_JSPPAGE_LOCATION;
 
             // try to use the folder def file as link
-            CmsProperty prop = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_DEFAULT_FILE, true);
+            CmsProperty prop = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_DEFAULT_FILE, true);
             String defFile = "index.html";
             if (!prop.isNullProperty()) {
                 defFile = prop.getValue();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/06/15 08:55:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/21 15:49:59 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,12 @@
 package org.opencms.workplace.galleries;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsNewResource;
@@ -58,17 +58,17 @@ import org.apache.commons.logging.Log;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.5.2
  */
 public class CmsLinkGallery extends A_CmsGallery {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLinkGallery.class);  
     
     /** URI of the image gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "link_fs.jsp";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLinkGallery.class);  
 
     /**
      * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
@@ -146,11 +146,11 @@ public class CmsLinkGallery extends A_CmsGallery {
             if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
                 CmsResource res = getCms().readResource(getParamResourcePath());
                 if (res != null) {
-                    String title = getPropertyValue(res, I_CmsConstants.C_PROPERTY_TITLE);
+                    String title = getPropertyValue(res, CmsPropertyDefinition.PROPERTY_TITLE);
                     String description = getJsp().property(
-                        I_CmsConstants.C_PROPERTY_DESCRIPTION,
+                        CmsPropertyDefinition.PROPERTY_DESCRIPTION,
                         getParamResourcePath());
-                    String keywords = getJsp().property(I_CmsConstants.C_PROPERTY_KEYWORDS, getParamResourcePath());
+                    String keywords = getJsp().property(CmsPropertyDefinition.PROPERTY_KEYWORDS, getParamResourcePath());
                     String lastmodified = getMessages().getDateTime(res.getDateLastModified());
                     html
                         .append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: middle; width:100%; background-color: ThreeDFace; margin: 0;\">");

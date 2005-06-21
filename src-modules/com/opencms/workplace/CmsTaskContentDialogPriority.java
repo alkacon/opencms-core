@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -251,9 +251,9 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
         names.addElement(lang.getLanguageValue("task.label.prioritylevel.low"));
 
         // add values for priority
-        values.addElement(C_TASK_PRIORITY_HIGH + "");
-        values.addElement(C_TASK_PRIORITY_NORMAL + "");
-        values.addElement(C_TASK_PRIORITY_LOW + "");
+        values.addElement(org.opencms.workflow.CmsTaskService.TASK_PRIORITY_HIGH + "");
+        values.addElement(CmsTaskService.TASK_PRIORITY_NORMAL + "");
+        values.addElement(org.opencms.workflow.CmsTaskService.TASK_PRIORITY_LOW + "");
 
         // return the current priority
         return new Integer(task.getPriority() - 1);

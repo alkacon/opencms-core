@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.workplace;
 
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
@@ -240,7 +241,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                     Map moduleParameters = new HashMap();
 
                     // as default don't export any module data                
-                    cms.writeProperty(modulePath, C_PROPERTY_EXPORT, "false");                    
+                    cms.writeProperty(modulePath, CmsPropertyDefinition.PROPERTY_EXPORT, "false");                    
                     
                     // create the templates folder
                     tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_VFS_DIR_TEMPLATES);

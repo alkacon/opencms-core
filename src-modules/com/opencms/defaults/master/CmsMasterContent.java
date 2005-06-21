@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/21 15:50:00 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,8 +60,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.1 $
- * $Date: 2005/05/17 13:47:28 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/21 15:50:00 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -162,7 +162,7 @@ public abstract class CmsMasterContent
         m_dataSet.m_groupName = null;
         m_dataSet.m_lastModifiedByName = null;
         m_dataSet.m_userId = CmsUUID.getNullUUID();
-        setAccessFlags(I_CmsConstants.C_ACCESS_DEFAULT_FLAGS);
+        setAccessFlags(com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS);
     }
 
     /**
@@ -567,12 +567,12 @@ public abstract class CmsMasterContent
         buf.append(((accessFlags & I_CmsExtendedContentDefinition.C_PERMISSION_READ) > 0 ? "r" : "-"));
         buf.append(((accessFlags & I_CmsExtendedContentDefinition.C_PERMISSION_WRITE) > 0 ? "w" : "-"));
         buf.append(((accessFlags & I_CmsExtendedContentDefinition.C_PERMISSION_VIEW) > 0 ? "v" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_GROUP_READ) > 0 ? "r" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_GROUP_WRITE) > 0 ? "w" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_GROUP_VISIBLE) > 0 ? "v" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_READ) > 0 ? "r" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_WRITE) > 0 ? "w" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE) > 0 ? "v" : "-"));
+        buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_GROUP_READ) > 0 ? "r" : "-"));
+        buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_GROUP_WRITE) > 0 ? "w" : "-"));
+        buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_GROUP_VISIBLE) > 0 ? "v" : "-"));
+        buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_READ) > 0 ? "r" : "-"));
+        buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_WRITE) > 0 ? "w" : "-"));
+        buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE) > 0 ? "v" : "-"));
         buf.append(((accessFlags & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0 ? "i" : "-"));
 
         return buf.toString();
@@ -588,9 +588,9 @@ public abstract class CmsMasterContent
             if(m_cms.isAdmin()) {
                 return true;
             } else {
-                if ( !accessOther(I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE)
+                if ( !accessOther(com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE)
                     && !accessOwner(m_cms, currentUser, CmsPermissionSet.PERMISSION_VIEW)
-                    && !accessGroup(m_cms, currentUser, I_CmsConstants.C_ACCESS_GROUP_VISIBLE)) {
+                    && !accessGroup(m_cms, currentUser, com.opencms.core.I_CmsConstants.C_ACCESS_GROUP_VISIBLE)) {
                     return false;
                 } else {
                     return true;

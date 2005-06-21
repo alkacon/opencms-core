@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/21 15:06:41 $
- * Version: $Revision: 1.201 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.202 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.db.CmsSqlManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
@@ -96,6 +97,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
@@ -124,7 +126,8 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.201 $
+ * @version $Revision: 1.202 $
+ * @version $Revision: 1.202 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1007,7 +1010,7 @@ public final class OpenCmsCore {
         }
 
         // read the the default context name from the servlet context parameters
-        String defaultWebApplication = context.getInitParameter(OpenCmsServlet.SERVLET_PARAM_DEFAULT_WEB_APPLICATION);
+        String defaultWebApplication = context.getInitParameter("DefaultWebApplication");
         if (defaultWebApplication == null) {
             // not set in web.xml, so we use "ROOT" which should usually work since it is the (de-facto) standard 
             defaultWebApplication = "ROOT";
@@ -1130,7 +1133,7 @@ public final class OpenCmsCore {
                 try {
                     String defaultFileName = cms.readPropertyObject(
                         CmsResource.getFolderPath(cms.getSitePath(resource)),
-                        I_CmsConstants.C_PROPERTY_DEFAULT_FILE,
+                        CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
                         false).getValue();
                     if (defaultFileName != null) {
                         // property was set, so look up this file first
@@ -1244,7 +1247,7 @@ public final class OpenCmsCore {
         }
     }
 
-    /**       
+    /**
      * This method adds an Object to the OpenCms runtime properties.
      * The runtime properties can be used to store Objects that are shared
      * in the whole system.<p>
@@ -1557,7 +1560,7 @@ public final class OpenCmsCore {
         CmsErrorBean errorBean = new CmsErrorBean(cms, cause);
         errorBean.setParamAction(errorUri);
         return errorBean.toHtml();
-    }
+        }
 
     /**
      * This method performs the error handling for OpenCms.<p>
@@ -1925,12 +1928,12 @@ public final class OpenCmsCore {
         CmsProperty propertyLoginForm = null;
         String redirectURL = null;
         try {
-            propertyLoginForm = adminCms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_LOGIN_FORM, true);
+            propertyLoginForm = adminCms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true);
         } catch (Throwable t) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().key(
                     Messages.LOG_ERROR_READING_AUTH_PROP_2,
-                    I_CmsConstants.C_PROPERTY_LOGIN_FORM,
+                    CmsPropertyDefinition.PROPERTY_LOGIN_FORM,
                     path), t);
             }
         }

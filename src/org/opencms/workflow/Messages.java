@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/Messages.java,v $
- * Date   : $Date: 2005/06/02 14:05:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.I_CmsMessageBundle;
-import org.opencms.main.I_CmsConstants;
 
 import java.util.Locale;
 
@@ -116,18 +115,18 @@ public final class Messages extends A_CmsMessageBundle {
      * @param taskType One of 
      * <ul>
      *  <li>
-     *   {@link I_CmsConstants#C_TASKS_ACTIVE}
+     *   {@link CmsTaskService#TASKS_ACTIVE}
      *  <li>
-     *   {@link I_CmsConstants#C_TASKS_ALL}
+     *   {@link CmsTaskService#TASKS_ALL}
      *  <li>
-     *   {@link I_CmsConstants#C_TASKS_DONE}
+     *   {@link CmsTaskService#TASKS_DONE}
      *  <li>
-     *   {@link I_CmsConstants#C_TASKS_NEW}
+     *   {@link CmsTaskService#TASKS_NEW}
      *  <li> 
-     *   {@link I_CmsConstants#C_TASKS_OPEN}
+     *   {@link CmsTaskService#TASKS_OPEN}
      * </ul>
      * @return A string describing the state of the task in the default locale.
-     * @see I_CmsConstants 
+     * @see CmsTaskService
      * @see #toTaskTypeString(int, CmsRequestContext)
      */
     public static String toTaskTypeString(int taskType) {
@@ -141,20 +140,20 @@ public final class Messages extends A_CmsMessageBundle {
      * @param taskType One of 
      * <ul>
      *  <li>
-     *   {@link I_CmsConstants#C_TASKS_ACTIVE}
+     *   {@link CmsTaskService#TASKS_ACTIVE}
      *  <li>
-     *   {@link I_CmsConstants#C_TASKS_ALL}
+     *   {@link CmsTaskService#TASKS_ALL}
      *  <li>
-     *   {@link I_CmsConstants#C_TASKS_DONE}
+     *   {@link CmsTaskService#TASKS_DONE}
      *  <li>
-     *   {@link I_CmsConstants#C_TASKS_NEW}
+     *   {@link CmsTaskService#TASKS_NEW}
      *  <li> 
-     *   {@link I_CmsConstants#C_TASKS_OPEN}
+     *   {@link CmsTaskService#TASKS_OPEN}
      * </ul>
      * 
      * @param context the current user's request context. 
      * @return A string describing the state of the task in the default locale.
-     * @see I_CmsConstants 
+     * @see CmsTaskService 
      * @see #toTaskTypeString(int)
      */
 
@@ -169,34 +168,34 @@ public final class Messages extends A_CmsMessageBundle {
      * @param taskType One of 
      * <ul>
      *  <li>
-     *   {@link I_CmsConstants#C_TASKS_ACTIVE}
+     *   {@link CmsTaskService#TASKS_ACTIVE}
      *  <li>
-     *   {@link I_CmsConstants#C_TASKS_ALL}
+     *   {@link CmsTaskService#TASKS_ALL}
      *  <li>
-     *   {@link I_CmsConstants#C_TASKS_DONE}
+     *   {@link CmsTaskService#TASKS_DONE}
      *  <li>
-     *   {@link I_CmsConstants#C_TASKS_NEW}
+     *   {@link CmsTaskService#TASKS_NEW}
      *  <li> 
-     *   {@link I_CmsConstants#C_TASKS_OPEN}
+     *   {@link CmsTaskService#TASKS_OPEN}
      * </ul>
      * @param locale the locale in which the task state should be given back. 
      * @return A string describing the state of the task in the default locale.
-     * @see I_CmsConstants 
+     * @see CmsTaskService 
      * @see #toTaskTypeString(int)
      */
     public static String toTaskTypeString(int taskType, Locale locale) {
 
         Object[] dummy = new Object[0];
         switch (taskType) {
-            case I_CmsConstants.C_TASKS_ACTIVE:
+            case CmsTaskService.TASKS_ACTIVE:
                 return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy);
-            case I_CmsConstants.C_TASKS_ALL:
+            case CmsTaskService.TASKS_ALL:
                 return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy);
-            case I_CmsConstants.C_TASKS_DONE:
+            case CmsTaskService.TASKS_DONE:
                 return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy);
-            case I_CmsConstants.C_TASKS_NEW:
+            case CmsTaskService.TASKS_NEW:
                 return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy);
-            case I_CmsConstants.C_TASKS_OPEN:
+            case CmsTaskService.TASKS_OPEN:
             default:
                 return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ILLEGAL_0, dummy);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package com.opencms.legacy;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
@@ -41,14 +42,33 @@ import org.opencms.loader.I_CmsLoaderIncludeExtension;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.editors.CmsDefaultPageEditor;
 
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.template.cache.*;
+import com.opencms.core.CmsRequestHttpServlet;
+import com.opencms.core.CmsResponseHttpServlet;
+import com.opencms.core.CmsSession;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsRequest;
+import com.opencms.core.I_CmsResponse;
+import com.opencms.core.I_CmsSession;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsRootTemplate;
+import com.opencms.template.CmsTemplateCache;
+import com.opencms.template.CmsTemplateClassManager;
+import com.opencms.template.CmsXmlControlFile;
+import com.opencms.template.CmsXmlTemplate;
+import com.opencms.template.I_CmsTemplate;
+import com.opencms.template.I_CmsTemplateCache;
+import com.opencms.template.I_CmsXmlTemplate;
+import com.opencms.template.cache.CmsElementCache;
+import com.opencms.template.cache.CmsElementDefinition;
+import com.opencms.template.cache.CmsElementDefinitionCollection;
+import com.opencms.template.cache.CmsElementDescriptor;
+import com.opencms.template.cache.CmsUri;
+import com.opencms.template.cache.CmsUriDescriptor;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -88,7 +108,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -117,7 +137,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     
     /** The resource loader configuration. */
     private Map m_configuration;
-        
+
     /**
      * The constructor of the class is empty and does nothing.
      */
@@ -245,11 +265,11 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         if (CmsLog.getLog(this).isDebugEnabled()) {
             CmsLog.getLog(this).debug("absolutePath=" + absolutePath);
         }
-        String templateProp = cms.readPropertyObject(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE, false).getValue();
+        String templateProp = cms.readPropertyObject(absolutePath, CmsPropertyDefinition.PROPERTY_TEMPLATE, false).getValue();
         if (CmsLog.getLog(this).isDebugEnabled()) {
             CmsLog.getLog(this).debug("templateProp=" + templateProp);
         }
-        String templateClassProp = cms.readPropertyObject(absolutePath, I_CmsConstants.C_PROPERTY_BODY_CLASS, false).getValue(I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
+        String templateClassProp = cms.readPropertyObject(absolutePath, org.opencms.file.CmsPropertyDefinition.PROPERTY_BODY_CLASS, false).getValue(org.opencms.importexport.CmsCompatibleCheck.XML_CONTROL_DEFAULT_CLASS);
         if (CmsLog.getLog(this).isDebugEnabled()) {
             CmsLog.getLog(this).debug("templateClassProp=" + templateClassProp);
         }
@@ -261,7 +281,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             StringBuffer buf = new StringBuffer(256);
             buf.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
             buf.append("<PAGE>\n<class>");
-            buf.append(I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
+            buf.append(org.opencms.importexport.CmsCompatibleCheck.XML_CONTROL_DEFAULT_CLASS);
             buf.append("</class>\n<masterTemplate>");
             // i got a black magic template,
             buf.append(templateProp);
@@ -273,7 +293,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             buf.append("</TEMPLATE>\n</ELEMENTDEF>\n</PAGE>\n");              
             // i got a black magic template it's try'in to make a devil out of me...
             xmlTemplateContent = buf.toString();
-            uri += I_CmsConstants.C_XML_CONTROL_FILE_SUFFIX; 
+            uri += com.opencms.core.I_CmsConstants.C_XML_CONTROL_FILE_SUFFIX; 
         }
         
         // Parameters used for element cache
@@ -318,7 +338,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
                 String elementName = replace.substring(0, index);
                 String replaceUri = replace.substring(index+1);               
                 replaceDef = new CmsElementDefinition(elementName,
-                                        I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS,
+                    org.opencms.importexport.CmsCompatibleCheck.XML_CONTROL_DEFAULT_CLASS,
                                         replaceUri, null, new Hashtable());
                 newParameters.put(C_ELEMENT_REPLACE + "_VFS_" + elementName, cms.getRequestContext().addSiteRoot(replaceUri));
             }
@@ -357,7 +377,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
                 templateClass = this.getClass().getName();
             }
             if (templateClass == null || "".equals(templateClass)) {
-                templateClass = I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS;
+                templateClass = org.opencms.importexport.CmsCompatibleCheck.XML_CONTROL_DEFAULT_CLASS;
             }
             templateName = doc.getMasterTemplate();
             if (templateName != null && !"".equals(templateName)) {
@@ -374,7 +394,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             while (masterTemplateParams.hasMoreElements()) {
                 String paramName = (String)masterTemplateParams.nextElement();
                 String paramValue = doc.getParameter(paramName);
-                newParameters.put(I_CmsConstants.C_ROOT_TEMPLATE_NAME + "." + paramName, paramValue);
+                newParameters.put(com.opencms.core.I_CmsConstants.C_ROOT_TEMPLATE_NAME + "." + paramName, paramValue);
             }
 
             // ... and now the params of all subtemplates
@@ -391,10 +411,10 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
                     if (xmlTemplateContent == null) {
                         template = doc.validateBodyPath(cms, template, file);
                     }
-                    if (I_CmsConstants.C_XML_BODY_ELEMENT.equalsIgnoreCase(elementName)) {
+                    if (CmsDefaultPageEditor.XML_BODY_ELEMENT.equalsIgnoreCase(elementName)) {
                         // found body element
                         if (template != null) {
-                            cms.getRequestContext().setAttribute(I_CmsConstants.C_XML_BODY_ELEMENT, template);
+                            cms.getRequestContext().setAttribute(CmsDefaultPageEditor.XML_BODY_ELEMENT, template);
                         }
                     } 
                     newParameters.put(elementName + "._TEMPLATE_", template);
@@ -747,7 +767,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             org.opencms.file.CmsFile fx = cms.readFile(cms.getSitePath(file));            
             // care about encoding issues
             String dnc = OpenCms.getSystemInfo().getDefaultEncoding().trim();
-            String enc = cms.readPropertyObject(cms.getSitePath(fx), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue(dnc).trim();
+            String enc = cms.readPropertyObject(cms.getSitePath(fx), CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue(dnc).trim();
             // fake the called URI (otherwise XMLTemplate / ElementCache would not work)            
             cms_req.setOriginalRequest((HttpServletRequest)req);
             cms.getRequestContext().setEncoding(enc);      
@@ -879,7 +899,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             controller.setThrowable(e, target);
             throw new CmsLegacyException("File not found: " + target, e);
         }
-        String bodyAttribute = (String) controller.getCmsObject().getRequestContext().getAttribute(I_CmsConstants.C_XML_BODY_ELEMENT);               
+        String bodyAttribute = (String) controller.getCmsObject().getRequestContext().getAttribute(CmsDefaultPageEditor.XML_BODY_ELEMENT);               
         if (bodyAttribute == null) {
             // no body attribute is set: this is NOT a sub-element in a XML mastertemplate
             if (isPageTarget) {

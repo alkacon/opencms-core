@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -266,7 +266,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 zipName = (String)session.getValue(C_MODULE_FILENAME);
                 module = (CmsModule)session.getValue(C_MODULE);
                 if (module != null) importNewModule = false; 
-                conflictFiles = (Vector)session.getValue(C_SESSION_MODULE_VECTOR);
+                conflictFiles = (Vector)session.getValue(com.opencms.core.I_CmsConstants.C_SESSION_MODULE_VECTOR);
                 session.removeValue(C_MODULE);
                 session.removeValue(C_MODULE_NAV);
             }

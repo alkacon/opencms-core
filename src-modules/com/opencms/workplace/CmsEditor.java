@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
@@ -58,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -145,7 +146,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
             session.removeValue(C_PARA_CONTENT);
         }
         String action = (String)parameters.get(C_PARA_ACTION);
-        String jsfile = (String)parameters.get(C_ROOT_TEMPLATE_NAME + "." + C_PARA_JSFILE);
+        String jsfile = (String)parameters.get(com.opencms.core.I_CmsConstants.C_ROOT_TEMPLATE_NAME + "." + C_PARA_JSFILE);
         // try to get the value from the session because we might come from the error page
         if((jsfile == null) || ("".equals(jsfile))){
             jsfile = (String)session.getValue(C_PARA_JSFILE);
@@ -200,7 +201,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
 
             // Read file encoding from the property of the file 
             String encoding = cms.getRequestContext().getEncoding();
-            encoding = cms.readProperty(file, C_PROPERTY_CONTENT_ENCODING, true, encoding);
+            encoding = cms.readProperty(file, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true, encoding);
 
             // If there is no content set, this is the first request of the editor.
             // So load the file content and set the "content" parameter.

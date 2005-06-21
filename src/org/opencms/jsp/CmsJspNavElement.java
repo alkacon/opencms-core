@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2005/06/13 09:51:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.main.I_CmsConstants;
 
 import java.util.Map;
 
@@ -41,7 +41,7 @@ import java.util.Map;
  * Bean to collect navigation information from a resource in the OpenCms VFS.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspNavElement implements Comparable {
 
@@ -151,7 +151,7 @@ public class CmsJspNavElement implements Comparable {
      */
     public String getDescription() {
 
-        return (String)m_properties.get(I_CmsConstants.C_PROPERTY_DESCRIPTION);
+        return (String)m_properties.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION);
     }
 
     /**
@@ -239,9 +239,9 @@ public class CmsJspNavElement implements Comparable {
 
         if (m_text == null) {
             // use "lazy initialiting"
-            m_text = (String)m_properties.get(I_CmsConstants.C_PROPERTY_NAVTEXT);
+            m_text = (String)m_properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
             if (m_text == null) {
-                m_text = CmsMessages.formatUnknownKey(I_CmsConstants.C_PROPERTY_NAVTEXT);
+                m_text = CmsMessages.formatUnknownKey(CmsPropertyDefinition.PROPERTY_NAVTEXT);
             }
         }
         return m_text;
@@ -319,7 +319,7 @@ public class CmsJspNavElement implements Comparable {
      */
     public String getTitle() {
 
-        return (String)m_properties.get(I_CmsConstants.C_PROPERTY_TITLE);
+        return (String)m_properties.get(CmsPropertyDefinition.PROPERTY_TITLE);
     }
 
     /**
@@ -372,7 +372,7 @@ public class CmsJspNavElement implements Comparable {
         // init the position value
         m_position = Float.MAX_VALUE;
         try {
-            m_position = Float.parseFloat((String)m_properties.get(I_CmsConstants.C_PROPERTY_NAVPOS));
+            m_position = Float.parseFloat((String)m_properties.get(CmsPropertyDefinition.PROPERTY_NAVPOS));
         } catch (Exception e) {
             // m_position will have Float.MAX_VALUE, so nevigation element will 
             // appear last in navigation
@@ -407,8 +407,8 @@ public class CmsJspNavElement implements Comparable {
 
         if (m_hasNav == null) {
             // use "lazy initialiting"
-            Object o1 = m_properties.get(I_CmsConstants.C_PROPERTY_NAVTEXT);
-            Object o2 = m_properties.get(I_CmsConstants.C_PROPERTY_NAVPOS);
+            Object o1 = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+            Object o2 = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVPOS);
             m_hasNav = new Boolean(((o1 != null) || (o2 != null)) && (m_resource.indexOf('~') < 0));
         }
         return m_hasNav.booleanValue();

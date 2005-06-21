@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,11 @@ package org.opencms.site;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -163,7 +163,7 @@ public final class CmsSiteManager implements Cloneable {
                 try {
                     CmsResource res = cms.readResource(folder);
                     if (!workplaceMode || cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW)) {
-                        String title = cms.readPropertyObject(folder, I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
+                        String title = cms.readPropertyObject(folder, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
                         if (title == null) {
                             title = folder;
                         }

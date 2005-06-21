@@ -24,16 +24,24 @@
 
 package com.opencms.defaults;
 
-import com.opencms.defaults.master.*;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterMedia;
 import com.opencms.legacy.CmsXmlTemplateLoader;
-import com.opencms.core.*;
-import org.opencms.file.*;
-import org.opencms.main.*;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsXmlTemplateFile;
+import com.opencms.workplace.CmsXmlLanguageFile;
 
-import com.opencms.workplace.*;
-import com.opencms.template.*;
-
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * Backoffice class with channel functionality

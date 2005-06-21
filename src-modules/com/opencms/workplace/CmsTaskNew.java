@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskNew.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.workflow.CmsTaskService;
 
 import com.opencms.template.A_CmsXmlContent;
 
@@ -47,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -138,16 +139,16 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
         
         // the tasksettings exists - use them
         int messageAt = settings.getTaskMessageValue();
-        if((messageAt & C_TASK_MESSAGES_ACCEPTED) != C_TASK_MESSAGES_ACCEPTED) {
+        if((messageAt & CmsTaskService.TASK_MESSAGES_ACCEPTED) != CmsTaskService.TASK_MESSAGES_ACCEPTED) {
             paraAcceptation = "";
         }
-        if((messageAt & C_TASK_MESSAGES_COMPLETED) != C_TASK_MESSAGES_COMPLETED) {
+        if((messageAt & CmsTaskService.TASK_MESSAGES_COMPLETED) != CmsTaskService.TASK_MESSAGES_COMPLETED) {
             paraCompletion = "";
         }
-        if((messageAt & C_TASK_MESSAGES_FORWARDED) != C_TASK_MESSAGES_FORWARDED) {
+        if((messageAt & CmsTaskService.TASK_MESSAGES_FORWARDED) != CmsTaskService.TASK_MESSAGES_FORWARDED) {
             paraDelivery = "";
         }
-        if((messageAt & C_TASK_MESSAGES_MEMBERS) != C_TASK_MESSAGES_MEMBERS) {
+        if((messageAt & CmsTaskService.TASK_MESSAGES_MEMBERS) != CmsTaskService.TASK_MESSAGES_MEMBERS) {
             paraAll = "";
         }
 

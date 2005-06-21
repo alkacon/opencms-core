@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2005/06/19 10:57:05 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2005/06/21 15:49:59 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,11 +35,12 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2005/06/19 10:57:05 $
+ * @version $Revision: 1.7 $ $Date: 2005/06/21 15:49:59 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -192,7 +193,7 @@ public class CmsXmlLanguageFile {
         // encoding not stored so far, let's try to figure it out
         if (DEBUG > 0) System.err.println("CmsXmlLanguageFile.getEncoding(): looking up encoding for locale " + m_locale);
         try {
-            result = m_messages.getString(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
+            result = m_messages.getString(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING);
         } catch (MissingResourceException e) {
             // exception - just use the default encoding
             result = m_workplaceDefaultEncoding;

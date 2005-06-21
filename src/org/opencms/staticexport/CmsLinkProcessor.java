@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,9 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
@@ -55,7 +55,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -183,8 +183,10 @@ public class CmsLinkProcessor {
 
                         if (!hasAltAttrib && (m_cms != null)) {
                             try {
-                                title = m_cms.readPropertyObject(internalUri, I_CmsConstants.C_PROPERTY_TITLE, false).getValue(
-                                    "\"\"");
+                                title = m_cms.readPropertyObject(
+                                    internalUri,
+                                    CmsPropertyDefinition.PROPERTY_TITLE,
+                                    false).getValue("\"\"");
                             } catch (CmsException e) {
                                 title = "\"\"";
                             }

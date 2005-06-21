@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,12 @@
 package org.opencms.module;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
@@ -271,8 +271,8 @@ public class CmsModule implements Comparable {
             try {
                 CmsResource resource = cms.readResource(resourcePath);
                 // append folder separator, of resource is a file and does not and with a slash
-                if (resource.isFolder() && !resourcePath.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-                    m_resources.set(i, resourcePath + I_CmsConstants.C_FOLDER_SEPARATOR);
+                if (resource.isFolder() && !resourcePath.endsWith("/")) {
+                    m_resources.set(i, resourcePath + "/");
                 }
             } catch (CmsException e) {
                 result.append(resourcePath);
@@ -898,11 +898,11 @@ public class CmsModule implements Comparable {
         List resources = new ArrayList(m_resources);
 
         String additionalResources;
-        additionalResources = (String)parameters.get(I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
+        additionalResources = (String)parameters.get(CmsPropertyDefinition.MODULE_PROPERTY_ADDITIONAL_RESOURCES);
         if (additionalResources != null) {
             StringTokenizer tok = new StringTokenizer(
                 additionalResources,
-                I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
+                CmsPropertyDefinition.MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
             while (tok.hasMoreTokens()) {
                 String resource = tok.nextToken().trim();
                 if ((!"-".equals(resource)) && (!resources.contains(resource))) {

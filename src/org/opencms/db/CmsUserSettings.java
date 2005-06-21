@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2005/06/20 12:12:22 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,11 @@ import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workflow.CmsTaskService;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
@@ -52,11 +52,40 @@ import java.util.Map;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1.12
  */
 public class CmsUserSettings {
+
+    /**
+     * Key for additional info address.
+     */
+    public static final String ADDITIONAL_INFO_COUNTRY = "USER_COUNTRY";
+
+    /** Key for additional info start settings. */
+    public static final String ADDITIONAL_INFO_DEFAULTGROUP = "USER_DEFAULTGROUP";
+
+    /** Key for additional info explorer settings. */
+    public static final String ADDITIONAL_INFO_EXPLORERSETTINGS = "USER_EXPLORERSETTINGS";
+
+    /**
+     * Key for additional info flags.
+     */
+    public static final String ADDITIONAL_INFO_PREFERENCES = "USER_PREFERENCES";
+
+    /** Key for additional info start settings. */
+    public static final String ADDITIONAL_INFO_STARTSETTINGS = "USER_STARTSETTINGS";
+
+    /**
+     * Key for additional info address.
+     */
+    public static final String ADDITIONAL_INFO_TOWN = "USER_TOWN";
+
+    /**
+     * Key for additional info address.
+     */
+    public static final String ADDITIONAL_INFO_ZIPCODE = "USER_ZIPCODE";
 
     /** The default button style. */
     private static final int BUTTONSTYLE_DEFAULT = 1;
@@ -404,7 +433,7 @@ public class CmsUserSettings {
      */
     public boolean getTaskMessageAccepted() {
 
-        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_ACCEPTED) > 0);
+        return ((m_taskMessages & CmsTaskService.TASK_MESSAGES_ACCEPTED) > 0);
     }
 
     /**
@@ -414,7 +443,7 @@ public class CmsUserSettings {
      */
     public boolean getTaskMessageCompleted() {
 
-        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_COMPLETED) > 0);
+        return ((m_taskMessages & CmsTaskService.TASK_MESSAGES_COMPLETED) > 0);
     }
 
     /**
@@ -424,7 +453,7 @@ public class CmsUserSettings {
      */
     public boolean getTaskMessageForwarded() {
 
-        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_FORWARDED) > 0);
+        return ((m_taskMessages & CmsTaskService.TASK_MESSAGES_FORWARDED) > 0);
     }
 
     /**
@@ -434,7 +463,7 @@ public class CmsUserSettings {
      */
     public boolean getTaskMessageMembers() {
 
-        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_MEMBERS) > 0);
+        return ((m_taskMessages & CmsTaskService.TASK_MESSAGES_MEMBERS) > 0);
     }
 
     /**
@@ -1413,7 +1442,7 @@ public class CmsUserSettings {
      */
     public void setTaskMessageAccepted(boolean message) {
 
-        setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_ACCEPTED);
+        setTaskMessageSetting(message, CmsTaskService.TASK_MESSAGES_ACCEPTED);
     }
 
     /**
@@ -1423,7 +1452,7 @@ public class CmsUserSettings {
      */
     public void setTaskMessageCompleted(boolean message) {
 
-        setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_COMPLETED);
+        setTaskMessageSetting(message, CmsTaskService.TASK_MESSAGES_COMPLETED);
     }
 
     /**
@@ -1433,7 +1462,7 @@ public class CmsUserSettings {
      */
     public void setTaskMessageForwarded(boolean message) {
 
-        setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_FORWARDED);
+        setTaskMessageSetting(message, CmsTaskService.TASK_MESSAGES_FORWARDED);
     }
 
     /**
@@ -1443,7 +1472,7 @@ public class CmsUserSettings {
      */
     public void setTaskMessageMembers(boolean message) {
 
-        setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_MEMBERS);
+        setTaskMessageSetting(message, CmsTaskService.TASK_MESSAGES_MEMBERS);
     }
 
     /**

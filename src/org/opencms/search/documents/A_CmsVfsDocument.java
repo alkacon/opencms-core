@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2005/04/28 08:29:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/21 15:49:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,10 @@ package org.opencms.search.documents;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
@@ -93,7 +93,9 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             return C_VFS_DOCUMENT_KEY_PREFIX
                 + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getTypeId();
         } catch (Exception exc) {
-            throw new CmsIndexException(Messages.get().container(Messages.ERR_RESOURCE_TYPE_INSTANTIATION_1, resourceType), exc);
+            throw new CmsIndexException(Messages.get().container(
+                Messages.ERR_RESOURCE_TYPE_INSTANTIATION_1,
+                resourceType), exc);
         }
     }
 
@@ -162,7 +164,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         Field field;
 
         // add the title from the property
-        value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
+        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
         if (CmsStringUtil.isNotEmpty(value)) {
             value = value.trim();
             if (value.length() > 0) {
@@ -178,14 +180,14 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             }
         }
         // add the keywords from the property
-        value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_KEYWORDS, false).getValue();
+        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_KEYWORDS, false).getValue();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_KEYWORDS, value));
             meta.append(value);
             meta.append(" ");
         }
         // add the description from the property
-        value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_DESCRIPTION, false).getValue();
+        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_DESCRIPTION, value));
             meta.append(value);
@@ -198,7 +200,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         }
 
         // add the category of the file (this is searched so the value can also be attached on a folder)
-        value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_SEARCH_CATEGORY, true).getValue();
+        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_SEARCH_CATEGORY, true).getValue();
         if (CmsStringUtil.isNotEmpty(value)) {
             // all categorys are internally stored lower case
             value = value.trim().toLowerCase();
@@ -231,7 +233,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
         float boost = 1.0f;
         // note that the priority property IS searched, so you can easily flag whole folders as "high" or "low"
-        if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_SEARCH_PRIORITY, true).getValue()) != null) {
+        if ((value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, true).getValue()) != null) {
             value = value.trim().toLowerCase();
             if (value.equals(I_CmsDocumentFactory.SEARCH_PRIORITY_MAX_VALUE)) {
                 boost = 2.0f;

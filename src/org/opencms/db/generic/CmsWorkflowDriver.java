@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/06/21 15:49:59 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
+import org.opencms.workflow.CmsTaskService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.50 $ $Date: 2005/06/13 10:00:02 $
+ * @version $Revision: 1.51 $ $Date: 2005/06/21 15:49:59 $
  * @since 5.1
  */
 public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -130,7 +131,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
         CmsTask task = new CmsTask(
             newId,
             taskname,
-            I_CmsConstants.C_TASK_STATE_STARTED,
+            CmsTaskService.TASK_STATE_STARTED,
             tasktype,
             rootId,
             parentId,
@@ -642,7 +643,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             CmsUUID.getNullUUID(),
             new java.sql.Timestamp(System.currentTimeMillis()),
             comment,
-            I_CmsConstants.C_TASKLOG_USER);
+            CmsTaskService.TASKLOG_USER);
     }
 
     /**
@@ -714,7 +715,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
                 stmt.setString(3, m_driverManager.readUser(
                     dbc,
                     OpenCms.getDefaultUsers().getUserGuest(),
-                    I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
+                    CmsUser.USER_TYPE_SYSTEMUSER).getId().toString());
             }
             stmt.setTimestamp(4, starttime);
             stmt.setString(5, m_sqlManager.validateEmpty(comment));
@@ -908,29 +909,29 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
         }
 
         switch (tasktype) {
-            case I_CmsConstants.C_TASKS_ALL:
+            case CmsTaskService.TASKS_ALL:
                 result = result + m_sqlManager.readQuery("C_TASK_ROOT") + "<>0";
                 break;
 
-            case I_CmsConstants.C_TASKS_OPEN:
-                result = result + m_sqlManager.readQuery("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
+            case CmsTaskService.TASKS_OPEN:
+                result = result + m_sqlManager.readQuery("C_TASK_STATE") + "=" + CmsTaskService.TASK_STATE_STARTED;
                 break;
 
-            case I_CmsConstants.C_TASKS_ACTIVE:
-                result = result + m_sqlManager.readQuery("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
+            case CmsTaskService.TASKS_ACTIVE:
+                result = result + m_sqlManager.readQuery("C_TASK_STATE") + "=" + CmsTaskService.TASK_STATE_STARTED;
                 break;
 
-            case I_CmsConstants.C_TASKS_DONE:
-                result = result + m_sqlManager.readQuery("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_ENDED;
+            case CmsTaskService.TASKS_DONE:
+                result = result + m_sqlManager.readQuery("C_TASK_STATE") + "=" + CmsTaskService.TASK_STATE_ENDED;
                 break;
 
-            case I_CmsConstants.C_TASKS_NEW:
+            case CmsTaskService.TASKS_NEW:
                 result = result
                     + m_sqlManager.readQuery("C_TASK_PERCENTAGE")
                     + "='0' AND "
                     + m_sqlManager.readQuery("C_TASK_STATE")
                     + "="
-                    + I_CmsConstants.C_TASK_STATE_STARTED;
+                    + CmsTaskService.TASK_STATE_STARTED;
                 break;
 
             default:

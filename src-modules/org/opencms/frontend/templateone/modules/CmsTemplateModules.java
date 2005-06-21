@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/CmsTemplateModules.java,v $
- * Date   : $Date: 2005/05/20 14:35:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.frontend.templateone.modules;
 
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
@@ -39,7 +40,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Date;
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 6.0 alpha 2
  */
 public class CmsTemplateModules extends CmsJspActionElement {
@@ -119,12 +119,16 @@ public class CmsTemplateModules extends CmsJspActionElement {
                     LOG.warn(Messages.get().key(
                         Messages.LOG_ERR_MISSING_PROP_2,
                         navElement.getResourceName(),
-                        I_CmsConstants.C_PROPERTY_TITLE));
+                        CmsPropertyDefinition.PROPERTY_TITLE));
                 }
                 title = CmsResource.getName(navElement.getResourceName());
             }
             // generate the link for the navigation element
-            String faqUri = link(getRequestContext().getUri() + "?" + C_PARAM_CATEGORYFOLDER + "=" + navElement.getResourceName());
+            String faqUri = link(getRequestContext().getUri()
+                + "?"
+                + C_PARAM_CATEGORYFOLDER
+                + "="
+                + navElement.getResourceName());
 
             // append the anchor
             result.append("<a href=\"");
@@ -234,15 +238,17 @@ public class CmsTemplateModules extends CmsJspActionElement {
 
                 String faqUri = link(getRequestContext().getUri() + "?" + C_PARAM_CATEGORYFOLDER + "=" + resourceName);
 
-                String title = getCmsObject().readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_TITLE, false)
-                    .getValue(null);
+                String title = getCmsObject().readPropertyObject(
+                    resourceName,
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    false).getValue(null);
 
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                     if (LOG.isWarnEnabled()) {
                         LOG.warn(Messages.get().key(
                             Messages.LOG_ERR_MISSING_PROP_2,
                             resourceName,
-                            I_CmsConstants.C_PROPERTY_TITLE));
+                            CmsPropertyDefinition.PROPERTY_TITLE));
                     }
                     title = resource.getName();
                 }

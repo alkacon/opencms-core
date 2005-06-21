@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPageFactory.java,v $
- * Date   : $Date: 2005/05/20 11:47:11 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/21 15:50:00 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.xml.page;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
@@ -40,7 +41,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
@@ -66,11 +66,11 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public final class CmsXmlPageFactory {
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlPageFactory.class);
 
@@ -180,15 +180,14 @@ public final class CmsXmlPageFactory {
         boolean allowRelative = false;
         try {
             allowRelative = Boolean.valueOf(
-                cms.readPropertyObject(fileName, CmsXmlPage.C_PROPERTY_ALLOW_RELATIVE, false).getValue()
-            ).booleanValue();
+                cms.readPropertyObject(fileName, CmsXmlPage.C_PROPERTY_ALLOW_RELATIVE, false).getValue()).booleanValue();
         } catch (CmsException e) {
             // allowRelative will be false
         }
 
         String encoding = null;
         try {
-            encoding = cms.readPropertyObject(fileName, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue();
+            encoding = cms.readPropertyObject(fileName, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
         } catch (CmsException e) {
             // encoding will be null 
         }
@@ -197,9 +196,7 @@ public final class CmsXmlPageFactory {
         } else {
             encoding = CmsEncoder.lookupEncoding(encoding, null);
             if (encoding == null) {
-                throw new CmsXmlException(Messages.get().container(
-                    Messages.ERR_XML_PAGE_FACT_INVALID_ENC_1,
-                    fileName));
+                throw new CmsXmlException(Messages.get().container(Messages.ERR_XML_PAGE_FACT_INVALID_ENC_1, fileName));
             }
         }
 
@@ -248,7 +245,7 @@ public final class CmsXmlPageFactory {
     public static CmsXmlPage unmarshal(CmsObject cms, CmsResource resource, ServletRequest req) throws CmsException {
 
         String rootPath = resource.getRootPath();
-        
+
         if (resource.getTypeId() != CmsResourceTypeXmlPage.getStaticTypeId()) {
             // sanity check: resource must be of type XML page
             throw new CmsXmlException(Messages.get().container(
@@ -282,36 +279,34 @@ public final class CmsXmlPageFactory {
      * @throws CmsException in something goes wrong
      */
     public static I_CmsXmlDocument unmarshal(CmsObject cms, String filename, ServletRequest req) throws CmsException {
-        
+
         // add site root to filename
         String rootPath = cms.getRequestContext().addSiteRoot(filename);
-        
+
         // try to get the requested page form the current request attributes
         I_CmsXmlDocument doc = (I_CmsXmlDocument)req.getAttribute(rootPath);
 
         if (doc != null) {
             return doc;
         }
-        
+
         // always use "ignore expiration" filter, date validity must be checked before calling this if required
         CmsFile file = cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
-        
+
         if (file.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
             // file is of type XML page
             doc = CmsXmlPageFactory.unmarshal(cms, file);
-        } else  if ((OpenCms.getResourceManager().getLoader(file) instanceof CmsXmlContentLoader)) {
+        } else if ((OpenCms.getResourceManager().getLoader(file) instanceof CmsXmlContentLoader)) {
             // file is of type XML content
-            doc = CmsXmlContentFactory.unmarshal(cms, file); 
+            doc = CmsXmlContentFactory.unmarshal(cms, file);
         } else {
             // sanity check: file type not an A_CmsXmlDocument
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XML_PAGE_FACT_NO_XML_DOCUMENT_1,
-                file));
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_XML_PAGE_FACT_NO_XML_DOCUMENT_1, file));
         }
-        
+
         // store the page that was read as request attribute for future read requests
         req.setAttribute(rootPath, doc);
-        
+
         return doc;
     }
 

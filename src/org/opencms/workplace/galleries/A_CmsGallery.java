@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/06/15 08:55:38 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/21 15:49:59 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.galleries;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePointer;
@@ -70,15 +71,12 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.5.2
  */
 public abstract class A_CmsGallery extends CmsDialog {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsGallery.class);  
-    
     /** Value for the action: delete the gallery item. */
     public static final int ACTION_DELETE = 101;
     /** Value for the action: list gallery items. */
@@ -87,14 +85,14 @@ public abstract class A_CmsGallery extends CmsDialog {
     public static final int ACTION_SEARCH = 103;
     /** Value for the action: upload a new gallery item. */
     public static final int ACTION_UPLOAD = 104;
-    
+
     /** The CSS filename used in the galleries. */
     public static final String C_CSS_FILENAME = "gallery.css";
     /** The uri suffix for the gallery start page. */
     public static final String C_OPEN_URI_SUFFIX = "gallery_fs.jsp";
     /** The galleries path in the workplace containing the JSPs. */
     public static final String C_PATH_GALLERIES = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "galleries/";
-    
+
     /** Request parameter value for the action: delete the gallery item. */
     public static final String DIALOG_DELETE = "delete";
     /** Request parameter value for the action: edit property value. */
@@ -131,6 +129,9 @@ public abstract class A_CmsGallery extends CmsDialog {
     public static final String PARAM_RESOURCEPATH = "resourcepath";
     /** Request parameter name for the search word. */
     public static final String PARAM_SEARCHWORD = "searchword";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsGallery.class);
 
     /** The currently displayed gallery resource. */
     private CmsResource m_currentResource;
@@ -222,9 +223,11 @@ public abstract class A_CmsGallery extends CmsDialog {
             if (jsp == null) {
                 message = Messages.get().container(Messages.LOG_UNKNOWN_GALLERY_TYPE_REQ_1, galleryTypeName);
             } else {
-                message = Messages.get().container(Messages.LOG_UNKNOWN_GALLERY_TYPE_REQ_JSP_2, 
-                    galleryTypeName, jsp.info("opencms.request.element.uri"));
-            }    
+                message = Messages.get().container(
+                    Messages.LOG_UNKNOWN_GALLERY_TYPE_REQ_JSP_2,
+                    galleryTypeName,
+                    jsp.info("opencms.request.element.uri"));
+            }
             LOG.error(message.key());
             throw new CmsRuntimeException(message);
         }
@@ -245,14 +248,42 @@ public abstract class A_CmsGallery extends CmsDialog {
             // requested type is not configured          
             CmsMessageContainer message;
             if (jsp == null) {
-                message = Messages.get().container(Messages.LOG_CREATE_GALLERY_INSTANCE_FAILED_2, 
-                    className, galleryTypeName);
+                message = Messages.get().container(
+                    Messages.LOG_CREATE_GALLERY_INSTANCE_FAILED_2,
+                    className,
+                    galleryTypeName);
             } else {
-                message = Messages.get().container(Messages.LOG_CREATE_GALLERY_INSTANCE_FAILED_JSP_3, 
-                    className, galleryTypeName, jsp.info("opencms.request.element.uri"));
-            }    
+                message = Messages.get().container(
+                    Messages.LOG_CREATE_GALLERY_INSTANCE_FAILED_JSP_3,
+                    className,
+                    galleryTypeName,
+                    jsp.info("opencms.request.element.uri"));
+            }
             LOG.error(message.key());
             throw new CmsRuntimeException(message);
+        }
+    }
+
+    /**
+     * Initializes the gallery dialog before redirecting.<p>
+     * 
+     * @param wp the workplace object
+     */
+    public static void initGallery(CmsDialog wp) {
+
+        // 1. get "gallerytypename" by reading the folderpath
+        String galleryTypeName = null;
+        if (wp.useNewStyle()) {
+            galleryTypeName = CmsResource.getName(CmsResource.getFolderPath(wp.getAdminTool().getHandler().getLink()));
+        } else {
+            galleryTypeName = CmsResource.getName(CmsResource.getFolderPath(wp.getJsp().getRequestContext().getUri()));
+        }
+        if (galleryTypeName.endsWith("/")) {
+            galleryTypeName = galleryTypeName.substring(0, galleryTypeName.length() - 1);
+        }
+        if (!galleryTypeName.equals("commons")) {
+            // 2. Set in user settings
+            wp.getSettings().setGalleryType(galleryTypeName);
         }
     }
 
@@ -303,7 +334,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                         // write the changed title property value
                         writeTitleProperty(res);
                     }
-                    String title = CmsEncoder.escapeXml(getPropertyValue(res, I_CmsConstants.C_PROPERTY_TITLE));
+                    String title = CmsEncoder.escapeXml(getPropertyValue(res, CmsPropertyDefinition.PROPERTY_TITLE));
                     buttonBar.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" ");
                     buttonBar.append("style=\"align: left; width:100%; background-color: ThreeDFace; margin: 0; border-right: 1px solid ThreeDShadow\">");
                     buttonBar.append("<tr align=\"left\">");
@@ -408,7 +439,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                     }
                     String resPath = getCms().getSitePath(res);
                     String resName = CmsResource.getName(resPath);
-                    String title = getPropertyValue(res, I_CmsConstants.C_PROPERTY_TITLE);
+                    String title = getPropertyValue(res, CmsPropertyDefinition.PROPERTY_TITLE);
                     // get the resource type name
                     String resType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
 
@@ -485,7 +516,7 @@ public abstract class A_CmsGallery extends CmsDialog {
             String title = "";
             try {
                 // read the gallery title
-                title = getCms().readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue("");
+                title = getCms().readPropertyObject(path, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue("");
             } catch (CmsException e) {
                 // error reading title property 
                 LOG.error(e);
@@ -515,11 +546,11 @@ public abstract class A_CmsGallery extends CmsDialog {
                 String title = "";
                 try {
                     // read the gallery title
-                    title = getCms().readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue("");
+                    title = getCms().readPropertyObject(path, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue("");
                 } catch (CmsException e) {
                     // error reading title property
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(e);    
+                        LOG.error(e);
                     }
                 }
                 options.add(title + " (" + path + ")");
@@ -620,7 +651,7 @@ public abstract class A_CmsGallery extends CmsDialog {
         } catch (CmsException e) {
             // error checking permissions
             if (LOG.isErrorEnabled()) {
-                LOG.error(e);    
+                LOG.error(e);
             }
         }
         return button(null, null, "deletecontent_in.png", "", 0);
@@ -722,7 +753,7 @@ public abstract class A_CmsGallery extends CmsDialog {
             // error reading resources with filter
             LOG.error(e);
         }
-        
+
         // if the current site is NOT the root site - add all other galleries from the system path
         if (!getCms().getRequestContext().getSiteRoot().equals("")) {
             List systemGalleries = null;
@@ -741,7 +772,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 galleries.addAll(systemGalleries);
             }
         }
-        
+
         // return the found galleries
         return galleries;
     }
@@ -752,7 +783,7 @@ public abstract class A_CmsGallery extends CmsDialog {
      * @return a list of gallery items (resources)
      */
     public List getGalleryItems() {
-             
+
         if (m_galleryItems == null) {
             // gallery items have not been read yet
             int resTypeId = getGalleryItemsTypeId();
@@ -768,7 +799,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                         // filter all resources of the required type
                         filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(resTypeId);
                     }
-                    m_galleryItems = getCms().readResources(getParamGalleryPath(), filter, false); 
+                    m_galleryItems = getCms().readResources(getParamGalleryPath(), filter, false);
                 } catch (CmsException e) {
                     // error reading reaources
                     LOG.error(e);
@@ -1206,7 +1237,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 value = property.getValue("[" + resName + "]");
             } catch (CmsException e) {
                 // error reading property object
-                LOG.error(e); 
+                LOG.error(e);
             }
         }
         return value;
@@ -1229,8 +1260,10 @@ public abstract class A_CmsGallery extends CmsDialog {
             while (i.hasNext()) {
                 CmsResource res = (CmsResource)i.next();
                 String resname = res.getName().toLowerCase();
-                String restitle = getJsp()
-                    .property(I_CmsConstants.C_PROPERTY_TITLE, getCms().getSitePath(res), resname).toLowerCase();
+                String restitle = getJsp().property(
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    getCms().getSitePath(res),
+                    resname).toLowerCase();
                 if (restitle.indexOf(searchword) != -1 || resname.indexOf(searchword) != -1) {
                     // add this resource to the hitlist
                     hitlist.add(res);
@@ -1278,28 +1311,6 @@ public abstract class A_CmsGallery extends CmsDialog {
     }
 
     /**
-     * Initializes the gallery dialog before redirecting.<p>
-     * 
-     * @param wp the workplace object
-     */
-    public static void initGallery(CmsDialog wp) {
-        // 1. get "gallerytypename" by reading the folderpath
-        String galleryTypeName = null;
-        if (wp.useNewStyle()) {
-             galleryTypeName = CmsResource.getName(CmsResource.getFolderPath(wp.getAdminTool().getHandler().getLink()));
-        } else {
-             galleryTypeName = CmsResource.getName(CmsResource.getFolderPath(wp.getJsp().getRequestContext().getUri()));
-        }
-        if (galleryTypeName.endsWith("/")) {
-            galleryTypeName = galleryTypeName.substring(0, galleryTypeName.length()-1);
-        }
-        if (!galleryTypeName.equals("commons")) {
-            // 2. Set in user settings
-            wp.getSettings().setGalleryType(galleryTypeName);
-        }
-    }
-    
-    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
@@ -1332,12 +1343,15 @@ public abstract class A_CmsGallery extends CmsDialog {
         String resPath = getCms().getSitePath(res);
         String currentPropertyValue = getParamPropertyValue();
         try {
-            CmsProperty currentProperty = getCms().readPropertyObject(resPath, I_CmsConstants.C_PROPERTY_TITLE, false);
+            CmsProperty currentProperty = getCms().readPropertyObject(
+                resPath,
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                false);
             // detect if property is a null property or not
             if (currentProperty.isNullProperty()) {
                 // create new property object and set key and value
                 currentProperty = new CmsProperty();
-                currentProperty.setName(I_CmsConstants.C_PROPERTY_TITLE);
+                currentProperty.setName(CmsPropertyDefinition.PROPERTY_TITLE);
                 if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
                     // set structure value
                     currentProperty.setStructureValue(currentPropertyValue);

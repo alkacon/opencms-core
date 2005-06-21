@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2005/06/01 12:34:42 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/06/21 15:50:00 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ package com.opencms.legacy;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsExport;
@@ -48,7 +49,9 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsXmlSaxWriter;
 
-import com.opencms.defaults.master.*;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.CmsMasterMedia;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -78,7 +81,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.5 $ $Date: 2005/06/01 12:34:42 $
+ * @version $Revision: 1.6 $ $Date: 2005/06/21 15:50:00 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -344,7 +347,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      */
     protected String getExportNodeName() {
         
-        return I_CmsConstants.C_EXPORT_TAG_MODULEXPORT;
+        return com.opencms.core.I_CmsConstants.C_EXPORT_TAG_MODULEXPORT;
     }        
     
     /**
@@ -364,7 +367,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             return true;
         }
         // don't export "channel" property
-        return I_CmsConstants.C_PROPERTY_CHANNELID.equals(property.getName());
+        return CmsPropertyDefinition.PROPERTY_CHANNELID.equals(property.getName());
     }
 
     /**
@@ -521,7 +524,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
 
         // create a new xml document
         Document doc = DocumentHelper.createDocument();
-        Element data = doc.addElement(I_CmsConstants.C_EXPORT_TAG_MODULEXPORT).addElement(C_EXPORT_TAG_MASTER_DATASET);
+        Element data = doc.addElement(com.opencms.core.I_CmsConstants.C_EXPORT_TAG_MODULEXPORT).addElement(C_EXPORT_TAG_MASTER_DATASET);
 
         // add the data of the contentdefinition
         // get the name of the owner
@@ -643,7 +646,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
     private void exportCosModuleMedia(CmsMasterMedia media, String filename, int masterNr, int subId, int mediaId) throws CmsException {
         // create a new xml document
         Document doc = DocumentHelper.createDocument();
-        Element data = doc.addElement(I_CmsConstants.C_EXPORT_TAG_MODULEXPORT);
+        Element data = doc.addElement(com.opencms.core.I_CmsConstants.C_EXPORT_TAG_MODULEXPORT);
         // add the data element
         Element em = data.addElement(C_EXPORT_TAG_MASTER_MEDIA);
         // add the data of the contentdefinition
