@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/21 11:05:17 $
- * Version: $Revision: 1.200 $
+ * Date   : $Date: 2005/06/21 15:06:41 $
+ * Version: $Revision: 1.201 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,8 +58,8 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.jsp.util.CmsErrorBean;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.I_CmsFlexCacheEnabledLoader;
 import org.opencms.lock.CmsLockManager;
@@ -81,9 +81,7 @@ import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
-import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlContentTypeManager;
 
@@ -98,7 +96,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
@@ -127,13 +124,10 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.200 $
+ * @version $Revision: 1.201 $
  * @since 5.1
  */
 public final class OpenCmsCore {
-
-    /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
-    public static final String HTML_MESSAGE_FILE = "org/opencms/main/htmlmsg.properties";
 
     /** Required as template for event list generation. */
     private static final I_CmsEventListener[] EVENT_LIST = new I_CmsEventListener[0];
@@ -1551,81 +1545,18 @@ public final class OpenCmsCore {
      */
     private String createErrorBox(Throwable t, HttpServletRequest request, CmsObject cms) {
 
-        int todo = 0;
-        // this method needs to be fully rewritten using new Messages and the MacroResolver
-
-        // load the property file that contains the html fragments for the dialog
-        Properties htmlProps = new Properties();
-        try {
-            htmlProps.load(getClass().getClassLoader().getResourceAsStream(HTML_MESSAGE_FILE));
-        } catch (Throwable th) {
-            CmsLog.INIT.error(Messages.get().key(Messages.INIT_ERR_LOAD_HTML_PROPERTY_FILE_1, HTML_MESSAGE_FILE), th);
+        String errorUri = CmsFlexController.getThrowableResourceUri(request);
+        if (errorUri == null) {
+            errorUri = cms.getRequestContext().getUri();
         }
-
-        // get localized message bundle
-        CmsMessages messages = new CmsMessages(
-            CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE,
-            cms.getRequestContext().getLocale());
-
         // try to get the exception root cause
         Throwable cause = CmsFlexController.getThrowable(request);
         if (cause == null) {
             cause = t;
         }
-
-        String errorHtml;
-        // construct the error page
-        errorHtml = htmlProps.getProperty("C_ERROR_DIALOG_START")
-            + htmlProps.getProperty("C_STYLES")
-            + htmlProps.getProperty("C_ERROR_DIALOG_END");
-
-        errorHtml = CmsStringUtil.substitute(errorHtml, "${title}", messages.key("error.system.message"));
-        errorHtml = CmsStringUtil.substitute(errorHtml, "${encoding}", getSystemInfo().getDefaultEncoding());
-        errorHtml = CmsStringUtil.substitute(errorHtml, "${warnimageuri}", CmsWorkplace.getSkinUri()
-            + "commons/error.png");
-        if (cause.getLocalizedMessage() != null) {
-            errorHtml = CmsStringUtil.substitute(errorHtml, "${message}", "<p><b>"
-                + CmsStringUtil.substitute(cause.getLocalizedMessage(), "\n", "\n<br>")
-                + "</b></p>");
-        } else {
-            errorHtml = CmsStringUtil.substitute(errorHtml, "${message}", "<p><b>"
-                + CmsStringUtil.substitute(cause.toString(), "\n", "\n<br>")
-                + "</b></p>");
-        }
-        errorHtml = CmsStringUtil.substitute(errorHtml, "${resource_key}", messages.key("error.system.resource"));
-        errorHtml = CmsStringUtil.substitute(errorHtml, "${version_key}", messages.key("error.system.version"));
-        errorHtml = CmsStringUtil.substitute(errorHtml, "${context_key}", messages.key("error.system.context"));
-        String errorUri = CmsFlexController.getThrowableResourceUri(request);
-        if (errorUri == null) {
-            errorUri = cms.getRequestContext().getUri();
-        }
-        errorHtml = CmsStringUtil.substitute(errorHtml, "${resource}", errorUri);
-        errorHtml = CmsStringUtil.substitute(errorHtml, "${version}", getSystemInfo().getVersionName());
-        errorHtml = CmsStringUtil.substitute(errorHtml, "${context}", getSystemInfo().getOpenCmsContext());
-        errorHtml = CmsStringUtil.substitute(errorHtml, "${bt_close}", messages.key("button.close"));
-
-        String exception = CmsException.getStackTraceAsString(cause);
-        String details = "";
-
-        if (exception == null || "".equals(exception.trim())) {
-            // no stack trace available, do not show "details" button
-            errorHtml = CmsStringUtil.substitute(errorHtml, "${button_details}", "");
-        } else {
-            // stack trace available, show the "details" button
-            errorHtml = CmsStringUtil.substitute(
-                errorHtml,
-                "${button_details}",
-                htmlProps.getProperty("C_BUTTON_DETAILS"));
-            errorHtml = CmsStringUtil.substitute(errorHtml, "${bt_details}", messages.key("button.detail"));
-            exception = CmsStringUtil.escapeJavaScript(exception);
-            exception = CmsStringUtil.substitute(exception, ">", "&gt;");
-            exception = CmsStringUtil.substitute(exception, "<", "&lt;");
-            details = "<html><body style='background-color: Window;'><pre>" + exception + "</pre></body></html>";
-        }
-
-        errorHtml = CmsStringUtil.substitute(errorHtml, "${details}", details);
-
-        return errorHtml;
+        CmsErrorBean errorBean = new CmsErrorBean(cms, cause);
+        errorBean.setParamAction(errorUri);
+        return errorBean.toHtml();
     }
 
     /**
