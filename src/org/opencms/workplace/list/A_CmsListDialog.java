@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspWriter;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -319,9 +319,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         StringBuffer result = new StringBuffer(2048);
         result.append(defaultActionHtmlStart());
         result.append(defaultActionHtmlContent());
-        result.append(dialogEnd());
-        result.append(bodyEnd());
-        result.append(htmlEnd());
+        result.append(defaultActionHtmlEnd());
         return result.toString();
     }
 
@@ -358,6 +356,20 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
+     * Generates the dialog ending html code.<p>
+     * 
+     * @return html code
+     */
+    public String defaultActionHtmlEnd() {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append(dialogEnd());
+        result.append(bodyEnd());
+        result.append(htmlEnd());
+        return result.toString();
+    }
+
+    /**
      * Generates the dialog starting html code.<p>
      * 
      * @return html code
@@ -366,7 +378,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
         StringBuffer result = new StringBuffer(2048);
         result.append(htmlStart(null));
-        result.append(getList().listJs());
+        result.append(getList().listJs(getLocale()));
         result.append(bodyStart("dialog", null));
         result.append(dialogStart());
         return result.toString();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsTwoListsDialogBuilder.java,v $
- * Date   : $Date: 2005/06/20 12:12:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.jsp.JspWriter;
  * Helper class for managing two lists on the same dialog.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsTwoListsDialogBuilder {
@@ -131,7 +131,7 @@ public class CmsTwoListsDialogBuilder {
 
         StringBuffer result = new StringBuffer(2048);
         result.append(m_activeWp.htmlStart(null));
-        result.append(m_activeWp.getList().listJs());
+        result.append(m_activeWp.getList().listJs(m_activeWp.getLocale()));
         result.append(m_activeWp.bodyStart("dialog", null));
         result.append(m_activeWp.dialogStart());
         return result.toString();

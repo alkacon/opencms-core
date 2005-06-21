@@ -1,3 +1,42 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/list.js,v $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.4 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2004-2005 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/**
+ * Executes a list action.<p>
+ *
+ * @param listId the id of the list
+ * @param action the id of the action to execute
+ * @param confirmation a confirmation string or the id of a div tag with the confirmation string
+ * @param listItem the affected list item
+ */
 function listAction(listId, action, confirmation, listItem) {
 	var form = document.forms[listId + '-form'];
 	
@@ -20,6 +59,13 @@ function listAction(listId, action, confirmation, listItem) {
 	submitForm(form);
 }
 
+/**
+ * Executes a list independent action.<p>
+ *
+ * @param listId the id of the list
+ * @param action the id of the independent action to execute
+ * @param confirmation a confirmation text 
+ */
 function listIndepAction(listId, action, confirmation) {
 	var form = document.forms[listId + '-form'];
 	if (confirmation!='null' && confirmation!='') {
@@ -32,6 +78,11 @@ function listIndepAction(listId, action, confirmation) {
 	submitForm(form);
 }
 
+/**
+ * Selects/Deselects all no-disabled multi action checkboxes.<p>
+ *
+ * @param listId the id of the list
+ */
 function listSelect(listId) {
 	var form = document.forms[listId + '-form'];
 	for (i = 0 ; i < form.elements.length; i++) {
@@ -44,6 +95,14 @@ function listSelect(listId) {
 	return true;
 }
 
+/**
+ * Executes a list multi action.<p>
+ *
+ * @param listId the id of the list
+ * @param action the id of the multi action to execute
+ * @param confirmation a confirmation text
+ * @param noselectionhelp a help text displayed when there are no selected items 
+ */
 function listMAction(listId, action, confirmation, noselectionhelp) {
 	var form = document.forms[listId + '-form'];
 	var count = 0;
@@ -74,6 +133,13 @@ function listMAction(listId, action, confirmation, noselectionhelp) {
 	submitForm(form);
 }
 
+/**
+ * Executes a list search action.<p>
+ *
+ * @param listId the id of the list
+ * @param action the id of the search action to execute
+ * @param confirmation a confirmation text
+ */
 function listSearchAction(listId, action, confirmation) {
 	var form = document.forms[listId + '-form'];
 	if (confirmation!='null' && confirmation!='') {
@@ -91,6 +157,12 @@ function listSearchAction(listId, action, confirmation) {
 	return;
 }
 
+/**
+ * Sorts a list column.<p>
+ *
+ * @param listId the id of the list
+ * @param column the id of the column to sort
+ */
 function listSort(listId, column) {
 	var form = document.forms[listId + '-form'];
 	form.action.value = 'listsort';
@@ -98,6 +170,12 @@ function listSort(listId, column) {
 	submitForm(form);
 }
 
+/**
+ * Sets the visible page of a list.<p>
+ *
+ * @param listId the id of the list
+ * @param page the page number to set
+ */
 function listSetPage(listId, page) {
 	var form = document.forms[listId + '-form'];
 	form.action.value = 'listselectpage';

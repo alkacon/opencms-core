@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/general.js,v $
- * Date   : $Date: 2005/06/14 12:00:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -144,6 +144,31 @@ function hMH(obj_id) {
          hideHelp(obj_id);
       } else {
          setContextHelp('');
+      }
+   } catch(e) {
+      // ignore
+   }
+}
+
+/*
+ * Shows the context help when having one helptext for several buttons.
+ * If framed, it will be shown in the menu frame;
+ * if not, as a help ballon.
+ * The obj_id argument should be the id of a div tag, where the ballon while be displayed.
+ * The help_id argument should be the id of a div tag, which contains the help text.
+ */
+function sMHS(obj_id, help_id) {
+   try {
+      if (!isFramed() && !parent.parent.admin_content) {
+         showHelpX(obj_id, help_id);
+      } else {
+         try {
+            var writezone = document.getElementById('help' + help_id);
+            context = writezone.firstChild.nodeValue;
+         } catch(e) {
+            context = obj_id;
+         }
+         setContextHelp(context);
       }
    } catch(e) {
       // ignore

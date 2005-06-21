@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/Messages.java,v $
- * Date   : $Date: 2005/06/10 15:14:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -202,10 +202,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULES_LABEL_RESTYPES_DETAIL_0 = "GUI_MODULES_LABEL_RESTYPES_DETAIL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_LIST_ACTION_DELETE_CONF_1 = "GUI_MODULES_LIST_ACTION_DELETE_CONF_1";
+    public static final String GUI_MODULES_LIST_ACTION_DELETE_CONF_0 = "GUI_MODULES_LIST_ACTION_DELETE_CONF_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_LIST_ACTION_DELETE_HELP_1 = "GUI_MODULES_LIST_ACTION_DELETE_HELP_1";
+    public static final String GUI_MODULES_LIST_ACTION_DELETE_HELP_0 = "GUI_MODULES_LIST_ACTION_DELETE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LIST_ACTION_DELETE_NAME_0 = "GUI_MODULES_LIST_ACTION_DELETE_NAME_0";
@@ -217,10 +217,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULES_LIST_ACTION_EDIT_NAME_0 = "GUI_MODULES_LIST_ACTION_EDIT_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_LIST_ACTION_EXPORT_CONF_1 = "GUI_MODULES_LIST_ACTION_EXPORT_CONF_1";
+    public static final String GUI_MODULES_LIST_ACTION_EXPORT_CONF_0 = "GUI_MODULES_LIST_ACTION_EXPORT_CONF_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODULES_LIST_ACTION_EXPORT_HELP_1 = "GUI_MODULES_LIST_ACTION_EXPORT_HELP_1";
+    public static final String GUI_MODULES_LIST_ACTION_EXPORT_HELP_0 = "GUI_MODULES_LIST_ACTION_EXPORT_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LIST_ACTION_EXPORT_NAME_0 = "GUI_MODULES_LIST_ACTION_EXPORT_NAME_0";
@@ -302,10 +302,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DEPENDENCIES_LIST_COLS_VERSION_0 = "GUI_DEPENDENCIES_LIST_COLS_VERSION_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEPENDENCIES_LIST_ACTION_DELETE_CONF_1 = "GUI_DEPENDENCIES_LIST_ACTION_DELETE_CONF_1";
+    public static final String GUI_DEPENDENCIES_LIST_ACTION_DELETE_CONF_0 = "GUI_DEPENDENCIES_LIST_ACTION_DELETE_CONF_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DEPENDENCIES_LIST_ACTION_DELETE_HELP_1 = "GUI_DEPENDENCIES_LIST_ACTION_DELETE_HELP_1";
+    public static final String GUI_DEPENDENCIES_LIST_ACTION_DELETE_HELP_0 = "GUI_DEPENDENCIES_LIST_ACTION_DELETE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEPENDENCIES_LIST_ACTION_DELETE_NAME_0 = "GUI_DEPENDENCIES_LIST_ACTION_DELETE_NAME_0";
@@ -373,10 +373,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPORTPOINTS_LIST_COLS_SERVERDESTINATION_0 = "GUI_EXPORTPOINTS_LIST_COLS_SERVERDESTINATION_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EXPORTPOINTS_LIST_ACTION_DELETE_CONF_1 = "GUI_EXPORTPOINTS_LIST_ACTION_DELETE_CONF_1";
+    public static final String GUI_EXPORTPOINTS_LIST_ACTION_DELETE_CONF_0 = "GUI_EXPORTPOINTS_LIST_ACTION_DELETE_CONF_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EXPORTPOINTS_LIST_ACTION_DELETE_HELP_1 = "GUI_EXPORTPOINTS_LIST_ACTION_DELETE_HELP_1";
+    public static final String GUI_EXPORTPOINTS_LIST_ACTION_DELETE_HELP_0 = "GUI_EXPORTPOINTS_LIST_ACTION_DELETE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPORTPOINTS_LIST_ACTION_DELETE_NAME_0 = "GUI_EXPORTPOINTS_LIST_ACTION_DELETE_NAME_0";

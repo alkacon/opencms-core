@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsList.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Module exportpoint view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsExportpointsList extends A_CmsListDialog {
@@ -281,13 +281,12 @@ public class CmsExportpointsList extends A_CmsListDialog {
         delCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         // direct action: delete module
         CmsListDirectAction delDependency = new CmsListDirectAction(LIST_ID, LIST_ACTION_DELETE);
-        delDependency.setColumn(LIST_COLUMN_URI);
         delDependency.setName(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_ACTION_DELETE_NAME_0));
         delDependency.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_EXPORTPOINTS_LIST_ACTION_DELETE_CONF_1));
+            Messages.GUI_EXPORTPOINTS_LIST_ACTION_DELETE_CONF_0));
         delDependency.setIconPath(ICON_DELETE);
         delDependency.setEnabled(true);
-        delDependency.setHelpText(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_ACTION_DELETE_HELP_1));
+        delDependency.setHelpText(Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_ACTION_DELETE_HELP_0));
         delCol.addDirectAction(delDependency);
         metadata.addColumn(delCol);
 

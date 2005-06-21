@@ -3,18 +3,11 @@
 <%
 	// initialize the widget dialog
 	CmsUserOverviewDialog wpWidget = new CmsUserOverviewDialog(pageContext, request, response);
-
 	// perform the widget actions	
 	wpWidget.displayDialog();
 
 	// initialize the list dialog
     CmsShowUserGroupsList wpList = new CmsShowUserGroupsList(pageContext, request, response);
-%>
-<%= wpList.getList().listJs() %>
-<%
 	// perform the list actions	
 	wpList.displayDialog();
 %>
-<%=wpWidget.dialogEnd()%>
-<%=wpWidget.bodyEnd()%>
-<%=wpWidget.htmlEnd()%>

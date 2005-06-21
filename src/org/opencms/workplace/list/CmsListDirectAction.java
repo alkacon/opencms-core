@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDirectAction.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,16 +43,16 @@ import java.text.MessageFormat;
  * Default implementation of a direct action for a html list column.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDirectAction {
 
-    /** List item. */
-    private CmsListItem m_listItem;
-
     /** Id of the Column to use. */
     private String m_columnId;
+
+    /** List item. */
+    private CmsListItem m_listItem;
 
     /**
      * Default Constructor.<p>
@@ -106,34 +106,54 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
                 getColumn())});
             helpText = new MessageFormat(helpText, wp.getLocale()).format(new Object[] {getItem().get(getColumn())});
         }
-        String onClic = "listAction('"
-            + getListId()
-            + "', '"
-            + getId()
-            + "', '"
-            + CmsStringUtil.escapeJavaScript(confirmationMessage)
-            + "', '"
-            + CmsStringUtil.escapeJavaScript(getItem().getId())
-            + "');";
+        StringBuffer onClic = new StringBuffer(128);
+        onClic.append("listAction('");
+        onClic.append(getListId());
+        onClic.append("', '");
+        onClic.append(getId());
+        onClic.append("', '");
+        if (getColumn() == null
+            || getItem().get(getColumn()) == null
+            || confirmationMessage.equals(new MessageFormat(confirmationMessage, wp.getLocale()).format(new Object[] {""}))) {
+            onClic.append("conf" + getId());
+        } else {
+            onClic.append(CmsStringUtil.escapeJavaScript(confirmationMessage));
+        }
+        onClic.append("', '");
+        onClic.append(CmsStringUtil.escapeJavaScript(getItem().getId()));
+        onClic.append("');");
 
+        if (getColumn() == null
+            || getItem().get(getColumn()) == null
+            || helpText.equals(new MessageFormat(helpText, wp.getLocale()).format(new Object[] {""}))) {
+            return A_CmsHtmlIconButton.defaultButtonHtml(
+                CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY,
+                id,
+                getId(),
+                getName().key(wp.getLocale()),
+                helpText,
+                isEnabled(),
+                getIconPath(),
+                onClic.toString(),
+                true);
+        }
         return A_CmsHtmlIconButton.defaultButtonHtml(CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY, id, getName().key(
-            wp.getLocale()), helpText, isEnabled(), getIconPath(), onClic);
+            wp.getLocale()), helpText, isEnabled(), getIconPath(), onClic.toString());
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsListDirectAction#getItem()
+     * @see org.opencms.workplace.list.I_CmsListDirectAction#confirmationTextHtml(org.opencms.workplace.CmsWorkplace)
      */
-    public CmsListItem getItem() {
+    public String confirmationTextHtml(CmsWorkplace wp) {
 
-        return m_listItem;
-    }
-
-    /**
-     * @see org.opencms.workplace.list.I_CmsListDirectAction#setItem(org.opencms.workplace.list.CmsListItem)
-     */
-    public void setItem(CmsListItem item) {
-
-        m_listItem = item;
+        StringBuffer html = new StringBuffer(512);
+        String cm = getConfirmationMessage().key(wp.getLocale());
+        String confMessage = new MessageFormat(cm, wp.getLocale()).format(new Object[] {""});
+        if (getColumn() == null
+            || confMessage.equals(new MessageFormat(cm, wp.getLocale()).format(new Object[] {getItem().get(getColumn())}))) {
+            html.append(A_CmsListAction.defaultConfirmationHtml(getId(), confMessage));
+        }
+        return html.toString();
     }
 
     /**
@@ -145,11 +165,42 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
     }
 
     /**
+     * @see org.opencms.workplace.list.I_CmsListDirectAction#getItem()
+     */
+    public CmsListItem getItem() {
+
+        return m_listItem;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsListDirectAction#helpTextHtml(org.opencms.workplace.CmsWorkplace)
+     */
+    public String helpTextHtml(CmsWorkplace wp) {
+
+        StringBuffer html = new StringBuffer(512);
+        String ht = getHelpText().key(wp.getLocale());
+        String helptext = new MessageFormat(ht, wp.getLocale()).format(new Object[] {""});
+        if (getColumn() == null
+            || helptext.equals(new MessageFormat(ht, wp.getLocale()).format(new Object[] {getItem().get(getColumn())}))) {
+            html.append(A_CmsHtmlIconButton.defaultHelpHtml(getId(), helptext));
+        }
+        return html.toString();
+    }
+
+    /**
      * @see org.opencms.workplace.list.I_CmsListDirectAction#setColumn(java.lang.String)
      */
     public void setColumn(String columnId) {
 
         m_columnId = columnId;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsListDirectAction#setItem(org.opencms.workplace.list.CmsListItem)
+     */
+    public void setItem(CmsListItem item) {
+
+        m_listItem = item;
     }
 
 }

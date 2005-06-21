@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/19 10:57:05 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * @since 5.9.1
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
@@ -1069,9 +1069,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         StringBuffer result = new StringBuffer(2048);
         result.append(defaultActionHtmlStart());
         result.append(defaultActionHtmlContent());
-        result.append(dialogEnd());
-        result.append(bodyEnd());
-        result.append(htmlEnd());
+        result.append(defaultActionHtmlEnd());
         return result.toString();
     }
 
@@ -1096,6 +1094,20 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         }
         result.append("</form>\n");
         result.append(getWidgetHtmlEnd());
+        return result.toString();
+    }
+
+    /**
+     * Generates the dialog ending html code.<p>
+     * 
+     * @return html code
+     */
+    protected String defaultActionHtmlEnd() {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append(dialogEnd());
+        result.append(bodyEnd());
+        result.append(htmlEnd());
         return result.toString();
     }
 

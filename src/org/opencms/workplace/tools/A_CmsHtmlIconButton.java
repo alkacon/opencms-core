@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,14 +39,14 @@ import org.opencms.workplace.CmsWorkplace;
  * Default skeleton for an html icon button.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
 
     /** Constant for an empty message. */
     public static final CmsMessageContainer C_EMPTY_MESSAGE = Messages.get().container(Messages.GUI_EMPTY_MESSAGE_0);
-    
+
     /** Enabled flag. */
     private boolean m_enabled = true;
 
@@ -57,7 +57,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     private String m_iconPath;
 
     /** unique id. */
-    private String m_id;
+    protected String m_id;
 
     /** Display name. */
     private CmsMessageContainer m_name;
@@ -96,14 +96,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     }
 
     /**
-     * Generates a default html code for big icon buttons.<p>
-     * 
-     * If the name is empty only the icon is displayed.<br>
-     * If the iconPath is empty only the name is displayed.<br>
-     * If the onClic is empty no link is generated.<br>
-     * If the helptext is empty no mouse events are generated.<br>
-     * If not enabled be sure to take an according helptext.
-     * <p>
+     * Generates a default html code for icon buttons.<p>
      * 
      * @param style the style of the button
      * @param id the id
@@ -124,12 +117,41 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String iconPath,
         String onClick) {
 
+        return defaultButtonHtml(style, id, id, name, helpText, enabled, iconPath, onClick, false);
+    }
+
+    /**
+     * Generates a default html code for big icon buttons.<p>
+     * 
+     * @param style the style of the button
+     * @param id the id
+     * @param helpId the id of the helptext div tag
+     * @param name the name, if empty only the icon is displayed
+     * @param helpText the help text, if empty no mouse events are generated
+     * @param enabled if enabled or not, if not set be sure to take an according helptext
+     * @param iconPath the path to the icon, if empty only the name is displayed
+     * @param onClick the js code to execute, if empty no link is generated
+     * @param singleHelp if set, no helptext is written, you have to use the defaultHelpHtml() method later
+     * 
+     * @return html code
+     */
+    public static String defaultButtonHtml(
+        CmsHtmlIconButtonStyleEnum style,
+        String id,
+        String helpId,
+        String name,
+        String helpText,
+        boolean enabled,
+        String iconPath,
+        String onClick,
+        boolean singleHelp) {
+
         StringBuffer html = new StringBuffer(1024);
         if (style == CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
             html.append("<div class='bigLink' id='img");
             html.append(id);
             html.append("'>\n");
-        } 
+        }
         html.append("\t<span class=\"link");
         if (enabled) {
             html.append("\"");
@@ -137,12 +159,24 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
             html.append(" linkdisabled\"");
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
-            html.append(" onmouseover=\"sMH('");
-            html.append(id);
-            html.append("');\" onmouseout=\"hMH('");
-            html.append(id);
-            html.append("');\"");
-        } 
+            if (!singleHelp) {
+                html.append(" onMouseOver=\"sMH('");
+                html.append(id);
+                html.append("');\" onMouseOut=\"hMH('");
+                html.append(id);
+                html.append("');\"");
+            } else {
+                html.append(" onMouseOver=\"sMHS('");
+                html.append(id);
+                html.append("', '");
+                html.append(helpId);
+                html.append("');\" onMouseOut=\"hMH('");
+                html.append(id);
+                html.append("', '");
+                html.append(helpId);
+                html.append("');\"");
+            }
+        }
         if (enabled && CmsStringUtil.isNotEmptyOrWhitespaceOnly(onClick)) {
             html.append(" onClick=\"");
             html.append(onClick);
@@ -188,13 +222,36 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         if (style == CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
             html.append("</div>\n");
         }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText) && !singleHelp) {
+            html.append("<div class='help' id='help");
+            html.append(helpId);
+            html.append("' onMouseOver=\"sMH('");
+            html.append(id);
+            html.append("');\" onMouseOut=\"hMH('");
+            html.append(id);
+            html.append("');\">");
+            html.append(helpText);
+            html.append("</div>\n");
+        }
+        return html.toString();
+    }
+
+    /**
+     * Generates html for the helptext when having one helptext for several buttons.<p>
+     * 
+     * @param helpId the id of the help text
+     * @param helpText the help text
+     * 
+     * @return html code
+     */
+    public static String defaultHelpHtml(String helpId, String helpText) {
+
+        StringBuffer html = new StringBuffer(1024);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
             html.append("<div class='help' id='help");
-            html.append(id);
-            html.append("' onmouseover=\"sMH('");
-            html.append(id);
-            html.append("');\" onmouseout=\"hMH('");
-            html.append(id);
+            html.append(helpId);
+            html.append("' onMouseOut=\"hMH('");
+            html.append(helpId);
             html.append("');\">");
             html.append(helpText);
             html.append("</div>\n");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsGroupDisabledStateAction.java,v $
- * Date   : $Date: 2005/06/08 16:44:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,10 +40,10 @@ import org.opencms.workplace.list.I_CmsListDirectAction;
 import java.util.List;
 
 /**
- * Adds/Removes a user to/from a role.<p>
+ * Show diferent states depending on user direct/indirect group assignment.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsGroupDisabledStateAction extends A_CmsListTwoStatesAction {
@@ -53,14 +53,24 @@ public class CmsGroupDisabledStateAction extends A_CmsListTwoStatesAction {
     
     /**
      * Default Constructor.<p>
-     * 
      * @param listId the id of the associated list
      * @param id unique id
      * @param cms the cms context
+     * @param userName the name of a valid opencms user
      */
-    protected CmsGroupDisabledStateAction(String listId, String id, CmsObject cms) {
+    protected CmsGroupDisabledStateAction(String listId, String id, CmsObject cms, String userName) {
 
         super(listId, id, cms);
+        setUserName(userName);
+        m_id = id;
+    }
+        
+    /**
+     * @see org.opencms.workplace.list.A_CmsListToggleAction#isEnabled()
+     */
+    public boolean isEnabled() {
+
+        return false;
     }
     
     
@@ -69,16 +79,7 @@ public class CmsGroupDisabledStateAction extends A_CmsListTwoStatesAction {
      */
     public String getId() {
 
-        // needed to avoid calling the <code>{@link selectAction()}</code> method while setting the right username
-        return getFirstAction().getId();
-    }
-    
-    /**
-     * @see org.opencms.workplace.list.A_CmsListToggleAction#isEnabled()
-     */
-    public boolean isEnabled() {
-
-        return false;
+        return m_id;
     }
     
     /**

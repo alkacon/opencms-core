@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListAction.java,v $
- * Date   : $Date: 2005/05/20 16:55:03 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
  * The default skeleton for a list action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_CmsListAction {
@@ -102,6 +102,26 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
         setIconPath(iconPath);
         setConfirmationMessage(confirmationMessage);
     }
+    
+    /**
+     * Generates html for the confirmation message when having one confirmation message
+     * for several actions.<p>
+     * 
+     * @param confId the id of the confirmation message
+     * @param confText the confirmation message
+     * 
+     * @return html code
+     */
+    public static String defaultConfirmationHtml(String confId, String confText) {
+
+        StringBuffer html = new StringBuffer(1024);
+        html.append("<div class='hide' id='conf");
+        html.append(confId);
+        html.append("'>");
+        html.append(CmsStringUtil.isEmptyOrWhitespaceOnly(confText)?"null":confText);
+        html.append("</div>\n");
+        return html.toString();
+    }    
 
     /**
      * @see org.opencms.workplace.list.I_CmsListAction#getConfirmationMessage()

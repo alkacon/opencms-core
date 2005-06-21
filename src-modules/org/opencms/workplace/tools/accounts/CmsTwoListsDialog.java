@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsTwoListsDialog.java,v $
- * Date   : $Date: 2005/06/20 12:12:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.workplace.list.CmsTwoListsDialogBuilder;
  * A <code>CmsTwoListsDialogBuilder</code> with no starting html for previous widget dialog display.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsTwoListsDialog extends CmsTwoListsDialogBuilder {
@@ -53,13 +53,12 @@ public class CmsTwoListsDialog extends CmsTwoListsDialogBuilder {
 
         super(wp1, wp2);
     }
-
     
     /**
      * @see org.opencms.workplace.list.CmsTwoListsDialogBuilder#defaultActionHtmlStart()
      */
     public String defaultActionHtmlStart() {
 
-        return getActiveWp().getList().listJs();
+        return getActiveWp().getList().listJs(getActiveWp().getLocale());
     }
 }

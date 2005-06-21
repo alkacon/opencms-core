@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Main module management view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsModulesList extends A_CmsListDialog {
@@ -355,12 +355,11 @@ public class CmsModulesList extends A_CmsListDialog {
         expCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         // direct action: export module
         CmsListDirectAction expModule = new CmsListDirectAction(LIST_ID, LIST_ACTION_EXPORT);
-        expModule.setColumn(LIST_COLUMN_NICENAME);
         expModule.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EXPORT_NAME_0));
-        expModule.setConfirmationMessage(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EXPORT_CONF_1));
+        expModule.setConfirmationMessage(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EXPORT_CONF_0));
         expModule.setIconPath(PATH_BUTTONS + "export.png");
         expModule.setEnabled(true);
-        expModule.setHelpText(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EXPORT_HELP_1));
+        expModule.setHelpText(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EXPORT_HELP_0));
         expCol.addDirectAction(expModule);
         metadata.addColumn(expCol);
 
@@ -374,10 +373,10 @@ public class CmsModulesList extends A_CmsListDialog {
         CmsListDirectAction delModule = new CmsListDirectAction(LIST_ID, LIST_ACTION_DELETE);
         delModule.setColumn(LIST_COLUMN_NICENAME);
         delModule.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_DELETE_NAME_0));
-        delModule.setConfirmationMessage(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_DELETE_CONF_1));
+        delModule.setConfirmationMessage(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_DELETE_CONF_0));
         delModule.setIconPath(ICON_DELETE);
         delModule.setEnabled(true);
-        delModule.setHelpText(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_DELETE_HELP_1));
+        delModule.setHelpText(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_DELETE_HELP_0));
         delCol.addDirectAction(delModule);
         metadata.addColumn(delCol);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/06/10 15:58:06 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.7.3
  */
 public class CmsHtmlList {
@@ -449,15 +449,21 @@ public class CmsHtmlList {
 
     /**
      * Generate the need js code for the list.<p>
+     * @param locale TODO:
      * 
      * @return js code
      */
-    public String listJs() {
+    public String listJs(Locale locale) {
 
         StringBuffer js = new StringBuffer(1024);
         js.append("<script type='text/javascript' src='");
         js.append(CmsWorkplace.getSkinUri());
         js.append("admin/javascript/list.js'></script>\n");
+        js.append("<script type='text/javascript'>\n");
+        js.append("\tvar noSelHelp = '");
+        js.append(CmsStringUtil.escapeJavaScript(Messages.get().key(locale, Messages.GUI_LIST_ACTION_NO_SELECTION_0, null)));
+        js.append("';\n");
+        js.append("</script>\n");
         return js.toString();
     }
 
@@ -839,6 +845,27 @@ public class CmsHtmlList {
     private String htmlBegin(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
+        // help & confirmation text for actions if needed
+        if (m_visibleItems!=null && !m_visibleItems.isEmpty()) {
+            Iterator cols = getMetadata().getListColumns().iterator();
+            while (cols.hasNext()) {
+                CmsListColumnDefinition col = (CmsListColumnDefinition)cols.next();
+                Iterator actions = col.getDirectActions().iterator();
+                while (actions.hasNext()) {
+                    I_CmsListDirectAction action = (I_CmsListDirectAction)actions.next();
+                    action.setItem((CmsListItem)m_visibleItems.get(0));
+                    html.append(action.helpTextHtml(wp));
+                    html.append(action.confirmationTextHtml(wp));
+                }
+                I_CmsListDirectAction defAction = col.getDefaultAction();
+                if (defAction!=null) {
+                    defAction.setItem((CmsListItem)m_visibleItems.get(0));
+                    html.append(defAction.helpTextHtml(wp));
+                    html.append(defAction.confirmationTextHtml(wp));
+                }
+            }
+        }
+        // start list code
         html.append("<div class='listArea'>\n");
         html.append(((CmsDialog)wp).dialogBlock(CmsWorkplace.HTML_START, m_name.key(wp.getLocale()), false));
         html.append("\t\t<table width='100%' cellspacing='0' cellpadding='0' border='0'>\n");

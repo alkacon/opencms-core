@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupStateAction.java,v $
- * Date   : $Date: 2005/06/20 12:12:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,26 +35,29 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListDefaultAction;
+import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 /**
- * Adds/Removes a user to/from a role.<p>
+ * Shows direct/indirect assigned groups and enabled/disabled a remove action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsGroupStateAction extends CmsListDefaultAction {
 
-    /** The user name. */
-    private String m_userName;
-    
     /** The cms context. */
     private CmsObject m_cms;
-    
+
+    /** The user name. */
+    private String m_userName;
+
     /**
      * Default Constructor.<p>
      * 
@@ -70,6 +73,41 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
         m_cms = cms;
     }
 
+    /**
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getHelpText()
+     */
+    public CmsMessageContainer getHelpText() {
+
+        if (isEnabled()) {
+            return super.getHelpText();
+        }
+        return Messages.get().container(Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0);
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
+     */
+    public String getIconPath() {
+
+        if (isEnabled()) {
+            return super.getIconPath();
+        } else if (super.getIconPath() == null) {
+            return null;
+        } else {
+            return A_CmsListDialog.ICON_DISABLED;
+        }
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getId()
+     */
+    public String getId() {
+
+        if (!isEnabled()) {
+            return "x" + super.getId();
+        }
+        return super.getId();
+    }
 
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getName()
@@ -81,7 +119,31 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
         }
         return super.getName();
     }
-    
+
+    /**
+     * @see org.opencms.workplace.list.CmsListDirectAction#helpTextHtml(org.opencms.workplace.CmsWorkplace)
+     */
+    public String helpTextHtml(CmsWorkplace wp) {
+
+        StringBuffer html = new StringBuffer(512);
+        // enabled
+        String ht = super.getHelpText().key(wp.getLocale());
+        String helptext = new MessageFormat(ht, wp.getLocale()).format(new Object[] {""});
+        if (getColumn() == null
+            || helptext.equals(new MessageFormat(ht, wp.getLocale()).format(new Object[] {getItem().get(getColumn())}))) {
+            html.append(A_CmsHtmlIconButton.defaultHelpHtml(getId(), helptext));
+        }
+        // disabled
+        String ht2 = Messages.get().key(wp.getLocale(), Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0, null);
+        String helptext2 = new MessageFormat(ht2, wp.getLocale()).format(new Object[] {""});
+        if (getColumn() == null
+            || helptext2.equals(new MessageFormat(ht2, wp.getLocale()).format(new Object[] {getItem().get(getColumn())}))) {
+            html.append(A_CmsHtmlIconButton.defaultHelpHtml("x" + getId(), helptext2));
+        }
+        return html.toString();
+
+    }
+
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isEnabled()
      */
@@ -95,36 +157,11 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
                 return dGroups.contains(group);
             } catch (Exception e) {
                 throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_USERGROUPS_DIRECT_GROUP_1, m_userName), e);
+                    Messages.ERR_USERGROUPS_DIRECT_GROUP_1,
+                    m_userName), e);
             }
         }
         return super.isEnabled();
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getHelpText()
-     */
-    public CmsMessageContainer getHelpText() {
-
-        if (isEnabled()) {
-            return super.getHelpText();
-        }
-        return Messages.get().container(Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0);
-    }
-
-
-    /**
-     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
-     */
-    public String getIconPath() {
-
-        if (isEnabled()) {
-            return super.getIconPath();
-        } else if (super.getIconPath()==null) {
-            return null;
-        } else {
-            return A_CmsListDialog.ICON_DISABLED;
-        }
     }
 
     /**

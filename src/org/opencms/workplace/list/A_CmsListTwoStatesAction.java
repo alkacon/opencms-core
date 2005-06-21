@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsListTwoStatesAction.java,v $
- * Date   : $Date: 2005/05/18 13:19:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.list;
 
 import org.opencms.file.CmsObject;
+import org.opencms.workplace.CmsWorkplace;
 
 /**
  * Abstract implementation of a two state action for a html list.<p>
@@ -40,7 +41,7 @@ import org.opencms.file.CmsObject;
  * where you can use the <code>{@link #getCms()}</code> to access the cms context.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public abstract class A_CmsListTwoStatesAction extends A_CmsListToggleAction {
@@ -135,5 +136,21 @@ public abstract class A_CmsListTwoStatesAction extends A_CmsListToggleAction {
     public void setSecondAction(I_CmsListDirectAction secondAction) {
 
         m_secondAction = secondAction;
+    }
+    
+    /**
+     * @see org.opencms.workplace.list.CmsListDirectAction#helpTextHtml(org.opencms.workplace.CmsWorkplace)
+     */
+    public String helpTextHtml(CmsWorkplace wp) {
+
+        return m_firstAction.helpTextHtml(wp) + m_secondAction.helpTextHtml(wp);
+    }
+    
+    /**
+     * @see org.opencms.workplace.list.CmsListDirectAction#confirmationTextHtml(org.opencms.workplace.CmsWorkplace)
+     */
+    public String confirmationTextHtml(CmsWorkplace wp) {
+
+        return m_firstAction.confirmationTextHtml(wp) + m_secondAction.confirmationTextHtml(wp);
     }
 }

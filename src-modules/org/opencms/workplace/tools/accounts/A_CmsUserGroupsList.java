@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/20 12:12:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/21 09:37:55 $
+ * Version: $Revision: 1.7 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Generalized user groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
@@ -246,21 +246,22 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         iconCol.setSorteable(false);
         if (!getListId().equals(CmsNotUserGroupsList.LIST_ID)) {
             // state action
+            CmsGroupDisabledStateAction iconAction = new CmsGroupDisabledStateAction(
+                getListId(),
+                LIST_ACTION_ICON,
+                getCms(),
+                getParamUsername());
+            // adds a direct group icon
             CmsListDirectAction dirAction = new CmsListDirectAction(getListId(), LIST_ACTION_ICON);
             dirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_NAME_0));
             dirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_HELP_0));
             dirAction.setIconPath(CmsUsersList.PATH_BUTTONS + "group.png");
-            // adds a direct group icon
+            iconAction.setFirstAction(dirAction);
+            // adds an indirect group icon
             CmsListDirectAction indirAction = new CmsListDirectAction(getListId(), LIST_ACTION_ICON);
             indirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_NAME_0));
             indirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_HELP_0));
             indirAction.setIconPath(CmsUsersList.PATH_BUTTONS + "group_indirect.png");
-            // adds an indirect group icon
-            CmsGroupDisabledStateAction iconAction = new CmsGroupDisabledStateAction(
-                getListId(),
-                LIST_ACTION_ICON,
-                getCms());
-            iconAction.setFirstAction(dirAction);
             iconAction.setSecondAction(indirAction);
             iconCol.addDirectAction(iconAction);
         } else {
