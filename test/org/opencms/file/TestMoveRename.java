@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2005/05/31 14:38:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/21 15:52:11 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
   
@@ -127,7 +127,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         // assert lock state
         assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
         // "internal" property must have been added
-        assertPropertyNew(cms, source, new CmsProperty(I_CmsConstants.C_PROPERTY_INTERNAL, 
+        assertPropertyNew(cms, source, new CmsProperty(CmsPropertyDefinition.PROPERTY_INTERNAL, 
             String.valueOf(cms.getRequestContext().currentProject().getId()), null));
         // one sibling must have been added
         assertSiblingCountIncremented(cms, source, 1);
@@ -189,7 +189,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         // assert lock state
         assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
         // "internal" property must have been added
-        assertPropertyNew(cms, source, new CmsProperty(I_CmsConstants.C_PROPERTY_INTERNAL, 
+        assertPropertyNew(cms, source, new CmsProperty(CmsPropertyDefinition.PROPERTY_INTERNAL, 
             String.valueOf(cms.getRequestContext().currentProject().getId()), null));
         // one sibling must have been added
         assertSiblingCountIncremented(cms, source, 1);
@@ -368,7 +368,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         // assert lock state
         assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
         // "internal" property must have been added
-        assertPropertyNew(cms, source, new CmsProperty(I_CmsConstants.C_PROPERTY_INTERNAL, 
+        assertPropertyNew(cms, source, new CmsProperty(CmsPropertyDefinition.PROPERTY_INTERNAL, 
             String.valueOf(cms.getRequestContext().currentProject().getId()), null));
         // one sibling must have been added
         assertSiblingCountIncremented(cms, source, 1);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPropertyDefinition.java,v $
- * Date   : $Date: 2005/03/29 18:03:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/21 15:52:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,8 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -48,7 +47,7 @@ import junit.framework.TestSuite;
  * "readAllPropertyDefintions" methods of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestPropertyDefinition extends OpenCmsTestCase {
 
@@ -255,9 +254,9 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         List result;
         
-        result = cms.readResourcesWithProperty(I_CmsConstants.C_PROPERTY_TITLE);
+        result = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_TITLE);
         assertEquals(63, result.size());
-        result = cms.readResourcesWithProperty(I_CmsConstants.C_PROPERTY_TEMPLATE);
+        result = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE);
         assertEquals(25, result.size());
     }
     

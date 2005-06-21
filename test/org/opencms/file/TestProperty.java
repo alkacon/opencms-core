@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2005/04/29 16:02:25 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/21 15:52:11 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -404,11 +404,11 @@ public class TestProperty extends OpenCmsTestCase {
         CmsResource res = cms.readResource(typesUri);
         // now set "exportname" property and try again
         cms.lockResource(typesUri);
-        cms.writePropertyObject(typesUri, new CmsProperty(I_CmsConstants.C_PROPERTY_EXPORTNAME, "myfolder", null));       
+        cms.writePropertyObject(typesUri, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "myfolder", null));       
         // publish the changes
         cms.publishProject(); 
         
-        List result = cms.readResourcesWithProperty(I_CmsConstants.C_PROPERTY_EXPORTNAME);
+        List result = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
         assertTrue(result.contains(res));
     }  
     
@@ -439,16 +439,16 @@ public class TestProperty extends OpenCmsTestCase {
         assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser()); 
                
         CmsProperty property1, property2;
-        property1 = new CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, "Test title", null);
-        property2 = cms.readPropertyObject(resourcename, I_CmsConstants.C_PROPERTY_TITLE, false);
+        property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Test title", null);
+        property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
         assertTrue(property1.isIdentical(property2));        
         
         property1 = new CmsProperty("template-elements", "/system/modules/org.opencms.frontend.templateone.form/pages/form.html", null);
         property2 = cms.readPropertyObject(resourcename, "template-elements", false);
         assertTrue(property1.isIdentical(property2));        
 
-        property1 = new CmsProperty(I_CmsConstants.C_PROPERTY_DESCRIPTION, null, "Admin_/folder1/article_test.html_/sites/default/folder1/article_test.html");
-        property2 = cms.readPropertyObject(resourcename, I_CmsConstants.C_PROPERTY_DESCRIPTION, false);
+        property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, null, "Admin_/folder1/article_test.html_/sites/default/folder1/article_test.html");
+        property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
         assertTrue(property1.isIdentical(property2));        
         
         // publish the project

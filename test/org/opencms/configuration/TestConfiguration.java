@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
- * Date   : $Date: 2005/04/16 06:05:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/21 15:52:11 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,6 +66,7 @@ public class TestConfiguration extends OpenCmsTestCase {
     /**
      * Loads the configuration using the configuration manager,
      * if anyting goes wrong an exception is thrown and the test fails.<p>
+     * 
      * 
      * @throws Exception if something goes wrong
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/21 15:52:11 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TestLock extends OpenCmsTestCase {
   
@@ -613,7 +613,7 @@ public class TestLock extends OpenCmsTestCase {
 
         needLock = false;
         try {
-            cms.writePropertyObject(source, new CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, "New title", null));
+            cms.writePropertyObject(source, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "New title", null));
         }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
@@ -625,7 +625,7 @@ public class TestLock extends OpenCmsTestCase {
         needLock = false;
         try {
             List properties = new ArrayList();
-            properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, "New title 2", null));
+            properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "New title 2", null));
             cms.writePropertyObjects(source, properties);
         }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
@@ -681,7 +681,7 @@ public class TestLock extends OpenCmsTestCase {
 
         needLock = false;
         try {
-            CmsPermissionSet permissions = new CmsPermissionSet(I_CmsConstants.C_ACCESS_WRITE, I_CmsConstants.C_ACCESS_READ);
+            CmsPermissionSet permissions = new CmsPermissionSet(CmsPermissionSet.PERMISSION_WRITE, CmsPermissionSet.PERMISSION_READ);
             cms.chacc(source, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupAdministrators(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
         }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked

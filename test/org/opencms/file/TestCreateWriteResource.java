@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2005/05/11 11:00:52 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/21 15:52:11 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit tests for the create and import methods.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -547,9 +547,9 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();     
         echo("Testing to import an existing resource as sibling");
 
-        CmsProperty prop1 = new CmsProperty(I_CmsConstants.C_PROPERTY_TITLE, "The title", null);
-        CmsProperty prop2 = new CmsProperty(I_CmsConstants.C_PROPERTY_DESCRIPTION, "The description", null);
-        CmsProperty prop3 = new CmsProperty(I_CmsConstants.C_PROPERTY_KEYWORDS, "The keywords", null);
+        CmsProperty prop1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "The title", null);
+        CmsProperty prop2 = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, "The description", null);
+        CmsProperty prop3 = new CmsProperty(CmsPropertyDefinition.PROPERTY_KEYWORDS, "The keywords", null);
         
         List properties = new ArrayList();
         properties.add(prop1);
