@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2005/06/21 15:07:29 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsThrowable;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -58,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.78 $
+ * @version $Revision: 1.79 $
  * 
  * @since 5.1
  */
@@ -869,72 +868,6 @@ public class CmsDialog extends CmsToolDialog {
             return getDialogRealUri();
         } else {
             return CmsToolManager.linkForToolPath(getJsp(), getCurrentToolPath());
-        }
-    }
-
-    /**
-     * Returns the error message to be displayed.<p>
-     * 
-     * @return the error message to be displayed
-     */
-    public String getErrorMessage() {
-
-        StringBuffer result = new StringBuffer(512);
-        Throwable t = (Throwable)getJsp().getRequest().getAttribute("throwable");
-        // if a localized message is already set as a parameter, append it.
-        if (CmsStringUtil.isNotEmpty(getParamMessage())) {
-            result.append(getParamMessage());
-            result.append("<br><br>").append(key("label.reason")).append(": ");
-        }
-        result.append(getMessage(t));
-        // recursively append all error reasons to the message
-        for (Throwable cause = t.getCause(); cause != null; cause = cause.getCause()) {
-            result.append("<br><br>").append(key("label.reason")).append(": ");
-            result.append(getMessage(cause));
-        }
-        return result.toString().replaceAll("\n", "<br>");
-    }
-
-    /**
-     * Returns the formatted value of the exception.<p>
-     * 
-     * The error stack is used by the common error screen 
-     * that is displayed if an error occurs.<p>
-     * 
-     * @return the formatted value of the errorstack parameter
-     */
-    public String getFormattedErrorstack() {
-
-        String exception = CmsException.getStackTraceAsString(((Throwable)getJsp().getRequest().getAttribute(
-            "throwable")));
-        if (CmsStringUtil.isEmpty(exception)) {
-            return "";
-        } else {
-            exception = CmsStringUtil.escapeJavaScript(exception);
-            exception = CmsStringUtil.substitute(exception, ">", "&gt;");
-            exception = CmsStringUtil.substitute(exception, "<", "&lt;");
-            return "<html><body style='background-color: Window; overflow: scroll;'><pre>"
-                + exception
-                + "</pre></body></html>";
-        }
-    }
-
-    /** 
-     * Returns the localized Message, if the argument is a CmsException, or
-     * the message otherwise.<p>
-     * 
-     * @param t the Throwable to get the message from
-     * 
-     * @return returns the localized Message, if the argument is a CmsException, or
-     * the message otherwise
-     */
-    public String getMessage(Throwable t) {
-
-        if (t instanceof I_CmsThrowable && ((I_CmsThrowable)t).getMessageContainer() != null) {
-            I_CmsThrowable cmsThrowable = (I_CmsThrowable)t;
-            return cmsThrowable.getLocalizedMessage(getLocale());
-        } else {
-            return t.getMessage();
         }
     }
 
