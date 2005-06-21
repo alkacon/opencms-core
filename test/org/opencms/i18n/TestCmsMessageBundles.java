@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2005/06/01 15:09:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/21 15:37:33 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,13 @@
 
 package org.opencms.i18n;
 
+import org.opencms.workplace.CmsWorkplaceMessages;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
@@ -57,6 +60,18 @@ public abstract class TestCmsMessageBundles extends TestCase {
         for (int i = 0; i < bundles.length; i++) {
             doTestBundle(bundles[i]);
         }
+    }
+    
+    /**
+     * Tests if message will be returned in the correct locale.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public final void testLocale() throws Exception {
+
+        CmsMessages messages = new CmsMessages("org.opencms.i18n.messages", Locale.GERMANY);
+        String value = messages.key("LOG_LOCALE_MANAGER_FLUSH_CACHE_1", new Object[]{"TestEvent"});
+        assertEquals("Locale manager leerte die Caches nachdem Event TestEvent empfangen wurde.", value);
     }
 
     /**
