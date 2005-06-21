@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2005/06/21 11:37:28 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.83 $
+ * @version $Revision: 1.84 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -383,8 +383,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             dispatchJsp(controller);
         }
 
-        // remove the controller from the request
-        CmsFlexController.removeController(req);
+        // remove the controller from the request if not forwarding
+        if (!controller.isForwardMode()) {
+            CmsFlexController.removeController(req);
+        }
     }
 
     /**
