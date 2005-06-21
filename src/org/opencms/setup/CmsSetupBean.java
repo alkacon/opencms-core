@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/06/21 11:05:17 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/21 15:05:10 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsShellCommands;
 import org.opencms.main.Messages;
 import org.opencms.main.OpenCms;
-import org.opencms.main.OpenCmsCore;
 import org.opencms.main.OpenCmsServlet;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleDependency;
@@ -90,9 +89,12 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
+
+    /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
+    public static final String HTML_MESSAGE_FILE = "org/opencms/setup/htmlmsg.properties";
 
     /** DB provider constant. */
     public static final String C_GENERIC_PROVIDER = "generic";
@@ -945,7 +947,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         }
         try {
             m_htmlProps = new Properties();
-            m_htmlProps.load(getClass().getClassLoader().getResourceAsStream(OpenCmsCore.HTML_MESSAGE_FILE));
+            m_htmlProps.load(getClass().getClassLoader().getResourceAsStream(HTML_MESSAGE_FILE));
         } catch (Exception e) {
             e.printStackTrace();
             m_errors.add(e.toString());
