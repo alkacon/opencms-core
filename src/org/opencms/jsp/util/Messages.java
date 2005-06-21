@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/Messages.java,v $
- * Date   : $Date: 2005/06/17 09:01:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/21 15:03:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,19 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DETAILS_0 = "GUI_DETAILS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CLOSE_0 = "GUI_CLOSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERROR_0 = "GUI_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REASON_0 = "GUI_REASON_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_COLLECTOR_NOT_FOUND_1 = "ERR_COLLECTOR_NOT_FOUND_1";
-    
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.jsp.util.messages";
