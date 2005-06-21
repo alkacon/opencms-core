@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/06/19 10:57:07 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/21 11:05:17 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.main.I_CmsShellCommands;
 import org.opencms.main.Messages;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
+import org.opencms.main.OpenCmsServlet;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleDependency;
 import org.opencms.module.CmsModuleImportExportHandler;
@@ -89,7 +90,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 
@@ -138,6 +139,9 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     /** Password used for the JDBC connection when the OpenCms database is created. */
     private String m_dbCreatePwd;
 
+    /** The name of the default web application (in web.xml). */
+    private String m_defaultWebApplication;
+
     /** Contains the error messages to be displayed in the setup wizard. */
     private Vector m_errors;
 
@@ -158,6 +162,9 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
 
     /** A map with tokens ${...} to be replaced in SQL scripts. */
     private Map m_replacer;
+
+    /** The servlet mapping (in web.xml). */
+    private String m_servletMapping;
 
     /** List of sorted keys by ranking of all available database server setups (e.g. "mysql", "generic" or "oracle") */
     private List m_sortedDatabaseKeys;
@@ -586,6 +593,18 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         return getExtProperty("defaultContentEncoding");
     }
 
+    /**
+     * Returns the name of the default web application, configured in <code>web.xml</code>.<p>
+     *
+     * By default this is <code>"ROOT"</code>.<p>
+     *
+     * @return the name of the default web application, configured in <code>web.xml</code>
+     */
+    public String getDefaultWebApplication() {
+
+        return m_defaultWebApplication;
+    }
+
     /** 
      * Returns the error messages.<p>
      * 
@@ -703,6 +722,18 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     public String getServerName() {
 
         return getExtProperty("server.name");
+    }
+
+    /**
+     * Returns the OpenCms servlet mapping, configured in <code>web.xml</code>.<p>
+     * 
+     * By default this is <code>"/opencms/*"</code>.<p>
+     * 
+     * @return the OpenCms servlet mapping, configured in <code>web.xml</code>
+     */
+    public String getServletMapping() {
+
+        return m_servletMapping;
     }
 
     /**
@@ -832,22 +863,32 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * Creates a new instance of the setup Bean from a JSP page.<p>
      * 
      * @param pageContext the JSP's page context
-     * @param request the current HTTP request 
      */
-    public void init(PageContext pageContext, HttpServletRequest request) {
+    public void init(PageContext pageContext) {
 
-        init(pageContext.getServletConfig().getServletContext().getRealPath("/"), request.getContextPath().replaceAll(
-            "\\W",
-            ""));
+        // check for OpenCms installation directory path
+        String webAppRfsPath = pageContext.getServletConfig().getServletContext().getRealPath("/");
+
+        // read the the OpenCms servlet mapping from the servlet context parameters
+        String servletMapping = pageContext.getServletContext().getInitParameter(
+            OpenCmsServlet.SERVLET_PARAM_OPEN_CMS_SERVLET);
+
+        // read the the default context name from the servlet context parameters
+        String defaultWebApplication = pageContext.getServletContext().getInitParameter(
+            OpenCmsServlet.SERVLET_PARAM_DEFAULT_WEB_APPLICATION);
+
+        init(webAppRfsPath, servletMapping, defaultWebApplication);
     }
 
     /** 
      * Creates a new instance of the setup Bean.<p>
      * 
      * @param webAppRfsPath path to the OpenCms web application
-     * @param appName the web application name
+     * @param servletMapping the OpenCms servlet mapping
+     * @param defaultWebApplication the name of the default web application
+     * 
      */
-    public void init(String webAppRfsPath, String appName) {
+    public void init(String webAppRfsPath, String servletMapping, String defaultWebApplication) {
 
         try {
             // explicit set to null to overwrite exiting values from session
@@ -860,11 +901,20 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             m_moduleDependencies = null;
             m_sortedDatabaseKeys = null;
 
+            if (servletMapping == null) {
+                servletMapping = "/opencms/*";
+            }
+            if (defaultWebApplication == null) {
+                defaultWebApplication = "ROOT";
+            }
+            m_servletMapping = servletMapping;
+            m_defaultWebApplication = defaultWebApplication;
+
             setWebAppRfsPath(webAppRfsPath);
             m_errors = new Vector();
 
-            if (appName != null) {
-                // workaround for JUnit test cases that have no context
+            if (CmsStringUtil.isNotEmpty(webAppRfsPath)) {
+                // workaround for JUnit test cases, this must not be executed in a test case
                 m_extProperties = loadProperties(m_configRfsPath + "opencms.properties");
                 readDatabaseConfig();
             }

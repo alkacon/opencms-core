@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/05/31 18:57:21 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2005/06/21 11:05:16 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.80 $
+ * @version $Revision: 1.81 $
  * 
  * @since 5.3.5
  */
@@ -597,7 +597,7 @@ public class OpenCmsTestCase extends TestCase {
         setupDatabase();
 
         // create a shell instance
-        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), "${user}@${project}>", null);
+        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
 
         // open the test script 
         File script;
@@ -2629,7 +2629,7 @@ public class OpenCmsTestCase extends TestCase {
 
         m_shell.exit();
 
-        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), "${user}@${project}>", null);
+        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
 
         OpenCmsTestLogAppender.setBreakOnError(true);
     }

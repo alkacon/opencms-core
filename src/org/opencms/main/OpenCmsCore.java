@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.199 $
+ * Date   : $Date: 2005/06/21 11:05:17 $
+ * Version: $Revision: 1.200 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,6 +76,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -86,7 +87,6 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlContentTypeManager;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -127,7 +127,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.199 $
+ * @version $Revision: 1.200 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -998,22 +998,22 @@ public final class OpenCmsCore {
     protected synchronized void initContext(ServletContext context) throws CmsInitException {
 
         // read the the OpenCms servlet mapping from the servlet context parameters
-        String servletMapping = context.getInitParameter("OpenCmsServlet");
+        String servletMapping = context.getInitParameter(OpenCmsServlet.SERVLET_PARAM_OPEN_CMS_SERVLET);
         if (servletMapping == null) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_SERVLET_0));
         }
 
         // check for OpenCms home (base) directory path
-        String webInfPath = context.getInitParameter("OpenCmsHome");
+        String webInfPath = context.getInitParameter(OpenCmsServlet.SERVLET_PARAM_OPEN_CMS_HOME);
         if (CmsStringUtil.isEmpty(webInfPath)) {
-            webInfPath = searchWebInfFolder(context.getRealPath("/"));
+            webInfPath = CmsFileUtil.searchWebInfFolder(context.getRealPath("/"));
             if (CmsStringUtil.isEmpty(webInfPath)) {
                 throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_FOLDER_0));
             }
         }
 
         // read the the default context name from the servlet context parameters
-        String defaultWebApplication = context.getInitParameter("DefaultWebApplication");
+        String defaultWebApplication = context.getInitParameter(OpenCmsServlet.SERVLET_PARAM_DEFAULT_WEB_APPLICATION);
         if (defaultWebApplication == null) {
             // not set in web.xml, so we use "ROOT" which should usually work since it is the (de-facto) standard 
             defaultWebApplication = "ROOT";
@@ -1021,7 +1021,7 @@ public final class OpenCmsCore {
 
         // read the the webapp context name from the servlet context parameters
         // this is needed in case an application server specific deployment descriptor is used to changed the webapp context
-        String webApplicationContext = context.getInitParameter("WebApplicationContext");
+        String webApplicationContext = context.getInitParameter(OpenCmsServlet.SERVLET_PARAM_WEB_APPLICATION_CONTEXT);
 
         // now initialize the system info with the path and mapping information
         getSystemInfo().init(webInfPath, servletMapping, webApplicationContext, defaultWebApplication);
@@ -1248,38 +1248,6 @@ public final class OpenCmsCore {
                 listeners.remove(listener);
             }
         }
-    }
-
-    /**
-     * Searches for the OpenCms web application 'WEB-INF' folder during system startup.<p>
-     * 
-     * @param startFolder the folder where to start searching
-     * @return String the path of the 'WEB-INF' folder in the 'real' file system
-     */
-    protected String searchWebInfFolder(String startFolder) {
-
-        File f = new File(startFolder);
-        if (!f.isDirectory()) {
-            return null;
-        }
-
-        File configFile = new File(f, "config/opencms.xml".replace('/', File.separatorChar));
-        if (configFile.exists() && configFile.isFile()) {
-            return f.getAbsolutePath();
-        }
-
-        String webInfFolder = null;
-        File[] subFiles = f.listFiles();
-        for (int i = 0; i < subFiles.length; i++) {
-            if (subFiles[i].isDirectory()) {
-                webInfFolder = searchWebInfFolder(subFiles[i].getAbsolutePath());
-                if (webInfFolder != null) {
-                    break;
-                }
-            }
-        }
-
-        return webInfFolder;
     }
 
     /**       

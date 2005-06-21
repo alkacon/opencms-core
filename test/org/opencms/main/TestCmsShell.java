@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsShell.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/21 11:05:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.io.FileInputStream;
  * Test cases for the OpenCms shell.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.0
  */
@@ -97,8 +97,9 @@ public class TestCmsShell extends OpenCmsTestCase {
         // create a shell instance
         CmsShell shell = new CmsShell(
             getTestDataPath("WEB-INF" + File.separator),
-            "${user}@${project}>", 
-            null);
+            null,
+            null, 
+            "${user}@${project}>", null);
         
         // open the test script 
         File script;

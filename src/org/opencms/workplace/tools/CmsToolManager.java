@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/20 12:12:49 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/21 11:05:17 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -62,7 +63,7 @@ import org.apache.commons.logging.Log;
  * several tool related methods.<p>
  *
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * @since 5.7.3
  */
 public class CmsToolManager {
@@ -429,7 +430,7 @@ public class CmsToolManager {
         }
         // forward to the requested page uri
         CmsRequestUtil.forwardRequest(
-            wp.getJsp().link(pagePath),
+            OpenCms.getSystemInfo().getServletPath() + pagePath,
             CmsRequestUtil.createParameterMap(newParams),
             wp.getJsp().getRequest(),
             wp.getJsp().getResponse());
@@ -470,7 +471,7 @@ public class CmsToolManager {
         }
         // forward to the requested tool uri
         CmsRequestUtil.forwardRequest(
-            wp.getJsp().link(C_VIEW_JSPPAGE_LOCATION),
+            OpenCms.getSystemInfo().getServletPath() + C_VIEW_JSPPAGE_LOCATION,
             CmsRequestUtil.createParameterMap(newParams),
             wp.getJsp().getRequest(),
             wp.getJsp().getResponse());

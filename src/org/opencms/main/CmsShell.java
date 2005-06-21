@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/06/10 15:14:24 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/06/21 11:05:17 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.main;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -77,7 +78,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
@@ -391,6 +392,18 @@ public class CmsShell {
         }
     }
 
+    /** Prefix for "base" parameter. */
+    public static final String SHELL_PARAM_BASE = "-base=";
+
+    /** Prefix for "servletMapping" parameter. */
+    public static final String SHELL_PARAM_DEFAULT_WEB_APP = "-defaultWebApp=";
+
+    /** Prefix for "script" parameter. */
+    public static final String SHELL_PARAM_SCRIPT = "-servletMapping=";
+
+    /** Prefix for "servletMapping" parameter. */
+    public static final String SHELL_PARAM_SERVLET_MAPPING = "-script=";
+
     /** The OpenCms context object. */
     protected CmsObject m_cms;
 
@@ -421,14 +434,26 @@ public class CmsShell {
     /**
      * Creates a new CmsShell.<p>
      * 
+     * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
+     * @param servletMapping the mapping of the servlet (or <code>null</code> to use the default <code>"/opencms/*"</code>)
+     * @param defaultWebAppName the name of the default web application (or <code>null</code> to use the default <code>"ROOT"</code>)
      * @param prompt the prompt format to set
      * @param additionalShellCommands optional object for additional shell commands, or null
-     * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
      */
-    public CmsShell(String webInfPath, String prompt, I_CmsShellCommands additionalShellCommands) {
+    public CmsShell(
+        String webInfPath,
+        String servletMapping,
+        String defaultWebAppName,
+        String prompt,
+        I_CmsShellCommands additionalShellCommands) {
 
         setPrompt(prompt);
-
+        if (CmsStringUtil.isEmpty(servletMapping)) {
+            servletMapping = "/opencms/*";
+        }
+        if (CmsStringUtil.isEmpty(defaultWebAppName)) {
+            defaultWebAppName = "ROOT";
+        }
         try {
             // first initialize runlevel 1 
             m_opencms = OpenCmsCore.getInstance();
@@ -439,7 +464,7 @@ public class CmsShell {
             if (CmsStringUtil.isEmpty(webInfPath)) {
                 System.out.println(Messages.get().key(locale, Messages.GUI_SHELL_NO_HOME_FOLDER_SPECIFIED_0, null));
                 System.out.println();
-                webInfPath = m_opencms.searchWebInfFolder(System.getProperty("user.dir"));
+                webInfPath = CmsFileUtil.searchWebInfFolder(System.getProperty("user.dir"));
                 if (CmsStringUtil.isEmpty(webInfPath)) {
                     System.err.println(Messages.get().key(Messages.GUI_SHELL_HR_0));
                     System.err.println(Messages.get().key(locale, Messages.GUI_SHELL_NO_HOME_FOLDER_FOUND_0, null));
@@ -455,7 +480,7 @@ public class CmsShell {
                 Messages.GUI_SHELL_WEB_INF_PATH_1,
                 new Object[] {webInfPath}));
             // set the path to the WEB-INF folder (the 2nd and 3rd parameters are just reasonable dummies)
-            m_opencms.getSystemInfo().init(webInfPath, "/opencms/*", null, "ROOT");
+            m_opencms.getSystemInfo().init(webInfPath, servletMapping, null, defaultWebAppName);
 
             // now read the configuration properties
             String propertyPath = m_opencms.getSystemInfo().getConfigurationFileRfsPath();
@@ -514,16 +539,22 @@ public class CmsShell {
         boolean wrongUsage = false;
         String webInfPath = null;
         String script = null;
+        String servletMapping = null;
+        String defaultWebApp = null;
 
-        if (args.length > 2) {
+        if (args.length > 4) {
             wrongUsage = true;
         } else {
             for (int i = 0; i < args.length; i++) {
                 String arg = args[i];
-                if (arg.startsWith("-base=")) {
-                    webInfPath = arg.substring(6);
-                } else if (arg.startsWith("-script=")) {
-                    script = arg.substring(8);
+                if (arg.startsWith(SHELL_PARAM_BASE)) {
+                    webInfPath = arg.substring(SHELL_PARAM_BASE.length());
+                } else if (arg.startsWith(SHELL_PARAM_SCRIPT)) {
+                    script = arg.substring(SHELL_PARAM_SCRIPT.length());
+                } else if (arg.startsWith(SHELL_PARAM_SERVLET_MAPPING)) {
+                    servletMapping = arg.substring(SHELL_PARAM_SERVLET_MAPPING.length());
+                } else if (arg.startsWith(SHELL_PARAM_DEFAULT_WEB_APP)) {
+                    defaultWebApp = arg.substring(SHELL_PARAM_DEFAULT_WEB_APP.length());
                 } else {
                     System.out.println(Messages.get().key(Messages.GUI_SHELL_WRONG_USAGE_0));
                     wrongUsage = true;
@@ -545,7 +576,12 @@ public class CmsShell {
                 // no script-file, use standard input stream
                 stream = new FileInputStream(FileDescriptor.in);
             }
-            CmsShell shell = new CmsShell(webInfPath, "${user}@${project}:${siteroot}|${uri}>", null);
+            CmsShell shell = new CmsShell(
+                webInfPath,
+                servletMapping,
+                defaultWebApp,
+                "${user}@${project}:${siteroot}|${uri}>",
+                null);
             shell.start(stream);
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/06/17 09:59:07 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/06/21 11:05:17 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,15 +73,27 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
+    /** Name of the <code>DefaultWebApplication</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
+    public static final String SERVLET_PARAM_DEFAULT_WEB_APPLICATION = "DefaultWebApplication";
+
+    /** Name of the <code>OpenCmsHome</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
+    public static final String SERVLET_PARAM_OPEN_CMS_HOME = "OpenCmsHome";
+
+    /** Name of the <code>OpenCmsServlet</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
+    public static final String SERVLET_PARAM_OPEN_CMS_SERVLET = "OpenCmsServlet";
+
+    /** Name of the <code>WebApplicationContext</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
+    public static final String SERVLET_PARAM_WEB_APPLICATION_CONTEXT = "WebApplicationContext";
+
     /** Handler prefix. */
-    private static final String C_HANDLE = "/handle";
+    private static final String HANDLE_PATH = "/handle";
 
     /** Handler implementation names. */
-    private static final String[] C_HANDLER_NAMES = {"404"};
+    private static final String[] HANDLER_NAMES = {"404"};
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(OpenCmsServlet.class);
@@ -109,7 +121,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             }
         }
         String path = req.getPathInfo();
-        if ((path != null) && path.startsWith(C_HANDLE)) {
+        if ((path != null) && path.startsWith(HANDLE_PATH)) {
             invokeHandler(req, res);
         } else {
             OpenCmsCore.getInstance().showResource(req, res);
@@ -132,7 +144,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      */
     public String[] getHandlerNames() {
 
-        return C_HANDLER_NAMES;
+        return HANDLER_NAMES;
     }
 
     /**
@@ -220,7 +232,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      */
     protected void invokeHandler(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
-        String name = req.getPathInfo().substring(C_HANDLE.length());
+        String name = req.getPathInfo().substring(HANDLE_PATH.length());
         I_CmsRequestHandler handler = OpenCmsCore.getInstance().getRequestHandler(name);
         if (handler != null) {
             handler.handle(req, res, name);
@@ -262,7 +274,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         try {
             file = cms.readFile(handlerUri, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
-            if (! res.isCommitted()) {
+            if (!res.isCommitted()) {
                 // handler file does not exist, display default error code page
                 res.sendError(errorCode);
             }
@@ -275,9 +287,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 Messages.ERR_SHOW_ERR_HANDLER_RESOURCE_2,
                 new Integer(errorCode),
                 handlerUri);
-            throw new ServletException(
-                org.opencms.jsp.Messages.getLocalizedMessage(container, req),
-                e);
+            throw new ServletException(org.opencms.jsp.Messages.getLocalizedMessage(container, req), e);
         }
     }
 }

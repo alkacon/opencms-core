@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/21 11:05:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * Handles the login of Users to the OpenCms workplace.<p> 
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0
  */
@@ -154,8 +154,10 @@ public class CmsLogin extends CmsJspLoginBean {
      */
     public String displayDialog() throws IOException {
 
-        if (!OpenCms.getSiteManager().isWorkplaceRequest(getRequest())) {
-            // this is not a request to the configured Workplace site
+        if ((OpenCms.getSiteManager().getSites().size() > 1)
+            && !OpenCms.getSiteManager().isWorkplaceRequest(getRequest())) {
+            
+            // this is a multi site-configuration, but not a request to the configured Workplace site
             StringBuffer loginLink = new StringBuffer();
             loginLink.append(OpenCms.getSiteManager().getWorkplaceSiteMatcher().toString());
             loginLink.append(getFormLink());

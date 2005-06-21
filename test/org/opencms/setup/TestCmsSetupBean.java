@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupBean.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/21 11:05:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.apache.commons.collections.ExtendedProperties;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0
  */
@@ -70,7 +70,7 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
      */
     public void testSaveProperties() throws IOException {
         CmsSetupBean bean = new CmsSetupBean();
-        bean.init("", null);
+        bean.init("", null, null);
 
         String base = getTestDataPath(File.separator + "WEB-INF" + File.separator + "config" +  File.separator);
         String inputFile = base + "opencms.properties";

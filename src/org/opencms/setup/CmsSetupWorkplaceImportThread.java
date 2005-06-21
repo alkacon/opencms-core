@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupWorkplaceImportThread.java,v $
- * Date   : $Date: 2005/06/13 10:00:03 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/21 11:05:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.PrintStream;
  * Used for the workplace setup in the OpenCms setup wizard.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsSetupWorkplaceImportThread extends Thread {
      
@@ -141,8 +141,9 @@ public class CmsSetupWorkplaceImportThread extends Thread {
     
             // create a shell that will start importing the workplace
             m_shell = new CmsShell(m_setupBean.getWebAppRfsPath() + "WEB-INF" + File.separator,
-                         "${user}@${project}>",
-                         m_setupBean);            
+                         m_setupBean.getServletMapping(),
+                         m_setupBean.getDefaultWebApplication(),
+                         "${user}@${project}>", m_setupBean);            
     
             try {
                 try {

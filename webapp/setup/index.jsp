@@ -16,7 +16,7 @@ try {
 	}
 	
 	// Initialize the Bean 
-	Bean.init(pageContext, request);
+	Bean.init(pageContext);
 
 	// check wizards accessability 
 	wizardEnabled = Bean.getWizardEnabled();

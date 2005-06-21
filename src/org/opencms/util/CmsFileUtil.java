@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/06/15 12:51:24 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/21 11:05:17 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -339,5 +339,43 @@ public final class CmsFileUtil {
     public static String readFile(String filename, String encoding) throws IOException {
 
         return new String(readFile(filename), encoding);
+    }
+
+    /**
+     * Searches for the OpenCms web application 'WEB-INF' folder during system startup, code or 
+     * <code>null</code> if the 'WEB-INF' folder can not be found.<p>
+     * 
+     * @param startFolder the folder where to start searching
+     * 
+     * @return String the path of the 'WEB-INF' folder in the 'real' file system, or <code>null</code>
+     */
+    public static String searchWebInfFolder(String startFolder) {
+
+        if (CmsStringUtil.isEmpty(startFolder)) {
+            return null;
+        }
+
+        File f = new File(startFolder);
+        if (!f.exists() || !f.isDirectory()) {
+            return null;
+        }
+
+        File configFile = new File(f, "config/opencms.xml".replace('/', File.separatorChar));
+        if (configFile.exists() && configFile.isFile()) {
+            return f.getAbsolutePath();
+        }
+
+        String webInfFolder = null;
+        File[] subFiles = f.listFiles();
+        for (int i = 0; i < subFiles.length; i++) {
+            if (subFiles[i].isDirectory()) {
+                webInfFolder = searchWebInfFolder(subFiles[i].getAbsolutePath());
+                if (webInfFolder != null) {
+                    break;
+                }
+            }
+        }
+
+        return webInfFolder;
     }
 }

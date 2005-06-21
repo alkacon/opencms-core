@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/06/19 11:00:29 $
- * Version: $Revision: 1.661 $
+ * Date   : $Date: 2005/06/21 11:05:17 $
+ * Version: $Revision: 1.662 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,6 +22,8 @@ Legend:
 OpenCms 6.0.0 ??? - June 30, 2005
 * Improved implementation of request "forwarding" in Flex JSP handler
 * Fixed JavaScript issues in IE (in new Administration) caused by "sendRedirect" usage
+- Name of web application and OpenCms servlet can now be passed to the CmsShell
+* Fixed issue with confusing redirect to localhost in a simple broken site configuration
 
 OpenCms 5.9.2 Corrin (aka 6.0 RC 2) - June 17, 2005
 * New pointer link validation tool for the (new) Administration
