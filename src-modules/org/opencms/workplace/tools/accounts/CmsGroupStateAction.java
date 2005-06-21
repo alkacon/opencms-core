@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupStateAction.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListDefaultAction;
@@ -47,7 +46,7 @@ import java.util.List;
  * Shows direct/indirect assigned groups and enabled/disabled a remove action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsGroupStateAction extends CmsListDefaultAction {
@@ -61,14 +60,13 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
     /**
      * Default Constructor.<p>
      * 
-     * @param listId the id of the associated list
-     * @param id unique id
+     * @param id the unique id
      * @param cms the cms context
      * @param userName the user name
      */
-    protected CmsGroupStateAction(String listId, String id, CmsObject cms, String userName) {
+    protected CmsGroupStateAction(String id, CmsObject cms, String userName) {
 
-        super(listId, id);
+        super(id);
         m_userName = userName;
         m_cms = cms;
     }
@@ -131,14 +129,14 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
         String helptext = new MessageFormat(ht, wp.getLocale()).format(new Object[] {""});
         if (getColumn() == null
             || helptext.equals(new MessageFormat(ht, wp.getLocale()).format(new Object[] {getItem().get(getColumn())}))) {
-            html.append(A_CmsHtmlIconButton.defaultHelpHtml(getId(), helptext));
+            html.append(A_CmsHtmlIconButton.defaultHelpHtml(super.getId(), helptext));
         }
         // disabled
         String ht2 = Messages.get().key(wp.getLocale(), Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0, null);
         String helptext2 = new MessageFormat(ht2, wp.getLocale()).format(new Object[] {""});
         if (getColumn() == null
             || helptext2.equals(new MessageFormat(ht2, wp.getLocale()).format(new Object[] {getItem().get(getColumn())}))) {
-            html.append(A_CmsHtmlIconButton.defaultHelpHtml("x" + getId(), helptext2));
+            html.append(A_CmsHtmlIconButton.defaultHelpHtml("x" + super.getId(), helptext2));
         }
         return html.toString();
 
@@ -156,9 +154,7 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
                 CmsGroup group = m_cms.readGroup(groupName);
                 return dGroups.contains(group);
             } catch (Exception e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_USERGROUPS_DIRECT_GROUP_1,
-                    m_userName), e);
+                // ignore
             }
         }
         return super.isEnabled();

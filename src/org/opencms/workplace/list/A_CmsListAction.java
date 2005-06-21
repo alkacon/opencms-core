@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListAction.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
  * The default skeleton for a list action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.7.3
  */
 public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_CmsListAction {
@@ -49,60 +49,22 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
     private CmsMessageContainer m_confirmationMsg;
 
     /** The id of the associated list. */
-    private final String m_listId;
+    private String m_listId;
 
     /**
      * Default Constructor.<p>
      * 
-     * @param listId the id of the list
      * @param id unique id
      */
-    public A_CmsListAction(String listId, String id) {
-        
+    public A_CmsListAction(String id) {
+
         super(id);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(id)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_LIST_INVALID_NULL_ARG_1,
-                "id"));
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LIST_INVALID_NULL_ARG_1, "id"));
         }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(listId)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_LIST_INVALID_NULL_ARG_1,
-                "listId"));
-        }
-        m_listId = listId;
         setConfirmationMessage(null);
     }
-    
-    
-    /**
-     * Full Constructor.<p>
-     * 
-     * @param listId the id of the list
-     * @param id unique id
-     * @param name the name
-     * @param helpText the help text
-     * @param iconPath the link to the icon
-     * @param enabled <code>true</code> if enabled
-     * @param confirmationMessage the confirmation message
-     */
-    public A_CmsListAction(
-        String listId,
-        String id,
-        CmsMessageContainer name,
-        CmsMessageContainer helpText,
-        String iconPath,
-        boolean enabled,
-        CmsMessageContainer confirmationMessage) {
 
-        this(listId, id);
-        setName(name);
-        setHelpText(helpText);
-        setEnabled(enabled);
-        setIconPath(iconPath);
-        setConfirmationMessage(confirmationMessage);
-    }
-    
     /**
      * Generates html for the confirmation message when having one confirmation message
      * for several actions.<p>
@@ -118,10 +80,10 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
         html.append("<div class='hide' id='conf");
         html.append(confId);
         html.append("'>");
-        html.append(CmsStringUtil.isEmptyOrWhitespaceOnly(confText)?"null":confText);
+        html.append(CmsStringUtil.isEmptyOrWhitespaceOnly(confText) ? "null" : confText);
         html.append("</div>\n");
         return html.toString();
-    }    
+    }
 
     /**
      * @see org.opencms.workplace.list.I_CmsListAction#getConfirmationMessage()
@@ -148,5 +110,18 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
             confirmationMsg = C_EMPTY_MESSAGE;
         }
         m_confirmationMsg = confirmationMsg;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.I_CmsListAction#setListId(java.lang.String)
+     */
+    public void setListId(String listId) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(listId)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_LIST_INVALID_NULL_ARG_1,
+                "listId"));
+        }
+        m_listId = listId;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/20 12:12:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,19 +54,22 @@ import javax.servlet.jsp.PageContext;
  * User groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsUserGroupsList extends A_CmsUserGroupsList {
 
     /** list action id constant. */
-    public static final String LIST_DEFACTION_REMOVE = "defaction_remove";
-
-    /** list id constant. */
-    public static final String LIST_ID = "usergroups";
+    public static final String LIST_ACTION_REMOVE = "ar";
 
     /** list action id constant. */
-    public static final String LIST_MACTION_REMOVE = "maction_remove";
+    public static final String LIST_DEFACTION_REMOVE = "dr";
+
+    /** list id constant. */
+    public static final String LIST_ID = "lug";
+
+    /** list action id constant. */
+    public static final String LIST_MACTION_REMOVE = "mr";
 
     /**
      * Public constructor.<p>
@@ -129,7 +132,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
      */
     public void executeListSingleActions() throws CmsRuntimeException {
 
-        if (getParamListAction().equals(LIST_DEFACTION_REMOVE)) {
+        if (getParamListAction().equals(LIST_DEFACTION_REMOVE) || getParamListAction().equals(LIST_ACTION_REMOVE)) {
             CmsListItem listItem = getSelectedItem();
             try {
                 getCms().removeUserFromGroup(getParamUsername(), (String)listItem.get(LIST_COLUMN_NAME));
@@ -153,7 +156,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
         if (list != null) {
             CmsListColumnDefinition col = list.getMetadata().getColumnDefinition(LIST_COLUMN_STATE);
             if (col != null) {
-                I_CmsListDirectAction action = col.getDirectAction(LIST_DEFACTION_REMOVE);
+                I_CmsListDirectAction action = col.getDirectAction(LIST_ACTION_REMOVE);
                 if (action != null && action instanceof CmsGroupStateAction) {
                     ((CmsGroupStateAction)action).setUserName(getParamUsername());
                 }
@@ -197,21 +200,17 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
         CmsListColumnDefinition stateCol = metadata.getColumnDefinition(LIST_COLUMN_STATE);
         // add remove action
         CmsGroupStateAction stateAction = new CmsGroupStateAction(
-            LIST_ID,
-            LIST_DEFACTION_REMOVE,
-            getCms(),
+            LIST_ACTION_REMOVE, getCms(),
             getParamUsername());
         stateAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_REMOVE_NAME_0));
         stateAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_REMOVE_HELP_0));
         stateAction.setIconPath(ICON_MINUS);
         stateCol.addDirectAction(stateAction);
         // get column for name
-        CmsListColumnDefinition nameCol = metadata.getColumnDefinition(LIST_COLUMN_NAME);
+        CmsListColumnDefinition nameCol = metadata.getColumnDefinition("cn");
         // add default remove action
         CmsGroupStateAction removeAction = new CmsGroupStateAction(
-            LIST_ID,
-            LIST_DEFACTION_REMOVE,
-            getCms(),
+            LIST_DEFACTION_REMOVE, getCms(),
             getParamUsername());
         removeAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_REMOVE_NAME_0));
         removeAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_REMOVE_HELP_0));
@@ -224,7 +223,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add remove multi action
-        CmsListMultiAction removeMultiAction = new CmsListMultiAction(LIST_ID, LIST_MACTION_REMOVE);
+        CmsListMultiAction removeMultiAction = new CmsListMultiAction(LIST_MACTION_REMOVE);
         removeMultiAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_REMOVE_NAME_0));
         removeMultiAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_REMOVE_HELP_0));
         removeMultiAction.setConfirmationMessage(Messages.get().container(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsListToggleAction.java,v $
- * Date   : $Date: 2005/05/19 14:46:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * You have to extend this class and implement the <code>{@link #selectAction()}</code> method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public abstract class A_CmsListToggleAction extends CmsListDirectAction {
@@ -47,12 +47,11 @@ public abstract class A_CmsListToggleAction extends CmsListDirectAction {
     /**
      * Default Constructor.<p>
      * 
-     * @param listId the id of the associated list
      * @param id unique id
      */
-    protected A_CmsListToggleAction(String listId, String id) {
+    protected A_CmsListToggleAction(String id) {
 
-        super(listId, id);
+        super(id);
     }
 
     /**
@@ -117,14 +116,4 @@ public abstract class A_CmsListToggleAction extends CmsListDirectAction {
      * @return the selected action
      */
     public abstract I_CmsListDirectAction selectAction();
-
-    /**
-     * @see org.opencms.workplace.list.CmsListDirectAction#setItem(org.opencms.workplace.list.CmsListItem)
-     */
-    public void setItem(CmsListItem item) {
-
-        super.setItem(item);
-        selectAction().setItem(item);
-    }
-
 }

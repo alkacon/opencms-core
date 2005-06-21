@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesDependenciesList.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,34 +64,37 @@ import javax.servlet.jsp.PageContext;
  * Module dependencies view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsModulesDependenciesList extends A_CmsListDialog {
 
     /** List action delete. */
-    public static final String LIST_ACTION_DELETE = "delete";
+    public static final String LIST_ACTION_DELETE = "ad";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_EDIT = "edit";
+    public static final String LIST_ACTION_EDIT = "ae";
 
-    /** List action multi delete. */
-    public static final String LIST_ACTION_MDELETE = "mdelete";
+    /** list action id constant. */
+    public static final String LIST_DEFACTION_EDIT = "de";
 
     /** List column delete. */
-    public static final String LIST_COLUMN_DELETE = "delete";
+    public static final String LIST_COLUMN_DELETE = "cd";
 
     /** List column edit. */
-    public static final String LIST_COLUMN_EDIT = "edit";
+    public static final String LIST_COLUMN_EDIT = "ce";
 
     /** List column name. */
-    public static final String LIST_COLUMN_NAME = "name";
+    public static final String LIST_COLUMN_NAME = "cn";
 
     /** List column version. */
-    public static final String LIST_COLUMN_VERSION = "version";
+    public static final String LIST_COLUMN_VERSION = "cv";
 
     /** list id constant. */
-    public static final String LIST_ID = "dependencies";
+    public static final String LIST_ID = "lmd";
+
+    /** List action multi delete. */
+    public static final String LIST_MACTION_DELETE = "md";
 
     /** Dependency parameter. */
     public static final String PARAM_DEPENDENCY = "dependency";
@@ -134,7 +137,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
      */
     public void executeListMultiActions() {
 
-        if (getParamListAction().equals(LIST_ACTION_MDELETE)) {
+        if (getParamListAction().equals(LIST_MACTION_DELETE)) {
             String moduleName = getParamModule();
             // execute the delete multiaction
             Iterator itItems = getSelectedItems().iterator();
@@ -259,7 +262,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
         editCol.setSorteable(false);
         editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         // add the edit action
-        CmsListDirectAction editColAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_EDIT);
+        CmsListDirectAction editColAction = new CmsListDirectAction(LIST_ACTION_EDIT);
         editColAction.setName(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_EDIT_NAME_0));
         editColAction.setHelpText(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_EDIT_HELP_0));
         editColAction.setIconPath(PATH_BUTTONS + "module_dependencies.png");
@@ -275,7 +278,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
         delCol.setSorteable(false);
         delCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         // direct action: delete module
-        CmsListDirectAction delDependency = new CmsListDirectAction(LIST_ID, LIST_ACTION_DELETE);
+        CmsListDirectAction delDependency = new CmsListDirectAction(LIST_ACTION_DELETE);
         delDependency.setName(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_DELETE_NAME_0));
         delDependency.setConfirmationMessage(Messages.get().container(
             Messages.GUI_DEPENDENCIES_LIST_ACTION_DELETE_CONF_0));
@@ -291,7 +294,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
         nameCol.setWidth("80%");
         nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         // create default edit action for name column: edit dependency
-        CmsListDefaultAction nameColAction = new CmsListDefaultAction(LIST_ID, LIST_COLUMN_EDIT);
+        CmsListDefaultAction nameColAction = new CmsListDefaultAction(LIST_DEFACTION_EDIT);
         nameColAction.setName(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_OVERVIEW_NAME_0));
         nameColAction.setIconPath(null);
         nameColAction.setHelpText(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_OVERVIEW_HELP_0));
@@ -323,7 +326,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the delete dependencies multi action
-        CmsListMultiAction deleteDependencies = new CmsListMultiAction(LIST_ID, LIST_ACTION_MDELETE);
+        CmsListMultiAction deleteDependencies = new CmsListMultiAction(LIST_MACTION_DELETE);
         deleteDependencies.setName(Messages.get().container(Messages.GUI_DEPENDENCIES_LIST_ACTION_MDELETE_NAME_0));
         deleteDependencies.setConfirmationMessage(Messages.get().container(
             Messages.GUI_DEPENDENCIES_LIST_ACTION_MDELETE_CONF_0));

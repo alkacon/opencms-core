@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsGroupDisabledStateAction.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.workplace.list.A_CmsListTwoStatesAction;
 import org.opencms.workplace.list.I_CmsListDirectAction;
 
@@ -43,7 +42,7 @@ import java.util.List;
  * Show diferent states depending on user direct/indirect group assignment.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsGroupDisabledStateAction extends A_CmsListTwoStatesAction {
@@ -53,33 +52,23 @@ public class CmsGroupDisabledStateAction extends A_CmsListTwoStatesAction {
     
     /**
      * Default Constructor.<p>
-     * @param listId the id of the associated list
-     * @param id unique id
+     *
+     * @param id the unique id
      * @param cms the cms context
      * @param userName the name of a valid opencms user
      */
-    protected CmsGroupDisabledStateAction(String listId, String id, CmsObject cms, String userName) {
+    protected CmsGroupDisabledStateAction(String id, CmsObject cms, String userName) {
 
-        super(listId, id, cms);
+        super(id, cms);
         setUserName(userName);
-        m_id = id;
     }
-        
+    
     /**
      * @see org.opencms.workplace.list.A_CmsListToggleAction#isEnabled()
      */
     public boolean isEnabled() {
 
         return false;
-    }
-    
-    
-    /**
-     * @see org.opencms.workplace.list.A_CmsListToggleAction#getId()
-     */
-    public String getId() {
-
-        return m_id;
     }
     
     /**
@@ -95,8 +84,7 @@ public class CmsGroupDisabledStateAction extends A_CmsListTwoStatesAction {
                 return getFirstAction();
             }
         } catch (Exception e) {
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_USERGROUPS_DIRECT_GROUP_1, m_userName), e);
+            // ignore
         }
         return getSecondAction();
     }

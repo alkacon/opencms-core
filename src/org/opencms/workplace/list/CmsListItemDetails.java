@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemDetails.java,v $
- * Date   : $Date: 2005/05/23 16:06:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * For detail contents you may use HTML code.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsListItemDetails extends CmsListColumnDefinition {
@@ -58,42 +58,17 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
     /**
      * Default constructor.<p>
      * 
-     * @param listId the id of the list
-     * @param id an unique column id
+     * @param id the unique id
      */
-    public CmsListItemDetails(String listId, String id) {
+    public CmsListItemDetails(String id) {
 
-        super(id, null, null, CmsListColumnAlignEnum.ALIGN_LEFT);
+        super(id);
         // set default actions
-        m_hideAction = new CmsListIndependentAction(listId, id);
+        setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        m_hideAction = new CmsListIndependentAction(id);
         m_hideAction.setIconPath(A_CmsListDialog.ICON_DETAILS_HIDE);
-        m_showAction = new CmsListIndependentAction(listId, id);
+        m_showAction = new CmsListIndependentAction(id);
         m_showAction.setIconPath(A_CmsListDialog.ICON_DETAILS_SHOW);
-    }
-
-    /**
-     * Full constructor.<p>
-     * 
-     * @param listId the id of the list
-     * @param id an unique column id
-     * @param atColumn the id of the first column to include
-     * @param visible initial visibility state
-     * @param showAction action for showing the details
-     * @param hideAction action for hidding the details
-     */
-    public CmsListItemDetails(
-        String listId,
-        String id,
-        String atColumn,
-        boolean visible,
-        I_CmsListAction showAction,
-        I_CmsListAction hideAction) {
-
-        this(listId, id);
-        setVisible(visible);
-        setAtColumn(atColumn);
-        setShowAction(showAction);
-        setHideAction(hideAction);
     }
 
     /**
@@ -184,5 +159,16 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
     public String getAtColumn() {
 
         return m_atColumn;
+    }
+    
+    /**
+     * Sets the id of the list.<p>
+     * 
+     * @param listId the id of the list
+     */
+    public void setListId(String listId) {
+        
+        m_hideAction.setListId(listId);
+        m_showAction.setListId(listId);
     }
 }

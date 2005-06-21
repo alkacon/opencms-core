@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotGroupUsersList.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,19 +54,22 @@ import javax.servlet.jsp.PageContext;
  * Not Usergroups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
 
     /** list action id constant. */
-    public static final String LIST_DEFACTION_ADD = "defaction_add";
-
-    /** list id constant. */
-    public static final String LIST_ID = "notgroupusers";
+    public static final String LIST_ACTION_ADD = "aa";
 
     /** list action id constant. */
-    public static final String LIST_MACTION_ADD = "maction_add";
+    public static final String LIST_DEFACTION_ADD = "da";
+
+    /** list id constant. */
+    public static final String LIST_ID = "lngu";
+
+    /** list action id constant. */
+    public static final String LIST_MACTION_ADD = "ma";
 
     /**
      * Public constructor.<p>
@@ -123,7 +126,7 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
      */
     public void executeListSingleActions() throws CmsRuntimeException {
 
-        if (getParamListAction().equals(LIST_DEFACTION_ADD)) {
+        if (getParamListAction().equals(LIST_DEFACTION_ADD) || getParamListAction().equals(LIST_ACTION_ADD)) {
             CmsListItem listItem = getSelectedItem();
             try {
                 getCms().addUserToGroup((String)listItem.get(LIST_COLUMN_LOGIN), getParamGroupname());
@@ -167,7 +170,7 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
         // get column for state
         CmsListColumnDefinition stateCol = metadata.getColumnDefinition(LIST_COLUMN_STATE);
         // add add action
-        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ID, LIST_DEFACTION_ADD);
+        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_ADD);
         stateAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_ADD_NAME_0));
         stateAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_ADD_HELP_0));
         stateAction.setIconPath(ICON_ADD);
@@ -175,7 +178,7 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
         // get column for name
         CmsListColumnDefinition nameCol = metadata.getColumnDefinition(LIST_COLUMN_LOGIN);
         // add add action
-        CmsListDefaultAction addAction = new CmsListDefaultAction(LIST_ID, LIST_DEFACTION_ADD);
+        CmsListDefaultAction addAction = new CmsListDefaultAction(LIST_DEFACTION_ADD);
         addAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_ADD_NAME_0));
         addAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_ADD_HELP_0));
         nameCol.setDefaultAction(addAction);
@@ -187,7 +190,7 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add add multi action
-        CmsListMultiAction addMultiAction = new CmsListMultiAction(LIST_ID, LIST_MACTION_ADD);
+        CmsListMultiAction addMultiAction = new CmsListMultiAction(LIST_MACTION_ADD);
         addMultiAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ADD_NAME_0));
         addMultiAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ADD_HELP_0));
         addMultiAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ADD_CONF_0));

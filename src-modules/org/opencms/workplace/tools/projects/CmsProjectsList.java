@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2005/06/19 10:57:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,76 +67,82 @@ import javax.servlet.jsp.PageContext;
  * Main project management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public class CmsProjectsList extends A_CmsListDialog {
 
     /** list action id constant. */
-    public static final String LIST_ACTION_DELETE = "action_delete";
+    public static final String LIST_ACTION_DELETE = "ad";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_EDIT = "action_edit";
+    public static final String LIST_ACTION_EDIT = "ae";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_FILES = "action_files";
+    public static final String LIST_ACTION_FILES = "af";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_LOCK = "action_lock";
+    public static final String LIST_ACTION_LOCK = "al";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_PUBLISH = "action_publish";
+    public static final String LIST_ACTION_PUBLISH = "ap";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_UNLOCK = "action_unlock";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_CREATION = "column_creation";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_DELETE = "column_delete";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_DESCRIPTION = "column_description";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_EDIT = "column_edit";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_FILES = "column_files";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_LOCK = "column_lock";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_MANAGER = "column_manager";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_NAME = "column_name";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_OWNER = "column_owner";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_PUBLISH = "column_publish";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_USER = "column_user";
+    public static final String LIST_ACTION_PUBLISH_ENABLED = "ape";
 
     /** list action id constant. */
-    public static final String LIST_DEFACTION_FILES = "defaction_files";
+    public static final String LIST_ACTION_PUBLISH_DISABLED = "apd";
+
+    /** list action id constant. */
+    public static final String LIST_ACTION_UNLOCK = "au";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_CREATION = "cc";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_DELETE = "cd";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_DESCRIPTION = "cr";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_EDIT = "ce";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_FILES = "cf";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_LOCK = "cl";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_MANAGER = "cm";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_NAME = "cn";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_OWNER = "co";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_PUBLISH = "cp";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_USER = "cu";
+
+    /** list action id constant. */
+    public static final String LIST_DEFACTION_FILES = "df";
 
     /** list detail constant. */
-    public static final String LIST_DETAIL_RESOURCES = "details_resources";
+    public static final String LIST_DETAIL_RESOURCES = "dr";
 
     /** list id constant. */
-    public static final String LIST_ID = "projects";
+    public static final String LIST_ID = "lp";
 
     /** list action id constant. */
-    public static final String LIST_MACTION_DELETE = "maction_delete";
+    public static final String LIST_MACTION_DELETE = "md";
 
     /** list action id constant. */
-    public static final String LIST_MACTION_UNLOCK = "maction_unlock";
+    public static final String LIST_MACTION_UNLOCK = "mu";
 
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/projects/buttons/";
@@ -241,7 +247,7 @@ public class CmsProjectsList extends A_CmsListDialog {
             getToolManager().jspForwardTool(this, "/projects/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_FILES)) {
             getToolManager().jspForwardTool(this, "/projects/files", params);
-        } else if (getParamListAction().equals(LIST_ACTION_PUBLISH)) {
+        } else if (getParamListAction().equals(LIST_ACTION_PUBLISH_ENABLED)) {
             getToolManager().jspForwardTool(this, "/projects/publish", params);
         } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
             // execute the delete action
@@ -359,7 +365,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         filesCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         filesCol.setSorteable(false);
         // add files action
-        CmsListDirectAction filesAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_FILES);
+        CmsListDirectAction filesAction = new CmsListDirectAction(LIST_ACTION_FILES);
         filesAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_FILES_NAME_0));
         filesAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_FILES_HELP_0));
         filesAction.setIconPath(PATH_BUTTONS + "project.png");
@@ -375,20 +381,20 @@ public class CmsProjectsList extends A_CmsListDialog {
         lockCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         lockCol.setListItemComparator(new CmsListItemActionIconComparator());
         // lock action
-        CmsListDirectAction lockAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_LOCK);
+        CmsListDirectAction lockAction = new CmsListDirectAction(LIST_ACTION_LOCK);
         lockAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_LOCK_NAME_0));
         lockAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_LOCK_HELP_0));
         lockAction.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_LOCK_CONF_0));
         lockAction.setIconPath(PATH_BUTTONS + "project_lock.png");
         lockAction.setEnabled(false);
         // unlock action
-        CmsListDirectAction unlockAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_UNLOCK);
+        CmsListDirectAction unlockAction = new CmsListDirectAction(LIST_ACTION_UNLOCK);
         unlockAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_UNLOCK_NAME_0));
         unlockAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_UNLOCK_HELP_0));
         unlockAction.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_UNLOCK_CONF_0));
         unlockAction.setIconPath(PATH_BUTTONS + "project_unlock.png");
         // adds a lock/unlock direct action
-        CmsProjectLockAction projectAction = new CmsProjectLockAction(LIST_ID, LIST_ACTION_LOCK, getCms());
+        CmsProjectLockAction projectAction = new CmsProjectLockAction(LIST_ACTION_LOCK, getCms());
         projectAction.setFirstAction(lockAction);
         projectAction.setSecondAction(unlockAction);
         lockCol.addDirectAction(projectAction);
@@ -403,7 +409,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         publishCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         publishCol.setSorteable(false);
         // publish enabled action
-        CmsListDirectAction publishEnabledAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_PUBLISH);
+        CmsListDirectAction publishEnabledAction = new CmsListDirectAction(LIST_ACTION_PUBLISH_ENABLED);
         publishEnabledAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_NAME_0));
         publishEnabledAction.setHelpText(Messages.get().container(
             Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_HELP_0));
@@ -411,7 +417,7 @@ public class CmsProjectsList extends A_CmsListDialog {
             Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_CONF_0));
         publishEnabledAction.setIconPath(PATH_BUTTONS + "project_publish.png");
         // publish disabled action
-        CmsListDirectAction publishDisabledAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_PUBLISH);
+        CmsListDirectAction publishDisabledAction = new CmsListDirectAction(LIST_ACTION_PUBLISH_DISABLED);
         publishDisabledAction.setName(Messages.get().container(
             Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_NAME_0));
         publishDisabledAction.setHelpText(Messages.get().container(
@@ -421,7 +427,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         publishDisabledAction.setIconPath(PATH_BUTTONS + "project_publish_disabled.png");
         publishDisabledAction.setEnabled(false);
         // adds a publish enabled/disabled direct action
-        CmsPublishProjectAction publishAction = new CmsPublishProjectAction(LIST_ID, LIST_ACTION_PUBLISH, getCms());
+        CmsPublishProjectAction publishAction = new CmsPublishProjectAction(LIST_ACTION_PUBLISH, getCms());
         publishAction.setFirstAction(publishEnabledAction);
         publishAction.setSecondAction(publishDisabledAction);
         publishCol.addDirectAction(publishAction);
@@ -436,7 +442,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         editCol.setSorteable(false);
         // add edit action
-        CmsListDirectAction editAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_EDIT);
+        CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);
         editAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_EDIT_NAME_0));
         editAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_EDIT_HELP_0));
         editAction.setIconPath(PATH_BUTTONS + "project_edit.png");
@@ -452,7 +458,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         deleteCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         deleteCol.setSorteable(false);
         // add delete action
-        CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_DELETE);
+        CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ACTION_DELETE);
         deleteAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_DELETE_NAME_0));
         deleteAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_DELETE_HELP_0));
         deleteAction.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_DELETE_CONF_0));
@@ -466,7 +472,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         nameCol.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_COLS_NAME_0));
         nameCol.setWidth("15%");
         // create default edit action
-        CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_ID, LIST_DEFACTION_FILES);
+        CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_DEFACTION_FILES);
         defEditAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_DEFACTION_EDIT_NAME_0));
         defEditAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_DEFACTION_EDIT_HELP_0));
         nameCol.setDefaultAction(defEditAction);
@@ -515,7 +521,7 @@ public class CmsProjectsList extends A_CmsListDialog {
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add publishing info details
-        CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_RESOURCES);
+        CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_DETAIL_RESOURCES);
         resourcesDetails.setAtColumn(LIST_COLUMN_NAME);
         resourcesDetails.setVisible(false);
         resourcesDetails.setShowActionName(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_NAME_0));
@@ -530,9 +536,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         metadata.addItemDetails(resourcesDetails);
 
         // makes the list searchable
-        CmsListSearchAction searchAction = new CmsListSearchAction(
-            LIST_ID,
-            metadata.getColumnDefinition(LIST_COLUMN_NAME));
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_NAME));
         searchAction.addColumn(metadata.getColumnDefinition(LIST_COLUMN_DESCRIPTION));
         metadata.setSearchAction(searchAction);
     }
@@ -543,7 +547,7 @@ public class CmsProjectsList extends A_CmsListDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the unlock project multi action
-        CmsListMultiAction unlockProject = new CmsListMultiAction(LIST_ID, LIST_MACTION_UNLOCK);
+        CmsListMultiAction unlockProject = new CmsListMultiAction(LIST_MACTION_UNLOCK);
         unlockProject.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_NAME_0));
         unlockProject.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_HELP_0));
         unlockProject.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_CONF_0));
@@ -551,7 +555,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         metadata.addMultiAction(unlockProject);
 
         // add delete multi action
-        CmsListMultiAction deleteMultiAction = new CmsListMultiAction(LIST_ID, LIST_MACTION_DELETE);
+        CmsListMultiAction deleteMultiAction = new CmsListMultiAction(LIST_MACTION_DELETE);
         deleteMultiAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_DELETE_NAME_0));
         deleteMultiAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_DELETE_HELP_0));
         deleteMultiAction.setConfirmationMessage(Messages.get().container(

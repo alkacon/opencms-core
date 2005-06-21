@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectHistoryList.java,v $
- * Date   : $Date: 2005/06/16 14:30:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,46 +59,46 @@ import javax.servlet.jsp.PageContext;
  * Main project management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsProjectHistoryList extends A_CmsListDialog {
 
     /** list action constant. */
-    public static final String LIST_ACTION_ICON = "action_icon";
+    public static final String LIST_ACTION_ICON = "ai";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_CREATION = "column_creation";
+    public static final String LIST_COLUMN_CREATION = "cc";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_DESCRIPTION = "column_description";
+    public static final String LIST_COLUMN_DESCRIPTION = "cd";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_ICON = "column_icon";
+    public static final String LIST_COLUMN_ICON = "ci";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_MANAGER = "column_manager";
+    public static final String LIST_COLUMN_MANAGER = "cm";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_NAME = "column_name";
+    public static final String LIST_COLUMN_NAME = "cn";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_OWNER = "column_owner";
+    public static final String LIST_COLUMN_OWNER = "co";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_PUBLISHED_BY = "column_pub_by";
+    public static final String LIST_COLUMN_PUBLISHED_BY = "cb";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_PUBLISHED_DATE = "column_pub_date";
+    public static final String LIST_COLUMN_PUBLISHED_DATE = "cp";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_USER = "column_user";
+    public static final String LIST_COLUMN_USER = "cu";
 
     /** list detail constant. */
-    public static final String LIST_DETAIL_RESOURCES = "details_resources";
+    public static final String LIST_DETAIL_RESOURCES = "dr";
 
     /** list id constant. */
-    public static final String LIST_ID = "projecthistory";
+    public static final String LIST_ID = "lph";
 
     /**
      * Public constructor.<p>
@@ -249,7 +249,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
         iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         iconCol.setSorteable(false);
         // add files action
-        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_ICON);
+        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
         iconAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_ICON_NAME_0));
         iconAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_ICON_HELP_0));
         iconAction.setIconPath(CmsProjectsList.PATH_BUTTONS + "project.png");
@@ -323,7 +323,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add publishing info details
-        CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_RESOURCES);
+        CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_DETAIL_RESOURCES);
         resourcesDetails.setAtColumn(LIST_COLUMN_NAME);
         resourcesDetails.setVisible(false);
         resourcesDetails.setShowActionName(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_NAME_0));
@@ -338,9 +338,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
         metadata.addItemDetails(resourcesDetails);
 
         // makes the list searchable
-        CmsListSearchAction searchAction = new CmsListSearchAction(
-            LIST_ID,
-            metadata.getColumnDefinition(LIST_COLUMN_NAME));
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_NAME));
         searchAction.addColumn(metadata.getColumnDefinition(LIST_COLUMN_DESCRIPTION));
         metadata.setSearchAction(searchAction);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDirectAction.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
@@ -43,7 +42,7 @@ import java.text.MessageFormat;
  * Default implementation of a direct action for a html list column.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDirectAction {
@@ -57,40 +56,11 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
     /**
      * Default Constructor.<p>
      * 
-     * @param listId the id of the associated list
      * @param id unique id
      */
-    public CmsListDirectAction(String listId, String id) {
+    public CmsListDirectAction(String id) {
 
-        super(listId, id);
-    }
-
-    /**
-     * Default Constructor.<p>
-     * 
-     * @param listId the id of the associated list
-     * @param id unique id
-     * @param name the name
-     * @param helpText the help text
-     * @param iconPath the link to the icon
-     * @param enabled if enabled
-     * @param confirmationMessage the confirmation message
-     */
-    public CmsListDirectAction(
-        String listId,
-        String id,
-        CmsMessageContainer name,
-        CmsMessageContainer helpText,
-        String iconPath,
-        boolean enabled,
-        CmsMessageContainer confirmationMessage) {
-
-        this(listId, id);
-        setName(name);
-        setHelpText(helpText);
-        setIconPath(iconPath);
-        setEnabled(enabled);
-        setConfirmationMessage(confirmationMessage);
+        super(id);
     }
 
     /**

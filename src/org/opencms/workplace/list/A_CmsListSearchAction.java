@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListSearchAction.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * It provides the default show all action accessor and the rendering method.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
@@ -57,6 +57,7 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
     private static final CmsMessageContainer SEARCH_CONFIRMATION = new CmsMessageContainer(
         Messages.get(),
         Messages.GUI_LIST_ACTION_SEARCH_CONF_0);
+
     /** Default icon for search action. */
     private static final String SEARCH_ICON = "list/search.png";
 
@@ -64,14 +65,17 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
     private static final CmsMessageContainer SEARCH_NAME = new CmsMessageContainer(
         Messages.get(),
         Messages.GUI_LIST_ACTION_SEARCH_NAME_0);
+
     /** Default confirmation message for show all action. */
     private static final CmsMessageContainer SHOWALL_CONFIRMATION = new CmsMessageContainer(
         Messages.get(),
         Messages.GUI_LIST_ACTION_SHOWALL_CONF_0);
+
     /** Default help text for show all action. */
     private static final CmsMessageContainer SHOWALL_HELPTEXT = new CmsMessageContainer(
         Messages.get(),
         Messages.GUI_LIST_ACTION_SHOWALL_HELP_0);
+
     /** Default icon for show all action. */
     private static final String SHOWALL_ICON = "list/showall.png";
 
@@ -88,18 +92,16 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
 
     /**
      * Default Constructor.<p>
-     * 
-     * @param listId the id of the associated list
      */
-    protected A_CmsListSearchAction(String listId) {
+    protected A_CmsListSearchAction() {
 
-        super(listId, SEARCH_ACTION_ID);
+        super(SEARCH_ACTION_ID);
         setName(SEARCH_NAME);
         setIconPath(SEARCH_ICON);
         setConfirmationMessage(SEARCH_CONFIRMATION);
         setHelpText(null);
 
-        m_defaultShowAllAction = createDefaultShowAllAction(listId);
+        m_defaultShowAllAction = createDefaultShowAllAction();
     }
 
     /**
@@ -155,13 +157,11 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
     /**
      * Creates a default show all action.<p>
      * 
-     * @param listId the is of the list
-     * 
      * @return default show all action
      */
-    private I_CmsListAction createDefaultShowAllAction(String listId) {
+    private I_CmsListAction createDefaultShowAllAction() {
 
-        I_CmsListAction defaultShowAllAction = new CmsListIndependentAction(listId, SHOWALL_ACTION_ID) {
+        I_CmsListAction defaultShowAllAction = new CmsListIndependentAction(SHOWALL_ACTION_ID) {
 
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)

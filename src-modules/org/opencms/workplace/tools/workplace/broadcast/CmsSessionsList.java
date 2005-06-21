@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,52 +64,61 @@ import javax.servlet.jsp.PageContext;
  * Session list for broadcasting messages.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsSessionsList extends A_CmsListDialog {
 
     /** list action id constant. */
-    public static final String LIST_ACTION_MESSAGE = "action_message";
+    public static final String LIST_ACTION_MESSAGE = "am";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_PENDING = "action_pending";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_CREATION = "column_creation";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_EMAIL = "column_email";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_INACTIVE = "column_inactive";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_MESSAGE = "column_message";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_PENDING = "column_pending";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_PROJECT = "column_project";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_SITE = "column_site";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_USER = "column_name";
+    public static final String LIST_ACTION_PENDING = "ap";
 
     /** list action id constant. */
-    public static final String LIST_DEFACTION_EMAIL = "defaction_email";
+    public static final String LIST_ACTION_PENDING_ENABLED = "ape";
+
+    /** list action id constant. */
+    public static final String LIST_ACTION_PENDING_DISABLED = "apd";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_CREATION = "cc";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_EMAIL = "ce";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_INACTIVE = "ci";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_MESSAGE = "cm";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_PENDING = "cp";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_PROJECT = "cj";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_SITE = "cs";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_USER = "cu";
+
+    /** list action id constant. */
+    public static final String LIST_DEFACTION_EMAIL = "de";
+
+    /** list action id constant. */
+    public static final String LIST_DEFACTION_MESSAGE = "dm";
 
     /** list id constant. */
-    public static final String LIST_ID = "sessions";
+    public static final String LIST_ID = "ls";
 
     /** list action id constant. */
-    public static final String LIST_MACTION_EMAIL = "maction_email";
+    public static final String LIST_MACTION_EMAIL = "me";
 
     /** list action id constant. */
-    public static final String LIST_MACTION_MESSAGE = "maction_message";
+    public static final String LIST_MACTION_MESSAGE = "mm";
 
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/workplace/buttons/";
@@ -177,7 +186,7 @@ public class CmsSessionsList extends A_CmsListDialog {
         if (getParamListAction().equals(LIST_DEFACTION_EMAIL)) {
             // forward to the edit user screen
             getToolManager().jspForwardTool(this, "/workplace/broadcast/email", params);
-        } else if (getParamListAction().equals(LIST_ACTION_MESSAGE)) {
+        } else if (getParamListAction().equals(LIST_ACTION_MESSAGE) || getParamListAction().equals(LIST_DEFACTION_MESSAGE)) {
             getToolManager().jspForwardTool(this, "/workplace/broadcast/message", params);
         } else if (getParamListAction().equals(LIST_ACTION_PENDING)) {
             // noop
@@ -248,7 +257,7 @@ public class CmsSessionsList extends A_CmsListDialog {
         messageCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         messageCol.setSorteable(false);
         // add send message action
-        CmsListDirectAction messageAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_MESSAGE);
+        CmsListDirectAction messageAction = new CmsListDirectAction(LIST_ACTION_MESSAGE);
         messageAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_MESSAGE_NAME_0));
         messageAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_MESSAGE_HELP_0));
         messageAction.setIconPath(PATH_BUTTONS + "send_message.png");
@@ -263,18 +272,19 @@ public class CmsSessionsList extends A_CmsListDialog {
         pendingCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         pendingCol.setListItemComparator(new CmsListItemActionIconComparator());
         // add pending action
-        CmsListDirectAction pendingAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_PENDING);
+        CmsListDirectAction pendingAction = new CmsListDirectAction(LIST_ACTION_PENDING_ENABLED);
         pendingAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_PENDING_NAME_0));
         pendingAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_PENDING_HELP_0));
         pendingAction.setIconPath(PATH_BUTTONS + "message_pending.png");
         pendingAction.setEnabled(false);
         // not pending action
-        CmsListDirectAction notPendingAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_PENDING);
+        CmsListDirectAction notPendingAction = new CmsListDirectAction(LIST_ACTION_PENDING_DISABLED);
         notPendingAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_NOTPENDING_NAME_0));
         notPendingAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_NOTPENDING_HELP_0));
         notPendingAction.setIconPath(PATH_BUTTONS + "message_notpending.png");
+        notPendingAction.setEnabled(false);
         // adds a pending/not pending direct action
-        CmsMessagePendingAction sessionAction = new CmsMessagePendingAction(LIST_ID, LIST_ACTION_PENDING);
+        CmsMessagePendingAction sessionAction = new CmsMessagePendingAction(LIST_ACTION_PENDING);
         sessionAction.setFirstAction(pendingAction);
         sessionAction.setSecondAction(notPendingAction);
         pendingCol.addDirectAction(sessionAction);
@@ -285,24 +295,24 @@ public class CmsSessionsList extends A_CmsListDialog {
         CmsListColumnDefinition userCol = new CmsListColumnDefinition(LIST_COLUMN_USER);
         userCol.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_COLS_USER_0));
         userCol.setWidth("20%");
-        // add it to the list definition
-        metadata.addColumn(userCol);
         // create default edit message action
-        CmsListDefaultAction messageEditAction = new CmsListDefaultAction(LIST_ID, LIST_ACTION_MESSAGE);
+        CmsListDefaultAction messageEditAction = new CmsListDefaultAction(LIST_DEFACTION_MESSAGE);
         messageEditAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_MESSAGE_NAME_0));
         messageEditAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_MESSAGE_HELP_0));
         userCol.setDefaultAction(messageEditAction);
+        // add it to the list definition
+        metadata.addColumn(userCol);
 
         // add column for email
         CmsListColumnDefinition emailCol = new CmsListColumnDefinition(LIST_COLUMN_EMAIL);
         emailCol.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_COLS_EMAIL_0));
         emailCol.setWidth("30%");
-        metadata.addColumn(emailCol);
         // create default edit email action
-        CmsListDefaultAction emailEditAction = new CmsListDefaultAction(LIST_ID, LIST_DEFACTION_EMAIL);
+        CmsListDefaultAction emailEditAction = new CmsListDefaultAction(LIST_DEFACTION_EMAIL);
         emailEditAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_DEFACTION_EMAIL_NAME_0));
         emailEditAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_DEFACTION_EMAIL_HELP_0));
         emailCol.setDefaultAction(emailEditAction);
+        metadata.addColumn(emailCol);
 
         // add column for creation date
         CmsListColumnDefinition creationCol = new CmsListColumnDefinition(LIST_COLUMN_CREATION);
@@ -348,7 +358,7 @@ public class CmsSessionsList extends A_CmsListDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add message multi action
-        CmsListMultiAction messageMultiAction = new CmsListMultiAction(LIST_ID, LIST_MACTION_MESSAGE);
+        CmsListMultiAction messageMultiAction = new CmsListMultiAction(LIST_MACTION_MESSAGE);
         messageMultiAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_MACTION_MESSAGE_NAME_0));
         messageMultiAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_MACTION_MESSAGE_HELP_0));
         messageMultiAction.setConfirmationMessage(Messages.get().container(
@@ -357,7 +367,7 @@ public class CmsSessionsList extends A_CmsListDialog {
         metadata.addMultiAction(messageMultiAction);
 
         // add email multi action
-        CmsListMultiAction emailMultiAction = new CmsListMultiAction(LIST_ID, LIST_MACTION_EMAIL);
+        CmsListMultiAction emailMultiAction = new CmsListMultiAction(LIST_MACTION_EMAIL);
         emailMultiAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_MACTION_EMAIL_NAME_0));
         emailMultiAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_MACTION_EMAIL_HELP_0));
         emailMultiAction.setConfirmationMessage(Messages.get().container(

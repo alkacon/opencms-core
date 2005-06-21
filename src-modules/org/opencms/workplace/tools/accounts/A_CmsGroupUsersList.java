@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2005/06/20 12:12:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,28 +56,28 @@ import javax.servlet.jsp.JspException;
  * Generalized user groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
 
     /** list action id constant. */
-    public static final String LIST_ACTION_ICON = "action_icon";
+    public static final String LIST_ACTION_ICON = "ai";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_STATE = "action_state";
+    public static final String LIST_ACTION_STATE = "as";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_FULLNAME = "column_fullname";
+    public static final String LIST_COLUMN_FULLNAME = "cf";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_ICON = "column_icon";
+    public static final String LIST_COLUMN_ICON = "ci";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_LOGIN = "column_name";
+    public static final String LIST_COLUMN_LOGIN = "cn";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_STATE = "column_state";
+    public static final String LIST_COLUMN_STATE = "cs";
 
     /** Stores the value of the request parameter for the user id. */
     private String m_paramGroupid;
@@ -225,7 +225,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         iconCol.setSorteable(false);
         // state action
-        CmsListDirectAction iconAction = new CmsListDirectAction(getListId(), LIST_ACTION_ICON);
+        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
         if (!getListId().equals(CmsNotUserGroupsList.LIST_ID)) {
             iconAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_INGROUP_NAME_0));
             iconAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_INGROUP_HELP_0));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,73 +73,73 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.7.3
  */
 public class CmsSchedulerList extends A_CmsListDialog {
 
     /** List action activate. */
-    public static final String LIST_ACTION_ACTIVATE = "activate";
+    public static final String LIST_ACTION_ACTIVATE = "aa";
 
     /** List action copy. */
-    public static final String LIST_ACTION_COPY = "copy";
+    public static final String LIST_ACTION_COPY = "ac";
 
     /** List action deactivate. */
-    public static final String LIST_ACTION_DEACTIVATE = "deactivate";
+    public static final String LIST_ACTION_DEACTIVATE = "at";
 
     /** List action delete. */
-    public static final String LIST_ACTION_DELETE = "delete";
+    public static final String LIST_ACTION_DELETE = "ad";
 
     /** List action edit. */
-    public static final String LIST_ACTION_EDIT = "edit";
+    public static final String LIST_ACTION_EDIT = "ae";
 
-    /** List action multi activate. */
-    public static final String LIST_ACTION_MACTIVATE = "mactivate";
-
-    /** List action multi deactivate. */
-    public static final String LIST_ACTION_MDEACTIVATE = "mdeactivate";
-
-    /** List action multi delete. */
-    public static final String LIST_ACTION_MDELETE = "mdelete";
+    /** List action edit. */
+    public static final String LIST_DEFACTION_EDIT = "de";
 
     /** List column activate. */
-    public static final String LIST_COLUMN_ACTIVATE = "activate";
+    public static final String LIST_COLUMN_ACTIVATE = "ca";
 
     /** List column class. */
-    public static final String LIST_COLUMN_CLASS = "class";
+    public static final String LIST_COLUMN_CLASS = "cs";
 
     /** List column copy. */
-    public static final String LIST_COLUMN_COPY = "copy";
+    public static final String LIST_COLUMN_COPY = "cc";
 
     /** List column delete. */
-    public static final String LIST_COLUMN_DELETE = "delete";
+    public static final String LIST_COLUMN_DELETE = "cd";
 
     /** List column edit. */
-    public static final String LIST_COLUMN_EDIT = "editcol";
+    public static final String LIST_COLUMN_EDIT = "ce";
 
     /** List column last execution. */
-    public static final String LIST_COLUMN_LASTEXE = "lastexe";
+    public static final String LIST_COLUMN_LASTEXE = "cl";
 
     /** List column name. */
-    public static final String LIST_COLUMN_NAME = "name";
+    public static final String LIST_COLUMN_NAME = "cn";
 
     /** List column next execution. */
-    public static final String LIST_COLUMN_NEXTEXE = "nextexe";
+    public static final String LIST_COLUMN_NEXTEXE = "cx";
 
     /** List detail context info. */
-    public static final String LIST_DETAIL_CONTEXTINFO = "contextinfo";
+    public static final String LIST_DETAIL_CONTEXTINFO = "dc";
 
     /** List detail parameter. */
-    public static final String LIST_DETAIL_PARAMETER = "parameter";
+    public static final String LIST_DETAIL_PARAMETER = "dp";
 
     /** List ID. */
-    public static final String LIST_ID = "jobs";
+    public static final String LIST_ID = "lj";
+
+    /** List action multi activate. */
+    public static final String LIST_MACTION_ACTIVATE = "ma";
+
+    /** List action multi deactivate. */
+    public static final String LIST_MACTION_DEACTIVATE = "mc";
+
+    /** List action multi delete. */
+    public static final String LIST_MACTION_DELETE = "md";
 
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/scheduler/buttons/";
-
-    /** Path to the list icons. */
-    public static final String PATH_ICONS = "tools/scheduler/icons/";
 
     /**
      * Public constructor.<p>
@@ -179,7 +179,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     public void executeListMultiActions() throws CmsRuntimeException {
 
         CmsListItem listItem = null;
-        if (getParamListAction().equals(LIST_ACTION_MDELETE)) {
+        if (getParamListAction().equals(LIST_MACTION_DELETE)) {
             // execute the delete multiaction
             List removedItems = new ArrayList();
             try {
@@ -198,12 +198,12 @@ public class CmsSchedulerList extends A_CmsListDialog {
             } finally {
                 getList().removeAllItems(removedItems, getLocale());
             }
-        } else if (getParamListAction().equals(LIST_ACTION_MACTIVATE)
-            || getParamListAction().equals(LIST_ACTION_MDEACTIVATE)) {
+        } else if (getParamListAction().equals(LIST_MACTION_ACTIVATE)
+            || getParamListAction().equals(LIST_MACTION_DEACTIVATE)) {
             // execute the activate or deactivate multiaction
             try {
                 Iterator itItems = getSelectedItems().iterator();
-                boolean activate = getParamListAction().equals(LIST_ACTION_MACTIVATE);
+                boolean activate = getParamListAction().equals(LIST_MACTION_ACTIVATE);
                 while (itItems.hasNext()) {
                     // toggle the active state of the selected item(s)
                     listItem = (CmsListItem)itItems.next();
@@ -229,7 +229,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
      */
     public void executeListSingleActions() throws IOException, ServletException {
 
-        if (getParamListAction().equals(LIST_ACTION_EDIT)) {
+        if (getParamListAction().equals(LIST_ACTION_EDIT) || getParamListAction().equals(LIST_DEFACTION_EDIT)) {
             // edit a job from the list
             String jobId = getSelectedItem().getId();
             // forward to the edit job screen with additional parameters               
@@ -370,7 +370,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         editCol.setSorteable(false);
         // create default edit action for edit column: edit job
-        CmsListDirectAction editColAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_EDIT);
+        CmsListDirectAction editColAction = new CmsListDirectAction(LIST_ACTION_EDIT);
         editColAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0));
         editColAction.setIconPath(PATH_BUTTONS + "edit.png");
         editColAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_HELP_0));
@@ -387,16 +387,16 @@ public class CmsSchedulerList extends A_CmsListDialog {
         activateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         activateCol.setListItemComparator(new CmsListItemActionIconComparator());
         // create direct action to activate/deactivate job
-        CmsActionActivateJob activateJob = new CmsActionActivateJob(LIST_ID, LIST_ACTION_ACTIVATE, getCms());
+        CmsActionActivateJob activateJob = new CmsActionActivateJob(LIST_ACTION_ACTIVATE, getCms());
         // direct action: activate job
-        CmsListDirectAction userActAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_ACTIVATE);
+        CmsListDirectAction userActAction = new CmsListDirectAction(LIST_ACTION_ACTIVATE);
         userActAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_NAME_0));
         userActAction.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_CONF_0));
         userActAction.setIconPath(ICON_INACTIVE);
         userActAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_HELP_0));
         activateJob.setFirstAction(userActAction);
         // direct action: deactivate job
-        CmsListDirectAction userDeactAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_DEACTIVATE);
+        CmsListDirectAction userDeactAction = new CmsListDirectAction(LIST_ACTION_DEACTIVATE);
         userDeactAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_NAME_0));
         userDeactAction.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_CONF_0));
         userDeactAction.setIconPath(ICON_ACTIVE);
@@ -413,7 +413,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         copyCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         copyCol.setListItemComparator(null);
         // direct action: copy job
-        CmsListDirectAction copyJob = new CmsListDirectAction(LIST_ID, LIST_COLUMN_COPY);
+        CmsListDirectAction copyJob = new CmsListDirectAction(LIST_ACTION_COPY);
         copyJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0));
         copyJob.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_COPY_CONF_0));
         copyJob.setIconPath(PATH_BUTTONS + "copy.png");
@@ -429,7 +429,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         delCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         delCol.setListItemComparator(null);
         // direct action: delete job
-        CmsListDirectAction delJob = new CmsListDirectAction(LIST_ID, LIST_ACTION_DELETE);
+        CmsListDirectAction delJob = new CmsListDirectAction(LIST_ACTION_DELETE);
         delJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0));
         delJob.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DELETE_CONF_0));
         delJob.setIconPath(ICON_DELETE);
@@ -444,7 +444,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         nameCol.setListItemComparator(new CmsListItemDefaultComparator());
         // create default edit action for name column: edit job
-        CmsListDefaultAction nameColAction = new CmsListDefaultAction(LIST_ID, LIST_ACTION_EDIT);
+        CmsListDefaultAction nameColAction = new CmsListDefaultAction(LIST_DEFACTION_EDIT);
         nameColAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0));
         nameColAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_HELP_0));
         nameColAction.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_CONF_0));
@@ -493,7 +493,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add independent job context info button
-        CmsListItemDetails jobsContextInfoDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_CONTEXTINFO);
+        CmsListItemDetails jobsContextInfoDetails = new CmsListItemDetails(LIST_DETAIL_CONTEXTINFO);
         jobsContextInfoDetails.setAtColumn(LIST_COLUMN_NAME);
         jobsContextInfoDetails.setVisible(false);
         jobsContextInfoDetails.setShowActionName(Messages.get().container(
@@ -518,7 +518,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         metadata.addItemDetails(jobsContextInfoDetails);
 
         // add independent job parameter button
-        CmsListItemDetails jobsParameterDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_PARAMETER);
+        CmsListItemDetails jobsParameterDetails = new CmsListItemDetails(LIST_DETAIL_PARAMETER);
         jobsParameterDetails.setAtColumn(LIST_COLUMN_NAME);
         jobsParameterDetails.setVisible(false);
         jobsParameterDetails.setShowActionName(Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_PARAMETER_NAME_0));
@@ -540,7 +540,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the activate job multi action
-        CmsListMultiAction activateJob = new CmsListMultiAction(LIST_ID, LIST_ACTION_MACTIVATE);
+        CmsListMultiAction activateJob = new CmsListMultiAction(LIST_MACTION_ACTIVATE);
         activateJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MACTIVATE_NAME_0));
         activateJob.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MACTIVATE_CONF_0));
         activateJob.setIconPath(ICON_MULTI_ACTIVATE);
@@ -548,7 +548,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         metadata.addMultiAction(activateJob);
 
         // add the deactivate job multi action
-        CmsListMultiAction deactivateJob = new CmsListMultiAction(LIST_ID, LIST_ACTION_MDEACTIVATE);
+        CmsListMultiAction deactivateJob = new CmsListMultiAction(LIST_MACTION_DEACTIVATE);
         deactivateJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_NAME_0));
         deactivateJob.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_CONF_0));
         deactivateJob.setIconPath(ICON_MULTI_DEACTIVATE);
@@ -556,7 +556,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         metadata.addMultiAction(deactivateJob);
 
         // add the delete job multi action
-        CmsListMultiAction deleteJobs = new CmsListMultiAction(LIST_ID, LIST_ACTION_MDELETE);
+        CmsListMultiAction deleteJobs = new CmsListMultiAction(LIST_MACTION_DELETE);
         deleteJobs.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDELETE_NAME_0));
         deleteJobs.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDELETE_CONF_0));
         deleteJobs.setIconPath(ICON_MULTI_DELETE);

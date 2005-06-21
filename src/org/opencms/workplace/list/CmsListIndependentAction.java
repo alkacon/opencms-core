@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListIndependentAction.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
@@ -41,48 +40,38 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * Default implementation of a independent action for a html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
 public class CmsListIndependentAction extends A_CmsListAction {
 
+    /** list action id constant. */
+    public static final String LIST_ACTION_PRINT = "print";
+
     /**
      * Default Constructor.<p>
      * 
-     * @param listId the id of the associated list
      * @param id unique id
      */
-    public CmsListIndependentAction(String listId, String id) {
+    public CmsListIndependentAction(String id) {
 
-        super(listId, id);
+        super(id);
     }
 
     /**
-     * Default Constructor.<p>
+     * Creates a new list print action.<p>
      * 
-     * @param listId the id of the associated list
-     * @param id unique id
-     * @param name the name
-     * @param helpText the help text
-     * @param iconPath the link to the icon
-     * @param enabled if enabled
-     * @param confirmationMessage the confirmation message
+     * @return a new list print action
      */
-    public CmsListIndependentAction(
-        String listId,
-        String id,
-        CmsMessageContainer name,
-        CmsMessageContainer helpText,
-        String iconPath,
-        boolean enabled,
-        CmsMessageContainer confirmationMessage) {
+    public static final CmsListIndependentAction getDefaultPrintListAction() {
 
-        this(listId, id);
-        setName(name);
-        setHelpText(helpText);
-        setIconPath(iconPath);
-        setEnabled(enabled);
-        setConfirmationMessage(confirmationMessage);
+        CmsListIndependentAction action = new CmsListIndependentAction(LIST_ACTION_PRINT);
+        action.setName(Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_NAME_0));
+        action.setHelpText(Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_HELP_0));
+        action.setIconPath("list/print.gif");
+        action.setEnabled(true);
+        action.setConfirmationMessage(Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_CONF_0));
+        return action;
     }
 
     /**
@@ -105,27 +94,5 @@ public class CmsListIndependentAction extends A_CmsListAction {
             isEnabled(),
             getIconPath(),
             onClic);
-    }
-
-    /** list action id constant. */
-    public static final String LIST_ACTION_PRINT = "print";
-
-    /**
-     * Creates a new list print action for the given list.<p>
-     * 
-     * @param listId the id of the associated list
-     * 
-     * @return a new list print action
-     */
-    public static final CmsListIndependentAction getDefaultPrintListAction(String listId) {
-
-        return new CmsListIndependentAction(
-            listId,
-            LIST_ACTION_PRINT,
-            Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_NAME_0),
-            Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_HELP_0),
-            "list/print.gif",
-            true, // enabled
-            Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_CONF_0));
     }
 }

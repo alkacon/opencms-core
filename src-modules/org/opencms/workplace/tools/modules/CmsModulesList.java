@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,52 +66,49 @@ import javax.servlet.jsp.PageContext;
  * Main module management view.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public class CmsModulesList extends A_CmsListDialog {
 
     /** List action delete. */
-    public static final String LIST_ACTION_DELETE = "delete";
+    public static final String LIST_ACTION_DELETE = "ad";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_EDIT = "edit";
+    public static final String LIST_ACTION_EDIT = "ae";
 
     /** List action export. */
-    public static final String LIST_ACTION_EXPORT = "export";
-
-    /** List action multi delete. */
-    public static final String LIST_ACTION_MDELETE = "mdelete";
+    public static final String LIST_ACTION_EXPORT = "ax";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_OVERVIEW = "overview";
+    public static final String LIST_ACTION_OVERVIEW = "ao";
 
     /** List column delete. */
-    public static final String LIST_COLUMN_DELETE = "delete";
+    public static final String LIST_COLUMN_DELETE = "cd";
 
     /** List column export. */
-    public static final String LIST_COLUMN_EDIT = "edit";
+    public static final String LIST_COLUMN_EDIT = "ce";
 
     /** List column export. */
-    public static final String LIST_COLUMN_EXPORT = "export";
+    public static final String LIST_COLUMN_EXPORT = "cx";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_GROUP = "group";
+    public static final String LIST_COLUMN_GROUP = "cg";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_NAME = "name";
+    public static final String LIST_COLUMN_NAME = "cn";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_NICENAME = "nicename";
+    public static final String LIST_COLUMN_NICENAME = "cc";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_VERSION = "version";
+    public static final String LIST_COLUMN_VERSION = "cv";
 
     /** List detail author info. */
-    public static final String LIST_DETAIL_AUTHORINFO = "authorinfo";
+    public static final String LIST_DETAIL_AUTHORINFO = "da";
 
     /** List detail dependencies info. */
-    public static final String LIST_DETAIL_DEPENDENCIES = "dependenciesinfo";
+    public static final String LIST_DETAIL_DEPENDENCIES = "dd";
 
     /** List detail  resources info. */
     public static final String LIST_DETAIL_RESOURCES = "resourcestinfo";
@@ -121,6 +118,9 @@ public class CmsModulesList extends A_CmsListDialog {
 
     /** list id constant. */
     public static final String LIST_ID = "modules";
+
+    /** List action multi delete. */
+    public static final String LIST_MACTION_DELETE = "md";
 
     /** Module parameter. */
     public static final String PARAM_MODULE = "module";
@@ -158,7 +158,7 @@ public class CmsModulesList extends A_CmsListDialog {
      */
     public void executeListMultiActions() throws IOException, ServletException {
 
-        if (getParamListAction().equals(LIST_ACTION_MDELETE)) {
+        if (getParamListAction().equals(LIST_MACTION_DELETE)) {
             String moduleList = "";
             // execute the delete multiaction
             Iterator itItems = getSelectedItems().iterator();
@@ -338,7 +338,7 @@ public class CmsModulesList extends A_CmsListDialog {
         editCol.setSorteable(false);
         editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         // add the edit action
-        CmsListDirectAction editColAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_EDIT);
+        CmsListDirectAction editColAction = new CmsListDirectAction(LIST_ACTION_EDIT);
         editColAction.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EDIT_NAME_0));
         editColAction.setHelpText(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EDIT_HELP_0));
         editColAction.setIconPath(PATH_BUTTONS + "modules.png");
@@ -354,7 +354,7 @@ public class CmsModulesList extends A_CmsListDialog {
         expCol.setSorteable(false);
         expCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         // direct action: export module
-        CmsListDirectAction expModule = new CmsListDirectAction(LIST_ID, LIST_ACTION_EXPORT);
+        CmsListDirectAction expModule = new CmsListDirectAction(LIST_ACTION_EXPORT);
         expModule.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EXPORT_NAME_0));
         expModule.setConfirmationMessage(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_EXPORT_CONF_0));
         expModule.setIconPath(PATH_BUTTONS + "export.png");
@@ -370,7 +370,7 @@ public class CmsModulesList extends A_CmsListDialog {
         delCol.setSorteable(false);
         delCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         // direct action: delete module
-        CmsListDirectAction delModule = new CmsListDirectAction(LIST_ID, LIST_ACTION_DELETE);
+        CmsListDirectAction delModule = new CmsListDirectAction(LIST_ACTION_DELETE);
         delModule.setColumn(LIST_COLUMN_NICENAME);
         delModule.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_DELETE_NAME_0));
         delModule.setConfirmationMessage(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_DELETE_CONF_0));
@@ -386,7 +386,7 @@ public class CmsModulesList extends A_CmsListDialog {
         nameCol.setWidth("30%");
         nameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         // create default edit action for name column: edit module
-        CmsListDefaultAction nameColAction = new CmsListDefaultAction(LIST_ID, LIST_ACTION_OVERVIEW);
+        CmsListDefaultAction nameColAction = new CmsListDefaultAction(LIST_ACTION_OVERVIEW);
         nameColAction.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_OVERVIEW_NAME_0));
         nameColAction.setIconPath(null);
         nameColAction.setHelpText(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_OVERVIEW_HELP_0));
@@ -427,7 +427,7 @@ public class CmsModulesList extends A_CmsListDialog {
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // create list item detail
-        CmsListItemDetails modulesAuthorInfoDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_AUTHORINFO);
+        CmsListItemDetails modulesAuthorInfoDetails = new CmsListItemDetails(LIST_DETAIL_AUTHORINFO);
         modulesAuthorInfoDetails.setAtColumn(LIST_COLUMN_NAME);
         modulesAuthorInfoDetails.setVisible(false);
         modulesAuthorInfoDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
@@ -445,7 +445,7 @@ public class CmsModulesList extends A_CmsListDialog {
         metadata.addItemDetails(modulesAuthorInfoDetails);
 
         // create list item detail
-        CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_RESOURCES);
+        CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_DETAIL_RESOURCES);
         resourcesDetails.setAtColumn(LIST_COLUMN_NAME);
         resourcesDetails.setVisible(false);
         resourcesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
@@ -461,7 +461,7 @@ public class CmsModulesList extends A_CmsListDialog {
         metadata.addItemDetails(resourcesDetails);
 
         // create list item detail
-        CmsListItemDetails dependenciesDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_DEPENDENCIES);
+        CmsListItemDetails dependenciesDetails = new CmsListItemDetails(LIST_DETAIL_DEPENDENCIES);
         dependenciesDetails.setAtColumn(LIST_COLUMN_NAME);
         dependenciesDetails.setVisible(false);
         dependenciesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
@@ -479,7 +479,7 @@ public class CmsModulesList extends A_CmsListDialog {
         metadata.addItemDetails(dependenciesDetails);
 
         // create list item detail
-        CmsListItemDetails restypesDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_RESTYPES);
+        CmsListItemDetails restypesDetails = new CmsListItemDetails(LIST_DETAIL_RESTYPES);
         restypesDetails.setAtColumn(LIST_COLUMN_NAME);
         restypesDetails.setVisible(false);
         restypesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
@@ -493,9 +493,7 @@ public class CmsModulesList extends A_CmsListDialog {
         metadata.addItemDetails(restypesDetails);
 
         // makes the list searchable
-        CmsListSearchAction searchAction = new CmsListSearchAction(
-            LIST_ID,
-            metadata.getColumnDefinition(LIST_COLUMN_NAME));
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_NAME));
         searchAction.addColumn(metadata.getColumnDefinition(LIST_COLUMN_GROUP));
         metadata.setSearchAction(searchAction);
 
@@ -507,7 +505,7 @@ public class CmsModulesList extends A_CmsListDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the delete module multi action
-        CmsListMultiAction deleteModules = new CmsListMultiAction(LIST_ID, LIST_ACTION_MDELETE);
+        CmsListMultiAction deleteModules = new CmsListMultiAction(LIST_MACTION_DELETE);
         deleteModules.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_MDELETE_NAME_0));
         deleteModules.setConfirmationMessage(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_MDELETE_CONF_0));
         deleteModules.setIconPath(ICON_MULTI_DELETE);

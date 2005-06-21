@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/Attic/CmsMessagePendingAction.java,v $
- * Date   : $Date: 2005/06/15 13:50:49 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.list.I_CmsListDirectAction;
  * Project lock/unlock action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsMessagePendingAction extends A_CmsListTwoStatesAction {
@@ -47,33 +47,13 @@ public class CmsMessagePendingAction extends A_CmsListTwoStatesAction {
     /**
      * Default Constructor.<p>
      * 
-     * @param listId the id of the associated list
-     * @param id unique id
+     * @param id the unique id
      */
-    protected CmsMessagePendingAction(String listId, String id) {
+    protected CmsMessagePendingAction(String id) {
 
-        super(listId, id, null);
+        super(id, null);
     }
-
-    /**
-     * Full Constructor.<p>
-     * 
-     * @param listId the id of the associated list
-     * @param id unique id
-     * @param actAction the first action
-     * @param deactAction the second action
-     */
-    protected CmsMessagePendingAction(
-        String listId,
-        String id,
-        I_CmsListDirectAction actAction,
-        I_CmsListDirectAction deactAction) {
-
-        this(listId, id);
-        setFirstAction(actAction);
-        setSecondAction(deactAction);
-    }
-    
+   
     /**
      * @see org.opencms.workplace.list.A_CmsListToggleAction#selectAction()
      */

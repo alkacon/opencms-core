@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.8 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,28 +58,37 @@ import javax.servlet.jsp.JspException;
  * Generalized user groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
     /** list action id constant. */
-    public static final String LIST_ACTION_ICON = "action_icon";
+    public static final String LIST_ACTION_ICON = "ai";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_STATE = "action_state";
+    public static final String LIST_ACTION_ICON_DIRECT = "aid";
+
+    /** list action id constant. */
+    public static final String LIST_ACTION_ICON_INDIRECT = "aii";
+
+    /** list action id constant. */
+    public static final String LIST_ACTION_STATE_DIRECT = "asd";
+
+    /** list action id constant. */
+    public static final String LIST_ACTION_STATE_INDIRECT = "asi";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_DESCRIPTION = "column_description";
+    public static final String LIST_COLUMN_DESCRIPTION = "cd";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_ICON = "column_icon";
+    public static final String LIST_COLUMN_ICON = "ci";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_NAME = "column_name";
+    public static final String LIST_COLUMN_NAME = "cn";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_STATE = "column_state";
+    public static final String LIST_COLUMN_STATE = "cs";
 
     /** Stores the value of the request parameter for the user id. */
     private String m_paramUserid;
@@ -123,9 +132,12 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         if (list != null) {
             CmsListColumnDefinition col = list.getMetadata().getColumnDefinition(LIST_COLUMN_ICON);
             if (col != null) {
-                I_CmsListDirectAction action = col.getDirectAction(LIST_ACTION_ICON);
-                if (action != null && action instanceof CmsGroupDisabledStateAction) {
-                    ((CmsGroupDisabledStateAction)action).setUserName(getParamUsername());
+                Iterator it = col.getDirectActions().iterator();
+                while (it.hasNext()) {
+                    I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
+                    if (action instanceof CmsGroupDisabledStateAction) {
+                        ((CmsGroupDisabledStateAction)action).setUserName(getParamUsername());
+                    }
                 }
             }
         }
@@ -247,18 +259,17 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         if (!getListId().equals(CmsNotUserGroupsList.LIST_ID)) {
             // state action
             CmsGroupDisabledStateAction iconAction = new CmsGroupDisabledStateAction(
-                getListId(),
                 LIST_ACTION_ICON,
                 getCms(),
                 getParamUsername());
             // adds a direct group icon
-            CmsListDirectAction dirAction = new CmsListDirectAction(getListId(), LIST_ACTION_ICON);
+            CmsListDirectAction dirAction = new CmsListDirectAction(LIST_ACTION_ICON_DIRECT);
             dirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_NAME_0));
             dirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_HELP_0));
             dirAction.setIconPath(CmsUsersList.PATH_BUTTONS + "group.png");
             iconAction.setFirstAction(dirAction);
             // adds an indirect group icon
-            CmsListDirectAction indirAction = new CmsListDirectAction(getListId(), LIST_ACTION_ICON);
+            CmsListDirectAction indirAction = new CmsListDirectAction(LIST_ACTION_ICON_INDIRECT);
             indirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_NAME_0));
             indirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_HELP_0));
             indirAction.setIconPath(CmsUsersList.PATH_BUTTONS + "group_indirect.png");
@@ -266,7 +277,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             iconCol.addDirectAction(iconAction);
         } else {
             // state action
-            CmsListDirectAction iconAction = new CmsListDirectAction(getListId(), LIST_ACTION_ICON);
+            CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
             iconAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_AVAILABLE_NAME_0));
             iconAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_AVAILABLE_HELP_0));
             iconAction.setIconPath(CmsUsersList.PATH_BUTTONS + "group.png");

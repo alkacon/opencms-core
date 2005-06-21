@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,79 +70,79 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsUsersList extends A_CmsListDialog {
 
     /** list action id constant. */
-    public static final String LIST_ACTION_ACTIVATE = "action_activate";
+    public static final String LIST_ACTION_ACTIVATE = "aa";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_DEACTIVATE = "action_deactivate";
+    public static final String LIST_ACTION_DEACTIVATE = "ac";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_DELETE = "action_delete";
+    public static final String LIST_ACTION_DELETE = "ad";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_EDIT = "action_edit";
+    public static final String LIST_ACTION_EDIT = "ae";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_GROUPS = "action_groups";
+    public static final String LIST_ACTION_GROUPS = "ag";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_ROLES = "action_roles";
+    public static final String LIST_ACTION_ROLES = "ar";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_ACTIVATE = "column_activate";
+    public static final String LIST_COLUMN_ACTIVATE = "ca";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_DELETE = "column_delete";
+    public static final String LIST_COLUMN_DELETE = "cd";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_EDIT = "column_edit";
+    public static final String LIST_COLUMN_EDIT = "ce";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_EMAIL = "column_email";
+    public static final String LIST_COLUMN_EMAIL = "cm";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_GROUPS = "column_groups";
+    public static final String LIST_COLUMN_GROUPS = "cg";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_LASTLOGIN = "column_lastlogin";
+    public static final String LIST_COLUMN_LASTLOGIN = "cl";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_LOGIN = "column_login";
+    public static final String LIST_COLUMN_LOGIN = "ci";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_NAME = "column_name";
+    public static final String LIST_COLUMN_NAME = "cn";
 
     /** list column id constant. */
-    public static final String LIST_COLUMN_ROLES = "column_roles";
+    public static final String LIST_COLUMN_ROLES = "cr";
 
     /** list action id constant. */
-    public static final String LIST_DEFACTION_EDIT = "defaction_edit";
+    public static final String LIST_DEFACTION_EDIT = "de";
 
     /** list item detail id constant. */
-    public static final String LIST_DETAIL_ADDRESS = "detail_address";
+    public static final String LIST_DETAIL_ADDRESS = "da";
 
     /** list item detail id constant. */
-    public static final String LIST_DETAIL_GROUPS = "detail_groups";
+    public static final String LIST_DETAIL_GROUPS = "dg";
 
     /** list item detail id constant. */
-    public static final String LIST_DETAIL_ROLES = "detail_roles";
+    public static final String LIST_DETAIL_ROLES = "dr";
 
     /** list id constant. */
-    public static final String LIST_ID = "users";
+    public static final String LIST_ID = "lu";
 
     /** list action id constant. */
-    public static final String LIST_MACTION_ACTIVATE = "maction_activate";
+    public static final String LIST_MACTION_ACTIVATE = "ma";
 
     /** list action id constant. */
-    public static final String LIST_MACTION_DEACTIVATE = "maction_deactivate";
+    public static final String LIST_MACTION_DEACTIVATE = "mc";
 
     /** list action id constant. */
-    public static final String LIST_MACTION_DELETE = "maction_delete";
+    public static final String LIST_MACTION_DELETE = "md";
 
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/accounts/buttons/";
@@ -408,7 +408,7 @@ public class CmsUsersList extends A_CmsListDialog {
         editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         editCol.setSorteable(false);
         // add edit action
-        CmsListDirectAction editAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_EDIT);
+        CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);
         editAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDIT_NAME_0));
         editAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDIT_HELP_0));
         editAction.setIconPath(PATH_BUTTONS + "user.png");
@@ -424,7 +424,7 @@ public class CmsUsersList extends A_CmsListDialog {
         groupCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         groupCol.setSorteable(false);
         // add groups action
-        CmsListDirectAction groupAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_GROUPS);
+        CmsListDirectAction groupAction = new CmsListDirectAction(LIST_ACTION_GROUPS);
         groupAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_GROUPS_NAME_0));
         groupAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_GROUPS_HELP_0));
         groupAction.setIconPath(PATH_BUTTONS + "group.png");
@@ -456,19 +456,19 @@ public class CmsUsersList extends A_CmsListDialog {
         actCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         actCol.setListItemComparator(new CmsListItemActionIconComparator());
         // activate action
-        CmsListDirectAction actAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_ACTIVATE);
+        CmsListDirectAction actAction = new CmsListDirectAction(LIST_ACTION_ACTIVATE);
         actAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_NAME_0));
         actAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_HELP_0));
         actAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_CONF_0));
         actAction.setIconPath(ICON_INACTIVE);
         // deactivate action
-        CmsListDirectAction deactAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_DEACTIVATE);
+        CmsListDirectAction deactAction = new CmsListDirectAction(LIST_ACTION_DEACTIVATE);
         deactAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_NAME_0));
         deactAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_HELP_0));
         deactAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_CONF_0));
         deactAction.setIconPath(ICON_ACTIVE);
         // adds an activate/deactivate direct action
-        CmsUserActivateAction userAction = new CmsUserActivateAction(LIST_ID, LIST_ACTION_ACTIVATE, getCms());
+        CmsUserActivateAction userAction = new CmsUserActivateAction(LIST_ACTION_ACTIVATE, getCms());
         userAction.setFirstAction(actAction);
         userAction.setSecondAction(deactAction);
         actCol.addDirectAction(userAction);
@@ -483,7 +483,7 @@ public class CmsUsersList extends A_CmsListDialog {
         deleteCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         deleteCol.setSorteable(false);
         // add delete action
-        CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_DELETE);
+        CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ACTION_DELETE);
         deleteAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DELETE_NAME_0));
         deleteAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DELETE_HELP_0));
         deleteAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DELETE_CONF_0));
@@ -497,7 +497,7 @@ public class CmsUsersList extends A_CmsListDialog {
         loginCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LOGIN_0));
         loginCol.setWidth("20%");
         // create default edit action
-        CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_ID, LIST_DEFACTION_EDIT);
+        CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_DEFACTION_EDIT);
         defEditAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_EDIT_NAME_0));
         defEditAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_EDIT_HELP_0));
         loginCol.setDefaultAction(defEditAction);
@@ -533,7 +533,7 @@ public class CmsUsersList extends A_CmsListDialog {
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add user address details
-        CmsListItemDetails userAddressDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_ADDRESS);
+        CmsListItemDetails userAddressDetails = new CmsListItemDetails(LIST_DETAIL_ADDRESS);
         userAddressDetails.setAtColumn(LIST_COLUMN_LOGIN);
         userAddressDetails.setVisible(false);
         userAddressDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_NAME_0));
@@ -546,7 +546,7 @@ public class CmsUsersList extends A_CmsListDialog {
         metadata.addItemDetails(userAddressDetails);
 
         // add user groups details
-        CmsListItemDetails userGroupsDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_GROUPS);
+        CmsListItemDetails userGroupsDetails = new CmsListItemDetails(LIST_DETAIL_GROUPS);
         userGroupsDetails.setAtColumn(LIST_COLUMN_LOGIN);
         userGroupsDetails.setVisible(false);
         userGroupsDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_GROUPS_NAME_0));
@@ -572,9 +572,7 @@ public class CmsUsersList extends A_CmsListDialog {
         //        metadata.addItemDetails(userRolesDetails);
 
         // makes the list searchable
-        CmsListSearchAction searchAction = new CmsListSearchAction(
-            LIST_ID,
-            metadata.getColumnDefinition(LIST_COLUMN_LOGIN));
+        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_LOGIN));
         searchAction.addColumn(metadata.getColumnDefinition(LIST_COLUMN_NAME));
         metadata.setSearchAction(searchAction);
     }
@@ -585,7 +583,7 @@ public class CmsUsersList extends A_CmsListDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add delete multi action
-        CmsListMultiAction deleteMultiAction = new CmsListMultiAction(LIST_ID, LIST_MACTION_DELETE);
+        CmsListMultiAction deleteMultiAction = new CmsListMultiAction(LIST_MACTION_DELETE);
         deleteMultiAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_DELETE_NAME_0));
         deleteMultiAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_DELETE_HELP_0));
         deleteMultiAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_DELETE_CONF_0));
@@ -593,7 +591,7 @@ public class CmsUsersList extends A_CmsListDialog {
         metadata.addMultiAction(deleteMultiAction);
 
         // add the activate user multi action
-        CmsListMultiAction activateUser = new CmsListMultiAction(LIST_ID, LIST_MACTION_ACTIVATE);
+        CmsListMultiAction activateUser = new CmsListMultiAction(LIST_MACTION_ACTIVATE);
         activateUser.setName(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ACTIVATE_NAME_0));
         activateUser.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ACTIVATE_HELP_0));
         activateUser.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ACTIVATE_CONF_0));
@@ -601,7 +599,7 @@ public class CmsUsersList extends A_CmsListDialog {
         metadata.addMultiAction(activateUser);
 
         // add the deactivate user multi action
-        CmsListMultiAction deactivateUser = new CmsListMultiAction(LIST_ID, LIST_MACTION_DEACTIVATE);
+        CmsListMultiAction deactivateUser = new CmsListMultiAction(LIST_MACTION_DEACTIVATE);
         deactivateUser.setName(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_DEACTIVATE_NAME_0));
         deactivateUser.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_DEACTIVATE_HELP_0));
         deactivateUser.setConfirmationMessage(Messages.get().container(

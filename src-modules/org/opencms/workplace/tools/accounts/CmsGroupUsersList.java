@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupUsersList.java,v $
- * Date   : $Date: 2005/06/07 16:25:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,19 +53,22 @@ import javax.servlet.jsp.PageContext;
  * User groups view.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsGroupUsersList extends A_CmsGroupUsersList {
 
     /** list action id constant. */
-    public static final String LIST_DEFACTION_REMOVE = "defaction_remove";
-
-    /** list id constant. */
-    public static final String LIST_ID = "groupusers";
+    public static final String LIST_ACTION_REMOVE = "ar";
 
     /** list action id constant. */
-    public static final String LIST_MACTION_REMOVE = "maction_remove";
+    public static final String LIST_DEFACTION_REMOVE = "dr";
+
+    /** list id constant. */
+    public static final String LIST_ID = "lgu";
+
+    /** list action id constant. */
+    public static final String LIST_MACTION_REMOVE = "mr";
 
     /**
      * Public constructor.<p>
@@ -117,7 +120,7 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
      */
     public void executeListSingleActions() throws CmsRuntimeException {
 
-        if (getParamListAction().equals(LIST_DEFACTION_REMOVE)) {
+        if (getParamListAction().equals(LIST_DEFACTION_REMOVE) || getParamListAction().equals(LIST_ACTION_REMOVE)) {
             CmsListItem listItem = getSelectedItem();
             try {
                 getCms().removeUserFromGroup((String)listItem.get(LIST_COLUMN_LOGIN), getParamGroupname());
@@ -158,7 +161,7 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
         // get column for state
         CmsListColumnDefinition stateCol = metadata.getColumnDefinition(LIST_COLUMN_STATE);
         // add remove action
-        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ID, LIST_DEFACTION_REMOVE);
+        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_REMOVE);
         stateAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_REMOVE_NAME_0));
         stateAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_REMOVE_HELP_0));
         stateAction.setIconPath(ICON_MINUS);
@@ -166,7 +169,7 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
         // get column for login
         CmsListColumnDefinition loginCol = metadata.getColumnDefinition(LIST_COLUMN_LOGIN);
         // add default remove action
-        CmsListDefaultAction removeAction = new CmsListDefaultAction(LIST_ID, LIST_DEFACTION_REMOVE);
+        CmsListDefaultAction removeAction = new CmsListDefaultAction(LIST_DEFACTION_REMOVE);
         removeAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_REMOVE_NAME_0));
         removeAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_REMOVE_HELP_0));
         loginCol.setDefaultAction(removeAction);
@@ -178,11 +181,10 @@ public class CmsGroupUsersList extends A_CmsGroupUsersList {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add remove multi action
-        CmsListMultiAction removeMultiAction = new CmsListMultiAction(LIST_ID, LIST_MACTION_REMOVE);
+        CmsListMultiAction removeMultiAction = new CmsListMultiAction(LIST_MACTION_REMOVE);
         removeMultiAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_REMOVE_NAME_0));
         removeMultiAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_REMOVE_HELP_0));
-        removeMultiAction.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_USERS_LIST_MACTION_REMOVE_CONF_0));
+        removeMultiAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_REMOVE_CONF_0));
         removeMultiAction.setIconPath(ICON_MULTI_MINUS);
         metadata.addMultiAction(removeMultiAction);
     }

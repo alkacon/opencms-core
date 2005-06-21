@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/CmsPublishProjectAction.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.workplace.list.I_CmsListDirectAction;
  * publish enabled/disabled action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsPublishProjectAction extends A_CmsListTwoStatesAction {
@@ -48,36 +48,14 @@ public class CmsPublishProjectAction extends A_CmsListTwoStatesAction {
     /**
      * Default Constructor.<p>
      * 
-     * @param listId the id of the associated list
-     * @param id unique id
+     * @param id the unique id
      * @param cms the cms context
      */
-    protected CmsPublishProjectAction(String listId, String id, CmsObject cms) {
+    protected CmsPublishProjectAction(String id, CmsObject cms) {
 
-        super(listId, id, cms);
+        super(id, cms);
     }
 
-    /**
-     * Full Constructor.<p>
-     * 
-     * @param listId the id of the associated list
-     * @param id unique id
-     * @param cms the cms context
-     * @param actAction the first action
-     * @param deactAction the second action
-     */
-    protected CmsPublishProjectAction(
-        String listId,
-        String id,
-        CmsObject cms,
-        I_CmsListDirectAction actAction,
-        I_CmsListDirectAction deactAction) {
-
-        this(listId, id, cms);
-        setFirstAction(actAction);
-        setSecondAction(deactAction);
-    }
-    
     /**
      * @see org.opencms.workplace.list.A_CmsListToggleAction#selectAction()
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Attic/CmsActionActivateJob.java,v $
- * Date   : $Date: 2005/05/18 10:26:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,21 +43,20 @@ import org.opencms.workplace.list.I_CmsListDirectAction;
  * @author Michael Moossen (m.moossen@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsActionActivateJob  extends A_CmsListTwoStatesAction {
     
     /**
      * Default Constructor.<p>
-     * 
-     * @param listId the id of the associated list
-     * @param id unique item id
+     *
+     * @param id the unique id
      * @param cms the cms context
      */
-    protected CmsActionActivateJob(String listId, String id, CmsObject cms) {
+    protected CmsActionActivateJob(String id, CmsObject cms) {
 
-        super(listId, id, cms);
+        super(id, cms);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspWriter;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -341,7 +341,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
             result.append(" onsubmit=\"listSearchAction('");
             result.append(getListId());
             result.append("', '");
-            result.append(A_CmsListSearchAction.SEARCH_ACTION_ID);
+            result.append(getMetadata(getListId()).getSearchAction().getId());
             result.append("', '");
             result.append(getMetadata(getListId()).getSearchAction().getConfirmationMessage().key(getLocale()));
             result.append("');\"");
@@ -771,11 +771,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected synchronized CmsListMetadata getMetadata(String listId) {
 
         if (m_metadatas.get(listId) == null) {
-            CmsListMetadata metadata = new CmsListMetadata();
+            CmsListMetadata metadata = new CmsListMetadata(listId);
 
             setColumns(metadata);
             setIndependentActions(metadata);
             setMultiActions(metadata);
+            metadata.checkIds();
             m_metadatas.put(listId, metadata);
         }
         return (CmsListMetadata)m_metadatas.get(listId);
@@ -897,7 +898,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
         if (((CmsListMetadata)m_metadatas.get(listId)).getSearchAction() == null) {
             // makes the list searchable
-            CmsListSearchAction searchAction = new CmsListSearchAction(listId, columnDefinition);
+            CmsListSearchAction searchAction = new CmsListSearchAction(columnDefinition);
             searchAction.useDefaultShowAllAction();
             ((CmsListMetadata)m_metadatas.get(listId)).setSearchAction(searchAction);
         }

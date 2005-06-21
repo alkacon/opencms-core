@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMultiAction.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
@@ -41,7 +40,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * Default implementation of a list multi action.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsListMultiAction extends A_CmsListAction {
@@ -49,40 +48,11 @@ public class CmsListMultiAction extends A_CmsListAction {
     /**
      * Default Constructor.<p>
      * 
-     * @param listId the id of the associated list
-     * @param id unique id
+     * @param id the unique id
      */
-    public CmsListMultiAction(String listId, String id) {
+    public CmsListMultiAction(String id) {
 
-        super(listId, id);
-    }
-
-    /**
-     * Full Constructor.<p>
-     * 
-     * @param listId the id of the associated list
-     * @param id unique id
-     * @param name the name
-     * @param iconPath the link to the icon
-     * @param helpText the help text
-     * @param enabled if enabled
-     * @param confirmationMessage the confirmation message
-     */
-    public CmsListMultiAction(
-        String listId,
-        String id,
-        CmsMessageContainer name,
-        String iconPath,
-        CmsMessageContainer helpText,
-        boolean enabled,
-        CmsMessageContainer confirmationMessage) {
-
-        this(listId, id);
-        setName(name);
-        setIconPath(iconPath);
-        setHelpText(helpText);
-        setEnabled(enabled);
-        setConfirmationMessage(confirmationMessage);
+        super(id);
     }
 
     /**

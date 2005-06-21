@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/06/08 16:44:19 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {
@@ -79,7 +79,7 @@ public class CmsListColumnDefinition {
     private CmsMessageContainer m_helpText;
 
     /** Unique id. */
-    private String m_id;
+    private final String m_id;
 
     /** Display name. */
     private CmsMessageContainer m_name;
@@ -93,10 +93,13 @@ public class CmsListColumnDefinition {
     /** Column width. */
     private String m_width;
 
+    /** List id. */
+    private String m_listId;
+
     /**
      * Default Constructor.<p>
-     *  
-     * @param id the id
+     * 
+     * @param id the unique id
      */
     public CmsListColumnDefinition(String id) {
 
@@ -107,29 +110,26 @@ public class CmsListColumnDefinition {
     }
 
     /**
-     * Full Constructor.<p>
-     *  
-     * @param id the id
-     * @param name the name
-     * @param width the width
-     * @param align the alignment
-     */
-    public CmsListColumnDefinition(String id, CmsMessageContainer name, String width, CmsListColumnAlignEnum align) {
-
-        this(id);
-        setName(name);
-        setWidth(width);
-        setAlign(align);
-    }
-
-    /**
      * Adds a new action to the column.<p>
      * 
      * @param listAction the action to add
      */
     public void addDirectAction(I_CmsListDirectAction listAction) {
 
+        if (m_listId != null) {
+            listAction.setListId(m_listId);
+        }
         m_actionList.add(listAction);
+    }
+
+    /**
+     * Sets the id of the list.<p>
+     * 
+     * @param listId the id of the list
+     */
+    /*package*/void setListId(String listId) {
+
+        m_listId = listId;
     }
 
     /**
@@ -150,6 +150,25 @@ public class CmsListColumnDefinition {
     public I_CmsListDirectAction getDefaultAction() {
 
         return m_defaultAction;
+    }
+
+    /**
+     * Returns a direct action by id.<p>
+     * 
+     * @param actionId the id of the action
+     * 
+     * @return the action if found or null
+     */
+    public I_CmsListDirectAction getDirectAction(String actionId) {
+
+        Iterator it = m_actionList.iterator();
+        while (it.hasNext()) {
+            I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
+            if (action.getId().equals(actionId)) {
+                return action;
+            }
+        }
+        return null;
     }
 
     /**
@@ -397,8 +416,11 @@ public class CmsListColumnDefinition {
      * @param defaultAction the default Action to set
      */
     public void setDefaultAction(CmsListDefaultAction defaultAction) {
-
+        
         m_defaultAction = defaultAction;
+        if (m_listId != null) {
+            m_defaultAction.setListId(m_listId);
+        }
         // set the column id
         m_defaultAction.setColumn(getId());
     }
@@ -491,24 +513,5 @@ public class CmsListColumnDefinition {
     public void setWidth(String width) {
 
         m_width = width;
-    }
-
-    /**
-     * Returns a direct action by id.<p>
-     * 
-     * @param actionId the id of the action
-     * 
-     * @return the action if found or null
-     */
-    public I_CmsListDirectAction getDirectAction(String actionId) {
-
-        Iterator it = m_actionList.iterator();
-        while (it.hasNext()) {
-            I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
-            if (action.getId().equals(actionId)) {
-                return action;
-            }
-        }       
-        return null;
     }
 }

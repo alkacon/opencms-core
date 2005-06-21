@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsListTwoStatesAction.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.CmsWorkplace;
  * where you can use the <code>{@link #getCms()}</code> to access the cms context.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public abstract class A_CmsListTwoStatesAction extends A_CmsListToggleAction {
@@ -51,41 +51,26 @@ public abstract class A_CmsListTwoStatesAction extends A_CmsListToggleAction {
 
     /** The activation action. */
     private I_CmsListDirectAction m_firstAction;
+
     /** The desactivation action. */
     private I_CmsListDirectAction m_secondAction;
 
     /**
      * Default Constructor.<p>
      * 
-     * @param listId the id of the associated list
-     * @param id unique id
-     * @param cms the cms context
-     */
-    protected A_CmsListTwoStatesAction(String listId, String id, CmsObject cms) {
-
-        super(listId, id);
-        m_cms = cms;
-    }
-
-    /**
-     * Full Constructor.<p>
+     * Be careful while using the cms object to select the proper action, 
+     * this cms object will be set only once the first time the action is needed, after that
+     * every user/session that may access to this action will be using the same cms object.<p>
      * 
-     * @param listId the id of the associated list
-     * @param id unique id
+     * So use only methods that do not need role checks and those that do not are current user dependent.<p>  
+     * 
+     * @param id the unique id
      * @param cms the cms context
-     * @param firstAction the first action
-     * @param secondAction the second action
      */
-    protected A_CmsListTwoStatesAction(
-        String listId,
-        String id,
-        CmsObject cms,
-        I_CmsListDirectAction firstAction,
-        I_CmsListDirectAction secondAction) {
+    protected A_CmsListTwoStatesAction(String id, CmsObject cms) {
 
-        this(listId, id, cms);
-        setFirstAction(firstAction);
-        setSecondAction(secondAction);
+        super(id);
+        m_cms = cms;
     }
 
     /**
@@ -97,7 +82,7 @@ public abstract class A_CmsListTwoStatesAction extends A_CmsListToggleAction {
 
         return m_cms;
     }
-
+    
     /**
      * Returns the first Action.<p>
      *
@@ -137,7 +122,7 @@ public abstract class A_CmsListTwoStatesAction extends A_CmsListToggleAction {
 
         m_secondAction = secondAction;
     }
-    
+
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#helpTextHtml(org.opencms.workplace.CmsWorkplace)
      */
@@ -145,12 +130,22 @@ public abstract class A_CmsListTwoStatesAction extends A_CmsListToggleAction {
 
         return m_firstAction.helpTextHtml(wp) + m_secondAction.helpTextHtml(wp);
     }
-    
+
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#confirmationTextHtml(org.opencms.workplace.CmsWorkplace)
      */
     public String confirmationTextHtml(CmsWorkplace wp) {
 
         return m_firstAction.confirmationTextHtml(wp) + m_secondAction.confirmationTextHtml(wp);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.CmsListDirectAction#setItem(org.opencms.workplace.list.CmsListItem)
+     */
+    public void setItem(CmsListItem item) {
+
+        super.setItem(item);
+        getFirstAction().setItem(item);
+        getSecondAction().setItem(item);
     }
 }

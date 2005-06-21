@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/06/20 12:12:49 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/21 15:54:15 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.TreeSet;
  * This is class contains all the information for defining a whole html list.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.7.3
  */
 public class CmsListMetadata {
@@ -62,20 +62,25 @@ public class CmsListMetadata {
     /** Container for item detail definitions. */
     private CmsIdentifiableObjectContainer m_itemDetails = new CmsIdentifiableObjectContainer(true, false);
 
+    /** The id of the list. */
+    private String m_listId;
+
     /** List of multi actions. */
     private List m_multiActions = new ArrayList();
 
     /** Search action. */
     private CmsListSearchAction m_searchAction;
 
-    
     /**
-     * Default Constructor.<p> 
+     * Default Constructor.<p>
+     * 
+     * @param listId the id of the list 
      */
-    public CmsListMetadata() {
-        // noop
+    public CmsListMetadata(String listId) {
+
+        m_listId = listId;
     }
-    
+
     /**
      * Adds a new column definition at the end.<p>
      * 
@@ -85,6 +90,7 @@ public class CmsListMetadata {
      */
     public void addColumn(CmsListColumnDefinition listColumn) {
 
+        setListIdForColumn(listColumn);
         m_columns.addIdentifiableObject(listColumn.getId(), listColumn);
     }
 
@@ -98,6 +104,7 @@ public class CmsListMetadata {
      */
     public void addColumn(CmsListColumnDefinition listColumn, int position) {
 
+        setListIdForColumn(listColumn);
         m_columns.addIdentifiableObject(listColumn.getId(), listColumn, position);
     }
 
@@ -108,6 +115,7 @@ public class CmsListMetadata {
      */
     public void addIndependentAction(I_CmsListAction action) {
 
+        action.setListId(getListId());
         m_indepActions.add(action);
     }
 
@@ -120,6 +128,7 @@ public class CmsListMetadata {
      */
     public void addItemDetails(CmsListItemDetails itemDetail) {
 
+        itemDetail.setListId(getListId());
         m_itemDetails.addIdentifiableObject(itemDetail.getId(), itemDetail);
     }
 
@@ -133,6 +142,7 @@ public class CmsListMetadata {
      */
     public void addItemDetails(CmsListItemDetails itemDetail, int position) {
 
+        itemDetail.setListId(getListId());
         m_itemDetails.addIdentifiableObject(itemDetail.getId(), itemDetail, position);
     }
 
@@ -145,6 +155,7 @@ public class CmsListMetadata {
      */
     public void addMultiAction(CmsListMultiAction multiAction) {
 
+        multiAction.setListId(getListId());
         m_multiActions.add(multiAction);
     }
 
@@ -171,16 +182,6 @@ public class CmsListMetadata {
     }
 
     /**
-     * Returns the list of multi actions.<p>
-     * 
-     * @return a list of <code>{@link CmsListMultiAction}</code>s
-     */
-    public List getMultiActions() {
-
-        return Collections.unmodifiableList(m_multiActions);
-    }
-
-    /**
      * Returns a list item details definition object for a given id.<p>
      * 
      * @param itemDetailId the id
@@ -201,14 +202,35 @@ public class CmsListMetadata {
 
         return m_columns.elementList();
     }
-    
+
     /**
      * Returns all detail definitions.<p>
      * 
      * @return a list of <code>{@link CmsListItemDetails}</code>.
      */
     public List getListDetails() {
+
         return m_itemDetails.elementList();
+    }
+
+    /**
+     * Returns the id of the list.<p>
+     *
+     * @return the id of list
+     */
+    public String getListId() {
+
+        return m_listId;
+    }
+
+    /**
+     * Returns the list of multi actions.<p>
+     * 
+     * @return a list of <code>{@link CmsListMultiAction}</code>s
+     */
+    public List getMultiActions() {
+
+        return Collections.unmodifiableList(m_multiActions);
     }
 
     /**
@@ -397,7 +419,9 @@ public class CmsListMetadata {
         Iterator itDet = m_itemDetails.elementList().iterator();
         while (itDet.hasNext()) {
             CmsListItemDetails lid = (CmsListItemDetails)itDet.next();
-            if (lid.isVisible() && item.get(lid.getId())!=null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.get(lid.getId()).toString())) {
+            if (lid.isVisible()
+                && item.get(lid.getId()) != null
+                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.get(lid.getId()).toString())) {
                 int padCols = 0;
                 itCols = m_columns.elementList().iterator();
                 while (itCols.hasNext()) {
@@ -540,7 +564,7 @@ public class CmsListMetadata {
      *      <li><code>{@link CmsListDirectAction}</code>s</li>
      * </ul>
      */
-    private void checkIds() {
+    /*package*/void checkIds() {
 
         Set ids = new TreeSet();
         // indep actions
@@ -580,20 +604,75 @@ public class CmsListMetadata {
             ids.add(col.getId());
             // default actions
             if (col.getDefaultAction() != null) {
-                if (ids.contains(col.getDefaultAction().getId())) {
-                    throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_DUPLICATED_ID_1, col.getDefaultAction().getId()));
+                if (col.getDefaultAction() instanceof A_CmsListTwoStatesAction) {
+                    A_CmsListTwoStatesAction action = (A_CmsListTwoStatesAction)col.getDefaultAction();
+                    if (ids.contains(action.getFirstAction().getId())) {
+                        throw new CmsIllegalStateException(Messages.get().container(
+                            Messages.ERR_DUPLICATED_ID_1,
+                            action.getFirstAction().getId()));
+                    }
+                    ids.add(action.getFirstAction().getId());
+                    if (ids.contains(action.getSecondAction().getId())) {
+                        throw new CmsIllegalStateException(Messages.get().container(
+                            Messages.ERR_DUPLICATED_ID_1,
+                            action.getSecondAction().getId()));
+                    }
+                    ids.add(action.getSecondAction().getId());
+                } else {
+                    if (ids.contains(col.getDefaultAction().getId())) {
+                        throw new CmsIllegalStateException(Messages.get().container(
+                            Messages.ERR_DUPLICATED_ID_1,
+                            col.getDefaultAction().getId()));
+                    }
+                    ids.add(col.getDefaultAction().getId());
                 }
-                ids.add(col.getDefaultAction().getId());
             }
             // direct actions
             Iterator itDirectActions = col.getDirectActions().iterator();
             while (itDirectActions.hasNext()) {
-                String id = ((CmsListDirectAction)itDirectActions.next()).getId();
-                if (ids.contains(id)) {
-                    throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_DUPLICATED_ID_1, id));
+                CmsListDirectAction action = (CmsListDirectAction)itDirectActions.next();
+                if (action instanceof A_CmsListTwoStatesAction) {
+                    A_CmsListTwoStatesAction action2 = (A_CmsListTwoStatesAction)action;
+                    if (ids.contains(action2.getFirstAction().getId())) {
+                        throw new CmsIllegalStateException(Messages.get().container(
+                            Messages.ERR_DUPLICATED_ID_1,
+                            action2.getFirstAction().getId()));
+                    }
+                    ids.add(action2.getFirstAction().getId());
+                    if (ids.contains(action2.getSecondAction().getId())) {
+                        throw new CmsIllegalStateException(Messages.get().container(
+                            Messages.ERR_DUPLICATED_ID_1,
+                            action2.getSecondAction().getId()));
+                    }
+                    ids.add(action2.getSecondAction().getId());
+                } else {
+                    if (ids.contains(action.getId())) {
+                        throw new CmsIllegalStateException(Messages.get().container(
+                            Messages.ERR_DUPLICATED_ID_1,
+                            action.getId()));
+                    }
+                    ids.add(action.getId());
                 }
-                ids.add(id);
             }
+        }
+    }
+
+    /**
+     * Sets the list id for all column single actions.<p>
+     * 
+     * @param col the column to set the list id for
+     */
+    private void setListIdForColumn(CmsListColumnDefinition col) {
+
+        col.setListId(getListId());
+        // default actions
+        if (col.getDefaultAction() != null) {
+            col.getDefaultAction().setListId(getListId());
+        }
+        // direct actions
+        Iterator itDirectActions = col.getDirectActions().iterator();
+        while (itDirectActions.hasNext()) {
+            ((CmsListDirectAction)itDirectActions.next()).setListId(getListId());
         }
     }
 
