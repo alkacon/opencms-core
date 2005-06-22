@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/widgets/TestSelectWidgetOption.java,v $
- * Date   : $Date: 2005/06/13 09:51:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 08:12:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * Test cases for the parsing of select widget options.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com}
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestSelectWidgetOption extends TestCase {
 
@@ -200,7 +200,6 @@ public class TestSelectWidgetOption extends TestCase {
     public void testCastFloatToInt() {
         
         float f = -0.99f;        
-        
-        assertTrue(0 != (int)f);
+        assertTrue(0 == (int)f);
     }
 }
