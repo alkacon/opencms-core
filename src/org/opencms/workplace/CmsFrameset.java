@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2005/06/22 14:13:04 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Alexander Kandzior 
- * @version $Revision: 1.74 $
+ * @version $Revision: 1.75 $
  * 
  * @since 5.1
  */
@@ -374,13 +374,11 @@ public class CmsFrameset extends CmsWorkplace {
         while (i.hasNext()) {
             count++;
             CmsWorkplaceView view = (CmsWorkplaceView)i.next();
-            String viewKey = view.getKey();
-            String viewUri = view.getUri();
 
-            if (getCms().existsResource(viewUri, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+            if (getCms().existsResource(view.getUri(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                 // ensure the current user has +v+r permissions on the view
-                String loopLink = getJsp().link(viewUri);
-                String localizedKey = key(viewKey, viewKey);
+                String loopLink = getJsp().link(view.getUri());
+                String localizedKey = resolveMacros(view.getKey());
                 options.add(localizedKey);
                 values.add(loopLink);
 

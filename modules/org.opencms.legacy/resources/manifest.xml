@@ -11657,7 +11657,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Legacy Administration]]></value>
+					<value><![CDATA[${key.select.legacyadmin}]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -11680,7 +11680,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[select.tasks]]></value>
+					<value><![CDATA[${key.select.tasks}]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

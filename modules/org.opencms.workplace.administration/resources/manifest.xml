@@ -521,7 +521,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[select.admin]]></value>
+					<value><![CDATA[${key.select.admin}]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

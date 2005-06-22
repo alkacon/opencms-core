@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 14:13:05 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1.12
  */
@@ -750,12 +750,10 @@ public class CmsPreferences extends CmsTabDialog {
         while (i.hasNext()) {
             count++;
             CmsWorkplaceView view = (CmsWorkplaceView)i.next();
-            String viewKey = view.getKey();
-            String viewUri = view.getUri();
 
             boolean visible = true;
             try {
-                getCms().readResource(viewUri);
+                getCms().readResource(view.getUri());
             } catch (CmsException e) {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {
@@ -764,11 +762,11 @@ public class CmsPreferences extends CmsTabDialog {
                 visible = false;
             }
             if (visible) {
-                String localizedKey = key(viewKey, viewKey);
+                String localizedKey =  resolveMacros(view.getKey());
                 options.add(localizedKey);
-                values.add(viewUri);
+                values.add(view.getUri());
 
-                if (viewUri.equals(getParamTabWpView())) {
+                if (view.getUri().equals(getParamTabWpView())) {
                     selectedIndex = count;
                 }
             }

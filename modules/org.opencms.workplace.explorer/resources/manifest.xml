@@ -1701,7 +1701,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[select.explorer]]></value>
+					<value><![CDATA[${key.select.explorer}]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
