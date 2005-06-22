@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 13:22:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.9.1
  */
 public class CmsEditUserDialog extends CmsWidgetDialog {
@@ -281,15 +281,8 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", PAGES[0], new CmsPasswordWidget()));
             addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "confirmation", PAGES[0], new CmsPasswordWidget()));
         } else {
-            addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", "", PAGES[0], new CmsPasswordWidget(), 0, 1));
-            addWidget(new CmsWidgetDialogParameter(
-                m_pwdInfo,
-                "confirmation",
-                "",
-                PAGES[0],
-                new CmsPasswordWidget(),
-                0,
-                1));
+            addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", "", PAGES[0], new CmsPasswordWidget(), 1, 1));
+            addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "confirmation", "", PAGES[0], new CmsPasswordWidget(), 1, 1));
         }
     }
 

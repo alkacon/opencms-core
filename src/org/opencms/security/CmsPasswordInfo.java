@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPasswordInfo.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 13:22:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,12 +36,13 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 /**
  * Validating bean for changing the password.<p>
  * 
- * @author Michael Moossen  
- * @version $Revision: 1.3 $
+ * @author Michael Moossen (m.moossen@alkacon.com) 
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsPasswordInfo {
@@ -129,9 +130,10 @@ public class CmsPasswordInfo {
      * @param confirmation the confirmation to set
      */
     public void setConfirmation(String confirmation) {
-
-        if (getNewPwd() == null) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEWPWD_EMPTY_0));
+    
+        // leave password unchanged, if the new password and the confirmation is empty
+        if (CmsStringUtil.isEmpty(getNewPwd()) && CmsStringUtil.isEmpty(confirmation)) {
+            return;
         }
         if (!getNewPwd().equals(confirmation)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEWPWD_MISMATCH_0));
@@ -163,9 +165,10 @@ public class CmsPasswordInfo {
      * @param newPwd the new Pwd to set
      */
     public void setNewPwd(String newPwd) {
-
-        if (newPwd == null) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEWPWD_EMPTY_0));
+    
+        // leave password unchanged, if the new password is empty
+        if (CmsStringUtil.isEmpty(newPwd)) {
+            return;
         }
         try {
             OpenCms.getPasswordHandler().validatePassword(newPwd);
