@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/22 08:02:32 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.io.SAXReader;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2005/06/21 15:49:58 $
+ * @version $Revision: 1.22 $ $Date: 2005/06/22 08:02:32 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
@@ -362,7 +362,6 @@ public class CmsImportExportManager {
     /** 
      * The filename of the xml manifest.
      */
-    // used 2 times in org.opencms.importexport
     public static final String EXPORT_XMLFILENAME = "manifest.xml";
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 08:02:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,12 +38,35 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsPropertyDefinition implements Cloneable, Comparable {
 
+    /**
+     * The module property key name to specifiy additional resources which are
+     * part of a module outside of {system/modules}.
+     */
+    public static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES = "additionalresources";
+
+    /**
+     * Character to separate additional resources specified in the module properties.
+     */
+    public static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR = ";";
+
+    /** Property for the active method in the administration view. */
+    public static final String PROPERTY_ACTIV = "activemethod";
+
+    /** Property for the allowed set of locales. */
+    public static final String PROPERTY_AVAILABLE_LOCALES = "locale-available";
+
+    /** Property to control the Java class for body. */
+    public static final String PROPERTY_BODY_CLASS = "templateclass";
+
     /** Property for the channel id. */
     public static final String PROPERTY_CHANNELID = "ChannelId";
+
+    /** Property for the content conversion. */
+    public static final String PROPERTY_CONTENT_CONVERSION = "content-conversion";
 
     /** Property for the content encoding. */
     public static final String PROPERTY_CONTENT_ENCODING = "content-encoding";
@@ -60,11 +83,20 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** Property for the resource export name, during export this name is used instead of the resource name. */
     public static final String PROPERTY_EXPORTNAME = "exportname";
 
+    /** Property for JSP additional suffix during static export, default is "html". */
+    public static final String PROPERTY_EXPORTSUFFIX = "exportsuffix";
+
+    /** Property for internal use (e.g. delete). */
+    public static final String PROPERTY_INTERNAL = "internal";
+
     /** Property for the keywords. */
     public static final String PROPERTY_KEYWORDS = "Keywords";
 
     /** Property for the current locale. */
     public static final String PROPERTY_LOCALE = "locale";
+
+    /** Property for the login form. */
+    public static final String PROPERTY_LOGIN_FORM = "login-form";
 
     /** Property for the navigation position. */
     public static final String PROPERTY_NAVPOS = "NavPos";
@@ -72,8 +104,23 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** Property for the navigation text. */
     public static final String PROPERTY_NAVTEXT = "NavText";
 
+    /** Property for the relative root link substitution. */
+    public static final String PROPERTY_RELATIVEROOT = "relativeroot";
+
+    /** Property to sort search results in categories. */
+    public static final String PROPERTY_SEARCH_CATEGORY = "category";
+
+    /** Property to define a bean for search content extraction. */
+    public static final String PROPERTY_SEARCH_EXTRACTIONCLASS = "search.extractionclass";
+
+    /** Property to boost certain search results. */
+    public static final String PROPERTY_SEARCH_PRIORITY = "search.priority";
+
     /** Property for the secure transmission of resources. */
     public static final String PROPERTY_SECURE = "secure";
+
+    /** Property for the stylesheet of files. */
+    public static final String PROPERTY_STYLESHEET = "stylesheet";
 
     /** Property to control the template. */
     public static final String PROPERTY_TEMPLATE = "template";
@@ -83,6 +130,12 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property for the resource title. */
     public static final String PROPERTY_TITLE = "Title";
+
+    /** Property for the visible method in the administration view. */
+    public static final String PROPERTY_VISIBLE = "visiblemethod";
+
+    /** The propertydefinitiontype for resources. */
+    public static final int PROPERYDEFINITION_RESOURCE = 1;
 
     /** The null property definition object. */
     private static final CmsPropertyDefinition C_NULL_PROPERTY_DEFINITION = new CmsPropertyDefinition(
@@ -94,61 +147,6 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** The name of this property definition. */
     private String m_name;
-
-    /** The propertydefinitiontype for resources. */
-    public static final int PROPERYDEFINITION_RESOURCE = 1;
-
-    /** Property for JSP additional suffix during static export, default is "html". */
-    public static final String PROPERTY_EXPORTSUFFIX = "exportsuffix";
-
-    /** Property for internal use (e.g. delete). */
-    public static final String PROPERTY_INTERNAL = "internal";
-
-    /** Property for the login form. */
-    public static final String PROPERTY_LOGIN_FORM = "login-form";
-
-    /** Property to boost certain search results. */
-    public static final String PROPERTY_SEARCH_PRIORITY = "search.priority";
-
-    /** Property to define a bean for search content extraction. */
-    public static final String PROPERTY_SEARCH_EXTRACTIONCLASS = "search.extractionclass";
-
-    /** Property to sort search results in categories. */
-    public static final String PROPERTY_SEARCH_CATEGORY = "category";
-
-    /** Property for the stylesheet of files. */
-    public static final String PROPERTY_STYLESHEET = "stylesheet";
-
-    /** Property for the allowed set of locales. */
-    // used 1 time in core, CmsLocaleManager
-    public static final String PROPERTY_AVAILABLE_LOCALES = "locale-available";
-
-    /** Property for the content conversion. */
-    // used 1 time in core, CmsHtmlConverter
-    public static final String PROPERTY_CONTENT_CONVERSION = "content-conversion";
-
-    /**
-     * The module property key name to specifiy additional resources which are
-     * part of a module outside of {system/modules}.
-     */
-    public static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES = "additionalresources";
-
-    /**
-     * Character to separate additional resources specified in the module properties.
-     */
-    public static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR = ";";
-
-    /** Property for the active method in the administration view. */
-    public static final String PROPERTY_ACTIV = "activemethod";
-
-    /** Property to control the Java class for body. */
-    public static final String PROPERTY_BODY_CLASS = "templateclass";
-
-    /** Property for the relative root link substitution. */
-    public static final String PROPERTY_RELATIVEROOT = "relativeroot";
-
-    /** Property for the visible method in the administration view. */
-    public static final String PROPERTY_VISIBLE = "visiblemethod";
 
     /**
      * Creates a new CmsPropertydefinition.<p>
