@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 12:44:07 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.lucene.index.IndexWriter;
  * The indexing of a single resource was wrapped into a single thread
  * in order to prevent the indexer from hanging.<p>
  *  
- * @version $Revision: 1.17 $ $Date: 2005/06/22 10:38:15 $
+ * @version $Revision: 1.18 $ $Date: 2005/06/22 12:44:07 $
  * @author Carsten Weinholz 
  * @since 5.3.1
  */
@@ -132,8 +132,8 @@ public class CmsIndexingThread extends Thread {
                 if (DEBUG && LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_CREATING_INDEX_DOC_0));
                 }
-
                 Document doc = documentFactory.newInstance(m_cms, m_res, m_index.getLocale());
+   
                 if (doc == null) {
                     throw new CmsIndexException(Messages.get().container(Messages.ERR_CREATING_INDEX_DOC_0));
                 }
@@ -157,18 +157,26 @@ public class CmsIndexingThread extends Thread {
                 if (isInterrupted() && LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_ABANDONED_THREAD_FINISHED_1, m_res.getRootPath()));
                 }
-
             } catch (Exception exc) {
+                // Ignore exception caused by empty documents, so that the report is not messed up with error message
+                Throwable cause = exc.getCause();
+                if ((cause != null && cause instanceof CmsIndexException 
+                && ((CmsIndexException)cause).getMessageContainer().getKey().equals(org.opencms.search.documents.Messages.ERR_NO_CONTENT_1)) 
+                || (exc instanceof CmsIndexException && ((CmsIndexException)exc).getMessageContainer().getKey().equals(org.opencms.search.documents.Messages.ERR_NO_CONTENT_1))) {
+                    m_report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+                    m_threadManager.finished();
+                } else {
+                    if (m_report != null) {
+                        m_report.println();
+                        m_report.print(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.C_FORMAT_WARNING);
+                        m_report.println(exc);
 
-                if (m_report != null) {
-                    m_report.println();
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.C_FORMAT_WARNING);
-                    m_report.println(exc);
-                    
-                }
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_INDEX_FAILED_1, m_res.getRootPath()), exc);
+                    }
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().key(Messages.LOG_INDEX_FAILED_1, m_res.getRootPath()), exc);
+                    }
                 }
             }
         } else {
