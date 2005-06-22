@@ -54,7 +54,12 @@ String editId = "directedit_".concat(String.valueOf(rnd.nextInt()));
 
 --%><cms:template element="start_directedit_enabled">
 <!-- EDIT BLOCK START -->
-<div id="<%= editId %>" class="ocms_de_norm">
+<script type="text/javascript">
+<!--
+	registerButtonOcms("<%= editId %>");
+//-->
+</script>
+<div class="ocms_de_bt" id="buttons_<%= editId %>">
 <form name="form_<%= editId %>" id="form_<%= editId %>" method="post" action="<%= editLink %>" class="ocms_nomargin">
 <input type="hidden" name="resource" value="<%= editTarget %>">
 <input type="hidden" name="directedit" value="true">
@@ -65,8 +70,8 @@ String editId = "directedit_".concat(String.valueOf(rnd.nextInt()));
 <input type="hidden" name="closelink">
 <input type="hidden" name="editortitle">
 </form>
-<span class="ocms_de_bt" onmouseover="activateOcms('<%= editId %>');" onmouseout="deactivateOcms('<%= editId %>');">
-<table border="0" cellpadding="0" cellspacing="0">
+<span onmouseover="activateOcms('<%= editId %>');" onmouseout="deactivateOcms('<%= editId %>');">
+<table border="0" cellpadding="0" cellspacing="0" id="table_<%= editId %>">
 <tr>
 <% 
 if (showEdit) { 
@@ -110,6 +115,8 @@ if (showNew) {
 </tr>
 </table>
 </span>
+</div>
+<div id="<%= editId %>" class="ocms_de_norm">
 </cms:template><%--
 
 --%><cms:template element="end_directedit_enabled">
@@ -119,11 +126,16 @@ if (showNew) {
 
 --%><cms:template element="start_directedit_disabled">
 <!-- EDIT BLOCK START -->
-<div id="<%= editId %>" class="ocms_de_norm">
-<span class="ocms_de_bt" onmouseover="activateOcms('<%=editId%>');" onmouseout="deactivateOcms('<%=editId%>');">
-<table border="0" cellpadding="1" cellspacing="0">
+<script type="text/javascript">
+<!--
+	registerButtonOcms("<%= editId %>");
+//-->
+</script>
+<div class="ocms_de_bt" id="buttons_<%= editId %>">
+<span onmouseover="activateOcms('<%=editId%>');" onmouseout="deactivateOcms('<%=editId%>');">
+<table border="0" cellpadding="0" cellspacing="0" id="table_<%= editId %>">
 <tr>
-	<td style="vertical-align: top;"><span unselectable="on" class="ocms_disabled"><%
+	<td class="ocms_de"><span unselectable="on" class="ocms_disabled"><%
    if (editButtonStyle == 1) { 
 	%><span unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_in.png');">&nbsp;<%= wp.key("editor.frontend.button.locked") %></span><%
    } else if (editButtonStyle == 2) { 
@@ -133,6 +145,8 @@ if (showNew) {
    } %></span></td>
 </table>
 </span>
+</div>
+<div id="<%= editId %>" class="ocms_de_norm">
 </cms:template><%--
 
 --%><cms:template element="end_directedit_disabled">
@@ -192,6 +206,11 @@ span.ocms_disabled {
 	border: 1px solid ButtonFace;
 	color: ButtonShadow;
 }
+div.ocms_de_bt {
+	visibility: hidden; 
+	position: absolute; 
+	z-index: 100;
+}
 div.ocms_de_norm {
 	width: 100%;
 	padding-top: 1px;
@@ -205,21 +224,26 @@ div.ocms_de_over {
 	border-top: 1px dotted ThreedDarkShadow;
 	border-bottom: 1px dotted ThreedDarkShadow;
 }
-span.ocms_de_bt {
-	position: absolute;
-	background-color: ButtonFace;
-}
 td.ocms_de {
 	line-height: 12px;
+	background-color: ButtonFace;
 }
 form.ocms_nomargin {
 	display: none;
+	visibility: hidden;
 }
 //-->
 </style>
 
 <script type="text/javascript">
 <!--
+window.onresize = showButtonsOcms;
+document.onkeyup = keyUpOcms;
+
+var deButtonsOcms = new Array();
+var ocms_btTimeout;
+var visibleOcmsButtons = true;
+
 function activateOcms(id) {
 	var el = document.getElementById(id);
 	if (el.className == "ocms_de_norm") {
@@ -261,7 +285,74 @@ function submitOcms(id, action, link) {
 	}
 	alert("Unknown form action [" + id + "/" + action + "]");
 }
-
+function registerButtonOcms(id) {
+	deButtonsOcms[deButtonsOcms.length] = id; 
+	clearTimeout(ocms_btTimeout);
+	ocms_btTimeout = setTimeout("showButtonsOcms()", 400);
+}
+function showButtonsOcms() {	
+		
+	var visStyle = "visible";
+	if (!visibleOcmsButtons) {
+		visStyle = "hidden";
+	}
+		
+	for (var i = 0; i<deButtonsOcms.length; i++) {
+		var btid = deButtonsOcms[i];
+		var deDiv = document.getElementById(btid);
+		var deButton = document.getElementById("buttons_" + btid);
+		var deTable = document.getElementById("table_" + btid);
+		var x = findPosXOcms(deDiv);
+		var y = findPosYOcms(deDiv);
+		var w1 = deDiv.offsetWidth; // width of surrounding div
+		var w2 = deTable.offsetWidth; // width of button table
+		
+		x += (w1 - w2);		
+		deButton.style.left = x + "px";
+		deButton.style.top =  y + "px";				
+		deButton.style.visibility = visStyle;
+	}
+}
+function findPosXOcms(obj) {
+    var curleft = 0; 
+    if (obj.offsetParent) {
+        while (obj.offsetParent) {
+            curleft += obj.offsetLeft - obj.scrollLeft; 
+            obj = obj.offsetParent; 
+        } 
+    } else if (obj.x) {
+        curleft += obj.x; 
+    }
+    return curleft; 
+}
+function findPosYOcms(obj) {
+    var curtop = 0; 
+    if (obj.offsetParent) {
+        while (obj.offsetParent) { 
+            curtop += obj.offsetTop - obj.scrollTop; 
+            obj = obj.offsetParent; 
+        }
+    } else if (obj.y) {
+        curtop += obj.y;
+    }
+    return curtop;
+}
+function toggleVisibleOcms() {
+	if (visibleOcmsButtons) {
+		visibleOcmsButtons = false;
+	} else {
+		visibleOcmsButtons = true;
+	}
+	showButtonsOcms();
+}
+function keyUpOcms(evt) {
+	if (!evt) {
+		evt = window.event;
+	}
+	if ((evt.type == "keyup") && (evt.keyCode == 32) && evt.ctrlKey) {
+		toggleVisibleOcms();
+	}
+}
 //-->
 </script>
 </cms:template>
