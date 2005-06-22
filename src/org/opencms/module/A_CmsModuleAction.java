@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/A_CmsModuleAction.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.module;
 
 import org.opencms.configuration.CmsConfigurationManager;
@@ -45,12 +45,15 @@ import org.apache.commons.logging.Log;
  * extend this class for more sophisticated module action implementations.<p>
  * 
  * @author Alexander Kandzior 
- * @since 5.3.6
+ * 
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsModuleAction implements I_CmsModuleAction {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsModuleAction.class);  
+    private static final Log LOG = CmsLog.getLog(A_CmsModuleAction.class);
 
     /**
      * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
@@ -58,7 +61,10 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
     public void cmsEvent(CmsEvent event) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_EVENT_CAUGHT_2, this.getClass().getName(), new Integer(event.getType())));
+            LOG.debug(Messages.get().key(
+                Messages.LOG_EVENT_CAUGHT_2,
+                this.getClass().getName(),
+                new Integer(event.getType())));
         }
     }
 
@@ -69,9 +75,9 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_MODULE_INITIALIZED_2, module.getName(), this.getClass().getName()));
-        }        
+        }
     }
-    
+
     /**
      * @see org.opencms.module.I_CmsModuleAction#moduleUninstall(CmsModule)
      */
@@ -79,9 +85,9 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_MODULE_UNINSTALLED_2, module.getName(), this.getClass().getName()));
-        } 
-    }    
-    
+        }
+    }
+
     /**
      * @see org.opencms.module.I_CmsModuleAction#moduleUpdate(org.opencms.module.CmsModule)
      */
@@ -89,9 +95,9 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_MODULE_UPDATED_2, module.getName(), this.getClass().getName()));
-        } 
-    }    
-        
+        }
+    }
+
     /**
      * @see org.opencms.module.I_CmsModuleAction#publishProject(org.opencms.file.CmsObject, org.opencms.db.CmsPublishList, int, org.opencms.report.I_CmsReport)
      */
@@ -99,7 +105,7 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_PUBLISH_PROJECT_1, this.getClass().getName()));
-        }         
+        }
     }
 
     /**
@@ -109,6 +115,6 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_MODULE_SHUTDOWN_2, module.getName(), this.getClass().getName()));
-        }         
+        }
     }
 }

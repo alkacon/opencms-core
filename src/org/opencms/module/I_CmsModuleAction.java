@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/I_CmsModuleAction.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.module;
 
 import org.opencms.configuration.CmsConfigurationManager;
@@ -45,7 +45,10 @@ import org.opencms.report.I_CmsReport;
  * {@link #shutDown(CmsModule)}.<p>
  * 
  * @author Alexander Kandzior 
- * @since 5.3.6
+ * 
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  * 
  * @see org.opencms.module.A_CmsModuleAction
  */
@@ -68,7 +71,7 @@ public interface I_CmsModuleAction extends I_CmsEventListener {
      * @param module the module of this action instance
      */
     void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module);
-    
+
     /**
      * Will be called if a module is uninstalled from an OpenCms system.<p>
      * 
@@ -90,14 +93,14 @@ public interface I_CmsModuleAction extends I_CmsEventListener {
      * @see #initialize(CmsObject, CmsConfigurationManager, CmsModule)
      */
     void moduleUninstall(CmsModule module);
-    
+
     /**
      * Will be called if the module this action instance belongs to is updated.<p>
      * 
      * @param module the module of this action instance with the updated values
      */
     void moduleUpdate(CmsModule module);
-    
+
     /**
      * Will be called during a the publish process after the resources have been published,
      * but before the publish event is fired.<p>
@@ -111,7 +114,7 @@ public interface I_CmsModuleAction extends I_CmsEventListener {
      * @param report the report to write messages to
      */
     void publishProject(CmsObject cms, CmsPublishList publishList, int backupTagId, I_CmsReport report);
-    
+
     /**
      * Will be called by the OpenCms system during server shutdown.<p>
      * 

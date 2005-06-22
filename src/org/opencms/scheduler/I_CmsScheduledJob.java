@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/I_CmsScheduledJob.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.scheduler;
 
 import org.opencms.file.CmsObject;
@@ -40,8 +40,9 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.6 $
- * @since 5.3
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsScheduledJob {
 
@@ -67,5 +68,5 @@ public interface I_CmsScheduledJob {
      * @see CmsScheduledJobInfo
      * @see CmsScheduledJobInfo#setReuseInstance(boolean)
      */
-    String launch(CmsObject cms, Map parameters) throws Exception;    
+    String launch(CmsObject cms, Map parameters) throws Exception;
 }

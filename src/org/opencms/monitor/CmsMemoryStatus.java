@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryStatus.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,41 +28,33 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.monitor;
 
 /**
  * Data structure for dealing with memory status information.<p>
  * 
  * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 class CmsMemoryStatus {
+    private int m_count;
+    private long m_freeMemory;
 
     private long m_maxMemory;
     private long m_totalMemory;
-    private long m_usedMemory;
-    private long m_freeMemory;
     private long m_usage;
-    private int m_count;
+    private long m_usedMemory;
 
     /**
      * Initializes a new instance of the memory status with the current memory values.<p> 
      */
     public CmsMemoryStatus() {
-        
+
         update();
-    }
-    
-    /**
-     * Updates this memory status with the current memory information.<p> 
-     */
-    public void update() {
-        
-        m_maxMemory = Runtime.getRuntime().maxMemory() / 1048576;
-        m_totalMemory = Runtime.getRuntime().totalMemory() / 1048576;
-        m_usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576;
-        m_freeMemory = m_maxMemory - m_usedMemory;
-        m_usage = m_usedMemory * 100 / m_maxMemory;
     }
 
     /**
@@ -80,6 +72,16 @@ class CmsMemoryStatus {
         m_freeMemory = ((m_count * m_freeMemory) + currentStatus.getFreeMemory()) / newCount;
         m_usage = m_usedMemory * 100 / m_maxMemory;
         m_count = newCount;
+    }
+
+    /**
+     * Returns the count used to calculate the average.<p>
+     *
+     * @return the count used to calculate the average
+     */
+    public int getCount() {
+
+        return m_count;
     }
 
     /**
@@ -131,14 +133,16 @@ class CmsMemoryStatus {
 
         return m_usedMemory;
     }
-        
-    /**
-     * Returns the count used to calculate the average.<p>
-     *
-     * @return the count used to calculate the average
-     */
-    public int getCount() {
 
-        return m_count;
+    /**
+     * Updates this memory status with the current memory information.<p> 
+     */
+    public void update() {
+
+        m_maxMemory = Runtime.getRuntime().maxMemory() / 1048576;
+        m_totalMemory = Runtime.getRuntime().totalMemory() / 1048576;
+        m_usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576;
+        m_freeMemory = m_maxMemory - m_usedMemory;
+        m_usage = m_usedMemory * 100 / m_maxMemory;
     }
 }

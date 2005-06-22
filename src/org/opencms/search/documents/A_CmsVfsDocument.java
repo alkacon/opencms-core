@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 14:19:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,10 +59,12 @@ import org.apache.lucene.document.Field;
  * <code>{@link I_CmsDocumentFactory#extractContent(CmsObject, A_CmsIndexResource, String)}</code>
  * for text extraction from the binary document content.<p>
  * 
- * @version $Revision: 1.18 
- * 
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 

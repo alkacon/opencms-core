@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,16 +51,18 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implementation for an indexer indexing VFS Cms resources.<p>
  * 
- * @version $Revision: 1.25 $ $Date: 2005/06/22 10:38:15 $
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
- * @since 5.3.1
+ * 
+ * @version $Revision: 1.26 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsVfsIndexer implements I_CmsIndexer {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsVfsIndexer.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsVfsIndexer.class);
+
     /** The index. */
     private CmsSearchIndex m_index;
 
@@ -136,21 +138,25 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     }
 
                     if (m_report != null && !folderReported) {
-                        m_report.print(Messages.get().container(Messages.RPT_SEARCH_INDEXING_FOLDER_0), I_CmsReport.C_FORMAT_NOTE);
-                        m_report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, path));
+                        m_report.print(
+                            Messages.get().container(Messages.RPT_SEARCH_INDEXING_FOLDER_0),
+                            I_CmsReport.C_FORMAT_NOTE);
+                        m_report.println(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            path));
                         folderReported = true;
                     }
 
                     if (m_report != null) {
-                        m_report.print(
-                            org.opencms.report.Messages.get().container(
-                                org.opencms.report.Messages.RPT_SUCCESSION_1,
-                                String.valueOf(m_threadManager.getCounter() + 1)),
-                            I_CmsReport.C_FORMAT_NOTE);
-                        m_report.print(Messages.get().container(
-                            Messages.RPT_SEARCH_INDEXING_FILE_BEGIN_0), I_CmsReport.C_FORMAT_NOTE);
                         m_report.print(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_ARGUMENT_1, res.getName()));
+                            org.opencms.report.Messages.RPT_SUCCESSION_1,
+                            String.valueOf(m_threadManager.getCounter() + 1)), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(
+                            Messages.get().container(Messages.RPT_SEARCH_INDEXING_FILE_BEGIN_0),
+                            I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            res.getName()));
                         m_report.print(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_DOTS_0), I_CmsReport.C_FORMAT_DEFAULT);
                     }
@@ -164,13 +170,14 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
             if (m_report != null) {
                 m_report.println();
-                m_report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.C_FORMAT_WARNING);
+                m_report.print(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                    I_CmsReport.C_FORMAT_WARNING);
                 m_report.println(exc);
             }
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().key(Messages.LOG_INDEXING_PATH_FAILED_1, path), exc);
-            } 
+            }
 
         } catch (CmsException exc) {
 
@@ -182,7 +189,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             }
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().key(Messages.LOG_INDEXING_PATH_FAILED_1, path), exc);
-            } 
+            }
 
         } catch (Exception exc) {
 
@@ -193,10 +200,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             }
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().key(Messages.LOG_INDEXING_PATH_FAILED_1, path), exc);
-            } 
+            }
 
             throw new CmsIndexException(Messages.get().container(Messages.LOG_INDEXING_FAILED_1));
-            
+
         }
     }
 

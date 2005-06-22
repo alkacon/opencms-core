@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsPowerPoint.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,9 @@ import org.apache.poi.util.LittleEndian;
  * 
  * @author Alexander Kandzior 
  * 
- * @since 5.7.2
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBase implements POIFSReaderListener {
 

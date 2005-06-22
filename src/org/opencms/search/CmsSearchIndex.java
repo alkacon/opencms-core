@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,19 +68,18 @@ import org.apache.lucene.search.TermQuery;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @since 5.3.1
+ * @version $Revision: 1.51 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);  
-    
     /** Automatic rebuild. */
     public static final String C_AUTO_REBUILD = "auto";
 
@@ -115,6 +114,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Fragments required in excerpt. */
     private static final int C_EXCERPT_REQUIRED_FRAGMENTS = 5;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);
 
     /** The excerpt mode for this index. */
     private boolean m_createExcerpt;
@@ -244,12 +246,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             m_priority = Integer.parseInt(value);
             if (m_priority < Thread.MIN_PRIORITY) {
                 m_priority = Thread.MIN_PRIORITY;
-                LOG.error(Messages.get().key(Messages.LOG_SEARCH_PRIORITY_TOO_LOW_2, value, new Integer(Thread.MIN_PRIORITY)));
-                
+                LOG.error(Messages.get().key(
+                    Messages.LOG_SEARCH_PRIORITY_TOO_LOW_2,
+                    value,
+                    new Integer(Thread.MIN_PRIORITY)));
+
             } else if (m_priority > Thread.MAX_PRIORITY) {
                 m_priority = Thread.MAX_PRIORITY;
-                LOG.debug(Messages.get().key(Messages.LOG_SEARCH_PRIORITY_TOO_HIGH_2, value, new Integer(Thread.MAX_PRIORITY)));
-                
+                LOG.debug(Messages.get().key(
+                    Messages.LOG_SEARCH_PRIORITY_TOO_HIGH_2,
+                    value,
+                    new Integer(Thread.MAX_PRIORITY)));
+
             }
         }
     }
@@ -338,7 +346,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
         } catch (Exception exc) {
-            throw new CmsIndexException(Messages.get().container(Messages.LOG_INDEX_WRITER_CREATION_FAILED_1, m_name), exc);
+            throw new CmsIndexException(
+                Messages.get().container(Messages.LOG_INDEX_WRITER_CREATION_FAILED_1, m_name),
+                exc);
         }
 
         return indexWriter;
@@ -432,7 +442,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     m_documenttypes.put(resourceName, searchIndexSourceDocumentTypes);
                 }
             } catch (Exception exc) {
-                throw new CmsSearchException(Messages.get().container(Messages.ERR_INDEX_SOURCE_ASSOCIATION_1, sourceName), exc);
+                throw new CmsSearchException(Messages.get().container(
+                    Messages.ERR_INDEX_SOURCE_ASSOCIATION_1,
+                    sourceName), exc);
             }
         }
     }
@@ -460,8 +472,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_SEARCH_PARAMS_2, params, m_name));
-        }  
-        
+        }
 
         CmsRequestContext context = cms.getRequestContext();
         CmsProject currentProject = context.currentProject();
@@ -541,12 +552,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 BooleanQuery fieldsQuery = new BooleanQuery();
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                 for (int i = 0; i < params.getFields().size(); i++) {
-                    fieldsQuery.add(
-                        QueryParser.parse(
-                            params.getQuery(), 
-                            (String)params.getFields().get(i), languageAnalyzer), 
-                            false, 
-                            false);
+                    fieldsQuery.add(QueryParser.parse(
+                        params.getQuery(),
+                        (String)params.getFields().get(i),
+                        languageAnalyzer), false, false);
                 }
                 // finally add the field queries to the main query
                 query.add(fieldsQuery, true, false);
@@ -571,7 +580,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_BASE_QUERY_1, query));
                 LOG.debug(Messages.get().key(Messages.LOG_REWRITTEN_QUERY_1, finalQuery));
-                
+
             }
 
             // collect the categories
@@ -636,7 +645,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                         // should not happen, but if it does we want to go on with the next result nevertheless                        
                         if (LOG.isWarnEnabled()) {
                             LOG.warn(Messages.get().key(Messages.LOG_RESULT_ITERATION_FAILED_0), e);
-                        } 
+                        }
                     }
                 }
 
@@ -669,11 +678,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         timeTotal += System.currentTimeMillis();
 
-        Object[] logParams = new Object[] {new Integer(hits.length()), new Long(timeTotal), new Long(timeLucene), new Long(timeResultProcessing)};
+        Object[] logParams = new Object[] {
+            new Integer(hits.length()),
+            new Long(timeTotal),
+            new Long(timeLucene),
+            new Long(timeResultProcessing)};
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_STAT_RESULTS_TIME_4, logParams));
-        }    
-        
+        }
 
         return searchResults;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractionResult.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.search.extractors;
 
 import java.util.Collections;
@@ -39,15 +39,21 @@ import java.util.Map;
  * 
  * This data structure contains the extracted text as well as (optional) 
  * meta information extracted from the document.<p>
+ * 
+ * @author Alexander Kandzior
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsExtractionResult implements I_CmsExtractionResult {
 
     /** The extracted content. */
     private String m_content;
-    
+
     /** The extracted meta information. */
     private Map m_metaInfo;
-        
+
     /**
      * Creates a new extration result without meta information.<p>
      * 
@@ -57,7 +63,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult {
 
         this(content, null);
     }
-    
+
     /**
      * Creates a new extration result.<p>
      * 
@@ -68,12 +74,12 @@ public class CmsExtractionResult implements I_CmsExtractionResult {
 
         m_content = content;
         m_metaInfo = metaInfo;
-        
+
         if (m_metaInfo == null) {
             m_metaInfo = Collections.EMPTY_MAP;
         }
     }
-        
+
     /**
      * @see org.opencms.search.extractors.I_CmsExtractionResult#getContent()
      */
@@ -81,7 +87,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult {
 
         return m_content;
     }
-        
+
     /**
      * @see org.opencms.search.extractors.I_CmsExtractionResult#getMetaInfo()
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThreadPool.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,8 +72,9 @@ import org.quartz.spi.ThreadPool;
  * @author James House
  * @author Juergen Donnerstag
  *
- * @version $Revision: 1.8 $
- * @since 5.3
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSchedulerThreadPool implements ThreadPool {
 
@@ -176,8 +177,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
             throw new SchedulerConfigException(Messages.get().key(Messages.ERR_MAX_THREAD_COUNT_BOUNDS_0));
         }
         if (m_initialThreadCount < 0 || m_initialThreadCount > m_maxThreadCount) {
-            throw new SchedulerConfigException(
-                Messages.get().key(Messages.ERR_INIT_THREAD_COUNT_BOUNDS_0));
+            throw new SchedulerConfigException(Messages.get().key(Messages.ERR_INIT_THREAD_COUNT_BOUNDS_0));
         }
         if (m_threadPriority <= 0 || m_threadPriority > 9) {
             throw new SchedulerConfigException(Messages.get().key(Messages.ERR_SCHEDULER_PRIORITY_BOUNDS_0));
@@ -374,16 +374,10 @@ public class CmsSchedulerThreadPool implements ThreadPool {
         if (m_currentThreadCount < m_maxThreadCount) {
             // if maximum number is not reached grow the thread pool
             synchronized (m_nextRunnableLock) {
-                m_workers[m_currentThreadCount] = 
-                    new CmsSchedulerThread(
-                        this, 
-                        m_threadGroup, 
-                        m_threadNamePrefix + m_currentThreadCount, 
-                        m_threadPriority, 
-                        m_makeThreadsDaemons);
+                m_workers[m_currentThreadCount] = new CmsSchedulerThread(this, m_threadGroup, m_threadNamePrefix
+                    + m_currentThreadCount, m_threadPriority, m_makeThreadsDaemons);
                 if (m_inheritLoader) {
-                    m_workers[m_currentThreadCount].setContextClassLoader(
-                        Thread.currentThread().getContextClassLoader());
+                    m_workers[m_currentThreadCount].setContextClassLoader(Thread.currentThread().getContextClassLoader());
                 }
                 // increas the current size
                 m_currentThreadCount++;

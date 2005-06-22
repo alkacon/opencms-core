@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchCategoryCollector.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,9 +54,11 @@ import org.apache.lucene.search.IndexSearcher;
  * Be especially careful if your search result list can become large (> 1000 documents), since in this case
  * overall system performance will certainly be impacted considerably when calculating the categories.<p> 
  * 
- * @version $Revision: 1.3 $
  * @author Alexander Kandzior 
- * @since 5.3.1
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSearchCategoryCollector extends HitCollector {
 
@@ -105,13 +107,13 @@ public class CmsSearchCategoryCollector extends HitCollector {
             return new Integer(m_count);
         }
     }
-    
+
     /** Category used in case the document belongs to no category. */
     public static final String UNKNOWN_CATEGORY = "unknown";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSearchCategoryCollector.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsSearchCategoryCollector.class);
+
     /** The internal map of the categories found. */
     private Map m_categories;
 
@@ -167,8 +169,8 @@ public class CmsSearchCategoryCollector extends HitCollector {
             // category will be null
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_READ_CATEGORY_FAILED_1, new Integer(id)), e);
-            }  
-            
+            }
+
         }
         if (category == null) {
             category = UNKNOWN_CATEGORY;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/22 14:19:39 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,10 @@ import java.util.Locale;
  * Provides a common Thread class for the reports.<p>
  * 
  * @author Alexander Kandzior  
- * @version $Revision: 1.18 $
+ * 
+ * @version $Revision: 1.19 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsReportThread extends Thread implements I_CmsReportThread {
 

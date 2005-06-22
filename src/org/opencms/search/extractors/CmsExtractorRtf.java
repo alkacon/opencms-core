@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorRtf.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,9 @@ import javax.swing.text.rtf.RTFEditorKit;
  * 
  * @author Alexander Kandzior 
  * 
- * @since 5.7.2
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsExtractorRtf extends A_CmsTextExtractor {
 

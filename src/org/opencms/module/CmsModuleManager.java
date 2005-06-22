@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,10 @@ import org.apache.commons.logging.Log;
  * Manages the modules of an OpenCms installation.<p>
  * 
  * @author Alexander Kandzior 
- * @since 5.3.6
+ * 
+ * @version $Revision: 1.24 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsModuleManager {
 

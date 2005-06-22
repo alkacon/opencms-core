@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,10 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Jan Baudisch 
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
@@ -191,28 +194,28 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITING_INDEX_TO_WRITER_1 = "LOG_WRITING_INDEX_TO_WRITER_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_BEGIN_0 = "RPT_SEARCH_INDEXING_BEGIN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_END_0 = "RPT_SEARCH_INDEXING_END_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_FAILED_0 = "RPT_SEARCH_INDEXING_FAILED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_FILE_BEGIN_0 = "RPT_SEARCH_INDEXING_FILE_BEGIN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_FOLDER_0 = "RPT_SEARCH_INDEXING_FOLDER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_FOLDER_FAILED_2 = "RPT_SEARCH_INDEXING_FOLDER_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_STATS_4 = "RPT_SEARCH_INDEXING_STATS_4";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_TIMEOUT_1 = "RPT_SEARCH_INDEXING_TIMEOUT_1";
 

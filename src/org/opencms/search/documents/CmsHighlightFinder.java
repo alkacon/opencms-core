@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightFinder.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,8 +28,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.search.documents;
 
+package org.opencms.search.documents;
 
 import java.io.*;
 import java.util.*;
@@ -37,76 +37,6 @@ import org.apache.lucene.analysis.*;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.PriorityQueue;
-
-/**
- * This class describes a fragment within a document.<p>
- */
-class DocumentFragment {
-    
-    /** The fragment number. */
-    protected int m_fragNum;
-        
-    /** The score. */
-    protected int m_score;
-    
-    /** The text end position .*/
-    protected int m_textEndPos; 
-    
-    /** The test start position. */
-    protected int m_textStartPos;
-    
-    /** All unique terms found. */
-    protected HashSet m_uniqueTerms = new HashSet();
-
-    /**
-     * @param textStartPos textStartPos
-     * @param fragNum fragNum
-     */
-    public DocumentFragment(int textStartPos, int fragNum) {
-        this.m_textStartPos = textStartPos;
-        this.m_fragNum = fragNum;
-    }
-    
-    /**
-     * @param term term
-     */
-    void addTerm(String term) {
-        m_uniqueTerms.add(term);
-    }
-    
-    /**
-     * @return the score
-     */
-    int getScore() {
-        return m_uniqueTerms.size();
-    }
-}
-
-/**
- * This class implements a priority queue for document fragments.<p>
- */
-class FragmentQueue extends PriorityQueue {
-    
-    /**
-     * @param size size
-     */
-    public FragmentQueue(int size) {
-        initialize(size);
-    }
-
-    /**
-     * @see org.apache.lucene.util.PriorityQueue#lessThan(java.lang.Object, java.lang.Object)
-     */
-    public final boolean lessThan(Object a, Object b) {
-        DocumentFragment fragA = (DocumentFragment) a;
-        DocumentFragment fragB = (DocumentFragment) b;
-        if (fragA.getScore() == fragB.getScore()) {
-            return fragA.m_fragNum > fragB.m_fragNum;
-        } else {
-            return fragA.getScore() < fragB.getScore();
-        }
-    }
-}
 
 /**
  * Adapted from Maik Schreiber's LuceneTools.java,v 1.5 2001/10/16 07:25:55. 
@@ -123,16 +53,16 @@ class FragmentQueue extends PriorityQueue {
  * @author Maik Schreiber 
  */
 public final class CmsHighlightFinder {
-    
+
     /** The analyzer. */
     private Analyzer m_analyzer;
-    
+
     /** The term highlighter. */
     private I_CmsTermHighlighter m_highlighter;
 
     /** The query. */
     private Query m_query;
-    
+
     /** A set of all terms. */
     private HashSet m_terms = new HashSet();
 
@@ -145,17 +75,15 @@ public final class CmsHighlightFinder {
      *            Analyzer used to construct the Query
      * @throws IOException if something goes wrong
      */
-    public CmsHighlightFinder(
-        I_CmsTermHighlighter highlighter,
-        Query query,
-        Analyzer analyzer)
-        throws IOException {
+    public CmsHighlightFinder(I_CmsTermHighlighter highlighter, Query query, Analyzer analyzer)
+    throws IOException {
+
         this.m_highlighter = highlighter;
         this.m_query = query;
         this.m_analyzer = analyzer;
         // get m_terms in m_query
         getTerms(m_query, m_terms, false);
-                
+
     }
 
     /**
@@ -171,17 +99,14 @@ public final class CmsHighlightFinder {
      *            <code>true</code> to extract "prohibited" m_terms, too
      * @throws IOException if something goes wrong
      */
-    public static void getTerms(
-        Query query,
-        HashSet terms,
-        boolean prohibited)
-        throws IOException {
+    public static void getTerms(Query query, HashSet terms, boolean prohibited) throws IOException {
+
         if (query instanceof BooleanQuery) {
-            getTermsFromBooleanQuery((BooleanQuery) query, terms, prohibited);
+            getTermsFromBooleanQuery((BooleanQuery)query, terms, prohibited);
         } else if (query instanceof PhraseQuery) {
-            getTermsFromPhraseQuery((PhraseQuery) query, terms);
+            getTermsFromPhraseQuery((PhraseQuery)query, terms);
         } else if (query instanceof TermQuery) {
-            getTermsFromTermQuery((TermQuery) query, terms);
+            getTermsFromTermQuery((TermQuery)query, terms);
         }
     }
 
@@ -198,11 +123,9 @@ public final class CmsHighlightFinder {
      *            <code>true</code> to extract "prohibited" m_terms, too
      * @throws IOException if something goes wrong
      */
-    private static void getTermsFromBooleanQuery(
-        BooleanQuery query,
-        HashSet terms,
-        boolean prohibited)
-        throws IOException {
+    private static void getTermsFromBooleanQuery(BooleanQuery query, HashSet terms, boolean prohibited)
+    throws IOException {
+
         BooleanClause[] queryClauses = query.getClauses();
         int i;
 
@@ -212,7 +135,7 @@ public final class CmsHighlightFinder {
             }
         }
     }
-    
+
     /**
      * Extracts all term texts of a given PhraseQuery. Term texts will be
      * returned in lower-case.
@@ -223,9 +146,8 @@ public final class CmsHighlightFinder {
      *            HashSet where extracted term texts should be put into
      *            (Elements: String)
      */
-    private static void getTermsFromPhraseQuery(
-        PhraseQuery query,
-        HashSet terms) {
+    private static void getTermsFromPhraseQuery(PhraseQuery query, HashSet terms) {
+
         Term[] queryTerms = query.getTerms();
         int i;
 
@@ -233,7 +155,6 @@ public final class CmsHighlightFinder {
             terms.add(getTermsFromTerm(queryTerms[i]));
         }
     }
-
 
     /**
      * Extracts the term of a given Term. The term will be returned in
@@ -245,6 +166,7 @@ public final class CmsHighlightFinder {
      * @return the Term's term text
      */
     private static String getTermsFromTerm(Term term) {
+
         return term.text().toLowerCase();
     }
 
@@ -258,9 +180,8 @@ public final class CmsHighlightFinder {
      *            HashSet where extracted term texts should be put into
      *            (Elements: String)
      */
-    private static void getTermsFromTermQuery(
-        TermQuery query,
-        HashSet terms) {
+    private static void getTermsFromTermQuery(TermQuery query, HashSet terms) {
+
         terms.add(getTermsFromTerm(query.getTerm()));
     }
 
@@ -282,18 +203,14 @@ public final class CmsHighlightFinder {
      *         of fragments)
      * @throws IOException if something goes wrong
      */
-    public String[] getBestFragments(
-        String text,
-        int fragmentSize,
-        int maxNumFragments)
-        throws IOException {
+    public String[] getBestFragments(String text, int fragmentSize, int maxNumFragments) throws IOException {
+
         StringBuffer newText = new StringBuffer();
         TokenStream stream = null;
 
         ArrayList docFrags = new ArrayList();
 
-        DocumentFragment currentFrag =
-            new DocumentFragment(newText.length(), docFrags.size());
+        DocumentFragment currentFrag = new DocumentFragment(newText.length(), docFrags.size());
         docFrags.add(currentFrag);
 
         FragmentQueue fragQueue = new FragmentQueue(maxNumFragments + 1);
@@ -320,27 +237,24 @@ public final class CmsHighlightFinder {
                     newText.append(" ");
                     // newText.append(text.substring(lastEndOffset, startOffset));
                 }
-                
+
                 // does m_query contain current token?
                 if (m_terms.contains(token.termText())) {
                     newText.append(m_highlighter.highlightTerm(tokenText));
                     currentFrag.addTerm(token.termText());
                 } else {
                     if (tokenText.length() > fragmentSize / 2) {
-                        newText.append(
-                            tokenText.substring(0, fragmentSize / 2));
+                        newText.append(tokenText.substring(0, fragmentSize / 2));
                         newText.append(" ");
                     } else {
                         newText.append(tokenText);
                     }
                 }
 
-                if (newText.length()
-                    >= (fragmentSize * (docFrags.size() + 1))) {
+                if (newText.length() >= (fragmentSize * (docFrags.size() + 1))) {
                     //record stats for a new fragment
                     currentFrag.m_textEndPos = newText.length();
-                    currentFrag =
-                        new DocumentFragment(newText.length(), docFrags.size());
+                    currentFrag = new DocumentFragment(newText.length(), docFrags.size());
                     docFrags.add(currentFrag);
                 }
 
@@ -360,15 +274,14 @@ public final class CmsHighlightFinder {
             //find the most relevant sections of the text
             int minScore = 0;
             for (Iterator i = docFrags.iterator(); i.hasNext();) {
-                currentFrag = (DocumentFragment) i.next();
+                currentFrag = (DocumentFragment)i.next();
                 if (currentFrag.getScore() >= minScore) {
                     fragQueue.put(currentFrag);
                     if (fragQueue.size() > maxNumFragments) {
                         // if hit queue overfull
                         fragQueue.pop();
                         // remove lowest in hit queue
-                        minScore =
-                            ((DocumentFragment) fragQueue.top()).getScore();
+                        minScore = ((DocumentFragment)fragQueue.top()).getScore();
                         // reset minScore
                     }
 
@@ -378,9 +291,8 @@ public final class CmsHighlightFinder {
             //extract the text
             String[] fragText = new String[fragQueue.size()];
             for (int i = fragText.length - 1; i >= 0; i--) {
-                DocumentFragment frag = (DocumentFragment) fragQueue.pop();
-                fragText[i] =
-                    newText.substring(frag.m_textStartPos, frag.m_textEndPos);
+                DocumentFragment frag = (DocumentFragment)fragQueue.pop();
+                fragText[i] = newText.substring(frag.m_textStartPos, frag.m_textEndPos);
             }
             return fragText;
 
@@ -415,14 +327,10 @@ public final class CmsHighlightFinder {
      * @return highlighted text
      * @throws IOException if something goes wrong
      */
-    public String getBestFragments(
-        String text,
-        int fragmentSize,
-        int maxNumFragments,
-        String separator)
-        throws IOException {
-        String[] sections =
-            getBestFragments(text, fragmentSize, maxNumFragments);
+    public String getBestFragments(String text, int fragmentSize, int maxNumFragments, String separator)
+    throws IOException {
+
+        String[] sections = getBestFragments(text, fragmentSize, maxNumFragments);
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < sections.length; i++) {
             if (i > 0) {
@@ -431,5 +339,88 @@ public final class CmsHighlightFinder {
             result.append(sections[i]);
         }
         return result.toString();
+    }
+}
+
+/**
+ * This class describes a fragment within a document. <p>
+ * 
+ * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
+ */
+
+class DocumentFragment {
+
+    /** The fragment number. */
+    protected int m_fragNum;
+
+    /** The score. */
+    protected int m_score;
+
+    /** The text end position .*/
+    protected int m_textEndPos;
+
+    /** The test start position. */
+    protected int m_textStartPos;
+
+    /** All unique terms found. */
+    protected HashSet m_uniqueTerms = new HashSet();
+
+    /**
+     * @param textStartPos textStartPos
+     * @param fragNum fragNum
+     */
+    public DocumentFragment(int textStartPos, int fragNum) {
+
+        this.m_textStartPos = textStartPos;
+        this.m_fragNum = fragNum;
+    }
+
+    /**
+     * @param term term
+     */
+    void addTerm(String term) {
+
+        m_uniqueTerms.add(term);
+    }
+
+    /**
+     * @return the score
+     */
+    int getScore() {
+
+        return m_uniqueTerms.size();
+    }
+}
+
+/**
+ * This class implements a priority queue for document fragments.<p>
+ */
+
+class FragmentQueue extends PriorityQueue {
+
+    /**
+     * @param size size
+     */
+    public FragmentQueue(int size) {
+
+        initialize(size);
+    }
+
+    /**
+     * @see org.apache.lucene.util.PriorityQueue#lessThan(java.lang.Object, java.lang.Object)
+     */
+    public final boolean lessThan(Object a, Object b) {
+
+        DocumentFragment fragA = (DocumentFragment)a;
+        DocumentFragment fragB = (DocumentFragment)b;
+        if (fragA.getScore() == fragB.getScore()) {
+            return fragA.m_fragNum > fragB.m_fragNum;
+        } else {
+            return fragA.getScore() < fragB.getScore();
+        }
     }
 }

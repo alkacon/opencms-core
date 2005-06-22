@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/22 14:19:39 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.report;
 
 import org.opencms.i18n.CmsMessageContainer;
@@ -43,28 +43,31 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior  
  * @author Jan Baudisch 
- * @version $Revision: 1.22 $
+ * 
+ * @version $Revision: 1.23 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsReport {
-        
+
     /** The name of the property file. */
     String C_BUNDLE_NAME = "org.opencms.workplace.workplace";
 
     /** Indicates default formatting. */
     int C_FORMAT_DEFAULT = 0;
-    
+
     /** Indicates error formatting. */
     int C_FORMAT_ERROR = 5;
-    
+
     /** Indicates headline formatting. */
     int C_FORMAT_HEADLINE = 2;
-    
+
     /** Indicates note formatting. */
-    int C_FORMAT_NOTE = 3;  
-    
+    int C_FORMAT_NOTE = 3;
+
     /** Indicates OK formatting. */
-    int C_FORMAT_OK = 4;      
-    
+    int C_FORMAT_OK = 4;
+
     /** Indicates warning formatting. */
     int C_FORMAT_WARNING = 1;
 
@@ -73,42 +76,42 @@ public interface I_CmsReport {
 
     /** Request parameter value that this report should create a "simple" output. */
     String REPORT_TYPE_SIMPLE = "simple";
-    
+
     /**
      * Adds a bundle specified by it's name to the List of resource bundles.<p>
      * 
      * @param bundleName the name of the resource bundle with localized strings
      */
     void addBundle(String bundleName);
-    
+
     /**
      * Adds an error object to the list of errors that occured during the report.<p>
      * 
      * @param obj the error object
      */
     void addError(Object obj);
-    
+
     /**
      * Formats the runtime formatted as "hh:mm:ss".<p>
      * 
      * @return the runtime formatted as "hh:mm:ss"
      */
     String formatRuntime();
-    
+
     /**
      * Returns a list of all errors that occured during the report.<p>
      * 
      * @return an error list that occured during the report
      */
     List getErrors();
-    
+
     /**
      * Returns the locale this report was initialized with.<p>
      * 
      * @return the locale this report was initialized with
      */
     Locale getLocale();
-           
+
     /**
      * Updates this report, this processes all new output added since 
      * the last call to this method.<p>
@@ -119,21 +122,21 @@ public interface I_CmsReport {
      * @return new elements that have been added to the report and not yet processed.
      */
     String getReportUpdate();
- 
+
     /** 
      * Returns the time this report has been running.<p>
      * 
      * @return the time this report has been running
      */
     long getRuntime();
-    
+
     /**
      * Returns if the report generated an error output.<p>
      * 
      * @return true if the report generated an error, otherwise false
      */
     boolean hasError();
-    
+
     /**
      * Gets the localized resource string for a given message key.<p>
      * 
@@ -155,27 +158,6 @@ public interface I_CmsReport {
     void print(CmsMessageContainer container);
 
     /**
-     * Prints a localized message followed by a parametera and dots to the report.<p>
-     * 
-     * @param container the Message to add
-     * @param param the Parameter to add
-     */
-    void printMessageWithParam(CmsMessageContainer container, Object param);
-    
-    /**
-     * Convenience method to print a localized message, followed by a parameter and dots to the report.<p>
-     * 
-     * The output follows the pattern: ( 3 / 8 ) Deleting filename.txt ...
-     * 
-     * @param m the number of the report output
-     * @param n the total number of report outputs
-     * @param container the Message to add
-     * @param param the Parameter to add
-     * 
-     */
-    void printMessageWithParam(int m, int n, CmsMessageContainer container, Object param);
-    
-    /**
      * Prints a localized message to the report, using the indicated formatting.<p>
      * 
      * Use the contants starting with <code>C_FORMAT</code> from this interface
@@ -184,13 +166,13 @@ public interface I_CmsReport {
      * @param container the String to add
      * @param format the formatting to use for the output
      */
-    void print(CmsMessageContainer container, int format);  
-    
+    void print(CmsMessageContainer container, int format);
+
     /**
      * Adds a line break to the report.<p>
      */
     void println();
-    
+
     /**
      * Prints a localized message to the report.<p>
      * 
@@ -207,8 +189,8 @@ public interface I_CmsReport {
      * @param container the message container to add
      * @param format the formatting to use for the output
      */
-    void println(CmsMessageContainer container, int format);  
-    
+    void println(CmsMessageContainer container, int format);
+
     /**
      * Adds an Exception to the report, ensuring that the Exception content is
      * processed to generate a valid output esp. for HTML pages.<p>
@@ -219,7 +201,28 @@ public interface I_CmsReport {
      * @param t the exception to add
      */
     void println(Throwable t);
-    
+
+    /**
+     * Prints a localized message followed by a parametera and dots to the report.<p>
+     * 
+     * @param container the Message to add
+     * @param param the Parameter to add
+     */
+    void printMessageWithParam(CmsMessageContainer container, Object param);
+
+    /**
+     * Convenience method to print a localized message, followed by a parameter and dots to the report.<p>
+     * 
+     * The output follows the pattern: ( 3 / 8 ) Deleting filename.txt ...
+     * 
+     * @param m the number of the report output
+     * @param n the total number of report outputs
+     * @param container the Message to add
+     * @param param the Parameter to add
+     * 
+     */
+    void printMessageWithParam(int m, int n, CmsMessageContainer container, Object param);
+
     /**
      * Resets the runtime to 0 milliseconds.<p>
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorPdf.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.search.extractors;
 
 import org.opencms.util.CmsStringUtil;
@@ -43,35 +43,38 @@ import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.pdmodel.PDDocumentInformation;
 import org.pdfbox.util.PDFTextStripper;
 
-
 /**
  * Extracts the text form a PDF document.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @since 5.7.2
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsExtractorPdf extends A_CmsTextExtractor {
 
     /** Static member instance of the extractor. */
     private static final CmsExtractorPdf INSTANCE = new CmsExtractorPdf();
-    
+
     /**
      * Hide the public constructor.<p> 
      */
     private CmsExtractorPdf() {
+
         // noop
     }
-    
+
     /**
      * Returns an instance of this text extractor.<p> 
      * 
      * @return an instance of this text extractor
      */
     public static I_CmsTextExtractor getExtractor() {
+
         return INSTANCE;
     }
-    
+
     /**
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
      */
@@ -82,9 +85,9 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
         try {
             PDFParser parser = new PDFParser(in);
             parser.parse();
-            
+
             pdfDocument = parser.getPDDocument();
-            
+
             // check for encryption
             if (pdfDocument.isEncrypted()) {
                 DocumentEncryption decryptor = new DocumentEncryption(pdfDocument);
@@ -95,7 +98,7 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
             // create PDF stripper
             PDFTextStripper stripper = new PDFTextStripper();
             PDDocumentInformation info = pdfDocument.getDocumentInformation();
-            
+
             Map metaInfo = new HashMap();
             // append document meta data to content
             String meta;
@@ -105,35 +108,35 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
             }
             meta = info.getKeywords();
             if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_KEYWORDS, meta);                
+                metaInfo.put(I_CmsExtractionResult.META_KEYWORDS, meta);
             }
             meta = info.getSubject();
             if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_SUBJECT, meta);                
+                metaInfo.put(I_CmsExtractionResult.META_SUBJECT, meta);
             }
             // extract other available meta information
             meta = info.getAuthor();
             if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_AUTHOR, meta);                
+                metaInfo.put(I_CmsExtractionResult.META_AUTHOR, meta);
             }
             meta = info.getCreator();
             if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_CREATOR, meta);                
+                metaInfo.put(I_CmsExtractionResult.META_CREATOR, meta);
             }
             meta = info.getProducer();
             if (CmsStringUtil.isNotEmpty(meta)) {
-                metaInfo.put(I_CmsExtractionResult.META_PRODUCER, meta);                
+                metaInfo.put(I_CmsExtractionResult.META_PRODUCER, meta);
             }
             if (info.getCreationDate() != null) {
-                metaInfo.put(I_CmsExtractionResult.META_DATE_CREATED, info.getCreationDate().getTime());                
+                metaInfo.put(I_CmsExtractionResult.META_DATE_CREATED, info.getCreationDate().getTime());
             }
             if (info.getModificationDate() != null) {
-                metaInfo.put(I_CmsExtractionResult.META_DATE_LASTMODIFIED, info.getModificationDate().getTime());                
+                metaInfo.put(I_CmsExtractionResult.META_DATE_LASTMODIFIED, info.getModificationDate().getTime());
             }
-            
+
             // add the main document text
             String result = stripper.getText(pdfDocument);
-            
+
             // return the final result
             return new CmsExtractionResult(result, metaInfo);
 
@@ -142,5 +145,5 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
                 pdfDocument.close();
             }
         }
-    }    
+    }
 }

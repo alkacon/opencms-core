@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentPdf.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,11 @@ import org.pdfbox.exceptions.InvalidPasswordException;
  * Lucene document factory class to extract index data from a cms resource 
  * containing Adobe pdf data.<p>
  * 
- * @version $Revision: 1.4 $
  * @author Carsten Weinholz 
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsDocumentPdf extends A_CmsVfsDocument {
 
@@ -77,16 +80,19 @@ public class CmsDocumentPdf extends A_CmsVfsDocument {
             return CmsExtractorPdf.getExtractor().extractText(file.getContents());
         } catch (Exception e) {
             if (e instanceof CryptographyException) {
-                throw new CmsIndexException(Messages.get()
-                    .container(Messages.ERR_DECRYPTING_RESOURCE_1, resource.getRootPath()), e);                
+                throw new CmsIndexException(Messages.get().container(
+                    Messages.ERR_DECRYPTING_RESOURCE_1,
+                    resource.getRootPath()), e);
             }
             if (e instanceof InvalidPasswordException) {
                 // default password "" was wrong.
-                throw new CmsIndexException(Messages.get()
-                    .container(Messages.ERR_PWD_PROTECTED_1, resource.getRootPath()), e);
+                throw new CmsIndexException(Messages.get().container(
+                    Messages.ERR_PWD_PROTECTED_1,
+                    resource.getRootPath()), e);
             }
-            throw new CmsIndexException(Messages.get()
-                .container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
+            throw new CmsIndexException(
+                Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
+                e);
         }
     }
 }

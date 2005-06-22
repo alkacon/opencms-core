@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexException.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,14 +38,16 @@ import org.opencms.main.CmsException;
  * Signals an error during an indexing operation.<p> 
  * 
  * This exception is thrown by various classes 
- * in the <code>org.opencms.search</code> package.
+ * in the <code>org.opencms.search</code> package.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.11 $ $Date: 2005/06/22 10:38:15 $
- * @since 5.3.1
+ * 
+ * @version $Revision: 1.12 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsIndexException extends CmsException {
-    
+
     /**
      * Creates a new localized Exception.<p>
      * 
@@ -65,13 +67,13 @@ public class CmsIndexException extends CmsException {
     public CmsIndexException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }    
-    
+    }
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsIndexException(container, cause);
-    } 
+    }
 }

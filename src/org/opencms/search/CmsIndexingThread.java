@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2005/06/22 12:44:07 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,9 +47,11 @@ import org.apache.lucene.index.IndexWriter;
  * The indexing of a single resource was wrapped into a single thread
  * in order to prevent the indexer from hanging.<p>
  *  
- * @version $Revision: 1.18 $ $Date: 2005/06/22 12:44:07 $
  * @author Carsten Weinholz 
- * @since 5.3.1
+ * 
+ * @version $Revision: 1.19 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsIndexingThread extends Thread {
 
@@ -57,16 +59,10 @@ public class CmsIndexingThread extends Thread {
     private static final boolean DEBUG = false;
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsIndexingThread.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsIndexingThread.class);
+
     /** The cms object. */
     CmsObject m_cms;
-    
-    /** The index writer. */
-    IndexWriter m_writer;
-
-    /** The resource to index. */
-    A_CmsIndexResource m_res;
 
     /** The current index. */
     CmsSearchIndex m_index;
@@ -74,8 +70,14 @@ public class CmsIndexingThread extends Thread {
     /** The current report. */
     I_CmsReport m_report;
 
+    /** The resource to index. */
+    A_CmsIndexResource m_res;
+
     /** The thread manager. */
     CmsIndexingThreadManager m_threadManager;
+
+    /** The index writer. */
+    IndexWriter m_writer;
 
     /**
      * Creates a new indexing thread for a single resource.<p>
@@ -123,7 +125,7 @@ public class CmsIndexingThread extends Thread {
                 LOG.debug(Messages.get().key(Messages.LOG_INDEXING_DOC_ROOT_1, documentFactory.getName()));
             } else {
                 LOG.debug(Messages.get().key(Messages.LOG_INDEXING_0));
-            }    
+            }
         }
 
         if (documentFactory != null) {
@@ -133,13 +135,15 @@ public class CmsIndexingThread extends Thread {
                     LOG.debug(Messages.get().key(Messages.LOG_CREATING_INDEX_DOC_0));
                 }
                 Document doc = documentFactory.newInstance(m_cms, m_res, m_index.getLocale());
-   
+
                 if (doc == null) {
                     throw new CmsIndexException(Messages.get().container(Messages.ERR_CREATING_INDEX_DOC_0));
                 }
 
                 if (DEBUG && LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_WRITING_INDEX_TO_WRITER_1, ((m_writer != null) ? m_writer.toString() : "null")));
+                    LOG.debug(Messages.get().key(
+                        Messages.LOG_WRITING_INDEX_TO_WRITER_1,
+                        ((m_writer != null) ? m_writer.toString() : "null")));
                 }
 
                 if (!isInterrupted()) {
@@ -147,8 +151,9 @@ public class CmsIndexingThread extends Thread {
                 }
 
                 if (m_report != null && !isInterrupted()) {
-                    m_report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+                    m_report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                        I_CmsReport.C_FORMAT_OK);
                     if (DEBUG && LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(Messages.LOG_WRITE_SUCCESS_0));
                     }
@@ -160,11 +165,13 @@ public class CmsIndexingThread extends Thread {
             } catch (Exception exc) {
                 // Ignore exception caused by empty documents, so that the report is not messed up with error message
                 Throwable cause = exc.getCause();
-                if ((cause != null && cause instanceof CmsIndexException 
-                && ((CmsIndexException)cause).getMessageContainer().getKey().equals(org.opencms.search.documents.Messages.ERR_NO_CONTENT_1)) 
-                || (exc instanceof CmsIndexException && ((CmsIndexException)exc).getMessageContainer().getKey().equals(org.opencms.search.documents.Messages.ERR_NO_CONTENT_1))) {
-                    m_report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+                if ((cause != null && cause instanceof CmsIndexException && ((CmsIndexException)cause).getMessageContainer().getKey().equals(
+                    org.opencms.search.documents.Messages.ERR_NO_CONTENT_1))
+                    || (exc instanceof CmsIndexException && ((CmsIndexException)exc).getMessageContainer().getKey().equals(
+                        org.opencms.search.documents.Messages.ERR_NO_CONTENT_1))) {
+                    m_report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                        I_CmsReport.C_FORMAT_OK);
                     m_threadManager.finished();
                 } else {
                     if (m_report != null) {
@@ -182,14 +189,15 @@ public class CmsIndexingThread extends Thread {
         } else {
 
             if (m_report != null) {
-                m_report.println(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SKIPPED_0), I_CmsReport.C_FORMAT_NOTE);
+                m_report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
+                    I_CmsReport.C_FORMAT_NOTE);
             }
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_SKIPPED_1, m_res.getRootPath()));
-            }    
-            
+            }
+
         }
 
         m_threadManager.finished();

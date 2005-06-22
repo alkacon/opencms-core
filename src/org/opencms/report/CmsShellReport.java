@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 14:19:39 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,14 @@ import java.util.Locale;
 /**
  * Report class used for the shell.<p>
  * 
- * It stores nothing. It just prints everthing to <code>System.out</code>.
+ * It stores nothing. It just prints everthing to <code>System.out</code><p>.
  * 
  * @author Alexander Kandzior  
  * @author Jan Baudisch  
- * @version $Revision: 1.16 $
+ * 
+ * @version $Revision: 1.17 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsShellReport extends A_CmsReport {
 
@@ -119,7 +122,7 @@ public class CmsShellReport extends A_CmsReport {
 
         System.out.println();
     }
-    
+
     /**
      * @see org.opencms.report.I_CmsReport#println(java.lang.Throwable)
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/I_CmsExtractionResult.java,v $
- * Date   : $Date: 2005/03/30 10:49:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,12 @@ import java.util.Map;
  * 
  * This data structure contains the extracted text as well as (optional) 
  * meta information extracted from the document.<p>
+ * 
+ * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsExtractionResult {
 

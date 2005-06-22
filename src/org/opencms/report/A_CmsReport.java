@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/22 14:19:39 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,10 @@ import java.util.Locale;
  * @author Alexander Kandzior   
  * @author Thomas Weckert  
  * @author Jan Baudisch 
- * @version $Revision: 1.15 $
+ * 
+ * @version $Revision: 1.16 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsReport implements I_CmsReport {
 
@@ -136,7 +139,7 @@ public abstract class A_CmsReport implements I_CmsReport {
         // if not found, check in 
         return CmsMessages.formatUnknownKey(keyName);
     }
-    
+
     /**
      * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer)
      */
@@ -144,7 +147,6 @@ public abstract class A_CmsReport implements I_CmsReport {
 
         print(container.key(getLocale()), C_FORMAT_DEFAULT);
     }
-    
 
     /**
      * @see org.opencms.report.I_CmsReport#print(org.opencms.i18n.CmsMessageContainer, int)
@@ -153,32 +155,13 @@ public abstract class A_CmsReport implements I_CmsReport {
 
         print(container.key(getLocale()), format);
     }
-    
-    
+
     /**
      * @see org.opencms.report.I_CmsReport#println(org.opencms.i18n.CmsMessageContainer)
      */
     public synchronized void println(CmsMessageContainer container) {
 
         println(container.key(getLocale()), C_FORMAT_DEFAULT);
-    }
-    
-    /**
-     * @see org.opencms.report.I_CmsReport#printMessageWithParam(org.opencms.i18n.CmsMessageContainer,Object)
-     */
-    public synchronized void printMessageWithParam(CmsMessageContainer container, Object param) {
-        print(container, I_CmsReport.C_FORMAT_NOTE);                   
-        print(Messages.get().container(Messages.RPT_ARGUMENT_1, param));
-        print(Messages.get().container(Messages.RPT_DOTS_0));
-    }    
-    
-    /**
-     * @see org.opencms.report.I_CmsReport#printMessageWithParam(int,int,org.opencms.i18n.CmsMessageContainer,Object)
-     */
-    public synchronized void printMessageWithParam(int m, int n, CmsMessageContainer container, Object param) {
-        print(Messages.get().container(Messages.RPT_SUCCESSION_2, 
-            String.valueOf(m), String.valueOf(n)), I_CmsReport.C_FORMAT_NOTE);
-        printMessageWithParam(container, param);
     }
 
     /**
@@ -188,7 +171,28 @@ public abstract class A_CmsReport implements I_CmsReport {
 
         println(container.key(getLocale()), format);
     }
-    
+
+    /**
+     * @see org.opencms.report.I_CmsReport#printMessageWithParam(org.opencms.i18n.CmsMessageContainer,Object)
+     */
+    public synchronized void printMessageWithParam(CmsMessageContainer container, Object param) {
+
+        print(container, I_CmsReport.C_FORMAT_NOTE);
+        print(Messages.get().container(Messages.RPT_ARGUMENT_1, param));
+        print(Messages.get().container(Messages.RPT_DOTS_0));
+    }
+
+    /**
+     * @see org.opencms.report.I_CmsReport#printMessageWithParam(int,int,org.opencms.i18n.CmsMessageContainer,Object)
+     */
+    public synchronized void printMessageWithParam(int m, int n, CmsMessageContainer container, Object param) {
+
+        print(
+            Messages.get().container(Messages.RPT_SUCCESSION_2, String.valueOf(m), String.valueOf(n)),
+            I_CmsReport.C_FORMAT_NOTE);
+        printMessageWithParam(container, param);
+    }
+
     /**
      * @see org.opencms.report.I_CmsReport#resetRuntime()
      */
@@ -218,7 +222,7 @@ public abstract class A_CmsReport implements I_CmsReport {
 
         print(value, C_FORMAT_DEFAULT);
     }
-    
+
     /**
      * Prints a String to the report, using the indicated formatting.<p>
      * 
@@ -229,7 +233,7 @@ public abstract class A_CmsReport implements I_CmsReport {
      * @param format the formatting to use for the output
      */
     protected abstract void print(String value, int format);
-    
+
     /**
      * Prints a String with line break to the report.<p>
      * 
@@ -239,7 +243,7 @@ public abstract class A_CmsReport implements I_CmsReport {
 
         println(value, C_FORMAT_DEFAULT);
     }
-    
+
     /**
      * Prints a String with line break to the report, using the indicated formatting.<p>
      * 

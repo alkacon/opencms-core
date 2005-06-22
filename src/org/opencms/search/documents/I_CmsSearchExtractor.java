@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsSearchExtractor.java,v $
- * Date   : $Date: 2005/04/15 15:51:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,14 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
 
 /**
  * Comment for <code>I_CmsSearchExtractor</code>.<p>
+ * 
+ * @param please add a comment
+ * 
+ * @author Carsten Weinholz 
+ * 
+ * @version $Revision: 1.2 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsSearchExtractor {
 
@@ -50,6 +58,7 @@ public interface I_CmsSearchExtractor {
      * @return the extracted content of the resource
      * @throws CmsException if somethin goes wrong
      */
-    I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException;
+    I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language)
+    throws CmsException;
 
 }

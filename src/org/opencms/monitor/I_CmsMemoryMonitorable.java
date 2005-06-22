@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/I_CmsMemoryMonitorable.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,12 @@ package org.opencms.monitor;
 
 /**
  * Describes an object that can be memory monitored.<p>
+ * 
+ * @author Alexander Kandzior
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsMemoryMonitorable {
 
@@ -43,4 +49,3 @@ public interface I_CmsMemoryMonitorable {
      */
     int getMemorySize();
 }
-

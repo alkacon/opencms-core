@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReportThread.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 14:19:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,9 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $ 
  * 
+ * @since 6.0.0 
  */
 public interface I_CmsReportThread {
 
@@ -54,5 +55,5 @@ public interface I_CmsReportThread {
      * Starts the report thread.<p>
      */
     void start();
-    
+
 }

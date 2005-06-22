@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndexSource.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,31 +46,33 @@ import org.apache.commons.logging.Log;
  * to be indexed.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.7 $
- * @since 5.3.6
+ * 
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSearchIndexSource implements Serializable, Cloneable {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSearchIndexSource.class);  
+    private static final Log LOG = CmsLog.getLog(CmsSearchIndexSource.class);
 
-    /** The logical key/name of this index. */
-    private String m_name;
+    /** A list of Cms resource types to be indexed. */
+    private List m_documentTypes;
+
+    /** The indexer. */
+    private I_CmsIndexer m_indexer;
 
     /** The class name of the indexer. */
     private String m_indexerClassName;
 
-    /** The indexer. */
-    private I_CmsIndexer m_indexer;
-    
+    /** The logical key/name of this index. */
+    private String m_name;
+
     /** A map of optional key/value parameters. */
     private Map m_params;
 
     /** A list of Cms resources to be indexed. */
     private List m_resourcesNames;
-
-    /** A list of Cms resource types to be indexed. */
-    private List m_documentTypes;
 
     /**
      * Creates a new CmsSearchIndexSource.<p>
@@ -80,6 +82,37 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
         m_params = new HashMap();
         m_resourcesNames = new ArrayList();
         m_documentTypes = new ArrayList();
+    }
+
+    /**
+     * Adds a parameter.<p>
+     * 
+     * @param key the key/name of the parameter
+     * @param value the value of the parameter
+     */
+    public void addConfigurationParameter(String key, String value) {
+
+        m_params.put(key, value);
+    }
+
+    /**
+     * Adds the key/name of a document type.<p>
+     * 
+     * @param key the key/name of a document type
+     */
+    public void addDocumentType(String key) {
+
+        m_documentTypes.add(key);
+    }
+
+    /**
+     * Adds the path of a Cms resource.<p>
+     * 
+     * @param resourceName the path of a Cms resource
+     */
+    public void addResourceName(String resourceName) {
+
+        m_resourcesNames.add(resourceName);
     }
 
     /**
@@ -98,10 +131,10 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
      * @return the indexer
      */
     public I_CmsIndexer getIndexer() {
-        
+
         return m_indexer;
     }
-    
+
     /**
      * Returns the class name of the indexer.<p>
      *
@@ -120,6 +153,17 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns the value for a specified parameter key.<p>
+     * 
+     * @param key the parameter key/name
+     * @return the value for the specified parameter key
+     */
+    public String getParam(String key) {
+
+        return (String)m_params.get(key);
     }
 
     /**
@@ -160,12 +204,12 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
     public void setIndexerClassName(String indexerClassName) {
 
         m_indexerClassName = indexerClassName;
-        
+
         try {
             m_indexer = (I_CmsIndexer)Class.forName(m_indexerClassName).newInstance();
         } catch (Exception exc) {
             LOG.error(Messages.get().key(Messages.LOG_INDEXER_CREATION_FAILED_1, m_indexerClassName), exc);
-            
+
         }
     }
 
@@ -197,47 +241,5 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
     public void setResourcesNames(List resources) {
 
         m_resourcesNames = resources;
-    }
-
-    /**
-     * Adds a parameter.<p>
-     * 
-     * @param key the key/name of the parameter
-     * @param value the value of the parameter
-     */
-    public void addConfigurationParameter(String key, String value) {
-
-        m_params.put(key, value);
-    }
-
-    /**
-     * Adds the path of a Cms resource.<p>
-     * 
-     * @param resourceName the path of a Cms resource
-     */
-    public void addResourceName(String resourceName) {
-
-        m_resourcesNames.add(resourceName);
-    }
-
-    /**
-     * Adds the key/name of a document type.<p>
-     * 
-     * @param key the key/name of a document type
-     */
-    public void addDocumentType(String key) {
-
-        m_documentTypes.add(key);
-    }
-
-    /**
-     * Returns the value for a specified parameter key.<p>
-     * 
-     * @param key the parameter key/name
-     * @return the value for the specified parameter key
-     */
-    public String getParam(String key) {
-
-        return (String)m_params.get(key);
     }
 }

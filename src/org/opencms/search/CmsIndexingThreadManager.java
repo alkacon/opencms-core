@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,29 +42,31 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the management of indexing threads.<p>
  * 
- * @version $Revision: 1.17 $ $Date: 2005/06/22 10:38:15 $
  * @author Carsten Weinholz 
- * @since 5.3.1
+ * 
+ * @version $Revision: 1.18 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsIndexingThreadManager extends Thread {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsIndexingThreadManager.class);
 
-    /** The report. */
-    private I_CmsReport m_report;
-
-    /** Timeout for abandoning threads. */
-    private long m_timeout;
+    /** Number of threads abandoned. */
+    private int m_abandonedCounter;
 
     /** Overall number of threads started. */
     private int m_fileCounter;
 
-    /** Number of threads abandoned. */
-    private int m_abandonedCounter;
+    /** The report. */
+    private I_CmsReport m_report;
 
     /** Number of thread returned. */
     private int m_returnedCounter;
+
+    /** Timeout for abandoning threads. */
+    private long m_timeout;
 
     /**
      * Creates and starts a thread manager for indexing threads.<p>
@@ -98,11 +100,7 @@ public class CmsIndexingThreadManager extends Thread {
      * @param res the resource
      * @param index the index
      */
-    public void createIndexingThread(
-        CmsObject cms,
-        IndexWriter writer,
-        A_CmsIndexResource res,
-        CmsSearchIndex index) {
+    public void createIndexingThread(CmsObject cms, IndexWriter writer, A_CmsIndexResource res, CmsSearchIndex index) {
 
         CmsIndexingThread thread = new CmsIndexingThread(cms, writer, res, index, m_report, this);
 
@@ -114,16 +112,16 @@ public class CmsIndexingThreadManager extends Thread {
             if (thread.isAlive()) {
 
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(
-                        Messages.LOG_INDEXING_TIMEOUT_1, res.getRootPath()));
+                    LOG.warn(Messages.get().key(Messages.LOG_INDEXING_TIMEOUT_1, res.getRootPath()));
                 }
 
                 m_report.println();
-                m_report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.C_FORMAT_WARNING);
-                m_report.println(Messages.get().container(
-                    Messages.RPT_SEARCH_INDEXING_TIMEOUT_1,
-                    res.getRootPath()), I_CmsReport.C_FORMAT_WARNING);
+                m_report.print(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                    I_CmsReport.C_FORMAT_WARNING);
+                m_report.println(
+                    Messages.get().container(Messages.RPT_SEARCH_INDEXING_TIMEOUT_1, res.getRootPath()),
+                    I_CmsReport.C_FORMAT_WARNING);
 
                 m_abandonedCounter++;
                 thread.interrupt();
@@ -131,6 +129,34 @@ public class CmsIndexingThreadManager extends Thread {
         } catch (InterruptedException exc) {
             // noop
         }
+    }
+
+    /**
+     * Signals the thread manager that a thread has finished its job and will exit immediately.<p>
+     */
+    public synchronized void finished() {
+
+        m_returnedCounter++;
+    }
+
+    /**
+     * Gets the current thread (file) count.<p>
+     * 
+     * @return the current thread count
+     */
+    public int getCounter() {
+
+        return m_fileCounter;
+    }
+
+    /**
+     * Returns if the indexing manager still have indexing threads.<p>
+     * 
+     * @return true if the indexing manager still have indexing threads
+     */
+    public boolean isRunning() {
+
+        return (m_returnedCounter + m_abandonedCounter < m_fileCounter);
     }
 
     /**
@@ -161,34 +187,6 @@ public class CmsIndexingThreadManager extends Thread {
                 I_CmsReport.C_FORMAT_HEADLINE);
             m_report.println(message);
         }
-    }
-
-    /**
-     * Gets the current thread (file) count.<p>
-     * 
-     * @return the current thread count
-     */
-    public int getCounter() {
-
-        return m_fileCounter;
-    }
-
-    /**
-     * Signals the thread manager that a thread has finished its job and will exit immediately.<p>
-     */
-    public synchronized void finished() {
-
-        m_returnedCounter++;
-    }
-
-    /**
-     * Returns if the indexing manager still have indexing threads.<p>
-     * 
-     * @return true if the indexing manager still have indexing threads
-     */
-    public boolean isRunning() {
-
-        return (m_returnedCounter + m_abandonedCounter < m_fileCounter);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,12 +63,12 @@ import org.dom4j.Element;
  * Adds the XML handler rules for import and export of a single module.<p>
  * 
  * @author Alexander Kandzior 
- * @since 5.3.6
+ * 
+ * @version $Revision: 1.18 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsModuleXmlHandler {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsModuleXmlHandler.class);  
 
     /** The "name" attribute. */
     protected static final String A_NAME = "name";
@@ -102,7 +102,7 @@ public class CmsModuleXmlHandler {
 
     /** The node name for the group node. */
     protected static final String N_GROUP = "group";
-    
+
     /** The node name for a module. */
     protected static final String N_MODULE = "module";
 
@@ -126,6 +126,9 @@ public class CmsModuleXmlHandler {
 
     /** The node name for the version node. */
     protected static final String N_VERSION = "version";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsModuleXmlHandler.class);
 
     /** The list of dependencies for a module. */
     private List m_dependencies;
@@ -151,8 +154,6 @@ public class CmsModuleXmlHandler {
     /** The list of additional resource types. */
     private List m_resourceTypes;
 
-    
-    
     /**
      * Public constructor, will be called by digester during import.<p> 
      */
@@ -190,31 +191,63 @@ public class CmsModuleXmlHandler {
         digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 8);
         digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 9);
         digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 10);
-        
-         
+
         // add rules for module dependencies
         digester.addCallMethod("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, "addDependency", 2);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, 0, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam(
+            "*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY,
+            0,
+            I_CmsXmlConfiguration.A_NAME);
         digester.addCallParam("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, 1, A_VERSION);
 
         // add rules for the module export points 
-        digester.addCallMethod("*/" + N_MODULE + "/" + I_CmsXmlConfiguration.N_EXPORTPOINTS + "/" + I_CmsXmlConfiguration.N_EXPORTPOINT, "addExportPoint", 2);        
-        digester.addCallParam("*/" + N_MODULE + "/" + I_CmsXmlConfiguration.N_EXPORTPOINTS + "/" + I_CmsXmlConfiguration.N_EXPORTPOINT, 0, I_CmsXmlConfiguration.A_URI);
-        digester.addCallParam("*/" + N_MODULE + "/" + I_CmsXmlConfiguration.N_EXPORTPOINTS + "/" + I_CmsXmlConfiguration.N_EXPORTPOINT, 1, I_CmsXmlConfiguration.A_DESTINATION);      
-        
+        digester.addCallMethod("*/"
+            + N_MODULE
+            + "/"
+            + I_CmsXmlConfiguration.N_EXPORTPOINTS
+            + "/"
+            + I_CmsXmlConfiguration.N_EXPORTPOINT, "addExportPoint", 2);
+        digester.addCallParam("*/"
+            + N_MODULE
+            + "/"
+            + I_CmsXmlConfiguration.N_EXPORTPOINTS
+            + "/"
+            + I_CmsXmlConfiguration.N_EXPORTPOINT, 0, I_CmsXmlConfiguration.A_URI);
+        digester.addCallParam("*/"
+            + N_MODULE
+            + "/"
+            + I_CmsXmlConfiguration.N_EXPORTPOINTS
+            + "/"
+            + I_CmsXmlConfiguration.N_EXPORTPOINT, 1, I_CmsXmlConfiguration.A_DESTINATION);
+
         // add rules for the module resources 
-        digester.addCallMethod("*/" + N_MODULE + "/" + N_RESOURCES + "/" + I_CmsXmlConfiguration.N_RESOURCE, "addResource", 1);        
-        digester.addCallParam("*/" + N_MODULE +  "/" + N_RESOURCES + "/" + I_CmsXmlConfiguration.N_RESOURCE, 0, I_CmsXmlConfiguration.A_URI);
-        
+        digester.addCallMethod(
+            "*/" + N_MODULE + "/" + N_RESOURCES + "/" + I_CmsXmlConfiguration.N_RESOURCE,
+            "addResource",
+            1);
+        digester.addCallParam(
+            "*/" + N_MODULE + "/" + N_RESOURCES + "/" + I_CmsXmlConfiguration.N_RESOURCE,
+            0,
+            I_CmsXmlConfiguration.A_URI);
+
         // add rules for the module parameters
-        digester.addCallMethod("*/" + N_MODULE + "/" + N_PARAMETERS + "/" + I_CmsXmlConfiguration.N_PARAM , "addParameter", 2);        
-        digester.addCallParam("*/" + N_MODULE + "/" + N_PARAMETERS + "/" + I_CmsXmlConfiguration.N_PARAM , 0, I_CmsXmlConfiguration.A_NAME);        
-        digester.addCallParam("*/" + N_MODULE + "/" + N_PARAMETERS + "/" + I_CmsXmlConfiguration.N_PARAM , 1);
+        digester.addCallMethod(
+            "*/" + N_MODULE + "/" + N_PARAMETERS + "/" + I_CmsXmlConfiguration.N_PARAM,
+            "addParameter",
+            2);
+        digester.addCallParam(
+            "*/" + N_MODULE + "/" + N_PARAMETERS + "/" + I_CmsXmlConfiguration.N_PARAM,
+            0,
+            I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_PARAMETERS + "/" + I_CmsXmlConfiguration.N_PARAM, 1);
 
         // generic <param> parameter rules
-        digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
-        digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
-        digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1);     
+        digester.addCallMethod(
+            "*/" + I_CmsXmlConfiguration.N_PARAM,
+            I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD,
+            2);
+        digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 1);
 
         // add resource type rules from VFS
         CmsVfsConfiguration.addResourceTypeXmlRules(digester);
@@ -246,7 +279,7 @@ public class CmsModuleXmlHandler {
         }
         if (CmsStringUtil.isNotEmpty(module.getGroup())) {
             moduleElement.addElement(N_GROUP).setText(module.getGroup());
-        } 
+        }
         if (CmsStringUtil.isNotEmpty(module.getActionClass())) {
             moduleElement.addElement(N_CLASS).setText(module.getActionClass());
         } else {
@@ -287,26 +320,24 @@ public class CmsModuleXmlHandler {
         Element dependenciesElement = moduleElement.addElement(N_DEPENDENCIES);
         for (int i = 0; i < module.getDependencies().size(); i++) {
             CmsModuleDependency dependency = (CmsModuleDependency)module.getDependencies().get(i);
-            dependenciesElement
-                .addElement(N_DEPENDENCY)
-                .addAttribute(I_CmsXmlConfiguration.A_NAME, dependency.getName())
-                .addAttribute(A_VERSION, dependency.getVersion().toString());
-        }            
+            dependenciesElement.addElement(N_DEPENDENCY).addAttribute(
+                I_CmsXmlConfiguration.A_NAME,
+                dependency.getName()).addAttribute(A_VERSION, dependency.getVersion().toString());
+        }
         Element exportpointsElement = moduleElement.addElement(I_CmsXmlConfiguration.N_EXPORTPOINTS);
         for (int i = 0; i < module.getExportPoints().size(); i++) {
             CmsExportPoint point = (CmsExportPoint)module.getExportPoints().get(i);
-            exportpointsElement
-                .addElement(I_CmsXmlConfiguration.N_EXPORTPOINT)
-                .addAttribute(I_CmsXmlConfiguration.A_URI, point.getUri())
-                .addAttribute(I_CmsXmlConfiguration.A_DESTINATION, point.getConfiguredDestination());
-        }                  
+            exportpointsElement.addElement(I_CmsXmlConfiguration.N_EXPORTPOINT).addAttribute(
+                I_CmsXmlConfiguration.A_URI,
+                point.getUri()).addAttribute(I_CmsXmlConfiguration.A_DESTINATION, point.getConfiguredDestination());
+        }
         Element resourcesElement = moduleElement.addElement(N_RESOURCES);
         for (int i = 0; i < module.getResources().size(); i++) {
             String resource = (String)module.getResources().get(i);
-            resourcesElement
-                .addElement(I_CmsXmlConfiguration.N_RESOURCE)
-                .addAttribute(I_CmsXmlConfiguration.A_URI, resource);
-        }                       
+            resourcesElement.addElement(I_CmsXmlConfiguration.N_RESOURCE).addAttribute(
+                I_CmsXmlConfiguration.A_URI,
+                resource);
+        }
         Element parametersElement = moduleElement.addElement(N_PARAMETERS);
         SortedMap parameters = module.getParameters();
         if (parameters != null) {
@@ -425,8 +456,7 @@ public class CmsModuleXmlHandler {
         m_dependencies.add(dependency);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
-                Messages.LOG_ADD_MOD_DEPENDENCY_2, name, version));
+            LOG.debug(Messages.get().key(Messages.LOG_ADD_MOD_DEPENDENCY_2, name, version));
         }
     }
 
@@ -455,7 +485,9 @@ public class CmsModuleXmlHandler {
         m_exportPoints.add(point);
         if (CmsLog.INIT.isInfoEnabled() && (point.getDestinationPath() != null)) {
             CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_ADD_EXPORT_POINT_2, point.getUri(), point.getDestinationPath()));
+                Messages.INIT_ADD_EXPORT_POINT_2,
+                point.getUri(),
+                point.getDestinationPath()));
         }
     }
 
@@ -469,8 +501,7 @@ public class CmsModuleXmlHandler {
 
         m_parameters.put(key, value);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
-                Messages.LOG_ADD_MOD_PARAM_KEY_2, key, value));
+            LOG.debug(Messages.get().key(Messages.LOG_ADD_MOD_PARAM_KEY_2, key, value));
         }
     }
 
@@ -482,8 +513,7 @@ public class CmsModuleXmlHandler {
     public void addResource(String resource) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
-                Messages.LOG_ADD_MOD_RESOURCE_1, resource));
+            LOG.debug(Messages.get().key(Messages.LOG_ADD_MOD_RESOURCE_1, resource));
         }
         m_resources.add(resource);
     }
@@ -530,15 +560,12 @@ public class CmsModuleXmlHandler {
         String dateInstalled) {
 
         String moduleName;
-       
 
         if (!CmsStringUtil.isValidJavaClassName(name)) {
             // ensure backward compatibility with old (5.0) module names
-            LOG.error(Messages.get().key(
-                Messages.LOG_INVALID_MOD_NAME_IMPORTED_1, name));
+            LOG.error(Messages.get().key(Messages.LOG_INVALID_MOD_NAME_IMPORTED_1, name));
             moduleName = makeValidJavaClassName(name);
-            LOG.error(Messages.get().key(
-                Messages.LOG_CORRECTED_MOD_NAME_1, moduleName));            
+            LOG.error(Messages.get().key(Messages.LOG_CORRECTED_MOD_NAME_1, moduleName));
         } else {
             moduleName = name;
         }

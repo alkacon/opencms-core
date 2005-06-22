@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,15 +66,14 @@ import org.apache.lucene.search.SortField;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.32 $ $Date: 2005/06/22 10:38:15 $
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
- * @since 5.3.1
+ * 
+ * @version $Revision: 1.33 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSearch implements Serializable, Cloneable {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSearch.class);
 
     /** Sort result documents by date of last modification, then score. */
     public static final Sort SORT_DATE_CREATED = new Sort(new SortField[] {
@@ -93,6 +92,9 @@ public class CmsSearch implements Serializable, Cloneable {
     public static final Sort SORT_TITLE = new Sort(new SortField[] {
         new SortField(I_CmsDocumentFactory.DOC_TITLE_KEY),
         SortField.FIELD_SCORE});
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSearch.class);
 
     /** Indicates if a category count should be calculated for the result list. */
     protected boolean m_calculateCategories;
@@ -700,8 +702,7 @@ public class CmsSearch implements Serializable, Cloneable {
                 }
             } catch (Exception exc) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(
-                        Messages.LOG_INDEX_ACCESS_FAILED_1, indexName), exc);
+                    LOG.debug(Messages.get().key(Messages.LOG_INDEX_ACCESS_FAILED_1, indexName), exc);
                 }
                 m_lastException = exc;
             }

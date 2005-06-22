@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,22 +74,24 @@ import org.apache.commons.logging.Log;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.52 $ $Date: 2005/06/22 10:38:20 $
- * 
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.53 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsMemoryMonitor.class);
-    
     /** Set interval for clearing the caches to 10 minutes. */
     private static final int C_INTERVAL_CLEAR = 1000 * 60 * 10;
 
     /** Maximum depth for object size recursion. */
     private static final int C_MAX_DEPTH = 5;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMemoryMonitor.class);
 
     /** Flag indicating if monitor is currently running. */
     private static boolean m_currentlyRunning;
@@ -127,6 +129,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Memory percentage to reach to go to warning level. */
     private int m_maxUsagePercent;
 
+    /** The average memory status. */
+    private CmsMemoryStatus m_memoryAverage;
+
+    /** The current memory status. */
+    private CmsMemoryStatus m_memoryCurrent;
+
     /** Contains the object to be monitored. */
     private Map m_monitoredObjects;
 
@@ -135,13 +143,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Flag for memory warning mail send. */
     private boolean m_warningSendSinceLastStatus;
-    
-    /** The average memory status. */
-    private CmsMemoryStatus m_memoryAverage;
-    
-    /** The current memory status. */
-    private CmsMemoryStatus m_memoryCurrent;
-    
+
     /**
      * Empty constructor, required by OpenCms scheduler.<p>
      */
@@ -210,31 +212,31 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (obj instanceof Boolean) {
             return 8; // one boolean
         }
-        
+
         if (obj instanceof CmsProperty) {
             int size = 8;
-            
+
             CmsProperty property = (CmsProperty)obj;
             size += getMemorySize(property.getName());
-            
+
             if (property.getResourceValue() != null) {
                 size += getMemorySize(property.getResourceValue());
             }
-            
+
             if (property.getStructureValue() != null) {
                 size += getMemorySize(property.getStructureValue());
             }
-            
+
             return size;
         }
-        
+
         if (obj instanceof CmsPropertyDefinition) {
             int size = 8;
-            
+
             CmsPropertyDefinition propDef = (CmsPropertyDefinition)obj;
             size += getMemorySize(propDef.getName());
             size += getMemorySize(propDef.getId());
-            
+
             return size;
         }
 
@@ -281,7 +283,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         m_memoryAverage = new CmsMemoryStatus();
         m_memoryCurrent = new CmsMemoryStatus();
-        
+
         m_warningSendSinceLastStatus = false;
         m_warningLoggedSinceLastStatus = false;
         m_lastEmailWarning = 0;
@@ -307,11 +309,15 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            
+
             CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_INTERVAL_LOG_1, new Integer(m_intervalLog / 1000)));
             CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_INTERVAL_EMAIL_1, new Integer(m_intervalEmail / 1000)));
-            CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_INTERVAL_WARNING_1, new Integer(m_intervalWarning / 1000)));
-            CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_INTERVAL_MAX_USAGE_1, new Integer(m_intervalWarning / 1000)));
+            CmsLog.INIT.info(Messages.get().key(
+                Messages.LOG_MM_INTERVAL_WARNING_1,
+                new Integer(m_intervalWarning / 1000)));
+            CmsLog.INIT.info(Messages.get().key(
+                Messages.LOG_MM_INTERVAL_MAX_USAGE_1,
+                new Integer(m_intervalWarning / 1000)));
 
             if ((m_configuration.getEmailReceiver() == null) || (m_configuration.getEmailSender() == null)) {
                 CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_EMAIL_DISABLED_0));
@@ -320,7 +326,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 Iterator i = m_configuration.getEmailReceiver().iterator();
                 int n = 0;
                 while (i.hasNext()) {
-                    CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_EMAIL_RECEIVER_2, new Integer(n+1), i.next()));
+                    CmsLog.INIT.info(Messages.get().key(Messages.LOG_MM_EMAIL_RECEIVER_2, new Integer(n + 1), i.next()));
                     n++;
                 }
             }
@@ -328,7 +334,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         if (LOG.isDebugEnabled()) {
             // this will happen only once during system startup
-            
+
             LOG.debug(Messages.get().key(Messages.LOG_MM_CREATED_1, new Date(System.currentTimeMillis())));
         }
 
@@ -344,14 +350,14 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         // make sure job is not launched twice
         if (m_currentlyRunning) {
             return null;
-        }         
+        }
 
         try {
             m_currentlyRunning = true;
-            
+
             // update the memory status
             monitor.updateStatus();
-            
+
             // check if the system is in a low memory condition
             if (monitor.lowMemory()) {
                 // log warning
@@ -361,34 +367,25 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 // clean up caches     
                 monitor.clearCaches();
             }
-    
+
             // check if regular a log entry must be written
             if ((System.currentTimeMillis() - monitor.m_lastLogStatus) > monitor.m_intervalLog) {
                 monitor.monitorWriteLog(false);
             }
-    
+
             // check if the memory status email must be send
             if ((System.currentTimeMillis() - monitor.m_lastEmailStatus) > monitor.m_intervalEmail) {
                 monitor.monitorSendEmail(false);
             }
-        } finally {            
+        } finally {
             // make sure state is reset even if an error occurs, 
             // otherwise MM will not be executed after an error
             m_currentlyRunning = false;
         }
-        
+
         return null;
     }
 
-    /**
-     * Updatres the memory information of the memory monitor.<p> 
-     */
-    private void updateStatus() {
-        
-        m_memoryCurrent.update();
-        m_memoryAverage.calculateAverage(m_memoryCurrent);        
-    }
-    
     /**
      * Returns true if the system runs low on memory.<p>
      * 
@@ -424,7 +421,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         m_lastClearCache = System.currentTimeMillis();
         if (LOG.isWarnEnabled()) {
             LOG.warn(Messages.get().key(Messages.LOG_CLEAR_CACHE_MEM_CONS_0));
-        } 
+        }
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
         System.gc();
     }
@@ -682,10 +679,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if ((m_configuration.getEmailSender() == null) || (m_configuration.getEmailReceiver() == null)) {
             // send no mails if not fully configured
             return;
-        } else if (warning 
-            && (m_warningSendSinceLastStatus 
-                && !((m_intervalEmail <= 0) 
-                    && (System.currentTimeMillis() < (m_lastEmailWarning + m_intervalWarning))))) {
+        } else if (warning
+            && (m_warningSendSinceLastStatus && !((m_intervalEmail <= 0) && (System.currentTimeMillis() < (m_lastEmailWarning + m_intervalWarning))))) {
             // send no warning email if no status email has been send since the last warning
             // if status is disabled, send no warn email if warn interval has not passed
             return;
@@ -804,7 +799,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                     LOG.info(Messages.get().key(Messages.LOG_MM_WARNING_EMAIL_SENT_0));
                 } else {
                     LOG.info(Messages.get().key(Messages.LOG_MM_STATUS_EMAIL_SENT_0));
-                }    
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -817,7 +812,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param warning if true, write a memory warning log entry 
      */
     private void monitorWriteLog(boolean warning) {
-        
+
         if (!LOG.isWarnEnabled()) {
             // we need at last warn level for this output
             return;
@@ -825,9 +820,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             // if not warning we need info level
             return;
         } else if (warning
-            && (m_warningLoggedSinceLastStatus 
-                && !(((m_intervalLog <= 0) 
-                    && (System.currentTimeMillis() < (m_lastLogWarning + m_intervalWarning)))))) {
+            && (m_warningLoggedSinceLastStatus && !(((m_intervalLog <= 0) && (System.currentTimeMillis() < (m_lastLogWarning + m_intervalWarning)))))) {
             // write no warning log if no status log has been written since the last warning
             // if status is disabled, log no warn entry if warn interval has not passed
             return;
@@ -839,7 +832,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (warning) {
             m_lastLogWarning = System.currentTimeMillis();
             m_warningLoggedSinceLastStatus = true;
-            LOG.warn(Messages.get().key(Messages.LOG_MM_WARNING_MEM_CONSUME_2, new Long(m_memoryCurrent.getUsage()), 
+            LOG.warn(Messages.get().key(
+                Messages.LOG_MM_WARNING_MEM_CONSUME_2,
+                new Long(m_memoryCurrent.getUsage()),
                 new Integer(m_maxUsagePercent)));
         } else {
             m_warningLoggedSinceLastStatus = false;
@@ -847,18 +842,22 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
 
         if (warning) {
-            LOG.warn(Messages.get().key(Messages.LOG_MM_WARNING_MEM_STATUS_6, new Object[] {
-                new Long(m_memoryCurrent.getMaxMemory()),
-                new Long(m_memoryCurrent.getTotalMemory()),
-                new Long(m_memoryCurrent.getFreeMemory()),
-                new Long(m_memoryCurrent.getUsedMemory()), 
-                new Long(m_memoryCurrent.getUsage()),
-                new Integer(m_maxUsagePercent)}));
+            LOG.warn(Messages.get().key(
+                Messages.LOG_MM_WARNING_MEM_STATUS_6,
+                new Object[] {
+                    new Long(m_memoryCurrent.getMaxMemory()),
+                    new Long(m_memoryCurrent.getTotalMemory()),
+                    new Long(m_memoryCurrent.getFreeMemory()),
+                    new Long(m_memoryCurrent.getUsedMemory()),
+                    new Long(m_memoryCurrent.getUsage()),
+                    new Integer(m_maxUsagePercent)}));
         } else {
 
             m_logCount++;
-            LOG.info(Messages.get().key(Messages.LOG_MM_LOG_INFO_2, 
-                OpenCms.getSystemInfo().getServerName().toUpperCase(), String.valueOf(m_logCount)));
+            LOG.info(Messages.get().key(
+                Messages.LOG_MM_LOG_INFO_2,
+                OpenCms.getSystemInfo().getServerName().toUpperCase(),
+                String.valueOf(m_logCount)));
 
             List keyList = Arrays.asList(m_monitoredObjects.keySet().toArray());
             Collections.sort(keyList);
@@ -874,47 +873,63 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 PrintfFormat name1 = new PrintfFormat("%-80s");
                 PrintfFormat name2 = new PrintfFormat("%-50s");
                 PrintfFormat form = new PrintfFormat("%9s");
-                LOG.info(Messages.get().key(Messages.LOG_MM_NOWARN_STATUS_5, new Object[] {
-                    name1.sprintf(key), 
-                    name2.sprintf(obj.getClass().getName()),
-                    form.sprintf(getItems(obj)), 
-                    form.sprintf(getLimit(obj)),
-                    form.sprintf(Long.toString(size))}));
+                LOG.info(Messages.get().key(
+                    Messages.LOG_MM_NOWARN_STATUS_5,
+                    new Object[] {
+                        name1.sprintf(key),
+                        name2.sprintf(obj.getClass().getName()),
+                        form.sprintf(getItems(obj)),
+                        form.sprintf(getLimit(obj)),
+                        form.sprintf(Long.toString(size))}));
             }
-            
-            LOG.info(
-                Messages.get().key(Messages.LOG_MM_WARNING_MEM_STATUS_6, new Object[] {
+
+            LOG.info(Messages.get().key(
+                Messages.LOG_MM_WARNING_MEM_STATUS_6,
+                new Object[] {
                     new Long(m_memoryCurrent.getMaxMemory()),
                     new Long(m_memoryCurrent.getTotalMemory()),
                     new Long(m_memoryCurrent.getFreeMemory()),
-                    new Long(m_memoryCurrent.getUsedMemory()), 
+                    new Long(m_memoryCurrent.getUsedMemory()),
                     new Long(m_memoryCurrent.getUsage()),
-                    new Integer(m_maxUsagePercent), 
+                    new Integer(m_maxUsagePercent),
                     new Long(totalSize),
-                    new Long(totalSize / 1048576)
-                })
+                    new Long(totalSize / 1048576)})
 
             );
-            LOG.info(Messages.get().key(Messages.LOG_MM_WARNING_MEM_STATUS_AVG_6, new Object[] {
-                new Long(m_memoryAverage.getMaxMemory()),
-                new Long(m_memoryAverage.getTotalMemory()),
-                new Long(m_memoryAverage.getFreeMemory()),
-                new Long(m_memoryAverage.getUsedMemory()), 
-                new Long(m_memoryAverage.getUsage()),
-                new Integer(m_memoryAverage.getCount())}));
+            LOG.info(Messages.get().key(
+                Messages.LOG_MM_WARNING_MEM_STATUS_AVG_6,
+                new Object[] {
+                    new Long(m_memoryAverage.getMaxMemory()),
+                    new Long(m_memoryAverage.getTotalMemory()),
+                    new Long(m_memoryAverage.getFreeMemory()),
+                    new Long(m_memoryAverage.getUsedMemory()),
+                    new Long(m_memoryAverage.getUsage()),
+                    new Integer(m_memoryAverage.getCount())}));
 
             CmsSessionManager sm = OpenCms.getSessionManager();
 
             if (sm != null) {
-                LOG.info(Messages.get().key(Messages.LOG_MM_SESSION_STAT_3, 
-                    String.valueOf(sm.getSessionCountAuthenticated()), String.valueOf(sm.getSessionCountCurrent()), 
+                LOG.info(Messages.get().key(
+                    Messages.LOG_MM_SESSION_STAT_3,
+                    String.valueOf(sm.getSessionCountAuthenticated()),
+                    String.valueOf(sm.getSessionCountCurrent()),
                     String.valueOf(sm.getSessionCountTotal())));
             }
             sm = null;
-            
-            LOG.info(Messages.get().key(Messages.LOG_MM_STARTUP_TIME_2, 
-                CmsDateUtil.getDateTimeShort(OpenCms.getSystemInfo().getStartupTime()), 
-                CmsStringUtil.formatRuntime(OpenCms.getSystemInfo().getRuntime())));            
+
+            LOG.info(Messages.get().key(
+                Messages.LOG_MM_STARTUP_TIME_2,
+                CmsDateUtil.getDateTimeShort(OpenCms.getSystemInfo().getStartupTime()),
+                CmsStringUtil.formatRuntime(OpenCms.getSystemInfo().getRuntime())));
         }
+    }
+
+    /**
+     * Updatres the memory information of the memory monitor.<p> 
+     */
+    private void updateStatus() {
+
+        m_memoryCurrent.update();
+        m_memoryAverage.calculateAverage(m_memoryCurrent);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsStringBufferReport.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 14:19:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,10 @@ import java.util.Locale;
  * 
  * @author Thomas Weckert  
  * @author Jan Baudisch 
- * @version $Revision: 1.8 $ $Date: 2005/06/22 10:38:15 $
+ * 
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsStringBufferReport extends A_CmsReport {
 

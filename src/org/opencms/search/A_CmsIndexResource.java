@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/A_CmsIndexResource.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,12 @@ import org.opencms.util.CmsUUID;
  * An index resource is a wrapper class that contains the data of a
  * Cms resource specified by a Lucene search result document.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2005/06/22 10:38:15 $
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
- * @since 5.3.1
+ * 
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsIndexResource {
 
@@ -50,17 +52,17 @@ public abstract class A_CmsIndexResource {
     /** Id of the object. */
     protected CmsUUID m_id;
 
+    /** Mimetype of the object, <code>null</code> if the object is a <code>CmsMasterDataSet</code>. */
+    protected String m_mimeType;
+
     /** Name of the object. */
     protected String m_name;
 
     /** Path to access the object. */
     protected String m_path;
-    
+
     /** Type of the object. */
     protected int m_type;
-
-    /** Mimetype of the object, <code>null</code> if the object is a <code>CmsMasterDataSet</code>. */
-    protected String m_mimeType;
 
     /**
      * Returns the wrapped data object.<p>
@@ -76,16 +78,21 @@ public abstract class A_CmsIndexResource {
     }
 
     /**
-     * Returns the type of the wrapped object.<p>
+     * Returns the document key for the search manager.<p> 
      * 
-     * The type is either the type of the wrapped <code>CmsResource</code> 
-     * or the SubId of the <code>CmsMasterDataSet</code>.
-     * 
-     * @return the type of the wrapped object
+     * @param withMimeType true if the mime type should be included in the key
+     * @return the document key for the search manager
      */
-    public int getType() {
+    public abstract String getDocumentKey(boolean withMimeType);
 
-        return m_type;
+    /**
+     * Returns the id of the wrapped object.<p>
+     * 
+     * @return the id
+     */
+    public CmsUUID getId() {
+
+        return m_id;
     }
 
     /**
@@ -117,22 +124,17 @@ public abstract class A_CmsIndexResource {
 
         return m_path;
     }
-    
-    /**
-     * Returns the id of the wrapped object.<p>
-     * 
-     * @return the id
-     */
-    public CmsUUID getId() {
 
-        return m_id;
+    /**
+     * Returns the type of the wrapped object.<p>
+     * 
+     * The type is either the type of the wrapped <code>CmsResource</code> 
+     * or the SubId of the <code>CmsMasterDataSet</code>.
+     * 
+     * @return the type of the wrapped object
+     */
+    public int getType() {
+
+        return m_type;
     }
-
-    /**
-     * Returns the document key for the search manager.<p> 
-     * 
-     * @param withMimeType true if the mime type should be included in the key
-     * @return the document key for the search manager
-     */
-    public abstract String getDocumentKey(boolean withMimeType);
 }

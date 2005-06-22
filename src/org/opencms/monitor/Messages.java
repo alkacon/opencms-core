@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,10 +38,13 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Jan Baudisch 
- * @since 5.9.1
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CAUGHT_THROWABLE_1 = "LOG_CAUGHT_THROWABLE_1";
 
@@ -71,13 +74,13 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MM_INTERVAL_WARNING_1 = "LOG_MM_INTERVAL_WARNING_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MM_LOG_INFO_2 = "LOG_MM_LOG_INFO_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MM_NOWARN_STATUS_5 = "LOG_MM_NOWARN_STATUS_5";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MM_SESSION_STAT_3 = "LOG_MM_SESSION_STAT_3";
 
@@ -89,16 +92,16 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MM_WARNING_EMAIL_SENT_0 = "LOG_MM_WARNING_EMAIL_SENT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MM_WARNING_MEM_CONSUME_2 = "LOG_MM_WARNING_MEM_CONSUME_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MM_WARNING_MEM_STATUS_6 = "LOG_MM_WARNING_MEM_STATUS_6";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MM_WARNING_MEM_STATUS_8 = "LOG_MM_WARNING_MEM_STATUS_8";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MM_WARNING_MEM_STATUS_AVG_6 = "LOG_MM_WARNING_MEM_STATUS_AVG_6";
 

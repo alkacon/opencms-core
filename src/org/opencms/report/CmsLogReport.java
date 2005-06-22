@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/22 14:19:39 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,10 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
- * @version $Revision: 1.15 $
+ * 
+ * @version $Revision: 1.16 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsLogReport extends A_CmsReport {
 
@@ -153,7 +156,6 @@ public class CmsLogReport extends A_CmsReport {
         }
         m_buffer = new StringBuffer();
     }
-
 
     /**
      * @see org.opencms.report.I_CmsReport#println(java.lang.Throwable)

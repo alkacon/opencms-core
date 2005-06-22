@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/22 14:19:40 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,10 @@ import org.apache.commons.logging.Log;
  * Modules can contain VFS data, Java classes and a number of configuration options.<p> 
  * 
  * @author Alexander Kandzior 
- * @since 5.3.6
+ * 
+ * @version $Revision: 1.19 $ 
+ * 
+ * @since 6.0.0 
  * 
  * @see org.opencms.module.I_CmsModuleAction
  * @see org.opencms.module.A_CmsModuleAction
