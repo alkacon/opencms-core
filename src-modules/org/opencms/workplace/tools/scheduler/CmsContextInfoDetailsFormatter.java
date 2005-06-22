@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsContextInfoDetailsFormatter.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 15:26:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * This list item detail formatter creates a two column table to represent a context info object.<p>
  * 
  * @author Michael Moossen 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
@@ -101,84 +101,84 @@ public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
         StringBuffer html = new StringBuffer(512);
         html.append("<table border='0' cellspacing='0' cellpadding='0'>\n");
         html.append("\t<tr>\n");
-        html.append("\t\t<td width='150' align='right' style='vertical-align:top;'>\n");
-        html.append("\t\t\t<strong>");
+        html.append("\t\t<td width='150' align='right' class='listdetailhead'>\n");
+        html.append("\t\t\t");
         html.append(userMessage);
-        html.append("</strong>&nbsp;:&nbsp;\n");
+        html.append("&nbsp;:&nbsp;\n");
         html.append("\t\t</td>\n");
-        html.append("\t\t<td style='padding-left: 10px'>\n");
+        html.append("\t\t<td class='listdetailitem'>\n");
         html.append("\t\t\t");
         html.append(info.getUserName());
         html.append("\n");
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");
         html.append("\t<tr>\n");
-        html.append("\t\t<td width='150' align='right' style='vertical-align:top;'>\n");
-        html.append("\t\t\t<strong>");
+        html.append("\t\t<td width='150' align='right' class='listdetailhead'>\n");
+        html.append("\t\t\t");
         html.append(projectMessage);
-        html.append("</strong>&nbsp;:&nbsp;\n");
+        html.append("&nbsp;:&nbsp;\n");
         html.append("\t\t</td>\n");
-        html.append("\t\t<td style='padding-left: 10px'>\n");
+        html.append("\t\t<td class='listdetailitem'>\n");
         html.append("\t\t\t");
         html.append(info.getProjectName());
         html.append("\n");
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");
         html.append("\t<tr>\n");
-        html.append("\t\t<td width='150' align='right' style='vertical-align:top;'>\n");
-        html.append("\t\t\t<strong>");
+        html.append("\t\t<td width='150' align='right' class='listdetailhead'>\n");
+        html.append("\t\t\t");
         html.append(localeMessage);
-        html.append("</strong>&nbsp;:&nbsp;\n");
+        html.append("&nbsp;:&nbsp;\n");
         html.append("\t\t</td>\n");
-        html.append("\t\t<td style='padding-left: 10px'>\n");
+        html.append("\t\t<td class='listdetailitem'>\n");
         html.append("\t\t\t");
         html.append(info.getLocaleName());
         html.append("\n");
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");
         html.append("\t<tr>\n");
-        html.append("\t\t<td width='150' align='right' style='vertical-align:top;'>\n");
-        html.append("\t\t\t<strong>");
+        html.append("\t\t<td width='150' align='right' class='listdetailhead'>\n");
+        html.append("\t\t\t");
         html.append(rootSiteMessage);
-        html.append("</strong>&nbsp;:&nbsp;\n");
+        html.append("&nbsp;:&nbsp;\n");
         html.append("\t\t</td>\n");
-        html.append("\t\t<td style='padding-left: 10px'>\n");
+        html.append("\t\t<td class='listdetailitem'>\n");
         html.append("\t\t\t");
         html.append(info.getSiteRoot());
         html.append("\n");
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");
         html.append("\t<tr>\n");
-        html.append("\t\t<td width='150' align='right' style='vertical-align:top;'>\n");
-        html.append("\t\t\t<strong>");
+        html.append("\t\t<td width='150' align='right' class='listdetailhead'>\n");
+        html.append("\t\t\t");
         html.append(requestedURIMessage);
-        html.append("</strong>&nbsp;:&nbsp;\n");
+        html.append("&nbsp;:&nbsp;\n");
         html.append("\t\t</td>\n");
-        html.append("\t\t<td style='padding-left: 10px'>\n");
+        html.append("\t\t<td class='listdetailitem'>\n");
         html.append("\t\t\t");
         html.append(info.getRequestedUri());
         html.append("\n");
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");
         html.append("\t<tr>\n");
-        html.append("\t\t<td width='150' align='right' style='vertical-align:top;'>\n");
-        html.append("\t\t\t<strong>");
+        html.append("\t\t<td width='150' align='right' class='listdetailhead'>\n");
+        html.append("\t\t\t");
         html.append(remoteAddrMessage);
-        html.append("</strong>&nbsp;:&nbsp;\n");
+        html.append("&nbsp;:&nbsp;\n");
         html.append("\t\t</td>\n");
-        html.append("\t\t<td style='padding-left: 10px'>\n");
+        html.append("\t\t<td class='listdetailitem'>\n");
         html.append("\t\t\t");
         html.append(info.getRemoteAddr());
         html.append("\n");
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");
         html.append("\t<tr>\n");
-        html.append("\t\t<td width='150' align='right' style='vertical-align:top;'>\n");
-        html.append("\t\t\t<strong>");
+        html.append("\t\t<td width='150' align='right' class='listdetailhead'>\n");
+        html.append("\t\t\t");
         html.append(encodingMessage);
-        html.append("</strong>&nbsp;:&nbsp;\n");
+        html.append("&nbsp;:&nbsp;\n");
         html.append("\t\t</td>\n");
-        html.append("\t\t<td style='padding-left: 10px'>\n");
+        html.append("\t\t<td class='listdetailitem'>\n");
         html.append("\t\t\t");
         html.append(info.getEncoding());
         html.append("\n");

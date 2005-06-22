@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemDetailsFormatter.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 15:26:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Locale;
  * the message is put and in the second the content self.<p>
  * 
  * @author Michael Moossen 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsListItemDetailsFormatter implements I_CmsListFormatter {
@@ -67,12 +67,12 @@ public class CmsListItemDetailsFormatter implements I_CmsListFormatter {
         StringBuffer html = new StringBuffer(512);
         html.append("<table border='0' cellspacing='0' cellpadding='0'>\n");
         html.append("\t<tr>\n");
-        html.append("\t\t<td width='150' align='right' style='vertical-align:top;'>\n");
-        html.append("\t\t\t<strong>");
+        html.append("\t\t<td width='150' align='right' class='listdetailhead'>\n");
+        html.append("\t\t\t");
         html.append(message);
-        html.append("</strong>&nbsp;:&nbsp;\n");
+        html.append("&nbsp;:&nbsp;\n");
         html.append("\t\t</td>\n");
-        html.append("\t\t<td style='padding-left: 10px'>\n");
+        html.append("\t\t<td class='listdetailitem'>\n");
         html.append("\t\t\t");
         html.append(data == null ? "" : data);
         html.append("\n");
