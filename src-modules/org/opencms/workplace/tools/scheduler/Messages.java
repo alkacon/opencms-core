@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Messages.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 07:16:17 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITOR_CRONCLASS_MEMORYMONITOR_0 = "GUI_EDITOR_CRONCLASS_MEMORYMONITOR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_CRONCLASS_POINTERVALIDATION_0 = "GUI_EDITOR_CRONCLASS_EXAMPLE4_0";
+    public static final String GUI_EDITOR_CRONCLASS_POINTERVALIDATION_0 = "GUI_EDITOR_CRONCLASS_POINTERVALIDATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CRONCLASS_PUBLISH_0 = "GUI_EDITOR_CRONCLASS_PUBLISH_0";
