@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.msdhtml/resources/system/workplace/editors/msdhtml/Attic/edithtml.js,v $
- * Date   : $Date: 2005/05/19 15:24:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 15:57:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -631,7 +631,7 @@ function doEditHTML(para) {
 		_editor.showDetails = !_editor.showDetails;
 		break;
 	case 48:
-		openWindow = window.open("dialogs/specialchars.jsp","characters", "width=450, height=300, resizable=no, scrollbars=no, location=no, menubar=no, toolbar=no,dependent=yes, top=300, left=250");
+		openWindow = window.open("dialogs/specialchars.jsp","characters", "width=450, height=300, resizable=no, scrollbars=no, location=no, menubar=no, toolbar=no, dependent=yes, top=300, left=250");
 		focusCount = 1;
 		openWindow.focus();
 		break;
@@ -652,7 +652,7 @@ function doEditHTML(para) {
 					params += "&class=" + linkInformation["class"];
 				}
 			}			
-		openWindow = window.open('dialogs/link.jsp' + params,'SetLink', "width=480, height=" + winheight + ", resizable=yes, top=300, left=250");
+		openWindow = window.open('dialogs/link.jsp' + params,'SetLink', "width=480, height=" + winheight + ", scrollbars=no, location=no, menubar=no, toolbar=no, status=no, dependent=yes, resizable=yes, top=300, left=250");
 		focusCount = 1;
 		openWindow.focus();
 		} else {
@@ -677,7 +677,7 @@ function doEditHTML(para) {
 					params += "&class=" + linkInformation["class"];
 				}
 			}			
-			openWindow  = window.open('dialogs/anchor.jsp' + params, 'SetAnchor', "width=350, height=" + winheight + ", resizable=yes, top=300, left=250");
+			openWindow  = window.open('dialogs/anchor.jsp' + params, 'SetAnchor', "width=350, height=" + winheight + ", scrollbars=no, location=no, menubar=no, toolbar=no, status=no, dependent=yes, resizable=yes, top=300, left=250");
 			focusCount = 1;
 			openWindow.focus();
 		} else {
@@ -685,27 +685,27 @@ function doEditHTML(para) {
 		}
 		break;
 	case 60:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=downloadgallery", "DowloadBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=downloadgallery", "DownloadBrowser", "width=650, height=700, resizable=yes, status=no, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;
 	case 61:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=htmlgallery", "HtmlBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=htmlgallery", "HtmlBrowser", "width=650, height=700, resizable=yes, status=no, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;				
 	case 62:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=imagegallery", "PicBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=imagegallery", "PicBrowser", "width=650, height=700, resizable=yes, status=no, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;	
 	case 63:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=linkgallery", "LinkBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=linkgallery", "LinkBrowser", "width=650, height=700, resizable=yes, status=no, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;
 	case 64:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=tablegallery", "TableBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=tablegallery", "TableBrowser", "width=650, height=700, resizable=yes, status=no, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;
