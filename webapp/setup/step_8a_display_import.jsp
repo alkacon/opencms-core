@@ -50,7 +50,7 @@ OpenCms Setup Wizard - Import workplace
 
 		// displays a message and enables the continue button
 		function finish() {
-			replaceInfo("Finished. Please check the output to see if the workplace has been imported without errors.", "ok.png");
+			replaceInfo("Finished. Please check the output to see if the modules have been imported without errors.", "ok.png");
 			document.forms[0].ctn.disabled = false;
 			document.forms[0].bck.disabled = true;
 			finished = true;
@@ -83,7 +83,7 @@ OpenCms Setup Wizard - Import workplace
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Import workplace
+OpenCms Setup Wizard - Import modules
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
 <% if (Bean.isInitialized()) { %>
@@ -97,7 +97,7 @@ OpenCms Setup Wizard - Import workplace
 				<td><img src="resources/wait.gif" border="0" id="statusimg"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>
-					<span id="statustxt">Importing workplace ... please wait</span>
+					<span id="statustxt">Importing modules ... please wait</span>
 				</td>
 			</tr>
 		</table>
