@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/22 09:13:16 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2005/06/22 14:27:18 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.78 $
+ * @version $Revision: 1.79 $
  * 
  * @since 6.0.0
  */
@@ -2800,7 +2800,7 @@ public final class CmsSecurityManager {
     /**
      * Reactivates a task.<p>
      * 
-     * Setting its state to <code>{@link CmsTaskService#TASK_STATE_STARTED}</code> and
+     * Setting its state to <code>{@link org.opencms.workflow.CmsTaskService#TASK_STATE_STARTED}</code> and
      * the percentage to <b>zero</b>.<p>
      *
      * @param context the current request context
@@ -3124,10 +3124,10 @@ public final class CmsSecurityManager {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
      * @param context the current request context
@@ -3997,10 +3997,10 @@ public final class CmsSecurityManager {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values are:<br>
      * <ul>
-     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
      * @param context the current request context
@@ -4037,10 +4037,10 @@ public final class CmsSecurityManager {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
      * @param context the current request context
@@ -4084,10 +4084,10 @@ public final class CmsSecurityManager {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.workflow.CmsTaskService#TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
      * @param context the current request context
