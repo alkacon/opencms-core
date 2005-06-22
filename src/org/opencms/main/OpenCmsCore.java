@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.202 $
+ * Date   : $Date: 2005/06/22 07:20:03 $
+ * Version: $Revision: 1.203 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,7 +97,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
@@ -126,8 +125,8 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.202 $
- * @version $Revision: 1.202 $
+ * @version $Revision: 1.203 $
+ * @version $Revision: 1.203 $
  * @since 5.1
  */
 public final class OpenCmsCore {
