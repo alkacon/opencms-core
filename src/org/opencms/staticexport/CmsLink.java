@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,9 @@ import org.dom4j.Element;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsLink {
 
@@ -162,14 +164,6 @@ public class CmsLink {
         this(null, name, type, target, anchor, query, internal);
     }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-
-        return m_uri;
-    }
-    
     /**
      * Returns the anchor of this link.<p>
      * 
@@ -317,6 +311,14 @@ public class CmsLink {
     public boolean isInternal() {
 
         return m_internal;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        return m_uri;
     }
 
     /**

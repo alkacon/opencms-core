@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPasswordHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,9 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
  *
- * @version $Revision: 1.10 $
- * @since 5.1.11 
+ * @version $Revision: 1.11 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler {
 

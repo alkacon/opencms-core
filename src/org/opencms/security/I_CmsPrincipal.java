@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.security;
 
 import org.opencms.util.CmsUUID;
@@ -36,14 +37,17 @@ import org.opencms.util.CmsUUID;
  * Representation of an identity in the cms (currently user or group), 
  * used to define permissions on a resource.<p>
  * 
- * @version $Revision: 1.9 $ $Date: 2005/06/22 10:38:24 $
  * @author Carsten Weinholz 
+ * 
+ * @version $Revision: 1.10 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsPrincipal {
-    
+
     /** Identifier for group principals. */
     String C_PRINCIPAL_GROUP = "GROUP";
-    
+
     /** Identifier for user principals. */
     String C_PRINCIPAL_USER = "USER";
 
@@ -54,13 +58,6 @@ public interface I_CmsPrincipal {
      * @return true if the object is equal
      */
     boolean equals(Object obj);
-
-    /**
-     * Returns the hash code of this object.<p>
-     * 
-     * @return the hash code
-     */
-    int hashCode();
 
     /**
      * Gets the id of this principal.<p>
@@ -75,4 +72,11 @@ public interface I_CmsPrincipal {
      * @return the name of the principal
      */
     String getName();
+
+    /**
+     * Returns the hash code of this object.<p>
+     * 
+     * @return the hash code
+     */
+    int hashCode();
 }

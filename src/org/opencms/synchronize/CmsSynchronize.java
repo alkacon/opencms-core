@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.55 $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,10 @@ import org.apache.commons.logging.Log;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich 
- * @version $Revision: 1.55 $
+ * 
+ * @version $Revision: 1.56 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSynchronize {
 
@@ -150,37 +153,38 @@ public class CmsSynchronize {
             // create the sync list for this run
             m_syncList = readSyncList();
             m_newSyncList = new HashMap();
-            
+
             // store the current site root
             String currentSite = m_cms.getRequestContext().getSiteRoot();
             // set site to root site
             m_cms.getRequestContext().setSiteRoot("");
-            
+
             try {
                 Iterator i = settings.getSourceListInVfs().iterator();
                 while (i.hasNext()) {
                     // iterate all source folders
                     String sourcePathInVfs = (String)i.next();
                     String destPath = m_destinationPathInRfs + sourcePathInVfs.replace('/', File.separatorChar);
-                    
+
                     report.println(org.opencms.workplace.threads.Messages.get().container(
                         org.opencms.workplace.threads.Messages.RPT_SYNCHRONIZE_FOLDERS_2,
-                        sourcePathInVfs, destPath), I_CmsReport.C_FORMAT_HEADLINE);
+                        sourcePathInVfs,
+                        destPath), I_CmsReport.C_FORMAT_HEADLINE);
                     // synchronice the VFS and the RFS
                     syncVfsToRfs(sourcePathInVfs);
                 }
-    
+
                 // remove files from the RFS
                 removeFromRfs(m_destinationPathInRfs);
                 i = settings.getSourceListInVfs().iterator();
-    
+
                 while (i.hasNext()) {
                     // add new files from the RFS
                     copyFromRfs((String)i.next());
                 }
-    
+
                 // write the sync list
-                writeSyncList();           
+                writeSyncList();
             } finally {
                 // reset to current site root
                 m_cms.getRequestContext().setSiteRoot(currentSite);

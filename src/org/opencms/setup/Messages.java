@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,19 +38,22 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Jan Baudisch 
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DB_CONNECT_1 = "ERR_DB_CONNECT_1";
- 
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_MISSING_DB_SETUP_SCRIPT_1 = "ERR_MISSING_DB_SETUP_SCRIPT_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOAD_JDBC_DRIVER_1 = "ERR_LOAD_JDBC_DRIVER_1";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MISSING_DB_SETUP_SCRIPT_1 = "ERR_MISSING_DB_SETUP_SCRIPT_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String INIT_IMPORT_WORKPLACE_FINISHED_0 = "INIT_IMPORT_WORKPLACE_FINISHED_0";
 
@@ -59,7 +62,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WELCOME_SETUP_0 = "INIT_WELCOME_SETUP_0";
-    
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.setup.messages";
 

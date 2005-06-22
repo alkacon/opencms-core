@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkTable.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.staticexport;
 
 import java.util.HashMap;
@@ -38,21 +39,23 @@ import java.util.Iterator;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.8 $
- * @since 5.3
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsLinkTable {
 
     /** Prefix to identify a link in the content. */
     private static final String C_LINK_PREFIX = "link";
-    
+
     /** The map to store the link table in. */
     private HashMap m_linkTable;
-        
+
     /**
      * Creates a new CmsLinkTable.<p>
      */
-    public CmsLinkTable() {        
+    public CmsLinkTable() {
+
         m_linkTable = new HashMap();
     }
 
@@ -63,10 +66,11 @@ public class CmsLinkTable {
      * @return the new link entry
      */
     public CmsLink addLink(CmsLink link) {
+
         m_linkTable.put(link.getName(), link);
         return link;
     }
-    
+
     /**
      * Adds a new link to the link table.<p>
      * 
@@ -76,18 +80,20 @@ public class CmsLinkTable {
      * @return the new link entry
      */
     public CmsLink addLink(String type, String targetUri, boolean internal) {
+
         CmsLink link = new CmsLink(C_LINK_PREFIX + m_linkTable.size(), type, targetUri, internal);
         m_linkTable.put(link.getName(), link);
         return link;
     }
-    
+
     /**
      * Returns the CmsLink Entry for a given name.<p>
      * 
      * @param name the internal name of the link
      * @return the CmsLink entry
      */
-    public CmsLink getLink(String name) {        
+    public CmsLink getLink(String name) {
+
         return (CmsLink)m_linkTable.get(name);
     }
 
@@ -96,10 +102,11 @@ public class CmsLinkTable {
      * 
      * @return true if the link table is empty, false otherwise
      */
-    public boolean isEmpty() {        
+    public boolean isEmpty() {
+
         return m_linkTable.isEmpty();
     }
-    
+
     /**
      * Returns an iterator over the links in the table.<p>
      * 
@@ -107,17 +114,18 @@ public class CmsLinkTable {
      * 
      * @return a string iterator for internal link names
      */
-    public Iterator iterator() {    
+    public Iterator iterator() {
+
         return m_linkTable.values().iterator();
     }
-    
+
     /**
      * Returns the size of this link table.<p>
      * 
      * @return the size of this link table
      */
     public int size() {
-        
+
         return m_linkTable.size();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,8 +61,9 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.44 $
- * @since 5.1
+ * @version $Revision: 1.45 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsSiteManager implements Cloneable {
 

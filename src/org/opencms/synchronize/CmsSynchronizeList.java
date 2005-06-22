@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeList.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,22 @@ import java.io.Serializable;
  *
  * @author Edna Falkenhan
  * @author Michael Emmerich 
- * @version $Revision: 1.8 $ $Date: 2005/06/22 10:38:11 $
+ * 
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSynchronizeList implements Serializable {
+
+    /**
+     * Last modification data of this resource in the FS.
+     */
+    private long m_modifiedFs;
+
+    /**
+     * Last modification date of this resouce in the VFS.
+     */
+    private long m_modifiedVfs;
 
     /**
      * Name of the resource stored in the sync list.
@@ -59,16 +72,6 @@ public class CmsSynchronizeList implements Serializable {
     private String m_transResName;
 
     /**
-     * Last modification date of this resouce in the VFS.
-     */
-    private long m_modifiedVfs;
-
-    /**
-     * Last modification data of this resource in the FS.
-     */
-    private long m_modifiedFs;
-
-    /**
      * Constructor, creates a new CmsSynchronizeList object.
      * 
      * @param resName The name of the resource
@@ -77,6 +80,7 @@ public class CmsSynchronizeList implements Serializable {
      * @param modifiedFs last modification date in the Fs
      */
     public CmsSynchronizeList(String resName, String transResName, long modifiedVfs, long modifiedFs) {
+
         m_resName = resName;
         m_transResName = transResName;
         m_modifiedVfs = modifiedVfs;
@@ -84,10 +88,42 @@ public class CmsSynchronizeList implements Serializable {
     }
 
     /**
+     * Returns a format description of the sync-list file on the server FS.<p>
+     * 
+     * @return format description
+     */
+    public static String getFormatDescription() {
+
+        String output = "[original filename FS]:[translated filename VFS]";
+        output += ":[timestamp VFS]:[timestamp  FS]";
+        output += ":[VFS=readable timestamp VFS]:[FS=readable timestamp FS]";
+        return output;
+    }
+
+    /**
+     * Returns the last modification date in the Fs.
+     * @return last modification date in the Fs
+     */
+    public long getModifiedFs() {
+
+        return m_modifiedFs;
+    }
+
+    /**
+     * Returns the last modification date in the Vfs.
+     * @return last modification date in the Vfs
+     */
+    public long getModifiedVfs() {
+
+        return m_modifiedVfs;
+    }
+
+    /**
      * Returns the name of the resource.
      * @return name of the resource
      */
     public String getResName() {
+
         return m_resName;
     }
 
@@ -96,23 +132,8 @@ public class CmsSynchronizeList implements Serializable {
      * @return name of the resource
      */
     public String getTransResName() {
+
         return m_transResName;
-    }
-
-    /**
-     * Returns the last modification date in the Vfs.
-     * @return last modification date in the Vfs
-     */
-    public long getModifiedVfs() {
-        return m_modifiedVfs;
-    }
-
-    /**
-     * Returns the last modification date in the Fs.
-     * @return last modification date in the Fs
-     */
-    public long getModifiedFs() {
-        return m_modifiedFs;
     }
 
     /**
@@ -123,21 +144,10 @@ public class CmsSynchronizeList implements Serializable {
      * @return string-representation for this object.
      */
     public String toString() {
+
         String output = m_resName + ":" + m_transResName + ":" + m_modifiedVfs + ":" + m_modifiedFs;
         output += ":VFS=" + CmsDateUtil.getDateTimeShort(m_modifiedVfs);
         output += ":FS=" + CmsDateUtil.getDateTimeShort(m_modifiedFs);
-        return output;
-    }
-
-    /**
-     * Returns a format description of the sync-list file on the server FS.<p>
-     * 
-     * @return format description
-     */
-    public static String getFormatDescription() {
-        String output = "[original filename FS]:[translated filename VFS]";
-        output += ":[timestamp VFS]:[timestamp  FS]";
-        output += ":[VFS=readable timestamp VFS]:[FS=readable timestamp FS]";
         return output;
     }
 

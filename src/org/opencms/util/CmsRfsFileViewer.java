@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,9 +69,10 @@ import org.apache.commons.logging.Log;
  * at a position "windowPosition" which is an enumeration of windows in ascending order. <p>
  * 
  * @author  Achim Westermann 
- * @version $Revision: 1.4 $
  * 
- * @since 6.0
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsRfsFileViewer implements Cloneable {
 

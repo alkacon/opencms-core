@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportException.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,10 @@ import org.opencms.main.CmsException;
  * Describes errors that occur in the context of OpenCms scheduler.<p>
  * 
  * @author Jan Baudisch 
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsStaticExportException extends CmsException {
 
@@ -62,12 +65,12 @@ public class CmsStaticExportException extends CmsException {
 
         super(container, cause);
     }
-       
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsStaticExportException(container, cause);
-    } 
+    }
 }

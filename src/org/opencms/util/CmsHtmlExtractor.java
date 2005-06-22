@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlExtractor.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@
 //
 // $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlExtractor.java,v $
 // $Author: a.westermann $
-// $Date: 2005/06/22 10:38:11 $
-// $Revision: 1.4 $
+// $Date: 2005/06/22 14:58:54 $
+// $Revision: 1.5 $
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -53,6 +53,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
+
 package org.opencms.util;
 
 import org.opencms.staticexport.CmsLinkProcessor;
@@ -70,10 +71,11 @@ import org.htmlparser.util.ParserException;
 /**
  * Extracts plain text from HTML.<p>
  * 
- * @version $Revision: 1.4 $ 
  * @author  Alexander Kandzior 
  * 
- * Created on December 23, 2002, 5:01 PM
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsHtmlExtractor {
 
@@ -81,37 +83,10 @@ public final class CmsHtmlExtractor {
      * Hides the public constructor.<p>
      */
     private CmsHtmlExtractor() {
+
         // hides the public constructor
     }
-    
-    /**
-     * Extract the text from a HTML page.<p>
-     *
-     * @param content the html content
-     * @param encoding the encoding of the content
-     *
-     * @return the extracted text from the page
-     * @throws ParserException if the parsing of the HTML failed
-     * @throws UnsupportedEncodingException if the given encoding is not supported
-     */
-    public static String extractText(String content, String encoding) throws ParserException, UnsupportedEncodingException  {
 
-        // we must make sure that the content passed to the parser always is 
-        // a "valid" HTML page, i.e. is surrounded by <html><body>...</body></html> 
-        // otherwise you will get strange results for some specific HTML constructs
-        StringBuffer newContent = new StringBuffer(content.length() + 32);
-        
-        newContent.append(CmsLinkProcessor.C_HTML_START);
-        newContent.append(content);
-        newContent.append(CmsLinkProcessor.C_HTML_END);
-
-        // make sure the Lexer uses the right encoding
-        InputStream in = new ByteArrayInputStream(newContent.toString().getBytes(encoding));
-
-        // use the stream based version to process the results
-        return extractText(in, encoding);
-    }
-    
     /**
      * Extract the text from a HTML page.<p>
      *
@@ -122,19 +97,49 @@ public final class CmsHtmlExtractor {
      * @throws ParserException if the parsing of the HTML failed
      * @throws UnsupportedEncodingException if the given encoding is not supported
      */
-    public static String extractText(InputStream in, String encoding) throws ParserException, UnsupportedEncodingException {
-        
+    public static String extractText(InputStream in, String encoding)
+    throws ParserException, UnsupportedEncodingException {
+
         Parser parser = new Parser();
         Lexer lexer = new Lexer();
         Page page = new Page(in, encoding);
         lexer.setPage(page);
         parser.setLexer(lexer);
-        
+
         StringBean stringBean = new StringBean();
         // stringBean.setParser(parser);
-                       
+
         parser.visitAllNodesWith(stringBean);
-        
-        return stringBean.getStrings();      
+
+        return stringBean.getStrings();
+    }
+
+    /**
+     * Extract the text from a HTML page.<p>
+     *
+     * @param content the html content
+     * @param encoding the encoding of the content
+     *
+     * @return the extracted text from the page
+     * @throws ParserException if the parsing of the HTML failed
+     * @throws UnsupportedEncodingException if the given encoding is not supported
+     */
+    public static String extractText(String content, String encoding)
+    throws ParserException, UnsupportedEncodingException {
+
+        // we must make sure that the content passed to the parser always is 
+        // a "valid" HTML page, i.e. is surrounded by <html><body>...</body></html> 
+        // otherwise you will get strange results for some specific HTML constructs
+        StringBuffer newContent = new StringBuffer(content.length() + 32);
+
+        newContent.append(CmsLinkProcessor.C_HTML_START);
+        newContent.append(content);
+        newContent.append(CmsLinkProcessor.C_HTML_END);
+
+        // make sure the Lexer uses the right encoding
+        InputStream in = new ByteArrayInputStream(newContent.toString().getBytes(encoding));
+
+        // use the stream based version to process the results
+        return extractText(in, encoding);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/I_CmsSynchronizeModification.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,23 +46,16 @@ import java.io.File;
  * <synchronizemodifications><br>
  * <class>[your_complete_classname_incl._packages]</class><br>
  * </synchronizemodifications><br><br>
+ * <p>
  * 
  * 
  * @author  Michael Emmerich 
- * @version $Revision: 1.2 $
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsSynchronizeModification {
-
-    /**
-     * Possibility to modify a resource after it has been imported or updated 
-     * into the VFS.<p>
-     * 
-     * @param cms the current CmsObject
-     * @param vfsRes the resource in the VFS
-     * @param fsFile the resource in the FS
-     * @throws CmsSynchronizeException if something goes wrong
-     */
-    void modifyVfs(CmsObject cms, CmsResource vfsRes, File fsFile) throws CmsSynchronizeException;
 
     /**
      * Possibility to modify a resource after it has benn exported or updated 
@@ -74,6 +67,17 @@ public interface I_CmsSynchronizeModification {
      * @throws CmsSynchronizeException if something goes wrong
      */
     void modifyFs(CmsObject cms, CmsResource vfsRes, File fsFile) throws CmsSynchronizeException;
+
+    /**
+     * Possibility to modify a resource after it has been imported or updated 
+     * into the VFS.<p>
+     * 
+     * @param cms the current CmsObject
+     * @param vfsRes the resource in the VFS
+     * @param fsFile the resource in the FS
+     * @throws CmsSynchronizeException if something goes wrong
+     */
+    void modifyVfs(CmsObject cms, CmsResource vfsRes, File fsFile) throws CmsSynchronizeException;
 
     /**
      * Translates the resource name.<p>

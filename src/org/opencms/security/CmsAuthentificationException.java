@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAuthentificationException.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,10 +40,12 @@ import org.opencms.main.CmsException;
  * Usually this means that a proper password / user name combination was not provided.
  * However, there are also other possible explanations, for example a user could be diabled.<p>
  * 
- * There are 
  * 
  * @author Alexander Kandzior 
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsAuthentificationException extends CmsSecurityException {
 

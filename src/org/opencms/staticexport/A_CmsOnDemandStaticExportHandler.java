@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,8 +61,11 @@ import org.apache.commons.logging.Log;
  * as optimization for non-dynamic content.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.14 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.15 $ 
+ * 
+ * @since 6.0.0 
+ * 
  * @see I_CmsStaticExportHandler
  */
 public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExportHandler {
@@ -130,8 +133,7 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                         m_busy = false;
                     }
                 }
-            }, 
-            Messages.get().key(Messages.GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1, String.valueOf(id)));
+            }, Messages.get().key(Messages.GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1, String.valueOf(id)));
             t.start();
         }
     }

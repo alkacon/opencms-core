@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,10 @@ import java.util.Map;
  * It can handle relative or absolute orderings and unique names.<p> 
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.3 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectContainer {
 
@@ -53,7 +55,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      * Internal class just for taking care of the positions in the container.<p>
      * 
      * @author Michael Moossen  
-     * @version $Revision: 1.3 $
+     * @version $Revision: 1.4 $
      * @since 5.7.3
      */
     private class CmsIdObjectElement {
@@ -221,6 +223,21 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     }
 
     /**
+     * Returns the object with the given id.<p>
+     * 
+     * If <code>uniqueIds</code> is set to <code>false</code> an <code>{@link Object}</code> 
+     * containing a <code>{@link List}</code> with all the objects with the given id is returned.<p>
+     * 
+     * If the container no contains any object with the given id, <code>null</code> is returned.<p>
+     * 
+     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#getObject(String)
+     */
+    public Object getObject(String id) {
+
+        return m_objectsById.get(id);
+    }
+
+    /**
      * Removes an object with the given id.<p>
      * 
      * Only works if the <code>{@link #m_uniqueIds}</code> is set.<p>
@@ -245,20 +262,5 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
             m_objectList.remove(o);
             m_objectsById.remove(id);
         }
-    }
-
-    /**
-     * Returns the object with the given id.<p>
-     * 
-     * If <code>uniqueIds</code> is set to <code>false</code> an <code>{@link Object}</code> 
-     * containing a <code>{@link List}</code> with all the objects with the given id is returned.<p>
-     * 
-     * If the container no contains any object with the given id, <code>null</code> is returned.<p>
-     * 
-     * @see org.opencms.util.I_CmsIdentifiableObjectContainer#getObject(String)
-     */
-    public Object getObject(String id) {
-
-        return m_objectsById.get(id);
     }
 }

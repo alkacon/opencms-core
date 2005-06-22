@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,13 +38,13 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Jan Baudisch 
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1 = "GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_FOLDER_1 = "ERR_CREATE_FOLDER_1";
 
@@ -56,6 +56,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_OUTPUT_STREAM_1 = "ERR_OUTPUT_STREAM_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1 = "GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_EXPORT_DEFAULT_1 = "INIT_EXPORT_DEFAULT_1";
@@ -107,10 +110,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_STATIC_EXPORT_ENABLED_0 = "INIT_STATIC_EXPORT_ENABLED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String INIT_STATIC_EXPORT_SHUTDOWN_3 = "INIT_STATIC_EXPORT_SHUTDOWN_3";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_SE_PARAM_2 = "LOG_ADD_SE_PARAM_2";
 
@@ -206,7 +209,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SCRUBBING_FOLDER_FAILED_2 = "LOG_SCRUBBING_FOLDER_FAILED_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SE_RESOURCE_START_1 = "LOG_SE_RESOURCE_START_1";
 
@@ -236,31 +239,31 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_UPDATE_EXPORTNAME_PROP_START_0 = "LOG_UPDATE_EXPORTNAME_PROP_START_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WAITING_STATIC_EXPORT_3 = "LOG_WAITING_STATIC_EXPORT_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_FAILED_1 = "LOG_WRITE_FAILED_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_EXPORTING_0 = "RPT_EXPORTING_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_STATICEXPORT_BEGIN_0 = "RPT_STATICEXPORT_BEGIN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_STATICEXPORT_END_0 = "RPT_STATICEXPORT_END_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_BEGIN_0 = "RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_BEGIN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_END_0 = "RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_END_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_STATICEXPORT_TEMPLATE_RESOURCES_BEGIN_0 = "RPT_STATICEXPORT_TEMPLATE_RESOURCES_BEGIN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_STATICEXPORT_TEMPLATE_RESOURCES_END_0 = "RPT_STATICEXPORT_TEMPLATE_RESOURCES_END_0";
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTestResult.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.setup;
 
 import java.io.Serializable;
@@ -37,33 +37,37 @@ import java.io.Serializable;
  * Contains info about the result of a setup test.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.5 $ $Date: 2005/06/22 10:38:32 $
- * @since 5.3
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSetupTestResult extends Object implements Serializable, Cloneable {
 
-    /** The clear text name of the test.<p> */
-    private String m_name;
-    
-    /** A info string for the test result.<p> */
-    private String m_info;
-    
-    /** A string describing the result of the test.<p> */
-    private String m_result;
-    
+    private boolean m_green;
+
     /** A string offering some help in case a test failed.<p> */
     private String m_help;
-    
+
+    /** A info string for the test result.<p> */
+    private String m_info;
+
+    /** The clear text name of the test.<p> */
+    private String m_name;
+
     private boolean m_red;
+
+    /** A string describing the result of the test.<p> */
+    private String m_result;
     private boolean m_yellow;
-    private boolean m_green;    
 
     /**
      * Creates a new setup test result.<p>
      */
     public CmsSetupTestResult() {
+
         super();
-        
+
         setGreen();
         setName("");
         setInfo("");
@@ -72,11 +76,23 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
     }
 
     /**
+     * Returns the help string what to do if a test failed.<p>
+     * This string will be displayed in a help bubble.<p>
+     * 
+     * @return the help string what to do if a test failed
+     */
+    public String getHelp() {
+
+        return m_help;
+    }
+
+    /**
      * Returns the description of the test, e.g. "Test xy failed due to...".<p>
      * 
      * @return the description of the test
      */
     public String getInfo() {
+
         return m_info;
     }
 
@@ -86,6 +102,7 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
      * @return the name of the test
      */
     public String getName() {
+
         return m_name;
     }
 
@@ -95,34 +112,8 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
      * @return the result of the test
      */
     public String getResult() {
+
         return m_result;
-    }
-
-    /**
-     * Sets the description of the test, e.g. "Test xy failed due to...".<p>
-     * 
-     * @param info the description of the test 
-     */
-    protected void setInfo(String info) {
-        m_info = info;
-    }
-
-    /**
-     * Sets the name of the test, e.g. "Operating system test".<p>
-     * 
-     * @param name the name of the test
-     */
-    protected void setName(String name) {
-        m_name = name;
-    }
-
-    /**
-     * Sets the result of the test, e.g. "Detected Apache Tomcat/4.1.24...".<p>
-     * 
-     * @param result the result of the test
-     */
-    protected void setResult(String result) {
-        this.m_result = result;
     }
 
     /**
@@ -131,6 +122,7 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
      * @return true, if the conditions the test were fulfilled
      */
     public boolean isGreen() {
+
         return m_green;
     }
 
@@ -141,6 +133,7 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
      * @return true if the test found a violated a condition
      */
     public boolean isRed() {
+
         return m_red;
     }
 
@@ -151,6 +144,7 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
      * @return true if the test found a questionable condition
      */
     public boolean isYellow() {
+
         return m_yellow;
     }
 
@@ -158,37 +152,10 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
      * Sets if the conditions in the test were fulfilled.<p>
      */
     protected void setGreen() {
+
         m_green = true;
         m_red = false;
         m_yellow = false;
-    }
-
-    /**
-     * Sets if the test found a violated condition.<p>
-     */
-    protected void setRed() {
-        m_green = false;
-        m_red = true;
-        m_yellow = false;
-    }
-
-    /**
-     * Sets if the test found a questionable condition.<p>
-     */
-    protected void setYellow() {
-        m_green = false;
-        m_red = false;
-        m_yellow = true;
-    }
-
-    /**
-     * Returns the help string what to do if a test failed.<p>
-     * This string will be displayed in a help bubble.<p>
-     * 
-     * @return the help string what to do if a test failed
-     */
-    public String getHelp() {
-        return m_help;
     }
 
     /**
@@ -198,7 +165,58 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
      * @param help the help string what to do if a test failed
      */
     protected void setHelp(String help) {
+
         m_help = help;
+    }
+
+    /**
+     * Sets the description of the test, e.g. "Test xy failed due to...".<p>
+     * 
+     * @param info the description of the test 
+     */
+    protected void setInfo(String info) {
+
+        m_info = info;
+    }
+
+    /**
+     * Sets the name of the test, e.g. "Operating system test".<p>
+     * 
+     * @param name the name of the test
+     */
+    protected void setName(String name) {
+
+        m_name = name;
+    }
+
+    /**
+     * Sets if the test found a violated condition.<p>
+     */
+    protected void setRed() {
+
+        m_green = false;
+        m_red = true;
+        m_yellow = false;
+    }
+
+    /**
+     * Sets the result of the test, e.g. "Detected Apache Tomcat/4.1.24...".<p>
+     * 
+     * @param result the result of the test
+     */
+    protected void setResult(String result) {
+
+        this.m_result = result;
+    }
+
+    /**
+     * Sets if the test found a questionable condition.<p>
+     */
+    protected void setYellow() {
+
+        m_green = false;
+        m_red = false;
+        m_yellow = true;
     }
 
 }

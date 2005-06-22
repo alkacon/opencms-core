@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,8 +53,10 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner 
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
- * @version $Revision: 1.30 $
- * @since 5.0
+ * 
+ * @version $Revision: 1.31 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsStringUtil {
 

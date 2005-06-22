@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPasswordInfo.java,v $
- * Date   : $Date: 2005/06/22 13:22:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,11 @@ import org.opencms.util.CmsStringUtil;
 /**
  * Validating bean for changing the password.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
- * @since 5.7.3
+ * @author Michael Moossen  
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsPasswordInfo {
 
@@ -130,7 +132,7 @@ public class CmsPasswordInfo {
      * @param confirmation the confirmation to set
      */
     public void setConfirmation(String confirmation) {
-    
+
         // leave password unchanged, if the new password and the confirmation is empty
         if (CmsStringUtil.isEmpty(getNewPwd()) && CmsStringUtil.isEmpty(confirmation)) {
             return;
@@ -165,7 +167,7 @@ public class CmsPasswordInfo {
      * @param newPwd the new Pwd to set
      */
     public void setNewPwd(String newPwd) {
-    
+
         // leave password unchanged, if the new password is empty
         if (CmsStringUtil.isEmpty(newPwd)) {
             return;

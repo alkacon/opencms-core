@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.setup;
 
 import org.opencms.main.CmsException;
@@ -54,20 +55,23 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
- * @version $Revision: 1.18 $ $Date: 2005/06/22 10:38:32 $
+ * 
+ * @version $Revision: 1.19 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSetupDb extends Object {
-    
+
     /** The folder where to read the setup data from. */
     public static String C_SETUP_DATA_FOLDER = "WEB-INF/setupdata/";
-    
+
     /** The folder where the setup wizard is located. */
     public static String C_SETUP_FOLDER = "setup/";
+    private String m_basePath;
 
     private Connection m_con;
-    private Vector m_errors;
-    private String m_basePath;
     private boolean m_errorLogging;
+    private Vector m_errors;
 
     /**
      * Creates a new CmsSetupDb object.<p>
@@ -75,9 +79,171 @@ public class CmsSetupDb extends Object {
      * @param basePath the location of the setup scripts
      */
     public CmsSetupDb(String basePath) {
+
         m_errors = new Vector();
         m_basePath = basePath;
         m_errorLogging = true;
+    }
+
+    /**
+     * Clears the error messages stored internally.<p>
+     */
+    public void clearErrors() {
+
+        m_errors.clear();
+    }
+
+    /**
+     * Closes the internal connection to the database.<p>
+     */
+    public void closeConnection() {
+
+        try {
+            m_con.close();
+        } catch (Exception e) {
+            // ignore
+        }
+    }
+
+    /**
+     * Calls the create database script for the given database.<p>
+     * 
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     */
+    public void createDatabase(String database, Map replacer) {
+
+        m_errorLogging = true;
+        executeSql(database, "create_db.sql", replacer, true);
+    }
+
+    /**
+     * Calls the create database script for the given database.<p>
+     * 
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     * @param abortOnError indicates if the script is aborted if an error occurs
+     */
+    public void createDatabase(String database, Map replacer, boolean abortOnError) {
+
+        m_errorLogging = true;
+        executeSql(database, "create_db.sql", replacer, abortOnError);
+    }
+
+    /**
+     * Calls the create tables script for the given database.<p>
+     * 
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     */
+    public void createTables(String database, Map replacer) {
+
+        m_errorLogging = true;
+        executeSql(database, "create_tables.sql", replacer, true);
+    }
+
+    /**
+     * Calls the create tables script for the given database.<p>
+     * 
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     * @param abortOnError indicates if the script is aborted if an error occurs
+     */
+    public void createTables(String database, Map replacer, boolean abortOnError) {
+
+        m_errorLogging = true;
+        executeSql(database, "create_tables.sql", replacer, abortOnError);
+    }
+
+    /**
+     * Calls the drop script for the given database.
+     * 
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     */
+    public void dropDatabase(String database, Map replacer) {
+
+        m_errorLogging = true;
+        executeSql(database, "drop_db.sql", replacer, false);
+    }
+
+    /**
+     * Calls the drop script for the given database.
+     * 
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     * @param abortOnError indicates if the script is aborted if an error occurs
+     */
+    public void dropDatabase(String database, Map replacer, boolean abortOnError) {
+
+        m_errorLogging = true;
+        executeSql(database, "drop_db.sql", replacer, abortOnError);
+    }
+
+    /**
+     * Calls the drop tables script for the given database.<p>
+     * 
+     * @param database the name of the database
+     */
+    public void dropTables(String database) {
+
+        m_errorLogging = true;
+        executeSql(database, "drop_tables.sql", null, false);
+    }
+
+    /**
+     * Calls the drop tables script for the given database.<p>
+     * 
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     */
+    public void dropTables(String database, Map replacer) {
+
+        m_errorLogging = true;
+        executeSql(database, "drop_tables.sql", replacer, false);
+    }
+
+    /**
+     * Calls the drop tables script for the given database.<p>
+     * 
+     * @param database the name of the database
+     * @param replacer the replacements to perform in the drop script
+     * @param abortOnError indicates if the script is aborted if an error occurs
+     */
+    public void dropTables(String database, Map replacer, boolean abortOnError) {
+
+        m_errorLogging = true;
+        executeSql(database, "drop_tables.sql", replacer, abortOnError);
+    }
+
+    /**
+     * Returns a Vector of Error messages.<p>
+     * 
+     * @return all error messages collected internally
+     */
+    public Vector getErrors() {
+
+        return m_errors;
+    }
+
+    /**
+     * Checks if internal errors occured.<p>
+     * 
+     * @return true if internal errors occured
+     */
+    public boolean noErrors() {
+
+        return m_errors.isEmpty();
+    }
+
+    /**
+     * Sets a new internal connection to teh database.<p>
+     * 
+     * @param conn the connection to use
+     */
+    public void setConnection(Connection conn) {
+
+        m_con = conn;
     }
 
     /**
@@ -90,11 +256,12 @@ public class CmsSetupDb extends Object {
      * @param DbPwd JDBC database password
      */
     public void setConnection(String DbDriver, String DbConStr, String DbConStrParams, String DbUser, String DbPwd) {
+
         String jdbcUrl = DbConStr;
         try {
             if (DbConStrParams != null) {
                 jdbcUrl += DbConStrParams;
-            }            
+            }
             Class.forName(DbDriver).newInstance();
             m_con = DriverManager.getConnection(jdbcUrl, DbUser, DbPwd);
         } catch (ClassNotFoundException e) {
@@ -107,138 +274,17 @@ public class CmsSetupDb extends Object {
     }
 
     /**
-     * Sets a new internal connection to teh database.<p>
-     * 
-     * @param conn the connection to use
-     */
-    public void setConnection(Connection conn) {
-        m_con = conn;    
-    }
-    
-    /**
-     * Closes the internal connection to the database.<p>
-     */
-    public void closeConnection() {
-        try {
-            m_con.close();
-        } catch (Exception e) {
-            // ignore
-        }
-    }
-
-    /**
-     * Calls the drop script for the given database.
-     * 
-     * @param database the name of the database
-     * @param replacer the replacements to perform in the drop script
-     */
-    public void dropDatabase(String database, Map replacer) {
-        m_errorLogging = true;
-        executeSql(database, "drop_db.sql", replacer, false);
-    }
-    
-    /**
-     * Calls the drop script for the given database.
-     * 
-     * @param database the name of the database
-     * @param replacer the replacements to perform in the drop script
-     * @param abortOnError indicates if the script is aborted if an error occurs
-     */
-    public void dropDatabase(String database, Map replacer, boolean abortOnError) {
-        m_errorLogging = true;
-        executeSql(database, "drop_db.sql", replacer, abortOnError);
-    }
-
-    /**
-     * Calls the create database script for the given database.<p>
-     * 
-     * @param database the name of the database
-     * @param replacer the replacements to perform in the drop script
-     */
-    public void createDatabase(String database, Map replacer) {
-        m_errorLogging = true;
-        executeSql(database, "create_db.sql", replacer, true);
-    }
-    
-    /**
-     * Calls the create database script for the given database.<p>
-     * 
-     * @param database the name of the database
-     * @param replacer the replacements to perform in the drop script
-     * @param abortOnError indicates if the script is aborted if an error occurs
-     */
-    public void createDatabase(String database, Map replacer, boolean abortOnError) {
-        m_errorLogging = true;
-        executeSql(database, "create_db.sql", replacer, abortOnError);
-    }
-
-    /**
-     * Calls the create tables script for the given database.<p>
-     * 
-     * @param database the name of the database
-     * @param replacer the replacements to perform in the drop script
-     */
-    public void createTables(String database, Map replacer) {
-        m_errorLogging = true;
-        executeSql(database, "create_tables.sql", replacer, true);
-    }
-    
-    /**
-     * Calls the create tables script for the given database.<p>
-     * 
-     * @param database the name of the database
-     * @param replacer the replacements to perform in the drop script
-     * @param abortOnError indicates if the script is aborted if an error occurs
-     */
-    public void createTables(String database, Map replacer, boolean abortOnError) {
-        m_errorLogging = true;
-        executeSql(database, "create_tables.sql", replacer, abortOnError);
-    }
-
-    /**
-     * Calls the drop tables script for the given database.<p>
-     * 
-     * @param database the name of the database
-     */
-    public void dropTables(String database) {
-        m_errorLogging = true;
-        executeSql(database, "drop_tables.sql", null, false);
-    }
-    
-    /**
-     * Calls the drop tables script for the given database.<p>
-     * 
-     * @param database the name of the database
-     * @param replacer the replacements to perform in the drop script
-     */
-    public void dropTables(String database, Map replacer) {
-        m_errorLogging = true;
-        executeSql(database, "drop_tables.sql", replacer, false);
-    }
-    
-    /**
-     * Calls the drop tables script for the given database.<p>
-     * 
-     * @param database the name of the database
-     * @param replacer the replacements to perform in the drop script
-     * @param abortOnError indicates if the script is aborted if an error occurs
-     */
-    public void dropTables(String database, Map replacer, boolean abortOnError) {
-        m_errorLogging = true;
-        executeSql(database, "drop_tables.sql", replacer, abortOnError);
-    }
-
-    /**
      * Calls an update script.<p>
      * 
      * @param updateScript the update script code
      * @param replacers the replacers to use in the script code
      */
     public void updateDatabase(String updateScript, Map replacers) {
+
         StringReader reader = new StringReader(updateScript);
         executeSql(reader, replacers, true);
     }
-    
+
     /**
      * Calls an update script.<p>
      * 
@@ -247,37 +293,22 @@ public class CmsSetupDb extends Object {
      * @param abortOnError indicates if the script is aborted if an error occurs
      */
     public void updateDatabase(String updateScript, Map replacers, boolean abortOnError) {
+
         StringReader reader = new StringReader(updateScript);
         executeSql(reader, replacers, abortOnError);
     }
-    
+
     /**
-     * Internal method to parse and execute a setup script.<p>
-     * 
-     * @param databaseKey the database variant of the script
-     * @param sqlScript the name of the script
-     * @param replacers the replacements to perform in the script
+     * @see java.lang.Object#finalize()
      */
-    private void executeSql(String databaseKey, String sqlScript, Map replacers, boolean abortOnError) {
-        String filename = null;
-        InputStreamReader reader = null;
+    protected void finalize() throws Throwable {
+
         try {
-            filename = m_basePath + "setup" + File.separator + "database" + File.separator + databaseKey + File.separator + sqlScript;
-            executeSql(new FileReader(filename), replacers, abortOnError);
-        } catch (FileNotFoundException e) {
-            if (m_errorLogging) {
-                m_errors.addElement("Database setup SQL script not found: " + filename);
-                m_errors.addElement(CmsException.getStackTraceAsString(e));
-            }
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (Exception e) {
-                // noop
-            }
+            closeConnection();
+        } catch (Throwable t) {
+            // ignore
         }
+        super.finalize();
     }
 
     /**
@@ -287,6 +318,7 @@ public class CmsSetupDb extends Object {
      * @param replacers the replacements to perform in the script
      */
     private void executeSql(Reader inputReader, Map replacers, boolean abortOnError) {
+
         String statement = "";
         LineNumberReader reader = null;
         String line = null;
@@ -337,12 +369,12 @@ public class CmsSetupDb extends Object {
                                 if (m_errorLogging) {
                                     m_errors.addElement("Error executing SQL statement: " + statement);
                                     m_errors.addElement(CmsException.getStackTraceAsString(e));
-                                }  
+                                }
                             } else {
                                 throw e;
                             }
                         }
-                        
+
                         // reset
                         statement = "";
                     }
@@ -354,12 +386,12 @@ public class CmsSetupDb extends Object {
             if (m_errorLogging) {
                 m_errors.addElement("Error executing SQL statement: " + statement);
                 m_errors.addElement(CmsException.getStackTraceAsString(e));
-            }            
+            }
         } catch (Exception e) {
             if (m_errorLogging) {
                 m_errors.addElement("Error parsing database setup SQL script in line: " + line);
                 m_errors.addElement(CmsException.getStackTraceAsString(e));
-            } 
+            }
         } finally {
             try {
                 if (reader != null) {
@@ -372,24 +404,40 @@ public class CmsSetupDb extends Object {
     }
 
     /**
-     * Replaces tokens "${xxx}" in a specified SQL query.<p>
+     * Internal method to parse and execute a setup script.<p>
      * 
-     * @param sql a SQL query
-     * @param replacers a Map with values keyed by "${xxx}" tokens
-     * @return the SQl query with all "${xxx}" tokens replaced
+     * @param databaseKey the database variant of the script
+     * @param sqlScript the name of the script
+     * @param replacers the replacements to perform in the script
      */
-    private String replaceTokens(String sql, Map replacers) {
-        
-        Iterator keys = replacers.keySet().iterator();
-        while (keys.hasNext()) {
-            
-            String key = (String)keys.next();
-            String value = (String)replacers.get(key);
-            
-            sql = CmsStringUtil.substitute(sql, key, value);
+    private void executeSql(String databaseKey, String sqlScript, Map replacers, boolean abortOnError) {
+
+        String filename = null;
+        InputStreamReader reader = null;
+        try {
+            filename = m_basePath
+                + "setup"
+                + File.separator
+                + "database"
+                + File.separator
+                + databaseKey
+                + File.separator
+                + sqlScript;
+            executeSql(new FileReader(filename), replacers, abortOnError);
+        } catch (FileNotFoundException e) {
+            if (m_errorLogging) {
+                m_errors.addElement("Database setup SQL script not found: " + filename);
+                m_errors.addElement(CmsException.getStackTraceAsString(e));
+            }
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (Exception e) {
+                // noop
+            }
         }
-        
-        return sql;
     }
 
     /**
@@ -398,6 +446,7 @@ public class CmsSetupDb extends Object {
      * @param statement the database statement
      */
     private void executeStatement(String statement) throws SQLException {
+
         Statement stmt = null;
 
         try {
@@ -409,40 +458,23 @@ public class CmsSetupDb extends Object {
     }
 
     /**
-     * Returns a Vector of Error messages.<p>
+     * Replaces tokens "${xxx}" in a specified SQL query.<p>
      * 
-     * @return all error messages collected internally
+     * @param sql a SQL query
+     * @param replacers a Map with values keyed by "${xxx}" tokens
+     * @return the SQl query with all "${xxx}" tokens replaced
      */
-    public Vector getErrors() {
-        return m_errors;
-    }
-    
-    /**
-     * Clears the error messages stored internally.<p>
-     */
-    public void clearErrors() {
-        m_errors.clear();
-    }
+    private String replaceTokens(String sql, Map replacers) {
 
-    /**
-     * Checks if internal errors occured.<p>
-     * 
-     * @return true if internal errors occured
-     */
-    public boolean noErrors() {
-        return m_errors.isEmpty();
-    }
+        Iterator keys = replacers.keySet().iterator();
+        while (keys.hasNext()) {
 
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
+            String key = (String)keys.next();
+            String value = (String)replacers.get(key);
 
-        try {
-            closeConnection();
-        } catch (Throwable t) {
-            // ignore
+            sql = CmsStringUtil.substitute(sql, key, value);
         }
-        super.finalize();
+
+        return sql;
     }
 }

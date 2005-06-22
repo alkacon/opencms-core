@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,9 +58,10 @@ import org.doomdark.uuid.UUIDGenerator;
  * This class is just a facade wrapper for the "real" UUID implementation.<p> 
  * 
  * @author  Alexander Kandzior 
- * @version $Revision: 1.14 $
  * 
- * @since 5.0.0
+ * @version $Revision: 1.15 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable {
 
@@ -127,6 +128,24 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     private CmsUUID(UUID uuid) {
 
         m_uuid = uuid;
+    }
+
+    /**
+     * Check that the given id is not the null id.<p>
+     * 
+     * @param id the id to check
+     * @param canBeNull only if flag is set, <code>null</code> is accepted
+     * 
+     * @see #isNullUUID()
+     */
+    public static void checkId(CmsUUID id, boolean canBeNull) {
+
+        if (canBeNull && id == null) {
+            return;
+        }
+        if ((!canBeNull && id == null) || id.isNullUUID()) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_UUID_1, id));
+        }
     }
 
     /**
@@ -268,24 +287,6 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     public String toString() {
 
         return m_uuid.toString();
-    }
-    
-    /**
-     * Check that the given id is not the null id.<p>
-     * 
-     * @param id the id to check
-     * @param canBeNull only if flag is set, <code>null</code> is accepted
-     * 
-     * @see #isNullUUID()
-     */
-    public static void checkId(CmsUUID id, boolean canBeNull) {
-
-        if (canBeNull && id == null) {
-            return;
-        }
-        if ((!canBeNull && id == null) || id.isNullUUID()) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_UUID_1, id));
-        } 
     }
 
 }

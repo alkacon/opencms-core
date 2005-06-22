@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsResourceTranslator.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,14 +79,16 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior 
- * @version $Revision: 1.19 $
- * @since 5.0 beta 2
+ * 
+ * @version $Revision: 1.20 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsResourceTranslator {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsResourceTranslator.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsResourceTranslator.class);
+
     /** Flag to indicate if one or more matchings should be tried. */
     private boolean m_continueMatching;
 
@@ -124,7 +126,9 @@ public class CmsResourceTranslator {
         // initialize the Perl5Util
         m_perlUtil = new Perl5Util(m_perlPatternCache);
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_NUM_TRANSLATION_RULES_INITIALIZED_1, new Integer(translations.length)));
+            LOG.info(Messages.get().key(
+                Messages.LOG_NUM_TRANSLATION_RULES_INITIALIZED_1,
+                new Integer(translations.length)));
         }
     }
 
@@ -157,23 +161,27 @@ public class CmsResourceTranslator {
         if (resourceName == null) {
             return null;
         }
-        
+
         StringBuffer result;
         String current = resourceName;
         int size = current.length() * 2;
-        
-        for (int i = 0; i < m_translations.length; i++) {   
+
+        for (int i = 0; i < m_translations.length; i++) {
             result = new StringBuffer(size);
             try {
                 if (m_perlUtil.substitute(result, m_translations[i], current) != 0) {
 
-                    if (m_continueMatching) {                        
+                    if (m_continueMatching) {
                         // continue matching
-                        current = result.toString();                        
-                    } else {                        
+                        current = result.toString();
+                    } else {
                         // first pattern matched, return the result
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().key(Messages.LOG_TRANSLATION_MATCH_3, new Integer(i), resourceName, result));
+                            LOG.debug(Messages.get().key(
+                                Messages.LOG_TRANSLATION_MATCH_3,
+                                new Integer(i),
+                                resourceName,
+                                result));
                         }
                         // Return first match result
                         return result.toString();
@@ -183,7 +191,7 @@ public class CmsResourceTranslator {
                 LOG.error(Messages.get().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, m_translations[i]), e);
             }
         }
-        
+
         // the pattern matched, return the result
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_TRANSLATION_MATCH_2, resourceName, current));

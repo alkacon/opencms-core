@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportData.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,9 @@ import org.opencms.file.CmsResource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsStaticExportData {
 
@@ -61,13 +63,13 @@ public class CmsStaticExportData {
      * @param parameters the parameter string of a resource
      */
     public CmsStaticExportData(String vfsName, String parameters) {
-        
+
         m_vfsName = vfsName;
         m_rfsName = null;
         m_resource = null;
         m_parameters = parameters;
     }
-    
+
     /**
      * Creates a new static export data object.<p>
      * 

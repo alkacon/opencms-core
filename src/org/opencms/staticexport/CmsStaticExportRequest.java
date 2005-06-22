@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportRequest.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,10 @@ import org.apache.commons.logging.Log;
  * Wrapper for static export requests, required for parameter based requests.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.5 $
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsStaticExportRequest extends HttpServletRequestWrapper {
     

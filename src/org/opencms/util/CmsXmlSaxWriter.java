@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXmlSaxWriter.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,9 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ $Date: 2005/06/22 10:38:11 $
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
@@ -63,16 +65,16 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
     /** The last element name written to the output. */
     private String m_lastElementName;
-    
+
     /** Indicates if a CDATA node is still open. */
     private boolean m_openCdata;
-    
+
     /** Indicates if an element tag is still open. */
     private boolean m_openTag;
 
     /** The Writer to write the output to. */
-    private Writer m_writer;        
-    
+    private Writer m_writer;
+
     /**
      * A SAX event handler that generates XML Strings from the events caught and writes them
      * to the given Writer.<p>
@@ -81,15 +83,17 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @param encoding the encoding for the XML output file header
      */
     public CmsXmlSaxWriter(Writer writer, String encoding) {
+
         m_writer = writer;
         m_encoding = encoding;
         m_indentLevel = 0;
     }
-    
+
     /**
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
     public void characters(char[] buf, int offset, int len) throws SAXException {
+
         if (len == 0) {
             return;
         }
@@ -108,6 +112,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
      */
     public void comment(char[] ch, int start, int length) {
+
         // NOOP
     }
 
@@ -115,7 +120,8 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ext.LexicalHandler#endCDATA()
      */
     public void endCDATA() throws SAXException {
-        if (! m_openCdata) {
+
+        if (!m_openCdata) {
             write("]]>");
         }
         m_openCdata = false;
@@ -125,11 +131,12 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ContentHandler#endDocument()
      */
     public void endDocument() throws SAXException {
+
         try {
             if (m_openTag) {
                 write("/>");
                 m_openTag = false;
-            }            
+            }
             writeNewLine();
             m_writer.flush();
         } catch (IOException e) {
@@ -141,6 +148,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ext.LexicalHandler#endDTD()
      */
     public void endDTD() {
+
         // NOOP
     }
 
@@ -148,7 +156,8 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
      */
     public void endElement(String namespaceURI, String localName, String qualifiedName) throws SAXException {
-        String elementName = resolveName(localName, qualifiedName); 
+
+        String elementName = resolveName(localName, qualifiedName);
         if (m_openTag) {
             write("/>");
         } else {
@@ -167,6 +176,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ext.LexicalHandler#endEntity(java.lang.String)
      */
     public void endEntity(String name) {
+
         // NOOP
     }
 
@@ -176,30 +186,15 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @return the Writer where the XML is written to
      */
     public Writer getWriter() {
+
         return m_writer;
     }
 
     /**
-     * Resolves the local vs. the qualified name.<p>
-     * 
-     * If the local name is the empty String "", the qualified name is used.<p>
-     * 
-     * @param localName the local name
-     * @param qualifiedName the qualified XML 1.0 name
-     * @return the resolved name to use 
-     */
-    private String resolveName(String localName, String qualifiedName) {
-        if ((localName == null) || (localName.length() == 0)) {
-            return qualifiedName;
-        } else {
-            return localName;
-        }
-    }
-    
-    /**
      * @see org.xml.sax.ext.LexicalHandler#startCDATA()
      */
     public void startCDATA() {
+
         m_openCdata = true;
     }
 
@@ -207,6 +202,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ContentHandler#startDocument()
      */
     public void startDocument() throws SAXException {
+
         write("<?xml version=\"1.0\" encoding=\"");
         write(m_encoding);
         write("\"?>");
@@ -217,13 +213,16 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String, java.lang.String, java.lang.String)
      */
     public void startDTD(String name, String publicId, String systemId) {
+
         // NOOP
     }
 
     /**
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
-    public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) throws SAXException {
+    public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes)
+    throws SAXException {
+
         if (m_openTag) {
             write(">");
             m_openTag = false;
@@ -236,7 +235,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
         write("<");
         write(m_lastElementName);
         if (attributes != null) {
-            for (int i = 0; i<attributes.getLength(); i++) {
+            for (int i = 0; i < attributes.getLength(); i++) {
                 write(" ");
                 write(resolveName(attributes.getLocalName(i), attributes.getQName(i)));
                 write("=\"");
@@ -251,7 +250,26 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ext.LexicalHandler#startEntity(java.lang.String)
      */
     public void startEntity(String name) {
+
         // NOOP
+    }
+
+    /**
+     * Resolves the local vs. the qualified name.<p>
+     * 
+     * If the local name is the empty String "", the qualified name is used.<p>
+     * 
+     * @param localName the local name
+     * @param qualifiedName the qualified XML 1.0 name
+     * @return the resolved name to use 
+     */
+    private String resolveName(String localName, String qualifiedName) {
+
+        if ((localName == null) || (localName.length() == 0)) {
+            return qualifiedName;
+        } else {
+            return localName;
+        }
     }
 
     /**
@@ -261,6 +279,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @throws SAXException in case of I/O errors
      */
     private void write(String s) throws SAXException {
+
         try {
             m_writer.write(s);
         } catch (IOException e) {
@@ -274,6 +293,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @throws SAXException in case of I/O errors
      */
     private void writeNewLine() throws SAXException {
+
         try {
             // write new line
             m_writer.write('\n');

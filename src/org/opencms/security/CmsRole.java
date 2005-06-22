@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,8 +63,9 @@ import java.util.List;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.4 $
- * @since 5.7.3
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsRole {
 
@@ -112,6 +113,15 @@ public final class CmsRole {
     public static final CmsRole SCHEDULER_MANAGER = new CmsRole(
         "SCHEDULER_MANAGER",
         new CmsRole[] {CmsRole.ADMINISTRATOR});
+    /** 
+     * The "SYSTEM_USER" role.<p>
+     *
+     * Additional parents: <code>{@link CmsRole#WORKPLACE_USER}</code>, <code>{@link CmsRole#PROJECT_MANAGER},</code>
+     * <code>{@link CmsRole#DEVELOPER}</code>.<p>
+     */
+    public static final CmsRole SYSTEM_USER = new CmsRole("SYSTEM_USER", new CmsRole[] {
+    // important: this role must be defined _after_ all other roles it referes to
+        CmsRole.ADMINISTRATOR, CmsRole.WORKPLACE_USER, CmsRole.PROJECT_MANAGER, CmsRole.DEVELOPER});
 
     /** The "USER_MANAGER" role. */
     public static final CmsRole USER_MANAGER = new CmsRole("USER_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
@@ -131,16 +141,7 @@ public final class CmsRole {
 
     /** The "WORKPLACE_USER" role. */
     public static final CmsRole WORKPLACE_USER = new CmsRole("WORKPLACE_USER", new CmsRole[] {CmsRole.ADMINISTRATOR});
-    /** 
-     * The "SYSTEM_USER" role.<p>
-     *
-     * Additional parents: <code>{@link CmsRole#WORKPLACE_USER}</code>, <code>{@link CmsRole#PROJECT_MANAGER},</code>
-     * <code>{@link CmsRole#DEVELOPER}</code>.<p>
-     */
-    public static final CmsRole SYSTEM_USER = new CmsRole("SYSTEM_USER", new CmsRole[] {
-    // important: this role must be defined _after_ all other roles it referes to
-        CmsRole.ADMINISTRATOR, CmsRole.WORKPLACE_USER, CmsRole.PROJECT_MANAGER, CmsRole.DEVELOPER});
-    
+
     /** The list of system roles. */
     private static List m_systemRoles;
 

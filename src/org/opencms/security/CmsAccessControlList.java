@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.security;
 
 import org.opencms.file.CmsUser;
@@ -54,8 +55,11 @@ import java.util.Vector;
  * is called in each operation. This method acts as access guard and matches the required permissions for the operation
  * against the allowed and denied permissions defined for the user or groups of this user.</p>
  * 
- * @version $Revision: 1.17 $ $Date: 2005/06/22 10:38:24 $
  * @author Carsten Weinholz 
+ * 
+ * @version $Revision: 1.18 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsAccessControlList {
 
@@ -71,6 +75,21 @@ public class CmsAccessControlList {
     public CmsAccessControlList() {
 
         m_permissions = new HashMap();
+    }
+
+    /**
+     * Adds an access control entry to the access control list.<p>
+     * 
+     * @param entry the access control entry to add
+     */
+    public void add(CmsAccessControlEntry entry) {
+
+        CmsPermissionSetCustom permissions = (CmsPermissionSetCustom)m_permissions.get(entry.getPrincipal());
+        if (permissions == null) {
+            permissions = new CmsPermissionSetCustom();
+        }
+        permissions.addPermissions(entry.getPermissions());
+        m_permissions.put(entry.getPrincipal(), permissions);
     }
 
     /**
@@ -92,61 +111,13 @@ public class CmsAccessControlList {
     }
 
     /**
-     * Adds an access control entry to the access control list.<p>
+     * Returns the permission map of this access control list.<p>
      * 
-     * @param entry the access control entry to add
+     * @return permission map
      */
-    public void add(CmsAccessControlEntry entry) {
+    public HashMap getPermissionMap() {
 
-        CmsPermissionSetCustom permissions = (CmsPermissionSetCustom)m_permissions.get(entry.getPrincipal());
-        if (permissions == null) {
-            permissions = new CmsPermissionSetCustom();
-        }
-        permissions.addPermissions(entry.getPermissions());
-        m_permissions.put(entry.getPrincipal(), permissions);
-    }
-
-    /**
-     * Sets the allowed permissions of a given access control entry as allowed permissions in the access control list.<p>
-     * The denied permissions are left unchanged.
-     * 
-     * @param entry the access control entry
-     */
-    public void setAllowedPermissions(CmsAccessControlEntry entry) {
-
-        CmsPermissionSetCustom permissions = (CmsPermissionSetCustom)m_permissions.get(entry.getPrincipal());
-        if (permissions == null) {
-            permissions = new CmsPermissionSetCustom();
-        }
-        permissions.setPermissions(entry.getAllowedPermissions(), permissions.getDeniedPermissions());
-        m_permissions.put(entry.getPrincipal(), permissions);
-    }
-
-    /**
-     * Sets the denied permissions of a given access control entry as denied permissions in the access control list.<p>
-     * The allowed permissions are left unchanged.
-     * 
-     * @param entry the access control entry
-     */
-    public void setDeniedPermissions(CmsAccessControlEntry entry) {
-
-        CmsPermissionSetCustom permissions = (CmsPermissionSetCustom)m_permissions.get(entry.getPrincipal());
-        if (permissions == null) {
-            permissions = new CmsPermissionSetCustom();
-        }
-        permissions.setPermissions(permissions.getAllowedPermissions(), entry.getDeniedPermissions());
-        m_permissions.put(entry.getPrincipal(), permissions);        
-    }
-
-    /**
-     * Returns the permission set of a principal as stored in the access control list.<p>
-     * 
-     * @param principal the principal (group or user)
-     * 
-     * @return the current permissions of this single principal
-     */
-    public CmsPermissionSetCustom getPermissions(I_CmsPrincipal principal) {
-        return (CmsPermissionSetCustom)m_permissions.get(principal.getId());
+        return m_permissions;
     }
 
     /**
@@ -181,6 +152,18 @@ public class CmsAccessControlList {
     }
 
     /**
+     * Returns the permission set of a principal as stored in the access control list.<p>
+     * 
+     * @param principal the principal (group or user)
+     * 
+     * @return the current permissions of this single principal
+     */
+    public CmsPermissionSetCustom getPermissions(I_CmsPrincipal principal) {
+
+        return (CmsPermissionSetCustom)m_permissions.get(principal.getId());
+    }
+
+    /**
      * Calculates the permissions of the given user and his groups from the access control list.<p>
      * The permissions are returned as permission string in the format {{+|-}{r|w|v|c|i}}*.
      * 
@@ -204,14 +187,36 @@ public class CmsAccessControlList {
 
         return m_permissions.keySet();
     }
-    
+
     /**
-     * Returns the permission map of this access control list.<p>
+     * Sets the allowed permissions of a given access control entry as allowed permissions in the access control list.<p>
+     * The denied permissions are left unchanged.
      * 
-     * @return permission map
+     * @param entry the access control entry
      */
-    public HashMap getPermissionMap() {
-        
-        return m_permissions;
+    public void setAllowedPermissions(CmsAccessControlEntry entry) {
+
+        CmsPermissionSetCustom permissions = (CmsPermissionSetCustom)m_permissions.get(entry.getPrincipal());
+        if (permissions == null) {
+            permissions = new CmsPermissionSetCustom();
+        }
+        permissions.setPermissions(entry.getAllowedPermissions(), permissions.getDeniedPermissions());
+        m_permissions.put(entry.getPrincipal(), permissions);
+    }
+
+    /**
+     * Sets the denied permissions of a given access control entry as denied permissions in the access control list.<p>
+     * The allowed permissions are left unchanged.
+     * 
+     * @param entry the access control entry
+     */
+    public void setDeniedPermissions(CmsAccessControlEntry entry) {
+
+        CmsPermissionSetCustom permissions = (CmsPermissionSetCustom)m_permissions.get(entry.getPrincipal());
+        if (permissions == null) {
+            permissions = new CmsPermissionSetCustom();
+        }
+        permissions.setPermissions(permissions.getAllowedPermissions(), entry.getDeniedPermissions());
+        m_permissions.put(entry.getPrincipal(), permissions);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,8 +42,9 @@ import java.util.ArrayList;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.19 $
- * @since 5.1
+ * @version $Revision: 1.20 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsSite implements Cloneable {
 

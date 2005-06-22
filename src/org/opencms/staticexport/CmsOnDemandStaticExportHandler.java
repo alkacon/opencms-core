@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,11 @@ import java.util.List;
  * Just the published files and folders are purged.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.7 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
+ * 
  * @see I_CmsStaticExportHandler
  */
 public class CmsOnDemandStaticExportHandler extends A_CmsOnDemandStaticExportHandler {

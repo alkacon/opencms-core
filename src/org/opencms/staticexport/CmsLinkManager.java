@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,9 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsLinkManager {
 
@@ -66,10 +68,10 @@ public class CmsLinkManager {
 
     /** Base URL to calculate absolute links. */
     private static URL m_baseUrl;
-    
+
     /** Stores the results of a extern link validation. */
     private CmsPointerLinkValidationResult m_pointerLinkValidationResult;
-    
+
     /**
      * Public constructor.<p>
      */
@@ -315,17 +317,19 @@ public class CmsLinkManager {
      * @return the result of the last extern link validation
      */
     public CmsPointerLinkValidationResult getPointerLinkValidationResult() {
-        return m_pointerLinkValidationResult;   
+
+        return m_pointerLinkValidationResult;
     }
-    
+
     /**
      * Sets the result of a extern link validation.<p>
      * 
      * @param externLinkValidationResult the result a extern link validation
      */
     public void setPointerLinkValidationResult(CmsPointerLinkValidationResult externLinkValidationResult) {
-        m_pointerLinkValidationResult = externLinkValidationResult;   
-    } 
+
+        m_pointerLinkValidationResult = externLinkValidationResult;
+    }
 
     /**
      * Substitutes the contents of a link by adding the context path and 
@@ -501,6 +505,5 @@ public class CmsLinkManager {
         }
         return serverPrefix.concat(resultLink);
     }
-    
-    
+
 }

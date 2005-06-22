@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/I_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,10 @@ import org.opencms.util.CmsUUID;
  * so that the export is newly created after the next request to the resource.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.6 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsStaticExportHandler {
 

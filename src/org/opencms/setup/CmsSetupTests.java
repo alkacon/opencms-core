@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,23 +55,109 @@ import org.xml.sax.InputSource;
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.17 $ $Date: 2005/06/22 10:38:32 $
- * @since 5.3
+ * 
+ * @version $Revision: 1.18 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSetupTests {
 
-    private transient CmsSetupBean m_setupBean;
-    private boolean m_red;
-    private boolean m_yellow;
     private boolean m_green;
     private transient PageContext m_pageContext;
+    private boolean m_red;
+
+    private transient CmsSetupBean m_setupBean;
     private List m_testResults;
+    private boolean m_yellow;
 
     /**
      * Creates a new setup test suite.<p>
      */
     public CmsSetupTests() {
+
         super();
+    }
+
+    /**
+     * Returns the CmsSetup bean of the setup wizard.<p>
+     * 
+     * @return the CmsSetup bean of the setup wizard
+     */
+    public CmsSetupBean getSetupBean() {
+
+        return m_setupBean;
+    }
+
+    /**
+     * Returns the test results.<p>
+     * 
+     * @return the test results
+     */
+    public List getTestResults() {
+
+        return m_testResults;
+    }
+
+    //    /**
+    //     * Tests the selected OpenCms encoding.<p>
+    //     */    
+    //    public void testEncoding() {
+    //        CmsSetupTestResult testResult = new CmsSetupTestResult();
+    //
+    //        try {
+    //            testResult.setName("Default encoding");
+    //            String setEncoding = m_setupBean.getDefaultContentEncoding();
+    //            String encoding = CmsEncoder.lookupEncoding(setEncoding, null);
+    //            
+    //            if (encoding != null) {
+    //                testResult.setGreen();
+    //                testResult.setResult(encoding);
+    //            } else {
+    //                testResult.setRed();
+    //                testResult.setInfo("The your configured default encoding for OpenCms is not supported by your Java VM!"
+    //                                 + "Please ensure a supported encoding (e.g. 'UTF-8') is set in the cofiguration.");
+    //                testResult.setHelp(testResult.getInfo());
+    //                testResult.setResult("Invalid encoding set");
+    //            }
+    //        } catch (Exception e) {
+    //            testResult.setRed();
+    //            testResult.setResult("Unable to test the charset encoding!");
+    //            testResult.setInfo(e.toString());
+    //        } finally {
+    //            m_testResults.add(testResult);
+    //        }         
+    //    }
+
+    /**
+     * Returns true, if the conditions in all testes were fulfilled.<p>
+     * 
+     * @return true, if the conditions in all testes were fulfilled
+     */
+    public boolean isGreen() {
+
+        return m_green;
+    }
+
+    /**
+     * Returns true if one of the tests found a violated condition.
+     * It is assumed that it will be impossible to run OpenCms.<p>
+     * 
+     * @return true if one of the tests violates a condition
+     */
+    public boolean isRed() {
+
+        return m_red;
+    }
+
+    /**
+     * Returns true if one of the tests found a questionable condition.
+     * It is possible that OpenCms will not run.<p>
+     * 
+     * @return true if one of the tests found a questionable condition
+     */
+    public boolean isYellow() {
+
+        return m_yellow;
     }
 
     /**
@@ -81,15 +167,16 @@ public class CmsSetupTests {
      * @param setupBean the CmsSetup bean of the setup wizard
      */
     public void runTests(PageContext pageContext, CmsSetupBean setupBean) {
+
         Method method = null;
         String methodName = null;
         boolean hasRed = false;
         boolean hasYellow = false;
-        
+
         // reset everything back to an initial state
         m_pageContext = pageContext;
         m_setupBean = setupBean;
-        m_testResults = new ArrayList();        
+        m_testResults = new ArrayList();
         setGreen();
 
         try {
@@ -103,29 +190,54 @@ public class CmsSetupTests {
                 }
             }
         } catch (IllegalAccessException e) {
-            System.out.println("[" + getClass().getName() + "] error executing test method: " + methodName + ". Method object enforces Java language access control and the underlying method is inaccessible.");
+            System.out.println("["
+                + getClass().getName()
+                + "] error executing test method: "
+                + methodName
+                + ". Method object enforces Java language access control and the underlying method is inaccessible.");
         } catch (IllegalArgumentException e) {
-            System.out.println("[" + getClass().getName() + "] error executing test method: " + methodName + ". The method is an instance method and the specified object argument is not an instance of the class or interface declaring the underlying method (or of a subclass or implementor thereof); if the number of actual and formal parameters differ; if an unwrapping conversion for primitive arguments fails; or if, after possible unwrapping, a parameter value cannot be converted to the corresponding formal parameter type by a method invocation conversion.");
+            System.out.println("["
+                + getClass().getName()
+                + "] error executing test method: "
+                + methodName
+                + ". The method is an instance method and the specified object argument is not an instance of the class or interface declaring the underlying method (or of a subclass or implementor thereof); if the number of actual and formal parameters differ; if an unwrapping conversion for primitive arguments fails; or if, after possible unwrapping, a parameter value cannot be converted to the corresponding formal parameter type by a method invocation conversion.");
         } catch (InvocationTargetException e) {
-            System.out.println("[" + getClass().getName() + "] error executing test method: " + methodName + ". The underlying method throws an exception.");
+            System.out.println("["
+                + getClass().getName()
+                + "] error executing test method: "
+                + methodName
+                + ". The underlying method throws an exception.");
         } catch (NullPointerException e) {
-            System.out.println("[" + getClass().getName() + "] error executing test method: " + methodName + ". The specified object is null and the method is an instance method.");
+            System.out.println("["
+                + getClass().getName()
+                + "] error executing test method: "
+                + methodName
+                + ". The specified object is null and the method is an instance method.");
         } catch (ExceptionInInitializerError e) {
-            System.out.println("[" + getClass().getName() + "] error executing test method: " + methodName + ". The initialization provoked by this method fails.");
+            System.out.println("["
+                + getClass().getName()
+                + "] error executing test method: "
+                + methodName
+                + ". The initialization provoked by this method fails.");
         } catch (Exception e) {
-            System.out.println("[" + getClass().getName() + "] error executing test method: " + methodName + ". " + e.toString());
+            System.out.println("["
+                + getClass().getName()
+                + "] error executing test method: "
+                + methodName
+                + ". "
+                + e.toString());
         }
-        
+
         // check whether a test found violated or questionable conditions
         for (int i = 0; i < m_testResults.size(); i++) {
-            CmsSetupTestResult testResult = (CmsSetupTestResult) m_testResults.get(i);
+            CmsSetupTestResult testResult = (CmsSetupTestResult)m_testResults.get(i);
             if (testResult.isRed()) {
                 hasRed = true;
             } else if (testResult.isYellow()) {
                 hasYellow = true;
             }
         }
-        
+
         // set the global result of all tests
         if (hasRed) {
             setRed();
@@ -136,13 +248,17 @@ public class CmsSetupTests {
         }
 
         // save the detected software component versions in a text file
-        writeVersionInfo(m_pageContext.getServletConfig().getServletContext().getServerInfo(), System.getProperty("java.version"), m_pageContext.getServletConfig().getServletContext().getRealPath("/"));
+        writeVersionInfo(
+            m_pageContext.getServletConfig().getServletContext().getServerInfo(),
+            System.getProperty("java.version"),
+            m_pageContext.getServletConfig().getServletContext().getRealPath("/"));
     }
 
     /**
      * Tests the version of the JDK.<p>
      */
     public void testJdkVersion() {
+
         CmsSetupTestResult testResult = new CmsSetupTestResult();
 
         try {
@@ -153,10 +269,12 @@ public class CmsSetupTests {
             testResult.setResult(JDKVersion);
 
             boolean supportedJDK = compareJDKVersions(JDKVersion, requiredJDK);
-            
+
             if (!supportedJDK) {
                 testResult.setRed();
-                testResult.setHelp("OpenCms requires at least Java version " + requiredJDK + " to run. Please update your JDK");
+                testResult.setHelp("OpenCms requires at least Java version "
+                    + requiredJDK
+                    + " to run. Please update your JDK");
             } else {
                 testResult.setGreen();
             }
@@ -170,30 +288,51 @@ public class CmsSetupTests {
     }
 
     /**
-     * Tests the servlet engine.<p>
+     * Tests the operating system.<p>
      */
-    public void testServletEngine() {
+    public void testOperatingSystem() {
+
         CmsSetupTestResult testResult = new CmsSetupTestResult();
 
         try {
-            String[] supportedEngines = { 
-                    "Apache Tomcat/4.1", 
-                    "Apache Tomcat/4.0", 
-                    "Apache Tomcat/5.0", 
-                    "Apache Tomcat/5.5" 
-            };
+            String osName = System.getProperty("os.name");
+            String osVersion = System.getProperty("os.version");
 
-            String[] unsupportedEngines = { 
-                    "Tomcat Web Server/3.2", 
-                    "Tomcat Web Server/3.3", 
-                    "Resin/2.0.b2" 
-            };
+            testResult.setName("Operating system");
+            testResult.setResult(osName + " " + osVersion);
+            testResult.setHelp("No help available.");
 
-            String[] unsupportedServletEngineInfo = { 
-                    "Tomcat 3.2 is no longer supported. Please use Tomcat 4.x instead.", 
-                    "Tomcat 3.3 is no longer supported. Please use Tomcat 4.x instead.", 
-                    "The OpenCms JSP integration does currently not work with Resin. Please use Tomcat 4.x instead." 
-            };
+            // there is still no handling to test the operating system
+            testResult.setGreen();
+        } catch (Exception e) {
+            testResult.setRed();
+            testResult.setResult("Unable to test the operating system!");
+            testResult.setInfo(e.toString());
+        } finally {
+            m_testResults.add(testResult);
+        }
+    }
+
+    /**
+     * Tests the servlet engine.<p>
+     */
+    public void testServletEngine() {
+
+        CmsSetupTestResult testResult = new CmsSetupTestResult();
+
+        try {
+            String[] supportedEngines = {
+                "Apache Tomcat/4.1",
+                "Apache Tomcat/4.0",
+                "Apache Tomcat/5.0",
+                "Apache Tomcat/5.5"};
+
+            String[] unsupportedEngines = {"Tomcat Web Server/3.2", "Tomcat Web Server/3.3", "Resin/2.0.b2"};
+
+            String[] unsupportedServletEngineInfo = {
+                "Tomcat 3.2 is no longer supported. Please use Tomcat 4.x instead.",
+                "Tomcat 3.3 is no longer supported. Please use Tomcat 4.x instead.",
+                "The OpenCms JSP integration does currently not work with Resin. Please use Tomcat 4.x instead."};
 
             ServletConfig config = m_pageContext.getServletConfig();
             String servletEngine = config.getServletContext().getServerInfo();
@@ -206,9 +345,9 @@ public class CmsSetupTests {
             if (unsupportedServletEngine > -1) {
                 testResult.setRed();
                 testResult.setInfo(unsupportedServletEngineInfo[unsupportedServletEngine]);
-                testResult.setHelp("This servlet engine does not work with OpenCms. Even though OpenCms is fully standards compliant, " 
-                        + "the standard leaves some 'grey' (i.e. undefined) areas. " 
-                        + "Please consider using another, supported engine.");
+                testResult.setHelp("This servlet engine does not work with OpenCms. Even though OpenCms is fully standards compliant, "
+                    + "the standard leaves some 'grey' (i.e. undefined) areas. "
+                    + "Please consider using another, supported engine.");
             } else if (!supportedServletEngine) {
                 testResult.setYellow();
                 testResult.setHelp("This servlet engine has not been tested with OpenCms. Please consider using another, supported engine.");
@@ -225,34 +364,49 @@ public class CmsSetupTests {
     }
 
     /**
-     * Tests the operating system.<p>
+     * Tests if the OpenCms WAR file is unpacked.<p>
      */
-    public void testOperatingSystem() {
+    public void testWarFileUnpacked() {
+
         CmsSetupTestResult testResult = new CmsSetupTestResult();
 
         try {
-            String osName = System.getProperty("os.name");
-            String osVersion = System.getProperty("os.version");
+            testResult.setName("Unpacked WAR file");
 
-            testResult.setName("Operating system");
-            testResult.setResult(osName + " " + osVersion);
-            testResult.setHelp("No help available.");
-            
-            // there is still no handling to test the operating system
-            testResult.setGreen();
+            String basePath = m_pageContext.getServletConfig().getServletContext().getRealPath("/");
+            if (!basePath.endsWith(File.separator)) {
+                basePath += File.separator;
+            }
+            File file = new File(basePath
+                + "WEB-INF"
+                + File.separator
+                + "config"
+                + File.separator
+                + "opencms.properties");
+            if (file.exists() && file.canRead() && file.canWrite()) {
+                testResult.setGreen();
+                testResult.setResult("yes");
+            } else {
+                testResult.setRed();
+                testResult.setInfo("OpenCms cannot be installed unless the OpenCms WAR file is unpacked! "
+                    + "Please check the settings of your servlet container or unpack the WAR file manually.");
+                testResult.setHelp(testResult.getInfo());
+                testResult.setResult("WAR file NOT unpacked");
+            }
         } catch (Exception e) {
             testResult.setRed();
-            testResult.setResult("Unable to test the operating system!");
+            testResult.setResult("Unable to test if the OpenCms WAR file is unpacked!");
             testResult.setInfo(e.toString());
         } finally {
             m_testResults.add(testResult);
         }
     }
-    
+
     /**
      * Test for the Xerces version.<p>
      */
     public void testXercesVersion() {
+
         CmsSetupTestResult testResult = new CmsSetupTestResult();
         testResult.setName("XML Parser");
 
@@ -265,7 +419,7 @@ public class CmsSetupTests {
             // Xerces 1 and 2 APIs are different, let's see what we have...
             String versionStr = null;
             int xercesVersion = 0;
-            
+
             try {
                 doc.getClass().getMethod("getXmlEncoding", new Class[] {}).invoke(doc, new Object[] {});
                 versionStr = Version.getVersion();
@@ -314,143 +468,6 @@ public class CmsSetupTests {
             m_testResults.add(testResult);
         }
     }
-    
-    /**
-     * Tests if the OpenCms WAR file is unpacked.<p>
-     */
-    public void testWarFileUnpacked() {
-        CmsSetupTestResult testResult = new CmsSetupTestResult();
-
-        try {
-            testResult.setName("Unpacked WAR file");
-            
-            String basePath = m_pageContext.getServletConfig().getServletContext().getRealPath("/");
-            if (!basePath.endsWith(File.separator)) {
-                  basePath += File.separator;
-            }
-            File file = new File(basePath + "WEB-INF" + File.separator + "config" + File.separator + "opencms.properties");
-            if (file.exists() && file.canRead() && file.canWrite()) {
-                testResult.setGreen();
-                testResult.setResult("yes");
-            } else {
-                testResult.setRed();
-                testResult.setInfo("OpenCms cannot be installed unless the OpenCms WAR file is unpacked! "
-                                    + "Please check the settings of your servlet container or unpack the WAR file manually.");
-                testResult.setHelp(testResult.getInfo());
-                testResult.setResult("WAR file NOT unpacked");
-            }
-        } catch (Exception e) {
-            testResult.setRed();
-            testResult.setResult("Unable to test if the OpenCms WAR file is unpacked!");
-            testResult.setInfo(e.toString());
-        } finally {
-            m_testResults.add(testResult);
-        }        
-    }
-    
-//    /**
-//     * Tests the selected OpenCms encoding.<p>
-//     */    
-//    public void testEncoding() {
-//        CmsSetupTestResult testResult = new CmsSetupTestResult();
-//
-//        try {
-//            testResult.setName("Default encoding");
-//            String setEncoding = m_setupBean.getDefaultContentEncoding();
-//            String encoding = CmsEncoder.lookupEncoding(setEncoding, null);
-//            
-//            if (encoding != null) {
-//                testResult.setGreen();
-//                testResult.setResult(encoding);
-//            } else {
-//                testResult.setRed();
-//                testResult.setInfo("The your configured default encoding for OpenCms is not supported by your Java VM!"
-//                                 + "Please ensure a supported encoding (e.g. 'UTF-8') is set in the cofiguration.");
-//                testResult.setHelp(testResult.getInfo());
-//                testResult.setResult("Invalid encoding set");
-//            }
-//        } catch (Exception e) {
-//            testResult.setRed();
-//            testResult.setResult("Unable to test the charset encoding!");
-//            testResult.setInfo(e.toString());
-//        } finally {
-//            m_testResults.add(testResult);
-//        }         
-//    }
-
-    /**
-     * Returns true, if the conditions in all testes were fulfilled.<p>
-     * 
-     * @return true, if the conditions in all testes were fulfilled
-     */
-    public boolean isGreen() {
-        return m_green;
-    }
-
-    /**
-     * Returns true if one of the tests found a violated condition.
-     * It is assumed that it will be impossible to run OpenCms.<p>
-     * 
-     * @return true if one of the tests violates a condition
-     */
-    public boolean isRed() {
-        return m_red;
-    }
-
-    /**
-     * Returns true if one of the tests found a questionable condition.
-     * It is possible that OpenCms will not run.<p>
-     * 
-     * @return true if one of the tests found a questionable condition
-     */
-    public boolean isYellow() {
-        return m_yellow;
-    }
-
-    /**
-     * Sets if the conditions in all testes were fulfilled.<p>
-     */
-    protected void setGreen() {
-        m_green = true;
-        m_red = false;
-        m_yellow = false;
-    }
-
-    /**
-     * Sets if one of the tests found a violated condition.<p>
-     */
-    protected void setRed() {
-        m_green = false;
-        m_red = true;
-        m_yellow = false;
-    }
-
-    /**
-     * Sets if one of the tests found a questionable condition.<p>
-     */
-    protected void setYellow() {
-        m_green = false;
-        m_red = false;
-        m_yellow = true;
-    }
-
-    /**
-     * Returns the CmsSetup bean of the setup wizard.<p>
-     * 
-     * @return the CmsSetup bean of the setup wizard
-     */
-    public CmsSetupBean getSetupBean() {
-        return m_setupBean;
-    }
-
-    /**
-     * Returns the test results.<p>
-     * 
-     * @return the test results
-     */
-    public List getTestResults() {
-        return m_testResults;
-    }
 
     /**
      * Checks if the used JDK is a higher version than the required JDK.<p>
@@ -460,8 +477,58 @@ public class CmsSetupTests {
      * @return true if used JDK version is equal or higher than required JDK version, false otherwise
      */
     protected boolean compareJDKVersions(String usedJDK, String requiredJDK) {
+
         int compare = usedJDK.compareTo(requiredJDK);
         return (!(compare < 0));
+    }
+
+    /** 
+     * Checks if the used servlet engine is part of the servlet engines OpenCms supports.<p>
+     * 
+     * @param thisEngine The servlet engine in use
+     * @param supportedEngines All known servlet engines OpenCms supports
+     * @return true if this engine is supported, false if it was not found in the list
+     */
+    protected boolean hasSupportedServletEngine(String thisEngine, String[] supportedEngines) {
+
+        boolean supported = false;
+        engineCheck: for (int i = 0; i < supportedEngines.length; i++) {
+            if (thisEngine.indexOf(supportedEngines[i]) >= 0) {
+                supported = true;
+                break engineCheck;
+            }
+        }
+        return supported;
+    }
+
+    /**
+     * Sets if the conditions in all testes were fulfilled.<p>
+     */
+    protected void setGreen() {
+
+        m_green = true;
+        m_red = false;
+        m_yellow = false;
+    }
+
+    /**
+     * Sets if one of the tests found a violated condition.<p>
+     */
+    protected void setRed() {
+
+        m_green = false;
+        m_red = true;
+        m_yellow = false;
+    }
+
+    /**
+     * Sets if one of the tests found a questionable condition.<p>
+     */
+    protected void setYellow() {
+
+        m_green = false;
+        m_red = false;
+        m_yellow = true;
     }
 
     /** 
@@ -473,6 +540,7 @@ public class CmsSetupTests {
      * @return the engine id or -1 if the engine is not supported
      */
     protected int unsupportedServletEngine(String thisEngine, String[] unsupportedEngines) {
+
         for (int i = 0; i < unsupportedEngines.length; i++) {
             if (thisEngine.indexOf(unsupportedEngines[i]) >= 0) {
                 return i;
@@ -490,6 +558,7 @@ public class CmsSetupTests {
      * @param basePath the OpenCms base path
      */
     protected void writeVersionInfo(String thisEngine, String usedJDK, String basePath) {
+
         FileWriter fOut = null;
         PrintWriter dOut = null;
         String filename = basePath + CmsSetupDb.C_SETUP_FOLDER + "versions.txt";
@@ -505,7 +574,8 @@ public class CmsSetupTests {
             dOut = new PrintWriter(fOut);
             dOut.println();
             dOut.println("############### currently used configuration ################");
-            dOut.println("Date:                " + DateFormat.getDateTimeInstance().format(new java.util.Date(System.currentTimeMillis())));
+            dOut.println("Date:                "
+                + DateFormat.getDateTimeInstance().format(new java.util.Date(System.currentTimeMillis())));
             dOut.println("Used JDK:            " + usedJDK);
             dOut.println("Used Servlet Engine: " + thisEngine);
             dOut.close();
@@ -520,24 +590,6 @@ public class CmsSetupTests {
                 // nothing we can do
             }
         }
-    }
-
-    /** 
-     * Checks if the used servlet engine is part of the servlet engines OpenCms supports.<p>
-     * 
-     * @param thisEngine The servlet engine in use
-     * @param supportedEngines All known servlet engines OpenCms supports
-     * @return true if this engine is supported, false if it was not found in the list
-     */
-    protected boolean hasSupportedServletEngine(String thisEngine, String[] supportedEngines) {
-        boolean supported = false;
-        engineCheck : for (int i = 0; i < supportedEngines.length; i++) {
-            if (thisEngine.indexOf(supportedEngines[i]) >= 0) {
-                supported = true;
-                break engineCheck;
-            }
-        }
-        return supported;
     }
 
 }

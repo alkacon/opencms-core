@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/I_CmsMacroResolver.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 14:58:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,9 @@ package org.opencms.util;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.4 $
- * @since 5.7.2
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsMacroResolver {
 
