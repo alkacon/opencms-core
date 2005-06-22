@@ -87,7 +87,7 @@ OpenCms Setup Wizard - Create database & tables
 								<td><img src="resources/warning.png" border="0"></td>
 								<td>&nbsp;&nbsp;</td>
 								<td>You have not created the OpenCms database.<br>
-									You cannot import the workplace successfully without the database and tables!
+									You cannot import the modules successfully without the database and tables!
 								</td>
 							</tr>
 						</table>

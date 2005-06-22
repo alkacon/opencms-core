@@ -10,14 +10,14 @@
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard - Import workplace
+OpenCms Setup Wizard - Import modules
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 	<script type="text/javascript">
 
 		var enabled = false;
 		var finished = false;
 		var animation;
-		var message = "Importing workplace ... please wait";
+		var message = "Importing modules ... please wait";
 		var countchar = 0;
 
 		// indicates if the document has been loaded 

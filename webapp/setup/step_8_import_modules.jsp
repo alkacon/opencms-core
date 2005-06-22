@@ -11,7 +11,7 @@
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard - Import workplace
+OpenCms Setup Wizard - Import modules
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 
 <% if (importWp) { %>
@@ -25,21 +25,21 @@ OpenCms Setup Wizard - Import workplace
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Import workplace
+OpenCms Setup Wizard - Import modules
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (Bean.isInitialized()) { %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
 	<td style="vertical-align: middle;">
-		<%= Bean.getHtmlPart("C_BLOCK_START", "Import workplace") %>
+		<%= Bean.getHtmlPart("C_BLOCK_START", "Import modules") %>
 		<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
 			
 			<tr>
 				<td><img src="resources/warning.png" border="0"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td style="width: 100%;">
-					You have not imported the workplace.<br>
+					You have not imported the modules.<br>
 					OpenCms will not work without the virtual file system!
 				</td>
 			</tr>
