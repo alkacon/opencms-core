@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlGalleryWidget.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 15:33:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,19 +41,11 @@ import org.opencms.workplace.galleries.A_CmsGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $
- * @since 5.7.3
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
-
-    /**
-     * Creates a new html gallery widget.<p>
-     */
-    protected A_CmsHtmlGalleryWidget() {
-
-        // empty constructor is required for class registration
-        this("");
-    }
 
     /**
      * Creates a html gallery widget with the specified combo options.<p>
@@ -63,6 +55,15 @@ public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
     public A_CmsHtmlGalleryWidget(String configuration) {
 
         super(configuration);
+    }
+
+    /**
+     * Creates a new html gallery widget.<p>
+     */
+    protected A_CmsHtmlGalleryWidget() {
+
+        // empty constructor is required for class registration
+        this("");
     }
 
     /**

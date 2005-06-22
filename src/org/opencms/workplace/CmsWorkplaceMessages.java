@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/22 15:33:02 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,9 +57,10 @@ import java.util.Set;
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a module.<p>
  * 
  * @author  Alexander Kandzior 
- * @version $Revision: 1.35 $
  * 
- * @since 5.1
+ * @version $Revision: 1.36 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsWorkplaceMessages extends CmsMultiMessages {
 
@@ -99,14 +100,14 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
             result.add(wpMsg);
         }
 
-    ////////////    iterate over all registered modules ////////////////        
+        ////////////    iterate over all registered modules ////////////////        
         Set names = OpenCms.getModuleManager().getModuleNames();
         if (names != null) {
             // iterate all module names
             Iterator i = names.iterator();
             while (i.hasNext()) {
                 String modName = (String)i.next();
-    ////////////    collect the workplace.properties ////////////////
+                ////////////    collect the workplace.properties ////////////////
                 // this should result in a name like "my.module.name.workplace"
                 String bundleName = modName + ".workplace";
                 // try to load a bundle with the module names
@@ -115,7 +116,7 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
                 if (msg.isInitialized()) {
                     result.add(msg);
                 }
-    ////////////    collect the messages.properties ////////////////
+                ////////////    collect the messages.properties ////////////////
                 // this should result in a name like "my.module.name.messages"
                 bundleName = modName + ".messages";
                 // try to load a bundle with the module names
@@ -126,14 +127,14 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
                 }
             }
         }
-                      
-    ////////////collect additional core packages ////////////////
+
+        ////////////collect additional core packages ////////////////
         I_CmsMessageBundle[] coreMsgs = A_CmsMessageBundle.getOpenCmsMessageBundles();
         for (int i = 0; i < coreMsgs.length; i++) {
             I_CmsMessageBundle bundle = coreMsgs[i];
             result.add(bundle.getBundle(locale));
         }
-        
+
         return result;
     }
 

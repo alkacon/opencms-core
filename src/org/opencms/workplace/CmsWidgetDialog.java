@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/06/22 15:33:02 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,8 +63,9 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $
- * @since 5.9.1
+ * @version $Revision: 1.50 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
 

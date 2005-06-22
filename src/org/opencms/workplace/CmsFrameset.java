@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/06/22 14:13:04 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2005/06/22 15:33:02 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,11 +70,13 @@ import org.apache.commons.logging.Log;
  * <li>/views/top_foot.html
  * <li>/views/top_head.html
  * </ul>
- *
- * @author  Alexander Kandzior 
- * @version $Revision: 1.75 $
+ * <p> 
  * 
- * @since 5.1
+ * @author  Alexander Kandzior 
+ * 
+ * @version $Revision: 1.76 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsFrameset extends CmsWorkplace {
 

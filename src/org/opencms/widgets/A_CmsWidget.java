@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 15:33:01 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
-
 import java.util.Map;
 
 /**
@@ -41,8 +40,9 @@ import java.util.Map;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
- * @since 5.5.0
+ * @version $Revision: 1.12 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsWidget implements I_CmsWidget {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidgetParameter.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 15:33:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,9 @@ import org.opencms.file.CmsObject;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
- * @since 5.5.0
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsWidgetParameter {
 
@@ -80,13 +81,6 @@ public interface I_CmsWidgetParameter {
     String getKey();
 
     /**
-     * Sets an optional localized key prefix identificator of this parameter.<p>  
-     * 
-     * @param prefix the optional localized key prefix identificator of this parameter
-     */
-    void setKeyPrefix(String prefix);
-    
-    /**
      * Returns the maximum occurences of this parameter.<p>
      *
      * @return the maximum occurences of this parameter
@@ -122,6 +116,13 @@ public interface I_CmsWidgetParameter {
      * @return <code>true</code> if this widgets value contains an error
      */
     boolean hasError();
+
+    /**
+     * Sets an optional localized key prefix identificator of this parameter.<p>  
+     * 
+     * @param prefix the optional localized key prefix identificator of this parameter
+     */
+    void setKeyPrefix(String prefix);
 
     /**
      * Sets the value of this parameter.<p>  

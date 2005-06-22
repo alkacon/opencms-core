@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTaskService.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 15:33:02 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,14 +41,14 @@ import org.opencms.main.CmsException;
 import java.util.List;
 
 /**
- * Just a convinience wrapper for 
+ * Just a convenience wrapper for 
  * workflow related methods.<p>
  * 
  * @author Michael Moossen  
  * 
- * @author Michael Moossen  
- * @version $Revision: 1.8 $
- * @since 5.7.3
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsTaskService {
 

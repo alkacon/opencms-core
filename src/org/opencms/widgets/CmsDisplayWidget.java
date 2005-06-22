@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 15:33:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,9 @@ import org.opencms.i18n.CmsEncoder;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
- * @since 5.5.0
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsDisplayWidget extends A_CmsWidget {
 
@@ -71,8 +72,8 @@ public class CmsDisplayWidget extends A_CmsWidget {
         String id = param.getId();
 
         StringBuffer result = new StringBuffer(16);
-        
-        result.append("<td class=\"xmlTd\">"); 
+
+        result.append("<td class=\"xmlTd\">");
         result.append("<span class=\"xmlInput textInput\" style=\"border: 0px solid black;\">");
         result.append(param.getStringValue(cms));
         result.append("</span>");
@@ -90,28 +91,26 @@ public class CmsDisplayWidget extends A_CmsWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsWidget#newInstance()
-     */
-    public I_CmsWidget newInstance() {
-
-        return new CmsDisplayWidget(getConfiguration());
-    }
-    
-    
-    /**
      * @see org.opencms.widgets.A_CmsWidget#getHelpBubble(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         return "<td>&nbsp;</td>";
     }
-    
-    
+
     /**
      * @see org.opencms.widgets.A_CmsWidget#getHelpText(org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         return "";
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#newInstance()
+     */
+    public I_CmsWidget newInstance() {
+
+        return new CmsDisplayWidget(getConfiguration());
     }
 }

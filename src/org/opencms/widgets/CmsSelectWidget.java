@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidget.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 15:33:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,11 +47,13 @@ import java.util.List;
  * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#isDefault()}</code> for pre-selecting a specific value 
  * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getOption()}</code> for the <code>option</code> of the HTML select box
  * </ul>
+ * <p>
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $
- * @since 6.0
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSelectWidget extends A_CmsSelectWidget {
 

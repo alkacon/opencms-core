@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/22 15:33:02 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,26 +48,18 @@ import org.apache.commons.logging.Log;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior 
- * @version $Revision: 1.21 $
  * 
- * @since 5.1.10
+ * @version $Revision: 1.22 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsReport extends CmsDialog {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsReport.class);  
-    
-    /** Request parameter key for the type of the report. */
-    public static final String PARAM_REPORT_TYPE = "reporttype";
 
     /** Request parameter key for the type of the report. */
     public static final String PARAM_REPORT_CONTINUEKEY = "reportcontinuekey";
 
-    /** The key name which contains the localized message for the continue checkbox. */
-    private String m_paramReportContinueKey;
-
-    /** The type of this report. */
-    private String m_paramReportType;
+    /** Request parameter key for the type of the report. */
+    public static final String PARAM_REPORT_TYPE = "reporttype";
 
     /** Max. byte size of report output on client. */
     public static final int REPORT_UPDATE_SIZE = 512000;
@@ -75,16 +67,24 @@ public class CmsReport extends CmsDialog {
     /** Update time for report reloading. */
     public static final int REPORT_UPDATE_TIME = 2000;
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsReport.class);
+
+    /** Flag for refreching workplace .*/
+    private String m_paramRefreshWorkplace;
+
+    /** The key name which contains the localized message for the continue checkbox. */
+    private String m_paramReportContinueKey;
+
+    /** The type of this report. */
+    private String m_paramReportType;
+
     /** The thread to display in this report. */
     private CmsUUID m_paramThread;
 
     /** The next thread to display after this report. */
     private String m_paramThreadHasNext;
 
-    /** Flag for refreching workplace .*/
-    private String m_paramRefreshWorkplace;
-    
-    
     /**
      * Public constructor.<p>
      * 
@@ -135,6 +135,68 @@ public class CmsReport extends CmsDialog {
     }
 
     /**
+     * Builds a button row with an "Ok", a "Cancel" and a "Details" button.<p>
+     * 
+     * This row is displayed when the first report is running.<p>
+     * 
+     * @param okAttrs optional attributes for the ok button
+     * @param cancelAttrs optional attributes for the cancel button
+     * @param detailsAttrs optional attributes for the details button
+     * @return the button row
+     */
+    public String dialogButtonsContinue(String okAttrs, String cancelAttrs, String detailsAttrs) {
+
+        if (detailsAttrs == null || "".equals(detailsAttrs.trim())) {
+            detailsAttrs = "";
+        } else {
+            detailsAttrs += " ";
+        }
+        return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {
+            okAttrs,
+            cancelAttrs,
+            detailsAttrs + "onclick=\"switchOutputFormat();\""});
+    }
+
+    /**
+     * Builds a button row with an "Ok", a "Cancel" and a "Details" button.<p>
+     * 
+     * This row is used when a single report is running or after the first report has finished.<p>
+     * 
+     * @param okAttrs optional attributes for the ok button
+     * @param cancelAttrs optional attributes for the cancel button
+     * @param detailsAttrs optional attributes for the details button
+     * @return the button row
+     */
+    public String dialogButtonsOkCancelDetails(String okAttrs, String cancelAttrs, String detailsAttrs) {
+
+        if (detailsAttrs == null || "".equals(detailsAttrs.trim())) {
+            detailsAttrs = "";
+        } else {
+            detailsAttrs += " ";
+        }
+
+        if ("true".equals(getParamThreadHasNext()) && !"".equals(getParamReportContinueKey())) {
+            return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {
+                okAttrs,
+                cancelAttrs,
+                detailsAttrs + "onclick=\"switchOutputFormat();\""});
+        }
+        return dialogButtons(new int[] {BUTTON_OK, BUTTON_DETAILS}, new String[] {
+            okAttrs,
+            detailsAttrs + "onclick=\"switchOutputFormat();\""});
+    }
+
+    /**
+     * Returns if the workplace must be refreshed.<p>
+     * 
+     * @return "true" if the workplace must be refreshed.
+     */
+    public String getParamRefreshWorkplace() {
+
+        return m_paramRefreshWorkplace;
+    }
+
+    /**
      * Returns the key name which contains the localized message for the continue checkbox.<p>
      * 
      * @return the key name which contains the localized message for the continue checkbox
@@ -145,16 +207,6 @@ public class CmsReport extends CmsDialog {
             m_paramReportContinueKey = "";
         }
         return m_paramReportContinueKey;
-    }
-
-    /**
-     * Sets the key name which contains the localized message for the continue checkbox.<p>
-     * 
-     * @param key the key name which contains the localized message for the continue checkbox
-     */
-    public void setParamReportContinueKey(String key) {
-
-        m_paramReportContinueKey = key;
     }
 
     /**
@@ -172,25 +224,6 @@ public class CmsReport extends CmsDialog {
         return m_paramReportType;
     }
 
-    /**
-     * Returns if the workplace must be refreshed.<p>
-     * 
-     * @return "true" if the workplace must be refreshed.
-     */
-    public String getParamRefreshWorkplace() {
-        return m_paramRefreshWorkplace;
-    }
-
-    /**
-     * Sets  if the workplace must be refreshed.<p>
-     * 
-     * @param value "true" (String) if the workplace must be refreshed.
-     */
-    public void setParamRefreshWorkplace(String value) {
-        m_paramRefreshWorkplace = value;
-    }
-    
-    
     /**
      * Returns the Thread id to display in this report.<p>
      * 
@@ -216,16 +249,6 @@ public class CmsReport extends CmsDialog {
             m_paramThreadHasNext = "";
         }
         return m_paramThreadHasNext;
-    }
-
-    /**
-     * Sets if another report is following this report.<p>
-     * 
-     * @param value "true" if another report is following this report
-     */
-    public void setParamThreadHasNext(String value) {
-
-        m_paramThreadHasNext = value;
     }
 
     /**
@@ -283,21 +306,6 @@ public class CmsReport extends CmsDialog {
     public String htmlStart(boolean loadStyles) {
 
         return pageHtml(HTML_START, loadStyles);
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the action for the JSP switch 
-        if (REPORT_UPDATE.equals(getParamAction())) {
-            setAction(ACTION_REPORT_UPDATE);
-        } else {
-            setAction(ACTION_REPORT_BEGIN);
-        }
     }
 
     /**
@@ -363,6 +371,26 @@ public class CmsReport extends CmsDialog {
     }
 
     /**
+     * Sets  if the workplace must be refreshed.<p>
+     * 
+     * @param value "true" (String) if the workplace must be refreshed.
+     */
+    public void setParamRefreshWorkplace(String value) {
+
+        m_paramRefreshWorkplace = value;
+    }
+
+    /**
+     * Sets the key name which contains the localized message for the continue checkbox.<p>
+     * 
+     * @param key the key name which contains the localized message for the continue checkbox
+     */
+    public void setParamReportContinueKey(String key) {
+
+        m_paramReportContinueKey = key;
+    }
+
+    /**
      * Sets the type of this report.<p>
      * 
      * @param value the type of this report
@@ -393,55 +421,28 @@ public class CmsReport extends CmsDialog {
     }
 
     /**
-     * Builds a button row with an "Ok", a "Cancel" and a "Details" button.<p>
+     * Sets if another report is following this report.<p>
      * 
-     * This row is displayed when the first report is running.<p>
-     * 
-     * @param okAttrs optional attributes for the ok button
-     * @param cancelAttrs optional attributes for the cancel button
-     * @param detailsAttrs optional attributes for the details button
-     * @return the button row
+     * @param value "true" if another report is following this report
      */
-    public String dialogButtonsContinue(String okAttrs, String cancelAttrs, String detailsAttrs) {
+    public void setParamThreadHasNext(String value) {
 
-        if (detailsAttrs == null || "".equals(detailsAttrs.trim())) {
-            detailsAttrs = "";
-        } else {
-            detailsAttrs += " ";
-        }
-        return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {
-            okAttrs,
-            cancelAttrs,
-            detailsAttrs + "onclick=\"switchOutputFormat();\""});
+        m_paramThreadHasNext = value;
     }
 
     /**
-     * Builds a button row with an "Ok", a "Cancel" and a "Details" button.<p>
-     * 
-     * This row is used when a single report is running or after the first report has finished.<p>
-     * 
-     * @param okAttrs optional attributes for the ok button
-     * @param cancelAttrs optional attributes for the cancel button
-     * @param detailsAttrs optional attributes for the details button
-     * @return the button row
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
-    public String dialogButtonsOkCancelDetails(String okAttrs, String cancelAttrs, String detailsAttrs) {
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
-        if (detailsAttrs == null || "".equals(detailsAttrs.trim())) {
-            detailsAttrs = "";
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the action for the JSP switch 
+        if (REPORT_UPDATE.equals(getParamAction())) {
+            setAction(ACTION_REPORT_UPDATE);
         } else {
-            detailsAttrs += " ";
+            setAction(ACTION_REPORT_BEGIN);
         }
-
-        if ("true".equals(getParamThreadHasNext()) && !"".equals(getParamReportContinueKey())) {
-            return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {
-                okAttrs,
-                cancelAttrs,
-                detailsAttrs + "onclick=\"switchOutputFormat();\""});
-        }
-        return dialogButtons(new int[] {BUTTON_OK, BUTTON_DETAILS}, new String[] {
-            okAttrs,
-            detailsAttrs + "onclick=\"switchOutputFormat();\""});
     }
 
 }

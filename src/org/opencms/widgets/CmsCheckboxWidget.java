@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCheckboxWidget.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 15:33:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,8 +42,9 @@ import java.util.Map;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $
- * @since 5.5.2
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsCheckboxWidget extends A_CmsWidget {
 

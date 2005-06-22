@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialogParameter.java,v $
- * Date   : $Date: 2005/06/22 15:02:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 15:33:02 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,8 +56,9 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
- * @since 5.9.1
+ * @version $Revision: 1.10 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
 

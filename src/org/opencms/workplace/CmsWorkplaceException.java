@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceException.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 15:33:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace;
 
 import org.opencms.i18n.CmsMessageContainer;
@@ -39,11 +39,13 @@ import org.opencms.main.CmsException;
  * is triggered by wrong configurations or user input.<p> 
  * 
  * @author Jan Baudisch 
- * @version $Revision: 1.3 $ $Date: 2005/06/22 10:38:17 $
- * @since 5.1.2
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsWorkplaceException extends CmsException {
-    
+
     /**
      * Creates a new localized Exception.<p>
      * 
@@ -63,14 +65,13 @@ public class CmsWorkplaceException extends CmsException {
     public CmsWorkplaceException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }   
-    
-    
+    }
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsWorkplaceException(container, cause);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2005/06/22 15:33:02 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,9 +90,10 @@ import org.apache.commons.logging.Log;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.66 $
  * 
- * @since 5.3.1
+ * @version $Revision: 1.67 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 

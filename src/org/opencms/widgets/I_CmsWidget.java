@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidget.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 15:33:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,9 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
- * @since 5.5.0
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsWidget {
 

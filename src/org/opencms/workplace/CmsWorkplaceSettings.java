@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/06/22 15:33:02 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,10 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior 
- * @version $Revision: 1.50 $
- * @since 5.1
+ * 
+ * @version $Revision: 1.51 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsWorkplaceSettings {
 
@@ -62,8 +64,8 @@ public class CmsWorkplaceSettings {
     private boolean m_explorerShowLinks;
     private Map m_frameUris;
     private String m_galleryType;
-    private Object m_listObject;
     private Map m_lastUsedGalleries;
+    private Object m_listObject;
     private String m_permissionDetailView;
     private int m_project;
     private CmsPublishList m_publishList;
@@ -216,6 +218,17 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Returns the last saved gallery for the given gallery type id.<p>
+     * 
+     * @param galleryTypeId the type id of the gallery
+     * @return the last saved gallery for the given gallery type id
+     */
+    public String getLastUsedGallery(int galleryTypeId) {
+
+        return (String)m_lastUsedGalleries.get(String.valueOf(galleryTypeId));
+    }
+
+    /**
      * Returns the list dialog object.<p>
      *
      * Use this mechanism for transfering a html list object between
@@ -230,17 +243,6 @@ public class CmsWorkplaceSettings {
     public Object getListObject() {
 
         return m_listObject;
-    }
-
-    /**
-     * Returns the last saved gallery for the given gallery type id.<p>
-     * 
-     * @param galleryTypeId the type id of the gallery
-     * @return the last saved gallery for the given gallery type id
-     */
-    public String getLastUsedGallery(int galleryTypeId) {
-
-        return (String)m_lastUsedGalleries.get(String.valueOf(galleryTypeId));
     }
 
     /**
@@ -520,6 +522,17 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Saves the last gallery.<p>
+     * 
+     * @param galleryTypeId the type id of the gallery as key
+     * @param gallerypath the resourcepath of the gallery
+     */
+    public void setLastUsedGallery(int galleryTypeId, String gallerypath) {
+
+        m_lastUsedGalleries.put(String.valueOf(galleryTypeId), gallerypath);
+    }
+
+    /**
      * Sets the list object.<p>
      * 
      * Use this mechanism for transfering a html list object between
@@ -534,17 +547,6 @@ public class CmsWorkplaceSettings {
     public synchronized void setListObject(Object listObject) {
 
         m_listObject = listObject;
-    }
-
-    /**
-     * Saves the last gallery.<p>
-     * 
-     * @param galleryTypeId the type id of the gallery as key
-     * @param gallerypath the resourcepath of the gallery
-     */
-    public void setLastUsedGallery(int galleryTypeId, String gallerypath) {
-
-        m_lastUsedGalleries.put(String.valueOf(galleryTypeId), gallerypath);
     }
 
     /**

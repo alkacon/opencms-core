@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsLinkGalleryWidget.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 15:33:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,9 @@ import org.opencms.util.CmsStringUtil;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $
- * @since 5.5.3
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsLinkGalleryWidget extends A_CmsGalleryWidget {
 
