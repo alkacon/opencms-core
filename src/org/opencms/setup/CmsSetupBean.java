@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/06/22 13:57:02 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,12 +89,9 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
-
-    /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
-    public static final String HTML_MESSAGE_FILE = "org/opencms/setup/htmlmsg.properties";
 
     /** DB provider constant. */
     public static final String C_GENERIC_PROVIDER = "generic";
@@ -107,6 +104,9 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
 
     /** DB provider constant. */
     public static final String C_POSTGRESQL_PROVIDER = "postgresql";
+
+    /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
+    public static final String HTML_MESSAGE_FILE = "org/opencms/setup/htmlmsg.properties";
 
     /** Required files per database server setup. */
     public static final String[] REQUIRED_DB_SETUP_FILES = {
@@ -367,11 +367,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      */
     public String getDatabaseConfigPage(String key) {
 
-        return "database"
-            + "/"
-            + key
-            + "/"
-            + "step_4_database_setup.jsp";
+        return "database" + "/" + key + "/" + "step_4_database_setup.jsp";
     }
 
     /**
@@ -1272,7 +1268,16 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             }
 
             if (isFormSubmitted) {
-                if (provider.equals(C_MYSQL_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
+                if (provider.equals(C_POSTGRESQL_PROVIDER)) {
+                    setDb(database);
+
+                    String templateDb = request.getParameter("templateDb");
+                    setDbProperty(getDatabase() + ".templateDb", templateDb);
+                    if ((conStr != null) && (!conStr.endsWith("/"))) {
+                        conStr += "/";
+                    }
+                    setDbProperty(getDatabase() + ".constr", conStr + getDbProperty(getDatabase() + ".templateDb"));
+                } else if (provider.equals(C_MYSQL_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
                     if (!conStr.endsWith("/")) {
                         conStr += "/";
                     }

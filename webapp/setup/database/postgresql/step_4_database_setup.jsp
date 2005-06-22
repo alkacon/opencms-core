@@ -38,18 +38,8 @@ OpenCms Setup Wizard
 			document.forms[0].dbName.focus();
 			return false;
 		}
-		else if (document.forms[0].createDb.value != "" && document.forms[0].dbDefaultTablespace.value == "") {
-			alert("Please insert the name of the Default tablespace");
-			document.forms[0].dbWorkPwd.focus();
-			return false;
-		}
-		else if (document.forms[0].createDb.value != "" && document.forms[0].dbIndexTablespace.value == "") {
-			alert("Please insert the name of the Index tablespace");
-			document.forms[0].dbWorkPwd.focus();
-			return false;
-		}
-		else if (document.forms[0].createDb.value != "" && document.forms[0].dbTemporaryTablespace.value == "") {
-			alert("Please insert the name of the Temporary tablespace");
+		else if (document.forms[0].createDb.value != "" && document.forms[0].templateDb.value == "") {
+			alert("Please insert the name of the Template Database");
 			document.forms[0].dbWorkPwd.focus();
 			return false;
 		}
@@ -123,15 +113,15 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 							<td>&nbsp;</td>
 							<td>User</td>
 							<td>Password</td>
-							<td>&nbsp;</td>
+							<td>Template Db</td>
 							<td>&nbsp;</td>
 						</tr>
 						<tr>
 							<td>Setup Connection</td>
 							<td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td>
 							<td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>
-							<td><%= Bean.getHtmlHelpIcon("1", "../../") %></td>
-							<td>&nbsp;</td>
+							<td><input type="text" name="templateDb" size="8" style="width:120px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".templateDb") %>'></td>
+							<td><%= Bean.getHtmlHelpIcon("1", "../../") %></td>		
 						</tr>
 						<%
 						String user = Bean.getDbWorkUser();
@@ -151,14 +141,15 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 						</tr>
 						<tr>
 							<td>Connection String</td>
-							<td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:250px;" value='<%= Bean.getDbCreateConStr() %>'></td>
+							<td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:280px;" value='<%= Bean.getDbCreateConStr() %>'></td>
 							<td><%= Bean.getHtmlHelpIcon("3", "../../") %></td>
 							<td>&nbsp;</td>
 						</tr>
 						<tr>
 							<td>Database Name</td>
-							<td colspan="2"><input type="text" name="dbName" style="width:315px;" value=''></td>
+							<td colspan="2"><input type="text" name="dbName" style="width:280px;" value=''></td>
 							<td><%= Bean.getHtmlHelpIcon("4", "../../") %></td>
+							<td>&nbsp;</td>
 						</tr>
 						<tr>
 							<td>Create Database</td>
