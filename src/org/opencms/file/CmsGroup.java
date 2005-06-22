@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 09:39:32 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsGroup implements I_CmsPrincipal {
 
@@ -97,7 +97,8 @@ public class CmsGroup implements I_CmsPrincipal {
      */
     public static void checkName(String name) {
 
-        if (!CmsStringUtil.validateRegex(name, "[\\w\\.-~_]*", false)) {
+        String regex = "[\\w\\.~_-]*";
+        if (!CmsStringUtil.validateRegex(name, regex, false)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_GROUPNAME_VALIDATION_1, name));
         }
     }
