@@ -142,7 +142,7 @@
 			<destination>system/workplace/admin/workplace/broadcast_message.html</destination>
 			<type>jsp</type>
 			<uuidresource>7c202038-dd81-11d9-a3c8-efaaea26ed93</uuidresource>
-			<datelastmodified>Wed, 15 Jun 2005 13:18:42 GMT</datelastmodified>
+			<datelastmodified>Wed, 22 Jun 2005 14:03:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 15 Jun 2005 09:40:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -150,7 +150,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>
@@ -187,6 +187,59 @@
 				<property>
 					<name>admintoolhandler-args</name>
 					<value><![CDATA[path:/workplace/broadcast/message]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/workplace/broadcast_message_all.html</destination>
+			<type>jsp</type>
+			<uuidresource>7c202038-dd81-11d9-a3c8-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 22 Jun 2005 14:03:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 09:40:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_MESSAGE_ALL_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_MESSAGE_ALL_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/send_message.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_MESSAGE_ALL_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit Message to Broadcast to All]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/workplace/broadcast/messageall]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -296,7 +349,7 @@
 			<destination>system/workplace/admin/workplace/send_email.html</destination>
 			<type>jsp</type>
 			<uuidresource>b803e8d3-dda0-11d9-8944-efaaea26ed93</uuidresource>
-			<datelastmodified>Wed, 15 Jun 2005 13:35:15 GMT</datelastmodified>
+			<datelastmodified>Wed, 22 Jun 2005 14:02:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 15 Jun 2005 13:23:53 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -304,7 +357,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -341,6 +394,59 @@
 				<property>
 					<name>admintoolhandler-args</name>
 					<value><![CDATA[path:/workplace/broadcast/email]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/workplace/send_email_all.html</destination>
+			<type>jsp</type>
+			<uuidresource>b803e8d3-dda0-11d9-8944-efaaea26ed93</uuidresource>
+			<datelastmodified>Wed, 22 Jun 2005 14:02:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 15 Jun 2005 13:23:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_EMAIL_ALL_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_EMAIL_ALL_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/workplace/icons/big/send_email.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_WORKPLACE_EMAIL_ALL_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit Email to Send to All]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/workplace/broadcast/emailall]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
