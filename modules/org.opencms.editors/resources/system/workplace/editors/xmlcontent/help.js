@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/help.js,v $
- * Date   : $Date: 2005/06/20 12:54:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 13:43:33 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ function findPosY(obj) {
 
 function showHelp(id) { 
 
-    showHelp(id, id);
+    showHelpX(id, id);
 }
 
 function hideHelp(id) {
