@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityResourceCollector.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,9 +49,9 @@ import java.util.List;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
- * @since 5.7.2
+ * @since 6.0.0 
  */
 public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
 
@@ -103,7 +103,9 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreePriorityDateAsc", "allInSubTreePriorityDateDesc" or "allInSubTreePriorityTitleDesc"
                 return null;
             default:
-                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
+                    collectorName));
         }
     }
 
@@ -129,14 +131,17 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreePriorityDateAsc", "allInSubTreePriorityDateDesc" or "allInSubTreePriorityTitleDesc"
                 return null;
             default:
-                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
+                    collectorName));
         }
     }
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List getResults(CmsObject cms, String collectorName, String param) throws CmsException, CmsDataAccessException {
+    public List getResults(CmsObject cms, String collectorName, String param)
+    throws CmsException, CmsDataAccessException {
 
         // if action is not set use default
         if (collectorName == null) {
@@ -164,7 +169,9 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreePriorityTitleDesc"
                 return allInFolderPriorityTitle(cms, param, true);
             default:
-                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
+                    collectorName));
         }
 
     }

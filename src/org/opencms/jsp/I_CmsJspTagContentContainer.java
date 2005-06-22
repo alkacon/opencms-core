@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/I_CmsJspTagContentContainer.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,11 @@ import org.opencms.xml.A_CmsXmlDocument;
 import java.util.Locale;
 
 /**
- * Provides access to a XML content document that was loaded by a parent tag.<p>
+ * Provides access to a XML content document that was loaded by a parent tag.<p> 
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsJspTagContentContainer {
 

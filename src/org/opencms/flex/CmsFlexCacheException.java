@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheException.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.flex;
 
 import org.opencms.i18n.CmsMessageContainer;
@@ -38,7 +38,10 @@ import org.opencms.main.CmsException;
  * Signals an error of the Flex cache.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.4 $
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsFlexCacheException extends CmsException {
 
@@ -57,12 +60,12 @@ public class CmsFlexCacheException extends CmsException {
 
         super(container, cause);
     }
-    
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsFlexCacheException(container, cause);
-    } 
+    }
 }

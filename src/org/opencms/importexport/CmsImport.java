@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,20 +69,22 @@ import org.dom4j.Element;
 
 /**
  * Holds the functionaility to import resources from the filesystem
- * or a zip file into the OpenCms VFS.
+ * or a zip file into the OpenCms VFS.<p>
  *
  * @author Andreas Zahner 
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34 $ $Date: 2005/06/22 10:38:11 $
+ * @version $Revision: 1.35 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsImport implements Serializable {
 
     /** The algorithm for the message digest. */
     public static final String C_IMPORT_DIGEST = "MD5";
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImport.class);
 
@@ -207,9 +209,7 @@ public class CmsImport implements Serializable {
         for (int i = 0; i < fileNodes.size(); i++) {
             currentElement = (Element)fileNodes.get(i);
             source = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_SOURCE);
-            destination = CmsImport.getChildElementTextValue(
-                currentElement,
-                CmsImportExportManager.N_DESTINATION);
+            destination = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DESTINATION);
             if (source != null) {
                 // only consider files
                 boolean exists = true;
@@ -231,12 +231,14 @@ public class CmsImport implements Serializable {
             try {
                 m_importZip.close();
             } catch (IOException e) {
-                
-                CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_CLOSING_ZIP_ARCHIVE_1, m_importZip.getName());
+
+                CmsMessageContainer message = Messages.get().container(
+                    Messages.ERR_IMPORTEXPORT_ERROR_CLOSING_ZIP_ARCHIVE_1,
+                    m_importZip.getName());
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(message.key(), e);
                 }
-                
+
                 throw new CmsImportExportException(message, e);
             }
         }
@@ -257,7 +259,7 @@ public class CmsImport implements Serializable {
         Element currentElement;
         String destination;
         Vector resources = new Vector();
-        
+
         try {
             if (m_importingChannelData) {
                 m_cms.getRequestContext().saveSiteRoot();
@@ -270,9 +272,7 @@ public class CmsImport implements Serializable {
             // walk through all files in manifest
             for (int i = 0; i < fileNodes.size(); i++) {
                 currentElement = (Element)fileNodes.get(i);
-                destination = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_DESTINATION);
+                destination = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DESTINATION);
 
                 // get the resources for a project
                 try {
@@ -300,13 +300,13 @@ public class CmsImport implements Serializable {
         }
 
         closeImportFile();
-        
+
         if (resources.contains(I_CmsConstants.C_ROOT)) {
             // we have to import root - forget the rest!
             resources.removeAllElements();
             resources.addElement(I_CmsConstants.C_ROOT);
         }
-        
+
         return resources;
     }
 
@@ -346,9 +346,9 @@ public class CmsImport implements Serializable {
         // initialize the import
         boolean run = false;
         openImportFile();
-        m_report.println(Messages.get().container(
-            Messages.RPT_IMPORT_VERSION_1,
-            String.valueOf(m_importVersion)), I_CmsReport.C_FORMAT_NOTE);
+        m_report.println(
+            Messages.get().container(Messages.RPT_IMPORT_VERSION_1, String.valueOf(m_importVersion)),
+            I_CmsReport.C_FORMAT_NOTE);
         try {
             // now find the correct import implementation         
             Iterator i = m_importImplementations.iterator();
@@ -398,11 +398,13 @@ public class CmsImport implements Serializable {
             } catch (IOException e) {
                 m_report.println(e);
 
-                CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_CLOSING_ZIP_ARCHIVE_1, m_importZip.getName());
+                CmsMessageContainer message = Messages.get().container(
+                    Messages.ERR_IMPORTEXPORT_ERROR_CLOSING_ZIP_ARCHIVE_1,
+                    m_importZip.getName());
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(message.key(), e);
                 }
-                
+
                 throw new CmsImportExportException(message, e);
             }
         }
@@ -471,12 +473,14 @@ public class CmsImport implements Serializable {
             }
         } catch (IOException e) {
             m_report.println(e);
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_OPENING_ZIP_ARCHIVE_1, m_importFile);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_OPENING_ZIP_ARCHIVE_1,
+                m_importFile);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
-            
+
             throw new CmsImportExportException(message, e);
         }
     }
@@ -500,8 +504,8 @@ public class CmsImport implements Serializable {
 
         // try to read the export version number
         try {
-            m_importVersion = Integer.parseInt(((Element)m_docXml.selectNodes(
-                "//" + CmsImportExportManager.N_VERSION).get(0)).getTextTrim());
+            m_importVersion = Integer.parseInt(((Element)m_docXml.selectNodes("//" + CmsImportExportManager.N_VERSION).get(
+                0)).getTextTrim());
         } catch (Exception e) {
             //ignore the exception, the export file has no version nummber (version 0).
         }
@@ -521,12 +525,14 @@ public class CmsImport implements Serializable {
         try {
             m_digest = MessageDigest.getInstance(digest);
         } catch (NoSuchAlgorithmException e) {
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_CREATING_DIGEST_1, digest);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_CREATING_DIGEST_1,
+                digest);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
-            
+
             throw new CmsImportExportException(message, e);
         }
     }

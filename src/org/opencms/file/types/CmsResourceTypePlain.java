@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 13:01:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,10 @@ import org.opencms.main.OpenCms;
  * Resource type descriptor for the type "plain".<p>
  * 
  * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsResourceTypePlain extends A_CmsResourceType {
 
@@ -108,7 +112,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
      */
     public void initConfiguration(String name, String id) throws CmsConfigurationException {
 
-        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) &&  m_staticFrozen) {
+        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
             // configuration already frozen
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_CONFIG_FROZEN_3,

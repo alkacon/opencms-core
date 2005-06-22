@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsContentInfoBean.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,10 @@ import org.opencms.util.CmsStringUtil;
  * A container to store information about a collector's result.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.6 $
- * @since 6.0 alpha 3
+ * 
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsContentInfoBean {
 

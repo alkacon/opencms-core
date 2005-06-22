@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,9 @@ import org.dom4j.Node;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsCompatibleCheck {
 

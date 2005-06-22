@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/I_CmsJspTagParamParent.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,11 @@ package org.opencms.jsp;
  * Interface for tag handlers implementing valid parent tags for
  * &lt;c:param&gt;.<p>
  *
- * @author Shawn Bayern
+ * @author Shawn Bayern 
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsJspTagParamParent {
 

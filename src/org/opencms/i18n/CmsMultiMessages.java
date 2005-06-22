@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,9 +51,10 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexnader Kandzior 
  * @author Michael Moossen 
- * @version $Revision: 1.7 $
  * 
- * @since 5.7.3
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsMultiMessages extends CmsMessages {
 

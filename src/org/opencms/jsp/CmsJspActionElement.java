@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,9 +73,10 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior 
- * @version $Revision: 1.18 $
  * 
- * @since 5.0 beta 2
+ * @version $Revision: 1.19 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsJspActionElement extends CmsJspBean {
 

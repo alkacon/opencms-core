@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,11 +58,13 @@ import org.apache.commons.logging.Log;
  * &lt% cmslogin.init(pageContext, request, response); %&gt;
  * &lt;/jsp:useBean&gt;
  * </pre>
- *
- * @author  Alexander Kandzior 
- * @version $Revision: 1.15 $
+ * <p>
  * 
- * @since 5.3
+ * @author  Alexander Kandzior 
+ * 
+ * @version $Revision: 1.16 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsJspLoginBean extends CmsJspActionElement {
 
@@ -253,7 +255,6 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                         getRequestContext().addSiteRoot(getRequestContext().getUri()),
                         getRequestContext().getRemoteAddress()));
 
-                    
                 } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == m_loginException.getMessageContainer().getKey()) {
 
                     // logins have been disabled by the administration
@@ -268,7 +269,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                             getRequestContext().addSiteRoot(getRequestContext().getUri()),
                             getRequestContext().getRemoteAddress(),
                             new Date(endTime)}));
-                    
+
                 } else {
 
                     // the user exists, so the password must have been wrong

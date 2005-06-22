@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/I_CmsLocaleHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.i18n;
 
 import org.opencms.file.CmsObject;
@@ -44,8 +45,10 @@ import javax.servlet.http.HttpServletRequest;
  * to the exact need of the OpenCms installation.<p>
  * 
  * @author Carsten Weinholz 
- * @author Carsten Weinholz 
- * @version $Revision: 1.11 $ 
+ * 
+ * @version $Revision: 1.12 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsLocaleHandler {
 
@@ -60,7 +63,7 @@ public interface I_CmsLocaleHandler {
      * @return the i18n information to use for the given request context
      */
     CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resource);
-    
+
     /**
      * Will be called during system startup.<p>
      * 

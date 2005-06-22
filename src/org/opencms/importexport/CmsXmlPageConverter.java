@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,13 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 
 /**
- * @version $Revision: 1.19 $ $Date: 2005/06/22 10:38:11 $
+ * A missing comment for ${type_name} 
+ * 
  * @author Carsten Weinholz 
+ * 
+ * @version $Revision: 1.20 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsXmlPageConverter {
 
@@ -132,8 +137,10 @@ public final class CmsXmlPageConverter {
                 throw new CmsImportExportException(Messages.get().container(Messages.ERR_BODY_CONTENT_NOT_FOUND_0));
             }
 
-            bodyContent = CmsStringUtil.substitute(bodyContent, I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT, OpenCms
-                .getSystemInfo().getOpenCmsContext());
+            bodyContent = CmsStringUtil.substitute(
+                bodyContent,
+                I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT,
+                OpenCms.getSystemInfo().getOpenCmsContext());
 
             if (!"".equals(bodyContent.trim())) {
                 xmlPage.addValue(bodyName, locale);

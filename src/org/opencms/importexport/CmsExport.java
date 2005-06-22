@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,12 +88,14 @@ import org.xml.sax.SAXException;
  * 
  * The ZIP file written will contain a copy of all exported files with their contents.
  * It will also contain a <code>manifest.xml</code> file in wich all meta-information 
- * about this files are stored, like permissions etc.
+ * about this files are stored, like permissions etc.<p>
  *
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.71 $ $Date: 2005/06/22 10:38:11 $
+ * @version $Revision: 1.72 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsExport implements Serializable {
 
@@ -625,11 +627,9 @@ public class CmsExport implements Serializable {
 
         // add the info element. it contains all infos for this export
         Element info = exportNode.addElement(CmsImportExportManager.N_INFO);
-        info.addElement(CmsImportExportManager.N_CREATOR).addText(
-            getCms().getRequestContext().currentUser().getName());
+        info.addElement(CmsImportExportManager.N_CREATOR).addText(getCms().getRequestContext().currentUser().getName());
         info.addElement(CmsImportExportManager.N_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionName());
-        info.addElement(CmsImportExportManager.N_DATE).addText(
-            CmsDateUtil.getDateTimeShort(System.currentTimeMillis()));
+        info.addElement(CmsImportExportManager.N_DATE).addText(CmsDateUtil.getDateTimeShort(System.currentTimeMillis()));
         info.addElement(CmsImportExportManager.N_PROJECT).addText(
             getCms().getRequestContext().currentProject().getName());
         info.addElement(CmsImportExportManager.N_VERSION).addText(CmsImportExportManager.EXPORT_VERSION);

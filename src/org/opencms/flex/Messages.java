@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,17 +37,17 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @author Thomas Weckert  
- * @since 5.7.3
+ * @author Thomas Weckert 
+ *   
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_0 = "LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_0";
-    
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_COOKIE_0 = "ERR_ADD_COOKIE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FLEXREQUESTDISPATCHER_CLASSCAST_EXCEPTION_1 = "ERR_FLEXREQUESTDISPATCHER_CLASSCAST_EXCEPTION_1";
 
@@ -166,6 +166,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_FLEXCACHEKEY_PARSE_VALUES_1 = "LOG_FLEXCACHEKEY_PARSE_VALUES_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_0 = "LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_1 = "LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_1";
 
     /** Message constant for key in the resource bundle. */
@@ -242,7 +245,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1 = "LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1";
-    
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.flex.messages";
 

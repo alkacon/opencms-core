@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,8 +56,9 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.4 $
- * @since 5.5.2
+ * @version $Revision: 1.5 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
@@ -88,7 +89,8 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public String getCreateLink(CmsObject cms, String collectorName, String param) throws CmsDataAccessException, CmsException {
+    public String getCreateLink(CmsObject cms, String collectorName, String param)
+    throws CmsDataAccessException, CmsException {
 
         // if action is not set, use default action
         if (collectorName == null) {
@@ -100,21 +102,23 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 // "singleFile"
                 return null;
             case 1:
-                // "allInFolder"
+            // "allInFolder"
             case 2:
-                // "allInFolderDateReleasedDesc"
+            // "allInFolderDateReleasedDesc"
             case 3:
                 // "allInFolderNavPos"
                 return getCreateInFolder(cms, param);
             case 4:
-                // "allInSubTree"
+            // "allInSubTree"
             case 5:
-                // "allInSubTreeDateReleasedDesc"
+            // "allInSubTreeDateReleasedDesc"
             case 6:
                 // "allInSubTreeNavPos"
                 return null;
             default:
-                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
+                    collectorName));
         }
     }
 
@@ -133,28 +137,31 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 // "singleFile"
                 return null;
             case 1:
-                // "allInFolder"
+            // "allInFolder"
             case 2:
-                // "allInFolderDateReleasedDesc"
+            // "allInFolderDateReleasedDesc"
             case 3:
                 // "allInFolderNavPos"
                 return param;
             case 4:
-                // "allInSubTree"
+            // "allInSubTree"
             case 5:
-                // "allInSubTreeDateReleasedDesc"
+            // "allInSubTreeDateReleasedDesc"
             case 6:
                 // "allInSubTreeNavPos"
                 return null;
             default:
-                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
+                    collectorName));
         }
     }
 
     /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public List getResults(CmsObject cms, String collectorName, String param) throws CmsDataAccessException, CmsException {
+    public List getResults(CmsObject cms, String collectorName, String param)
+    throws CmsDataAccessException, CmsException {
 
         // if action is not set use default
         if (collectorName == null) {
@@ -184,7 +191,9 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 // "allInSubTreeNavPos"
                 return allInFolderNavPos(cms, param, true);
             default:
-                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
+                    collectorName));
         }
     }
 
@@ -287,7 +296,9 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
      * @throws CmsIllegalArgumentException if the given param argument is not a link to a single file
      * 
      */
-    protected List getAllInFolder(CmsObject cms, String param, boolean tree) throws CmsException, CmsIllegalArgumentException {
+    protected List getAllInFolder(CmsObject cms, String param, boolean tree)
+    throws CmsException, CmsIllegalArgumentException {
+
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
@@ -318,7 +329,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         // create a list and return it
         ArrayList result = new ArrayList(1);
-        result.add(cms.readFile(param)); 
+        result.add(cms.readFile(param));
         return result;
     }
 }

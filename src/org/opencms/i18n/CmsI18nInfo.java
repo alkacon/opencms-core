@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsI18nInfo.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.i18n;
 
 import java.util.Locale;
@@ -36,16 +37,19 @@ import java.util.Locale;
  * Bundle of i18n setting to be used to setup a new request context.<p>
  *
  * @author Alexander Kandzior 
- * @since 5.3
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsI18nInfo {
-    
+
     /** The locale to use. */
     private String m_encoding;
-    
+
     /** The encoding to use. */
     private Locale m_locale;
-    
+
     /**
      * Generates a new i18n info object.<p>
      * 
@@ -53,26 +57,29 @@ public class CmsI18nInfo {
      * @param encoding the encoding to use
      */
     public CmsI18nInfo(Locale locale, String encoding) {
+
         m_encoding = encoding;
         m_locale = locale;
     }
-    
+
     /**
      * Returns the encoding to use.<p>
      * 
      * @return the encoding to use
      */
     public String getEncoding() {
+
         return m_encoding;
     }
-    
+
     /**
      * Returns the locale to use.<p>
      * 
      * @return the locale to use
      */
     public Locale getLocale() {
+
         return m_locale;
     }
-    
+
 }

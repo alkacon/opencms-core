@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 13:01:42 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,13 +64,11 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $
- * @since 5.1
+ * @version $Revision: 1.18 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXmlDocumentLinkValidatable {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlPage.class);
 
     /** The type id of this resource type. */
     private static final int C_RESOURCE_TYPE_ID = 6;
@@ -78,42 +76,45 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
     /** The name of this resource type. */
     private static final String C_RESOURCE_TYPE_NAME = "xmlpage";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlPage.class);
+
     /** Indicates that the static configuration of the resource type has been frozen. */
     private static boolean m_staticFrozen;
 
     /** The static type id of this resource type. */
     private static int m_staticTypeId;
-    
+
     /**
      * Default constructor, used to initialize member variables.<p>
      */
     public CmsResourceTypeXmlPage() {
-        
+
         super();
         m_typeId = C_RESOURCE_TYPE_ID;
         m_typeName = C_RESOURCE_TYPE_NAME;
-    }  
-    
+    }
+
     /**
      * Returns the static type id of this (default) resource type.<p>
      * 
      * @return the static type id of this (default) resource type
      */
     public static int getStaticTypeId() {
-        
+
         return m_staticTypeId;
     }
-    
+
     /**
      * Returns the static type name of this (default) resource type.<p>
      * 
      * @return the static type name of this (default) resource type
      */
     public static String getStaticTypeName() {
-        
+
         return C_RESOURCE_TYPE_NAME;
     }
-    
+
     /**
      * @see org.opencms.validation.I_CmsXmlDocumentLinkValidatable#findLinks(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
@@ -129,7 +130,9 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
         CmsLink link = null;
 
         try {
-            file = cms.readFile(cms.getRequestContext().removeSiteRoot(resource.getRootPath()), CmsResourceFilter.IGNORE_EXPIRATION);
+            file = cms.readFile(
+                cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
+                CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(org.opencms.db.Messages.get().container(
@@ -170,9 +173,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
             }
         } catch (CmsXmlException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().container(
-                    Messages.ERR_PROCESS_HTML_CONTENT_1,
-                    cms.getSitePath(resource)), e);
+                LOG.error(Messages.get().container(Messages.ERR_PROCESS_HTML_CONTENT_1, cms.getSitePath(resource)), e);
             }
 
             return Collections.EMPTY_LIST;
@@ -196,12 +197,12 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
 
         return CmsXmlPageLoader.C_RESOURCE_LOADER_ID;
     }
-    
+
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String)
      */
     public void initConfiguration(String name, String id) throws CmsConfigurationException {
-        
+
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
             // configuration already frozen
             throw new CmsConfigurationException(Messages.get().container(
@@ -210,7 +211,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
                 getStaticTypeName(),
                 new Integer(getStaticTypeId())));
         }
-        
+
         if (!C_RESOURCE_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
             throw new CmsConfigurationException(Messages.get().container(
@@ -219,10 +220,10 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
                 C_RESOURCE_TYPE_NAME,
                 name));
         }
-        
+
         // freeze the configuration
         m_staticFrozen = true;
-        
+
         super.initConfiguration(C_RESOURCE_TYPE_NAME, id);
         // set static members with values from the configuration        
         m_staticTypeId = m_typeId;
@@ -243,7 +244,12 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
 
         // check if the user has write access and if resource is locked
         // done here so that all the XML operations are not performed if permissions not granted
-        securityManager.checkPermissions(cms.getRequestContext(), resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+        securityManager.checkPermissions(
+            cms.getRequestContext(),
+            resource,
+            CmsPermissionSet.ACCESS_WRITE,
+            true,
+            CmsResourceFilter.ALL);
 
         // empty file content is allowed
         if (resource.getLength() > 0) {
@@ -251,15 +257,15 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
             CmsXmlPage xmlPage = CmsXmlPageFactory.unmarshal(cms, resource, false);
             // validate the xml structure before writing the file         
             // an exception will be thrown if the structure is invalid
-            xmlPage.validateXmlStructure(new CmsXmlEntityResolver(cms));            
+            xmlPage.validateXmlStructure(new CmsXmlEntityResolver(cms));
             // read the content-conversion property
-            String contentConversion = CmsHtmlConverter.getConversionSettings(cms, resource);               
-            xmlPage.setConversion(contentConversion);            
+            String contentConversion = CmsHtmlConverter.getConversionSettings(cms, resource);
+            xmlPage.setConversion(contentConversion);
             // correct the HTML structure 
             resource = xmlPage.correctXmlStructure(cms);
         }
         // xml is valid if no exception occured
         return super.writeFile(cms, securityManager, resource);
     }
-    
+
 }

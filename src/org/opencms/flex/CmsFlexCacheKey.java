@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,10 @@ import org.apache.commons.logging.Log;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.17 $
+ * 
+ * @version $Revision: 1.18 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsFlexCacheKey {
 
@@ -286,7 +289,7 @@ public class CmsFlexCacheKey {
                         if (keyParams.containsKey(o)) {
                             str.append(o);
                             str.append("=");
-                            // TODO: handle multiple occurences of the same parameter value
+                            // TODO: handle multiple occurances of the same parameter value
                             String[] values = (String[])keyParams.get(o);
                             str.append(values[0]);
                             if (i.hasNext()) {
@@ -301,7 +304,7 @@ public class CmsFlexCacheKey {
                         Object o = i.next();
                         str.append(o);
                         str.append("=");
-                        // TODO: handle multiple occurences of the same parameter value
+                        // TODO: handle multiple occurances of the same parameter value
                         String[] values = (String[])keyParams.get(o);
                         str.append(values[0]);
                         if (i.hasNext()) {

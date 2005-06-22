@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2005/06/02 09:36:55 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,6 +101,10 @@ import javax.servlet.jsp.tagext.Tag;
  * and evaluates them as expressions at runtime.<p>
  *
  * @author Shawn Bayern
+ * 
+ * @version $Revision: 1.14 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsJspTagParam extends BodyTagSupport {
 
@@ -136,8 +140,10 @@ public class CmsJspTagParam extends BodyTagSupport {
 
         Tag t = findAncestorWithClass(this, I_CmsJspTagParamParent.class);
         if (t == null) {
-            throw new JspTagException(Messages.get().key(pageContext.getRequest().getLocale(), 
-                Messages.ERR_PARENTLESS_TAG_1, new Object[] {"param"}));
+            throw new JspTagException(Messages.get().key(
+                pageContext.getRequest().getLocale(),
+                Messages.ERR_PARENTLESS_TAG_1,
+                new Object[] {"param"}));
         }
         // take no action for null or empty names
         if (m_name == null || m_name.equals("")) {
@@ -155,8 +161,9 @@ public class CmsJspTagParam extends BodyTagSupport {
             }
         }
         if (m_encode) {
-            parent.addParameter(CmsEncoder.encode(m_name, OpenCms.getSystemInfo().getDefaultEncoding()), CmsEncoder
-                .encode(value, OpenCms.getSystemInfo().getDefaultEncoding()));
+            parent.addParameter(
+                CmsEncoder.encode(m_name, OpenCms.getSystemInfo().getDefaultEncoding()),
+                CmsEncoder.encode(value, OpenCms.getSystemInfo().getDefaultEncoding()));
         } else {
             parent.addParameter(m_name, value);
         }

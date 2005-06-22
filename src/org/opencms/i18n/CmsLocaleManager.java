@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,9 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsLocaleManager implements I_CmsEventListener {
 
@@ -369,7 +371,10 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         String availableNames = null;
         try {
-            availableNames = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES, true).getValue();
+            availableNames = cms.readPropertyObject(
+                resourceName,
+                CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES,
+                true).getValue();
         } catch (CmsException exc) {
             // noop
         }

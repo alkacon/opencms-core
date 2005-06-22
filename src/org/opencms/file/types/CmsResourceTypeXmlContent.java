@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/22 13:01:42 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,9 +54,9 @@ import java.util.TreeMap;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $ 
  * 
- * @since 5.5
+ * @since 6.0.0 
  */
 public class CmsResourceTypeXmlContent extends A_CmsResourceType {
 
@@ -94,26 +94,20 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
             // read the default locale for the new resource
             Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(
                 cms,
-                CmsResource.getParentFolder(resourcename)
-            ).get(0);
+                CmsResource.getParentFolder(resourcename)).get(0);
 
             // create the new content from the content defintion
             CmsXmlContent newContent = CmsXmlContentFactory.createDocument(
-                cms, 
-                locale, 
-                OpenCms.getSystemInfo().getDefaultEncoding(), 
+                cms,
+                locale,
+                OpenCms.getSystemInfo().getDefaultEncoding(),
                 contentDefinition);
             // get the bytes from the created content
             content = newContent.marshal();
         }
-        
+
         // now create the resource using the super class
-        return super.createResource(
-            cms, 
-            securityManager, 
-            resourcename, 
-            content, 
-            properties);
+        return super.createResource(cms, securityManager, resourcename, content, properties);
     }
 
     /**

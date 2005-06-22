@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLabel.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,10 +50,13 @@ import org.apache.commons.logging.Log;
  * 
  * Instead of using the XML based workplace tags one should 
  * consider using standard Java resource bundles to provide language independent 
- * implementations.
+ * implementations.<p>
  *
- * @author  Alexander Kandzior 
- * @version $Revision: 1.14 $
+ * @author  Alexander Kandzior
+ *  
+ * @version $Revision: 1.15 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsJspTagLabel extends BodyTagSupport {
 

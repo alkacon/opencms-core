@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,12 +48,13 @@ import java.util.ResourceBundle;
  * This class is frequently used from JSP templates. Because of that, throwing of 
  * exceptions related to the access of the resource bundle are suppressed
  * so that a template always execute. The class provides an {@link #isInitialized()} method
- * that can be checked to see if the instance was properly initialized.
+ * that can be checked to see if the instance was properly initialized.<p>
  * 
  * @author  Alexander Kandzior 
- * @version $Revision: 1.17 $
  * 
- * @since 5.0 beta 2
+ * @version $Revision: 1.18 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsMessages {
 
@@ -63,14 +64,14 @@ public class CmsMessages {
     /** Prefix / Suffix for unknown keys. */
     public static final String C_UNKNOWN_KEY_EXTENSION = "???";
 
+    /** The resource bundle base name this object was initialized with. */
+    protected String m_baseName;
+
     /** The locale to use for looking up the messages from the bundle. */
     protected Locale m_locale;
 
     /** The resource bundle this message object was initialized with. */
     protected ResourceBundle m_resourceBundle;
-    
-    /** The resource bundle base name this object was initialized with. */
-    protected String m_baseName;
 
     /**
      * Constructor for the messages with an initialized <code>java.util.Locale</code>.
@@ -451,7 +452,7 @@ public class CmsMessages {
             return key(cutKeyName, params);
         }
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */

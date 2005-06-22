@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,6 +86,10 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
+ * @version $Revision: 1.104 $ 
+ * 
+ * @since 6.0.0 
+ * 
  * @see org.opencms.importexport.A_CmsImport
  */
 public class CmsImportVersion2 extends A_CmsImport {
@@ -95,7 +99,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
     /** The version number of this import implementation. */
     private static final int C_IMPORT_VERSION = 2;
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImportVersion2.class);
 
@@ -208,9 +212,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
-                OpenCms.getMemoryMonitor().register(
-                    this.getClass().getName() + ".m_folderStorage",
-                    m_folderStorage);
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_folderStorage", m_folderStorage);
                 OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_pageStorage", m_pageStorage);
                 OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_linkStorage", m_linkStorage);
                 OpenCms.getMemoryMonitor().register(
@@ -424,12 +426,16 @@ public class CmsImportVersion2 extends A_CmsImport {
             if (name != null && !"".equals(name)) {
                 webAppNames.add(name);
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_PATH_2, Integer.toString((i + 1)), name));
-                }   
+                    LOG.info(Messages.get().key(
+                        Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_PATH_2,
+                        Integer.toString((i + 1)),
+                        name));
+                }
             }
         }
-        
-        String key = (webAppNames.size() > 0) ? Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_SUPPORT_ENABLED_0 : Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_SUPPORT_DISABLED_0;
+
+        String key = (webAppNames.size() > 0) ? Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_SUPPORT_ENABLED_0
+        : Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_SUPPORT_DISABLED_0;
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(key));
         }
@@ -513,7 +519,9 @@ public class CmsImportVersion2 extends A_CmsImport {
         // get list of immutable resources
         List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1, Integer.toString(immutableResources.size())));
+            LOG.debug(Messages.get().key(
+                Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1,
+                Integer.toString(immutableResources.size())));
         }
 
         // save the value of the boolean flag whether colliding resources should be overwritten
@@ -539,9 +547,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
                 // get all information for a file-import
                 source = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_SOURCE);
-                destination = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_DESTINATION);
+                destination = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DESTINATION);
 
                 resourceTypeName = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TYPE);
                 if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(resourceTypeName)) {
@@ -559,9 +565,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
 
                 uuid = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_UUIDSTRUCTURE);
-                uuidresource = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_UUIDRESOURCE);
+                uuidresource = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_UUIDRESOURCE);
 
                 if ((timestamp = CmsImport.getChildElementTextValue(
                     currentElement,
@@ -579,7 +583,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ORIGINAL_RESOURCE_NAME_1, destination));
                 }
-                
+
                 String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(resourceTypeName)) {
                     // ensure folders end with a "/"
@@ -587,7 +591,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                         translatedName += "/";
                     }
                 }
-                
+
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_TRANSLATED_RESOURCE_NAME_1, translatedName));
                 }
@@ -599,14 +603,11 @@ public class CmsImportVersion2 extends A_CmsImport {
                 if (resourceNotImmutable && (!excludeList.contains(translatedName))) {
 
                     // print out the information to the report
-                    m_report.print(
-                        Messages.get().container(Messages.RPT_IMPORTING_0),
-                        I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_IMPORTING_0), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         translatedName));
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_DOTS_0));
+                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                     // get all properties
                     properties = readPropertiesFromManifest(
@@ -632,8 +633,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
                         List aceList = new ArrayList();
                         // write all imported access control entries for this file
-                        acentryNodes = currentElement.selectNodes("*/"
-                            + CmsImportExportManager.N_ACCESSCONTROL_ENTRY);
+                        acentryNodes = currentElement.selectNodes("*/" + CmsImportExportManager.N_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
                         for (int j = 0; j < acentryNodes.size(); j++) {
                             currentEntry = (Element)acentryNodes.get(j);
@@ -654,8 +654,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                         }
                         importAccessControlEntries(res, aceList);
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(
-                                Messages.get().container(
+                            LOG.info(Messages.get().container(
                                 Messages.LOG_IMPORTING_4,
                                 new Object[] {
                                     String.valueOf(i + 1),
@@ -666,9 +665,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
                     } else {
                         // resource import failed, since no CmsResource was created
-                        m_report.print(
-                            Messages.get().container(
-                            Messages.RPT_SKIPPING_0), I_CmsReport.C_FORMAT_OK);
+                        m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.C_FORMAT_OK);
                         m_report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             translatedName));
@@ -682,9 +679,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     }
                 } else {
                     // skip the file import, just print out the information to the report
-                    m_report.print(
-                        Messages.get().container(Messages.RPT_SKIPPING_0),
-                        I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.C_FORMAT_NOTE);
                     m_report.println(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         translatedName));
@@ -708,12 +703,13 @@ public class CmsImportVersion2 extends A_CmsImport {
         } catch (Exception e) {
 
             m_report.println(e);
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
-            
+
             throw new CmsImportExportException(message, e);
         } finally {
             if (m_importingChannelData) {
@@ -847,9 +843,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
             if (C_RESOURCE_TYPE_LINK_ID == resourceTypeId) {
                 // store links for later conversion
-                m_report.print(
-                    Messages.get().container(Messages.RPT_STORING_LINK_0),
-                    I_CmsReport.C_FORMAT_NOTE);
+                m_report.print(Messages.get().container(Messages.RPT_STORING_LINK_0), I_CmsReport.C_FORMAT_NOTE);
                 m_linkStorage.put(m_importPath + destination, new String(content));
                 m_linkPropertyStorage.put(m_importPath + destination, properties);
                 res = resource;
@@ -862,16 +856,17 @@ public class CmsImportVersion2 extends A_CmsImport {
                 } catch (CmsLockException e) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_UNABLE_TO_UNLOCK_RESOURCE_1, resName), e);
-                    } 
+                    }
                 }
             }
 
-            m_report.println(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_DOTS_0));
+            m_report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
         } catch (CmsException exc) {
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCE_1, targetName);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCE_1,
+                targetName);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), exc);
             }
@@ -912,18 +907,18 @@ public class CmsImportVersion2 extends A_CmsImport {
     private void mergePageFile(String resourcename) throws CmsXmlException, CmsImportExportException {
 
         try {
-            
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_START_MERGING_1, resourcename));
-            } 
-    
+            }
+
             // in OpenCms versions <5 node names have not been case sensitive. thus, nodes are read both in upper
             // and lower case letters, or have to be tested for equality ignoring upper/lower case...
-    
+
             // get the header file
             CmsFile pagefile = m_cms.readFile(resourcename, CmsResourceFilter.ALL);
             Document contentXml = CmsXmlUtils.unmarshalHelper(pagefile.getContents(), null);
-    
+
             // get the <masterTemplate> node to check the content. this node contains the name of the template file.
             String masterTemplateNodeName = "//masterTemplate";
             Node masterTemplateNode = contentXml.selectSingleNode(masterTemplateNodeName);
@@ -933,14 +928,14 @@ public class CmsImportVersion2 extends A_CmsImport {
             if (masterTemplateNode == null) {
                 masterTemplateNode = contentXml.selectSingleNode(masterTemplateNodeName.toUpperCase());
             }
-    
+
             // there is only one <masterTemplate> allowed
             String mastertemplate = null;
             if (masterTemplateNode != null) {
                 // get the name of the mastertemplate
                 mastertemplate = masterTemplateNode.getText().trim();
             }
-    
+
             // get the <ELEMENTDEF> nodes to check the content.
             // this node contains the information for the body element.
             String elementDefNodeName = "//ELEMENTDEF";
@@ -948,19 +943,19 @@ public class CmsImportVersion2 extends A_CmsImport {
             if (bodyNode == null) {
                 bodyNode = contentXml.selectSingleNode(elementDefNodeName.toLowerCase());
             }
-    
+
             // there is only one <ELEMENTDEF> allowed
             if (bodyNode != null) {
-    
+
                 String bodyclass = null;
                 String bodyname = null;
                 Map bodyparams = null;
-    
+
                 List nodes = ((Element)bodyNode).elements();
                 for (int i = 0, n = nodes.size(); i < n; i++) {
-    
+
                     Node node = (Node)nodes.get(i);
-    
+
                     if ("CLASS".equalsIgnoreCase(node.getName())) {
                         bodyclass = node.getText().trim();
                     } else if ("TEMPLATE".equalsIgnoreCase(node.getName())) {
@@ -976,59 +971,63 @@ public class CmsImportVersion2 extends A_CmsImport {
                         bodyparams.put((paramElement.attribute("name")).getText(), paramElement.getTextTrim());
                     }
                 }
-    
+
                 if (mastertemplate == null || bodyname == null) {
-                    
-                    CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_CANNOT_MERGE_PAGE_FILE_3, resourcename, mastertemplate, bodyname);
+
+                    CmsMessageContainer message = Messages.get().container(
+                        Messages.ERR_IMPORTEXPORT_ERROR_CANNOT_MERGE_PAGE_FILE_3,
+                        resourcename,
+                        mastertemplate,
+                        bodyname);
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(message.key());
                     }
-                    
+
                     throw new CmsImportExportException(message);
                 }
-    
+
                 // lock the resource, so that it can be manipulated
                 m_cms.lockResource(resourcename);
-    
+
                 // get all properties                               
                 List properties = m_cms.readPropertyObjects(resourcename, false);
-    
+
                 // now get the content of the bodyfile and insert it into the control file                   
                 CmsFile bodyfile = m_cms.readFile(bodyname, CmsResourceFilter.IGNORE_EXPIRATION);
-    
+
                 //get the encoding
                 String encoding = CmsProperty.get(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, properties).getValue();
                 if (encoding == null) {
                     encoding = OpenCms.getSystemInfo().getDefaultEncoding();
                 }
-    
+
                 if (m_convertToXmlPage) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_START_CONVERTING_TO_XML_0));
-                    } 
-                    
+                    }
+
                     CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, bodyfile.getContents(), getLocale(
                         resourcename,
                         properties), encoding);
-    
+
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_END_CONVERTING_TO_XML_0));
-                    } 
-    
+                    }
+
                     if (xmlPage != null) {
                         pagefile.setContents(xmlPage.marshal());
-    
+
                         // set the type to xml page
                         pagefile.setType(CmsResourceTypeXmlPage.getStaticTypeId());
                     }
                 }
-    
+
                 // add the template and other required properties
                 CmsProperty newProperty = new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE, mastertemplate, null);
                 // property lists must not contain equal properties
                 properties.remove(newProperty);
                 properties.add(newProperty);
-    
+
                 // if set, add the bodyclass as property
                 if (bodyclass != null && !"".equals(bodyclass)) {
                     newProperty = new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE, mastertemplate, null);
@@ -1046,27 +1045,28 @@ public class CmsImportVersion2 extends A_CmsImport {
                         properties.add(newProperty);
                     }
                 }
-    
+
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_START_IMPORTING_XML_PAGE_0));
-                } 
-    
+                }
+
                 // now import the resource
                 m_cms.importResource(resourcename, pagefile, pagefile.getContents(), properties);
-    
+
                 // finally delete the old body file, it is not needed anymore
                 m_cms.lockResource(bodyname);
                 m_cms.deleteResource(bodyname, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-    
+
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_END_IMPORTING_XML_PAGE_0));
-                } 
-    
-                m_report.println(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
-    
+                }
+
+                m_report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                    I_CmsReport.C_FORMAT_OK);
+
             } else {
-    
+
                 // there are more than one template nodes in this control file
                 // convert the resource into a plain text file
                 // lock the resource, so that it can be manipulated
@@ -1077,32 +1077,32 @@ public class CmsImportVersion2 extends A_CmsImport {
                 m_cms.writeFile(pagefile);
                 // done, unlock the resource                   
                 m_cms.unlockResource(resourcename);
-    
+
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_CANNOT_CONVERT_XML_STRUCTURE_1, resourcename));
-                } 
-    
-                m_report.println(
-                    Messages.get().container(Messages.RPT_NOT_CONVERTED_0),
-                    I_CmsReport.C_FORMAT_OK);
-    
+                }
+
+                m_report.println(Messages.get().container(Messages.RPT_NOT_CONVERTED_0), I_CmsReport.C_FORMAT_OK);
+
             }
-    
+
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_END_MERGING_1, resourcename));
             }
         } catch (CmsXmlException e) {
-            
+
             throw e;
         } catch (CmsException e) {
-            
+
             m_report.println(e);
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_MERGING_PAGE_FILE_1, resourcename);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_MERGING_PAGE_FILE_1,
+                resourcename);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
-            
+
             throw new CmsImportExportException(message, e);
         }
 
@@ -1124,10 +1124,10 @@ public class CmsImportVersion2 extends A_CmsImport {
                 // the template propertydefintion does not exist. So create it.
                 m_cms.createPropertyDefinition(CmsPropertyDefinition.PROPERTY_TEMPLATE);
             }
-            
+
             // copy all propertydefinitions of the old page to the new page
             List definitions = m_cms.readAllPropertyDefinitions();
-    
+
             Iterator j = definitions.iterator();
             while (j.hasNext()) {
                 CmsPropertyDefinition definition = (CmsPropertyDefinition)j.next();
@@ -1139,20 +1139,19 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
             }
         } catch (CmsException e) {
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_COPYING_PROPERTY_DEFINITIONS_0);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_COPYING_PROPERTY_DEFINITIONS_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
-            
+
             throw new CmsImportExportException(message);
         }
 
         // iterate through the list of all page controlfiles found during the import process
         int size = m_pageStorage.size();
-        m_report.println(
-            Messages.get().container(Messages.RPT_MERGE_START_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_MERGE_START_0), I_CmsReport.C_FORMAT_HEADLINE);
         Iterator i = m_pageStorage.iterator();
         int counter = 1;
         while (i.hasNext()) {
@@ -1166,9 +1165,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 org.opencms.report.Messages.RPT_SUCCESSION_2,
                 String.valueOf(counter),
                 String.valueOf(size)), I_CmsReport.C_FORMAT_NOTE);
-            m_report.print(
-                Messages.get().container(Messages.RPT_MERGE_0),
-                I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(Messages.get().container(Messages.RPT_MERGE_0), I_CmsReport.C_FORMAT_NOTE);
             m_report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
                 resname));
@@ -1198,12 +1195,10 @@ public class CmsImportVersion2 extends A_CmsImport {
     private void removeFolders() throws CmsImportExportException {
 
         try {
-            
+
             int size = m_folderStorage.size();
-    
-            m_report.println(
-                Messages.get().container(Messages.RPT_DELFOLDER_START_0),
-                I_CmsReport.C_FORMAT_HEADLINE);
+
+            m_report.println(Messages.get().container(Messages.RPT_DELFOLDER_START_0), I_CmsReport.C_FORMAT_HEADLINE);
             // iterate though all collected folders. Iteration must start at the end of the list,
             // as folders habe to be deleted in the reverse order.
             int counter = 1;
@@ -1212,7 +1207,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 resname = (resname.startsWith("/") ? "" : "/") + resname + (resname.endsWith("/") ? "" : "/");
                 // now check if the folder is really empty. Only delete empty folders
                 List files = m_cms.getFilesInFolder(resname, CmsResourceFilter.IGNORE_EXPIRATION);
-    
+
                 if (files.size() == 0) {
                     List folders = m_cms.getSubFolders(resname, CmsResourceFilter.IGNORE_EXPIRATION);
                     if (folders.size() == 0) {
@@ -1220,9 +1215,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                             org.opencms.report.Messages.RPT_SUCCESSION_2,
                             String.valueOf(counter),
                             String.valueOf(size)), I_CmsReport.C_FORMAT_NOTE);
-                        m_report.print(
-                            Messages.get().container(Messages.RPT_DELFOLDER_0),
-                            I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(Messages.get().container(Messages.RPT_DELFOLDER_0), I_CmsReport.C_FORMAT_NOTE);
                         m_report.print(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             resname), I_CmsReport.C_FORMAT_DEFAULT);
@@ -1235,12 +1228,13 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
             }
         } catch (CmsException e) {
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_REMOVING_FOLDERS_OF_IMPORTED_BODY_FILES_0);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_REMOVING_FOLDERS_OF_IMPORTED_BODY_FILES_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
-            
+
             throw new CmsImportExportException(message, e);
         }
     }

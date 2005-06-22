@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,41 +68,24 @@ import org.dom4j.io.SAXReader;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.23 $ $Date: 2005/06/22 10:38:11 $
- * @since 5.3
+ * 
+ * @version $Revision: 1.24 $ 
+ * 
+ * @since 6.0.0 
+ * 
  * @see OpenCms#getImportExportManager()
  */
 public class CmsImportExportManager {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsImportExportManager.class);
+    /**
+     * The version of the opencms export (appears in the export manifest-file).
+     */
+    public static final String EXPORT_VERSION = "4";
 
-    /** Boolean flag whether imported pages should be converted into XML pages. */
-    private boolean m_convertToXmlPage;
-
-    /** List of property keys that should be removed from imported resources. */
-    private List m_ignoredProperties;
-
-    /** List of immutable resources that should remain unchanged when resources are imported. */
-    private List m_immutableResources;
-
-    /** The initialized import/export handlers. */
-    private List m_importExportHandlers;
-
-    /** Import princial group translations. */
-    private Map m_importGroupTranslations;
-
-    /** Import princial user translations. */
-    private Map m_importUserTranslations;
-
-    /** The configured import versions class names. */
-    private List m_importVersionClasses;
-
-    /** Boolean flag whether colliding resources should be overwritten during the import. */
-    private boolean m_overwriteCollidingResources;
-
-    /** The URL of a 4.x OpenCms app. to import content correct into 5.x OpenCms apps. */
-    private String m_webAppUrl;
+    /** 
+     * The filename of the xml manifest.
+     */
+    public static final String EXPORT_XMLFILENAME = "manifest.xml";
 
     /**
      * A tag in the manifest-file.
@@ -138,11 +121,6 @@ public class CmsImportExportManager {
      * Tag to identify a principal set.
      */
     public static final String N_ACCESSCONTROL_PRINCIPAL = "uuidprincipal";
-
-    /**
-     * A tag in the manifest-file.
-     */
-    public static final String N_TAG_ADDRESS = "address";
 
     /**
      * A tag in the export manifest-file, used as subtag of C_EXPORT_TAG_INFO.
@@ -213,6 +191,11 @@ public class CmsImportExportManager {
      * A tag in the manifest-file.
      */
     public static final String N_FLAGS = "flags";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static final String N_GROUPDATA = "groupdata";
 
     /**
      * A tag in the manifest-file.
@@ -292,6 +275,11 @@ public class CmsImportExportManager {
     /**
      * A tag in the manifest-file.
      */
+    public static final String N_TAG_ADDRESS = "address";
+
+    /**
+     * A tag in the manifest-file.
+     */
     public static final String N_TYPE = "type";
 
     /**
@@ -349,20 +337,35 @@ public class CmsImportExportManager {
      */
     public static final String N_VERSION = "export_version";
 
-    /**
-     * The version of the opencms export (appears in the export manifest-file).
-     */
-    public static final String EXPORT_VERSION = "4";
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsImportExportManager.class);
 
-    /**
-     * A tag in the manifest-file.
-     */
-    public static final String N_GROUPDATA = "groupdata";
+    /** Boolean flag whether imported pages should be converted into XML pages. */
+    private boolean m_convertToXmlPage;
 
-    /** 
-     * The filename of the xml manifest.
-     */
-    public static final String EXPORT_XMLFILENAME = "manifest.xml";
+    /** List of property keys that should be removed from imported resources. */
+    private List m_ignoredProperties;
+
+    /** List of immutable resources that should remain unchanged when resources are imported. */
+    private List m_immutableResources;
+
+    /** The initialized import/export handlers. */
+    private List m_importExportHandlers;
+
+    /** Import princial group translations. */
+    private Map m_importGroupTranslations;
+
+    /** Import princial user translations. */
+    private Map m_importUserTranslations;
+
+    /** The configured import versions class names. */
+    private List m_importVersionClasses;
+
+    /** Boolean flag whether colliding resources should be overwritten during the import. */
+    private boolean m_overwriteCollidingResources;
+
+    /** The URL of a 4.x OpenCms app. to import content correct into 5.x OpenCms apps. */
+    private String m_webAppUrl;
 
     /**
      * Creates a new instance for the import/export manager, will be called by the import/export configuration manager.

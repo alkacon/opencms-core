@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,9 +61,13 @@ import org.apache.commons.logging.Log;
  * <b>Note:</b> On the client side (browser) instead of using corresponding <code>escape</code>
  * and <code>unescape</code> JavaScript functions, better use <code>encodeURIComponent</code> and
  * <code>decodeURIComponent</code> functions wich are work properly with unicode characters.
- * These functions are supported in IE 5.5+ and NS 6+ only.
+ * These functions are supported in IE 5.5+ and NS 6+ only.<p>
  *
  * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.12 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsEncoder {
 

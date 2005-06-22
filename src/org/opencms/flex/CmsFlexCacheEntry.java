@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,8 +70,12 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
+ * 
+ * @version $Revision: 1.26 $ 
+ * 
+ * @since 6.0.0 
+ * 
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.25 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
 
@@ -327,7 +331,8 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * @throws ServletException might be thrown from call to RequestDispatcher.include()
      * @throws IOException might be thrown from call to RequestDispatcher.include() or from Response.sendRedirect()
      */
-    public void service(CmsFlexRequest req, CmsFlexResponse res) throws CmsFlexCacheException, ServletException, IOException {
+    public void service(CmsFlexRequest req, CmsFlexResponse res)
+    throws CmsFlexCacheException, ServletException, IOException {
 
         if (!m_completed) {
             return;
@@ -364,12 +369,14 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
                     try {
                         res.writeToOutputStream((byte[])o, hasNoSubElements);
                     } catch (IOException e) {
-                        
-                        CmsMessageContainer message = Messages.get().container(Messages.LOG_FLEXCACHEKEY_NOT_FOUND_1, getClass().getName());
+
+                        CmsMessageContainer message = Messages.get().container(
+                            Messages.LOG_FLEXCACHEKEY_NOT_FOUND_1,
+                            getClass().getName());
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(message.key());
                         }
-                        
+
                         throw new CmsFlexCacheException(message, e);
                     }
                 }

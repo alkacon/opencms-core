@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,19 +67,24 @@ import org.dom4j.Element;
  * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for 
  * the import version 4.<p>
  * 
- * This import format is used in OpenCms since 5.1.6.
- * @see org.opencms.importexport.A_CmsImport
+ * This import format is used in OpenCms since 5.1.6.<p>
  *
  * @author Michael Emmerich 
  * @author Thomas Weckert  
+ * 
+ * @version $Revision: 1.78 $ 
+ * 
+ * @since 6.0.0 
+ * 
+ * @see org.opencms.importexport.A_CmsImport
  */
 public class CmsImportVersion4 extends A_CmsImport {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsImportVersion4.class);
 
     /** The version number of this import implementation.<p> */
     private static final int C_IMPORT_VERSION = 4;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsImportVersion4.class);
 
     /**
      * Creates a new CmsImportVerion4 object.<p>
@@ -346,8 +351,9 @@ public class CmsImportVersion4 extends A_CmsImport {
             result = m_cms.importResource(destination, resource, content, properties);
 
             if (result != null) {
-                m_report.println(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+                m_report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                    I_CmsReport.C_FORMAT_OK);
             }
         } catch (Exception exc) {
             // an error while importing the file
@@ -371,7 +377,8 @@ public class CmsImportVersion4 extends A_CmsImport {
      * @param propertyValue value of the property to be added to all resources, or null
      * @throws CmsImportExportException if something goes wrong
      */
-    private void readResourcesFromManifest(Vector excludeList, String propertyKey, String propertyValue) throws CmsImportExportException {
+    private void readResourcesFromManifest(Vector excludeList, String propertyKey, String propertyValue)
+    throws CmsImportExportException {
 
         String source = null, destination = null, uuidresource = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
         long datelastmodified = 0, datecreated = 0, datereleased = 0, dateexpired = 0;
@@ -420,9 +427,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 source = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_SOURCE);
                 // <destination>
 
-                destination = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_DESTINATION);
+                destination = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DESTINATION);
 
                 // <type>
                 String typeName = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TYPE);
@@ -462,9 +467,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 }
 
                 // <usercreated>
-                usercreated = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_USERCREATED);
+                usercreated = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_USERCREATED);
                 usercreated = OpenCms.getImportExportManager().translateUser(usercreated);
 
                 // <datereleased>
@@ -504,14 +507,11 @@ public class CmsImportVersion4 extends A_CmsImport {
                 // if the resource is not immutable and not on the exclude list, import it
                 if (resourceNotImmutable) {
                     // print out the information to the report
-                    m_report.print(
-                        Messages.get().container(Messages.RPT_IMPORTING_0),
-                        I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_IMPORTING_0), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         translatedName));
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_DOTS_0));
+                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                     // get all properties
                     properties = readPropertiesFromManifest(
                         currentElement,
@@ -540,8 +540,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                         List aceList = new ArrayList();
 
                         // write all imported access control entries for this file
-                        acentryNodes = currentElement.selectNodes("*/"
-                            + CmsImportExportManager.N_ACCESSCONTROL_ENTRY);
+                        acentryNodes = currentElement.selectNodes("*/" + CmsImportExportManager.N_ACCESSCONTROL_ENTRY);
 
                         // collect all access control entries
                         for (int j = 0; j < acentryNodes.size(); j++) {
@@ -587,7 +586,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                                     LOG.warn(Messages.get().key(
                                         Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1,
                                         translatedName), e);
-                                }   
+                                }
                                 m_report.println(e);
                             }
                         }
@@ -605,9 +604,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                         }
                     } else {
                         // resource import failed, since no CmsResource was created
-                        m_report.print(
-                            Messages.get().container(Messages.RPT_SKIPPING_0),
-                            I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.C_FORMAT_NOTE);
                         m_report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             translatedName));
@@ -624,9 +621,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 } else {
                     // skip the file import, just print out the information to the report
 
-                    m_report.print(
-                        Messages.get().container(Messages.RPT_SKIPPING_0),
-                        I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.C_FORMAT_NOTE);
                     m_report.println(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         translatedName));
@@ -641,14 +636,15 @@ public class CmsImportVersion4 extends A_CmsImport {
                 }
             }
         } catch (Exception e) {
-            
+
             m_report.println(e);
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
-            
+
             throw new CmsImportExportException(message, e);
         } finally {
             if (m_importingChannelData) {

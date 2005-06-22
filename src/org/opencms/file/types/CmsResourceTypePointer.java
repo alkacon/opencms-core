@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypePointer.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 13:01:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,9 @@ import org.opencms.main.OpenCms;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 
@@ -93,13 +95,13 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
 
         return CmsPointerLoader.C_RESOURCE_LOADER_ID;
     }
-    
+
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String)
      */
     public void initConfiguration(String name, String id) throws CmsConfigurationException {
-        
-        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) &&  m_staticFrozen) {
+
+        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
             // configuration already frozen
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_CONFIG_FROZEN_3,
@@ -107,7 +109,7 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
                 getStaticTypeName(),
                 new Integer(getStaticTypeId())));
         }
-        
+
         if (!C_RESOURCE_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
             throw new CmsConfigurationException(Messages.get().container(
@@ -116,10 +118,10 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
                 C_RESOURCE_TYPE_NAME,
                 name));
         }
-        
+
         // freeze the configuration
         m_staticFrozen = true;
-        
+
         super.initConfiguration(C_RESOURCE_TYPE_NAME, id);
         // set static members with values from the configuration        
         m_staticTypeId = m_typeId;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheConfiguration.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,12 +34,15 @@ package org.opencms.flex;
 /**
  * Flex Cache configuration class.<p>
  * 
- * 
- * 
  * @author Armen Markarian 
- * @since 5.5.4
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsFlexCacheConfiguration {
+
+    private int m_avgCacheBytes;
 
     /** Indicates if the cache is enabled or not. */
     private boolean m_cacheEnabled;
@@ -60,8 +63,6 @@ public class CmsFlexCacheConfiguration {
     private int m_maxEntryBytes;
 
     private int m_maxKeys;
-
-    private int m_avgCacheBytes;
 
     /**
      * Empty public constructor for the digester.

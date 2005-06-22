@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,22 +61,25 @@ import javax.servlet.jsp.PageContext;
  * for the <code>org.opencms.jsp</code> pacakge.<p>
  * 
  * @author Jan Baudisch 
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.18 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COLLECTOR_NOT_FOUND_1 = "ERR_COLLECTOR_NOT_FOUND_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_CMS_CONTROLLER_1 = "ERR_MISSING_CMS_CONTROLLER_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PARENTLESS_TAG_1 = "ERR_PARENTLESS_TAG_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROCESS_TAG_1 = "ERR_PROCESS_TAG_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RUNTIME_1 = "ERR_RUNTIME_1";
 
@@ -150,10 +153,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_LOGIN_FAILED_NO_USER_3 = "LOG_LOGIN_FAILED_NO_USER_3";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_LOGIN_FAILED_WITH_MESSAGE_4 = "LOG_LOGIN_FAILED_WITH_MESSAGE_4";
-    
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_LOGIN_FAILED_TEMP_DISABLED_5 = "LOG_LOGIN_FAILED_TEMP_DISABLED_5";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_LOGIN_FAILED_WITH_MESSAGE_4 = "LOG_LOGIN_FAILED_WITH_MESSAGE_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LOGIN_SUCCESSFUL_3 = "LOG_LOGIN_SUCCESSFUL_3";

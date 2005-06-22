@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2005/06/22 10:38:17 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/22 13:01:41 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,11 +56,14 @@ import org.apache.commons.logging.Log;
 /**
  * Wrapper class for a HttpServletRequest.<p>
  *
- * This class wrapps the standard HttpServletRequest so that it's output can be delivered to
- * the CmsFlexCache.
+ * This class wraps the standard HttpServletRequest so that it's output can be delivered to
+ * the CmsFlexCache.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.31 $
+ * 
+ * @version $Revision: 1.32 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
 
