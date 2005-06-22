@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/22 14:33:36 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspWriter;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.7.3
  */
 public abstract class A_CmsListDialog extends CmsDialog {
@@ -189,11 +189,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
      * @param sortedColId the a priory sorted column
+     * @param sortOrder the order of the sorted column
      * @param searchableColId the column to search into
      */
     protected A_CmsListDialog(
@@ -201,7 +201,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         String listId,
         CmsMessageContainer listName,
         String sortedColId,
-        String searchableColId) {
+        CmsListOrderEnum sortOrder, String searchableColId) {
 
         super(jsp);
         m_listId = listId;
@@ -218,6 +218,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
             getList().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
             // sort the list
             getList().setSortedColumn(sortedColId, getLocale());
+            if (sortOrder!=null && sortOrder==CmsListOrderEnum.ORDER_DESCENDING) {
+                getList().setSortedColumn(sortedColId, getLocale());
+            }
             // save the current state of the list
             listSave();
         }

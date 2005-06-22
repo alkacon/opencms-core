@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 14:33:36 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.CmsListOrderEnum;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Generalized user groups view.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
@@ -99,9 +100,15 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         CmsMessageContainer listName,
         boolean searchable) {
 
-        super(jsp, listId, listName, LIST_COLUMN_LOGIN, searchable ? LIST_COLUMN_LOGIN : null);
+        super(
+            jsp,
+            listId,
+            listName,
+            LIST_COLUMN_LOGIN,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            searchable ? LIST_COLUMN_LOGIN : null);
     }
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
@@ -273,7 +280,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // noop
-    }    
+    }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()

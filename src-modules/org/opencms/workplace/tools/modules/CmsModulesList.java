@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 14:33:36 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.CmsListSearchAction;
 
 import java.io.IOException;
@@ -66,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * Main module management view.<p>
  * 
  * @author Michael Emmerich  
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
 public class CmsModulesList extends A_CmsListDialog {
@@ -138,7 +139,13 @@ public class CmsModulesList extends A_CmsListDialog {
      */
     public CmsModulesList(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_MODULES_LIST_NAME_0), LIST_COLUMN_NAME, null);
+        super(
+            jsp,
+            LIST_ID,
+            Messages.get().container(Messages.GUI_MODULES_LIST_NAME_0),
+            LIST_COLUMN_NAME,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            null);
     }
 
     /**

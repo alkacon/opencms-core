@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectHistoryList.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 14:33:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.CmsListSearchAction;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * Main project management view.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsProjectHistoryList extends A_CmsListDialog {
@@ -112,6 +113,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
             LIST_ID,
             Messages.get().container(Messages.GUI_PROJECTHISTORY_LIST_NAME_0),
             LIST_COLUMN_PUBLISHED_DATE,
+            CmsListOrderEnum.ORDER_DESCENDING,
             null);
     }
 

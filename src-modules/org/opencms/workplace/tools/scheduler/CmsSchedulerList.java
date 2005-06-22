@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/22 14:33:36 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.CmsListOrderEnum;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * @author Andreas Zahner  
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.7.3
  */
 public class CmsSchedulerList extends A_CmsListDialog {
@@ -153,6 +154,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             LIST_ID,
             new CmsMessageContainer(Messages.get(), Messages.GUI_JOBS_LIST_NAME_0),
             LIST_COLUMN_NAME,
+            CmsListOrderEnum.ORDER_ASCENDING,
             LIST_COLUMN_NAME);
     }
 

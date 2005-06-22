@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsList.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 14:33:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.CmsListOrderEnum;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsGroupsList extends A_CmsListDialog {
@@ -139,6 +140,7 @@ public class CmsGroupsList extends A_CmsListDialog {
             LIST_ID,
             Messages.get().container(Messages.GUI_GROUPS_LIST_NAME_0),
             LIST_COLUMN_NAME,
+            CmsListOrderEnum.ORDER_ASCENDING,
             LIST_COLUMN_NAME);
     }
 

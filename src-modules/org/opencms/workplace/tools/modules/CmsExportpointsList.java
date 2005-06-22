@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsList.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 14:33:36 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.CmsListOrderEnum;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * Module exportpoint view.<p>
  * 
  * @author Michael Emmerich  
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public class CmsExportpointsList extends A_CmsListDialog {
@@ -118,7 +119,13 @@ public class CmsExportpointsList extends A_CmsListDialog {
      */
     public CmsExportpointsList(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_NAME_0), LIST_COLUMN_URI, null);
+        super(
+            jsp,
+            LIST_ID,
+            Messages.get().container(Messages.GUI_EXPORTPOINTS_LIST_NAME_0),
+            LIST_COLUMN_URI,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            null);
     }
 
     /**

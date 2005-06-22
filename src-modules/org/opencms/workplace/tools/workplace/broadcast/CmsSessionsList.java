@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 14:33:36 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemActionIconComparator;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.CmsListTimeIntervalFormatter;
 
 import java.io.IOException;
@@ -64,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * Session list for broadcasting messages.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.7.3
  */
 public class CmsSessionsList extends A_CmsListDialog {
@@ -135,6 +136,7 @@ public class CmsSessionsList extends A_CmsListDialog {
             LIST_ID,
             Messages.get().container(Messages.GUI_SESSIONS_LIST_NAME_0),
             LIST_COLUMN_USER,
+            CmsListOrderEnum.ORDER_ASCENDING,
             LIST_COLUMN_USER);
     }
 
@@ -186,7 +188,8 @@ public class CmsSessionsList extends A_CmsListDialog {
         if (getParamListAction().equals(LIST_DEFACTION_EMAIL)) {
             // forward to the edit user screen
             getToolManager().jspForwardTool(this, "/workplace/broadcast/email", params);
-        } else if (getParamListAction().equals(LIST_ACTION_MESSAGE) || getParamListAction().equals(LIST_DEFACTION_MESSAGE)) {
+        } else if (getParamListAction().equals(LIST_ACTION_MESSAGE)
+            || getParamListAction().equals(LIST_DEFACTION_MESSAGE)) {
             getToolManager().jspForwardTool(this, "/workplace/broadcast/message", params);
         } else if (getParamListAction().equals(LIST_ACTION_PENDING)) {
             // noop
