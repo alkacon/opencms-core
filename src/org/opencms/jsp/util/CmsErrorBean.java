@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsErrorBean.java,v $
- * Date   : $Date: 2005/06/21 15:02:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 07:20:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Properties;
  * Class to display the error dialog.<p>
  *
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsErrorBean {
 
@@ -70,6 +70,9 @@ public class CmsErrorBean {
     
     /** The html code for the buttons. */
     private String m_paramAction;
+    
+    /** The optional error message. */
+    private String m_errorMessage;
     
     /** Name of the property file containing HTML fragments for setup wizard and error dialog.<p> */
     public static final String ERRORPAGE = "org/opencms/jsp/util/errorpage.properties";
@@ -152,15 +155,22 @@ public class CmsErrorBean {
     public String getErrorMessage() {
 
         StringBuffer result = new StringBuffer(512);
+        
+        String reason = Messages.get().key(m_locale, Messages.GUI_REASON_0, new Object[] {});
+        
+        if (CmsStringUtil.isNotEmpty(m_errorMessage)) {
+            result.append(m_errorMessage);
+            result.append("\n\n").append(reason).append(": ");
+        }
+
         // if a localized message is already set as a parameter, append it.
         result.append(getMessage(m_throwable));
         // recursively append all error reasons to the message
         for (Throwable cause = m_throwable.getCause(); cause != null; cause = cause.getCause()) {
-            result.append("\n\n").append(Messages.get().key(m_locale, 
-                Messages.GUI_REASON_0, new Object[] {})).append(": ");
+            result.append("\n\n").append(reason).append(": ");
             result.append(getMessage(cause));
         }
-        return CmsStringUtil.escapeHtml(result.toString());
+        return result.toString();
     }
 
     /** 
@@ -217,5 +227,14 @@ public class CmsErrorBean {
     public void setParamAction(String paramAction) {
 
         m_paramAction = paramAction;
+    }
+    /**
+     * Sets the error message which can be displayed if no exception is there.<p>
+     *
+     * @param errorMessage the error message to set
+     */
+    public void setErrorMessage(String errorMessage) {
+
+        m_errorMessage = errorMessage;
     }
 }
