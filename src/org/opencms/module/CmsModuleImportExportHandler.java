@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/06/22 14:19:40 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/22 14:45:01 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -287,7 +287,21 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         CmsProject previousProject = cms.getRequestContext().currentProject();
         try {
+            
+            importFile = importFile.replace('\\', '/');
+            String moduleZipName = importFile.substring(importFile.lastIndexOf('/') + 1);
+            String modulePackageName;
 
+            if (moduleZipName.toLowerCase().endsWith(".zip")) {
+                modulePackageName = moduleZipName.substring(0, moduleZipName.lastIndexOf('.'));
+                int pos = modulePackageName.lastIndexOf('_');
+                if (pos > 0) {
+                    modulePackageName = modulePackageName.substring(0, pos);
+                }
+            } else {
+                modulePackageName = moduleZipName;
+            }
+            
             CmsProject importProject = null;
 
             try {
@@ -304,7 +318,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                         Messages.get().key(
                             cms.getRequestContext().getLocale(),
                             Messages.GUI_PROJECT_NAME_IMPORT_MODULE_1,
-                            new Object[] {getModuleName()}),
+                            new Object[] {modulePackageName}),
                         OpenCms.getDefaultUsers().getGroupAdministrators(),
                         OpenCms.getDefaultUsers().getGroupAdministrators(),
                         I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
@@ -316,20 +330,6 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                 cms.copyResourceToProject("/");
             } finally {
                 cms.getRequestContext().restoreSiteRoot();
-            }
-
-            importFile = importFile.replace('\\', '/');
-            String moduleZipName = importFile.substring(importFile.lastIndexOf('/') + 1);
-            String modulePackageName;
-
-            if (moduleZipName.toLowerCase().endsWith(".zip")) {
-                modulePackageName = moduleZipName.substring(0, moduleZipName.lastIndexOf('.'));
-                int pos = modulePackageName.lastIndexOf('_');
-                if (pos > 0) {
-                    modulePackageName = modulePackageName.substring(0, pos);
-                }
-            } else {
-                modulePackageName = moduleZipName;
             }
 
             report.print(Messages.get().container(Messages.RPT_IMPORT_MODULE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
