@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:26:03 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,16 +33,17 @@ package org.opencms.db.mysql;
 
 import org.opencms.db.generic.CmsSqlManager;
 
-
 /**
  * MySQL implementation of the workflow driver methods.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2005/02/17 12:43:50 $
- * @since 5.1
+ * @author Thomas Weckert 
+ * @author Michael Emmerich 
+ * 
+ * @version $Revision: 1.15 $
+ * 
+ * @since 6.0.0 
  */
-public class CmsWorkflowDriver extends org.opencms.db.generic.CmsWorkflowDriver {   
+public class CmsWorkflowDriver extends org.opencms.db.generic.CmsWorkflowDriver {
 
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#initSqlManager(String)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/18 12:48:14 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/06/22 10:26:04 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,26 +61,76 @@ import org.apache.commons.logging.Log;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.47 $ $Date: 2005/05/18 12:48:14 $
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @since 5.1
+ * @author Thomas Weckert  
+ * @author Carsten Weinholz 
+ * 
+ * @version $Revision: 1.48 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsUserDriver.class); 
-    
+    private static final Log LOG = CmsLog.getLog(CmsUserDriver.class);
+
+    /**
+     * Generates an Output stream that writes to a blob, also truncating the existing blob if required.<p>
+     * 
+     * Apparently Oracle requires some non-standard handling here.<p>
+     * 
+     * @param res the result set where the blob is located in 
+     * @param name the name of the database column where the blob is located
+     * @return an Output stream from a blob
+     * @throws SQLException if something goes wring
+     */
+    public static OutputStream getOutputStreamFromBlob(ResultSet res, String name) throws SQLException {
+
+        // TODO: check/find a solution for Oracle 8/9/10
+        int todo = 0;
+        // TODO: perform blob check only once and store Oracle version in a static privae member 
+        // TODO: best do this during system startup / db init phase once
+
+        Blob blob = res.getBlob(name);
+        try {
+            // jdbc standard
+            blob.truncate(0);
+            return blob.setBinaryStream(0L);
+        } catch (SQLException e) {
+            // oracle 9   
+            ((oracle.sql.BLOB)blob).trim(0);
+            return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
+        }
+
+        // this is the code for Oracle 10 (doesn't work with Oracle 9)                
+        //((oracle.sql.BLOB)blob).truncate(0);
+        //return blob.setBinaryStream(0L);
+
+        // this is the code for Oracle 9 (doesn't work with Oracle 8)                
+        //((oracle.sql.BLOB)blob).trim(0);
+        //return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
+    }
+
     /**
      * @see org.opencms.db.I_CmsUserDriver#createUser(org.opencms.db.CmsDbContext, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
      */
-    public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type) 
-    throws CmsDataAccessException, CmsPasswordEncryptionException {
+    public CmsUser createUser(
+        CmsDbContext dbc,
+        String name,
+        String password,
+        String description,
+        String firstname,
+        String lastname,
+        String email,
+        long lastlogin,
+        int flags,
+        Map additionalInfos,
+        String address,
+        int type) throws CmsDataAccessException, CmsPasswordEncryptionException {
 
         CmsUUID id = new CmsUUID();
         PreparedStatement stmt = null;
         Connection conn = null;
-    
+
         if (existsUser(dbc, name, type, null)) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
             if (LOG.isErrorEnabled()) {
@@ -88,10 +138,10 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             }
             throw new CmsDbEntryAlreadyExistsException(message);
         }
-        
+
         try {
             conn = m_sqlManager.getConnection(dbc);
-            
+
             // write data to database
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_ADD");
             stmt.setString(1, id.toString());
@@ -110,10 +160,11 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt = null;
 
             internalWriteUserInfo(dbc, id, additionalInfos, null);
-             
+
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -124,11 +175,25 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int, java.lang.Object)
      */
-    public CmsUser importUser(CmsDbContext dbc, CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type, Object reservedParam) throws CmsDataAccessException {
+    public CmsUser importUser(
+        CmsDbContext dbc,
+        CmsUUID id,
+        String name,
+        String password,
+        String description,
+        String firstname,
+        String lastname,
+        String email,
+        long lastlogin,
+        int flags,
+        Map additionalInfos,
+        String address,
+        int type,
+        Object reservedParam) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
-     
+
         if (existsUser(dbc, name, type, reservedParam)) {
             CmsMessageContainer message = Messages.get().container(Messages.ERR_USER_WITH_NAME_ALREADY_EXISTS_1, name);
             if (LOG.isErrorEnabled()) {
@@ -136,14 +201,14 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             }
             throw new CmsDbEntryAlreadyExistsException(message);
         }
-        
+
         try {
             if (reservedParam == null) {
                 // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
                 conn = m_sqlManager.getConnection(dbc);
             } else {
                 // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(dbc, ((Integer) reservedParam).intValue());
+                conn = m_sqlManager.getConnection(dbc, ((Integer)reservedParam).intValue());
             }
 
             // write data to database
@@ -162,12 +227,13 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.executeUpdate();
             stmt.close();
             stmt = null;
-            
+
             internalWriteUserInfo(dbc, id, additionalInfos, reservedParam);
-                        
+
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -189,12 +255,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
         PreparedStatement stmt = null;
         Connection conn = null;
-        
+
         try {
 
             // get connection
             conn = m_sqlManager.getConnection(dbc);
-            
+
             // write data to database
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_WRITE");
             stmt.setString(1, m_sqlManager.validateEmpty(user.getDescription()));
@@ -209,17 +275,18 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.executeUpdate();
             stmt.close();
             stmt = null;
-            
+
             internalWriteUserInfo(dbc, user.getId(), user.getAdditionalInfo(), null);
-            
+
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
     }
-    
+
     /**
      * Writes the user info as blob.<p>
      * 
@@ -230,37 +297,38 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      * 
      * @throws CmsException if something goes wrong
      */
-    private void internalWriteUserInfo(CmsDbContext dbc, CmsUUID userId, Map additionalInfo, Object reservedParam) throws CmsDataAccessException {
+    private void internalWriteUserInfo(CmsDbContext dbc, CmsUUID userId, Map additionalInfo, Object reservedParam)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         PreparedStatement commit = null;
         PreparedStatement rollback = null;
         ResultSet res = null;
         Connection conn = null;
-            
+
         boolean wasInTransaction = false;
-        
+
         try {
 
             // serialize the user info
             byte[] value = internalSerializeAdditionalUserInfo(additionalInfo);
-            
+
             // get connection
             if (reservedParam == null) {
                 // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
                 conn = m_sqlManager.getConnection(dbc);
             } else {
                 // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(dbc, ((Integer) reservedParam).intValue());
+                conn = m_sqlManager.getConnection(dbc, ((Integer)reservedParam).intValue());
             }
 
             wasInTransaction = !conn.getAutoCommit();
             if (!wasInTransaction) {
                 conn.setAutoCommit(false);
             }
-                        
+
             // update user_info in this special way because of using blob
-            if (conn.getMetaData().getDriverMajorVersion()<9) {
+            if (conn.getMetaData().getDriverMajorVersion() < 9) {
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE8_USERS_UPDATEINFO");
             } else {
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_UPDATEINFO");
@@ -268,35 +336,35 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(1, userId.toString());
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
-                throw new CmsDbEntryNotFoundException(
-                    Messages.get().container(Messages.ERR_NO_USER_WITH_ID_1, userId));
+                throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_NO_USER_WITH_ID_1, userId));
             }
-            
+
             // write serialized user info 
             OutputStream output = getOutputStreamFromBlob(res, "USER_INFO");
             output.write(value);
             output.close();
             value = null;
-                         
+
             if (!wasInTransaction) {
                 commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
                 commit.execute();
-                m_sqlManager.closeAll(dbc, null, commit, null);      
+                m_sqlManager.closeAll(dbc, null, commit, null);
             }
-            
-            m_sqlManager.closeAll(dbc, null, stmt, res);      
 
-            commit = null;              
+            m_sqlManager.closeAll(dbc, null, stmt, res);
+
+            commit = null;
             stmt = null;
             res = null;
-                          
+
             if (!wasInTransaction) {
                 conn.setAutoCommit(true);
             }
-            
+
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, userId), e);
         } finally {
@@ -306,16 +374,16 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                     res.close();
                 } catch (SQLException exc) {
                     // ignore
-                }                
-            } 
+                }
+            }
             if (commit != null) {
                 try {
                     commit.close();
                 } catch (SQLException exc) {
                     // ignore
                 }
-            } 
-            
+            }
+
             if (!wasInTransaction) {
                 if (stmt != null) {
                     try {
@@ -341,42 +409,5 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                 }
             }
         }
-    }    
-    
-    /**
-     * Generates an Output stream that writes to a blob, also truncating the existing blob if required.<p>
-     * 
-     * Apparently Oracle requires some non-standard handling here.<p>
-     * 
-     * @param res the result set where the blob is located in 
-     * @param name the name of the database column where the blob is located
-     * @return an Output stream from a blob
-     * @throws SQLException if something goes wring
-     */
-    public static OutputStream getOutputStreamFromBlob(ResultSet res, String name) throws SQLException {
-        
-        // TODO: check/find a solution for Oracle 8/9/10
-        int todo = 0;
-        // TODO: perform blob check only once and store Oracle version in a static privae member 
-        // TODO: best do this during system startup / db init phase once
-        
-        Blob blob = res.getBlob(name);
-        try {
-            // jdbc standard
-            blob.truncate(0);
-            return blob.setBinaryStream(0L);
-        } catch (SQLException e) {
-            // oracle 9   
-            ((oracle.sql.BLOB)blob).trim(0);
-            return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
-        }
-
-        // this is the code for Oracle 10 (doesn't work with Oracle 9)                
-        //((oracle.sql.BLOB)blob).truncate(0);
-        //return blob.setBinaryStream(0L);
-        
-        // this is the code for Oracle 9 (doesn't work with Oracle 8)                
-        //((oracle.sql.BLOB)blob).trim(0);
-        //return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsSqlManager.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 10:26:04 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,11 @@ import java.sql.SQLException;
 /**
  * Oracle implementation of the SQL manager.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2005/02/17 12:43:47 $ 
- * @since 5.1
+ * @author Thomas Weckert  
+ * 
+ * @version $Revision: 1.18 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
 

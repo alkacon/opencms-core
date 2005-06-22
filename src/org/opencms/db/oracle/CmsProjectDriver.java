@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/22 10:26:04 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,13 +41,15 @@ import java.io.Serializable;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.35 $ $Date: 2005/02/17 12:43:47 $
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @since 5.1
+ * @author Thomas Weckert  
+ * @author Carsten Weinholz 
+ * 
+ * @version $Revision: 1.36 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
-    
+
     /**
      * @see org.opencms.db.I_CmsProjectDriver#initSqlManager(String)
      */
@@ -63,7 +65,8 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
      * @return byte[] the byte array with object data
      * @throws IOException if something goes wrong
      */
-    protected final byte[] internalSerializeObject (Serializable object) throws IOException {
+    protected final byte[] internalSerializeObject(Serializable object) throws IOException {
+
         // this method is final to allow the java compiler to inline this code!
 
         // serialize the object

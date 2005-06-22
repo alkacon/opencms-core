@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/18 12:48:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:26:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,29 +50,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * PostgreSql implementation of the backup driver methods.<p>
  * 
- * @author Antonio Core (antonio@starsolutions.it)
- * @version $Revision: 1.10 $ $Date: 2005/05/18 12:48:14 $
- * @since 6.0
+ * @author Antonio Core 
+ * 
+ * @version $Revision: 1.11 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#initSqlManager(String)
-     */
-    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
-        
-        return CmsSqlManager.getInstance(classname);
-    }
-
-    
-    /**
      * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(org.opencms.db.CmsDbContext, java.util.List, int)
      */
     public void deleteBackups(CmsDbContext dbc, List existingBackups, int maxVersions) throws CmsDataAccessException {
+
         PreparedStatement stmt1 = null;
         PreparedStatement stmt2 = null;
         PreparedStatement stmt3 = null;
@@ -119,7 +112,8 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
 
         } catch (Exception e) {
             throw new CmsDbException(Messages.get().container(
-                Messages.ERR_DELETE_BACKUP_VERSIONS_1, currentResource.getRootPath()), e);
+                Messages.ERR_DELETE_BACKUP_VERSIONS_1,
+                currentResource.getRootPath()), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt1, null);
             m_sqlManager.closeAll(dbc, conn, stmt2, null);
@@ -128,12 +122,19 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         }
     }
 
-    
-    
+    /**
+     * @see org.opencms.db.I_CmsBackupDriver#initSqlManager(String)
+     */
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
+
+        return CmsSqlManager.getInstance(classname);
+    }
+
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects(org.opencms.db.CmsDbContext)
      */
     public List readBackupProjects(CmsDbContext dbc) throws CmsDataAccessException {
+
         List projects = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -146,37 +147,36 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {
-                List resources = m_driverManager.getBackupDriver().readBackupProjectResources(dbc, res.getInt("PUBLISH_TAG"));
-                projects.add(
-                    new CmsBackupProject(
-                        res.getInt("PUBLISH_TAG"),
-                        res.getInt("PROJECT_ID"),
-                        res.getString("PROJECT_NAME"),
-                        res.getString("PROJECT_DESCRIPTION"),
-                        res.getInt("TASK_ID"),
-                        new CmsUUID(res.getString("USER_ID")),
-                        new CmsUUID(res.getString("GROUP_ID")),
-                        new CmsUUID(res.getString("MANAGERGROUP_ID")),
-                        res.getLong("DATE_CREATED"),
-                        res.getInt("PROJECT_TYPE"),
-                        CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
-                        new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
-                        res.getString("PROJECT_PUBLISHED_BY_NAME"),
-                        res.getString("USER_NAME"),
-                        res.getString("GROUP_NAME"),
-                        res.getString("MANAGERGROUP_NAME"),
-                        resources));
+                List resources = m_driverManager.getBackupDriver().readBackupProjectResources(
+                    dbc,
+                    res.getInt("PUBLISH_TAG"));
+                projects.add(new CmsBackupProject(
+                    res.getInt("PUBLISH_TAG"),
+                    res.getInt("PROJECT_ID"),
+                    res.getString("PROJECT_NAME"),
+                    res.getString("PROJECT_DESCRIPTION"),
+                    res.getInt("TASK_ID"),
+                    new CmsUUID(res.getString("USER_ID")),
+                    new CmsUUID(res.getString("GROUP_ID")),
+                    new CmsUUID(res.getString("MANAGERGROUP_ID")),
+                    res.getLong("DATE_CREATED"),
+                    res.getInt("PROJECT_TYPE"),
+                    CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
+                    new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
+                    res.getString("PROJECT_PUBLISHED_BY_NAME"),
+                    res.getString("USER_NAME"),
+                    res.getString("GROUP_NAME"),
+                    res.getString("MANAGERGROUP_NAME"),
+                    resources));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return (projects);
     }
-    
-    
 
-    
 }

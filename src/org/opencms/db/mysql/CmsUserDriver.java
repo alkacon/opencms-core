@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/18 12:48:15 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/22 10:26:03 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,26 +53,38 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
-
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.29 $ $Date: 2005/05/18 12:48:15 $
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @since 5.1
+ * @author Thomas Weckert 
+ * @author Carsten Weinholz 
+ * @author Michael Emmerich 
+ * 
+ * @version $Revision: 1.30 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(org.opencms.db.mysql.CmsUserDriver.class); 
-    
+    private static final Log LOG = CmsLog.getLog(org.opencms.db.mysql.CmsUserDriver.class);
+
     /**
      * @see org.opencms.db.I_CmsUserDriver#createUser(org.opencms.db.CmsDbContext, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
      */
-    public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Map additionalInfos, String address, int type) 
-    throws CmsDataAccessException, CmsPasswordEncryptionException {
+    public CmsUser createUser(
+        CmsDbContext dbc,
+        String name,
+        String password,
+        String description,
+        String firstname,
+        String lastname,
+        String email,
+        long lastlogin,
+        int flags,
+        Map additionalInfos,
+        String address,
+        int type) throws CmsDataAccessException, CmsPasswordEncryptionException {
 
         CmsUUID id = new CmsUUID();
         PreparedStatement stmt = null;
@@ -85,8 +97,8 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             }
             throw new CmsDbEntryAlreadyExistsException(message);
         }
-        
-        try {           
+
+        try {
             // user data is project independent- use a "dummy" project ID to receive
             // a JDBC connection from the offline connection pool
             conn = m_sqlManager.getConnection(dbc);
@@ -108,7 +120,8 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, name), e);
         } finally {
@@ -130,7 +143,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser)
      */
     public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException {
-        
+
         PreparedStatement stmt = null;
         Connection conn = null;
 
@@ -151,9 +164,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, user.getName()), e);
+            throw new CmsDbIoException(
+                Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, user.getName()),
+                e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }

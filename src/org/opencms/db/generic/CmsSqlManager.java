@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2005/06/22 10:26:04 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,9 +56,11 @@ import org.apache.commons.logging.Log;
 /**
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.58 $ $Date: 2005/06/13 10:00:02 $
- * @since 5.1
+ * @author Thomas Weckert 
+ * 
+ * @version $Revision: 1.59 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
 

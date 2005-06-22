@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/02 07:12:14 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/22 10:26:04 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,15 +58,16 @@ import org.apache.commons.logging.Log;
 /**
  * PostgreSql implementation of the user driver methods.<p>
  * 
- * @author Antonio Core (antonio@starsolutions.it)
+ * @author Antonio Core 
  * 
- * @version $Revision: 1.12 $
- * @since 6.0
+ * @version $Revision: 1.13 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
-    
+
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsUserDriver.class); 
+    private static final Log LOG = CmsLog.getLog(CmsUserDriver.class);
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#createGroup(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, int, java.lang.String, java.lang.Object)
@@ -86,7 +87,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         PreparedStatement stmt = null;
 
         if (existsGroup(dbc, groupName, reservedParam)) {
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_GROUP_WITH_NAME_ALREADY_EXISTS_1, groupName);
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_GROUP_WITH_NAME_ALREADY_EXISTS_1,
+                groupName);
             if (LOG.isErrorEnabled()) {
                 LOG.error(message.key());
             }
@@ -120,7 +123,8 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             group = new CmsGroup(groupId, parentId, groupName, description, flags);
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -179,7 +183,8 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, name), e);
         } finally {
@@ -245,7 +250,8 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, name), e);
         } finally {
@@ -285,13 +291,15 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
             } catch (SQLException e) {
                 throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                    org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                    org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
             } finally {
                 m_sqlManager.closeAll(dbc, conn, stmt, null);
             }
         } else {
             throw new CmsDbEntryNotFoundException(org.opencms.db.Messages.get().container(
-                org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1, group.getName()));
+                org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1,
+                group.getName()));
         }
     }
 
@@ -320,9 +328,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException exc) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), exc);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), exc);
         } catch (IOException e) {
-            throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, user.getName()), e);
+            throw new CmsDbIoException(
+                Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, user.getName()),
+                e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }

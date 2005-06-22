@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/21 15:49:59 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2005/06/22 10:26:03 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,17 +79,21 @@ import org.apache.commons.logging.Log;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Thomas Weckert 
+ * @author Carsten Weinholz 
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.100 $
- * @since 5.1
+ * @version $Revision: 1.101 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsUserDriver.class);
+
+    /** The name of the admin user. */
+    protected String m_adminUserName;
 
     /** A digest to encrypt the passwords. */
     protected MessageDigest m_digest;
@@ -105,9 +109,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /** The SQL manager. */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
-    
-    /** The name of the admin user. */
-    protected String m_adminUserName;
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#createAccessControlEntry(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, int, int, int)
@@ -138,7 +139,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -198,7 +200,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             group = new CmsGroup(groupId, parentId, groupName, description, flags);
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -254,7 +257,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, name), e);
         } finally {
@@ -296,7 +300,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             } catch (SQLException e) {
                 throw new CmsDbSqlException(Messages.get().container(
-                    Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
             } finally {
                 m_sqlManager.closeAll(dbc, conn, stmt, null);
             }
@@ -323,7 +328,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -346,7 +352,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -368,7 +375,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -391,7 +399,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -441,7 +450,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -482,7 +492,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -554,7 +565,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, name), e);
         } finally {
@@ -610,15 +622,18 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             m_digest = MessageDigest.getInstance(m_digestAlgorithm);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DIGEST_ENC_3, m_digest.getAlgorithm(), 
-                    m_digest.getProvider().getName(), String.valueOf(m_digest.getProvider().getVersion())));
+                CmsLog.INIT.info(Messages.get().key(
+                    Messages.INIT_DIGEST_ENC_3,
+                    m_digest.getAlgorithm(),
+                    m_digest.getProvider().getName(),
+                    String.valueOf(m_digest.getProvider().getVersion())));
             }
         } catch (NoSuchAlgorithmException e) {
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().key(Messages.INIT_SET_DIGEST_ERROR_0), e);
             }
         }
-        
+
         m_adminUserName = OpenCms.getDefaultUsers().getUserAdmin();
 
         try {
@@ -682,7 +697,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -730,7 +746,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -775,7 +792,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -816,7 +834,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -854,7 +873,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -885,7 +905,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 group = internalCreateGroup(res);
             } else {
                 CmsMessageContainer message = org.opencms.db.Messages.get().container(
-                    org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1, groupName);
+                    org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1,
+                    groupName);
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(message.key());
                 }
@@ -894,7 +915,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -925,7 +947,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -958,7 +981,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -996,7 +1020,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             return user;
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } catch (ClassNotFoundException e) {
@@ -1028,7 +1053,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 user = internalCreateUser(res);
             } else {
                 CmsMessageContainer message = org.opencms.db.Messages.get().container(
-                    org.opencms.db.Messages.ERR_UNKNOWN_USER_1, name);
+                    org.opencms.db.Messages.ERR_UNKNOWN_USER_1,
+                    name);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(message.key());
                 }
@@ -1036,7 +1062,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } catch (ClassNotFoundException e) {
@@ -1073,7 +1100,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 res.close();
                 res = null;
                 CmsMessageContainer message = org.opencms.db.Messages.get().container(
-                    org.opencms.db.Messages.ERR_UNKNOWN_USER_1, name);
+                    org.opencms.db.Messages.ERR_UNKNOWN_USER_1,
+                    name);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(message.key());
                 }
@@ -1083,7 +1111,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             return user;
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USER_0), e);
         } catch (ClassNotFoundException e) {
@@ -1124,7 +1153,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_READING_USERS_0), e);
         } catch (ClassNotFoundException e) {
@@ -1159,13 +1189,16 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
             throw new CmsDbIoException(org.opencms.db.Messages.get().container(
-                org.opencms.db.Messages.ERR_GET_USERS_OF_GROUP_1, name), e);
+                org.opencms.db.Messages.ERR_GET_USERS_OF_GROUP_1,
+                name), e);
         } catch (ClassNotFoundException e) {
             throw new CmsDataAccessException(org.opencms.db.Messages.get().container(
-                org.opencms.db.Messages.ERR_GET_USERS_OF_GROUP_1, name), e);
+                org.opencms.db.Messages.ERR_GET_USERS_OF_GROUP_1,
+                name), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1192,7 +1225,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1219,7 +1253,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1258,7 +1293,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1284,7 +1320,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1334,7 +1371,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
@@ -1362,13 +1400,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             } catch (SQLException e) {
                 throw new CmsDbSqlException(Messages.get().container(
-                    Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                    Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)), e);
             } finally {
                 m_sqlManager.closeAll(dbc, conn, stmt, null);
             }
         } else {
             throw new CmsDbEntryNotFoundException(org.opencms.db.Messages.get().container(
-                org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1, group.getName()));
+                org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1,
+                group.getName()));
         }
     }
 
@@ -1391,7 +1431,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1422,7 +1463,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } catch (IOException e) {
             throw new CmsDbIoException(
                 Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, user.getName()),
@@ -1450,7 +1492,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -1499,7 +1542,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     protected CmsUser internalCreateUser(ResultSet res) throws SQLException, IOException, ClassNotFoundException {
 
         String userName = res.getString(m_sqlManager.readQuery("C_USERS_USER_NAME"));
-        
+
         // deserialize the additional userinfo hash
         ByteArrayInputStream bin = new ByteArrayInputStream(m_sqlManager.getBytes(
             res,
@@ -1749,7 +1792,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }

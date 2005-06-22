@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsSqlManager.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:26:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,11 @@ package org.opencms.db.postgresql;
 /**
  * PostgreSql implementation of the SQL manager.<p>
  * 
- * @author Antonio Core (antonio@starsolutions.it)
+ * @author Antonio Core 
  * 
- * @version $Revision: 1.2 $
- * @since 6.0
+ * @version $Revision: 1.3 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
 

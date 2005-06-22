@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/05/18 08:41:34 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/06/22 10:26:04 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,24 +53,28 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the VFS driver methods.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.32 $ $Date: 2005/05/18 08:41:34 $
- * @since 5.1
+ * @author Thomas Weckert  
+ * @author Carsten Weinholz 
+ * 
+ * @version $Revision: 1.33 $
+ * 
+ * @since 6.0.0 
  */
-public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
+public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#createContent(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, byte[], int)
      */
-    public void createContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content, int versionId) throws CmsDataAccessException {
+    public void createContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content, int versionId)
+    throws CmsDataAccessException {
+
         PreparedStatement stmt = null;
         Connection conn = null;
-        
-        try {            
+
+        try {
             conn = m_sqlManager.getConnection(dbc, project.getId());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_ADD");
-            
+
             // first insert new file without file_content, then update the file_content
             // these two steps are necessary because of using BLOBs in the Oracle DB
             stmt.setString(1, new CmsUUID().toString());
@@ -79,7 +83,8 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
@@ -99,62 +104,65 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#writeContent(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, byte[])
      */
-    public void writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content) throws CmsDataAccessException {
+    public void writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         PreparedStatement commit = null;
         PreparedStatement rollback = null;
         Connection conn = null;
         ResultSet res = null;
-        
+
         boolean wasInTransaction = false;
-        try {            
+        try {
             conn = m_sqlManager.getConnection(dbc, project.getId());
-            if (conn.getMetaData().getDriverMajorVersion()<9) {
+            if (conn.getMetaData().getDriverMajorVersion() < 9) {
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE8_CONTENTS_UPDATECONTENT");
             } else {
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_UPDATECONTENT");
             }
-            
+
             wasInTransaction = !conn.getAutoCommit();
             if (!wasInTransaction) {
                 conn.setAutoCommit(false);
             }
-            
+
             // update the file content in the contents table
             stmt.setString(1, resourceId.toString());
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
-                throw new CmsDbEntryNotFoundException(
-                    Messages.get().container(Messages.LOG_READING_RESOURCE_1, resourceId));
+                throw new CmsDbEntryNotFoundException(Messages.get().container(
+                    Messages.LOG_READING_RESOURCE_1,
+                    resourceId));
             }
-            
+
             // write file content 
             OutputStream output = CmsUserDriver.getOutputStreamFromBlob(res, "FILE_CONTENT");
             output.write(content);
             output.close();
-                
+
             if (!wasInTransaction) {
                 commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
                 commit.execute();
-                m_sqlManager.closeAll(dbc, null, commit, null); 
+                m_sqlManager.closeAll(dbc, null, commit, null);
             }
-            
-            m_sqlManager.closeAll(dbc, null, stmt, res);          
+
+            m_sqlManager.closeAll(dbc, null, stmt, res);
 
             commit = null;
             stmt = null;
             res = null;
-                
+
             if (!wasInTransaction) {
                 conn.setAutoCommit(true);
             }
-                
+
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_WRITING_TO_OUTPUT_STREAM_1, resourceId), e);
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
 
             if (res != null) {
@@ -162,17 +170,17 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                     res.close();
                 } catch (SQLException exc) {
                     // ignore
-                }                
-            } 
-            
+                }
+            }
+
             if (commit != null) {
                 try {
                     commit.close();
                 } catch (SQLException exc) {
                     // ignore
                 }
-            } 
-            
+            }
+
             if (!wasInTransaction) {
                 if (stmt != null) {
                     try {
@@ -186,7 +194,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                         stmt.close();
                     } catch (SQLException exc) {
                         // ignore
-                    }                
+                    }
                 }
                 if (conn != null) {
                     try {
@@ -194,7 +202,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                         conn.close();
                     } catch (SQLException se) {
                         // ignore
-                    }                   
+                    }
                 }
             }
         }
