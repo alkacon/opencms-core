@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/22 08:24:22 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -204,7 +204,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public static void checkEmail(String email) {
 
-        if (!CmsStringUtil.validateRegex(email, "[\\w\\.~_-]*@[\\w\\.~_-]*\\.[\\w]*", false)) {
+        if (!CmsStringUtil.validateRegex(email, "^([a-zA-Z0-9_\\.\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$", false)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMAIL_VALIDATION_1, email));
         }
     }
