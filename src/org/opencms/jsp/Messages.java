@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * These methods provided here factor out the localization of exception messages and return Strings 
  * for the <code>org.opencms.jsp</code> pacakge.<p>
  * 
- * @author Jan Baudisch (j.baudisch@alkacon.com)
+ * @author Jan Baudisch 
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {

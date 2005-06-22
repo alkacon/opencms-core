@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2005/06/21 15:52:11 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,9 +55,9 @@ import junit.framework.TestSuite;
 /**
  * Tests for the XML page that require a running OpenCms system.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.5.0
  */

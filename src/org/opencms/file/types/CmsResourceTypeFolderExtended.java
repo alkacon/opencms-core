@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolderExtended.java,v $
- * Date   : $Date: 2005/03/17 10:31:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,10 +42,10 @@ import java.util.TreeMap;
  * This type extends a folder but has a configurable type id and type name.
  * Optionally, a workplace class name for the type can be provided.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
 

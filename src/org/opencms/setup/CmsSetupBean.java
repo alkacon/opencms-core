@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,11 +85,11 @@ import org.apache.commons.collections.ExtendedProperties;
  * setDbProperty("oracle.defaultTablespace", value);
  * </pre>
  *
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Thomas Weckert  
+ * @author Carsten Weinholz 
+ * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsMessageInfo.java,v $
- * Date   : $Date: 2005/06/17 15:46:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,8 +48,8 @@ import javax.mail.internet.InternetAddress;
 /**
  * Bean class for message information.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author Michael Moossen 
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsMessageInfo {

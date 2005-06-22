@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2005/06/08 15:48:00 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,10 +44,10 @@ import java.util.StringTokenizer;
  * HTML report output to be used for import / export / publish operations 
  * in the entire OpenCms system.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.24 $
+ * @author Alexander Kandzior 
+ * @author Thomas Weckert  
+ * @author Jan Baudisch 
+ * @version $Revision: 1.25 $
  */
 public class CmsHtmlReport extends A_CmsReport {
 

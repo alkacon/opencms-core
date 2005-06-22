@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2005/06/02 12:57:28 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,9 +52,9 @@ import java.util.Vector;
 /**
  * Helper class to call database setup scripts.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2005/06/02 12:57:28 $
+ * @author Thomas Weckert  
+ * @author Carsten Weinholz 
+ * @version $Revision: 1.18 $ $Date: 2005/06/22 10:38:32 $
  */
 public class CmsSetupDb extends Object {
     

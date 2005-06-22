@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,10 +45,10 @@ import org.dom4j.Node;
 /**
  * Checks path information on vfs resources.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Thomas Weckert  
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsCompatibleCheck {
 

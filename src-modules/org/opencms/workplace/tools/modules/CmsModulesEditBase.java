@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditBase.java,v $
- * Date   : $Date: 2005/06/17 09:59:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,9 @@ import javax.servlet.jsp.PageContext;
 /**
  * Base class to edit an exiting module.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.9.1
  */
 public class CmsModulesEditBase extends CmsWidgetDialog {

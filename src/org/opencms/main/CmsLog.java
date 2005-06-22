@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,9 +57,9 @@ import org.apache.log4j.helpers.Loader;
  * can be supressed by either using a log4j configuration file from another location, or by setting the
  * special property <code>${opencms.set.logfile}</code> in the log4j configuration file to <code>false</code>. 
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public final class CmsLog {
 

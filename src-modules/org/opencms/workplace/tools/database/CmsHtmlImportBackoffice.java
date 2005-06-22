@@ -44,9 +44,9 @@ import java.util.TreeMap;
 /**
  * This class contains some utility methods for the HTMLImport Backoffice.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public final class CmsHtmlImportBackoffice {
     

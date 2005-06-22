@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/CmsTemplateModules.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,10 +57,10 @@ import org.apache.commons.logging.Log;
  * Provides methods to create list views with category browsing and 
  * convenience methods to display date values and links.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Thomas Weckert  
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 6.0 alpha 2
  */
 public class CmsTemplateModules extends CmsJspActionElement {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,8 +81,8 @@ import org.dom4j.io.DocumentSource;
  * <li>/commons/newcvsfile_upload.jsp
  * </ul>
  * 
- * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.9 $
+ * @author Jan Baudisch 
+ * @version $Revision: 1.10 $
  * 
  * @since 5.7.3
  */

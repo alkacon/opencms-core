@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsWidgetException.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.workplace.CmsWidgetDialogParameter;
 /**
  * Describes errors that occur in the context of the OpenCms widgets.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * @since 5.9.1
  */
 public class CmsWidgetException extends CmsException {

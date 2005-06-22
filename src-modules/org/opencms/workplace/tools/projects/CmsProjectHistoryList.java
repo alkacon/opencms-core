@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectHistoryList.java,v $
- * Date   : $Date: 2005/06/21 15:54:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,8 +58,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Main project management view.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsProjectHistoryList extends A_CmsListDialog {

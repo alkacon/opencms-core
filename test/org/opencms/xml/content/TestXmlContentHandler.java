@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestXmlContentHandler.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.xml.content;
 /**
  * Test handler for XML content.
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.4
  */

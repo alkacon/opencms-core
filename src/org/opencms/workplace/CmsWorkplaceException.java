@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceException.java,v $
- * Date   : $Date: 2005/05/19 09:54:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,8 @@ import org.opencms.main.CmsException;
  * Signals that an exceptional program flow happens in the workplace. Most often this 
  * is triggered by wrong configurations or user input.<p> 
  * 
- * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2005/05/19 09:54:29 $
+ * @author Jan Baudisch 
+ * @version $Revision: 1.3 $ $Date: 2005/06/22 10:38:17 $
  * @since 5.1.2
  */
 public class CmsWorkplaceException extends CmsException {

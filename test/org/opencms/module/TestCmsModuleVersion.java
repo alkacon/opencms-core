@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestCmsModuleVersion.java,v $
- * Date   : $Date: 2005/06/21 15:01:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,9 @@ import junit.framework.TestCase;
 /**
  * Tests the module version.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestCmsModuleVersion extends TestCase {
     

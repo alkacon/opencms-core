@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/05/23 15:40:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,8 +55,8 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * Provides the necessary information to create an input form, email messages and confirmation outputs.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.9 $
  */
 public class CmsForm {
     

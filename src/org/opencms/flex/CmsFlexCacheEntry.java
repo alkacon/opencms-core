@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2005/05/18 12:48:14 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/22 10:38:17 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,10 +68,10 @@ import org.apache.commons.logging.Log;
  * The CmsFlexCacheEntry can also have an expire date value, which indicates the time 
  * that his entry will become invalid and should thus be cleared from the cache.<p>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author  Alexander Kandzior 
+ * @author Thomas Weckert  
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
 

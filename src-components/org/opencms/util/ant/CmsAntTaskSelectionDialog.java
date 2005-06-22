@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
- * Date   : $Date: 2005/04/22 08:39:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import javax.swing.border.Border;
 /**
  * This is a highly configurable Swing GUI dialog for selection.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  * 
  * @see CmsAntTaskSelectionPrompt

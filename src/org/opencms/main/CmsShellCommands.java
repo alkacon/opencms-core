@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/06/16 14:21:43 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,8 +72,8 @@ import java.util.StringTokenizer;
  * Also, wrapping methods to access some important functions in the CmsObject that
  * require complex data type parameters are provided.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.73 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.74 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 

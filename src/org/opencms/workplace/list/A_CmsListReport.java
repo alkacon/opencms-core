@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListReport.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Provides a report in the list widget.<p> 
  *
- * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author  Michael Emmerich 
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public abstract class A_CmsListReport extends CmsReport {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/Attic/CmsMultiMessageBundle.java,v $
- * Date   : $Date: 2005/04/19 12:00:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,8 @@ import java.util.Locale;
 /**
  * Provides access to the localized messages for several message bundles simultaneously.<p>
  * 
- * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author  Michael Moossen 
+ * @version $Revision: 1.2 $
  * 
  * @since 5.7.3
  */

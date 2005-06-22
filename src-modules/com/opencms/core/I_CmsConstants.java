@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2005/06/21 15:49:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,10 @@ import org.opencms.security.CmsPermissionSet;
 /**
  * This interface is a pool for constants in OpenCms.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Michael Emmerich 
+ * @author Thomas Weckert  
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface I_CmsConstants {
 

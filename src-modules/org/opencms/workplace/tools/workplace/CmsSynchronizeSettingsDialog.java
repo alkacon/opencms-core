@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/CmsSynchronizeSettingsDialog.java,v $
- * Date   : $Date: 2005/06/15 15:56:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,8 +51,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Dialog to edit the synchronize settings of the OpenCms Workplace.<p>
  *
- * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author  Jan Baudisch 
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0
  */

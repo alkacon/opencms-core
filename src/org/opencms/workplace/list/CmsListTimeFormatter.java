@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListTimeFormatter.java,v $
- * Date   : $Date: 2005/06/15 16:01:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import java.util.Locale;
 /**
  * Simple formatter for time.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Michael Moossen 
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsListTimeFormatter implements I_CmsListFormatter {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexException.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,8 @@ import org.opencms.main.CmsException;
  * This exception is thrown by various classes 
  * in the <code>org.opencms.search</code> package.
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2005/05/23 07:26:46 $
+ * @author Carsten Weinholz 
+ * @version $Revision: 1.11 $ $Date: 2005/06/22 10:38:15 $
  * @since 5.3.1
  */
 public class CmsIndexException extends CmsException {

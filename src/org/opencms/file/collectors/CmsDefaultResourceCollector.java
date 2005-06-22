@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2005/05/19 09:54:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,10 +53,10 @@ import org.apache.commons.logging.Log;
 /**
  * A default resource collector to generate some example list of resources from the VFS.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Thomas Weckert  
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.2
  */
 public class CmsDefaultResourceCollector extends A_CmsResourceCollector {

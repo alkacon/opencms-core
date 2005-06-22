@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/TestXmlUtils.java,v $
- * Date   : $Date: 2005/03/13 09:51:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.xml;
 import junit.framework.TestCase;
 
 /**
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5.4
  */

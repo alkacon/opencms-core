@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2005/05/04 15:16:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,8 @@ import java.util.Map;
  * 
  * It can handle relative or absolute orderings and unique names.<p> 
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectContainer {
@@ -52,8 +52,8 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     /**
      * Internal class just for taking care of the positions in the container.<p>
      * 
-     * @author Michael Moossen (m.moossen@alkacon.com) 
-     * @version $Revision: 1.2 $
+     * @author Michael Moossen  
+     * @version $Revision: 1.3 $
      * @since 5.7.3
      */
     private class CmsIdObjectElement {

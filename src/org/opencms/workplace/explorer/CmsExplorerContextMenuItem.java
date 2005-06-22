@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuItem.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ package org.opencms.workplace.explorer;
  * 
  * An item can be a context menu entry or a separator line.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */

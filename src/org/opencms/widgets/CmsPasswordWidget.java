@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsPasswordWidget.java,v $
- * Date   : $Date: 2005/05/30 15:47:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,9 @@ import org.opencms.i18n.CmsEncoder;
 /**
  * Provides a standard HTML form password widget, for use on a widget dialog.<p>
  *
- * @author Michael Moossen (m.moossen@alkacon.com)
+ * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsPasswordWidget extends A_CmsWidget {

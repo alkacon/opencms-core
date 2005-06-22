@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCheckboxWidget.java,v $
- * Date   : $Date: 2005/05/30 15:47:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,9 +40,9 @@ import java.util.Map;
 /**
  * Provides a standard HTML form checkbox widget, for use on a widget dialog.<p>
  *
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.2
  */
 public class CmsCheckboxWidget extends A_CmsWidget {

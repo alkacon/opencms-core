@@ -40,7 +40,7 @@ import org.apache.commons.logging.Log;
 /**
  * Thread for merging content pages.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Michael Emmerich 
  */
 public class CmsMergePagesThread extends A_CmsReportThread {
     /** The log object for this class. */

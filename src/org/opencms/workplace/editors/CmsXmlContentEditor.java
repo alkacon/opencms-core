@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/06/15 12:23:12 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,10 +75,10 @@ import org.apache.commons.logging.Log;
 /**
  * Creates the editor for XML content definitions.<p> 
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {

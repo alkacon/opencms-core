@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlNestedContentDefinition.java,v $
- * Date   : $Date: 2005/05/13 13:35:37 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,9 +43,9 @@ import org.dom4j.Element;
 /**
  * A nested content XML definition that is included by another XML content definition.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.4
  */
 public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implements I_CmsXmlSchemaType {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/A_CmsModuleAction.java,v $
- * Date   : $Date: 2005/06/01 07:00:49 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.commons.logging.Log;
  * Simple base implementation of the {@link I_CmsModuleAction} interface,
  * extend this class for more sophisticated module action implementations.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * @since 5.3.6
  */
 public abstract class A_CmsModuleAction implements I_CmsModuleAction {

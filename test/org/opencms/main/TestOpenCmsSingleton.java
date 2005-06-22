@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2005/06/21 15:52:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,8 @@ import junit.framework.TestSuite;
 /**
  * Unit test the static OpenCms singleton object.<p> 
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.13 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
 

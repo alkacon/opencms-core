@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheConfiguration.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.flex;
  * 
  * 
  * 
- * @author Armen Markarian (a.markarian@alkacon.com)
+ * @author Armen Markarian 
  * @since 5.5.4
  */
 public class CmsFlexCacheConfiguration {

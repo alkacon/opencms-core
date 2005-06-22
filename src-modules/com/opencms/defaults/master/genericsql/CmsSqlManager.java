@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/05/31 15:51:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,8 +60,8 @@ import java.util.Properties;
  * <li>"key" parameters (e.g. "queryKey") identify a key in query.properties to receive a SQL or attribute name</li>
  * </ul>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.3 $ $Date: 2005/06/22 10:38:25 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

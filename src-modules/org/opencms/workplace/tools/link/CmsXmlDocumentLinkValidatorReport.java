@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/Attic/CmsXmlDocumentLinkValidatorReport.java,v $
- * Date   : $Date: 2005/06/16 07:31:40 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * A report driven dialog for the HTML link validator.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2005/06/16 07:31:40 $
+ * @author Thomas Weckert  
+ * @version $Revision: 1.2 $ $Date: 2005/06/22 10:38:32 $
  */
 public class CmsXmlDocumentLinkValidatorReport extends CmsReport {
     

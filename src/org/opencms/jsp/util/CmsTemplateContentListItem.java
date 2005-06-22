@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2005/06/16 12:37:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,8 +49,8 @@ import javax.servlet.jsp.JspException;
  * 
  * Use the newInstance() method with correct arguments to create a fully configured item object for list generation.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.2 $
  */
 public class CmsTemplateContentListItem {
     

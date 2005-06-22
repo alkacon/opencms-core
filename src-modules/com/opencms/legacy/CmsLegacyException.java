@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyException.java,v $
- * Date   : $Date: 2005/05/31 08:12:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,12 +41,12 @@ import java.util.Locale;
  * Exception to keep the legacy packages com.opencms.* and com.opencms.*
  * with the old exception handling mechanism running.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @author Jan Baudisch (j.baudisch@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Michael Emmerich 
+ * @author Michael Moossen 
+ * @author Jan Baudisch 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsLegacyException extends CmsException implements I_CmsThrowable {
 

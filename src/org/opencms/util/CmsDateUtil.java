@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDateUtil.java,v $
- * Date   : $Date: 2005/04/19 17:20:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,8 @@ import java.util.TimeZone;
  * 
  * Utilities to get and set formated dates in OpenCms.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.9 $
+ * @author Michael Emmerich 
+ * @version $Revision: 1.10 $
  */
 public final class CmsDateUtil {
 

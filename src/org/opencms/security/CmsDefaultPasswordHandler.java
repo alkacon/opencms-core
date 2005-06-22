@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2005/05/24 07:45:07 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,10 +51,10 @@ import org.apache.commons.logging.Log;
  * Default implementation for OpenCms password validation,
  * just checks if a password is at last 4 characters long.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Carsten Weinholz 
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.1.11 
  */
 public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2005/05/19 07:15:14 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,10 +42,12 @@ import java.util.Locale;
  * Stores the information about the current request context,
  * like ths current user, the site root, the encoding and other stuff.<p>  
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Michael Emmerich 
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsRequestContext {
 
@@ -158,8 +160,8 @@ public class CmsRequestContext {
         siteRoot = getAdjustedSiteRoot(siteRoot, resourcename);
         StringBuffer result = new StringBuffer(128);
         result.append(siteRoot);
-        if (((siteRoot.length() == 0) || (siteRoot.charAt(siteRoot.length()-1) != '/'))
-        && ((resourcename.length() == 0) || (resourcename.charAt(0) != '/'))) {
+        if (((siteRoot.length() == 0) || (siteRoot.charAt(siteRoot.length() - 1) != '/'))
+            && ((resourcename.length() == 0) || (resourcename.charAt(0) != '/'))) {
             // add slash between site root and resource if required
             result.append('/');
         }

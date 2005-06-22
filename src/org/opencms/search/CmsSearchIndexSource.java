@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndexSource.java,v $
- * Date   : $Date: 2005/04/28 08:28:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import org.apache.commons.logging.Log;
  * A search index source is a description of a list of Cms resources
  * to be indexed.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @author Thomas Weckert  
+ * @version $Revision: 1.7 $
  * @since 5.3.6
  */
 public class CmsSearchIndexSource implements Serializable, Cloneable {

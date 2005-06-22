@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsExportFolderMatcher.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,8 +41,8 @@ import java.util.regex.Pattern;
  * This class provides a file name matcher to find out those resources which must be part of 
  * a static export.<p> 
  *
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $
+ * @author Michael Emmerich 
+ * @version $Revision: 1.7 $
  */
 public class CmsExportFolderMatcher {
 

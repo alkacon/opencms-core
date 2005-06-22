@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlExtractor.java,v $
- * Date   : $Date: 2005/03/31 10:32:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,9 @@
 // Revision Control Information
 //
 // $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlExtractor.java,v $
-// $Author: a.kandzior $
-// $Date: 2005/03/31 10:32:12 $
-// $Revision: 1.3 $
+// $Author: a.westermann $
+// $Date: 2005/06/22 10:38:11 $
+// $Revision: 1.4 $
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -70,8 +70,8 @@ import org.htmlparser.util.ParserException;
 /**
  * Extracts plain text from HTML.<p>
  * 
- * @version $Revision: 1.3 $ 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.4 $ 
+ * @author  Alexander Kandzior 
  * 
  * Created on December 23, 2002, 5:01 PM
  */

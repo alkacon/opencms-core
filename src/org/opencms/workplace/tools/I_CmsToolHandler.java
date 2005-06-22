@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsToolHandler.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import org.opencms.file.CmsObject;
  * These handlers are created and managed by the 
  * <code>{@link org.opencms.workplace.tools.CmsToolManager}</code>.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
 public interface I_CmsToolHandler {

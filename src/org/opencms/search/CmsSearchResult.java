@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,8 @@ import org.apache.lucene.document.Field;
 /**
  * Contains the data of a single item in a search result.<p>
  * 
- * @version $Revision: 1.15 $ $Date: 2005/06/12 11:18:21 $
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.16 $ $Date: 2005/06/22 10:38:15 $
+ * @author Thomas Weckert  
  * @since 5.3.1
  */
 public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {

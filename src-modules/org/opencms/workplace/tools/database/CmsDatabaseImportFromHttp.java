@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromHttp.java,v $
- * Date   : $Date: 2005/06/19 10:57:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,10 +49,10 @@ import javax.servlet.jsp.PageContext;
 /**
  * Class to upload a zip file containing VFS resources with HTTP upload.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Andreas Zahner 
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 6.0
  */
 public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {

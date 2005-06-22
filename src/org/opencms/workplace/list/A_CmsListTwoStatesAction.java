@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsListTwoStatesAction.java,v $
- * Date   : $Date: 2005/06/21 15:54:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,8 @@ import org.opencms.workplace.CmsWorkplace;
  * You have to extend this class and implement the <code>{@link #selectAction()}</code> method,
  * where you can use the <code>{@link #getCms()}</code> to access the cms context.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public abstract class A_CmsListTwoStatesAction extends A_CmsListToggleAction {

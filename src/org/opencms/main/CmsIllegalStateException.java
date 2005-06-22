@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsIllegalStateException.java,v $
- * Date   : $Date: 2005/05/31 11:17:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * Please note that this class does not extend <code>{@link java.lang.IllegalStateException}</code> due to 
  * the lack of multiple inheritance for Java.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
+ * @author Michael Moossen 
  * @since 5.9.1
  */
 public class CmsIllegalStateException extends CmsRuntimeException {

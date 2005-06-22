@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2005/06/21 15:50:00 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2005/06/22 10:38:32 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -3377,7 +3377,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             String name = m.getName().toLowerCase();
 
             //now extract all methods whose name starts with a "get"
-            // TESTFIX (a.kandzior@alkacon.com) Added "boignore" suffix to prevent BO from calling the method
+            // TESTFIX  Added "boignore" suffix to prevent BO from calling the method
             if (name.startsWith("get") && !(name.endsWith("boignore"))) {
                 Class[] param = m.getParameterTypes();
                 //only take those methods that have no parameter and return a String
@@ -3407,7 +3407,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             Method m = methods[i];
             String name = m.getName().toLowerCase();
             //now extract all methods whose name starts with a "set"
-            // TESTFIX (a.kandzior@alkacon.com) Added "boignore" suffix to prevent BO from calling the method
+            // TESTFIX  Added "boignore" suffix to prevent BO from calling the method
             if (name.startsWith("set") && !(name.endsWith("boignore"))) {
                 Class[] param = m.getParameterTypes();
                 //only take those methods that have a single string parameter and return nothing

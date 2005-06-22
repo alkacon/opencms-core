@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlColorValue.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,9 @@ import org.dom4j.Element;
 /**
  * Describes the XML content type "OpenCmsColor".<p>
  *
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.2
  */
 public class CmsXmlColorValue extends A_CmsXmlValueTextBase {

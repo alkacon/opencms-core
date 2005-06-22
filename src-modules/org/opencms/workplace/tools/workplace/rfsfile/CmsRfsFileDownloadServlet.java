@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Attic/CmsRfsFileDownloadServlet.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,8 +52,8 @@ import javax.servlet.http.HttpServletResponse;
  * pushes this file to the client browser where it triggers a download 
  * (popup-box with save dialog). <p>
  * 
- * @author  Achim Westermann (a.westermann@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author  Achim Westermann 
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  * 

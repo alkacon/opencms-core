@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,9 +55,9 @@ import org.apache.commons.logging.Log;
 /**
  * Used to access and display XML content item information from the VFS.<p>
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {

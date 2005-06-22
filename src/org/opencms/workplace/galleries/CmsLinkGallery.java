@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/06/21 15:49:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,8 +57,8 @@ import org.apache.commons.logging.Log;
  * <li>/commons/galeries/download_fs.jsp
  * </ul>
  * 
- * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.11 $
+ * @author Armen Markarian 
+ * @version $Revision: 1.12 $
  * 
  * @since 5.5.2
  */

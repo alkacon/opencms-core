@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsTableGallery.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,8 @@ import org.apache.commons.logging.Log;
 /**
  * Generates the html gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
- * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.6 $
+ * @author Jan Baudisch 
+ * @version $Revision: 1.7 $
  */
 public class CmsTableGallery extends CmsHtmlGallery {
 

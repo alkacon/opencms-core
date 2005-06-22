@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestExists.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,9 +42,9 @@ import junit.framework.TestSuite;
 /**
  * Unit tests for resource availability operations.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
+ * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestExists extends OpenCmsTestCase {
   

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/widgets/AllTests.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import junit.framework.TestSuite;
 /**
  * Main test suite for the package <code>{@link org.opencms.widgets}</code>.<p>
  * 
- * @author Alexander Kandzior (a.kanzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  */

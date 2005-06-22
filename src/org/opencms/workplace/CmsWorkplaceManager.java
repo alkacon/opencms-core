@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2005/06/22 10:38:17 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,8 +89,8 @@ import org.apache.commons.logging.Log;
  * This class reads the settings from the "opencms.properties" and stores them in member variables.
  * For each setting one or more get methods are provided.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.65 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.66 $
  * 
  * @since 5.3.1
  */

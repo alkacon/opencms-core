@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,8 +91,8 @@ import org.apache.commons.logging.Log;
  *   <DD>same as <STRONG>search.element.uri</STRONG></DD>
  * </DL>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.15 $
  */
 public class CmsJspTagProperty extends TagSupport {
 

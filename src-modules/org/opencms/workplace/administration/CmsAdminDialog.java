@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminDialog.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Workplace class for /system/workplace/views/admin/admin-main.html .<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author Michael Moossen 
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsAdminDialog extends CmsDialog {

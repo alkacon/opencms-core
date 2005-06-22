@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2005/05/24 16:09:39 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,10 +78,10 @@ import org.xml.sax.InputSource;
  * The content of each element is stored as CDATA, links within the 
  * content are processed and are seperately accessible as entries of a CmsLinkTable.
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Carsten Weinholz 
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2005/06/19 10:57:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,8 +68,8 @@ import org.apache.commons.logging.Log;
  * The portion of the file that is shown is defined by a "window" of "windowSize" lines of text 
  * at a position "windowPosition" which is an enumeration of windows in ascending order. <p>
  * 
- * @author  Achim Westermann (a.westermann@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author  Achim Westermann 
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0
  */
@@ -696,6 +696,9 @@ public class CmsRfsFileViewer implements Cloneable {
      * Implementation allows control of eventual caching of line number indexes 
      * for files. <p>
      * 
+     * This method should never called from outside. It's visibility is set only 
+     * for unit tests concerning the indexing mechanism.<p>
+     * 
      * This compilation unit uses indices (indexes) for fast reading / skipping of files that have 
      * to be dropped to free memory. Threads had to be avoided so this method will 
      * also check on all other remaining indices expiration time to drop them.<p>
@@ -704,7 +707,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * @param filePath the String denoting a valid path to a file in the real file system 
      * @return a line number index for the given file path
      */
-    private CmsRfsFileLineIndexInfo initIndexer(String filePath) {
+    protected CmsRfsFileLineIndexInfo initIndexer(String filePath) {
 
         synchronized (m_fileName2lineIndex) {
             CmsRfsFileLineIndexInfo result = (CmsRfsFileLineIndexInfo)m_fileName2lineIndex.get(filePath);

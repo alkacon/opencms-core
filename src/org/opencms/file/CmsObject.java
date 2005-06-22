@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.130 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.131 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,16 +64,15 @@ import java.util.Map;
  * Every call to a method here will be checked for user permissions
  * according to the context the CmsObject instance was created with.<p> 
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @author Michael Moossen (m.mmoossen@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Thomas Weckert  
+ * @author Carsten Weinholz 
+ * @author Andreas Zahner 
+ * @author Michael Moossen 
  * 
- * @version $Revision: 1.130 $
- */
-/**
- * Comment for <code>CmsObject</code>.<p>
+ * @version $Revision: 1.131 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsObject {
 
@@ -421,7 +420,8 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
      */
-    public void copyResource(String source, String destination, int siblingMode) throws CmsException, CmsIllegalArgumentException {
+    public void copyResource(String source, String destination, int siblingMode)
+    throws CmsException, CmsIllegalArgumentException {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource.getTypeId()).copyResource(this, m_securityManager, resource, destination, siblingMode);
@@ -1715,8 +1715,7 @@ public class CmsObject {
      *
      * @throws CmsException if the login was not successful
      */
-    public String loginUser(String username, String password, String remoteAddress, int type)
-    throws CmsException {
+    public String loginUser(String username, String password, String remoteAddress, int type) throws CmsException {
 
         // login the user
         CmsUser newUser = m_securityManager.loginUser(m_context, username, password, remoteAddress, type);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,8 +67,8 @@ import org.apache.commons.logging.Log;
  * <li>/jsp/editors/dialogs/elements.html
  * </ul>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.0
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2005/06/13 14:32:39 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,9 +80,11 @@ import java.util.RandomAccess;
  * on true to make writing properties to the database work in any case, because then you will loose
  * control about which resource types support which property definitions.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.24 $ $Date: 2005/06/13 14:32:39 $
- * @since build_5_1_14
+ * @author Thomas Weckert  
+ * 
+ * @version $Revision: 1.25 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsProperty implements Serializable, Cloneable, Comparable {
 

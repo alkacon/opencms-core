@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsResourceInit.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,8 +42,8 @@ import javax.servlet.http.HttpServletResponse;
  * and returns it to the calling method, which will usually be 
  * OpenCms.initResource(cms).<p>
  * 
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.6 $
  */
 public interface I_CmsResourceInit {
     

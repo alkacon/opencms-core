@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsEncoder.java,v $
- * Date   : $Date: 2005/02/28 16:56:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 /**
  * Tests for the CmsEncoder.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * @since 5.3
  */
 public class TestCmsEncoder extends TestCase {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsTextareaWidget.java,v $
- * Date   : $Date: 2005/06/16 14:40:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,9 @@ import org.opencms.i18n.CmsEncoder;
  * 
  * Displays a textarea with 4 rows to enter String values conveniently.<p>
  *
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.7.2
  */
 public class CmsTextareaWidget extends A_CmsWidget {

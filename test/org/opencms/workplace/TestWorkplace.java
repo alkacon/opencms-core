@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workplace/TestWorkplace.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,8 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.4
  */

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2005/06/21 15:50:00 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2005/06/22 10:38:16 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,11 +75,11 @@ import org.dom4j.Element;
  * Holds the functionaility to import resources from the filesystem
  * or a zip file into the OpenCms COS.
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Michael Emmerich  
+ * @author Thomas Weckert  
  * 
- * @version $Revision: 1.8 $ $Date: 2005/06/21 15:50:00 $
+ * @version $Revision: 1.9 $ $Date: 2005/06/22 10:38:16 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolUserData.java,v $
- * Date   : $Date: 2005/04/29 16:05:53 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,8 @@ package org.opencms.workplace.tools;
  * Store for some administration view parameters,
  * for each user, used by the <code>{@link CmsToolManager}</code>.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.5 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.6 $
  * @since 5.7.3
  */
 public class CmsToolUserData {

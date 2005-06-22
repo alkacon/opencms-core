@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2005/03/19 13:58:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,9 +44,9 @@ import java.util.Set;
 /**
  * The OpenCms Thread store where all system Threads are maintained.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * @since 5.1.10
  */
 public class CmsThreadStore extends Thread {

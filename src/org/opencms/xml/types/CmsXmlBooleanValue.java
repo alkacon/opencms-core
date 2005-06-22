@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlBooleanValue.java,v $
- * Date   : $Date: 2005/05/13 15:16:31 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,9 +44,9 @@ import org.dom4j.Element;
 /**
  * Describes the XML content type "OpenCmsBoolean".<p>
  *
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {

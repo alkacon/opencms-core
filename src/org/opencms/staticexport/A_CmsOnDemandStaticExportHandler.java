@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/06/02 13:36:03 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,8 +60,8 @@ import org.apache.commons.logging.Log;
  * This handler is most suitable for dynamic sites that use the static export 
  * as optimization for non-dynamic content.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.13 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.14 $
  * @since 5.7.3
  * @see I_CmsStaticExportHandler
  */

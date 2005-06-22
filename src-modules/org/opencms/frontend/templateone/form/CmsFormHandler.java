@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/05/30 15:35:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,8 +63,8 @@ import org.apache.commons.logging.Log;
  * Provides methods to determine the action that takes place and methods to create different
  * output formats of a submitted form.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.10 $
  */
 public class CmsFormHandler extends CmsJspActionElement {
 

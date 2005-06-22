@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestLogAppender.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,8 @@ import org.apache.log4j.spi.LoggingEvent;
  * <code>RuntimeException</code> if an error (or fatal) event is logged,
  * causing the running test to fail.<p> 
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5.0
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValueSequence.java,v $
- * Date   : $Date: 2005/05/07 16:08:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,9 +42,9 @@ import java.util.Locale;
 /**
  * Describes the sequence of XML content values of a specific type in an XML content instance.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public class CmsXmlContentValueSequence {

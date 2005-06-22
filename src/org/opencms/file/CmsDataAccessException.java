@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsDataAccessException.java,v $
- * Date   : $Date: 2005/05/23 07:26:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,11 @@ import org.opencms.main.CmsException;
 /**
  * Signals data access related issues, i.e. database access.<p> 
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.8 $
- * @since 5.7.3
+ * @author Michael Moossen 
+ * 
+ * @version $Revision: 1.9 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsDataAccessException extends CmsException {
 

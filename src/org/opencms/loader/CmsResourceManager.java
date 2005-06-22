@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,9 +71,9 @@ import org.apache.commons.logging.Log;
  * Collects all available resource loaders, resource types and resource collectors at startup and provides
  * methods to access them during OpenCms runtime.<p> 
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.1
  */
 public class CmsResourceManager {

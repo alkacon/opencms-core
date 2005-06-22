@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2005/06/09 15:44:50 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,8 @@ import org.dom4j.Element;
 /**
  * Import/export handler implementation for VFS data.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $
+ * @author Thomas Weckert  
+ * @version $Revision: 1.15 $
  * @since 5.3
  */
 public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {

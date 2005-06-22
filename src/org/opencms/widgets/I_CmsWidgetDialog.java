@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/05/24 11:05:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,10 +39,10 @@ import java.util.Locale;
 /**
  * Describes a widget enabled dialog.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.2
  */
 public interface I_CmsWidgetDialog {

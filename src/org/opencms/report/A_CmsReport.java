@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2005/06/16 07:28:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,10 +42,10 @@ import java.util.Locale;
 /**
  * Base report class.<p> 
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.14 $
+ * @author Alexander Kandzior   
+ * @author Thomas Weckert  
+ * @author Jan Baudisch 
+ * @version $Revision: 1.15 $
  */
 public abstract class A_CmsReport implements I_CmsReport {
 

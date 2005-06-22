@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,8 @@ import java.util.List;
  * as also a group of <code>{@link CmsToolGroup}</code>s through the 
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.14 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.15 $
  * @since 5.7.3
  */
 public class CmsTool {

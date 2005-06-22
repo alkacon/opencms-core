@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:03 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,9 +62,9 @@ import org.dom4j.Element;
 /**
  * Manager class for registered OpenCms XML content types and content collectors.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {

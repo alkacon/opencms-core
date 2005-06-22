@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListState.java,v $
- * Date   : $Date: 2005/06/03 16:29:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,8 +42,8 @@ package org.opencms.workplace.list;
  * <li>The current search Filter</li>
  * </ul><p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Michael Moossen 
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsListState {

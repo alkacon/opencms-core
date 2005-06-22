@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2005/06/22 08:02:32 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,8 +67,8 @@ import org.dom4j.io.SAXReader;
 /**
  * Provides information about how to handle imported resources.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2005/06/22 08:02:32 $
+ * @author Thomas Weckert  
+ * @version $Revision: 1.23 $ $Date: 2005/06/22 10:38:11 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */

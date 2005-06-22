@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsPointerLinkValidator.java,v $
- * Date   : $Date: 2005/06/17 07:23:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,8 +55,8 @@ import java.util.Map;
 /**
  * Class to validate pointer links.<p>
  * 
- * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2005/06/17 07:23:47 $
+ * @author Jan Baudisch 
+ * @version $Revision: 1.4 $ $Date: 2005/06/22 10:38:24 $
  * @since 5.9.2
  */
 public class CmsPointerLinkValidator implements I_CmsScheduledJob {

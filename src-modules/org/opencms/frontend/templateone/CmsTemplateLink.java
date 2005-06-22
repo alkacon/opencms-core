@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateLink.java,v $
- * Date   : $Date: 2005/06/02 16:46:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ package org.opencms.frontend.templateone;
  * 
  * These objects are used for the head link row creation of template one.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.4 $
  */
 public class CmsTemplateLink implements Comparable {
     

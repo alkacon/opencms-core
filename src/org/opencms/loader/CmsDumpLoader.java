@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,8 +59,8 @@ import javax.servlet.http.HttpServletResponse;
  * This loader is also used to deliver static sub-elements of pages processed 
  * by other loaders.<p>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.57 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.58 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialogSelector.java,v $
- * Date   : $Date: 2005/05/10 15:45:19 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:17 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import org.apache.commons.logging.Log;
  *
  * @see org.opencms.workplace.I_CmsDialogHandler
  * 
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */

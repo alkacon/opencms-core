@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/06/21 11:05:17 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,10 +70,10 @@ import org.apache.commons.logging.Log;
  * in case of an image (or other static file) this will simply be returned etc.
  * </li></ol>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 

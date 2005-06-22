@@ -51,8 +51,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Provides an output window for a CmsReport.<p> 
  *
- * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author  Jan Baudisch 
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.10
  */

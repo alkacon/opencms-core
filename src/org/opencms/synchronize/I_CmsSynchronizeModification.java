@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/I_CmsSynchronizeModification.java,v $
- * Date   : $Date: 2005/05/09 12:38:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,8 +48,8 @@ import java.io.File;
  * </synchronizemodifications><br><br>
  * 
  * 
- * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author  Michael Emmerich 
+ * @version $Revision: 1.2 $
  */
 public interface I_CmsSynchronizeModification {
 

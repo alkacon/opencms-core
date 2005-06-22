@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,9 @@ import org.apache.commons.logging.Log;
 /**
  * Default implementation of the locale handler.<p>
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.16 $ 
+ * @author Carsten Weinholz 
+ * @author Alexander Kandzior  
+ * @version $Revision: 1.17 $ 
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 

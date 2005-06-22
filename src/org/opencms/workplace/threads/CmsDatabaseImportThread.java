@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsDatabaseImportThread.java,v $
- * Date   : $Date: 2005/05/31 11:08:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,9 +43,9 @@ import org.apache.commons.logging.Log;
 /**
  * Imports an OpenCms export file into the VFS.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Alexander Kandzior 
+ * @author Thomas Weckert  
+ * @version $Revision: 1.4 $
  * @since 5.1.10
  */
 public class CmsDatabaseImportThread extends A_CmsReportThread {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2005/06/21 15:49:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,8 +58,8 @@ import java.util.Iterator;
  * Template class for displaying the login screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $ 
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.4 $ 
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

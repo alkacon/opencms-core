@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsErrorBean.java,v $
- * Date   : $Date: 2005/06/22 07:20:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import java.util.Properties;
 /**
  * Class to display the error dialog.<p>
  *
- * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author Jan Baudisch 
+ * @version $Revision: 1.3 $
  */
 public class CmsErrorBean {
 
@@ -61,19 +61,19 @@ public class CmsErrorBean {
 
     /** The locale for the errorpage. */
     private Locale m_locale;
-    
+
     /** The title for the error page. */
     private String m_title;
-    
+
     /** The html for the buttons. */
     private String m_buttons;
-    
+
     /** The html code for the buttons. */
     private String m_paramAction;
-    
+
     /** The optional error message. */
     private String m_errorMessage;
-    
+
     /** Name of the property file containing HTML fragments for setup wizard and error dialog.<p> */
     public static final String ERRORPAGE = "org/opencms/jsp/util/errorpage.properties";
 
@@ -100,25 +100,26 @@ public class CmsErrorBean {
         CmsMacroResolver resolver = new CmsMacroResolver();
         if (CmsStringUtil.isEmpty(m_title)) {
             m_title = Messages.get().key(m_locale, Messages.GUI_ERROR_0, new Object[] {});
-        }    
+        }
         resolver.addMacro("title", m_title);
-        resolver.addMacro("label_error", Messages.get().key(m_locale, 
-            Messages.GUI_ERROR_0, new Object[] {}));
+        resolver.addMacro("label_error", Messages.get().key(m_locale, Messages.GUI_ERROR_0, new Object[] {}));
         resolver.addMacro("errorstack", CmsException.getFormattedErrorstack(m_throwable));
         resolver.addMacro("message", getErrorMessage());
-        resolver.addMacro("styleuri", OpenCms.getLinkManager().substituteLink(m_cms,
+        resolver.addMacro("styleuri", OpenCms.getLinkManager().substituteLink(
+            m_cms,
             "/system/workplace/commons/style/workplace.css"));
         if (CmsStringUtil.isEmpty(m_buttons)) {
             resolver.addMacro("buttons", getDefaultButtonsHtml());
         } else {
             resolver.addMacro("buttons", m_buttons);
             resolver.addMacro("paramaction", m_paramAction);
-        }    
-        
+        }
+
         if (CmsStringUtil.isNotEmpty(m_hiddenParams)) {
             resolver.addMacro("hiddenparams", m_hiddenParams);
         }
-        resolver.addMacro("erroricon", OpenCms.getLinkManager().substituteLink(m_cms,
+        resolver.addMacro("erroricon", OpenCms.getLinkManager().substituteLink(
+            m_cms,
             "/system/workplace/resources/commons/error.png"));
         Properties errorpage = new Properties();
         try {
@@ -130,23 +131,26 @@ public class CmsErrorBean {
         }
         return resolver.resolveMacros(errorpage.getProperty("ERRORPAGE"));
     }
-    
+
     /**
      * Returns the html code for the buttons, when the errorpage is included from outside the workplace.<p>
      *
      * @return the default html for the buttons
      */
     public String getDefaultButtonsHtml() {
+
         StringBuffer result = new StringBuffer();
         String closeLabel = Messages.get().key(m_locale, Messages.GUI_CLOSE_0, new Object[] {});
         String detailsLabel = Messages.get().key(m_locale, Messages.GUI_DETAILS_0, new Object[] {});
         result.append("<div class=\"dialogbuttons\" unselectable=\"on\">");
-        result.append("<input name=\"close\" type=\"button\" value=\"").append(closeLabel).append("\" onclick=\"closeDialog();\" class=\"dialogbutton\">");
-        result.append("<input name=\"details\" type=\"button\" value=\"").append(detailsLabel).append("\" class=\"dialogbutton\" onclick=\"toggleElement('errordetails');\">");
+        result.append("<input name=\"close\" type=\"button\" value=\"").append(closeLabel).append(
+            "\" onclick=\"closeDialog();\" class=\"dialogbutton\">");
+        result.append("<input name=\"details\" type=\"button\" value=\"").append(detailsLabel).append(
+            "\" class=\"dialogbutton\" onclick=\"toggleElement('errordetails');\">");
         result.append("</div>");
         return result.toString();
-    }    
-    
+    }
+
     /**
      * Returns the error message to be displayed.<p>
      * 
@@ -155,9 +159,9 @@ public class CmsErrorBean {
     public String getErrorMessage() {
 
         StringBuffer result = new StringBuffer(512);
-        
+
         String reason = Messages.get().key(m_locale, Messages.GUI_REASON_0, new Object[] {});
-        
+
         if (CmsStringUtil.isNotEmpty(m_errorMessage)) {
             result.append(m_errorMessage);
             result.append("\n\n").append(reason).append(": ");
@@ -191,6 +195,7 @@ public class CmsErrorBean {
             return t.getMessage();
         }
     }
+
     /**
      * Sets the title of the error page.<p>
      *
@@ -200,6 +205,7 @@ public class CmsErrorBean {
 
         m_title = title;
     }
+
     /**
      * Sets the hiddenParams.<p>
      *
@@ -219,6 +225,7 @@ public class CmsErrorBean {
 
         m_buttons = buttons;
     }
+
     /**
      * Sets the action parameter.<p>
      *
@@ -228,6 +235,7 @@ public class CmsErrorBean {
 
         m_paramAction = paramAction;
     }
+
     /**
      * Sets the error message which can be displayed if no exception is there.<p>
      *

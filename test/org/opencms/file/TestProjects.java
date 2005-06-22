@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2005/05/07 16:08:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,9 @@ import junit.framework.TestSuite;
 /**
  * Unit tests OpenCms projects.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestProjects extends OpenCmsTestCase {
   

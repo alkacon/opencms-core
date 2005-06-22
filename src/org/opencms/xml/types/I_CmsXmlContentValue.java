@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/05/23 09:36:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,9 @@ import org.dom4j.Element;
 /**
  * Provides access to the value of a specific XML content node.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.0
  */
 public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {

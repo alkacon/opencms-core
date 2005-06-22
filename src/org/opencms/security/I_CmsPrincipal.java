@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import org.opencms.util.CmsUUID;
  * Representation of an identity in the cms (currently user or group), 
  * used to define permissions on a resource.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2005/02/17 12:44:41 $
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.9 $ $Date: 2005/06/22 10:38:24 $
+ * @author Carsten Weinholz 
  */
 public interface I_CmsPrincipal {
     

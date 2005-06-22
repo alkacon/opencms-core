@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,9 +47,9 @@ import org.dom4j.Element;
 /**
  * Describes the XML content type "OpenCmsVfsFile".<p>
  *
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {

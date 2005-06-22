@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,9 +61,9 @@ import javax.servlet.jsp.PageContext;
 /**
  * Class to upload a module from the server.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.9.1
  */
 public class CmsModulesUploadFromServer extends CmsWidgetDialog {

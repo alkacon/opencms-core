@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/06/21 15:54:15 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,8 @@ import java.util.TreeSet;
 /**
  * This is class contains all the information for defining a whole html list.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.14 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.15 $
  * @since 5.7.3
  */
 public class CmsListMetadata {

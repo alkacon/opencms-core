@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestResourceOperations.java,v $
- * Date   : $Date: 2005/05/13 08:11:09 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,9 +48,9 @@ import junit.framework.TestSuite;
 /**
  * Unit tests for basic resource operations without test import.<p>
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestResourceOperations extends OpenCmsTestCase {
   

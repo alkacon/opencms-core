@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,9 +74,9 @@ import org.quartz.impl.StdSchedulerFactory;
  * and wraps all calls to the {@link org.opencms.scheduler.I_CmsScheduledJob} implementing 
  * classes.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.3.6
  * 
  * @see org.opencms.scheduler.CmsScheduledJobInfo

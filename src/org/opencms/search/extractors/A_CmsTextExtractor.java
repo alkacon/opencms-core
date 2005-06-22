@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractor.java,v $
- * Date   : $Date: 2005/04/15 22:48:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.io.InputStream;
 /**
  * Base utility class that allows extraction of the indexable "plain" text from a given document format.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
  * @since 5.7.2
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,8 +62,8 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * The bean that provides methods to build the HTML for the single online help frames.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.5 $
  * 
  * @since 5.9.2
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/Attic/CmsField.java,v $
- * Date   : $Date: 2005/06/02 16:46:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import java.util.List;
  * Provides the necessary information to create a form input field,
  * e.g. the field type, label, name, validation rule, etc.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.5 $
  */
 public class CmsField {
 

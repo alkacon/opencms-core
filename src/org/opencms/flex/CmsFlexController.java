@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/06/21 08:26:41 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/22 10:38:17 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,9 +49,9 @@ import org.apache.commons.logging.Log;
  * Controller for getting access to the CmsObject, should be used as a 
  * request attribute.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class CmsFlexController {
 

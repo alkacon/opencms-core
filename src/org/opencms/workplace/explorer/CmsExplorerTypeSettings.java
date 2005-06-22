@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,8 +48,8 @@ import org.apache.commons.logging.Log;
  * Objects of this type are sorted by their order value which specifies the order
  * in the new resource dialog.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.12 $
  * 
  * @since 5.3.3
  */

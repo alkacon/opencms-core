@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportReport.java,v $
- * Date   : $Date: 2005/06/09 07:59:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Provides a report for importing zipped files or folder to the OpenCms VFS.<p> 
  *
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.2 $
  * @since 6.0
  */
 public class CmsDatabaseImportReport extends A_CmsListReport {

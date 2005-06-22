@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReportThread.java,v $
- * Date   : $Date: 2005/05/25 09:01:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,9 @@ import org.opencms.util.CmsUUID;
 /**
  * Identifies a class that can be used as a report thread .<p>
  * 
- * @author Michael Emmerich(m.emmerich@alkacon.com)
+ * @author Michael Emmerich
  *  
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  */
 public interface I_CmsReportThread {

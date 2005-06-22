@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsEdit.java,v $
- * Date   : $Date: 2005/06/16 10:55:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,9 +60,9 @@ import javax.servlet.jsp.PageContext;
 /**
  * Class to edit a module dependencies.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.9.1
  */
 public class CmsExportpointsEdit extends CmsWidgetDialog {

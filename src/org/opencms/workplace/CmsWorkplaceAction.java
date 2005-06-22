@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2005/05/25 10:56:53 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/22 10:38:17 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,8 +42,8 @@ import javax.servlet.http.HttpSession;
  * Utility class with static methods, mainly intended for the transition of
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.31 $
  * 
  * @since 5.1
  */

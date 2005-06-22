@@ -1,33 +1,33 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResource.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.13 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResource.java,v $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.14 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
  * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
-* For further information about OpenCms, please see the
+ * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package org.opencms.file;
 
@@ -42,39 +42,40 @@ import java.io.Serializable;
  * used to describe the backup state.
  * Backup resource extend CmsFile since the might contain binary content,
  * but they can also in fact be backup resources for a folder.<p>
+ * 
  * Backup resources contain the names of the users that 
  * created or last modified the resource as a String because 
  * a user id might have been deleted.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsBackupResource extends CmsFile implements Cloneable, Serializable, Comparable {
 
-    /** The id of the backup version. */
-    private int m_versionId;
-
-    /**
-     * The tag id of the version.
-     */
-    private int m_tagId;
-    
     /** The backup id of the resource. */
     private CmsUUID m_backupId;
-
-
-    /** The name of the last user who modified the resource. */
-    private String m_lastModifiedByName;
 
     /**
      * The name of the user who created the resource.
      */
     private String m_createdByName;
 
+    /** The name of the last user who modified the resource. */
+    private String m_lastModifiedByName;
 
     /**
-    * Constructor, creates a new CmsBackupResource object.
+     * The tag id of the version.
+     */
+    private int m_tagId;
+
+    /** The id of the backup version. */
+    private int m_versionId;
+
+    /**
+     * Constructor, creates a new CmsBackupResource object.
      * @param backupId the backup id of this backup resource     
      * @param tagId the tag id of this backup resource    
      * @param versionId the version id of this backup resource   
@@ -96,34 +97,34 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
      * @param dateExpired the expiration date of this resource
      * @param size the size of the file content of this resource
      * @param content the binary content data of this file
-    */
+     */
     public CmsBackupResource(
         CmsUUID backupId,
         int tagId,
-        int versionId, 
-        CmsUUID structureId, 
-        CmsUUID resourceId, 
+        int versionId,
+        CmsUUID structureId,
+        CmsUUID resourceId,
         CmsUUID contentId,
-        String path, 
-        int type, 
+        String path,
+        int type,
         int flags,
-        int projectId, 
-        int state, 
+        int projectId,
+        int state,
         long dateCreated,
         CmsUUID userCreated,
-        String userCreatedName, 
-        long dateLastModified, 
+        String userCreatedName,
+        long dateLastModified,
         CmsUUID userLastModified,
-        String userLastModifiedName, 
-        long dateReleased, 
+        String userLastModifiedName,
+        long dateReleased,
         long dateExpired,
         int size,
-        byte[] content
-    ) {
+        byte[] content) {
+
         // create the backup CmsResource.
         super(
-            structureId, 
-            resourceId, 
+            structureId,
+            resourceId,
             contentId,
             path,
             type,
@@ -133,22 +134,21 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
             dateCreated,
             userCreated,
             dateLastModified,
-            userLastModified, 
-            dateReleased, 
+            userLastModified,
+            dateReleased,
             dateExpired,
             0,
-            size, 
-            content
-        );
-        
-        m_backupId=backupId;
+            size,
+            content);
+
+        m_backupId = backupId;
 
         // set tag id
         m_tagId = tagId;
 
         // set version id
         m_versionId = versionId;
-      
+
         // set createdByName
         m_createdByName = userCreatedName;
 
@@ -161,63 +161,43 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
      * 
      * @return a clone of this instance
      */
-   public Object clone() {
-       byte[] newContent = new byte[ this.getContents().length ];
-       System.arraycopy(getContents(), 0, newContent, 0, getContents().length);
+    public Object clone() {
 
-       return new CmsBackupResource(
-           getBackupId(),
-           getTagId(),
-           getVersionId(), 
-           getStructureId(), 
-           getResourceId(),
-           getContentId(), 
-           getRootPath(),
-           getTypeId(), 
-           getFlags(), 
-           getProjectLastModified(),
-           getState(), 
-           getDateCreated(),
-           getUserCreated(),
-           getCreatedByName(), 
-           getDateLastModified(), 
-           getUserLastModified(), 
-           getLastModifiedByName(), 
-           getDateReleased(),
-           getDateExpired(),
-           getLength(),
-           newContent);
-   }
+        byte[] newContent = new byte[this.getContents().length];
+        System.arraycopy(getContents(), 0, newContent, 0, getContents().length);
 
-
-   /**
-    * Returns the backup id of this resource.
-    *
-    * @return the backup id of this resource
-    */
-   public CmsUUID getBackupId() {
-       return m_backupId;
-   }
-
-    
-
-    /**
-     * Returns the tag id of this resource.
-     *
-     * @return the tag id of this resource
-     */
-    public int getTagId() {
-        return m_tagId;
+        return new CmsBackupResource(
+            getBackupId(),
+            getTagId(),
+            getVersionId(),
+            getStructureId(),
+            getResourceId(),
+            getContentId(),
+            getRootPath(),
+            getTypeId(),
+            getFlags(),
+            getProjectLastModified(),
+            getState(),
+            getDateCreated(),
+            getUserCreated(),
+            getCreatedByName(),
+            getDateLastModified(),
+            getUserLastModified(),
+            getLastModifiedByName(),
+            getDateReleased(),
+            getDateExpired(),
+            getLength(),
+            newContent);
     }
 
-
     /**
-     *  Returns the version id of this backup resource.
+     * Returns the backup id of this resource.
      *
-     * @return the version id of this resource
+     * @return the backup id of this resource
      */
-    public int getVersionId() {
-        return m_versionId;
+    public CmsUUID getBackupId() {
+
+        return m_backupId;
     }
 
     /**
@@ -226,6 +206,7 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
      * @return the user name of the creator of this backup resource
      */
     public String getCreatedByName() {
+
         return m_createdByName;
     }
 
@@ -235,6 +216,27 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
      * @return the name of the user who last changed this backup resource
      */
     public String getLastModifiedByName() {
+
         return m_lastModifiedByName;
+    }
+
+    /**
+     * Returns the tag id of this resource.
+     *
+     * @return the tag id of this resource
+     */
+    public int getTagId() {
+
+        return m_tagId;
+    }
+
+    /**
+     *  Returns the version id of this backup resource.
+     *
+     * @return the version id of this resource
+     */
+    public int getVersionId() {
+
+        return m_versionId;
     }
 }

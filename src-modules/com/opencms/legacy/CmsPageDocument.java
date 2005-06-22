@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsPageDocument.java,v $
- * Date   : $Date: 2005/05/28 09:35:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,8 @@ import org.htmlparser.parserapplications.StringExtractor;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypePage</code>.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2005/05/28 09:35:34 $
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.4 $ $Date: 2005/06/22 10:38:16 $
+ * @author Carsten Weinholz 
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

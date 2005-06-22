@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentCheck.java,v $
- * Date   : $Date: 2005/05/03 15:56:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,9 +46,9 @@ import javax.servlet.jsp.tagext.TagSupport;
 /**
  * Used to check the availablity of an XML content item for conditional display.<p>
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public class CmsJspTagContentCheck extends TagSupport {

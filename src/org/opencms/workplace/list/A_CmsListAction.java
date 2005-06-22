@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListAction.java,v $
- * Date   : $Date: 2005/06/21 15:54:15 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 /**
  * The default skeleton for a list action.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.12 $
  * @since 5.7.3
  */
 public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_CmsListAction {

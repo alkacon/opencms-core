@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,9 @@ package org.opencms.site;
 /**
  * A matcher object to compare request data against the configured sites.<p>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.1
  */
 public final class CmsSiteMatcher implements Cloneable {

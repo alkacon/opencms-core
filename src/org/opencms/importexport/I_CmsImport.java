@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImport.java,v $
- * Date   : $Date: 2005/04/29 15:54:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,8 +56,8 @@ import org.dom4j.Document;
  * </importclasses>
  * </code>
  *
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Michael Emmerich 
+ * @author Thomas Weckert  
  */
 public interface I_CmsImport {
 

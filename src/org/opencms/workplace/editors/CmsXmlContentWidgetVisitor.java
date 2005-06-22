@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentWidgetVisitor.java,v $
- * Date   : $Date: 2005/05/20 14:31:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,9 +52,9 @@ import org.apache.commons.logging.Log;
  * This implementation is needed when creating the html output of the xmlcontent editor 
  * {@link org.opencms.workplace.editors.CmsXmlContentEditor}.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.4
  */
 public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {

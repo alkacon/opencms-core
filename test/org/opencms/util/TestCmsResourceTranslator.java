@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsResourceTranslator.java,v $
- * Date   : $Date: 2005/05/02 13:47:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.util;
 import junit.framework.TestCase;
 
 /** 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.5 $
  * 
  * @since 5.0
  */

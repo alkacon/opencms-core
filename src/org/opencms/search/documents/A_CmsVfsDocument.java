@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,8 +61,8 @@ import org.apache.lucene.document.Field;
  * 
  * @version $Revision: 1.18 
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Carsten Weinholz 
+ * @author Alexander Kandzior 
  */
 public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 

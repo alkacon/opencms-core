@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMultiPartMail.java,v $
- * Date   : $Date: 2005/04/29 15:00:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,8 @@ import org.apache.commons.mail.MultiPartEmail;
  * It uses the Apache Commons Email API and extends the provided classes
  * to conveniently generate emails using the OpenCms configuration.<p> 
  *
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsMultiPartMail extends MultiPartEmail {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/06/09 10:13:41 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2005/06/22 10:38:17 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,8 +71,8 @@ import org.apache.commons.logging.Log;
  * <li>/views/top_head.html
  * </ul>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.73 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.74 $
  * 
  * @since 5.1
  */

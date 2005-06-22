@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagIncludeTEI.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,8 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * This is a TagExtraInfo evaluation class that checks the attibutes of 
  * the <code>&lt;cms:include /&gt;</code> tag.
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagIncludeTEI extends TagExtraInfo {
 

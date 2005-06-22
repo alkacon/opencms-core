@@ -40,7 +40,7 @@ import org.apache.commons.logging.Log;
 /**
  * Thread for element rename.<p>
  * 
- * @author Armen Markarian (a.markarian@alkacon.com)
+ * @author Armen Markarian 
  */
 public class CmsElementRenameThread extends A_CmsReportThread {
 

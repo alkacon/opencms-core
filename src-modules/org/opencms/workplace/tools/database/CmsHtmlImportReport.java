@@ -45,8 +45,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Provides an output window for a CmsReport.<p> 
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.10
  */

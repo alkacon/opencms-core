@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2005/06/13 14:32:39 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,9 +45,9 @@ import org.opencms.util.CmsUUID;
  * {@link org.opencms.file.CmsObject#getLock(String)} to obtain a
  * CmsLock object that represents the current lock state of a resource.
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $ $Date: 2005/06/13 14:32:39 $
+ * @author Thomas Weckert  
+ * @author Andreas Zahner 
+ * @version $Revision: 1.24 $ $Date: 2005/06/22 10:38:29 $
  * @since 5.1.4
  * @see org.opencms.file.CmsObject#getLock(org.opencms.file.CmsResource)
  * @see org.opencms.lock.CmsLockManager

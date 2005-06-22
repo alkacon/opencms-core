@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsContextInfo.java,v $
- * Date   : $Date: 2005/05/19 09:35:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Locale;
  * Contains user information for automated creation of a  
  * {@link org.opencms.file.CmsRequestContext} during system runtime.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  */
 public class CmsContextInfo {
 

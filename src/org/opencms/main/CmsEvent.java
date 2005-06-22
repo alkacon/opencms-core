@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEvent.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,9 @@ import java.util.Map;
  * operations (e.g. publishing) and can be catched and processed by 
  * classes that implement the {@link I_CmsEventListener} interface.<p>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsEventListener

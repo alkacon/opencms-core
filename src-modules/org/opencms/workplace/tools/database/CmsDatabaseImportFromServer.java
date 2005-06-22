@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromServer.java,v $
- * Date   : $Date: 2005/06/19 10:57:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,9 +56,9 @@ import javax.servlet.jsp.PageContext;
 /**
  * Class to upload a zip file containing VFS resources from the server.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 6.0
  */
 public class CmsDatabaseImportFromServer extends CmsWidgetDialog {

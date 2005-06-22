@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2005/06/01 12:34:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,8 +66,8 @@ import org.xml.sax.InputSource;
  * single import class for each import version, a new, inherited class must be used, returning 
  * the correct import version.<p>
  *
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Michael Emmerich 
+ * @author Thomas Weckert  
  * 
  * @see org.opencms.importexport.A_CmsImport
  * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,8 +81,8 @@ import org.apache.commons.logging.Log;
  * and also not the system values, a (String) message is returned with a formatted 
  * error message.<p>
  *  
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.17 $
  */
 public class CmsJspTagInfo extends TagSupport {
 

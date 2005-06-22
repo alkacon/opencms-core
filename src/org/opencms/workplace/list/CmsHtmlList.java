@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,8 +49,8 @@ import java.util.Locale;
 /**
  * The main class of the html list widget.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.25 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.26 $
  * @since 5.7.3
  */
 public class CmsHtmlList {

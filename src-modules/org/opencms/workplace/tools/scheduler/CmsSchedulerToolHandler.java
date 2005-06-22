@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerToolHandler.java,v $
- * Date   : $Date: 2005/05/18 10:26:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * Scheduled Jobs management tool handler that hides the tool if the current user
  * has not the needed privileges.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Michael Moossen 
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsSchedulerToolHandler extends A_CmsToolHandler {

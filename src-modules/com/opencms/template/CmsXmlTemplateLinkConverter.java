@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsXmlTemplateLinkConverter.java,v $
- * Date   : $Date: 2005/05/19 08:57:23 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,8 +48,8 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * This class is mostly required for database imports of OpenCms versions &lt; 5.0.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $ 
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.3 $ 
  * @since 5.3.2
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.

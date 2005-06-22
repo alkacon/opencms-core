@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,8 @@ import junit.framework.TestSuite;
 /**
  * Unit test for operations on siblings.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $
+ * @author Thomas Weckert  
+ * @version $Revision: 1.12 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 

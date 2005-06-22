@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/22 09:13:15 $
- * Version: $Revision: 1.529 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.530 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.529 $
+ * @version $Revision: 1.530 $
  * 
  * @since 6.0.0
  */
@@ -121,7 +121,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Provides a method to build cache keys for groups and users that depend either on 
      * a name string or an id.<p>
      *
-     * @author Alkexander Kandzior (a.kandzior@alkacon.com)
+     * @author Alexander Kandzior 
      */
     private class CacheId extends Object {
 

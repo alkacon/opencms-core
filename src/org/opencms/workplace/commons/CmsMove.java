@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2005/05/31 14:38:39 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,8 +62,8 @@ import org.apache.commons.logging.Log;
  * <li>/commons/move.jsp
  * </ul>
  *
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */

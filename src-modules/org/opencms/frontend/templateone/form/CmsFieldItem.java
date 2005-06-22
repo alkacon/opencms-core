@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldItem.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,8 @@ package org.opencms.frontend.templateone.form;
  * This object is needed to create checkboxes, radio buttons and selectboxes
  * and represents an item for these types.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.4 $
  */
 public class CmsFieldItem {
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsStaticExportToolHandler.java,v $
- * Date   : $Date: 2005/06/10 13:49:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import org.opencms.workplace.tools.CmsOnlyAdminToolHandler;
  * Scheduled Jobs management tool handler that hides the tool if the current user
  * has not the needed privileges.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Michael Moossen 
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsStaticExportToolHandler extends CmsOnlyAdminToolHandler {

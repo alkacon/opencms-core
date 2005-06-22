@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsAcceptLanguageHeaderParser.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,8 +106,8 @@ import javax.servlet.http.HttpServletRequest;
  * (HTTP 1.1 header field definitions) and creates a sorted list of Locales from it.
  * 
  * @author Daniel Rall (dlr@collab.net)
- * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.8 $
+ * @author Alexander Kandzior  
+ * @version $Revision: 1.9 $
  */
 public class CmsAcceptLanguageHeaderParser implements Iterator {
 

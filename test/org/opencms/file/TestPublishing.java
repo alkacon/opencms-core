@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,9 +48,9 @@ import junit.framework.TestSuite;
 /**
  * Unit tests for OpenCms publishing.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   

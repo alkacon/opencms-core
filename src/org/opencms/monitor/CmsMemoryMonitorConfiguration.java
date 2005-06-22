@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitorConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.List;
 /**
  * Memory Monitor configuration class.<p>
  * 
- * @author Armen Markarian (a.markarian@alkacon.com)
+ * @author Armen Markarian 
  * @since 5.5.4
  */
 public class CmsMemoryMonitorConfiguration {

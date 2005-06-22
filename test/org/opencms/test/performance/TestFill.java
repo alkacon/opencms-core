@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/performance/TestFill.java,v $
- * Date   : $Date: 2005/04/26 09:43:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,9 +44,9 @@ import junit.framework.TestSuite;
 /**
  * Unit tests for lock operation.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestFill extends OpenCmsTestCase {
   

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsResourceAlreadyExistsException.java,v $
- * Date   : $Date: 2005/05/11 11:00:52 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.file;
 
 import org.opencms.i18n.CmsMessageContainer;
@@ -37,12 +37,14 @@ import org.opencms.main.CmsException;
 /**
  * Signals that a VFS resource unexpectedly exists.<p> 
  * 
- * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2005/05/11 11:00:52 $
- * @since 5.1.2
+ * @author Jan Baudisch 
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsVfsResourceAlreadyExistsException extends CmsVfsException {
-    
+
     /**
      * Creates a new localized Exception.<p>
      * 
@@ -62,14 +64,13 @@ public class CmsVfsResourceAlreadyExistsException extends CmsVfsException {
     public CmsVfsResourceAlreadyExistsException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }   
-    
-    
+    }
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsVfsResourceAlreadyExistsException(container, cause);
     }
 }

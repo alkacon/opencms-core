@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/06/14 13:34:31 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,8 +66,8 @@ import org.apache.commons.logging.Log;
  * <li>/commons/chacc.jsp
  * </ul>
  *
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */

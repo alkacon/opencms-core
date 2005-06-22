@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import java.util.Vector;
  * is called in each operation. This method acts as access guard and matches the required permissions for the operation
  * against the allowed and denied permissions defined for the user or groups of this user.</p>
  * 
- * @version $Revision: 1.16 $ $Date: 2005/02/17 12:44:41 $
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.17 $ $Date: 2005/06/22 10:38:24 $
+ * @author Carsten Weinholz 
  */
 public class CmsAccessControlList {
 

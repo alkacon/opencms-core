@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,8 +79,8 @@ import org.apache.commons.logging.Log;
  * <li>/commons/preferences.jsp
  * </ul>
  *
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1.12
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/06/21 15:54:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,8 +65,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Main module management view.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @author Michael Emmerich  
+ * @version $Revision: 1.11 $
  * @since 5.7.3
  */
 public class CmsModulesList extends A_CmsListDialog {

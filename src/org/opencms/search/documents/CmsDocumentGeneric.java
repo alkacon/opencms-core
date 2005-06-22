@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentGeneric.java,v $
- * Date   : $Date: 2005/04/28 08:29:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * matched the search query. It's also used if no specific extraction method is available for a binary document type.<p>
  * 
  * @version $Revision: 1.1
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  */
 public class CmsDocumentGeneric extends A_CmsVfsDocument {
 

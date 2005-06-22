@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2005/06/21 15:52:11 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,9 +53,9 @@ import org.opencms.test.OpenCmsTestResourceFilter;
 /**
  * Unit tests for lock operation.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestLock extends OpenCmsTestCase {
   

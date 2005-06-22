@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,10 +68,10 @@ import org.apache.commons.logging.Log;
  * This property dialog is shown specially by files using the OpenCms template one,
  * and for any folders except system folders.<p>
  * 
- * @author Armen Markarian (a.markarian@alkacon.com)
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Armen Markarian 
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
 

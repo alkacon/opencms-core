@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * Provided backward compatiblity for legacy (5.0) module "publishClass" 
  * and "maintainanceClass" methods.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

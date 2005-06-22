@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,8 +80,8 @@ import org.apache.commons.logging.Log;
  * <li>/administration/properties/renameelement/index.html
  * </ul>
  *
- * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.7 $
+ * @author Armen Markarian 
+ * @version $Revision: 1.8 $
  * 
  * @since 5.5.3
  */

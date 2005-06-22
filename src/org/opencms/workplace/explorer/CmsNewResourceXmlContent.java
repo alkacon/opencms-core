@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContent.java,v $
- * Date   : $Date: 2005/06/02 13:57:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,8 +51,8 @@ import javax.servlet.jsp.PageContext;
  * <li>/commons/newresource_xmlcontent.jsp
  * </ul>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $
+ * @author Michael Emmerich 
+ * @version $Revision: 1.9 $
  * 
  */
 public class CmsNewResourceXmlContent extends CmsNewResource {

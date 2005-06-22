@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2005/06/22 10:38:24 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package com.opencms.workplace;
  * XML format, hence the name "XmlLanguageFile". Since 5.0rc2 this class has
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2005/06/21 15:49:59 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.8 $ $Date: 2005/06/22 10:38:24 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

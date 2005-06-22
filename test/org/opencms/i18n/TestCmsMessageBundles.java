@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2005/06/21 15:37:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.i18n;
 
-import org.opencms.workplace.CmsWorkplaceMessages;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -44,7 +42,7 @@ import junit.framework.TestCase;
 /**
  * Tests for the CmsMessageBundles.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * @since 5.7.3
  */
 public abstract class TestCmsMessageBundles extends TestCase {
@@ -181,7 +179,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
     /**
      * Template method that has to be overwritten to return the <code>I_CmsMessageBundle</code> 
-     * instances that will be tested. 
+     * instances that will be tested.<p> 
      * 
      * @return the <code>I_CmsMessageBundle</code> instances to test: these will be the 
      *         singleton instances of the <code>Messages</code> classes residing in every localized package. 

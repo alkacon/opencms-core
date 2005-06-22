@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,9 +104,9 @@ import org.apache.commons.logging.Log;
  * Older versions of Tomcat like 4.0 require a setting of <code>false</code>.</dd>
  * </dl> 
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.85 $
+ * @version $Revision: 1.86 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader

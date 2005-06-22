@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/06/02 13:09:20 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,9 +66,9 @@ import org.apache.lucene.search.SortField;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.31 $ $Date: 2005/06/02 13:09:20 $
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.32 $ $Date: 2005/06/22 10:38:15 $
+ * @author Carsten Weinholz 
+ * @author Thomas Weckert  
  * @since 5.3.1
  */
 public class CmsSearch implements Serializable, Cloneable {

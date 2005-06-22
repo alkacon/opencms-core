@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLinkVisitor.java,v $
- * Date   : $Date: 2005/03/31 10:32:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,9 +44,9 @@ import org.htmlparser.visitors.NodeVisitor;
  * Implements the HTML parser node visitor pattern to
  * exchange all links on the page.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3
  */
 public class CmsLinkVisitor extends NodeVisitor {

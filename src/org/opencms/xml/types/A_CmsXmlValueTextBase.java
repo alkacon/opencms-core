@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlValueTextBase.java,v $
- * Date   : $Date: 2005/05/13 13:35:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,9 +44,9 @@ import org.dom4j.Element;
 /**
  * Base class for XML content value implementations that require only a simple XML plain text node.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public abstract class A_CmsXmlValueTextBase extends A_CmsXmlContentValue {
 

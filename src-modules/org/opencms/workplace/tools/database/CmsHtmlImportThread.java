@@ -40,10 +40,10 @@ import org.apache.commons.logging.Log;
 /**
  * Thread for extended html import. <p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Armen Markarian (a.markarian@alkacon.com)
+ * @author Michael Emmerich 
+ * @author Armen Markarian 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsHtmlImportThread extends A_CmsReportThread {
     

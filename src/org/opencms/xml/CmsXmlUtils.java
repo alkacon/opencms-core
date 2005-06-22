@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2005/05/25 12:48:38 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,9 +62,9 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * Provides some basic XML handling utilities.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.3.5
  */
 public final class CmsXmlUtils {

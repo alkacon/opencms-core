@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2005/05/02 14:39:59 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/06/22 10:38:17 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,8 +56,8 @@ import java.util.Set;
  * it will be used only from the module where it was first found in. The module order is undefined. It is therefore 
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a module.<p>
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.34 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.35 $
  * 
  * @since 5.1
  */

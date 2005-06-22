@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesListExportReport.java,v $
- * Date   : $Date: 2005/06/03 16:01:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,8 +51,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Provides a report for exporting modules.<p> 
  *
- * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author  Michael Emmerich 
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsModulesListExportReport extends A_CmsListReport {

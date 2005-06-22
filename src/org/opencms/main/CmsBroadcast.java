@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsBroadcast.java,v $
- * Date   : $Date: 2005/03/23 19:08:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,8 @@ import org.opencms.file.CmsUser;
  * broadcast queue of that user using for example 
  * {@link org.opencms.main.CmsSessionManager#sendBroadcast(org.opencms.file.CmsObject, String, CmsUser)}.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.4 $
  * 
  * @since 5.7.2
  */

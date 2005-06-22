@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/06/02 09:36:55 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import org.apache.commons.logging.Log;
 /**
  * Used to access and display XML content item information from the VFS.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $
+ * @author Thomas Weckert  
+ * @version $Revision: 1.11 $
  * @since 6.0 alpha 3
  */
 public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolver {

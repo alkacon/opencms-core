@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDateFormatter.java,v $
- * Date   : $Date: 2005/05/18 13:19:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import java.util.Locale;
 /**
  * Simple formatter for dates.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Michael Moossen 
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsListDateFormatter implements I_CmsListFormatter {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,8 @@ import java.util.Map;
 /**
  * Helper class to build easily other admin tool handlers.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.13 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.14 $
  * @since 5.7.3
  */
 public abstract class A_CmsToolHandler implements I_CmsToolHandler {

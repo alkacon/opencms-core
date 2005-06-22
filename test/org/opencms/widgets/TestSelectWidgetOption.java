@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/widgets/TestSelectWidgetOption.java,v $
- * Date   : $Date: 2005/06/22 08:12:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import junit.framework.TestCase;
 /** 
  * Test cases for the parsing of select widget options.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com}
- * @version $Revision: 1.3 $
+ * @author Alexander Kandzior
+ * @version $Revision: 1.4 $
  */
 public class TestSelectWidgetOption extends TestCase {
 

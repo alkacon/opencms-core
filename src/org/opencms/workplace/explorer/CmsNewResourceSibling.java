@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2005/06/02 13:57:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,8 +60,8 @@ import org.apache.commons.logging.Log;
  * <li>/commons/newresource_sibling.html
  * </ul>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.3
  */

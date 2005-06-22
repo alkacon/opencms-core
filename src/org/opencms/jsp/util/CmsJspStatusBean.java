@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStatusBean.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,8 +58,8 @@ import javax.servlet.jsp.PageContext;
  * 
  * The JSPs using this bean are placed in the OpenCms VFS folder /system/handler/.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.5 $
  * @since 6.0
  */
 public class CmsJspStatusBean extends CmsJspActionElement {

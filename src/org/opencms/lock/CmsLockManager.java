@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,10 +54,10 @@ import java.util.Map;
  * locked parent folders. The result of a query to the lock manager
  * are instances of CmsLock objects.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.28 $
+ * @author Michael Emmerich 
+ * @author Thomas Weckert  
+ * @author Andreas Zahner  
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1.4
  * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2005/05/31 14:38:39 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,8 +49,8 @@ import org.apache.commons.logging.Log;
 /**
  * Explorer type access object, encapsulates access control entires and lists of a explorer type.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $
+ * @author Michael Emmerich 
+ * @version $Revision: 1.7 $
  */
 public class CmsExplorerTypeAccess {
 

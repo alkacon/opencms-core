@@ -83,10 +83,10 @@ import org.apache.commons.logging.Log;
 /**
  * This class implements the HTML->OpenCms Template converter for OpenCms 6.x.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Armen Markarian (a.markarian@alkacon.com)
+ * @author Michael Emmerich 
+ * @author Armen Markarian 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsHtmlImport {
 

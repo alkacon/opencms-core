@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Attic/CmsLEditEditor.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,8 @@ import org.opencms.jsp.CmsJspActionElement;
  * <li>/editors/ledit/editor.jsp</li>
  * </ul>
  *
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */

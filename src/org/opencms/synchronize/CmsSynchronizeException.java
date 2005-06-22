@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeException.java,v $
- * Date   : $Date: 2005/05/11 10:22:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,9 +40,9 @@ import org.opencms.main.CmsException;
  * When this exeption is thrown, 
  * all other implementations of I_CmsSyncModifications will not be executed.<p>
  * 
- * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.8 $
+ * @author  Michael Emmerich 
+ * @author  Jan Baudisch 
+ * @version $Revision: 1.9 $
  */
 public class CmsSynchronizeException extends CmsException {
     

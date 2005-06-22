@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSetCustom.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import java.util.StringTokenizer;
 /**
  * A custom permission set that can be modified during runtime and contains both allowed and denied permissions as bitsets.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.3 $
  */
 public class CmsPermissionSetCustom extends CmsPermissionSet {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/AllTests.java,v $
- * Date   : $Date: 2005/06/01 15:09:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import junit.framework.TestSuite;
 /**
  * Main test suite for the package <code>{@link org.opencms.i18n}</code>.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0
  */

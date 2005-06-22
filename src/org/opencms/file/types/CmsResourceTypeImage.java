@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeImage.java,v $
- * Date   : $Date: 2005/05/19 16:27:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,9 @@ import org.opencms.main.OpenCms;
 /**
  * Resource type descriptor for the type "image".<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsResourceTypeImage extends A_CmsResourceType {
 

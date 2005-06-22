@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleDeleteThread.java,v $
- * Date   : $Date: 2005/06/17 07:34:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,9 +51,9 @@ import junit.framework.TestSuite;
  * comparing this to the deletion using the module manager alone.<p>
  * 
  * @author Olaf Watteroth
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestModuleDeleteThread extends OpenCmsTestCase {
 

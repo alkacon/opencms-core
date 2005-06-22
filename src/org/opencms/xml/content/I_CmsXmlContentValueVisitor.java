@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentValueVisitor.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,9 +40,9 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  * {@link org.opencms.xml.content.CmsXmlContent#visitAllValuesWith(I_CmsXmlContentValueVisitor)} in 
  * order to call the {@link #visit(I_CmsXmlContentValue)} method on all values of that document.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.4
  */
 public interface I_CmsXmlContentValueVisitor {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlErrorHandler.java,v $
- * Date   : $Date: 2005/05/19 12:57:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,8 @@ import org.xml.sax.SAXParseException;
  * 
  * Exceptions caused by warnings are suppressed (but written to the log if level is set to WARN).<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Michael Emmerich 
+ * @version $Revision: 1.4 $
  */
 public class CmsXmlErrorHandler implements ErrorHandler {
 

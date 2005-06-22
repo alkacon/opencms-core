@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClearThread.java,v $
- * Date   : $Date: 2005/06/02 08:46:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,9 +42,9 @@ import org.opencms.report.I_CmsReport;
 /**
  * Clears the file history of the OpenCms database.<p>
  * 
- * @author  Andreas Zahner (a.zahner@alkacon.com)
+ * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1.12
  */
 public class CmsAdminHistoryClearThread extends A_CmsReportThread {

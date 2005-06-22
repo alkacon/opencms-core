@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2005/06/19 10:57:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,9 +64,9 @@ import javax.servlet.jsp.PageContext;
 /**
  * Dialog to edit new and existing group in the administration view.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
+ * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.9.1
  */
 public class CmsEditGroupDialog extends CmsWidgetDialog {

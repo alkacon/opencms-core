@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2005/06/17 15:26:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import javax.servlet.jsp.PageContext;
  * <li>/system/workplace/administration/history/clearhistory/index.html
  * </ul>
  *
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,10 +58,10 @@ import org.apache.commons.logging.Log;
  * The macro names that can be resolved depend of the context objects provided to the resolver
  * using the <code>set...</code> methods.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Thomas Weckert  
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 6.0 alpha 3
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {

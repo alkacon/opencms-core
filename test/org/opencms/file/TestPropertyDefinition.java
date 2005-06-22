@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPropertyDefinition.java,v $
- * Date   : $Date: 2005/06/21 15:52:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,8 @@ import junit.framework.TestSuite;
  * Unit test for the "createPropertyDefinition", "readPropertyDefiniton" and
  * "readAllPropertyDefintions" methods of the CmsObject.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author Michael Emmerich 
+ * @version $Revision: 1.3 $
  */
 public class TestPropertyDefinition extends OpenCmsTestCase {
 

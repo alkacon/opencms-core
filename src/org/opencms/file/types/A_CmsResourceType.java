@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/05/31 14:38:39 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,10 +62,10 @@ import org.apache.commons.logging.Log;
 /**
  * Base implementation for resource type classes.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Thomas Weckert  
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {

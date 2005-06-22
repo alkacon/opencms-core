@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2005/05/19 16:27:33 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,9 +44,9 @@ import org.opencms.main.OpenCms;
  * system default encoding, but this can be overwritten by 
  * a configuration parameters set in <code>opencms-vfs.xml</code>.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 

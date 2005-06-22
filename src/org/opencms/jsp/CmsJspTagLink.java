@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:12 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,8 +48,8 @@ import org.apache.commons.logging.Log;
  * management and the static 
  * export to work properly.<p>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.11 $
  */
 public class CmsJspTagLink extends BodyTagSupport {
 

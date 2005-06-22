@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,10 +90,10 @@ import org.xml.sax.SAXException;
  * It will also contain a <code>manifest.xml</code> file in wich all meta-information 
  * about this files are stored, like permissions etc.
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.70 $ $Date: 2005/06/21 15:49:58 $
+ * @version $Revision: 1.71 $ $Date: 2005/06/22 10:38:11 $
  */
 public class CmsExport implements Serializable {
 

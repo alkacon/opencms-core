@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/06/21 11:05:17 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,8 +77,8 @@ import org.apache.commons.collections.ExtendedProperties;
  * If a method name is ambiguous, i.e. the method name with the same numer of parameter exist 
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.38 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.39 $
  * 
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext

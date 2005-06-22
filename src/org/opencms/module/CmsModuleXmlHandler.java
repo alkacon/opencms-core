@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/06/13 10:00:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.dom4j.Element;
 /**
  * Adds the XML handler rules for import and export of a single module.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * @since 5.3.6
  */
 public class CmsModuleXmlHandler {

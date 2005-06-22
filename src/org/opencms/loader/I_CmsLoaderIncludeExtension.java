@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsLoaderIncludeExtension.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,9 +42,9 @@ import javax.servlet.ServletResponse;
  * Allows extensions to the default include mechanism, 
  * these might be required for the handling of special resource types.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  * @see org.opencms.jsp.CmsJspTagInclude#includeTagAction(javax.servlet.jsp.PageContext, String, String, boolean, Map, ServletRequest, ServletResponse)
  */

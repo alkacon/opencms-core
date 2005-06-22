@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2005/04/29 16:02:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,8 +60,8 @@ import org.apache.commons.logging.Log;
  * 
  * This handler exports all changes immediately after something is published.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.9 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  * @see I_CmsStaticExportHandler
  */

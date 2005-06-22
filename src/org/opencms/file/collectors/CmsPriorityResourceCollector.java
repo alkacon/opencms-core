@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityResourceCollector.java,v $
- * Date   : $Date: 2005/05/19 09:54:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,9 +47,9 @@ import java.util.List;
  * 
  * The date or title information has to be stored as property for each resource.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.7.2
  */

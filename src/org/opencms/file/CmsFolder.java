@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2005/05/19 07:15:14 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,10 +43,12 @@ import java.io.Serializable;
  * 
  * A folder object is a CmsResource object that can contain sub-resources.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.26 
+ * @version $Revision: 1.16 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsFolder extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -138,7 +140,9 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         try {
             return OpenCms.getResourceManager().getResourceType(typeId).isFolder();
         } catch (CmsLoaderException e) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_UNKNOWN_RESOURCE_TYPE_1, new Integer(typeId)), e);
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_UNKNOWN_RESOURCE_TYPE_1,
+                new Integer(typeId)), e);
         }
     }
 
@@ -154,7 +158,9 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         try {
             return OpenCms.getResourceManager().getResourceType(typeName).isFolder();
         } catch (CmsLoaderException e) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_UNKNOWN_RESOURCE_TYPE_1, typeName), e);
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_UNKNOWN_RESOURCE_TYPE_1,
+                typeName), e);
         }
     }
 

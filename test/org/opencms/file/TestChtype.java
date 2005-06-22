@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChtype.java,v $
- * Date   : $Date: 2005/03/17 10:32:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,8 @@ import junit.framework.TestSuite;
 /**
  * Unit test for the "chtype" method of the CmsObject.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @author Michael Emmerich 
+ * @version $Revision: 1.6 $
  */
 public class TestChtype extends OpenCmsTestCase {
   

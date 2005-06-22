@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/06/21 11:05:17 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
 /**
  * Provides File utility functions.<p>
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Alexander Kandzior 
  * @since 5.5.0
  */
 public final class CmsFileUtil {

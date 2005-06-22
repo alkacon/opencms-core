@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerException.java,v $
- * Date   : $Date: 2005/05/12 13:31:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.main.CmsException;
 /**
  * Describes errors that occur in the context of the OpenCms scheduler.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * @since 5.7.3
  */
 public class CmsSchedulerException extends CmsException {

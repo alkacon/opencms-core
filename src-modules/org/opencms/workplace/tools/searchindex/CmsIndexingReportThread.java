@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2005/06/02 15:53:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.4 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -57,9 +57,10 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 /**
  * Implements methods to utilize a report thread for <code>CmsIndexingReport</code>.<p>
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Carsten Weinholz 
+ * @version $Revision: 1.4 $
  * @since 5.3.1
+ * @param Illegal old header!!!
  */
 public class CmsIndexingReportThread extends A_CmsReportThread {
 

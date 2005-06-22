@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/06/02 13:57:07 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,8 +65,8 @@ import org.apache.commons.fileupload.FileItem;
  * <li>/commons/newresource_upload.jsp
  * </ul>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.14 $
  * 
  * @since 5.3.3
  */

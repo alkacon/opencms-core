@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/05/03 12:37:35 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,8 +72,8 @@ import javax.servlet.jsp.PageContext;
  * and written to the log output only, so that a template still has a chance of
  * working at last in some elements.<p>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.18 $
  * 
  * @since 5.0 beta 2
  */

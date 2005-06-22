@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentErrorHandler.java,v $
- * Date   : $Date: 2005/05/23 09:36:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,9 +43,9 @@ import org.apache.commons.logging.Log;
 /**
  * Handler for issues found during XML content validation.<p> 
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.4
  */
 public class CmsXmlContentErrorHandler {

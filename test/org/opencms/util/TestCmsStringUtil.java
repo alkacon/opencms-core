@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsStringUtil.java,v $
- * Date   : $Date: 2005/03/20 13:46:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,8 @@ import junit.framework.TestCase;
 /** 
  * Test cases for {@link org.opencms.util.CmsStringUtil}.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.7 $
  */
 public class TestCmsStringUtil extends TestCase {
 

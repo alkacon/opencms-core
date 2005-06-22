@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/I_CmsListDirectAction.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,8 @@ import org.opencms.workplace.CmsWorkplace;
  * Interface for list direct action, that is an action that may be applied
  * directly on a list item.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public interface I_CmsListDirectAction extends I_CmsListAction {

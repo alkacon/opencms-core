@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlConverter.java,v $
- * Date   : $Date: 2005/05/11 17:54:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import org.opencms.test.OpenCmsTestCase;
 import java.io.File;
 
 /** 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author Michael Emmerich 
+ * @version $Revision: 1.5 $
  */
 public class TestCmsHtmlConverter extends OpenCmsTestCase  {
     

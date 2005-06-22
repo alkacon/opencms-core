@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchSimilarity.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,8 @@ import org.apache.lucene.search.DefaultSimilarity;
  * 
  * Inspired by Chuck Williams WikipediaSimilarity.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.2 $
  * @since 5.7.2
  */
 public class CmsSearchSimilarity extends DefaultSimilarity {

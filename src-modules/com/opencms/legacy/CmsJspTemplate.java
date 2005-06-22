@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,9 @@ import javax.servlet.http.HttpServletResponse;
  * the use of JSP as sub-elements in the legacy OpenCms XMLTemplate 
  * mechanism.<p>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.0 beta 1
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.

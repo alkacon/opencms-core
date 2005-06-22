@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsDataNotImplementedException.java,v $
- * Date   : $Date: 2005/05/19 15:24:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,12 +36,13 @@ import org.opencms.main.CmsException;
 
 /**
  * Signals that an attempt to call a method has failed since it is not implemented.
- * This exception may be thrown by various driver implementation classes. 
+ * This exception may be thrown by various driver implementation classes. <p>
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.3 $ 
- * @since 5.1.2
+ * @version $Revision: 1.4 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsDataNotImplementedException extends CmsDataAccessException {
 

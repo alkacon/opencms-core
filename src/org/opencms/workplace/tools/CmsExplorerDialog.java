@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsExplorerDialog.java,v $
- * Date   : $Date: 2005/06/15 09:27:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Dialog for explorer views in the administration view.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Michael Moossen 
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsExplorerDialog extends CmsDialog {

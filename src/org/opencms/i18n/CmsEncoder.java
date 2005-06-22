@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2005/06/18 08:34:55 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * <code>decodeURIComponent</code> functions wich are work properly with unicode characters.
  * These functions are supported in IE 5.5+ and NS 6+ only.
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  */
 public final class CmsEncoder {
 

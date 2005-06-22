@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestSiteConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,9 +45,9 @@ import junit.framework.TestSuite;
 /**
  * Unit tests for site configuration.<p>
  * 
- * @author Armen Markarian (a.markarian@alkacon.com)
+ * @author Armen Markarian 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestSiteConfiguration extends OpenCmsTestCase {
   

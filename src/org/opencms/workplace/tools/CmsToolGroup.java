@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolGroup.java,v $
- * Date   : $Date: 2005/05/24 12:57:12 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,8 +42,8 @@ import java.util.List;
  * This is an admin tool group, it just generates the html code for
  * the group structure.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.6 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsToolGroup {

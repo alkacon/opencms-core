@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/I_CmsResourceCollector.java,v $
- * Date   : $Date: 2005/05/19 09:54:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,9 +40,9 @@ import java.util.List;
 /**
  * A collector that generates list of {@link org.opencms.file.CmsResource} objects from the VFS.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.2
  */
 public interface I_CmsResourceCollector extends Comparable {

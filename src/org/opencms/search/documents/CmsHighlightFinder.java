@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightFinder.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -109,7 +109,7 @@ class FragmentQueue extends PriorityQueue {
 }
 
 /**
- * Adapted from Maik Schreiber's LuceneTools.java,v 1.5 2001/10/16 07:25:55.
+ * Adapted from Maik Schreiber's LuceneTools.java,v 1.5 2001/10/16 07:25:55. 
  * 
  * Alterations include:
  *  + Changed to support Lucene 1.3 release (requires no change to Lucene code
@@ -120,8 +120,7 @@ class FragmentQueue extends PriorityQueue {
  *  + New feature: can extract the most relevant parts of large bodies of text -
  * with user defined size of extracts
  * 
- * @author Maik Schreiber (mailto: bZ@iq-computing.de) /Mark Harwood
- *         (mark@searcharea.co.uk)
+ * @author Maik Schreiber 
  */
 public final class CmsHighlightFinder {
     

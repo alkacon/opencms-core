@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,8 +63,8 @@ import org.apache.commons.logging.Log;
  * 
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.12
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchCategoryCollector.java,v $
- * Date   : $Date: 2005/04/28 08:28:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import org.apache.lucene.search.IndexSearcher;
  * Be especially careful if your search result list can become large (> 1000 documents), since in this case
  * overall system performance will certainly be impacted considerably when calculating the categories.<p> 
  * 
- * @version $Revision: 1.2 $
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.3 $
+ * @author Alexander Kandzior 
  * @since 5.3.1
  */
 public class CmsSearchCategoryCollector extends HitCollector {

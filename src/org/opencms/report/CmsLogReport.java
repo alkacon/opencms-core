@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
- * Date   : $Date: 2005/06/01 12:36:12 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,9 @@ import java.util.Locale;
  * 
  * This prints all messages in the logfile at INFO level.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.14 $
+ * @author Alexander Kandzior 
+ * @author Jan Baudisch 
+ * @version $Revision: 1.15 $
  */
 public class CmsLogReport extends A_CmsReport {
 

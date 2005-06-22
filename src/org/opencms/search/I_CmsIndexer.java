@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/I_CmsIndexer.java,v $
- * Date   : $Date: 2005/03/04 13:42:37 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,9 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Interface for an indexer indexing Cms resources.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2005/03/04 13:42:37 $
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.9 $ $Date: 2005/06/22 10:38:15 $
+ * @author Carsten Weinholz 
+ * @author Thomas Weckert  
  */
 public interface I_CmsIndexer {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2005/06/15 08:55:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,9 +49,9 @@ import org.apache.commons.logging.Log;
 /**
  * Generates the html gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
- * @author Armen Markarian (a.markarian@alkacon.com)
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @author Armen Markarian 
+ * @author Andreas Zahner 
+ * @version $Revision: 1.11 $
  * 
  * @since 5.5.2
  */

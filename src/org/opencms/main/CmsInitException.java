@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsInitException.java,v $
- * Date   : $Date: 2005/05/11 10:22:41 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * If an Exception of this class is thrown, OpenCms is set to an error state and 
  * the system won't try to start up again.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * @since 5.7.3
  */
 public class CmsInitException extends CmsRuntimeException {

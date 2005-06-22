@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,8 +72,8 @@ import javax.servlet.jsp.PageContext;
  * Remember to set the Flex cache settings of the navigation elements to consider these
  * request parameters.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.19 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
 

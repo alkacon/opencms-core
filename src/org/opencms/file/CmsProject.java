@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,10 +41,12 @@ import java.util.List;
 /**
  * Describes an OpenCms project.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Michael Emmerich 
  *
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsProject implements Cloneable {
 
@@ -274,17 +276,6 @@ public class CmsProject implements Cloneable {
     }
 
     /**
-     * Sets the user group id of this project.<p>
-     *
-     * @param id the user group id of this project
-     */
-    public void setGroupId(CmsUUID id) {
-
-        CmsUUID.checkId(id, false);
-        m_groupUsersId = id;
-    }
-
-    /**
      * Returns the id of this project.<p>
      *
      * @return the id of this project
@@ -302,17 +293,6 @@ public class CmsProject implements Cloneable {
     public CmsUUID getManagerGroupId() {
 
         return m_groupManagersId;
-    }
-
-    /**
-     * Sets the manager group id of this project.<p>
-     *
-     * @param id the manager group id of this project
-     */
-    public void setManagerGroupId(CmsUUID id) {
-
-        CmsUUID.checkId(id, false);
-        m_groupManagersId = id;
     }
 
     /**
@@ -418,6 +398,28 @@ public class CmsProject implements Cloneable {
     public void setFlags(int flags) {
 
         m_flags = flags;
+    }
+
+    /**
+     * Sets the user group id of this project.<p>
+     *
+     * @param id the user group id of this project
+     */
+    public void setGroupId(CmsUUID id) {
+
+        CmsUUID.checkId(id, false);
+        m_groupUsersId = id;
+    }
+
+    /**
+     * Sets the manager group id of this project.<p>
+     *
+     * @param id the manager group id of this project
+     */
+    public void setManagerGroupId(CmsUUID id) {
+
+        CmsUUID.checkId(id, false);
+        m_groupManagersId = id;
     }
 
     /**

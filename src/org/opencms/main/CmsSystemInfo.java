@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,9 +49,9 @@ import java.util.Properties;
  * requests that begin with the /catalog request path, known as the <b>context path</b>, are
  * routed to the <b>web application</b> associated with the ServletContext.</i><p>   
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * @since 5.3
  */
 public class CmsSystemInfo {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractorMsOfficeBase.java,v $
- * Date   : $Date: 2005/03/30 10:49:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 /**
  * Base class to extract summary information from MS office documents.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
  * @since 5.7.2
  */

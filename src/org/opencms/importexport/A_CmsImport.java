@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,8 +82,8 @@ import org.dom4j.Element;
  * This class does not implement a real OpenCms import, real import implmentation should be 
  * inherited form this class.<p>
  *
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Michael Emmerich 
+ * @author Thomas Weckert  
  * 
  * @see org.opencms.importexport.I_CmsImport
  */

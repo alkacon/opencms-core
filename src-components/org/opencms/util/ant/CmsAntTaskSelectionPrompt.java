@@ -8,8 +8,8 @@ import javax.swing.UIManager;
  * 
  * Task that prompts user for selection to allow interactive builds.<p>
  *
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.3 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.4 $
  * @since 5.7.3
  */
 public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {

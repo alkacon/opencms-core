@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsResourceTranslator.java,v $
- * Date   : $Date: 2005/04/26 13:01:37 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,8 +78,8 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * s#!+#x#g
  * </pre><p>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.19 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator {

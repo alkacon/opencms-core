@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsPowerPoint.java,v $
- * Date   : $Date: 2005/03/27 20:37:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.poi.util.LittleEndian;
 /**
  * Extracts the text form an MS PowerPoint document.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
  * @since 5.7.2
  */

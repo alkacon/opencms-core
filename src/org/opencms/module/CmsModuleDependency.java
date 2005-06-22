@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleDependency.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package org.opencms.module;
  * If a module A requires certain resources (like Java classes) 
  * from another module B, a should be made dependend on B.<p>
  
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * @since 5.3.6
  */
 public class CmsModuleDependency implements Comparable {

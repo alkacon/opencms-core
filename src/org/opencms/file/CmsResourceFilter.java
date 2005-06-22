@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2005/03/16 16:44:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,12 +42,13 @@ import org.opencms.main.I_CmsConstants;
  * there can be deleted files, by using this filter you can control
  * if deleted files should be included in a result set or not.<p> 
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkaconc.om)
+ * @author Michael Emmerich 
+ * @author Alexander Kandzior 
+ * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14 $
- * @since 5.3.5
+ * @version $Revision: 1.15 $
+ * 
+ * @since 6.0.0 
  */
 public final class CmsResourceFilter {
 
@@ -125,10 +126,10 @@ public final class CmsResourceFilter {
      * </ul> 
      */
     public static final CmsResourceFilter ONLY_VISIBLE_NO_DELETED = ONLY_VISIBLE.addExcludeState(I_CmsConstants.C_STATE_DELETED);
-    
+    private static final int EXCLUDED = 2;
+
     private static final int IGNORED = 0;
     private static final int REQUIRED = 1;
-    private static final int EXCLUDED = 2;
 
     /** The cache id for this filter. */
     private String m_cacheId;
@@ -428,7 +429,7 @@ public final class CmsResourceFilter {
 
         return m_modifiedBefore;
     }
-    
+
     /**
      * Returns the state of the "only folders" flag.<p>
      * 
@@ -437,7 +438,7 @@ public final class CmsResourceFilter {
      * @return the state of the "only folders" flag
      */
     public Boolean getOnlyFolders() {
-        
+
         return m_onlyFolders;
     }
 
@@ -505,7 +506,7 @@ public final class CmsResourceFilter {
                 }
                 break;
             default:
-                // ignored
+        // ignored
         }
 
         // check for required resource type
@@ -521,7 +522,7 @@ public final class CmsResourceFilter {
                 }
                 break;
             default:
-                // ignored
+        // ignored
         }
 
         if (m_onlyFolders != null) {
@@ -550,8 +551,7 @@ public final class CmsResourceFilter {
 
         // check if the resource is currently released and not expired
         if (m_filterTimerange
-            && ((resource.getDateReleased() > context.getRequestTime()) || (resource.getDateExpired() < context
-                .getRequestTime()))) {
+            && ((resource.getDateReleased() > context.getRequestTime()) || (resource.getDateExpired() < context.getRequestTime()))) {
             return false;
         }
 
@@ -621,7 +621,7 @@ public final class CmsResourceFilter {
                 result.append(m_state);
                 break;
             default:
-                // ignored
+        // ignored
         }
         switch (m_filterType) {
             case REQUIRED:
@@ -633,7 +633,7 @@ public final class CmsResourceFilter {
                 result.append(m_type);
                 break;
             default:
-                // ignored
+        // ignored
         }
         if (m_onlyFolders != null) {
             if (m_onlyFolders.booleanValue()) {

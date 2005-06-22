@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/CmsReInitWorkplace.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Provides an output window for re-initialization of the OpenCms Workplace.<p> 
  *
- * @author  Michael Emmerich(m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author  Michael Emmerich
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.10
  */

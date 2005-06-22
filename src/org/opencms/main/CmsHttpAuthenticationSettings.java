@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsHttpAuthenticationSettings.java,v $
- * Date   : $Date: 2005/04/26 13:20:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,8 @@ import org.opencms.workplace.I_CmsWpConstants;
  * are able to specify different authentication forms in a property "login-form" on
  * resources that require authentication.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Thomas Weckert  
+ * @version $Revision: 1.2 $
  */
 public class CmsHttpAuthenticationSettings {
     

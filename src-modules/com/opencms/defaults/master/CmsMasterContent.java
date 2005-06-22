@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2005/06/21 15:50:00 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/22 10:38:32 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,8 +60,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.2 $
- * $Date: 2005/06/21 15:50:00 $
+ * $Revision: 1.3 $
+ * $Date: 2005/06/22 10:38:32 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -144,7 +144,7 @@ public abstract class CmsMasterContent
     }
     
     /**
-     * TESTFIX (a.kandzior@alkacon.com) New code:
+     * TESTFIX  New code:
      * Empty constructor needed for instanciating CDs as JavaBeans on JSPs.
      */    
     public CmsMasterContent() {}

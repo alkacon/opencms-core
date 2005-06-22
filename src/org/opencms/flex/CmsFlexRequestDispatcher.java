@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/06/19 10:55:31 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/22 10:38:17 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,8 +61,8 @@ import org.apache.commons.logging.Log;
  * <li>From the Flex cache
  * </ol>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.35 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.36 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
 

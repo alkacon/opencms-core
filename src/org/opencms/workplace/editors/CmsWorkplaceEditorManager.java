@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2005/05/20 14:31:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,8 +64,8 @@ import org.apache.commons.logging.Log;
  * <li>the editor rankings</li>
  * </ul>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.1
  */

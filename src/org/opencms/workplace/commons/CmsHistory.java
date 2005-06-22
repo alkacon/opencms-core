@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2005/06/15 08:55:38 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,8 +55,8 @@ import javax.servlet.jsp.PageContext;
  * <li>/commons/history.jsp
  * </ul>
  *
- * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.12 $
+ * @author  Armen Markarian 
+ * @version $Revision: 1.13 $
  * 
  * @since 5.5.1
  */

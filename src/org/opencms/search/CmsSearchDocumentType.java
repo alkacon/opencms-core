@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchDocumentType.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,8 @@ import java.util.List;
  * for OpenCms documents matching the specified resource type and/or mimetype combination 
  * in a document factory class instance.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @author Thomas Weckert  
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsSearchDocumentType implements Serializable, Cloneable {

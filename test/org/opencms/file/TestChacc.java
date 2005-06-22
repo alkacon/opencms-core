@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2005/04/24 11:20:31 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,8 @@ import org.opencms.test.OpenCmsTestResourceFilter;
 /**
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.11 $
+ * @author Michael Emmerich 
+ * @version $Revision: 1.12 $
  */
 public class TestChacc extends OpenCmsTestCase {
   

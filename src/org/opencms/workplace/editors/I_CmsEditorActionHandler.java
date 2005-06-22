@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import javax.servlet.jsp.JspException;
  * changing the &lt;class&gt; subnode of the system node &lt;editoraction&gt; to another value. 
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.0
  */

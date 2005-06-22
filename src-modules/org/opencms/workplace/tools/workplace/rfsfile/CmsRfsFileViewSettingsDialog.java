@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileViewSettingsDialog.java,v $
- * Date   : $Date: 2005/06/17 09:28:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,8 +59,8 @@ import javax.servlet.jsp.PageContext;
  * modification of the properties of the
  * <code>{@link org.opencms.util.CmsRfsFileViewer}</code> bean.<p>
  * 
- * @author  Achim Westermann (a.westermann@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author  Achim Westermann 
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  *  

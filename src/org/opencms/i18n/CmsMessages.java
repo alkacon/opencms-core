@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/06/19 10:57:08 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,8 @@ import java.util.ResourceBundle;
  * so that a template always execute. The class provides an {@link #isInitialized()} method
  * that can be checked to see if the instance was properly initialized.
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.17 $
  * 
  * @since 5.0 beta 2
  */

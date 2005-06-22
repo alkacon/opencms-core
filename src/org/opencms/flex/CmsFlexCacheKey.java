@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2005/04/24 11:20:30 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 10:38:17 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import org.apache.commons.logging.Log;
  * It has a lot of variables that are directly accessed (which isn't good style, I know)
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.17 $
  */
 public class CmsFlexCacheKey {
 

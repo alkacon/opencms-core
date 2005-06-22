@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
- * Date   : $Date: 2005/06/10 09:56:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,9 @@ import org.opencms.i18n.CmsEncoder;
 /**
  * Provides a display only widget, for use on a widget dialog.<p>
  *
- * @author Michael Moossen (m.moossen@alkacon.com)
+ * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsDisplayWidget extends A_CmsWidget {

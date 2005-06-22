@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,8 +64,8 @@ import org.apache.commons.logging.Log;
  * <li>/commons/displayresource.jsp
  * </ul>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.8 $
  */
 public class CmsDisplayResource extends CmsDialog {
 

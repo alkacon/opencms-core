@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2005/05/20 08:54:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,8 +69,8 @@ import org.apache.commons.logging.Log;
  * If no configuration file can be found for the current user, 
  * all display options will be disabled by default.<p>
  *
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.14
  */

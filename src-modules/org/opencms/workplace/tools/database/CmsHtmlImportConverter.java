@@ -62,9 +62,9 @@ import org.w3c.tidy.Tidy;
  * This class implements Html-converting routines based on tidy to modify the
  * Html code of the imported Html pages.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsHtmlImportConverter {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2005/05/19 08:57:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,8 @@ import java.util.Vector;
 /**
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @author Thomas Weckert  
+ * @version $Revision: 1.4 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

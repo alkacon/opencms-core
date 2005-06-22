@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.131 $
+ * Date   : $Date: 2005/06/22 10:38:17 $
+ * Version: $Revision: 1.132 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,8 +84,8 @@ import org.apache.commons.logging.Log;
  * Master class for the JSP based workplace which provides default methods and
  * session handling for all JSP workplace classes.<p>
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.131 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.132 $
  * 
  * @since 5.1
  */

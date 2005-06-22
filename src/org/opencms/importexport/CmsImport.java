@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,12 +71,12 @@ import org.dom4j.Element;
  * Holds the functionaility to import resources from the filesystem
  * or a zip file into the OpenCms VFS.
  *
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Andreas Zahner 
+ * @author Alexander Kandzior 
+ * @author Michael Emmerich 
+ * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33 $ $Date: 2005/06/21 15:49:58 $
+ * @version $Revision: 1.34 $ $Date: 2005/06/22 10:38:11 $
  */
 public class CmsImport implements Serializable {
 

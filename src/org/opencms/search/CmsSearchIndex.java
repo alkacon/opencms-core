@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/04/28 08:28:48 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,11 +68,11 @@ import org.apache.lucene.search.TermQuery;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Carsten Weinholz 
+ * @author Thomas Weckert  
+ * @author Alexander Kandzior 
  * 
  * @since 5.3.1
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2005/06/09 15:44:50 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,8 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Jan Baudisch (j.baudisch@alkacon.com)
+ * @author Thomas Weckert  
+ * @author Jan Baudisch 
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {

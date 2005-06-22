@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestBackup.java,v $
- * Date   : $Date: 2005/05/09 15:47:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,8 @@ import junit.framework.TestSuite;
 /**
  * Unit tests for backup operation.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Thomas Weckert  
+ * @version $Revision: 1.2 $
  */
 public class TestBackup extends OpenCmsTestCase {
 

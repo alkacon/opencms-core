@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsTermHighlighterHtml.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.search.documents;
 /**
  * HTML Highlighter implementation used while generation excerpts.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2005/03/23 19:08:22 $
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.2 $ $Date: 2005/06/22 10:38:16 $
+ * @author Carsten Weinholz 
  */
 public class CmsTermHighlighterHtml implements I_CmsTermHighlighter {
 

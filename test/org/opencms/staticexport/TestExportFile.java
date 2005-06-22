@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestExportFile.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /** 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.9 $
+ * @author Carsten Weinholz 
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */

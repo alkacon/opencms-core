@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,8 +61,8 @@ import org.apache.commons.logging.Log;
  * 
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1.12
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/06/22 08:24:22 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,12 +46,24 @@ import java.util.Map;
 /**
  * A user in the OpenCms system.<p>
  *
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Michael Emmerich 
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
+
+    /**
+     * A user-type system user.
+     */
+    public static final int USER_TYPE_SYSTEMUSER = 0;
+
+    /**
+     * A user-type web user.
+     */
+    public static final int USER_TYPE_WEBUSER = 2;
 
     /** A storage for additional user information. */
     private Map m_additionalInfo;
@@ -96,16 +108,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      * USER_TYPE_WEBUSER for webuser.
      */
     private int m_type;
-
-    /**
-     * A user-type system user.
-     */
-    public static final int USER_TYPE_SYSTEMUSER = 0;
-
-    /**
-     * A user-type web user.
-     */
-    public static final int USER_TYPE_WEBUSER = 2;
 
     /**
      * Creates a new empty CmsUser object.<p>

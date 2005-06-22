@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2005/06/15 08:55:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,9 +45,9 @@ import javax.servlet.jsp.PageContext;
 /**
  * Generates the image gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.8 $
+ * @author Andreas Zahner 
+ * @author Armen Markarian 
+ * @version $Revision: 1.9 $
  * 
  * @since 5.5.2
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Messages.java,v $
- * Date   : $Date: 2005/06/22 07:16:17 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
+ * @author Michael Moossen 
  * @since 5.7.3
  */
 public final class Messages extends A_CmsMessageBundle {
@@ -79,7 +79,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITOR_CRONCLASS_SEARCHINDEX_0 = "GUI_EDITOR_CRONCLASS_SEARCHINDEX_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_CRONCLASS_STATICEXPORT_0 = "GUI_EDITOR_CRONCLASS_EXAMPLE5_0";
+    public static final String GUI_EDITOR_CRONCLASS_STATICEXPORT_0 = "GUI_EDITOR_CRONCLASS_STATICEXPORT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CRONJOB_EXAMPLE1_0 = "GUI_EDITOR_CRONJOB_EXAMPLE1_0";

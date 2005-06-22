@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsStaticExportJob.java,v $
- * Date   : $Date: 2005/06/05 14:06:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,8 +49,8 @@ import javax.servlet.ServletException;
  * 
  * This job does not have any parameters.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Thomas Weckert  
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  */

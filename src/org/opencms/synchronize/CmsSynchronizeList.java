@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeList.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,8 @@ import java.io.Serializable;
  * required to synchronize the VFS and the server FS.<p> 
  *
  * @author Edna Falkenhan
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2005/02/17 12:44:32 $
+ * @author Michael Emmerich 
+ * @version $Revision: 1.8 $ $Date: 2005/06/22 10:38:11 $
  */
 public class CmsSynchronizeList implements Serializable {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2005/05/20 16:53:12 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import org.quartz.impl.StdSchedulerFactory;
 /** 
  * Test cases for the OpenCms scheduler thread pool.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/TestCmsFlexCacheEntry.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import junit.framework.TestCase;
 /**
  * Tests for the CmsFlexCacheEntry.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author Michael Emmerich 
+ * @version $Revision: 1.3 $
  */
 public class TestCmsFlexCacheEntry extends TestCase {
 

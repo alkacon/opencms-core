@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2005/06/21 15:49:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,8 +52,8 @@ import java.util.Vector;
  * This class provides some common functions and methods shared among all 
  * workplace gallery implementations.
  *
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author  Alexander Kandzior 
+ * @version $Revision: 1.3 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

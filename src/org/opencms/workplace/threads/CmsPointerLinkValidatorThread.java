@@ -41,9 +41,9 @@ import org.apache.commons.logging.Log;
 /**
  * Thread for extern link validation. <p>
  * 
- * @author Jan Baudisch (j.baudisch@alkacon.com)
+ * @author Jan Baudisch 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsPointerLinkValidatorThread extends A_CmsReportThread {
     

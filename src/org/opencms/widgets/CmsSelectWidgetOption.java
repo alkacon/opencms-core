@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidgetOption.java,v $
- * Date   : $Date: 2005/06/14 12:19:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,8 +88,8 @@ import org.apache.commons.logging.Log;
  * Please note: If an entry in the configuration String is malformed, this error is silently ignored (but written 
  * to the log channel of this class at <code>INFO</code>level.<p>
  * 
- * @author Alexander Kandzior (a.kanzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  */

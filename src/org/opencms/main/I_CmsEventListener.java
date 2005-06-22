@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2005/05/17 14:15:09 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,9 +58,9 @@ package org.opencms.main;
  * }
  * </pre>
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent

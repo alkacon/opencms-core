@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsException.java,v $
- * Date   : $Date: 2005/06/19 10:57:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,9 @@ import org.opencms.main.CmsException;
 /**
  * Used to signal issues with the real local file system (RFS), for example during file access.<p> 
  * 
- * @author Achim Westermann (a.westermann@alkacon.com)  
+ * @author Achim Westermann   
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsRfsException extends CmsException {

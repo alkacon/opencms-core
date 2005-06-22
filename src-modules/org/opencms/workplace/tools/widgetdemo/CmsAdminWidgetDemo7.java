@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo7.java,v $
- * Date   : $Date: 2005/05/19 16:08:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,9 +51,9 @@ import javax.servlet.jsp.PageContext;
  * A basic example and proof-of-concept on how to use OpenCms widgets within a custom build form
  * without XML contents.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.9.1
  */
 public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {

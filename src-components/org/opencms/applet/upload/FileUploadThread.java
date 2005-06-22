@@ -3,8 +3,8 @@ package org.opencms.applet.upload;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadThread.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package org.opencms.applet.upload;
 /**
  * File Upload Applet Thread, creates the upload animation.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Michael Emmerich 
  */
 public class FileUploadThread extends Thread {
 

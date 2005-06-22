@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,11 +74,11 @@ import org.apache.commons.logging.Log;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.51 $ $Date: 2005/06/13 10:00:02 $
+ * @version $Revision: 1.52 $ $Date: 2005/06/22 10:38:20 $
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Carsten Weinholz 
+ * @author Michael Emmerich 
+ * @author Alexander Kandzior 
  */
 public class CmsMemoryMonitor implements I_CmsScheduledJob {
 

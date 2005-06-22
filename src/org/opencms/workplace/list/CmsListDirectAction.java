@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDirectAction.java,v $
- * Date   : $Date: 2005/06/21 15:54:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,8 +41,8 @@ import java.text.MessageFormat;
 /**
  * Default implementation of a direct action for a html list column.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.11 $
  * @since 5.7.3
  */
 public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDirectAction {

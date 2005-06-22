@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsComboWidget.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,10 +50,10 @@ import java.util.List;
  * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getHelp()}</code> to display an (optional) help text for the combo option
  * </ul>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Andreas Zahner 
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.3
  */
 public class CmsComboWidget extends A_CmsSelectWidget {

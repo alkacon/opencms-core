@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2005/04/15 15:51:08 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,9 +42,9 @@ import org.apache.lucene.document.Document;
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.20 $ $Date: 2005/04/15 15:51:08 $
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.21 $ $Date: 2005/06/22 10:38:16 $
+ * @author Carsten Weinholz 
+ * @author Thomas Weckert  
  */
 public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
 

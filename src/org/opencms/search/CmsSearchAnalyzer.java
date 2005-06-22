@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchAnalyzer.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,8 @@ import java.io.Serializable;
  * An analyzer class is used by Lucene to reduce the content to be indexed
  * with trimmed endings etc.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @author Thomas Weckert  
+ * @version $Revision: 1.5 $
  * @since 5.3.6
  */
 public class CmsSearchAnalyzer implements Serializable, Cloneable {

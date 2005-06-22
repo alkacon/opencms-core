@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2005/03/29 18:01:40 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,9 +52,9 @@ import junit.framework.TestSuite;
 /**
  * Unit tests for special publish issues.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>

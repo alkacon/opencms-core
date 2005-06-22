@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,10 +52,10 @@ import org.htmlparser.util.ParserException;
 /**
  * Handles the link replacement required e.g. to process elements for XML pages.<p>
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Carsten Weinholz 
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * @since 5.3
  */
 public class CmsLinkProcessor {

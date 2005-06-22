@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,8 @@ import org.opencms.util.CmsUUID;
 /**
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.13 $
+ * @author Michael Emmerich 
+ * @version $Revision: 1.14 $
  */
 public class OpenCmsTestResourceStorageEntry {
 

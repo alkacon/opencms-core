@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsMacroResolver.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,8 +41,8 @@ import junit.framework.TestCase;
 /** 
  * Test cases for {@link org.opencms.util.CmsMacroResolver}.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com}
- * @version $Revision: 1.5 $
+ * @author Alexander Kandzior 
+ * @version $Revision: 1.6 $
  */
 public class TestCmsMacroResolver extends TestCase {
       

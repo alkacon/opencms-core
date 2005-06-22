@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminFrameset.java,v $
- * Date   : $Date: 2005/05/11 10:51:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,8 +51,8 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  * <p>
  *
- * @author  Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author  Michael Moossen 
+ * @version $Revision: 1.2 $
  * @since 5.7.3
  */
 public class CmsAdminFrameset extends CmsToolDialog {

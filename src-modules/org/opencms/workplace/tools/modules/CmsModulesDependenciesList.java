@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesDependenciesList.java,v $
- * Date   : $Date: 2005/06/21 15:54:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,8 +63,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Module dependencies view.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.7 $
+ * @author Michael Emmerich  
+ * @version $Revision: 1.8 $
  * @since 5.7.3
  */
 public class CmsModulesDependenciesList extends A_CmsListDialog {

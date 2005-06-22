@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/22 07:20:03 $
- * Version: $Revision: 1.203 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.204 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -123,10 +123,10 @@ import org.apache.commons.logging.Log;
  * OpenCms is accessed through a servlet context, there will be only one instance of 
  * this class in that servlet context.<p>
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.203 $
- * @version $Revision: 1.203 $
+ * @version $Revision: 1.204 $
+ * @version $Revision: 1.204 $
  * @since 5.1
  */
 public final class OpenCmsCore {

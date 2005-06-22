@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourcePointer.java,v $
- * Date   : $Date: 2005/06/02 13:57:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,8 @@ import javax.servlet.jsp.PageContext;
  * <li>/commons/newresource_pointer.jsp
  * </ul>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @author Andreas Zahner 
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.3
  */

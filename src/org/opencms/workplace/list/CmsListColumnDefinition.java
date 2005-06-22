@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/06/21 15:54:15 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,8 +48,8 @@ import java.util.Locale;
 /**
  * Html list column definition.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.16 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.17 $
  * @since 5.7.3
  */
 public class CmsListColumnDefinition {

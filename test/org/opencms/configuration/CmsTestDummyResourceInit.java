@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestDummyResourceInit.java,v $
- * Date   : $Date: 2005/05/20 09:13:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Just a dummy implementation of the I_CmsResourceInit  interface.
  * 
- *  @author  Michael Emmerich (m.emmerich@alkacon.com)
+ *  @author  Michael Emmerich 
  */
 public class CmsTestDummyResourceInit implements I_CmsResourceInit {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2005/06/09 12:46:16 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,9 +76,9 @@ import org.xml.sax.SAXException;
  * Use the {@link org.opencms.xml.content.CmsXmlContentFactory} to generate an
  * instance of this class.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {

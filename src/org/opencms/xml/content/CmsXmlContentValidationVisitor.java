@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValidationVisitor.java,v $
- * Date   : $Date: 2005/05/23 09:36:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,9 +43,9 @@ import org.apache.commons.logging.Log;
  * This class is used when {@link org.opencms.xml.content.CmsXmlContent#validate(CmsObject)} 
  * is called validate a XML content object.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.4
  */
 class CmsXmlContentValidationVisitor implements I_CmsXmlContentValueVisitor {

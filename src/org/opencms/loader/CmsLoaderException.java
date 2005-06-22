@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsLoaderException.java,v $
- * Date   : $Date: 2005/05/18 08:41:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,10 @@ import org.opencms.main.CmsException;
 /**
  * Signals exceptions occuring during the resource loading process.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Jan Baudisch (j.baudisch@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Jan Baudisch 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.3
  */
 public class CmsLoaderException extends CmsException {

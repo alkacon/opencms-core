@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestGroupOperations.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,9 +43,9 @@ import junit.framework.TestSuite;
 /**
  * Unit tests for basic group operations without test import.<p>
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestGroupOperations extends OpenCmsTestCase {
   

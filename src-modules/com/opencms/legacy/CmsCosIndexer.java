@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2005/06/16 16:56:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,9 +63,9 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.6 $ $Date: 2005/06/16 16:56:21 $
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.7 $ $Date: 2005/06/22 10:38:16 $
+ * @author Carsten Weinholz 
+ * @author Thomas Weckert  
  * @since 5.3.1
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.

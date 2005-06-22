@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsException.java,v $
- * Date   : $Date: 2005/05/19 07:15:14 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,11 +37,13 @@ import org.opencms.main.CmsException;
 /**
  * Used to signal VFS related issues, for example during file access.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Michael Moossen (a.kandzior@alkacon.com)
- * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.11 $
- * @since 5.1.4
+ * @author Alexander Kandzior 
+ * @author Michael Moossen 
+ * @author Jan Baudisch 
+ * 
+ * @version $Revision: 1.12 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsVfsException extends CmsDataAccessException {
 

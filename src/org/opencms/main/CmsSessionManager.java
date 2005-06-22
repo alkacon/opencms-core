@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2005/06/15 09:27:04 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,9 +68,9 @@ import org.apache.commons.logging.Log;
  * so all users can access the methods of this manager. Permission checking
  * based on the current users OpenCms context may be added in a future OpenCms release.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public class CmsSessionManager {

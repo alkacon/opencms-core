@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListTimeIntervalFormatter.java,v $
- * Date   : $Date: 2005/06/16 10:53:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,8 @@ import java.util.Locale;
 /**
  * Simple formatter for time intervals.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author Michael Moossen 
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  */
 public class CmsListTimeIntervalFormatter implements I_CmsListFormatter {

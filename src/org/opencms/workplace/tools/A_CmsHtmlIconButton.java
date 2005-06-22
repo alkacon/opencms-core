@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/06/21 09:37:55 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,8 @@ import org.opencms.workplace.CmsWorkplace;
 /**
  * Default skeleton for an html icon button.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.11 $
  * @since 5.7.3
  */
 public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {

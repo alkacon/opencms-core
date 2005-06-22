@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/06/21 15:49:59 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,9 +69,9 @@ import org.apache.commons.logging.Log;
  * 
  * Extend this class for every gallery type (e.g. image gallery) to build.<p>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.13 $
+ * @author Andreas Zahner 
+ * @author Armen Markarian 
+ * @version $Revision: 1.14 $
  * 
  * @since 5.5.2
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,10 +43,12 @@ import java.io.Serializable;
  * of binary data, which is the file content. 
  * A file object is not allowed to have sub-resources.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
+ * 
+ * @since 6.0.0 
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResultList.java,v $
- * Date   : $Date: 2005/03/26 11:36:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,9 @@ import java.util.Map;
  * A search result object returned as result of a search in
  * <code>{@link org.opencms.search.CmsSearchIndex}</code>.<p>
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
  * @since 5.7.1
  */

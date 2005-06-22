@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/I_CmsModuleAction.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.report.I_CmsReport;
  * OpenCms lifecycle system events, like {@link #initialize(CmsObject, CmsConfigurationManager, CmsModule)} or 
  * {@link #shutDown(CmsModule)}.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * @since 5.3.6
  * 
  * @see org.opencms.module.A_CmsModuleAction

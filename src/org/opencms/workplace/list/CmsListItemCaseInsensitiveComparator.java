@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemCaseInsensitiveComparator.java,v $
- * Date   : $Date: 2005/05/20 16:55:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 10:38:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,8 +41,8 @@ import java.util.Locale;
  * If both list items column values are Strings then a localized collector is used for sorting; 
  * if not, the <code>{@link Comparable}</code> interface is used.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.3 $
  * @since 5.7.3
  * 
  * @see org.opencms.workplace.list.CmsListColumnDefinition

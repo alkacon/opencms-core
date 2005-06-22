@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2005/06/08 15:48:00 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 10:38:32 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,9 +56,9 @@ import junit.framework.TestSuite;
 /**
  * JUnit test cases for the VFS/RFS synchronization.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Thomas Weckert  
  * @since 5.3.6
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestSynchronize extends OpenCmsTestCase {
 

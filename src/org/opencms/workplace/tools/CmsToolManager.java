@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/21 11:05:17 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,8 +62,8 @@ import org.apache.commons.logging.Log;
  * Manages also the configuration settings for the administration view, and provides
  * several tool related methods.<p>
  *
- * @author Michael Moossen (m.moossen@alkacon.com) 
- * @version $Revision: 1.29 $
+ * @author Michael Moossen  
+ * @version $Revision: 1.30 $
  * @since 5.7.3
  */
 public class CmsToolManager {

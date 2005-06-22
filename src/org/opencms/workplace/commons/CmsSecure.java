@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/06/21 15:50:00 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 10:38:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,8 +62,8 @@ import org.apache.commons.logging.Log;
  * <li>/commons/secure.jsp
  * </ul>
  *
- * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.16 $
+ * @author  Jan Baudisch 
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0
  */

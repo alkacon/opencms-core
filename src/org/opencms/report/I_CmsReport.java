@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2005/06/16 09:33:51 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/22 10:38:15 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,9 @@ import java.util.Locale;
  * during operations that run on a spearate Thread in OpenCms,
  * like publish, import, export etc.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.21 $
+ * @author Alexander Kandzior  
+ * @author Jan Baudisch 
+ * @version $Revision: 1.22 $
  */
 public interface I_CmsReport {
         

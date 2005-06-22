@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2005/04/28 10:11:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 10:38:25 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import java.util.regex.Pattern;
  * <li>/editors/msdhtml/editor.jsp
  * </ul>
  *
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @author  Andreas Zahner 
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1.12
  */

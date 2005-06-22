@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/I_CmsLocaleHandler.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 10:38:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,9 +43,9 @@ import javax.servlet.http.HttpServletRequest;
  * accordingly, the behaviour for the m_locale selection can be fine-tuned
  * to the exact need of the OpenCms installation.<p>
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.10 $ 
+ * @author Carsten Weinholz 
+ * @author Carsten Weinholz 
+ * @version $Revision: 1.11 $ 
  */
 public interface I_CmsLocaleHandler {
 

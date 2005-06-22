@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2005/05/19 09:54:29 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/22 10:38:29 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,9 +63,9 @@ import java.util.List;
  * resource type operations. Mistakes made in the implementation of a resource type
  * can screw up the system security and the database structure, and make you unhappy. 
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Thomas Weckert  
+ * @author Michael Emmerich 
  */
 public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
 

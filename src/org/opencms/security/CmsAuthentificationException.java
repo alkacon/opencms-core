@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAuthentificationException.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 10:38:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.main.CmsException;
  * 
  * There are 
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * @since 5.7.3
  */
 public class CmsAuthentificationException extends CmsSecurityException {
