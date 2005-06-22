@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,11 +54,13 @@ import javax.servlet.jsp.PageContext;
  * <ul>
  * <li>/commons/history.jsp
  * </ul>
+ * <p>
  *
  * @author  Armen Markarian 
- * @version $Revision: 1.13 $
  * 
- * @since 5.5.1
+ * @version $Revision: 1.14 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsHistory extends CmsDialog {
 

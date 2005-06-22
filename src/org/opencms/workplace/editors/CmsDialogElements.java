@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,11 +66,13 @@ import org.apache.commons.logging.Log;
  * <ul>
  * <li>/jsp/editors/dialogs/elements.html
  * </ul>
+ * <p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.11 $
  * 
- * @since 5.3.0
+ * @version $Revision: 1.12 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsDialogElements extends CmsDialog {
 

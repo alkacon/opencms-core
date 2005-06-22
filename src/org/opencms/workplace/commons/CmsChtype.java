@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,34 +61,37 @@ import org.apache.commons.logging.Log;
  * <ul>
  * <li>/commons/chtype.jsp
  * </ul>
+ * <p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.14 $
  * 
- * @since 5.5.0
+ * @version $Revision: 1.15 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsChtype extends CmsDialog {
-  
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsChtype.class);  
-    
+
     /** The dialog type.<p> */
     public static final String DIALOG_TYPE = "chtype";
-    
+
     /** Request parameter name for the new resource type.<p> */
     public static final String PARAM_NEWRESOURCETYPE = "newresourcetype";
-    
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsChtype.class);
+
     private String m_paramNewResourceType;
-    
+
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsChtype(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -97,9 +100,10 @@ public class CmsChtype extends CmsDialog {
      * @param res the JSP response
      */
     public CmsChtype(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
-    }    
-    
+    }
+
     /**
      * Builds the html for the list of possible types for the uploaded file.<p>
      * 
@@ -111,7 +115,8 @@ public class CmsChtype extends CmsDialog {
      * @return the list of possible files for the uploaded resource
      */
     public static String buildTypeList(CmsDialog dialog, boolean useTypeId) {
-        StringBuffer result = new StringBuffer(512);        
+
+        StringBuffer result = new StringBuffer(512);
         try {
             // get current Cms object
             CmsObject cms = dialog.getCms();
@@ -122,11 +127,11 @@ public class CmsChtype extends CmsDialog {
             List resTypes = OpenCms.getWorkplaceManager().getExplorerTypeSettings();
             boolean isFolder = res.isFolder();
             // loop through all visible resource types
-            for (int i=0; i<resTypes.size(); i++) {                
-                boolean changeable = false;                
+            for (int i = 0; i < resTypes.size(); i++) {
+                boolean changeable = false;
                 // get explorer type settings for current resource type
                 CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)resTypes.get(i);
-                
+
                 // only if settings is a real resourcetype
                 boolean isResourceType;
                 try {
@@ -135,39 +140,42 @@ public class CmsChtype extends CmsDialog {
                 } catch (CmsLoaderException e) {
                     isResourceType = false;
                 }
-                                
+
                 if (isResourceType) {
                     int resTypeId = OpenCms.getResourceManager().getResourceType(settings.getName()).getTypeId();
                     // determine if this resTypeId is changeable by currentResTypeId
-                    
+
                     // changeable is true if current resource is a folder and this resource type also
                     if (isFolder && OpenCms.getResourceManager().getResourceType(resTypeId).isFolder()) {
                         changeable = true;
                     } else if (!isFolder && !OpenCms.getResourceManager().getResourceType(resTypeId).isFolder()) {
                         // changeable is true if current resource is NOT a folder and this resource type also NOT                    
                         changeable = true;
-                    }   
-                    
+                    }
+
                     if (changeable) {
                         // determine if this resource type is editable for the current user
                         CmsPermissionSet permissions;
                         try {
                             // get permissions of the current user
-                            permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
+                            permissions = settings.getAccess().getAccessControlList().getPermissions(
+                                cms.getRequestContext().currentUser(),
+                                cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
                         } catch (CmsException e) {
                             // error reading the groups of the current user
-                            permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
+                            permissions = settings.getAccess().getAccessControlList().getPermissions(
+                                cms.getRequestContext().currentUser());
                             if (LOG.isErrorEnabled()) {
-                                LOG.error(org.opencms.workplace.explorer.Messages.get()
-                                    .key(org.opencms.workplace.explorer.Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, 
-                                        cms.getRequestContext().currentUser().getName()));
-                            }      
+                                LOG.error(org.opencms.workplace.explorer.Messages.get().key(
+                                    org.opencms.workplace.explorer.Messages.LOG_READ_GROUPS_OF_USER_FAILED_1,
+                                    cms.getRequestContext().currentUser().getName()));
+                            }
                         }
-                        
+
                         String permString = permissions.getPermissionString();
                         if (permString.indexOf("+w") == -1 || permString.indexOf("+c") == -1) {
                             // skip resource types without needed write or create permissions
-                            continue;    
+                            continue;
                         }
                         // create table row with input radio button
                         result.append("<tr><td>");
@@ -179,7 +187,7 @@ public class CmsChtype extends CmsDialog {
                             result.append(resTypeId);
                         } else {
                             // use resource type name as value
-                            result.append(settings.getName());    
+                            result.append(settings.getName());
                         }
                         result.append("\"");
                         if (resTypeId == currentResTypeId) {
@@ -202,23 +210,24 @@ public class CmsChtype extends CmsDialog {
         } catch (CmsException e) {
             // error reading the VFS resource, log error
             LOG.error(Messages.get().key(Messages.ERR_BUILDING_RESTYPE_LIST_1, dialog.getParamResource()));
-        }      
+        }
         return result.toString();
     }
-    
+
     /**
      * Uploads the specified file and replaces the VFS file.<p>
      * 
      * @throws JspException if inclusion of error dialog fails
      */
     public void actionChtype() throws JspException {
+
         try {
             int newType = CmsResourceTypePlain.getStaticTypeId();
             try {
                 // get new resource type id from request
                 newType = Integer.parseInt(getParamNewResourceType());
             } catch (NumberFormatException nf) {
-                throw new CmsException(Messages.get().container(Messages.ERR_GET_RESTYPE_1, getParamNewResourceType()));    
+                throw new CmsException(Messages.get().container(Messages.ERR_GET_RESTYPE_1, getParamNewResourceType()));
             }
             // check the resource lock state
             checkLock(getParamResource());
@@ -228,41 +237,45 @@ public class CmsChtype extends CmsDialog {
             actionCloseDialog();
         } catch (Throwable e) {
             // error changing resource type, show error dialog
-            includeErrorpage(this, e);  
+            includeErrorpage(this, e);
         }
     }
-    
+
     /**
      * Builds the html for the list of possible types for the uploaded file.<p>
      * 
      * @return the list of possible files for the uploaded resource
      */
     public String buildTypeList() {
+
         return buildTypeList(this, true);
     }
-    
+
     /**
      * Returns the new resource type parameter.<p>
      * 
      * @return the new resource type parameter
      */
     public String getParamNewResourceType() {
+
         return m_paramNewResourceType;
     }
-    
+
     /**
      * Sets the new resource type parameter.<p>
      * 
      * @param newResourceType the new resource type parameter
      */
     public void setParamNewResourceType(String newResourceType) {
+
         m_paramNewResourceType = newResourceType;
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
@@ -270,7 +283,7 @@ public class CmsChtype extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_OK.equals(getParamAction())) {
             // ok button pressed, change file type
-            setAction(ACTION_OK);                            
+            setAction(ACTION_OK);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             // cancel button pressed
             setAction(ACTION_CANCEL);
@@ -279,7 +292,7 @@ public class CmsChtype extends CmsDialog {
             setAction(ACTION_DEFAULT);
             // build title for change file type dialog     
             setParamTitle(key("title.chtype") + ": " + CmsResource.getName(getParamResource()));
-        }   
+        }
     }
-   
+
 }

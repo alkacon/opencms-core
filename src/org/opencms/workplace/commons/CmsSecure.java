@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,11 +61,13 @@ import org.apache.commons.logging.Log;
  * <ul>
  * <li>/commons/secure.jsp
  * </ul>
+ * <p>
  *
  * @author  Jan Baudisch 
- * @version $Revision: 1.17 $
  * 
- * @since 6.0
+ * @version $Revision: 1.18 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSecure extends CmsDialog {
 

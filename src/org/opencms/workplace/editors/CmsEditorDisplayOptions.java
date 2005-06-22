@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
@@ -70,30 +71,31 @@ import org.apache.commons.logging.Log;
  * all display options will be disabled by default.<p>
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.6 $
  * 
- * @since 5.1.14
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsEditorDisplayOptions {
-    
+
     /** The name of the configuration folder.<p> */
     public static final String C_FOLDER_EDITORCONFIGURATION = CmsEditor.C_PATH_EDITORS + "configuration/";
-    
+
     /** Mapping entry name that is used if no mapping is available for the user.<p> */
     public static final String C_NO_MAPPING_FOR_USER = "na";
-    
+
     /** Maximum size of the stored editor configurations.<p> */
     public static final int C_SIZE_CONFIGURATIONFILES = 12;
-    
+
     /** Maximum size of the user editor configuration mappings.<p> */
     public static final int C_SIZE_USERENTRIES = 100;
-    
+
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEditorDisplayOptions.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsEditorDisplayOptions.class);
+
     /** Stores all loaded editor configuration options.<p> */
     private Map m_loadedConfigurations;
-    
+
     /** Stores the mappings of users to their configuration options to use.<p> */
     private Map m_userMappings;
 
@@ -101,11 +103,12 @@ public class CmsEditorDisplayOptions {
      * Constructor that initializes the editor display options for the workplace.<p>
      */
     public CmsEditorDisplayOptions() {
+
         // initialize members
         m_userMappings = new LRUMap(C_SIZE_USERENTRIES);
         m_loadedConfigurations = new LRUMap(C_SIZE_CONFIGURATIONFILES);
     }
-    
+
     /**
      * Reads the editor configuration file valid for the current user and caches the result in a Map.<p>
      * 
@@ -167,7 +170,9 @@ public class CmsEditorDisplayOptions {
             if (LOG.isDebugEnabled()) {
                 // check which mapping has been stored
                 LOG.debug(Messages.get().key(
-                    Messages.LOG_MAP_CONFIG_FILE_TO_USER_2, mappedConfigFile, jsp.getRequestContext().currentUser().getName()));
+                    Messages.LOG_MAP_CONFIG_FILE_TO_USER_2,
+                    mappedConfigFile,
+                    jsp.getRequestContext().currentUser().getName()));
             }
         } else {
             // configuration file for current user is known, get options from loaded configurations
@@ -176,7 +181,7 @@ public class CmsEditorDisplayOptions {
         // return the editor display options for this user
         return displayOptions;
     }
-    
+
     /**
      * Determines if the given element should be shown in the editor.<p>
      * 

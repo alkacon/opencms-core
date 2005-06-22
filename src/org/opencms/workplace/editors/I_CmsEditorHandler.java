@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/I_CmsEditorHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.editors;
 
 import org.opencms.jsp.CmsJspActionElement;
@@ -40,9 +41,10 @@ import org.opencms.jsp.CmsJspActionElement;
  * The class you enter must implement this interface to obtain the URI of the displayed editor.<p>  
  * 
  * @author  Andreas Zahner 
- * @version $Revision: 1.3 $
  * 
- * @since 5.1.14
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsEditorHandler {
 
@@ -53,6 +55,6 @@ public interface I_CmsEditorHandler {
      * @param jsp the CmsJspActionElement
      * @return the absolute path to the editor that will be displayed
      */
-    String getEditorUri(String resource, CmsJspActionElement jsp); 
+    String getEditorUri(String resource, CmsJspActionElement jsp);
 
 }

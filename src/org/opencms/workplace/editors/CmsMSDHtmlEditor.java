@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.editors;
 
 import org.opencms.i18n.CmsEncoder;
@@ -52,22 +53,26 @@ import java.util.regex.Pattern;
  * <ul>
  * <li>/editors/msdhtml/editor.jsp
  * </ul>
+ * <p>
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.10 $
  * 
- * @since 5.1.12
+ * @version $Revision: 1.11 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
-    
-    /** The button number to start the galleries with. */    
-    private static final int C_JS_GALLERY_ACTION_START = 60;
-    
-    /** regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags. */
-    private static final Pattern C_REGEX_LINKS = Pattern.compile("<(img|a)(\\s+)(.*?)(src|href)=(\"|\')(.*?)(\"|\')(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-    
+
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     public static final String EDITOR_TYPE = "msdhtml";
+
+    /** The button number to start the galleries with. */
+    private static final int C_JS_GALLERY_ACTION_START = 60;
+
+    /** regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags. */
+    private static final Pattern C_REGEX_LINKS = Pattern.compile(
+        "<(img|a)(\\s+)(.*?)(src|href)=(\"|\')(.*?)(\"|\')(.*?)>",
+        Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
 
     /**
      * Public constructor.<p>
@@ -75,9 +80,30 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
      * @param jsp an initialized JSP action element
      */
     public CmsMSDHtmlEditor(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
+    /**
+     * @see org.opencms.workplace.editors.CmsDefaultPageEditor#buildGalleryButtons(CmsEditorDisplayOptions, int, Properties)
+     */
+    public String buildGalleryButtons(CmsEditorDisplayOptions options, int buttonStyle, Properties displayOptions) {
+
+        StringBuffer result = new StringBuffer();
+        List l = new ArrayList(OpenCms.getWorkplaceManager().getGalleries().keySet());
+        Collections.sort(l);
+        Iterator galleries = l.iterator();
+        for (int i = C_JS_GALLERY_ACTION_START; galleries.hasNext(); i++) {
+            String galleryType = ((String)galleries.next()).replaceFirst("gallery", "");
+            if (options.showElement("gallery." + galleryType, displayOptions)) {
+                result.append(button("javascript:doEditHTML(" + i + ");", null, galleryType + "gallery", "button."
+                    + galleryType
+                    + "list", buttonStyle));
+            }
+        }
+        return result.toString();
+    }
+
     /**
      * Builds the html String for the editor views available in the editor screens.<p>
      * 
@@ -85,6 +111,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
      * @return the html for the editorview selectbox
      */
     public final String buildSelectViews(String attributes) {
+
         Vector names = new Vector();
         Vector values = new Vector();
         // get the available views fron the constant
@@ -113,36 +140,12 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         int currentIndex = valuesFinal.indexOf(getParamEditormode());
         return buildSelect(attributes, namesFinal, valuesFinal, currentIndex, false);
     }
-    
-    /**
-     * @see org.opencms.workplace.editors.CmsDefaultPageEditor#buildGalleryButtons(CmsEditorDisplayOptions, int, Properties)
-     */
-    public String buildGalleryButtons(CmsEditorDisplayOptions options, int buttonStyle, Properties displayOptions) {
 
-        StringBuffer result = new StringBuffer();   
-        List l = new ArrayList(OpenCms.getWorkplaceManager().getGalleries().keySet());
-        Collections.sort(l);
-        Iterator galleries = l.iterator();
-        for (int i = C_JS_GALLERY_ACTION_START; galleries.hasNext(); i++) {
-            String galleryType = ((String)galleries.next()).replaceFirst("gallery", "");
-            if (options.showElement("gallery." + galleryType, displayOptions)) {
-                result.append(button("javascript:doEditHTML(" + i + ");", null, galleryType + "gallery", "button." + galleryType + "list", buttonStyle));
-            }
-        }
-        return result.toString();
-    }        
-    
-    /**
-     * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
-     */
-    public final String getEditorResourceUri() {
-        return getSkinUri() + "editors/" + EDITOR_TYPE + "/";   
-    }
-        
     /**
      * @see org.opencms.workplace.editors.CmsDefaultPageEditor#escapeParams()
      */
     public void escapeParams() {
+
         // This code fixes a very strange bug in the MS Dhtml Control.
         // If the HTML source contains a link like this:
         // <a href=
@@ -150,13 +153,21 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         // i.e. with a linebreak between the = and the " of the link href attribute, this 
         // causes the Dhtml control to insert additional buggy attributes in the link.
         // Solution: Remove the linebreak in this case on the server (see next lines).
-        String result = CmsStringUtil.substitute(getParamContent(), "\r\n", "\n");        
-        result = CmsStringUtil.substitute(result, "=\n\"", "=\"");    
+        String result = CmsStringUtil.substitute(getParamContent(), "\r\n", "\n");
+        result = CmsStringUtil.substitute(result, "=\n\"", "=\"");
         // escape the content
         result = CmsEncoder.escapeWBlanks(result, CmsEncoder.C_UTF8_ENCODING);
         setParamContent(result);
-    }  
-    
+    }
+
+    /**
+     * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
+     */
+    public final String getEditorResourceUri() {
+
+        return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
+    }
+
     /**
      * Manipulates the content String for the different editor views and the save operation.<p>
      * 
@@ -164,21 +175,26 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
      * @return the prepared content String
      */
     protected String prepareContent(boolean save) {
+
         String content = getParamContent();
         // extract content of <body>...</body> tag
         content = CmsStringUtil.extractHtmlBody(content);
         // remove unwanted "&amp;" from links
         content = filterAnchors(content);
-       
+
         // ensure all chars in the content are valid for the selected encoding
         content = CmsEncoder.adjustHtmlEncoding(content, getFileEncoding());
-                
-        if (! ("edit".equals(getParamEditormode()) || save)) {
+
+        if (!("edit".equals(getParamEditormode()) || save)) {
             // editor is in html mode, add tags for stylesheet
-            String stylesheet = getUriStyleSheet();                      
-            
+            String stylesheet = getUriStyleSheet();
+
             // create a head with stylesheet for template and base URL to display images correctly
-            String server = getJsp().getRequest().getScheme() + "://" + getJsp().getRequest().getServerName() + ":" + getJsp().getRequest().getServerPort();
+            String server = getJsp().getRequest().getScheme()
+                + "://"
+                + getJsp().getRequest().getServerName()
+                + ":"
+                + getJsp().getRequest().getServerPort();
             StringBuffer result = new StringBuffer(content.length() + 1024);
             result.append("<html><head>");
             if (!"".equals(stylesheet)) {
@@ -187,22 +203,22 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
                 result.append(server);
                 result.append(stylesheet);
                 result.append("\" rel=\"stylesheet\" type=\"text/css\">");
-            }            
+            }
             result.append("<base href=\"");
             result.append(server);
             result.append(OpenCms.getSystemInfo().getOpenCmsContext());
             result.append("\"></base></head><body>");
             result.append(content);
             result.append("</body></html>");
-            content = result.toString();   
-          }
+            content = result.toString();
+        }
         if (!save) {
             // set the content parameter to the modified content
             setParamContent(content);
-        } 
+        }
         return content.trim();
-    }  
-    
+    }
+
     /**
      * Filters the content String and removes unwanted "&amp;" Strings from anchor "href" or "src" attributes.<p>
      * 
@@ -212,9 +228,10 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
      * @return filtered content
      */
     private String filterAnchors(String content) {
+
         String anchor = null;
         String newAnchor = null;
-        
+
         // don't forget to update the group index on the matcher after changing the regex below!      
         Matcher matcher = C_REGEX_LINKS.matcher(content);
         while (matcher.find()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2005/06/22 15:38:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,9 +61,12 @@ import java.util.List;
  * membership does. For example, the <code>{@link #ADMINISTRATOR}</code> role is a parent group of all other roles. 
  * So all users that are members of <code>{@link #ADMINISTRATOR}</code> have access to the functions of all other roles.<p>
  * 
+ * Please do not perform automated sorting of members on this compilation unit. That leads 
+ * to NPE's<p>
+ * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,7 +92,7 @@ public final class CmsRole {
 
     /** The "PROJECT_MANAGER" role. */
     public static final CmsRole PROJECT_MANAGER = new CmsRole("PROJECT_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
-
+    
     /** The "PROPERTY_MANAGER" role. */
     public static final CmsRole PROPERTY_MANAGER = new CmsRole(
         "PROPERTY_MANAGER",

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopyToProject.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsResource;
@@ -55,23 +56,25 @@ import org.apache.commons.logging.Log;
  * <ul>
  * <li>/commons/copytoproject.jsp
  * </ul>
+ * <p>
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.4 $
  * 
- * @since 6.0
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsCopyToProject extends CmsDialog {
-    
+
     /** Value for the action: copy the resource to current project. */
     public static final int ACTION_COPYTOPROJECT = 100;
-    
+
     /** The dialog type. */
     public static final String DIALOG_TYPE = "copytoproject";
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCopyToProject.class);
-    
+
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -81,7 +84,7 @@ public class CmsCopyToProject extends CmsDialog {
 
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -92,7 +95,7 @@ public class CmsCopyToProject extends CmsDialog {
     public CmsCopyToProject(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    } 
+    }
 
     /**
      * Performs the copy to project action, will be called by the JSP page.<p>
@@ -100,20 +103,20 @@ public class CmsCopyToProject extends CmsDialog {
      * @throws JspException if problems including sub-elements occur
      */
     public void actionCopyToProject() throws JspException {
-        
+
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
             // copy the resource to the current project
             getCms().copyResourceToProject(getParamResource());
             // close the dialog
-            actionCloseDialog(); 
+            actionCloseDialog();
         } catch (Throwable e) {
             // error copying resource to project, include error page
-            includeErrorpage(this, e);  
+            includeErrorpage(this, e);
         }
     }
-    
+
     /**
      * Returns the HTML containing project information and confirmation question for the JSP.<p>
      * 
@@ -122,9 +125,9 @@ public class CmsCopyToProject extends CmsDialog {
     public String buildProjectInformation() {
 
         StringBuffer result = new StringBuffer(32);
-        
+
         try {
-            String[] localizedObject = new String[]{getCms().getRequestContext().currentProject().getName()};
+            String[] localizedObject = new String[] {getCms().getRequestContext().currentProject().getName()};
             List resources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
             Iterator i = resources.iterator();
             result.append(dialogBlockStart(key(Messages.GUI_COPYTOPROJECT_RESOURCES_0)));
@@ -135,7 +138,7 @@ public class CmsCopyToProject extends CmsDialog {
                 String siteRoot = getCms().getRequestContext().getSiteRoot();
                 while (i.hasNext()) {
                     // create resource list
-                    String resName = (String)i.next();                   
+                    String resName = (String)i.next();
                     if (resName.startsWith(siteRoot)) {
                         // remove current site root from resource name
                         resName = resName.substring(siteRoot.length());
@@ -157,7 +160,7 @@ public class CmsCopyToProject extends CmsDialog {
                 LOG.info(e.getLocalizedMessage());
             }
         }
-        
+
         // determine resource name to show
         String resName = getParamResource();
         try {
@@ -172,12 +175,11 @@ public class CmsCopyToProject extends CmsDialog {
             }
         }
         // show confirmation question
-        String[] localizedObject = new String[]{resName, getCms().getRequestContext().currentProject().getName()};
+        String[] localizedObject = new String[] {resName, getCms().getRequestContext().currentProject().getName()};
         result.append(key(Messages.GUI_COPYTOPROJECT_PROJECT_CONFIRMATION_2, localizedObject));
         return result.toString();
     }
-    
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
@@ -198,14 +200,14 @@ public class CmsCopyToProject extends CmsDialog {
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
         if (DIALOG_TYPE.equals(getParamAction())) {
-            setAction(ACTION_COPYTOPROJECT);                            
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+            setAction(ACTION_COPYTOPROJECT);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
-        } else {                        
+        } else {
             setAction(ACTION_DEFAULT);
             // build title for copy to project dialog     
             setParamTitle(key(Messages.GUI_COPYTOPROJECT_TITLE_0));
-        }      
-    } 
-    
+        }
+    }
+
 }

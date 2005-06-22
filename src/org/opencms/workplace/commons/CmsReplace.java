@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsReplace.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,29 +54,32 @@ import org.apache.commons.fileupload.FileItem;
  * <ul>
  * <li>/commons/replace.jsp
  * </ul>
+ * <p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.9 $
  * 
- * @since 5.5.0
+ * @version $Revision: 1.10 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsReplace extends CmsDialog {
-    
+
     /** The dialog type.<p> */
     public static final String DIALOG_TYPE = "replace";
-    
+
     /** Request parameter name for the upload file name.<p> */
     public static final String PARAM_UPLOADFILE = "uploadfile";
-    
+
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsReplace(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -85,16 +88,17 @@ public class CmsReplace extends CmsDialog {
      * @param res the JSP response
      */
     public CmsReplace(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
-    }    
-    
+    }
+
     /**
      * Uploads the specified file and replaces the VFS file.<p>
      * 
      * @throws JspException if inclusion of error dialog fails
      */
     public void actionReplace() throws JspException {
-        
+
         try {
             // get the file item from the multipart request
             Iterator i = getMultiPartFileItems().iterator();
@@ -106,7 +110,7 @@ public class CmsReplace extends CmsDialog {
                     break;
                 }
             }
-            
+
             if (fi != null) {
                 // get file object information
                 long size = fi.getSize();
@@ -114,11 +118,13 @@ public class CmsReplace extends CmsDialog {
                 // check file size
                 if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
                     // file size is larger than maximum allowed file size, throw an error
-                    throw new CmsException(Messages.get().container(Messages.ERR_FILE_SIZE_TOO_LARGE_1, new Long((maxFileSizeBytes / 1024))));
+                    throw new CmsException(Messages.get().container(
+                        Messages.ERR_FILE_SIZE_TOO_LARGE_1,
+                        new Long((maxFileSizeBytes / 1024))));
                 }
                 byte[] content = fi.get();
                 fi.delete();
-                
+
                 // determine the resource type id from the resource to replace
                 CmsResource res = getCms().readResource(getParamResource());
                 int resTypeId = res.getTypeId();
@@ -132,14 +138,15 @@ public class CmsReplace extends CmsDialog {
             }
         } catch (Throwable e) {
             // error replacing file, show error dialog
-            includeErrorpage(this, e);   
+            includeErrorpage(this, e);
         }
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
@@ -147,7 +154,7 @@ public class CmsReplace extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_OK.equals(getParamAction())) {
             // ok button pressed, replace file
-            setAction(ACTION_OK);                            
+            setAction(ACTION_OK);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             // cancel button pressed
             setAction(ACTION_CANCEL);
@@ -156,7 +163,7 @@ public class CmsReplace extends CmsDialog {
             setAction(ACTION_DEFAULT);
             // build title for replace resource dialog     
             setParamTitle(key("title.replace") + ": " + CmsResource.getName(getParamResource()));
-        }   
+        }
     }
-   
+
 }

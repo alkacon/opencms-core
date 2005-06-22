@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSynchronizeReport.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.commons;
 
 import org.opencms.jsp.CmsJspActionElement;
@@ -44,12 +45,13 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior 
- * @version $Revision: 1.7 $
  * 
- * @since 5.1.10
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSynchronizeReport extends CmsReport {
-    
+
     /** The dialog type. */
     public static final String DIALOG_TYPE = "sync";
 
@@ -59,9 +61,10 @@ public class CmsSynchronizeReport extends CmsReport {
      * @param jsp an initialized JSP action element
      */
     public CmsSynchronizeReport(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -70,21 +73,23 @@ public class CmsSynchronizeReport extends CmsReport {
      * @param res the JSP response
      */
     public CmsSynchronizeReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
-    }    
-        
+    }
+
     /**
      * Performs the move report, will be called by the JSP page.<p>
      * 
      * @throws JspException if problems including sub-elements occur
      */
     public void actionReport() throws JspException {
+
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
             case ACTION_REPORT_UPDATE:
-                setParamAction(REPORT_UPDATE);   
-                getJsp().include(C_FILE_REPORT_OUTPUT);  
+                setParamAction(REPORT_UPDATE);
+                getJsp().include(C_FILE_REPORT_OUTPUT);
                 break;
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
@@ -93,15 +98,16 @@ public class CmsSynchronizeReport extends CmsReport {
                 CmsSynchronizeThread thread = new CmsSynchronizeThread(getCms());
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
-                getJsp().include(C_FILE_REPORT_OUTPUT);  
+                getJsp().include(C_FILE_REPORT_OUTPUT);
                 break;
         }
     }
-        
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
@@ -110,17 +116,17 @@ public class CmsSynchronizeReport extends CmsReport {
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_CONFIRMED);
         } else if (REPORT_UPDATE.equals(getParamAction())) {
-            setAction(ACTION_REPORT_UPDATE);         
+            setAction(ACTION_REPORT_UPDATE);
         } else if (REPORT_BEGIN.equals(getParamAction())) {
             setAction(ACTION_REPORT_BEGIN);
         } else if (REPORT_END.equals(getParamAction())) {
             setAction(ACTION_REPORT_END);
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
-        } else {                        
+        } else {
             setAction(ACTION_DEFAULT);
             // add the title for the dialog 
             setParamTitle(key("title.sync"));
-        }                 
+        }
     }
 }

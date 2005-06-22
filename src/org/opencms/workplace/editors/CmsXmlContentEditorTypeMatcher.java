@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditorTypeMatcher.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace.editors;
 
 import org.opencms.main.OpenCms;
@@ -38,20 +38,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
 /**
  * Implementation of an additionional editor resource type matcher for xmlcontent resources.<p>
  * 
- * All resourcetypes refering to xmlcontent will be found by this class.
+ * All resourcetypes refering to xmlcontent will be found by this class.<p>
  * 
  * @author  Michael Emmerich 
- * @version $Revision: 1.4 $
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsXmlContentEditorTypeMatcher implements I_CmsEditorTypeMatcher {
 
     /** */
     static final String C_TYPE_XMLCONTENT = "xmlcontent";
-    
+
     /**
      * @see org.opencms.workplace.editors.I_CmsEditorTypeMatcher#getAdditionalResourceTypes()
      */
@@ -65,10 +67,9 @@ public class CmsXmlContentEditorTypeMatcher implements I_CmsEditorTypeMatcher {
         while (i.hasNext()) {
             CmsExplorerTypeSettings type = (CmsExplorerTypeSettings)i.next();
             if ((type.getName().equalsIgnoreCase(C_TYPE_XMLCONTENT))
-                || (type.getReference() != null 
-                 && type.getReference().equalsIgnoreCase(C_TYPE_XMLCONTENT))) {
+                || (type.getReference() != null && type.getReference().equalsIgnoreCase(C_TYPE_XMLCONTENT))) {
                 additionalTypes.add(type.getName());
-            }            
+            }
         }
         return additionalTypes;
     }

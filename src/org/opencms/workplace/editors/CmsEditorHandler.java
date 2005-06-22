@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsResource;
@@ -56,31 +57,55 @@ import org.apache.commons.logging.Log;
  * <li>the users current browser</li>
  * <li>the resource type</li>
  * </ul>
+ * <p>
+ * 
+ * @author  Andreas Zahner 
+ * 
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  * 
  * @see org.opencms.workplace.editors.I_CmsEditorHandler
  * @see org.opencms.workplace.editors.CmsWorkplaceEditorManager
- *
- * @author  Andreas Zahner 
- * @version $Revision: 1.6 $
- * 
- * @since 5.3.1
  */
 public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler {
-    
+
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEditorHandler.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsEditorHandler.class);
+
     /**
      * Default constructor needed for editor handler implementation.<p>
      */
     public CmsEditorHandler() {
+
         super(null);
     }
-    
+
+    /**
+     * Shows the error dialog when no valid editor is found and returns null for the editor URI.<p>
+     * 
+     * @param jsp the instanciated CmsJspActionElement
+     * @param t a throwable object, can be null
+     */
+    private static void showErrorDialog(CmsJspActionElement jsp, Throwable t) {
+
+        CmsDialog wp = new CmsDialog(jsp);
+        wp.setParamMessage(Messages.get().getBundle(wp.getLocale()).key(Messages.ERR_NO_EDITOR_FOUND_0));
+        wp.fillParamValues(jsp.getRequest());
+        try {
+            wp.includeErrorpage(wp, t);
+        } catch (JspException e) {
+            LOG.debug(org.opencms.workplace.commons.Messages.get().key(
+                org.opencms.workplace.commons.Messages.LOG_ERROR_INCLUDE_FAILED_1,
+                C_FILE_DIALOG_SCREEN_ERRORPAGE), e);
+        }
+    }
+
     /**
      * @see org.opencms.workplace.editors.I_CmsEditorHandler#getEditorUri(java.lang.String, CmsJspActionElement)
      */
     public String getEditorUri(String resource, CmsJspActionElement jsp) {
+
         // first try to get the "edit as text" and "load default" parameters from the request
         boolean editAsText = Boolean.valueOf(jsp.getRequest().getParameter(CmsEditor.PARAM_EDITASTEXT)).booleanValue();
         boolean loadDefault = Boolean.valueOf(jsp.getRequest().getParameter(CmsEditor.PARAM_LOADDEFAULT)).booleanValue();
@@ -97,10 +122,10 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
                 resTypeId = res.getTypeId();
             } catch (CmsException e) {
                 // resource could not be read, show error dialog
-                showErrorDialog(jsp, e); 
+                showErrorDialog(jsp, e);
             }
         }
-        
+
         try {
             // get the resource type name
             resourceType = OpenCms.getResourceManager().getResourceType(resTypeId).getTypeName();
@@ -108,21 +133,27 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
             // resource type name can not be determined, show error dialog
             showErrorDialog(jsp, e);
         }
-        
+
         // get the editor URI from the editor manager
         String editorUri = null;
-        
+
         // get the browser identification from the request
         String userAgent = jsp.getRequest().getHeader("user-agent");
-        
+
         if (loadDefault) {
             // get default editor because loaddefault parameter was found
-            editorUri = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getDefaultEditorUri(jsp.getRequestContext(), resourceType, userAgent);        
+            editorUri = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getDefaultEditorUri(
+                jsp.getRequestContext(),
+                resourceType,
+                userAgent);
         } else {
             // get preferred editor
-            editorUri = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorUri(jsp.getRequestContext(), resourceType, userAgent);
+            editorUri = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getEditorUri(
+                jsp.getRequestContext(),
+                resourceType,
+                userAgent);
         }
-        
+
         try {
             // check the presence of the editor
             jsp.getCmsObject().readResource(editorUri);
@@ -130,41 +161,28 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
             // preferred or selected editor not found, try default editor
             if (LOG.isInfoEnabled()) {
                 LOG.info(t);
-            }            
-            editorUri = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getDefaultEditorUri(jsp.getRequestContext(), resourceType, userAgent);
+            }
+            editorUri = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getDefaultEditorUri(
+                jsp.getRequestContext(),
+                resourceType,
+                userAgent);
         }
-        
+
         if (editorUri == null) {
             // no valid editor was found, show the error dialog
-            CmsWorkplaceException e = new CmsWorkplaceException(Messages.get().container(Messages.ERR_NO_EDITOR_FOUND_0));
+            CmsWorkplaceException e = new CmsWorkplaceException(
+                Messages.get().container(Messages.ERR_NO_EDITOR_FOUND_0));
             showErrorDialog(jsp, e);
         }
         return editorUri;
-    }  
-    
+    }
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
         // empty
     }
-    
-    /**
-     * Shows the error dialog when no valid editor is found and returns null for the editor URI.<p>
-     * 
-     * @param jsp the instanciated CmsJspActionElement
-     * @param t a throwable object, can be null
-     */
-    private static void showErrorDialog(CmsJspActionElement jsp, Throwable t)  {
-        CmsDialog wp = new CmsDialog(jsp);
-        wp.setParamMessage(Messages.get().getBundle(wp.getLocale()).key(Messages.ERR_NO_EDITOR_FOUND_0));
-        wp.fillParamValues(jsp.getRequest());
-        try {
-            wp.includeErrorpage(wp, t);
-        } catch (JspException e) {
-            LOG.debug(org.opencms.workplace.commons.Messages.get().key(
-                org.opencms.workplace.commons.Messages.LOG_ERROR_INCLUDE_FAILED_1, C_FILE_DIALOG_SCREEN_ERRORPAGE), e);
-        }    
-    }
-    
+
 }

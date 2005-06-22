@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/06/22 14:13:05 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,11 +78,13 @@ import org.apache.commons.logging.Log;
  * <ul>
  * <li>/commons/preferences.jsp
  * </ul>
+ * <p>
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.18 $
  * 
- * @since 5.1.12
+ * @version $Revision: 1.19 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsPreferences extends CmsTabDialog {
 

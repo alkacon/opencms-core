@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsGroup;
@@ -51,34 +52,36 @@ import javax.servlet.jsp.PageContext;
  * <ul>
  * <li>/commons/chaccbrowser.jsp
  * </ul>
+ * <p>
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.10 $
  * 
- * @since 5.1
+ * @version $Revision: 1.11 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsChaccBrowser extends CmsDialog {
-    
+
+    /** Constant for the frame name which is displayed: groups frame. */
+    public static final String DIALOG_FRAME_GROUPS = "groups";
+    /** Constant for the frame name which is displayed: users frame. */
+    public static final String DIALOG_FRAME_USERS = "users";
+
     /** The dialog type. */
     public static final String DIALOG_TYPE = "chaccbrowser";
-    
+
     /** Constant for the frame type which is displayed: default frame. */
     public static final int FRAME_DEFAULT = 1;
     /** Constant for the frame type which is displayed: groups frame. */
     public static final int FRAME_GROUPS = 100;
     /** Constant for the frame type which is displayed: users frame. */
     public static final int FRAME_USERS = 200;
-    
-    /** Constant for the frame name which is displayed: groups frame. */
-    public static final String DIALOG_FRAME_GROUPS = "groups";
-    /** Constant for the frame name which is displayed: users frame. */
-    public static final String DIALOG_FRAME_USERS = "users";
-    
+
     /** Request parameter name for the frame parameter. */
     public static final String PARAM_FRAME = "frame";
-    
-    private String m_paramFrame;
     private int m_frame;
+
+    private String m_paramFrame;
 
     /**
      * Public constructor.<p>
@@ -86,9 +89,10 @@ public class CmsChaccBrowser extends CmsDialog {
      * @param jsp an initialized JSP action element
      */
     public CmsChaccBrowser(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -97,65 +101,10 @@ public class CmsChaccBrowser extends CmsDialog {
      * @param res the JSP response
      */
     public CmsChaccBrowser(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
     }
-    
-    /**
-     * Returns the value of the frame parameter, 
-     * or null if this parameter was not provided.<p>
-     * 
-     * The frame parameter selects the frame which should be displayed.<p>
-     * 
-     * @return the value of the target parameter
-     */    
-    public String getParamFrame() {
-        return m_paramFrame;
-    }
 
-    /**
-     * Sets the value of the frame parameter.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setParamFrame(String value) {
-        m_paramFrame = value;
-    }    
-
-    /**
-     * Returns the int representation of the frame parameter value.<p>
-     * 
-     * @return int representing the frame parameter value
-     */
-    public int getFrame() {
-        return m_frame;    
-    }
-    
-    /**
-     * Sets the int representation of the frame parameter value.<p>
-     * 
-     * @param value the int value of the parameter
-     */
-    public void setFrame(int value) {
-        m_frame = value;
-    }        
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);    
-        if (DIALOG_FRAME_GROUPS.equals(getParamFrame())) {
-            setFrame(FRAME_GROUPS);
-        } else if (DIALOG_FRAME_USERS.equals(getParamFrame())) {
-            setFrame(FRAME_USERS);
-        } else {
-            setFrame(FRAME_DEFAULT);
-        }
-    }
-    
     /**
      * Builds a list of all groups and returns an html string.<p>
      * 
@@ -163,22 +112,23 @@ public class CmsChaccBrowser extends CmsDialog {
      * @throws JspException if problems including sub-elements occur   
      */
     public String buildGroupList() throws JspException {
+
         List groups = new Vector();
         StringBuffer retValue = new StringBuffer(1024);
         try {
             groups = getCms().getGroups();
         } catch (Throwable e) {
             // should usually never happen
-            includeErrorpage(this, e);   
+            includeErrorpage(this, e);
         }
-        
-        for (int i=0; i<groups.size(); i++) {
+
+        for (int i = 0; i < groups.size(); i++) {
             CmsGroup curGroup = (CmsGroup)groups.get(i);
             retValue.append(buildEntryGroup(curGroup));
         }
         return retValue.toString();
     }
-    
+
     /**
      * Builds a list of all users and returns an html string.<p>
      * 
@@ -186,6 +136,7 @@ public class CmsChaccBrowser extends CmsDialog {
      * @throws JspException if problems including sub-elements occur  
      */
     public String buildUserList() throws JspException {
+
         List users = new Vector();
         StringBuffer retValue = new StringBuffer(1024);
         try {
@@ -195,13 +146,74 @@ public class CmsChaccBrowser extends CmsDialog {
             includeErrorpage(this, e);
         }
 
-        for (int i=0; i<users.size(); i++) {
+        for (int i = 0; i < users.size(); i++) {
             CmsUser curUser = (CmsUser)users.get(i);
             retValue.append(buildEntryUser(curUser));
         }
         return retValue.toString();
     }
-    
+
+    /**
+     * Returns the int representation of the frame parameter value.<p>
+     * 
+     * @return int representing the frame parameter value
+     */
+    public int getFrame() {
+
+        return m_frame;
+    }
+
+    /**
+     * Returns the value of the frame parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The frame parameter selects the frame which should be displayed.<p>
+     * 
+     * @return the value of the target parameter
+     */
+    public String getParamFrame() {
+
+        return m_paramFrame;
+    }
+
+    /**
+     * Sets the int representation of the frame parameter value.<p>
+     * 
+     * @param value the int value of the parameter
+     */
+    public void setFrame(int value) {
+
+        m_frame = value;
+    }
+
+    /**
+     * Sets the value of the frame parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamFrame(String value) {
+
+        m_paramFrame = value;
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        if (DIALOG_FRAME_GROUPS.equals(getParamFrame())) {
+            setFrame(FRAME_GROUPS);
+        } else if (DIALOG_FRAME_USERS.equals(getParamFrame())) {
+            setFrame(FRAME_USERS);
+        } else {
+            setFrame(FRAME_DEFAULT);
+        }
+    }
+
     /**
      * Creates the html code for a single group entry.<p>
      * 
@@ -209,16 +221,18 @@ public class CmsChaccBrowser extends CmsDialog {
      * @return the html code as StringBuffer
      */
     private StringBuffer buildEntryGroup(CmsGroup group) {
+
         StringBuffer retValue = new StringBuffer(256);
-        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\"" 
+        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\""
             + " onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"top.selectForm('0','"
-            + group.getName() + "');\">");
-        retValue.append("<img src=\""+getSkinUri()+"commons/group.png\">&nbsp;");
+            + group.getName()
+            + "');\">");
+        retValue.append("<img src=\"" + getSkinUri() + "commons/group.png\">&nbsp;");
         retValue.append(group.getName());
         retValue.append("</span>");
         return retValue;
     }
-    
+
     /**
      * Creates the html code for a single user entry.<p>
      * 
@@ -226,17 +240,19 @@ public class CmsChaccBrowser extends CmsDialog {
      * @return the html code as StringBuffer
      */
     private StringBuffer buildEntryUser(CmsUser user) {
+
         StringBuffer retValue = new StringBuffer(384);
-        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\"" 
+        retValue.append("<span class=\"dialogunmarked maxwidth\" onmouseover=\"className='dialogmarked maxwidth';\""
             + " onmouseout=\"className='dialogunmarked maxwidth'\" onclick=\"top.selectForm('1','"
-            + user.getName() + "');\">");
-        retValue.append("<img src=\""+getSkinUri()+"commons/user.png\">&nbsp;");
+            + user.getName()
+            + "');\">");
+        retValue.append("<img src=\"" + getSkinUri() + "commons/user.png\">&nbsp;");
         retValue.append(user.getName());
         if (!"".equals(user.getFirstname()) || !"".equals(user.getLastname())) {
-            retValue.append(" ("+user.getFirstname()+" "+user.getLastname()+")");
+            retValue.append(" (" + user.getFirstname() + " " + user.getLastname() + ")");
         }
         retValue.append("</span>");
         return retValue;
     }
-    
+
 }

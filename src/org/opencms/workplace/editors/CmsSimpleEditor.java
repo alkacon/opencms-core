@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
@@ -57,65 +58,39 @@ import org.apache.commons.logging.Log;
  * <ul>
  * <li>/editors/simple/editor.jsp</li>
  * </ul>
+ * <p>
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.6 $
  * 
- * @since 5.1.12
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSimpleEditor extends CmsEditor {
-    
+
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     private static final String EDITOR_TYPE = "simple";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSimpleEditor.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsSimpleEditor.class);
+
     /**
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsSimpleEditor(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);        
-        // set the dialog type
-        setParamDialogtype(EDITOR_TYPE);
 
-        // set the action for the JSP switch 
-        if (EDITOR_SAVE.equals(getParamAction())) {
-            setAction(ACTION_SAVE);
-        } else if (EDITOR_SAVEEXIT.equals(getParamAction())) {
-            setAction(ACTION_SAVEEXIT);         
-        } else if (EDITOR_EXIT.equals(getParamAction())) { 
-            setAction(ACTION_EXIT);
-        } else if (EDITOR_SHOW.equals(getParamAction())) {
-            setAction(ACTION_SHOW);
-        } else if (EDITOR_SHOW_ERRORMESSAGE.equals(getParamAction())) {
-            setAction(ACTION_SHOW_ERRORMESSAGE);
-        } else {
-            // initial call of editor
-            setAction(ACTION_DEFAULT);
-            initContent();
-        }
-        
-        setParamContent(encodeContent(getParamContent()));        
-    }
-    
     /**
      * @see org.opencms.workplace.editors.CmsEditor#actionClear(boolean)
      */
     public void actionClear(boolean forceUnlock) {
 
         boolean modified = Boolean.valueOf(getParamModified()).booleanValue();
-        if (forceUnlock || ! modified) {
+        if (forceUnlock || !modified) {
             // unlock the resource when force unlock is true or resource was not modified
             try {
                 getCms().unlockResource(getParamResource());
@@ -123,71 +98,26 @@ public class CmsSimpleEditor extends CmsEditor {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e);
-                }       
-            }
-        }
-    }
-    
-    /**
-     * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
-     */
-    public String getEditorResourceUri() {
-        return getSkinUri() + "editors/" + EDITOR_TYPE + "/";   
-    }
-    
-    /**
-     * Initializes the editor content when openening the editor for the first time.<p>
-     */
-    protected void initContent() {
-        // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        // get the default encoding
-        String content = getParamContent();
-        if (CmsStringUtil.isNotEmpty(content)) {
-            // content already read, must be decoded 
-            setParamContent(decodeContent(content));
-            return;
-        } else {
-            content = "";
-        }
-        
-        try {
-            // lock resource if autolock is enabled
-            checkLock(getParamResource());
-            CmsFile editFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
-            try {
-                content = new String(editFile.getContents(), getFileEncoding());
-            } catch (UnsupportedEncodingException e) {
-                throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()), e);
-            }
-        } catch (CmsException e) {
-            // reading of file contents failed, show error dialog
-            try {
-                showErrorPage(this, e);
-            } catch (JspException exc) {
-                // should usually never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(exc);
                 }
             }
         }
-        setParamContent(content);
     }
-    
+
     /**
      * Performs the exit editor action.<p>
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
-    public void actionExit() throws IOException, JspException {    
+    public void actionExit() throws IOException, JspException {
+
         if (getAction() == ACTION_CANCEL) {
             // save and exit was canceled
             return;
         }
-        
+
         // unlock resource, if no modified
         actionClear(false);
-        
+
         // close the editor
         actionClose();
     }
@@ -198,23 +128,28 @@ public class CmsSimpleEditor extends CmsEditor {
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
     public void actionSave() throws JspException {
+
         CmsFile editFile = null;
         try {
-            editFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);            
+            editFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
             // ensure all chars in the content are valid for the selected encoding
             String decodedContent = CmsEncoder.adjustHtmlEncoding(decodeContent(getParamContent()), getFileEncoding());
-            
+
             try {
                 editFile.setContents(decodedContent.getBytes(getFileEncoding()));
             } catch (UnsupportedEncodingException e) {
-                throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()), e);
-            }        
+                throw new CmsException(
+                    Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()),
+                    e);
+            }
             // the file content might have been modified during the write operation
             CmsFile writtenFile = getCms().writeFile(editFile);
             try {
                 decodedContent = new String(writtenFile.getContents(), getFileEncoding());
             } catch (UnsupportedEncodingException e) {
-                throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()), e);
+                throw new CmsException(
+                    Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()),
+                    e);
             }
             setParamContent(encodeContent(decodedContent));
             // set the modified parameter
@@ -222,13 +157,21 @@ public class CmsSimpleEditor extends CmsEditor {
         } catch (CmsException e) {
             showErrorPage(e);
         }
-    
+
         if (getAction() != ACTION_CANCEL) {
             // save successful, set save action         
-           setAction(ACTION_SAVE);
+            setAction(ACTION_SAVE);
         }
     }
-    
+
+    /**
+     * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
+     */
+    public String getEditorResourceUri() {
+
+        return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
+    }
+
     /**
      * Closes the editor and redirects to the workplace or the resource depending on the editor mode.<p>
      * 
@@ -236,6 +179,7 @@ public class CmsSimpleEditor extends CmsEditor {
      * @throws JspException if including a JSP fails
      */
     protected void actionClose() throws IOException, JspException {
+
         if ("true".equals(getParamDirectedit())) {
             // editor is in direct edit mode
             if (!"".equals(getParamBacklink())) {
@@ -253,5 +197,77 @@ public class CmsSimpleEditor extends CmsEditor {
             // redirect to the workplace explorer view 
             sendCmsRedirect(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         }
-    }    
+    }
+
+    /**
+     * Initializes the editor content when openening the editor for the first time.<p>
+     */
+    protected void initContent() {
+
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        // get the default encoding
+        String content = getParamContent();
+        if (CmsStringUtil.isNotEmpty(content)) {
+            // content already read, must be decoded 
+            setParamContent(decodeContent(content));
+            return;
+        } else {
+            content = "";
+        }
+
+        try {
+            // lock resource if autolock is enabled
+            checkLock(getParamResource());
+            CmsFile editFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
+            try {
+                content = new String(editFile.getContents(), getFileEncoding());
+            } catch (UnsupportedEncodingException e) {
+                throw new CmsException(
+                    Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()),
+                    e);
+            }
+        } catch (CmsException e) {
+            // reading of file contents failed, show error dialog
+            try {
+                showErrorPage(this, e);
+            } catch (JspException exc) {
+                // should usually never happen
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(exc);
+                }
+            }
+        }
+        setParamContent(content);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(EDITOR_TYPE);
+
+        // set the action for the JSP switch 
+        if (EDITOR_SAVE.equals(getParamAction())) {
+            setAction(ACTION_SAVE);
+        } else if (EDITOR_SAVEEXIT.equals(getParamAction())) {
+            setAction(ACTION_SAVEEXIT);
+        } else if (EDITOR_EXIT.equals(getParamAction())) {
+            setAction(ACTION_EXIT);
+        } else if (EDITOR_SHOW.equals(getParamAction())) {
+            setAction(ACTION_SHOW);
+        } else if (EDITOR_SHOW_ERRORMESSAGE.equals(getParamAction())) {
+            setAction(ACTION_SHOW_ERRORMESSAGE);
+        } else {
+            // initial call of editor
+            setAction(ACTION_DEFAULT);
+            initContent();
+        }
+
+        setParamContent(encodeContent(getParamContent()));
+    }
 }

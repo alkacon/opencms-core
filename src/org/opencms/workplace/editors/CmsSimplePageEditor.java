@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,8 +28,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.workplace.editors;
 
+package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
@@ -56,39 +56,70 @@ import org.apache.commons.logging.Log;
  * <ul>
  * <li>/editors/simplehtml/editor.jsp
  * </ul>
+ * <p>
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.8 $
  * 
- * @since 5.3.0
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSimplePageEditor extends CmsDefaultPageEditor {
-    
+
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     private static final String EDITOR_TYPE = "simplehtml";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSimplePageEditor.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsSimplePageEditor.class);
+
     /**
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsSimplePageEditor(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
+    /**
+     * @see org.opencms.workplace.editors.CmsDefaultPageEditor#buildGalleryButtons(CmsEditorDisplayOptions, int, Properties)
+     */
+    public String buildGalleryButtons(CmsEditorDisplayOptions options, int buttonStyle, Properties displayOptions) {
+
+        StringBuffer result = new StringBuffer();
+        Iterator galleries = OpenCms.getWorkplaceManager().getGalleries().keySet().iterator();
+        while (galleries.hasNext()) {
+            String galleryType = (String)galleries.next();
+            if (options.showElement("gallery." + galleryType.replaceFirst("gallery", ""), displayOptions)) {
+                if (result.length() == 0) {
+                    result.append(", \"separator\"");
+                }
+                result.append(", \"" + galleryType + "\"");
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
+     */
+    public String getEditorResourceUri() {
+
+        return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
+    }
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
+
         // set the dialog type
         setParamDialogtype(EDITOR_TYPE);
-        
+
         // Initialize a page object from the temporary file
         if (getParamTempfile() != null && !"null".equals(getParamTempfile())) {
             try {
@@ -134,11 +165,11 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             setAction(ACTION_SHOW);
             actionCleanupBodyElement();
             // prepare the content String for the editor
-            prepareContent(false);   
+            prepareContent(false);
         } else if (EDITOR_SHOW.equals(getParamAction())) {
             setAction(ACTION_SHOW);
             // prepare the content String for the editor
-            prepareContent(false);            
+            prepareContent(false);
         } else if (EDITOR_PREVIEW.equals(getParamAction())) {
             setAction(ACTION_PREVIEW);
         } else {
@@ -156,7 +187,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                 // create the temporary file
                 setParamTempfile(createTempFile());
                 // initialize a page object from the created temporary file
-                m_file =  getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
+                m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
                 m_page = CmsXmlPageFactory.unmarshal(getCms(), m_file);
             } catch (CmsException e) {
                 // error during initialization
@@ -166,7 +197,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                     // should usually never happen
                     if (LOG.isInfoEnabled()) {
                         LOG.info(exc);
-                    }       
+                    }
                 }
             }
             // set the initial body language & name if not given in request parameters
@@ -180,9 +211,9 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             initContent();
             // prepare the content String for the editor
             prepareContent(false);
-        }       
-    }    
-    
+        }
+    }
+
     /**
      * Manipulates the content String and removes leading and trailing white spaces.<p>
      * 
@@ -190,39 +221,14 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
      * @return the prepared content String
      */
     protected String prepareContent(boolean save) {
+
         String content = getParamContent().trim();
         // ensure all chars in the content are valid for the selected encoding
         content = CmsEncoder.adjustHtmlEncoding(content, getFileEncoding());
-        if (! save) {
+        if (!save) {
             setParamContent(content);
-        } 
-        return content;
-    }  
-    
-    /**
-     * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
-     */
-    public String getEditorResourceUri() {
-        return getSkinUri() + "editors/" + EDITOR_TYPE + "/";   
-    }
-
-    /**
-     * @see org.opencms.workplace.editors.CmsDefaultPageEditor#buildGalleryButtons(CmsEditorDisplayOptions, int, Properties)
-     */
-    public String buildGalleryButtons(CmsEditorDisplayOptions options, int buttonStyle, Properties displayOptions) {
-
-        StringBuffer result = new StringBuffer();
-        Iterator galleries = OpenCms.getWorkplaceManager().getGalleries().keySet().iterator();
-        while (galleries.hasNext()) {
-            String galleryType = (String)galleries.next();
-            if (options.showElement("gallery." + galleryType.replaceFirst("gallery", ""), displayOptions)) {
-                if (result.length() == 0) {
-                    result.append(", \"separator\"");
-                }
-                result.append(", \"" + galleryType + "\"");
-            }
         }
-        return result.toString();
+        return content;
     }
-    
+
 }

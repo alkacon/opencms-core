@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,9 +64,10 @@ import org.apache.commons.logging.Log;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.13 $
  * 
- * @since 5.1.12
+ * @version $Revision: 1.14 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class CmsDefaultPageEditor extends CmsEditor {
 
@@ -75,6 +76,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     /** Parameter name for the request parameter "old element name". */
     public static final String PARAM_OLDELEMENTNAME = "oldelementname";
+
+    /** Name of the special body element from an XMLTemplate. */
+    public static final String XML_BODY_ELEMENT = "body";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultPageEditor.class);
@@ -92,9 +96,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     private String m_paramElementname;
     private String m_paramOldelementname;
-
-    /** Name of the special body element from an XMLTemplate. */
-    public static final String XML_BODY_ELEMENT = "body";
 
     /**
      * Public constructor.<p>

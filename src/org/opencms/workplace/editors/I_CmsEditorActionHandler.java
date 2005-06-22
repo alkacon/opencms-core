@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,9 +46,10 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner 
- * @version $Revision: 1.4 $
  * 
- * @since 5.3.0
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsEditorActionHandler {
     
@@ -75,6 +76,15 @@ public interface I_CmsEditorActionHandler {
     
     /** Constant for: direct edit mode inactive. */
     String C_DIRECT_EDIT_MODE_INACTIVE = "inactive";
+
+    /** Option value that indicates the "delete" button should be displayed. */
+    String C_DIRECT_EDIT_OPTION_DELETE = "delete";
+    
+    /** Option value that indicates the "edit" button should be displayed. */
+    String C_DIRECT_EDIT_OPTION_EDIT = "edit";
+
+    /** Option value that indicates the "new" button should be displayed. */
+    String C_DIRECT_EDIT_OPTION_NEW = "new";
     
     /** Key to identify the edit button style, used on JPS pages that supply the direct edit html. */  
     String C_DIRECT_EDIT_PARAM_BUTTONSTYLE = "__directEditButtonStyle";
@@ -85,23 +95,14 @@ public interface I_CmsEditorActionHandler {
     /** Key to identify the edit language, used on JPS pages that supply the direct edit html. */  
     String C_DIRECT_EDIT_PARAM_LOCALE = "__directEditLocale";
     
-    /** Key to identify the edit target, used on JPS pages that supply the direct edit html. */
-    String C_DIRECT_EDIT_PARAM_TARGET = "__directEditTarget";
+    /** Key to identify the link to use for the "new" button (if enabled). */
+    String C_DIRECT_EDIT_PARAM_NEWLINK = "__directEditNewLink";
     
     /** Key to identify additional direct edit options, used e.g. to control which direct edit buttons are displayed */
     String C_DIRECT_EDIT_PARAM_OPTIONS = "__directEditOptions";
     
-    /** Key to identify the link to use for the "new" button (if enabled). */
-    String C_DIRECT_EDIT_PARAM_NEWLINK = "__directEditNewLink";
-    
-    /** Option value that indicates the "edit" button should be displayed. */
-    String C_DIRECT_EDIT_OPTION_EDIT = "edit";
-
-    /** Option value that indicates the "delete" button should be displayed. */
-    String C_DIRECT_EDIT_OPTION_DELETE = "delete";
-
-    /** Option value that indicates the "new" button should be displayed. */
-    String C_DIRECT_EDIT_OPTION_NEW = "new";
+    /** Key to identify the edit target, used on JPS pages that supply the direct edit html. */
+    String C_DIRECT_EDIT_PARAM_TARGET = "__directEditTarget";
             
     /**
      * Performs an action which is configurable in the implementation of the interface, e.g. save, exit, publish.<p>

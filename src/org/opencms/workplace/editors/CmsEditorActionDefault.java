@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsObject;
@@ -63,26 +64,29 @@ import org.apache.commons.logging.Log;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.13 $
  * 
- * @since 5.3.0
+ * @version $Revision: 1.14 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEditorActionDefault.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsEditorActionDefault.class);
+
     /**
      * Default constructor needed for editor action handler implementation.<p>
      */
     public CmsEditorActionDefault() {
+
         // empty constructor
     }
-    
+
     /**
      * @see org.opencms.workplace.editors.I_CmsEditorActionHandler#editorAction(org.opencms.workplace.editors.CmsEditor, org.opencms.jsp.CmsJspActionElement)
      */
     public void editorAction(CmsEditor editor, CmsJspActionElement jsp) throws IOException, JspException {
+
         // save the edited content
         editor.actionSave();
         // delete temporary file and unlock resource in direct edit mode
@@ -97,7 +101,9 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         params.append(CmsDialog.DIALOG_CONFIRMED);
         params.append("&directpublish=true&publishsiblings=true");
         params.append("&title=");
-        params.append(CmsEncoder.escapeWBlanks(editor.key("messagebox.title.publishresource") + ": " + editor.getParamResource(), CmsEncoder.C_UTF8_ENCODING));
+        params.append(CmsEncoder.escapeWBlanks(editor.key("messagebox.title.publishresource")
+            + ": "
+            + editor.getParamResource(), CmsEncoder.C_UTF8_ENCODING));
         params.append("&closelink=");
         if ("true".equals(editor.getParamDirectedit())) {
             String linkTarget;
@@ -110,24 +116,27 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             publishLink += params.toString() + CmsEncoder.escapeWBlanks(linkTarget, CmsEncoder.C_UTF8_ENCODING);
         } else {
             // append the parameters and the report "ok" button action to the link
-            publishLink += params.toString() + CmsEncoder.escapeWBlanks(jsp.link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI), CmsEncoder.C_UTF8_ENCODING);
-       
+            publishLink += params.toString()
+                + CmsEncoder.escapeWBlanks(jsp.link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI), CmsEncoder.C_UTF8_ENCODING);
+
         }
         // redirect to the publish dialog with all necessary parameters
-        jsp.getResponse().sendRedirect(publishLink); 
+        jsp.getResponse().sendRedirect(publishLink);
     }
-    
+
     /**
      * @see org.opencms.workplace.editors.I_CmsEditorActionHandler#getButtonName()
      */
     public String getButtonName() {
+
         return "explorer.context.publish";
     }
-    
+
     /**
      * @see org.opencms.workplace.editors.I_CmsEditorActionHandler#getButtonUrl(CmsJspActionElement, java.lang.String)
      */
     public String getButtonUrl(CmsJspActionElement jsp, String resourceName) {
+
         // get the button image
         String button = I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + "buttons/publish.png";
         if (!isButtonActive(jsp, resourceName)) {
@@ -136,28 +145,20 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         }
         return jsp.link(button);
     }
-    
-    /**
-     * @see org.opencms.workplace.editors.I_CmsEditorActionHandler#isButtonActive(CmsJspActionElement, java.lang.String)
-     */
-    public boolean isButtonActive(CmsJspActionElement jsp, String resourceName) {
-        
-        return jsp.getCmsObject().hasPublishPermissions(resourceName);
-    }
-    
+
     /**
      * @see org.opencms.workplace.editors.I_CmsEditorActionHandler#getEditMode(org.opencms.file.CmsObject, java.lang.String, java.lang.String, javax.servlet.ServletRequest)
      */
     public String getEditMode(CmsObject cmsObject, String filename, String element, ServletRequest req) {
-    
+
         try {
-            
+
             CmsResource resource = cmsObject.readResource(filename, CmsResourceFilter.ALL);
             int currentProject = cmsObject.getRequestContext().currentProject().getId();
             CmsUUID userId = cmsObject.getRequestContext().currentUser().getId();
             CmsLock lock = cmsObject.getLock(filename);
             boolean locked = !(lock.isNullLock() || (lock.getUserId().equals(userId) && lock.getProjectId() == currentProject));
-        
+
             if (currentProject == I_CmsConstants.C_PROJECT_ONLINE_ID) {
                 // don't render direct edit button in online project
                 return null;
@@ -170,7 +171,11 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             } else if (!cmsObject.isInsideCurrentProject(filename)) {
                 // don't show direct edit button on files not belonging to the current project
                 return C_DIRECT_EDIT_MODE_INACTIVE;
-            } else if (!cmsObject.hasPermissions(resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.IGNORE_EXPIRATION)) {
+            } else if (!cmsObject.hasPermissions(
+                resource,
+                CmsPermissionSet.ACCESS_WRITE,
+                false,
+                CmsResourceFilter.IGNORE_EXPIRATION)) {
                 // don't show direct edit button on files without write permissions
                 if (locked) {
                     return C_DIRECT_EDIT_MODE_DISABLED;
@@ -180,32 +185,43 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             } else if (locked) {
                 return C_DIRECT_EDIT_MODE_DISABLED;
             }
-              
+
             if ((element != null) && (resource.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId())) {
                 // check if the desired element is available (in case of xml page)
                 I_CmsXmlDocument document = CmsXmlPageFactory.unmarshal(cmsObject, filename, req);
                 List locales = document.getLocales();
                 Locale locale;
                 if ((locales == null) || (locales.size() == 0)) {
-                    locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename).get(0);                    
-                } else { 
-                    locale = OpenCms.getLocaleManager().getBestMatchingLocale(null, OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename), locales);
+                    locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename).get(0);
+                } else {
+                    locale = OpenCms.getLocaleManager().getBestMatchingLocale(
+                        null,
+                        OpenCms.getLocaleManager().getDefaultLocales(cmsObject, filename),
+                        locales);
                 }
                 if (!document.hasValue(element, locale) || !document.isEnabled(element, locale)) {
                     return C_DIRECT_EDIT_MODE_INACTIVE;
-                }                
+                }
             }
 
             // otherwise the resource is editable
             return C_DIRECT_EDIT_MODE_ENABLED;
-            
-        }  catch (CmsException e) {
+
+        } catch (CmsException e) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().key(Messages.LOG_CALC_EDIT_MODE_FAILED_1, filename), e);
             }
             // something went wrong - so the resource seems not to be editable
             return C_DIRECT_EDIT_MODE_INACTIVE;
         }
+    }
+
+    /**
+     * @see org.opencms.workplace.editors.I_CmsEditorActionHandler#isButtonActive(CmsJspActionElement, java.lang.String)
+     */
+    public boolean isButtonActive(CmsJspActionElement jsp, String resourceName) {
+
+        return jsp.getCmsObject().hasPublishPermissions(resourceName);
     }
 
 }

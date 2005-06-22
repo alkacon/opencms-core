@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndelete.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsResource;
@@ -49,30 +50,32 @@ import javax.servlet.jsp.PageContext;
  * <ul>
  * <li>/commons/undelete.jsp
  * </ul>
+ * <p>
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.8 $
  * 
- * @since 5.1
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsUndelete extends CmsDialog {
-    
+
     /** Value for the action: undelete resource. */
     public static final int ACTION_UNDELETE = 100;
-    
+
     /** The dialog type. */
     public static final String DIALOG_TYPE = "undelete";
 
-    
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsUndelete(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -81,30 +84,9 @@ public class CmsUndelete extends CmsDialog {
      * @param res the JSP response
      */
     public CmsUndelete(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-        this(new CmsJspActionElement(context, req, res));
-    }        
 
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_TYPE.equals(getParamAction())) {
-            setAction(ACTION_UNDELETE);                            
-        } else if (DIALOG_WAIT.equals(getParamAction())) {
-            setAction(ACTION_WAIT);
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
-            setAction(ACTION_CANCEL);
-        } else {                        
-            setAction(ACTION_DEFAULT);
-            // build title for delete dialog     
-            setParamTitle(key("title.undelete") + ": " + CmsResource.getName(getParamResource()));
-        }      
-    } 
+        this(new CmsJspActionElement(context, req, res));
+    }
 
     /**
      * Performs the undelete action, will be called by the JSP page.<p>
@@ -112,30 +94,54 @@ public class CmsUndelete extends CmsDialog {
      * @throws JspException if problems including sub-elements occur
      */
     public void actionUndelete() throws JspException {
+
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        try {        
-            if (performUndeleteOperation())  {
+        try {
+            if (performUndeleteOperation()) {
                 // if no exception is caused and "true" is returned delete operation was successful
                 actionCloseDialog();
-            } else  {
+            } else {
                 // "false" returned, display "please wait" screen
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
-            }    
-        } catch (Throwable e) {                 
+            }
+        } catch (Throwable e) {
             // error during deletion, show error dialog
-            includeErrorpage(this, e);  
+            includeErrorpage(this, e);
         }
     }
-    
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_TYPE.equals(getParamAction())) {
+            setAction(ACTION_UNDELETE);
+        } else if (DIALOG_WAIT.equals(getParamAction())) {
+            setAction(ACTION_WAIT);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            setAction(ACTION_CANCEL);
+        } else {
+            setAction(ACTION_DEFAULT);
+            // build title for delete dialog     
+            setParamTitle(key("title.undelete") + ": " + CmsResource.getName(getParamResource()));
+        }
+    }
+
     /**
      * Performs the resource undeletion.<p>
      * 
      * @return true, if the resource was undeleted, otherwise false
      * @throws CmsException if undeletion is not successful
      */
-    private boolean performUndeleteOperation() throws CmsException {     
-        
+    private boolean performUndeleteOperation() throws CmsException {
+
         // on folder deletion display "please wait" screen, not for simple file touching
         if (!DIALOG_WAIT.equals(getParamAction())) {
             CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
@@ -144,12 +150,12 @@ public class CmsUndelete extends CmsDialog {
                 return false;
             }
         }
-         
+
         // lock resource if autolock is enabled
-        checkLock(getParamResource());            
+        checkLock(getParamResource());
         // undelete the resource
         getCms().undeleteResource(getParamResource());
-        
+
         return true;
     }
 }

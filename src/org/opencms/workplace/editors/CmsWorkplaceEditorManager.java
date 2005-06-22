@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,32 +63,35 @@ import org.apache.commons.logging.Log;
  * <li>the resource type</li>
  * <li>the editor rankings</li>
  * </ul>
+ * <p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.5 $
  * 
- * @since 5.3.1
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsWorkplaceEditorManager {
-    
+
     /** The filename of the editor configuration XML file. */
     public static final String C_EDITOR_CONFIGURATION_FILENAME = "editor_configuration.xml";
-    
+
     /** The filename of the editor JSP. */
     public static final String C_EDITOR_FILENAME = "editor.jsp";
-    
+
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsWorkplaceEditorManager.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsWorkplaceEditorManager.class);
+
     private List m_editorConfigurations;
     private Map m_preferredEditors;
-    
+
     /**
      * Creates a new editor manager.<p>
      * 
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      */
     public CmsWorkplaceEditorManager(CmsObject cms) {
+
         // get all subfolders of the workplace editor folder
         List editorFolders = new ArrayList();
         try {
@@ -98,11 +101,11 @@ public class CmsWorkplaceEditorManager {
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             editorFolders = new ArrayList();
         }
-        
+
         m_editorConfigurations = new ArrayList(editorFolders.size());
-        
+
         // try to read the configuration files and create configuration objects for valid configurations
-        Iterator i = editorFolders.iterator(); 
+        Iterator i = editorFolders.iterator();
         while (i.hasNext()) {
             CmsFolder currentFolder = (CmsFolder)i.next();
             String folderName = CmsEditor.C_PATH_EDITORS + currentFolder.getName();
@@ -111,62 +114,27 @@ public class CmsWorkplaceEditorManager {
             }
             CmsFile configFile = null;
             try {
-                configFile = cms.readFile(folderName + C_EDITOR_CONFIGURATION_FILENAME, CmsResourceFilter.IGNORE_EXPIRATION);
+                configFile = cms.readFile(
+                    folderName + C_EDITOR_CONFIGURATION_FILENAME,
+                    CmsResourceFilter.IGNORE_EXPIRATION);
             } catch (CmsException e) {
                 // no configuration file present, ignore this folder
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e);
-                }                
+                }
                 continue;
             }
             // get the file contents
             byte[] xmlData = configFile.getContents();
-            CmsWorkplaceEditorConfiguration editorConfig = new CmsWorkplaceEditorConfiguration(xmlData, folderName + C_EDITOR_FILENAME);
+            CmsWorkplaceEditorConfiguration editorConfig = new CmsWorkplaceEditorConfiguration(xmlData, folderName
+                + C_EDITOR_FILENAME);
             if (editorConfig.isValidConfiguration()) {
                 m_editorConfigurations.add(editorConfig);
             }
         }
         m_preferredEditors = new HashMap(m_editorConfigurations.size());
     }
-    
-    /**
-     * Filters the matching editors for the given resource type from the list of all available editors.<p>
-     * 
-     * @param resourceType the resource type to filter 
-     * @return a map of filtered editor configurations sorted asceding by the ranking for the current resource type, with the (Float) ranking as key
-     */
-    private SortedMap filterEditorsForResourceType(String resourceType) {
-        SortedMap filteredEditors = new TreeMap();
-        Iterator i = m_editorConfigurations.iterator();
-        while (i.hasNext()) {
-            CmsWorkplaceEditorConfiguration currentConfig = (CmsWorkplaceEditorConfiguration)i.next();
-            if (currentConfig.matchesResourceType(resourceType)) {
-                float key = currentConfig.getRankingForResourceType(resourceType);
-                if (key >= 0) {
-                    filteredEditors.put(new Float(key), currentConfig);
-                }              
-            }
-        }
-        return filteredEditors;
-    }
-    
-    /**
-     * Filters the preferred editor from the list of all available editors.<p>
-     * 
-     * @param preferredEditor the preferred editor identification String
-     * @return the preferred editor configuration object or null, if none is found
-     */
-    private CmsWorkplaceEditorConfiguration filterPreferredEditor(String preferredEditor) {
-        if (m_preferredEditors.size() == 0) {
-            Iterator i = m_editorConfigurations.iterator();
-            while (i.hasNext()) {
-                CmsWorkplaceEditorConfiguration currentConfig = (CmsWorkplaceEditorConfiguration)i.next();
-                m_preferredEditors.put(currentConfig.getEditorUri(), currentConfig);         
-            }
-        }
-        return (CmsWorkplaceEditorConfiguration)m_preferredEditors.get(preferredEditor);     
-    }
-    
+
     /**
      * Returns a map of configurable editors for the workplace preferences dialog.<p>
      * 
@@ -176,7 +144,7 @@ public class CmsWorkplaceEditorManager {
      * @return configurable editors for the workplace preferences dialog
      */
     public Map getConfigurableEditors() {
-        
+
         Map configurableEditors = new HashMap();
         Iterator i = m_editorConfigurations.iterator();
         while (i.hasNext()) {
@@ -186,14 +154,14 @@ public class CmsWorkplaceEditorManager {
             while (k.hasNext()) {
                 // key is the current resource type of the configuration
                 String key = (String)k.next();
-                
+
                 // check if the current resource type is only a reference to another resource type
                 CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(key);
                 if (CmsStringUtil.isNotEmpty(settings.getReference())) {
                     // skip this resource type
-                    continue;    
+                    continue;
                 }
-                
+
                 if (currentConfig.getMappingForResourceType(key) == null) {
                     // editor is configurable for specified resource type
                     SortedMap editorConfigs = (SortedMap)configurableEditors.get(key);
@@ -210,7 +178,7 @@ public class CmsWorkplaceEditorManager {
         }
         return configurableEditors;
     }
-    
+
     /**
      * Returns the default editor URI for the current resource type.<p>
      * 
@@ -220,10 +188,11 @@ public class CmsWorkplaceEditorManager {
      * @return a valid default editor URI for the resource type or null, if no editor matches
      */
     protected String getDefaultEditorUri(CmsRequestContext context, String resourceType, String userAgent) {
+
         SortedMap filteredEditors = filterEditorsForResourceType(resourceType);
         while (filteredEditors.size() > 0) {
             // get the configuration with the lowest key value from the map
-            Float key = (Float)filteredEditors.firstKey();          
+            Float key = (Float)filteredEditors.firstKey();
             CmsWorkplaceEditorConfiguration conf = (CmsWorkplaceEditorConfiguration)filteredEditors.get(key);
             // match the found configuration with the current users browser
             if (conf.matchesBrowser(userAgent)) {
@@ -238,16 +207,17 @@ public class CmsWorkplaceEditorManager {
         // no valid default editor found
         return null;
     }
-    
+
     /**
      * Returns the editor configuration objects.<p>
      * 
      * @return the editor configuration objects
      */
     protected List getEditorConfigurations() {
+
         return m_editorConfigurations;
     }
-    
+
     /**
      * Returns the editor URI for the current resource type.<p>
      * 
@@ -257,7 +227,7 @@ public class CmsWorkplaceEditorManager {
      * @return a valid editor URI for the resource type or null, if no editor matches
      */
     protected String getEditorUri(CmsRequestContext context, String resourceType, String userAgent) {
-        
+
         // step 1: check if the user specified a preferred editor for the given resource type
         CmsUserSettings settings = new CmsUserSettings(context.currentUser());
         String preferredEditorSetting = settings.getPreferredEditor(resourceType);
@@ -281,24 +251,64 @@ public class CmsWorkplaceEditorManager {
                 // return preferred editor only if it matches the current users browser
                 return preferredConf.getEditorUri();
             }
-        }   
-        
+        }
+
         // step 2: filter editors for the given resoure type
         SortedMap filteredEditors = filterEditorsForResourceType(resourceType);
-        
+
         // step 3: check if one of the editors matches the current users browser
         while (filteredEditors.size() > 0) {
             // check editor configuration with highest ranking 
-            Float key = (Float)filteredEditors.lastKey();           
+            Float key = (Float)filteredEditors.lastKey();
             CmsWorkplaceEditorConfiguration conf = (CmsWorkplaceEditorConfiguration)filteredEditors.get(key);
             if (conf.matchesBrowser(userAgent)) {
                 return conf.getEditorUri();
             }
             filteredEditors.remove(key);
         }
-        
+
         // no valid editor found 
         return null;
     }
-    
+
+    /**
+     * Filters the matching editors for the given resource type from the list of all available editors.<p>
+     * 
+     * @param resourceType the resource type to filter 
+     * @return a map of filtered editor configurations sorted asceding by the ranking for the current resource type, with the (Float) ranking as key
+     */
+    private SortedMap filterEditorsForResourceType(String resourceType) {
+
+        SortedMap filteredEditors = new TreeMap();
+        Iterator i = m_editorConfigurations.iterator();
+        while (i.hasNext()) {
+            CmsWorkplaceEditorConfiguration currentConfig = (CmsWorkplaceEditorConfiguration)i.next();
+            if (currentConfig.matchesResourceType(resourceType)) {
+                float key = currentConfig.getRankingForResourceType(resourceType);
+                if (key >= 0) {
+                    filteredEditors.put(new Float(key), currentConfig);
+                }
+            }
+        }
+        return filteredEditors;
+    }
+
+    /**
+     * Filters the preferred editor from the list of all available editors.<p>
+     * 
+     * @param preferredEditor the preferred editor identification String
+     * @return the preferred editor configuration object or null, if none is found
+     */
+    private CmsWorkplaceEditorConfiguration filterPreferredEditor(String preferredEditor) {
+
+        if (m_preferredEditors.size() == 0) {
+            Iterator i = m_editorConfigurations.iterator();
+            while (i.hasNext()) {
+                CmsWorkplaceEditorConfiguration currentConfig = (CmsWorkplaceEditorConfiguration)i.next();
+                m_preferredEditors.put(currentConfig.getEditorUri(), currentConfig);
+            }
+        }
+        return (CmsWorkplaceEditorConfiguration)m_preferredEditors.get(preferredEditor);
+    }
+
 }

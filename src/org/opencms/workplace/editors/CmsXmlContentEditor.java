@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2005/06/22 16:06:35 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
@@ -78,71 +79,72 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.52 $
- * @since 5.5.0
+ * @version $Revision: 1.53 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
-    
+
     /** Action for checking content before executing the direct edit action. */
     public static final int ACTION_CHECK = 151;
-    
+
     /** Action for optional element creation. */
     public static final int ACTION_ELEMENT_ADD = 152;
-    
+
     /** Action for optional element removal. */
     public static final int ACTION_ELEMENT_REMOVE = 153;
-    
+
     /** Action for new file creation. */
     public static final int ACTION_NEW = 154;
-    
+
     /** Indicates that the content should be checked before executing the direct edit action. */
     public static final String EDITOR_ACTION_CHECK = "check";
-    
+
     /** Indicates an optional element should be created. */
     public static final String EDITOR_ACTION_ELEMENT_ADD = "addelement";
-    
+
     /** Indicates an optional element should be removed. */
     public static final String EDITOR_ACTION_ELEMENT_REMOVE = "removeelement";
-    
+
     /** Indicates a new file should be created. */
     public static final String EDITOR_ACTION_NEW = I_CmsEditorActionHandler.C_DIRECT_EDIT_OPTION_NEW;
-    
+
     /** Parameter name for the request parameter "elementindex". */
     public static final String PARAM_ELEMENTINDEX = "elementindex";
-    
+
     /** Parameter name for the request parameter "elementname". */
     public static final String PARAM_ELEMENTNAME = "elementname";
-    
+
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     private static final String EDITOR_TYPE = "xmlcontent";
-    
+
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsXmlContentEditor.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsXmlContentEditor.class);
+
     /** The content object to edit. */
     private CmsXmlContent m_content;
-    
+
     /** The element locale. */
     private Locale m_elementLocale;
-    
+
     /** The error handler for the xml content. */
     private CmsXmlContentErrorHandler m_errorHandler;
-    
+
     /** File object used to read and write contents. */
     private CmsFile m_file;
-    
+
     /** Indicates if an optional element is included in the form. */
     private boolean m_optionalElementPresent;
-    
+
     /** Parameter stores the index of the element to add or remove. */
     private String m_paramElementIndex;
-    
+
     /** Parameter stores the name of the element to add or remove. */
-    private String m_paramElementName;    
-    
+    private String m_paramElementName;
+
     /** Parameter to indicate if a new XML content resource should be created. */
     private String m_paramNewLink;
-    
+
     /** Visitor implementation that stored the widgets for the content.  */
     private CmsXmlContentWidgetVisitor m_widgetCollector;
 
@@ -152,16 +154,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @param jsp an initialized JSP action element
      */
     public CmsXmlContentEditor(CmsJspActionElement jsp) {
-        
+
         super(jsp);
     }
-    
+
     /**
      * Performs the change element language action of the editor.<p>
      */
     public void actionChangeElementLanguage() {
-        
-        if (! m_content.hasLocale(getElementLocale())) {
+
+        if (!m_content.hasLocale(getElementLocale())) {
             // create new element if selected language element is not present
             try {
                 m_content.addLocale(getCms(), getElementLocale());
@@ -175,7 +177,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         Locale oldLocale = CmsLocaleManager.getLocale(getParamOldelementlanguage());
         try {
             setEditorValues(oldLocale);
-            if (! getErrorHandler().hasErrors()) {
+            if (!getErrorHandler().hasErrors()) {
                 // no errors found in content, save to temporary file              
                 writeContent();
             } else {
@@ -191,19 +193,19 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             }
         }
     }
-    
+
     /**
      * Deletes the temporary file and unlocks the edited resource when in direct edit mode.<p>
      * 
      * @param forceUnlock if true, the resource will be unlocked anyway
      */
     public void actionClear(boolean forceUnlock) {
-        
+
         // delete the temporary file        
         deleteTempFile();
         boolean directEditMode = Boolean.valueOf(getParamDirectedit()).booleanValue();
         boolean modified = Boolean.valueOf(getParamModified()).booleanValue();
-        if (directEditMode || forceUnlock || ! modified) {
+        if (directEditMode || forceUnlock || !modified) {
             // unlock the resource when in direct edit mode, force unlock is true or resource was not modified
             try {
                 getCms().unlockResource(getParamResource());
@@ -211,11 +213,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e.getLocalizedMessage(), e);
-                }       
+                }
             }
         }
     }
-    
+
     /**
      * Performs a configurable action performed by the editor.<p>
      * 
@@ -225,7 +227,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @throws JspException if including a JSP fails
      */
     public void actionDirectEdit() throws IOException, JspException {
-        
+
         // get the action class from the OpenCms runtime property
         I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
         if (actionClass == null) {
@@ -236,14 +238,14 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             actionClass.editorAction(this, getJsp());
         }
     }
-    
+
     /**
      * Performs the exit editor action.<p>
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
-    public void actionExit() throws IOException, JspException {    
-        
+    public void actionExit() throws IOException, JspException {
+
         if (getAction() == ACTION_CANCEL) {
             // save and exit was cancelled
             return;
@@ -260,17 +262,17 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @throws JspException in case something goes wrong
      */
     public void actionNew() throws JspException {
-        
+
         // get the collector used to create the new content
         int pos = m_paramNewLink.indexOf('|');
         String collectorName = m_paramNewLink.substring(0, pos);
         String param = m_paramNewLink.substring(pos + 1);
-        
+
         // get the collector used for calculating the next file name
-        I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(collectorName);    
-        
+        I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(collectorName);
+
         try {
-            
+
             // one resource serves as a "template" for the new resource
             CmsFile templateFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
             CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCms(), templateFile);
@@ -284,8 +286,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 template.getContentDefinition());
 
             // IMPORTANT: calculation of the name MUST be done here so the file name is ensured to be valid
-            String newFileName = collector.getCreateLink(getCms(), collectorName, param);            
-            
+            String newFileName = collector.getCreateLink(getCms(), collectorName, param);
+
             // now create the resource, fill it with the marshalled XML and write it back to the VFS
             getCms().createResource(newFileName, templateFile.getTypeId());
             // re-read the created resource
@@ -293,28 +295,28 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             newFile.setContents(newContent.marshal());
             // write the file with the updated content
             getCms().writeFile(newFile);
-            
+
             // wipe out parameters for the editor to ensure proper operation
             setParamNewLink(null);
             setParamAction(null);
             setParamResource(newFileName);
             setAction(ACTION_DEFAULT);
-            
+
             // create the temporary file to work with
             setParamTempfile(createTempFile());
-            
+
             // set the member variables for the content 
             m_file = newFile;
-            m_content = newContent;                         
-                        
+            m_content = newContent;
+
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_CREATE_XML_CONTENT_ITEM_1, m_paramNewLink) , e);
-            }                
+                LOG.error(Messages.get().key(Messages.LOG_CREATE_XML_CONTENT_ITEM_1, m_paramNewLink), e);
+            }
             throw new JspException(e);
         }
     }
-    
+
     /**
      * Performs the preview xml content action in a new browser window.<p>
      * 
@@ -322,7 +324,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @throws JspException if inclusion of error page fails
      */
     public void actionPreview() throws IOException, JspException {
-        
+
         try {
             // save content of the editor only to the temporary file
             setEditorValues(getElementLocale());
@@ -331,36 +333,39 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // show error page
             showErrorPage(this, e);
         }
-        
+
         // get preview uri from content handler
-        String previewUri = m_content.getContentDefinition().getContentHandler().getPreview(getCms(), m_content, getParamTempfile());     
-        
+        String previewUri = m_content.getContentDefinition().getContentHandler().getPreview(
+            getCms(),
+            m_content,
+            getParamTempfile());
+
         // create locale request parameter
         StringBuffer param = new StringBuffer(8);
         if (previewUri.indexOf('?') != -1) {
-            param.append("&");    
+            param.append("&");
         } else {
             param.append("?");
         }
         param.append(I_CmsConstants.C_PARAMETER_LOCALE);
         param.append("=");
         param.append(getParamElementlanguage());
-        
+
         // redirect to the temporary file with currently active element language or to the specified preview uri
         sendCmsRedirect(previewUri + param);
     }
-    
+
     /**
      * Performs the save content action.<p>
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
     public void actionSave() throws JspException {
-    
+
         actionSave(getElementLocale());
         if (getAction() != ACTION_CANCEL) {
             // save successful, set save action         
-           setAction(ACTION_SAVE);
+            setAction(ACTION_SAVE);
         }
     }
 
@@ -373,13 +378,13 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @throws JspException if including the error page fails
      */
     public void actionSave(Locale locale) throws JspException {
-        
-        try {                        
+
+        try {
             setEditorValues(locale);
             // check if content has errors
-            if (! getErrorHandler().hasErrors()) {
+            if (!getErrorHandler().hasErrors()) {
                 // no errors found, write content and copy temp file contents
-                writeContent();  
+                writeContent();
                 commitTempFile();
                 // set the modified parameter
                 setParamModified(Boolean.TRUE.toString());
@@ -387,9 +392,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         } catch (CmsException e) {
             showErrorPage(e);
         }
-    
+
     }
-    
+
     /**
      * Adds an optional element to the xml content or removes an optional element from the xml content.<p>
      * 
@@ -398,26 +403,26 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @throws JspException if including the error page fails
      */
     public void actionToggleElement() throws JspException {
-        
+
         // set editor values from request
-        try { 
+        try {
             setEditorValues(getElementLocale());
         } catch (CmsXmlException e) {
             // an error occured while trying to set the values, stop action
             showErrorPage(e);
             return;
         }
-        
+
         // validate the content values
-        if (! getErrorHandler().hasErrors()) {
+        if (!getErrorHandler().hasErrors()) {
             // get the necessary parameters to add/remove the element
             int index = 0;
             try {
-                index= Integer.parseInt(getParamElementIndex());
+                index = Integer.parseInt(getParamElementIndex());
             } catch (Exception e) {
                 // ignore, should not happen
             }
-            
+
             if (getAction() == ACTION_ELEMENT_REMOVE) {
                 // remove the value
                 m_content.removeValue(getParamElementName(), getElementLocale(), index);
@@ -425,16 +430,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // add the new value after the clicked element
                 if (m_content.hasValue(getParamElementName(), getElementLocale())) {
                     // when other values are present, increase index to use right position
-                    index += 1;    
+                    index += 1;
                 }
-                m_content.addValue(getCms(), getParamElementName(), getElementLocale(), index);  
+                m_content.addValue(getCms(), getParamElementName(), getElementLocale(), index);
             }
-            
+
             if (getErrorHandler().hasWarnings(getElementLocale())) {
                 // there were warnings for the edited content, reset error handler to avoid display issues
                 resetErrorHandler();
             }
-            
+
             try {
                 // write the modified content to the temporary file
                 writeContent();
@@ -442,9 +447,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // an error occured while trying to save
                 showErrorPage(e);
             }
-        }    
+        }
     }
-    
+
     /**
      * Returns the html for a button to add an optional element.<p>
      * 
@@ -454,7 +459,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @return the html for a button to add an optional element
      */
     public String buildAddElement(String elementName, int insertAfter, boolean enabled) {
-        
+
         if (enabled) {
             StringBuffer href = new StringBuffer(4);
             href.append("javascript:addElement('");
@@ -462,12 +467,12 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             href.append("', ");
             href.append(insertAfter);
             href.append(");");
-            return button(href.toString(), null, "new.png", "button.addnew", 0);    
+            return button(href.toString(), null, "new.png", "button.addnew", 0);
         } else {
             return dialogHorizontalSpacer(22);
         }
     }
-    
+
     /**
      * Returns the html for a button to remove an optional element.<p>
      * 
@@ -477,7 +482,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @return the html for a button to remove an optional element
      */
     public String buildRemoveElement(String elementName, int index, boolean enabled) {
-        
+
         if (enabled) {
             StringBuffer href = new StringBuffer(4);
             href.append("javascript:removeElement('");
@@ -485,12 +490,12 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             href.append("', ");
             href.append(index);
             href.append(");");
-            return button(href.toString(), null, "deletecontent.png", "button.delete", 0);    
+            return button(href.toString(), null, "deletecontent.png", "button.delete", 0);
         } else {
             return dialogHorizontalSpacer(22);
         }
     }
-    
+
     /**
      * Builds the html String for the element language selector.<p>
      * 
@@ -501,25 +506,33 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @return the html for the element language selectbox
      */
     public String buildSelectElementLanguage(String attributes) {
-        
-        return buildSelectElementLanguage(attributes, getParamResource(), getElementLocale());      
+
+        return buildSelectElementLanguage(attributes, getParamResource(), getElementLocale());
     }
-    
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidgetDialog#getButtonStyle()
+     */
+    public int getButtonStyle() {
+
+        return getSettings().getUserSettings().getEditorButtonStyle();
+    }
+
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
      */
     public String getEditorResourceUri() {
-        
-        return getSkinUri() + "editors/" + EDITOR_TYPE + "/";   
+
+        return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
     }
-    
+
     /**
      * Returns the current element locale.<p>
      * 
      * @return the current element locale
      */
     public Locale getElementLocale() {
-               
+
         if (m_elementLocale == null) {
             if (CmsStringUtil.isNotEmpty(getParamElementlanguage()) && !"null".equals(getParamElementlanguage())) {
                 m_elementLocale = CmsLocaleManager.getLocale(getParamElementlanguage());
@@ -527,10 +540,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 initElementLanguage();
                 m_elementLocale = CmsLocaleManager.getLocale(getParamElementlanguage());
             }
-        } 
+        }
         return m_elementLocale;
-    }    
-    
+    }
+
     /**
      * Returns the index of the element to add or remove.<p>
      *
@@ -540,7 +553,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         return m_paramElementIndex;
     }
-    
+
     /**
      * Returns the name of the element to add or remove.<p>
      *
@@ -550,7 +563,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         return m_paramElementName;
     }
-    
+
     /**
      * Returns the "new link" parameter.<p>
      *
@@ -560,19 +573,19 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         return m_paramNewLink;
     }
-    
+
     /**
      * Generates the HTML form for the XML content editor.<p> 
      * 
      * @return the HTML that generates the form for the XML editor
      */
     public String getXmlEditorForm() {
-        
+
         // set "editor mode" attribute (required for link replacement in the root site) 
-        getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));               
+        getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
         return getXmlEditorForm(m_content.getContentDefinition(), "", true).toString();
     }
-    
+
     /**
      * Generates the HTML for the end of the html editor form page.<p>
      * 
@@ -580,11 +593,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @throws JspException if including the error page fails
      */
     public String getXmlEditorHtmlEnd() throws JspException {
-        
+
         StringBuffer result = new StringBuffer(32);
         if (m_optionalElementPresent) {
             // disabled optional element(s) present, reset widgets to show help bubbles on optional form entries
-            resetWidgetCollector();    
+            resetWidgetCollector();
         }
         try {
             // get all widgets from collector
@@ -594,16 +607,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 String key = (String)i.next();
                 I_CmsXmlContentValue value = (I_CmsXmlContentValue)getWidgetCollector().getValues().get(key);
                 I_CmsWidget widget = (I_CmsWidget)getWidgetCollector().getWidgets().get(key);
-                result.append(widget.getDialogHtmlEnd(getCms(), this, (I_CmsWidgetParameter)value));    
-                
+                result.append(widget.getDialogHtmlEnd(getCms(), this, (I_CmsWidgetParameter)value));
+
             }
             return result.toString();
         } catch (Exception e) {
             showErrorPage(e);
             return "";
-        }       
+        }
     }
-    
+
     /**
      * Generates the javascript includes for the used widgets in the editor form.<p>
      * 
@@ -611,7 +624,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @throws JspException if including the error page fails
      */
     public String getXmlEditorIncludes() throws JspException {
-        
+
         StringBuffer result = new StringBuffer(32);
         try {
             // iterate over unique widgets from collector
@@ -626,7 +639,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         }
         return result.toString();
     }
-    
+
     /**
      * Generates the javascript initialization calls for the used widgets in the editor form.<p>
      * 
@@ -634,7 +647,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @throws JspException if including the error page fails
      */
     public String getXmlEditorInitCalls() throws JspException {
-        
+
         StringBuffer result = new StringBuffer(32);
         try {
             // iterate over unique widgets from collector
@@ -648,7 +661,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         }
         return result.toString();
     }
-    
+
     /**
      * Generates the JavaScript initialization methods for the used widgets.<p>
      * 
@@ -657,7 +670,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @throws JspException if an error occurs during JavaScript generation
      */
     public String getXmlEditorInitMethods() throws JspException {
-        
+
         StringBuffer result = new StringBuffer(32);
         try {
             // iterate over unique widgets from collector
@@ -672,17 +685,17 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         }
         return result.toString();
     }
-    
+
     /**
      * Returns true if the edited content contains validation errors, otherwise false.<p>
      * 
      * @return true if the edited content contains validation errors, otherwise false
      */
     public boolean hasValidationErrors() {
-        
-        return getErrorHandler().hasErrors();    
+
+        return getErrorHandler().hasErrors();
     }
-    
+
     /**
      * Returns true if the preview is available for the edited xml content.<p>
      * 
@@ -692,18 +705,21 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @return true if the preview is enabled, otherwise false
      */
     public boolean isPreviewEnabled() {
-        
+
         try {
             // read the original file because temporary file is not created when opening button frame
             CmsFile file = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(getCms(), file);
-            return content.getContentDefinition().getContentHandler().getPreview(getCms(), m_content, getParamResource()) != null;
+            return content.getContentDefinition().getContentHandler().getPreview(
+                getCms(),
+                m_content,
+                getParamResource()) != null;
         } catch (Exception e) {
             // error reading or unmarshalling, no preview available
             return false;
         }
     }
-    
+
     /**
      * Sets the editor values for the locale with the parameters from the request.<p>
      * 
@@ -714,7 +730,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @throws CmsXmlException if something goes wrong
      */
     public void setEditorValues(Locale locale) throws CmsXmlException {
-        
+
         List valueNames = getSimpleValueNames(m_content.getContentDefinition(), "", locale);
         Iterator i = valueNames.iterator();
         while (i.hasNext()) {
@@ -724,7 +740,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             widget.setEditorValue(getCms(), getJsp().getRequest().getParameterMap(), this, (I_CmsWidgetParameter)value);
         }
     }
-    
+
     /**
      * Sets the index of the element to add or remove.<p>
      *
@@ -734,7 +750,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         m_paramElementIndex = elementIndex;
     }
-    
+
     /**
      * Sets the name of the element to add or remove.<p>
      *
@@ -753,23 +769,23 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public void setParamNewLink(String paramNewLink) {
 
         m_paramNewLink = CmsEncoder.decode(paramNewLink);
-    } 
-    
+    }
+
     /**
      * Determines if the element language selector is shown dependent on the available Locales.<p>
      * 
      * @return true, if more than one Locale is available, otherwise false
      */
     public boolean showElementLanguageSelector() {
-        
+
         List locales = OpenCms.getLocaleManager().getAvailableLocales(getCms(), getParamResource());
         if (locales == null || locales.size() < 2) {
             // for less than two available locales, do not create language selector
-            return false;    
+            return false;
         }
         return true;
     }
-    
+
     /**
      * @see org.opencms.workplace.tools.CmsToolDialog#useNewStyle()
      */
@@ -777,7 +793,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         return false;
     }
-    
+
     /**
      * Closes the editor and redirects to the workplace or the resource depending on the editor mode.<p>
      * 
@@ -785,7 +801,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @throws JspException if including a JSP fails
      */
     protected void actionClose() throws IOException, JspException {
-        
+
         if ("true".equals(getParamDirectedit())) {
             // editor is in direct edit mode
             if (!"".equals(getParamBacklink())) {
@@ -804,29 +820,29 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             sendCmsRedirect(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         }
     }
-    
+
     /**
      * Initializes the editor content when opening the editor for the first time.<p>
      * 
      * Not necessary for the xmlcontent editor.<p>
      */
     protected void initContent() {
-        
+
         // nothing to be done for the xmlcontent editor form
     }
-    
+
     /**
      * Initializes the element language for the first call of the editor.<p>
      */
     protected void initElementLanguage() {
-        
+
         // get all locales of the content
         List locales = new ArrayList();
         if (m_content != null) {
             locales = m_content.getLocales();
         }
         Locale defaultLocale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
-        
+
         if (locales.size() > 0) {
             // locale element present, get the language
             if (locales.contains(defaultLocale)) {
@@ -841,17 +857,17 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         }
         setParamElementlanguage(defaultLocale.toString());
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        
+
         // fill the parameter values in the get/set methods
-        fillParamValues(request);        
+        fillParamValues(request);
         // set the dialog type
         setParamDialogtype(EDITOR_TYPE);
-        
+
         if (getParamNewLink() != null) {
             setParamAction(EDITOR_ACTION_NEW);
         } else {
@@ -872,14 +888,14 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     }
                 }
             }
-        }   
+        }
 
         // set the action for the JSP switch 
         if (EDITOR_SAVE.equals(getParamAction())) {
             setAction(ACTION_SAVE);
         } else if (EDITOR_SAVEEXIT.equals(getParamAction())) {
-            setAction(ACTION_SAVEEXIT);         
-        } else if (EDITOR_EXIT.equals(getParamAction())) { 
+            setAction(ACTION_SAVEEXIT);
+        } else if (EDITOR_EXIT.equals(getParamAction())) {
             setAction(ACTION_EXIT);
         } else if (EDITOR_ACTION_CHECK.equals(getParamAction())) {
             setAction(ACTION_CHECK);
@@ -908,8 +924,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             } catch (JspException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(org.opencms.workplace.Messages.get().key(
-                        org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));    
-                }    
+                        org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
+                }
             }
             if (getAction() != ACTION_CANCEL && getAction() != ACTION_SHOW_ERRORMESSAGE) {
                 // no error ocurred, redisplay the input form
@@ -922,8 +938,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             } catch (JspException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(org.opencms.workplace.Messages.get().key(
-                        org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));     
-                }    
+                        org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
+                }
             }
             if (getAction() != ACTION_CANCEL && getAction() != ACTION_SHOW_ERRORMESSAGE) {
                 // no error ocurred, redisplay the input form
@@ -949,7 +965,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // create the temporary file
                 setParamTempfile(createTempFile());
                 // initialize a content object from the created temporary file
-                m_file =  getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
+                m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
                 m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
             } catch (CmsException e) {
                 // error during initialization
@@ -959,30 +975,30 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     // should usually never happen
                     if (LOG.isInfoEnabled()) {
                         LOG.info(exc);
-                    }       
+                    }
                 }
             }
             // set the initial element language if not given in request parameters
             if (getParamElementlanguage() == null) {
                 initElementLanguage();
             }
-        }      
-    }   
-    
+        }
+    }
+
     /**
      * Returns the error handler for error handling of the edited xml content.<p>
      * 
      * @return the error handler
      */
     private CmsXmlContentErrorHandler getErrorHandler() {
-        
+
         if (m_errorHandler == null) {
             // errors were not yet checked, do this now and store result in member
-            m_errorHandler = m_content.validate(getCms());             
-        }    
+            m_errorHandler = m_content.validate(getCms());
+        }
         return m_errorHandler;
     }
-    
+
     /**
      * Returns a list of value names containing the complete xpath of each value as String.<p>
      * 
@@ -992,31 +1008,34 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @return list of value names (containing the xpath of each value)
      */
     private List getSimpleValueNames(CmsXmlContentDefinition contentDefinition, String pathPrefix, Locale locale) {
-        
+
         List valueNames = new ArrayList();
         Iterator i = contentDefinition.getTypeSequence().iterator();
         while (i.hasNext()) {
-     
+
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
-            
+
             String name = pathPrefix + type.getName();
-            
+
             // get the element sequence of the type
             CmsXmlContentValueSequence elementSequence = m_content.getValueSequence(name, locale);
             int elementCount = elementSequence.getElementCount();
             // loop through elements
-            for (int j=0; j<elementCount; j++) {
+            for (int j = 0; j < elementCount; j++) {
                 I_CmsXmlContentValue value = elementSequence.getValue(j);
-                
+
                 StringBuffer xPath = new StringBuffer(pathPrefix.length() + 16);
                 xPath.append(pathPrefix);
                 xPath.append(CmsXmlUtils.createXpathElement(type.getName(), value.getIndex() + 1));
-  
-                if (! type.isSimpleType()) {
+
+                if (!type.isSimpleType()) {
                     // recurse into nested type sequence
                     CmsXmlNestedContentDefinition nestedSchema = (CmsXmlNestedContentDefinition)type;
                     xPath.append("/");
-                    valueNames.addAll(getSimpleValueNames(nestedSchema.getNestedContentDefinition(), xPath.toString(), locale));
+                    valueNames.addAll(getSimpleValueNames(
+                        nestedSchema.getNestedContentDefinition(),
+                        xPath.toString(),
+                        locale));
                 } else {
                     // this is a simple type, get widget to display
                     valueNames.add(xPath.toString());
@@ -1025,14 +1044,14 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         }
         return valueNames;
     }
-    
+
     /**
      * Returns the different xml editor widgets used in the form to display.<p>
      * 
      * @return the different xml editor widgets used in the form to display
      */
     private CmsXmlContentWidgetVisitor getWidgetCollector() {
-        
+
         if (m_widgetCollector == null) {
             // create an instance of the widget collector
             m_widgetCollector = new CmsXmlContentWidgetVisitor(getElementLocale());
@@ -1040,7 +1059,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         }
         return m_widgetCollector;
     }
-    
+
     /**
      * Recursivion that generates the HTML form for the XML content editor.<p>
      * 
@@ -1050,24 +1069,27 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @param contentDefinition the content definition to start with
      * @return the HTML that generates the form for the XML editor
      */
-    private StringBuffer getXmlEditorForm(CmsXmlContentDefinition contentDefinition, String pathPrefix, boolean showHelpBubble) {
-        
+    private StringBuffer getXmlEditorForm(
+        CmsXmlContentDefinition contentDefinition,
+        String pathPrefix,
+        boolean showHelpBubble) {
+
         StringBuffer result = new StringBuffer(1024);
 
         try {
             // check if we are in a nested content definition
             boolean nested = CmsStringUtil.isNotEmpty(pathPrefix);
-            
+
             // create table
             result.append("<table class=\"xmlTable");
             if (nested) {
                 // use other style for nested content definition table
-                result.append("Nested");    
+                result.append("Nested");
             }
             result.append("\">\n");
-            
+
             // show error header once if there were validation errors
-            if (! nested &&  getErrorHandler().hasErrors(getElementLocale())) {
+            if (!nested && getErrorHandler().hasErrors(getElementLocale())) {
                 result.append("<tr><td colspan=\"4\">&nbsp;</td></tr>\n");
                 result.append("<tr><td colspan=\"2\">&nbsp;</td>");
                 result.append("<td class=\"xmlTdErrorHeader\">");
@@ -1075,35 +1097,35 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 result.append("</td><td>&nbsp;");
                 result.append("</td></tr>\n");
             }
-                      
+
             // iterate the type sequence        
             Iterator i = contentDefinition.getTypeSequence().iterator();
             while (i.hasNext()) {
                 // get the type
                 I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
                 CmsXmlContentDefinition nestedContentDefinition = contentDefinition;
-                if (! type.isSimpleType()) {
+                if (!type.isSimpleType()) {
                     // get nested content definition for nested types
                     CmsXmlNestedContentDefinition nestedSchema = (CmsXmlNestedContentDefinition)type;
                     nestedContentDefinition = nestedSchema.getNestedContentDefinition();
                 }
                 // create xpath to the current element
                 String name = pathPrefix + type.getName();
-                
+
                 // get the element sequence of the current type
                 CmsXmlContentValueSequence elementSequence = m_content.getValueSequence(name, getElementLocale());
                 int elementCount = elementSequence.getElementCount();
-                
+
                 // check if value is optional or multiple
-                boolean addValue = false;        
-                if (elementCount < type.getMaxOccurs()) {           
-                    addValue = true;    
+                boolean addValue = false;
+                if (elementCount < type.getMaxOccurs()) {
+                    addValue = true;
                 }
                 boolean removeValue = false;
                 if (elementCount > type.getMinOccurs()) {
                     removeValue = true;
                 }
-                
+
                 // assure that at least one element is present in sequence
                 boolean disabledElement = false;
                 if (elementCount < 1) {
@@ -1113,45 +1135,48 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     disabledElement = true;
                     m_optionalElementPresent = true;
                 }
-                
+
                 // loop through multiple elements
-                for (int j=0; j<elementCount; j++) {
+                for (int j = 0; j < elementCount; j++) {
                     // get value and corresponding widget
                     I_CmsXmlContentValue value = elementSequence.getValue(j);
                     I_CmsWidget widget = null;
                     if (type.isSimpleType()) {
                         widget = contentDefinition.getContentHandler().getWidget(value);
                     }
-                    
+
                     // create label and help bubble cells
                     result.append("<tr>");
                     result.append("<td class=\"xmlLabel");
                     if (disabledElement) {
                         // element is disabled, mark it with css
                         result.append("Disabled");
-                    }                    
+                    }
                     result.append("\">");
                     result.append(key(A_CmsWidget.getLabelKey((I_CmsWidgetParameter)value), value.getName()));
                     if (elementCount > 1) {
-                        result.append(" [").append(value.getIndex() + 1).append("]"); 
+                        result.append(" [").append(value.getIndex() + 1).append("]");
                     }
-                    result.append(": </td>");                    
-                    if (showHelpBubble && type.isSimpleType() && value.getIndex() == 0) {                       
+                    result.append(": </td>");
+                    if (showHelpBubble && type.isSimpleType() && value.getIndex() == 0) {
                         // show help bubble only on first element of each content definition 
                         result.append(widget.getHelpBubble(getCms(), this, (I_CmsWidgetParameter)value));
                     } else {
                         // create empty cell for all following elements 
-                        result.append(buttonBarSpacer(16));    
+                        result.append(buttonBarSpacer(16));
                     }
-                    
+
                     // append individual widget html cell if element is enabled
-                    if (! disabledElement) {
-                        if (! type.isSimpleType()) {
+                    if (!disabledElement) {
+                        if (!type.isSimpleType()) {
                             // recurse into nested type sequence
                             String newPath = CmsXmlUtils.createXpathElement(value.getName(), value.getIndex() + 1);
                             result.append("<td class=\"maxwidth\">");
                             boolean showHelp = (j == 0);
-                            result.append(getXmlEditorForm(nestedContentDefinition, pathPrefix + newPath + "/", showHelp));
+                            result.append(getXmlEditorForm(
+                                nestedContentDefinition,
+                                pathPrefix + newPath + "/",
+                                showHelp));
                             result.append("</td>");
                         } else {
                             // this is a simple type, display widget
@@ -1159,22 +1184,23 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         }
                     } else {
                         // disabled element, show message for optional element
-                        result.append("<td class=\"xmlTdDisabled maxwidth\">");                        
+                        result.append("<td class=\"xmlTdDisabled maxwidth\">");
                         result.append(key("editor.xmlcontent.optionalelement"));
-                        result.append("</td>");    
+                        result.append("</td>");
                     }
-                    
+
                     // append add and remove element buttons if required
                     result.append("<td style=\"vertical-align: top;\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
                     result.append(buildAddElement(name, value.getIndex(), addValue));
-                    result.append(buildRemoveElement(name, value.getIndex(), removeValue));                    
-                    result.append("</tr></table></td>");                   
+                    result.append(buildRemoveElement(name, value.getIndex(), removeValue));
+                    result.append("</tr></table></td>");
                     // close row
                     result.append("</tr>\n");
-                    
+
                     // show errors and/or warnings               
                     String key = value.getPath();
-                    if (getErrorHandler().hasErrors(getElementLocale()) && getErrorHandler().getErrors(getElementLocale()).containsKey(key)) {
+                    if (getErrorHandler().hasErrors(getElementLocale())
+                        && getErrorHandler().getErrors(getElementLocale()).containsKey(key)) {
                         // show error message
                         result.append("<tr><td></td><td><img src=\"");
                         result.append(getEditorResourceUri());
@@ -1184,7 +1210,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         result.append("</td><td></td></tr>\n");
                     }
                     // warnings can be additional to errors
-                    if (getErrorHandler().hasWarnings(getElementLocale()) && getErrorHandler().getWarnings(getElementLocale()).containsKey(key)) {
+                    if (getErrorHandler().hasWarnings(getElementLocale())
+                        && getErrorHandler().getWarnings(getElementLocale()).containsKey(key)) {
                         // show warning message
                         result.append("<tr><td></td><td><img src=\"");
                         result.append(getEditorResourceUri());
@@ -1193,57 +1220,49 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         result.append(resolveMacros((String)getErrorHandler().getWarnings(getElementLocale()).get(key)));
                         result.append("</td><td></td></tr>\n");
                     }
-                } 
+                }
             }
             // close table
-            result.append("</table>\n");                     
+            result.append("</table>\n");
         } catch (Throwable t) {
             LOG.error(Messages.get().key(Messages.ERR_XML_EDITOR_0), t);
-        }               
+        }
         return result;
     }
-    
+
     /**
      * Resets the error handler member variable to reinitialize the error messages.<p>
      */
     private void resetErrorHandler() {
-        
+
         m_errorHandler = null;
     }
-    
+
     /**
      * Resets the widget collector member variable to reinitialize the widgets.<p>
      * 
      * This is needed to display the help messages of optional elements before building the html end of the form.<p>
      */
     private void resetWidgetCollector() {
-    
+
         m_widgetCollector = null;
     }
-    
+
     /**
      * Writes the xml content to the vfs and re-initializes the member variables.<p>
      * 
      * @throws CmsException if writing the file fails
      */
     private void writeContent() throws CmsException {
-        
+
         String decodedContent = m_content.toString();
         try {
             m_file.setContents(decodedContent.getBytes(getFileEncoding()));
         } catch (UnsupportedEncodingException e) {
             throw new CmsException(Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()), e);
-        }  
+        }
         // the file content might have been modified during the write operation    
         m_file = getCms().writeFile(m_file);
         m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
-    }
-    
-    /**
-     * @see org.opencms.widgets.I_CmsWidgetDialog#getButtonStyle()
-     */
-    public int getButtonStyle() {
-
-        return getSettings().getUserSettings().getEditorButtonStyle();
     }
 }
