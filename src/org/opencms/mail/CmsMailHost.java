@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailHost.java,v $
- * Date   : $Date: 2005/06/12 11:18:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,12 @@ package org.opencms.mail;
 
 /**
  * Contains the configuration of an individual mail host.<p>
+ * 
+ * @author Andreas Zahner 
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsMailHost implements Comparable {
 

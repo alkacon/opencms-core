@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,13 +73,16 @@ import java.util.StringTokenizer;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.74 $
+ * 
+ * @version $Revision: 1.75 $ 
+ * 
+ * @since 6.0.0 
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
     /** The OpenCms context object. */
     private CmsObject m_cms;
-    
+
     /** The Cms shell object. */
     private CmsShell m_shell;
 
@@ -480,7 +483,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             System.out.println(p.getName() + ": " + acList.getPermissions(p).getPermissionString());
         }
     }
-    
+
     /**
      * Returns the Locales available on the system ready to use on Method 
      * {@link #setLocale(String)} from the <code>CmsShell</code>. <p>
@@ -653,13 +656,12 @@ class CmsShellCommands implements I_CmsShellCommands {
             // output the login message if required
             CmsLoginMessage message = OpenCms.getLoginManager().getLoginMessage();
             if ((message != null) && (message.isActive())) {
-                System.out.println(message.getMessage());                
+                System.out.println(message.getMessage());
             }
         } catch (Exception exc) {
             System.out.println(Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_LOGIN_FAILED_0, null));
         }
     }
-
 
     /**
      * Displays a list of all resources in the current folder.<p>
@@ -880,7 +882,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         return m_cms.getRequestContext().setCurrentProject(m_cms.readProject(name));
     }
-    
+
     /**
      * Set the locale of the current user logged in. <p> 
      * 
@@ -900,17 +902,17 @@ class CmsShellCommands implements I_CmsShellCommands {
      * 
      */
     public void setLocale(String localeName) throws CmsException {
-               
+
         Locale locale = CmsLocaleManager.getLocale(localeName);
 
         System.out.println(Messages.get().key(
             m_shell.getLocale(),
             Messages.GUI_SHELL_SETLOCALE_2,
             new Object[] {locale.toString(), m_cms.getRequestContext().currentUser().getName()}));
-        
+
         CmsUserSettings settings = m_shell.getSettings();
         settings.setLocale(locale);
-        settings.save(m_cms);        
+        settings.save(m_cms);
         System.out.println(Messages.get().key(
             m_shell.getLocale(),
             Messages.GUI_SHELL_SETLOCALE_POST_1,

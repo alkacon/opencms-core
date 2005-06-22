@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsBroadcast.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,10 @@ import org.opencms.file.CmsUser;
  * {@link org.opencms.main.CmsSessionManager#sendBroadcast(org.opencms.file.CmsObject, String, CmsUser)}.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.4 $
  * 
- * @since 5.7.2
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsBroadcast {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsIllegalArgumentException.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,10 @@ import org.opencms.i18n.CmsMessageContainer;
  * the lack of multiple inheritance for Java.<p>
  * 
  * @author Alexander Kandzior 
- * @since 5.9.1
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsIllegalArgumentException extends CmsRuntimeException {
 
@@ -65,12 +68,12 @@ public class CmsIllegalArgumentException extends CmsRuntimeException {
 
         super(container, cause);
     }
-    
+
     /**
      * @see org.opencms.main.CmsRuntimeException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsRuntimeException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsIllegalArgumentException(container, cause);
-    } 
+    }
 }

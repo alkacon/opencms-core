@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,10 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.39 $
+ * 
+ * @version $Revision: 1.40 $ 
+ * 
+ * @since 6.0.0 
  * 
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext

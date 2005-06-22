@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,10 @@ import javax.servlet.http.HttpServletResponse;
  * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior 
- * @version $Revision: 1.44 $
+ * 
+ * @version $Revision: 1.45 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
 
@@ -67,7 +70,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
         + " content="
         + '"'
         + "0; url=";
-    
+
     /** The html-code suffix for generating the export file for external links. */
     private static String C_EXPORT_SUFFIX = '"' + ">\n</head>\n<body></body>\n</html>";
 
@@ -161,8 +164,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     public void initConfiguration() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));            
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
         }
     }
 
@@ -207,12 +209,14 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
         if (res == null || res.isCommitted()) {
             // nothing we can do
             return;
-        }    
-        
+        }
+
         String pointer = new String(CmsFile.upgrade(resource, cms).getContents());
         if (pointer == null || "".equals(pointer.trim())) {
-            throw new CmsLoaderException(Messages.get().container(Messages.ERR_INVALID_POINTER_FILE_1, resource.getName()));
-        }        
+            throw new CmsLoaderException(Messages.get().container(
+                Messages.ERR_INVALID_POINTER_FILE_1,
+                resource.getName()));
+        }
         res.sendRedirect(pointer);
     }
 
@@ -221,7 +225,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
      */
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) {
 
-        throw new CmsRuntimeException(Messages.get().container(
-            Messages.ERR_SERVICE_UNSUPPORTED_1, getClass().getName()));
+        throw new CmsRuntimeException(
+            Messages.get().container(Messages.ERR_SERVICE_UNSUPPORTED_1, getClass().getName()));
     }
 }

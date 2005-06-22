@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsErrorBean.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,15 +46,24 @@ import java.util.Properties;
  * Class to display the error dialog.<p>
  *
  * @author Jan Baudisch 
- * @version $Revision: 1.3 $
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsErrorBean {
 
-    /** The exception that was caught.<p> */
-    private Throwable m_throwable;
+    /** Name of the property file containing HTML fragments for setup wizard and error dialog.<p> */
+    public static final String ERRORPAGE = "org/opencms/jsp/util/errorpage.properties";
+
+    /** The html for the buttons. */
+    private String m_buttons;
 
     /** The current CmsObject.<p> */
     private CmsObject m_cms;
+
+    /** The optional error message. */
+    private String m_errorMessage;
 
     /** The html code for the hidden parameters. */
     private String m_hiddenParams;
@@ -62,20 +71,14 @@ public class CmsErrorBean {
     /** The locale for the errorpage. */
     private Locale m_locale;
 
-    /** The title for the error page. */
-    private String m_title;
-
-    /** The html for the buttons. */
-    private String m_buttons;
-
     /** The html code for the buttons. */
     private String m_paramAction;
 
-    /** The optional error message. */
-    private String m_errorMessage;
+    /** The exception that was caught.<p> */
+    private Throwable m_throwable;
 
-    /** Name of the property file containing HTML fragments for setup wizard and error dialog.<p> */
-    public static final String ERRORPAGE = "org/opencms/jsp/util/errorpage.properties";
+    /** The title for the error page. */
+    private String m_title;
 
     /**
      * Constructs a new error bean.<p>
@@ -88,48 +91,6 @@ public class CmsErrorBean {
         m_cms = cms;
         m_locale = cms.getRequestContext().getLocale();
         m_throwable = throwable;
-    }
-
-    /**
-     * Returns the html code for a errorpage.<p>
-     *
-     * @return the html for the errorpage
-     */
-    public String toHtml() {
-
-        CmsMacroResolver resolver = new CmsMacroResolver();
-        if (CmsStringUtil.isEmpty(m_title)) {
-            m_title = Messages.get().key(m_locale, Messages.GUI_ERROR_0, new Object[] {});
-        }
-        resolver.addMacro("title", m_title);
-        resolver.addMacro("label_error", Messages.get().key(m_locale, Messages.GUI_ERROR_0, new Object[] {}));
-        resolver.addMacro("errorstack", CmsException.getFormattedErrorstack(m_throwable));
-        resolver.addMacro("message", getErrorMessage());
-        resolver.addMacro("styleuri", OpenCms.getLinkManager().substituteLink(
-            m_cms,
-            "/system/workplace/commons/style/workplace.css"));
-        if (CmsStringUtil.isEmpty(m_buttons)) {
-            resolver.addMacro("buttons", getDefaultButtonsHtml());
-        } else {
-            resolver.addMacro("buttons", m_buttons);
-            resolver.addMacro("paramaction", m_paramAction);
-        }
-
-        if (CmsStringUtil.isNotEmpty(m_hiddenParams)) {
-            resolver.addMacro("hiddenparams", m_hiddenParams);
-        }
-        resolver.addMacro("erroricon", OpenCms.getLinkManager().substituteLink(
-            m_cms,
-            "/system/workplace/resources/commons/error.png"));
-        Properties errorpage = new Properties();
-        try {
-            errorpage.load(CmsErrorBean.class.getClassLoader().getResourceAsStream(ERRORPAGE));
-        } catch (Throwable th) {
-            CmsLog.INIT.error(org.opencms.main.Messages.get().key(
-                org.opencms.main.Messages.INIT_ERR_LOAD_HTML_PROPERTY_FILE_1,
-                ERRORPAGE), th);
-        }
-        return resolver.resolveMacros(errorpage.getProperty("ERRORPAGE"));
     }
 
     /**
@@ -197,13 +158,23 @@ public class CmsErrorBean {
     }
 
     /**
-     * Sets the title of the error page.<p>
+     * Sets the buttons.<p>
      *
-     * @param title of the error page
+     * @param buttons the buttons to set
      */
-    public void setTitle(String title) {
+    public void setButtons(String buttons) {
 
-        m_title = title;
+        m_buttons = buttons;
+    }
+
+    /**
+     * Sets the error message which can be displayed if no exception is there.<p>
+     *
+     * @param errorMessage the error message to set
+     */
+    public void setErrorMessage(String errorMessage) {
+
+        m_errorMessage = errorMessage;
     }
 
     /**
@@ -217,16 +188,6 @@ public class CmsErrorBean {
     }
 
     /**
-     * Sets the buttons.<p>
-     *
-     * @param buttons the buttons to set
-     */
-    public void setButtons(String buttons) {
-
-        m_buttons = buttons;
-    }
-
-    /**
      * Sets the action parameter.<p>
      *
      * @param paramAction the action parameter to set
@@ -237,12 +198,54 @@ public class CmsErrorBean {
     }
 
     /**
-     * Sets the error message which can be displayed if no exception is there.<p>
+     * Sets the title of the error page.<p>
      *
-     * @param errorMessage the error message to set
+     * @param title of the error page
      */
-    public void setErrorMessage(String errorMessage) {
+    public void setTitle(String title) {
 
-        m_errorMessage = errorMessage;
+        m_title = title;
+    }
+
+    /**
+     * Returns the html code for a errorpage.<p>
+     *
+     * @return the html for the errorpage
+     */
+    public String toHtml() {
+
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        if (CmsStringUtil.isEmpty(m_title)) {
+            m_title = Messages.get().key(m_locale, Messages.GUI_ERROR_0, new Object[] {});
+        }
+        resolver.addMacro("title", m_title);
+        resolver.addMacro("label_error", Messages.get().key(m_locale, Messages.GUI_ERROR_0, new Object[] {}));
+        resolver.addMacro("errorstack", CmsException.getFormattedErrorstack(m_throwable));
+        resolver.addMacro("message", getErrorMessage());
+        resolver.addMacro("styleuri", OpenCms.getLinkManager().substituteLink(
+            m_cms,
+            "/system/workplace/commons/style/workplace.css"));
+        if (CmsStringUtil.isEmpty(m_buttons)) {
+            resolver.addMacro("buttons", getDefaultButtonsHtml());
+        } else {
+            resolver.addMacro("buttons", m_buttons);
+            resolver.addMacro("paramaction", m_paramAction);
+        }
+
+        if (CmsStringUtil.isNotEmpty(m_hiddenParams)) {
+            resolver.addMacro("hiddenparams", m_hiddenParams);
+        }
+        resolver.addMacro("erroricon", OpenCms.getLinkManager().substituteLink(
+            m_cms,
+            "/system/workplace/resources/commons/error.png"));
+        Properties errorpage = new Properties();
+        try {
+            errorpage.load(CmsErrorBean.class.getClassLoader().getResourceAsStream(ERRORPAGE));
+        } catch (Throwable th) {
+            CmsLog.INIT.error(org.opencms.main.Messages.get().key(
+                org.opencms.main.Messages.INIT_ERR_LOAD_HTML_PROPERTY_FILE_1,
+                ERRORPAGE), th);
+        }
+        return resolver.resolveMacros(errorpage.getProperty("ERRORPAGE"));
     }
 }

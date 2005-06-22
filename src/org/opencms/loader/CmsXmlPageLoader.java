@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,8 +58,9 @@ import javax.servlet.http.HttpServletResponse;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $
- * @since 5.3
+ * @version $Revision: 1.47 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {
 
@@ -151,7 +152,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
      * @return a describing String for the ResourceLoader 
      */
     public String getResourceLoaderInfo() {
-        
+
         return Messages.get().key(Messages.GUI_LOADER_XMLPAGE_DEFAULT_DESC_0);
     }
 

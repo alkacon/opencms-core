@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsLoaderIncludeExtension.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.loader;
 
 import org.opencms.main.CmsException;
@@ -44,8 +44,10 @@ import javax.servlet.ServletResponse;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
- * @since 5.3
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
+ * 
  * @see org.opencms.jsp.CmsJspTagInclude#includeTagAction(javax.servlet.jsp.PageContext, String, String, boolean, Map, ServletRequest, ServletResponse)
  */
 public interface I_CmsLoaderIncludeExtension {
@@ -62,5 +64,11 @@ public interface I_CmsLoaderIncludeExtension {
      * @throws CmsException in case something goes wrong
      * @return the modified target URI
      */
-    String includeExtension(String target, String element, boolean editable, Map paramMap, ServletRequest req, ServletResponse res) throws CmsException;
+    String includeExtension(
+        String target,
+        String element,
+        boolean editable,
+        Map paramMap,
+        ServletRequest req,
+        ServletResponse res) throws CmsException;
 }

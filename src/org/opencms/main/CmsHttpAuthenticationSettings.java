@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsHttpAuthenticationSettings.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.main;
 
 import org.opencms.workplace.I_CmsWpConstants;
@@ -45,29 +45,33 @@ import org.opencms.workplace.I_CmsWpConstants;
  * resources that require authentication.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.2 $
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsHttpAuthenticationSettings {
-    
-    /** Boolean flag to enable or disable browser-based HTTP basic authentication. */
-    private boolean m_useBrowserBasedHttpAuthentication;
-    
+
+    /** The URI of the default authentication form. */
+    public static final String C_DEFAULT_AUTHENTICATION_URI = I_CmsWpConstants.C_VFS_PATH_WORKPLACE
+        + "action/authenticate.html";
+
     /** The URI of the system wide login form if browser-based HTTP basic authentication is disabled. */
     private String m_formBasedHttpAuthenticationUri;
-    
-    /** The URI of the default authentication form. */
-    public static final String C_DEFAULT_AUTHENTICATION_URI = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/authenticate.html";
+
+    /** Boolean flag to enable or disable browser-based HTTP basic authentication. */
+    private boolean m_useBrowserBasedHttpAuthentication;
 
     /**
      * Default constructor.<p>
      */
     public CmsHttpAuthenticationSettings() {
-        
+
         super();
         m_useBrowserBasedHttpAuthentication = true;
         m_formBasedHttpAuthenticationUri = null;
     }
-    
+
     /**
      * Returns the URI of the system wide login form if browser-based HTTP basic authentication is disabled.<p>
      *
@@ -77,7 +81,7 @@ public class CmsHttpAuthenticationSettings {
 
         return m_formBasedHttpAuthenticationUri;
     }
-    
+
     /**
      * Sets the URI of the system wide login form if browser-based HTTP basic authentication is disabled.<p>
      *
@@ -87,17 +91,7 @@ public class CmsHttpAuthenticationSettings {
 
         m_formBasedHttpAuthenticationUri = uri;
     }
-    
-    /**
-     * Tests if browser-based HTTP basic authentication is enabled or disabled.<p>
-     *
-     * @return true if browser-based HTTP basic authentication is enabled
-     */
-    public boolean useBrowserBasedHttpAuthentication() {
 
-        return m_useBrowserBasedHttpAuthentication;
-    }
-    
     /**
      * Sets if browser-based HTTP basic authentication is enabled or disabled.<p>
      *
@@ -107,7 +101,7 @@ public class CmsHttpAuthenticationSettings {
 
         m_useBrowserBasedHttpAuthentication = value;
     }
-    
+
     /**
      * Sets if browser-based HTTP basic authentication is enabled or disabled.<p>
      *
@@ -116,6 +110,16 @@ public class CmsHttpAuthenticationSettings {
     public void setUseBrowserBasedHttpAuthentication(String value) {
 
         m_useBrowserBasedHttpAuthentication = Boolean.valueOf(value).booleanValue();
-    }    
-    
+    }
+
+    /**
+     * Tests if browser-based HTTP basic authentication is enabled or disabled.<p>
+     *
+     * @return true if browser-based HTTP basic authentication is enabled
+     */
+    public boolean useBrowserBasedHttpAuthentication() {
+
+        return m_useBrowserBasedHttpAuthentication;
+    }
+
 }

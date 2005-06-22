@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockException.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.lock;
 
 import org.opencms.i18n.CmsMessageContainer;
@@ -39,8 +39,10 @@ import org.opencms.main.CmsException;
  * 
  * @author Thomas Weckert  
  * @author Jan Baudisch 
- * @version $Revision: 1.16 $ $Date: 2005/06/22 10:38:29 $
- * @since 5.1.4
+ * 
+ * @version $Revision: 1.17 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsLockException extends CmsException {
 
@@ -64,13 +66,12 @@ public class CmsLockException extends CmsException {
 
         super(container, cause);
     }
-    
-    
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsLockException(container, cause);
-    } 
+    }
 }

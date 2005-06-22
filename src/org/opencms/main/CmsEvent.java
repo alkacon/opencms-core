@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEvent.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,12 +40,13 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.7 $
- * @since FLEX alpha 1
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  * 
  * @see I_CmsEventListener
  */
-public class CmsEvent {    
+public class CmsEvent {
 
     /** The event data associated with this event. */
     private Map m_data;

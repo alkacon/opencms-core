@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsResourceInitException.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,10 +39,13 @@ import org.opencms.i18n.CmsMessageContainer;
  * all other implementations of I_CmsResourceInit will not be executed.<p>
  * 
  * @author  Andreas Zahner 
- * @version $Revision: 1.8 $
+ * 
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsResourceInitException extends CmsException {
-    
+
     /**
      * Creates a new localized Exception.<p>
      * 
@@ -63,14 +66,13 @@ public class CmsResourceInitException extends CmsException {
 
         super(container, cause);
     }
-       
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsResourceInitException(container, cause);
-    } 
-    
-    
+    }
+
 }

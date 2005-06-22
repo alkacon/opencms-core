@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,9 @@ import org.apache.log4j.helpers.Loader;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsLog {
 
@@ -68,7 +70,7 @@ public final class CmsLog {
 
     /** Log for initialization messages. */
     public static final Log INIT = LogFactory.getLog(CHANNEL_INIT);
-    
+
     /** The  abolute path to the OpenCms log file (in the "real" file system). */
     private static String m_logFileRfsPath;
 
@@ -120,21 +122,7 @@ public final class CmsLog {
             e.printStackTrace(System.err);
         }
     }
-    
-    /**
-     * Returns the filename of the logfile (in the "real" file system).<p>
-     * 
-     * If the method returns <code>null</code>, this means that the log
-     * file is not managed by OpenCms.<p>
-     * 
-     * @return the filename of the logfile (in the "real" file system)
-     */
-    protected static String getLogFileRfsPath() {
 
-        return m_logFileRfsPath;
-    }
-    
-    
     /**
      * Returns the log for the selected object.<p>
      * 
@@ -154,5 +142,18 @@ public final class CmsLog {
         } else {
             return LogFactory.getLog(obj.getClass());
         }
+    }
+
+    /**
+     * Returns the filename of the logfile (in the "real" file system).<p>
+     * 
+     * If the method returns <code>null</code>, this means that the log
+     * file is not managed by OpenCms.<p>
+     * 
+     * @return the filename of the logfile (in the "real" file system)
+     */
+    protected static String getLogFileRfsPath() {
+
+        return m_logFileRfsPath;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsShellCommands.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,14 @@ import org.opencms.file.CmsObject;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
- * @since 5.3
+ * @version $Revision: 1.6 $
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsShellCommands {
-    
+
     /**
      * Provides access to the shell CmsObject and the shell itself.<p>
      * 
@@ -50,15 +53,7 @@ public interface I_CmsShellCommands {
      * @param shell the CmsShell
      */
     void initShellCmsObject(CmsObject cms, CmsShell shell);
-    
-    /**
-     * May be called before shell startup, can e.g. be used to ouput a welcome message.<p>
-     * 
-     * Please note: This method is not guaranteed to be called. For a shell that has more then
-     * one shell command object initialized, only the start method of one of thouse will be called.<p>
-     */
-    void shellStart();
-    
+
     /**
      * May be called after shell exit, can e.g. be used to ouput a goodbye message.<p>
      * 
@@ -67,5 +62,12 @@ public interface I_CmsShellCommands {
      */
     void shellExit();
 
-}
+    /**
+     * May be called before shell startup, can e.g. be used to ouput a welcome message.<p>
+     * 
+     * Please note: This method is not guaranteed to be called. For a shell that has more then
+     * one shell command object initialized, only the start method of one of thouse will be called.<p>
+     */
+    void shellStart();
 
+}

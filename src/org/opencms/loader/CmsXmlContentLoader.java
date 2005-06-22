@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlContentLoader.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 13:35:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,8 +57,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
- * @since 5.3
+ * @version $Revision: 1.12 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsXmlContentLoader implements I_CmsResourceLoader {
 

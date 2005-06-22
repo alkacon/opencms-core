@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailTransport.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.mail;
 
 import org.opencms.main.CmsLog;
@@ -43,26 +43,29 @@ import org.apache.commons.mail.Email;
  * continue without waiting for the mail to be send.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.4 $
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsMailTransport extends Thread {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsMailTransport.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsMailTransport.class);
+
     /** The email to be send. */
     private Email m_email;
-    
+
     /**
      * Creates a new CmsMailTransport.<p>
      * 
      * @param email the email to be send with this transport
      */
     public CmsMailTransport(Email email) {
-    
-        m_email = email;        
+
+        m_email = email;
     }
-        
+
     /**
      * @see java.lang.Thread#run()
      */
@@ -72,16 +75,17 @@ public class CmsMailTransport extends Thread {
             m_email.send();
         } catch (MessagingException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_SEND_MAIL_ERR_0)  , e);
+                LOG.error(Messages.get().key(Messages.LOG_SEND_MAIL_ERR_0), e);
             }
         }
     }
-    
+
     /**
      * Sends the email in this transport object,
      * same as calling <code>start()</code>.<p>
      */
     public void send() {
+
         start();
     }
 }

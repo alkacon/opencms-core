@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,9 @@ import java.util.Locale;
  * @author Michael Moossen 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsException extends Exception implements I_CmsThrowable {
 
@@ -139,7 +141,7 @@ public class CmsException extends Exception implements I_CmsThrowable {
 
         return m_message;
     }
-    
+
     /**
      * Returns the formatted value of a throwable.<p>
      * 
@@ -150,7 +152,7 @@ public class CmsException extends Exception implements I_CmsThrowable {
      * @return the formatted value of the errorstack parameter
      */
     public static String getFormattedErrorstack(Throwable t) {
-    
+
         String stacktrace = CmsException.getStackTraceAsString(t);
         if (CmsStringUtil.isEmpty(stacktrace)) {
             return "";

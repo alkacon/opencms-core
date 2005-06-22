@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.204 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.205 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -125,9 +125,9 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.204 $
- * @version $Revision: 1.204 $
- * @since 5.1
+ * @version $Revision: 1.205 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class OpenCmsCore {
 
@@ -1057,13 +1057,17 @@ public final class OpenCmsCore {
             }
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_LINE_0));
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_STARTUP_TIME_1, new Date(System.currentTimeMillis())));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_OPENCMS_VERSION_1, OpenCms.getSystemInfo().getVersionName()));            
+            CmsLog.INIT.info(Messages.get().key(
+                Messages.INIT_OPENCMS_VERSION_1,
+                OpenCms.getSystemInfo().getVersionName()));
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_SERVLET_CONTAINER_1, context.getServerInfo()));
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_WEBAPP_NAME_1, getSystemInfo().getWebApplicationName()));
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_SERVLET_PATH_1, getSystemInfo().getServletPath()));
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_OPENCMS_CONTEXT_1, getSystemInfo().getOpenCmsContext()));
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_WEBINF_PATH_1, getSystemInfo().getWebInfRfsPath()));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_PROPERTY_FILE_1, getSystemInfo().getConfigurationFileRfsPath()));
+            CmsLog.INIT.info(Messages.get().key(
+                Messages.INIT_PROPERTY_FILE_1,
+                getSystemInfo().getConfigurationFileRfsPath()));
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOG_FILE_1, getSystemInfo().getLogFileRfsPath()));
         }
 
@@ -1223,7 +1227,9 @@ public final class OpenCmsCore {
             addRequestHandler(servlet);
             // output the final 'startup is finished' message
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_SYSTEM_RUNNING_1, CmsStringUtil.formatRuntime(getSystemInfo().getRuntime())));
+                CmsLog.INIT.info(Messages.get().key(
+                    Messages.INIT_SYSTEM_RUNNING_1,
+                    CmsStringUtil.formatRuntime(getSystemInfo().getRuntime())));
                 CmsLog.INIT.info(Messages.get().key(Messages.INIT_LINE_0));
                 CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
             }
@@ -1310,9 +1316,13 @@ public final class OpenCmsCore {
                     CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
                     CmsLog.INIT.info(Messages.get().key(Messages.INIT_DOT_0));
                     CmsLog.INIT.info(Messages.get().key(Messages.INIT_LINE_0));
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_START_1, getSystemInfo().getVersionName()));
+                    CmsLog.INIT.info(Messages.get().key(
+                        Messages.INIT_SHUTDOWN_START_1,
+                        getSystemInfo().getVersionName()));
                     CmsLog.INIT.info(Messages.get().key(Messages.INIT_CURRENT_RUNLEVEL_1, new Integer(getRunLevel())));
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_TIME_1, new Date(System.currentTimeMillis())));
+                    CmsLog.INIT.info(Messages.get().key(
+                        Messages.INIT_SHUTDOWN_TIME_1,
+                        new Date(System.currentTimeMillis())));
                 }
 
                 // take the system offline
@@ -1559,7 +1569,7 @@ public final class OpenCmsCore {
         CmsErrorBean errorBean = new CmsErrorBean(cms, cause);
         errorBean.setParamAction(errorUri);
         return errorBean.toHtml();
-        }
+    }
 
     /**
      * This method performs the error handling for OpenCms.<p>
@@ -1573,7 +1583,7 @@ public final class OpenCmsCore {
 
         // remove the controller attribute from the request
         CmsFlexController.removeController(req);
-        
+
         boolean canWrite = !res.isCommitted() && !res.containsHeader("Location");
         int status = -1;
         boolean isNotGuest = false;
@@ -1605,21 +1615,26 @@ public final class OpenCmsCore {
                 t = t.getCause();
             }
         }
-        
-        if (status < 1) {           
+
+        if (status < 1) {
             // error code not set - set "internal server error" (500)
             status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
         }
         res.setStatus(status);
 
         try {
-            isNotGuest = isNotGuest 
-                || (cms != null 
-                    && cms.getRequestContext().currentUser() != null 
-                    && (! OpenCms.getDefaultUsers().getUserGuest().equals(cms.getRequestContext().currentUser().getName())) 
-                    && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), OpenCms.getDefaultUsers().getGroupUsers())) 
-                        || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), OpenCms.getDefaultUsers().getGroupProjectmanagers())) 
-                        || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), OpenCms.getDefaultUsers().getGroupAdministrators()))));
+            isNotGuest = isNotGuest
+                || (cms != null
+                    && cms.getRequestContext().currentUser() != null
+                    && (!OpenCms.getDefaultUsers().getUserGuest().equals(
+                        cms.getRequestContext().currentUser().getName())) && ((cms.userInGroup(
+                    cms.getRequestContext().currentUser().getName(),
+                    OpenCms.getDefaultUsers().getGroupUsers()))
+                    || (cms.userInGroup(
+                        cms.getRequestContext().currentUser().getName(),
+                        OpenCms.getDefaultUsers().getGroupProjectmanagers())) || (cms.userInGroup(
+                    cms.getRequestContext().currentUser().getName(),
+                    OpenCms.getDefaultUsers().getGroupAdministrators()))));
         } catch (CmsException e) {
             // result is false
         }
@@ -1627,7 +1642,7 @@ public final class OpenCmsCore {
         if (canWrite) {
             res.setContentType("text/html");
             CmsRequestUtil.setNoCacheHeaders(res);
-            if (isNotGuest && cms != null && ! cms.getRequestContext().currentProject().isOnlineProject()) {
+            if (isNotGuest && cms != null && !cms.getRequestContext().currentProject().isOnlineProject()) {
                 try {
                     res.setStatus(HttpServletResponse.SC_OK);
                     res.getWriter().print(createErrorBox(t, req, cms));
@@ -1723,10 +1738,7 @@ public final class OpenCmsCore {
      * @throws IOException if user authentication fails
      * @throws CmsException in case something goes wrong
      */
-    private CmsObject initCmsObject(
-        HttpServletRequest req, 
-        HttpServletResponse res
-    ) throws IOException, CmsException {
+    private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res) throws IOException, CmsException {
 
         CmsObject cms;
 
@@ -1796,12 +1808,8 @@ public final class OpenCmsCore {
      * @return a cms context that has been initialized with "Guest" permissions
      * @throws CmsException in case the CmsObject could not be initialized
      */
-    private CmsObject initCmsObject(
-        HttpServletRequest req, 
-        HttpServletResponse res,
-        String user,
-        String password
-    ) throws CmsException {
+    private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res, String user, String password)
+    throws CmsException {
 
         String siteroot = null;
         // gather information from request / response if provided
@@ -1833,12 +1841,8 @@ public final class OpenCmsCore {
      * @return the initialized CmsObject
      * @throws CmsException in case something goes wrong
      */
-    private CmsObject initCmsObject(
-        HttpServletRequest req, 
-        String userName,
-        String currentSite, 
-        int projectId
-    ) throws CmsException {
+    private CmsObject initCmsObject(HttpServletRequest req, String userName, String currentSite, int projectId)
+    throws CmsException {
 
         CmsUser user = m_securityManager.readUser(userName);
         CmsProject project = m_securityManager.readProject(projectId);

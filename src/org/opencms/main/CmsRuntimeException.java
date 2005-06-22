@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsRuntimeException.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,10 @@ import java.util.Locale;
  * localized exception messages for OpenCms.<p>
  * 
  * @author Alexander Kandzior 
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsRuntimeException extends RuntimeException implements I_CmsThrowable {
 
@@ -69,7 +72,7 @@ public class CmsRuntimeException extends RuntimeException implements I_CmsThrowa
         super(message.getKey(), cause);
         m_message = message;
     }
-    
+
     /**
      * Creates a copied instance of this localized exception.<p>
      * 
@@ -79,9 +82,9 @@ public class CmsRuntimeException extends RuntimeException implements I_CmsThrowa
      * @return a copied instance of this localized exception
      */
     public CmsRuntimeException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsRuntimeException(container, cause);
-    }      
+    }
 
     /**
      * @see org.opencms.main.I_CmsThrowable#getLocalizedMessage()

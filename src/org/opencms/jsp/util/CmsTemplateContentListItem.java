@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.jsp.util;
 
 import org.opencms.file.types.I_CmsResourceType;
@@ -50,33 +50,36 @@ import javax.servlet.jsp.JspException;
  * Use the newInstance() method with correct arguments to create a fully configured item object for list generation.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.2 $
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsTemplateContentListItem {
-    
+
     /** The display area of the list: center. */
     public static final String DISPLAYAREA_CENTER = "center";
     /** The display area of the list: left. */
     public static final String DISPLAYAREA_LEFT = "left";
     /** The display area of the list: right. */
     public static final String DISPLAYAREA_RIGHT = "right";
-    
+
     /** The possible display areas for the template. */
     public static final String[] DISPLAYAREAS = {DISPLAYAREA_CENTER, DISPLAYAREA_LEFT, DISPLAYAREA_RIGHT};
-    
+
     /** The name of the list variation: long. */
     public static final String LISTVARIATION_LONG = "long";
     /** The name of the list variation: short. */
     public static final String LISTVARIATION_SHORT = "short";
-    
+
     /** The possible list variations for a content type. */
     public static final String[] LISTVARIATIONS = {"", '.' + LISTVARIATION_LONG, '.' + LISTVARIATION_SHORT};
-    
+
     /** Macro used in property definition names to resolve the list index. */
     public static final String MACRO_LISTINDEX = "index";
     /** Macro used in folder String to represent the microsite folder. */
     public static final String MACRO_MICROSITEFOLDER = "microsite.folder";
-    
+
     /** Request parameter name for the collector. */
     public static final String PARAM_COLLECTOR = "collector";
     /** Request parameter name for the list count. */
@@ -87,7 +90,7 @@ public class CmsTemplateContentListItem {
     public static final String PARAM_FOLDER = "folder";
     /** Request parameter name for the xmlcontent listelement. */
     public static final String PARAM_LISTELEMENT = "listelement";
-    
+
     /** Name of the property key to set the element collector. */
     public static final String PROPERTY_LAYOUT_COLLECTOR = "layout.${" + MACRO_LISTINDEX + "}." + PARAM_COLLECTOR;
     /** Name of the property key to set the element count. */
@@ -98,10 +101,10 @@ public class CmsTemplateContentListItem {
     public static final String PROPERTY_LAYOUT_TYPE = "layout.${" + MACRO_LISTINDEX + "}.type";
     /** Name of the property key to set the list variation. */
     public static final String PROPERTY_LAYOUT_VARIATION = "layout.${" + MACRO_LISTINDEX + "}.variation";
-    
+
     /** The property value for displaying no list. */
     public static final String PROPERTY_VALUE_NONE = "none";
-    
+
     private String m_collector;
     private int m_count;
     private String m_displayArea;
@@ -109,7 +112,7 @@ public class CmsTemplateContentListItem {
     private String m_listElement;
     private String m_type;
     private String m_variation;
-    
+
     /**
      * Creates a Map holding the default values for the list creation from given workplace messages.<p>
      * 
@@ -121,12 +124,12 @@ public class CmsTemplateContentListItem {
 
         HashMap result = new HashMap();
         List resTypes = OpenCms.getResourceManager().getResourceTypes();
-        
-        for (int i=0; i<resTypes.size(); i++) {
+
+        for (int i = 0; i < resTypes.size(); i++) {
             I_CmsResourceType type = (I_CmsResourceType)resTypes.get(i);
             if (type.isAdditionalModuleResourceType()) {
                 // only look for keys if the resource type is an additional one
-                for (int k=0; k< DISPLAYAREAS.length; k++) {
+                for (int k = 0; k < DISPLAYAREAS.length; k++) {
                     // loop over the possible display areas
                     String area = DISPLAYAREAS[k];
                     String typeName = type.getTypeName();
@@ -135,7 +138,8 @@ public class CmsTemplateContentListItem {
                     // get collector default
                     String key = keyPrefix + PARAM_COLLECTOR;
                     String value = messages.key(key);
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(value) || value.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)
+                        || value.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
                         // no default collector found, this indicates no list specifications for this type are present
                         continue;
                     }
@@ -147,19 +151,19 @@ public class CmsTemplateContentListItem {
                     key = keyPrefix + PARAM_FOLDER;
                     result.put(key, messages.key(key));
                     // get the possible list element JSPs
-                    for (int m=0; m<LISTVARIATIONS.length; m++) {
+                    for (int m = 0; m < LISTVARIATIONS.length; m++) {
                         key = keyPrefix + PARAM_LISTELEMENT + LISTVARIATIONS[m];
                         value = messages.key(key);
-                        if (! value.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
+                        if (!value.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
                             result.put(key, value);
                         }
                     }
                 }
             }
-        } 
+        }
         return result;
     }
-    
+
     /**
      * Factory method to create a new {@link CmsTemplateContentListItem} instance.<p>
      * 
@@ -173,13 +177,18 @@ public class CmsTemplateContentListItem {
      * 
      * @return a new instance of a {@link CmsTemplateContentListItem}
      */
-    public static CmsTemplateContentListItem newInstance(Map defaultValues, Map properties, String microSiteFolder, String displayArea, int index) {
+    public static CmsTemplateContentListItem newInstance(
+        Map defaultValues,
+        Map properties,
+        String microSiteFolder,
+        String displayArea,
+        int index) {
 
         // initialize a macro resolver to resolve the current index and the microsite folder
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
         resolver.addMacro(MACRO_LISTINDEX, Integer.toString(index));
         resolver.addMacro(MACRO_MICROSITEFOLDER, microSiteFolder);
-        
+
         // try to get the list type from the properties
         String type = (String)properties.get(resolver.resolveMacros(PROPERTY_LAYOUT_TYPE));
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(type) && !PROPERTY_VALUE_NONE.equals(type)) {
@@ -205,7 +214,7 @@ public class CmsTemplateContentListItem {
                 listItem.setCount(Integer.parseInt(count));
             } catch (NumberFormatException e) {
                 // no valid number specified, use default value
-                listItem.setCount(Integer.parseInt(defaultCount));    
+                listItem.setCount(Integer.parseInt(defaultCount));
             }
             // determine the folder which holds the contents
             String folder = (String)properties.get(resolver.resolveMacros(PROPERTY_LAYOUT_FOLDER));
@@ -231,7 +240,7 @@ public class CmsTemplateContentListItem {
             return null;
         }
     }
-     
+
     /**
      * Returns the collector to use for this list.<p>
      *
@@ -241,7 +250,7 @@ public class CmsTemplateContentListItem {
 
         return m_collector;
     }
-    
+
     /**
      * Returns the maximum count of entries for elements.<p>
      *
@@ -251,7 +260,7 @@ public class CmsTemplateContentListItem {
 
         return m_count;
     }
-    
+
     /**
      * Returns the display area for this XMLContent list.<p>
      * 
@@ -261,7 +270,7 @@ public class CmsTemplateContentListItem {
 
         return m_displayArea;
     }
-    
+
     /**
      * Returns the folder which holds the XMLContent.<p>
      *
@@ -271,7 +280,7 @@ public class CmsTemplateContentListItem {
 
         return m_folder;
     }
-    
+
     /**
      * Returns the list element URI to use to display the list.<p>
      * 
@@ -281,7 +290,7 @@ public class CmsTemplateContentListItem {
 
         return m_listElement;
     }
-    
+
     /**
      * Returns the XMLContent type.<p>
      *
@@ -291,7 +300,7 @@ public class CmsTemplateContentListItem {
 
         return m_type;
     }
-    
+
     /**
      * Returns the list variation.<p>
      *
@@ -301,7 +310,7 @@ public class CmsTemplateContentListItem {
 
         return m_variation;
     }
-    
+
     /**
      * Includes the list generation JSP and creates the necessary request parameters for the included JSP.<p>
      * 
@@ -323,7 +332,7 @@ public class CmsTemplateContentListItem {
         properties.put(PARAM_FOLDER, getFolder());
         jsp.include(getListElement(), null, properties);
     }
-    
+
     /**
      * Sets the collector to use for this list.<p>
      *
@@ -333,7 +342,7 @@ public class CmsTemplateContentListItem {
 
         m_collector = collector;
     }
-    
+
     /**
      * Sets the maximum count of entries for elements.<p>
      *
@@ -343,7 +352,7 @@ public class CmsTemplateContentListItem {
 
         m_count = count;
     }
-    
+
     /**
      * Sets the display area for this XMLContent list.<p>
      * 
@@ -353,7 +362,7 @@ public class CmsTemplateContentListItem {
 
         m_displayArea = displayArea;
     }
-    
+
     /**
      * Sets the folder which holds the XMLContent.<p>
      *
@@ -363,7 +372,7 @@ public class CmsTemplateContentListItem {
 
         m_folder = contentFolder;
     }
-    
+
     /**
      * Sets the list element URI to use to display the list.<p>
      * 
@@ -373,7 +382,7 @@ public class CmsTemplateContentListItem {
 
         m_listElement = listElement;
     }
-    
+
     /**
      * Sets the XMLContent type.<p>
      *
@@ -383,7 +392,7 @@ public class CmsTemplateContentListItem {
 
         m_type = type;
     }
-    
+
     /**
      * Sets the list variation.<p>
      *

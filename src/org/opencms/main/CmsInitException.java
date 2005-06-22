@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsInitException.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,10 @@ import org.opencms.i18n.CmsMessageContainer;
  * the system won't try to start up again.<p>
  * 
  * @author Alexander Kandzior 
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.13 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsInitException extends CmsRuntimeException {
 
@@ -85,15 +88,15 @@ public class CmsInitException extends CmsRuntimeException {
         m_newError = true;
         setErrorCondition();
     }
-    
+
     /**
      * @see org.opencms.main.CmsRuntimeException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsRuntimeException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsInitException(container, cause);
-    } 
-    
+    }
+
     /**
      * Indicates that this exception describes a new error that was not already logged.<p>
      * 

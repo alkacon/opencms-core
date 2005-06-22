@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.main;
 
-
 /**
  * Implement this interface in case your class has to react 
  * to CmsEvents that are thrown by system.<p>
@@ -60,35 +59,36 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $
- * @since FLEX alpha 1
+ * @version $Revision: 1.24 $ 
+ * 
+ * @since 6.0.0 
  * 
  * @see CmsEvent
  * @see org.opencms.main.OpenCms#addCmsEventListener(I_CmsEventListener)
  * @see org.opencms.main.OpenCms#addCmsEventListener(I_CmsEventListener, int[])
  */
 public interface I_CmsEventListener {
-    
+
     /** Key name for passing a CmsObject in the data map. */
     String KEY_CMSOBJECT = "cmsObject";
-    
+
     /** Key name for passing a report in the data map. */
     String KEY_REPORT = "report";
-    
+
     /** Key name for passing a publish history id in the data map. */
     String KEY_PUBLISHID = "publishHistoryId";
-    
+
     /** Key name for passing a project id in the data map. */
     String KEY_PROJECTID = "projectId";
-    
+
     /** Key name for passing a database context in the data map. */
     String KEY_DBCONTEXT = "dbContext";
-    
+
     /**
      * Marker for "all events".<p>
      */
     Integer LISTENERS_FOR_ALL_EVENTS = new Integer(-1);
-    
+
     /** 
      * Event "user has logged in".<p>
      *
@@ -105,9 +105,9 @@ public interface I_CmsEventListener {
      * <li>key "report" (optional): an I_CmsReport instance to print output messages</li>
      * </ul>
      * @see org.opencms.file.CmsObject#publishProject()
-     */    
+     */
     int EVENT_PUBLISH_PROJECT = 2;
-        
+
     /** 
      * Event "all caches must be cleared".<p>
      *
@@ -124,7 +124,7 @@ public interface I_CmsEventListener {
      * request parameter.
      */
     int EVENT_FLEX_PURGE_JSP_REPOSITORY = 8;
-    
+
     /** 
      * Event "the FlexCache must be cleared".<p>
      * 
@@ -133,7 +133,7 @@ public interface I_CmsEventListener {
      * request parameter.
      */
     int EVENT_FLEX_CACHE_CLEAR = 9;
-    
+
     /** 
      * Event "a single resource has been modified".<p>
      * 
@@ -143,7 +143,7 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_RESOURCE_MODIFIED = 11;
-    
+
     /** 
      * Event "a bunch of resources has been modified".<p>
      * 
@@ -153,7 +153,7 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_RESOURCES_MODIFIED = 12;
-    
+
     /** 
      * Event "the list of sub-resources of a folder has been modified", (e.g. a new resource has been created).<p>
      * 
@@ -163,7 +163,7 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_RESOURCE_LIST_MODIFIED = 13;
-    
+
     /** 
      * Event "a single property (and so the resource itself, too) have been modified".<p>
      * 
@@ -174,7 +174,7 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_PROPERTY_MODIFIED = 14;
-    
+
     /** 
      * Event "all properties (and so the resource itself, too) have been modified".<p>
      * 
@@ -184,21 +184,21 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_RESOURCE_AND_PROPERTIES_MODIFIED = 15;
-    
+
     /** 
      * Event "clear all offline caches".<p>
      * 
      * Event data: none
      */
     int EVENT_CLEAR_OFFLINE_CACHES = 16;
-    
+
     /** 
      * Event "clear all online caches".<p>
      * 
      * Event data: none
      */
     int EVENT_CLEAR_ONLINE_CACHES = 17;
-    
+
     /**
      * Event "a project was modified" (e.g. a project has been deleted, 
      * or the project resources have been changed).<p>
@@ -209,7 +209,7 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_PROJECT_MODIFIED = 18;
-    
+
     /**
      * Event "update exported resources".<p>
      * 
@@ -218,19 +218,19 @@ public interface I_CmsEventListener {
      * all caches.<p>
      * 
      * This event is for internal use.<p>
-     */     
-    int EVENT_UPDATE_EXPORTS = 19;  
-    
+     */
+    int EVENT_UPDATE_EXPORTS = 19;
+
     /**
      * @see #EVENT_RESOURCE_AND_PROPERTIES_MODIFIED
      */
     int EVENT_RESOURCE_CREATED = 23;
-    
+
     /**
      * @see #EVENT_RESOURCES_MODIFIED
      */
     int EVENT_RESOURCE_COPIED = 24;
-    
+
     /**
      * @see #EVENT_RESOURCES_MODIFIED
      */
@@ -245,7 +245,7 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_PROPERTY_DEFINITION_MODIFIED = 26;
-    
+
     /** 
      * Event "a list of resources and their properties have been modified".<p>
      * 
@@ -253,9 +253,9 @@ public interface I_CmsEventListener {
      * <ul>
      * <li>key "resources" (mandatory): a List of modified CmsResources</li>
      * </ul>
-     */    
+     */
     int EVENT_RESOURCES_AND_PROPERTIES_MODIFIED = 27;
-    
+
     /**
      * Event "a property definition has been created".<p>
      * 
@@ -264,14 +264,13 @@ public interface I_CmsEventListener {
      * <li>key "propertyDefinition" (mandatory): the modified property definition</li>
      * </ul>
      */
-    int EVENT_PROPERTY_DEFINITION_CREATED = 28;    
-    
+    int EVENT_PROPERTY_DEFINITION_CREATED = 28;
+
     /**
      * Acknowledge the occurrence of the specified event, implement this 
      * method to check for CmsEvents in your class.
      *
      * @param event CmsEvent that has occurred
      */
-    void cmsEvent(CmsEvent event);    
+    void cmsEvent(CmsEvent event);
 }
-

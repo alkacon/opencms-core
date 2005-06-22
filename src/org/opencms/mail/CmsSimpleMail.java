@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsSimpleMail.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,8 +48,10 @@ import org.apache.commons.mail.SimpleEmail;
  * to conveniently generate emails using the OpenCms configuration.<p> 
  *
  * @author Andreas Zahner 
- * @version $Revision: 1.5 $
- * @since 5.5.0
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSimpleMail extends SimpleEmail {
    

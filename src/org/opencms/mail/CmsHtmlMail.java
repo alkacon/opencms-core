@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsHtmlMail.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.mail;
 
 import org.opencms.main.CmsLog;
@@ -38,7 +38,6 @@ import javax.mail.MessagingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail.HtmlEmail;
-
 
 /**
  * This class is used to send an HTML formatted email with optional attachments.<p>
@@ -50,15 +49,16 @@ import org.apache.commons.mail.HtmlEmail;
  * to conveniently generate emails using the OpenCms configuration.<p> 
  *
  * @author Andreas Zahner 
- * @version $Revision: 1.4 $
- * @since 5.5.0
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsHtmlMail extends HtmlEmail {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsHtmlMail.class);  
+    private static final Log LOG = CmsLog.getLog(CmsHtmlMail.class);
 
-    
     /**
      * Default constructor of a CmsHtmlMail.<p>
      * 
@@ -67,12 +67,13 @@ public class CmsHtmlMail extends HtmlEmail {
      * 
      */
     public CmsHtmlMail() {
+
         // call super constructor
         super();
         // set the host to the default mail host
         CmsMailHost host = OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost();
         setHostName(host.getHostname());
-        
+
         // check if username and password are provided
         String userName = host.getUsername();
         if (userName != null && !"".equals(userName.trim())) {
@@ -87,5 +88,5 @@ public class CmsHtmlMail extends HtmlEmail {
             LOG.error(Messages.get().key(Messages.LOG_INVALID_SENDER_ADDRESS_0), e);
         }
     }
-    
+
 }

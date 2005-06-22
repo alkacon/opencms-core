@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,8 +106,9 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.86 $
- * @since FLEX alpha 1
+ * @version $Revision: 1.87 $ 
+ * 
+ * @since 6.0.0 
  * 
  * @see I_CmsResourceLoader
  */
@@ -386,8 +387,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         // remove the controller from the request if not forwarding
         if (!controller.isForwardMode()) {
-        CmsFlexController.removeController(req);
-    }
+            CmsFlexController.removeController(req);
+        }
     }
 
     /**
@@ -1041,8 +1042,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 try {
                     contents = CmsFile.upgrade(resource, cms).getContents();
                     // check the "content-encoding" property for the JSP
-                    encoding = cms.readPropertyObject(jspVfsName, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, false).getValue(
-                        CmsEncoder.ENCODING_ISO_8859_1);
+                    encoding = cms.readPropertyObject(
+                        jspVfsName,
+                        CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                        false).getValue(CmsEncoder.ENCODING_ISO_8859_1);
                     encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
                 } catch (CmsException e) {
                     controller.setThrowable(e, jspVfsName);

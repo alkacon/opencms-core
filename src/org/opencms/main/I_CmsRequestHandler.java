@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsRequestHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 13:35:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
  * Describes an OpenCms request handler.<p>
  * 
@@ -55,9 +54,22 @@ import javax.servlet.http.HttpServletResponse;
  * In essence, the request handlers are like simplified mini-servlets that run inside OpenCms. 
  * Of course they are not intended as replacements for real servlets.
  * In case you require sophisticated lifecycle support use a genuine servlet instead.<p>
+ * 
+ * @author Alexander Kandzior
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsRequestHandler {
-    
+
+    /**
+     * Returns the handler name.<p>
+     * 
+     * @return the handler name
+     */
+    String[] getHandlerNames();
+
     /**
      * Handles an OpenCms request.<p>
      * 
@@ -66,14 +78,6 @@ public interface I_CmsRequestHandler {
      * @param name the handler name to invoke
      * @throws ServletException in case an error occurs
      * @throws IOException in case an error occurs
-     */       
-    void handle(HttpServletRequest req, HttpServletResponse res, String name) throws IOException, ServletException;
-    
-    /**
-     * Returns the handler name.<p>
-     * 
-     * @return the handler name
      */
-    String[] getHandlerNames();
+    void handle(HttpServletRequest req, HttpServletResponse res, String name) throws IOException, ServletException;
 }
-
