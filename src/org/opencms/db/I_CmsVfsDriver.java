@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2005/05/16 13:46:56 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.108 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,11 +48,12 @@ import java.util.List;
 /**
  * Definitions of all required VFS driver methods.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Thomas Weckert  
+ * @author Michael Emmerich  
  * 
- * @version $Revision: 1.107 $ $Date: 2005/05/16 13:46:56 $
- * @since 5.1
+ * @version $Revision: 1.108 $
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsVfsDriver {
 
@@ -119,7 +120,8 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsPropertyDefinition createPropertyDefinition(CmsDbContext dbc, int projectId, String name) throws CmsDataAccessException;
+    CmsPropertyDefinition createPropertyDefinition(CmsDbContext dbc, int projectId, String name)
+    throws CmsDataAccessException;
 
     /**
      * Creates a new resource from a given CmsResource object.<p>
@@ -161,8 +163,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void createSibling(CmsDbContext dbc, CmsProject project, CmsResource resource)
-    throws CmsDataAccessException;
+    void createSibling(CmsDbContext dbc, CmsProject project, CmsResource resource) throws CmsDataAccessException;
 
     /**
      * Deletes a property defintion.<p>
@@ -268,7 +269,8 @@ public interface I_CmsVfsDriver {
      * @return the file that was read
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsFile readFile(CmsDbContext dbc, int projectId, boolean includeDeleted, CmsUUID structureId) throws CmsDataAccessException;
+    CmsFile readFile(CmsDbContext dbc, int projectId, boolean includeDeleted, CmsUUID structureId)
+    throws CmsDataAccessException;
 
     /**
      * Reads all files that are either new, changed or deleted.<p>
@@ -345,7 +347,8 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    CmsPropertyDefinition readPropertyDefinition(CmsDbContext dbc, String name, int projectId) throws CmsDataAccessException;
+    CmsPropertyDefinition readPropertyDefinition(CmsDbContext dbc, String name, int projectId)
+    throws CmsDataAccessException;
 
     /**
      * Reads all property definitions for the specified mapping type.<p>
@@ -444,7 +447,8 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong 
      */
-    List readResources(CmsDbContext dbc, int currentProject, long starttime, long endtime) throws CmsDataAccessException;
+    List readResources(CmsDbContext dbc, int currentProject, long starttime, long endtime)
+    throws CmsDataAccessException;
 
     /**
      * Reads all resources that have a value set for the specified property (definition), in the given path.<p>
@@ -461,7 +465,8 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readResourcesWithProperty(CmsDbContext dbc, int projectId, CmsUUID propertyDefinition, String path) throws CmsDataAccessException;
+    List readResourcesWithProperty(CmsDbContext dbc, int projectId, CmsUUID propertyDefinition, String path)
+    throws CmsDataAccessException;
 
     /**
      * Reads all resources that have a value (containing the specified value) 
@@ -480,7 +485,12 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readResourcesWithProperty(CmsDbContext dbc, int projectId, CmsUUID propertyDefinition, String path, String value) throws CmsDataAccessException;
+    List readResourcesWithProperty(
+        CmsDbContext dbc,
+        int projectId,
+        CmsUUID propertyDefinition,
+        String path,
+        String value) throws CmsDataAccessException;
 
     /**
      * Reads all resources inside a given project matching the criteria specified by parameter values.<p>
@@ -565,11 +575,8 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void replaceResource(
-        CmsDbContext dbc,
-        CmsResource newResource,
-        byte[] newResourceContent,
-        int newResourceType) throws CmsDataAccessException;
+    void replaceResource(CmsDbContext dbc, CmsResource newResource, byte[] newResourceContent, int newResourceType)
+    throws CmsDataAccessException;
 
     /**
      * Validates if the specified content ID in the tables of the specified project {offline|online} exists.<p>
@@ -605,7 +612,8 @@ public interface I_CmsVfsDriver {
      * @return true, if the specified structure ID in the tables of the specified project {offline|online} exists
      * @throws CmsDataAccessException if something goes wrong
      */
-    boolean validateStructureIdExists(CmsDbContext dbc, int projectId, CmsUUID structureId) throws CmsDataAccessException;
+    boolean validateStructureIdExists(CmsDbContext dbc, int projectId, CmsUUID structureId)
+    throws CmsDataAccessException;
 
     /**
      * Writes the resource content with the specified content id.<p>
@@ -617,7 +625,8 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content) throws CmsDataAccessException;
+    void writeContent(CmsDbContext dbc, CmsProject project, CmsUUID resourceId, byte[] content)
+    throws CmsDataAccessException;
 
     /**
      * Writes the "last-modified-in-project" ID of a resource.<p>
@@ -691,7 +700,8 @@ public interface I_CmsVfsDriver {
      * @see org.opencms.db.CmsDriverManager#C_NOTHING_CHANGED
      * @see #writeResourceState(CmsDbContext, CmsProject, CmsResource, int)
      */
-    void writeResource(CmsDbContext dbc, CmsProject project, CmsResource resource, int changed) throws CmsDataAccessException;
+    void writeResource(CmsDbContext dbc, CmsProject project, CmsResource resource, int changed)
+    throws CmsDataAccessException;
 
     /**
      * Writes file state in either the structure or resource record, or both of them.<p>

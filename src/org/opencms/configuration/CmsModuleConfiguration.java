@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsModuleConfiguration.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,56 +49,59 @@ import org.dom4j.Element;
 /**
  * VFS master configuration class.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @since 5.3
+ * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.8 $
+ * 
+ * @since 6.0.0
  */
 public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
-    
+
     /** The node name for the modules top node. */
-    protected static final String N_MODULES = "modules";    
-        
+    protected static final String N_MODULES = "modules";
+
     /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-modules.dtd";
-    
+
     /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-modules.xml";   
+    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-modules.xml";
 
     /** The module manager generated from the configuration. */
     private CmsModuleManager m_moduleManager;
 
     /** The configured list of module descriptions. */
     private List m_modules;
-    
+
     /**
      * Public constructor, will be called by configuration manager.<p> 
      */
     public CmsModuleConfiguration() {
-        
+
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);
         m_modules = new ArrayList();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_MODULE_CONFIG_INIT_0));
-        }                                 
+        }
     }
-    
+
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
      */
-    public void addXmlDigesterRules(Digester digester) {        
-        
+    public void addXmlDigesterRules(Digester digester) {
+
         // add finish rule
         digester.addCallMethod("*/" + N_MODULES, "initializeFinished");
-        
+
         // add the module rules for the module digester
-        CmsModuleXmlHandler.addXmlDigesterRules(digester);        
+        CmsModuleXmlHandler.addXmlDigesterRules(digester);
     }
-    
+
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#generateXml(org.dom4j.Element)
      */
     public Element generateXml(Element parent) {
-        
-        List modules; 
+
+        List modules;
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             modules = new ArrayList();
             Iterator names = OpenCms.getModuleManager().getModuleNames().iterator();
@@ -110,17 +113,17 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
             // simple unit tests
             modules = m_modules;
         }
-        
+
         // generate modules node and subnodes
         Element modulesNode = parent.addElement(N_MODULES);
-        
-        for (int i=0; i<modules.size(); i++) {
+
+        for (int i = 0; i < modules.size(); i++) {
             // append all configured modules
-            CmsModule module = (CmsModule)modules.get(i); 
+            CmsModule module = (CmsModule)modules.get(i);
             Element moduleNode = CmsModuleXmlHandler.generateXml(module);
-            modulesNode.add(moduleNode);            
+            modulesNode.add(moduleNode);
         }
-        
+
         // return the modules node
         return modulesNode;
     }
@@ -129,7 +132,7 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
      * @see org.opencms.configuration.I_CmsXmlConfiguration#getDtdFilename()
      */
     public String getDtdFilename() {
-        
+
         return C_CONFIGURATION_DTD_NAME;
     }
 
@@ -139,10 +142,10 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
      * @return the configured module manager
      */
     public CmsModuleManager getModuleManager() {
-        
+
         return m_moduleManager;
     }
-    
+
     /**
      * Will be called when configuration of this object is finished.<p> 
      */
@@ -152,8 +155,8 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
         m_moduleManager = new CmsModuleManager(m_modules);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_MODULE_CONFIG_FINISHED_0));
-        }            
-    }       
+        }
+    }
 
     /**
      * Adds a new module to the list of configured modules.<p>
@@ -164,6 +167,6 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // add the module info to the list of configured modules
         m_modules.add(moduleHandler.getModule());
-    }    
-    
+    }
+
 }

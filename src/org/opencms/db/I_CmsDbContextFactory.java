@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsDbContextFactory.java,v $
- * Date   : $Date: 2005/02/17 12:43:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,11 @@ import org.opencms.file.CmsRequestContext;
 /**
  * This interface defines a factory to create runtime info objects.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
- * @since 5.5.2
+ * @author Thomas Weckert 
+ * 
+ * @version $Revision: 1.3 $
+ * 
+ * @since 6.0.0
  */
 public interface I_CmsDbContextFactory {
     

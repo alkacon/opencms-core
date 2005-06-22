@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2005/04/10 11:00:14 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,9 +44,12 @@ import java.util.List;
  * Default user workplace settings, used as default values for worklace settings in the
  * user preferences.<p>
  *  
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @author Michael Emmerich 
+ * @author Andreas Zahner 
+ * 
+ * @version $Revision: 1.13 $
+ * 
+ * @since 6.0.0
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
 

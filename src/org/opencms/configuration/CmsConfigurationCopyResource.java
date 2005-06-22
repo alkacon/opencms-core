@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationCopyResource.java,v $
- * Date   : $Date: 2005/03/23 19:08:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,10 +41,11 @@ import org.opencms.util.CmsMacroResolver;
  * Usually used in folder types to copy some default resources to the folder,
  * but also usable for file resources.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
- * @since 5.7.2
+ * @version $Revision: 1.4 $
+ * 
+ * @since 6.0.0
  */
 public class CmsConfigurationCopyResource {
 

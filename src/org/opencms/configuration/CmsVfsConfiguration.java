@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/06/13 10:00:02 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,8 +56,11 @@ import org.dom4j.Element;
 /**
  * VFS master configuration class.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @since 5.3
+ * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.35 $
+ * 
+ * @since 6.0.0
  */
 public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 

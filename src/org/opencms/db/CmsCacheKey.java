@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheKey.java,v $
- * Date   : $Date: 2005/02/17 12:43:46 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,8 +28,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.db;
 
+package org.opencms.db;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
@@ -38,17 +38,17 @@ import org.opencms.security.CmsPermissionSet;
 /**
  * Generates the cache keys for the user and permission caches.<p>
  * 
- * @version $Revision: 1.11 $ $Date: 2005/02/17 12:43:46 $
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Carsten Weinholz 
+ * 
  */
 public class CmsCacheKey implements I_CmsCacheKey {
-    
+
     /** Cache key for a list of sub-resources (files and folders) of a folder. */
     public static final String C_CACHE_KEY_SUBALL = "_all_";
-    
+
     /** Cache key for a list of sub-files of a folder. */
     public static final String C_CACHE_KEY_SUBFILES = "_files_";
-    
+
     /** Cache key for a list of sub-folders of a folder. */
     public static final String C_CACHE_KEY_SUBFOLDERS = "_folders_";
 
@@ -56,34 +56,39 @@ public class CmsCacheKey implements I_CmsCacheKey {
      * Constructor to create a new instance of CmsCacheKey.<p>
      */
     public CmsCacheKey() {
-        // empty
-    }
 
-    /**
-     * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForUserPermissions(java.lang.String, org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet)
-     */
-    public String getCacheKeyForUserPermissions(String prefix, CmsDbContext context, CmsResource resource, CmsPermissionSet requiredPermissions) {
-        
-        StringBuffer cacheBuffer = new StringBuffer(64);
-        cacheBuffer.append(prefix);
-        cacheBuffer.append('_');        
-        cacheBuffer.append(context.currentUser().getName());
-        cacheBuffer.append(context.currentProject().isOnlineProject()?"_0_":"_1_");
-        cacheBuffer.append(requiredPermissions.getPermissionString());
-        cacheBuffer.append('_');
-        cacheBuffer.append(resource.getStructureId().toString());
-        return cacheBuffer.toString();
+        // empty
     }
 
     /**
      * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForUserGroups(java.lang.String, org.opencms.db.CmsDbContext, org.opencms.file.CmsUser)
      */
-    public String getCacheKeyForUserGroups (String prefix, CmsDbContext context, CmsUser user) {
-        
+    public String getCacheKeyForUserGroups(String prefix, CmsDbContext context, CmsUser user) {
+
         StringBuffer cacheBuffer = new StringBuffer(64);
         cacheBuffer.append(prefix);
         cacheBuffer.append('_');
         cacheBuffer.append(user.getName());
-        return cacheBuffer.toString();       
+        return cacheBuffer.toString();
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsCacheKey#getCacheKeyForUserPermissions(java.lang.String, org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet)
+     */
+    public String getCacheKeyForUserPermissions(
+        String prefix,
+        CmsDbContext context,
+        CmsResource resource,
+        CmsPermissionSet requiredPermissions) {
+
+        StringBuffer cacheBuffer = new StringBuffer(64);
+        cacheBuffer.append(prefix);
+        cacheBuffer.append('_');
+        cacheBuffer.append(context.currentUser().getName());
+        cacheBuffer.append(context.currentProject().isOnlineProject() ? "_0_" : "_1_");
+        cacheBuffer.append(requiredPermissions.getPermissionString());
+        cacheBuffer.append('_');
+        cacheBuffer.append(resource.getStructureId().toString());
+        return cacheBuffer.toString();
     }
 }

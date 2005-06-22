@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsConfigurationParameterHandler.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,8 +41,11 @@ import java.util.Map;
  * Such "param" nodes can be used to add some arbitary names 
  * parameters to classes that otherwise share the same XML configuration.
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @since 5.3
+ * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.6 $
+ * 
+ * @since 6.0.0
  */
 public interface I_CmsConfigurationParameterHandler {
     

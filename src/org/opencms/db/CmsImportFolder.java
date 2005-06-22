@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.db;
 
 import org.opencms.file.CmsObject;
@@ -54,9 +54,11 @@ import java.util.zip.ZipInputStream;
 /**
  * Allows to import resources from the filesystem or a ZIP file into the OpenCms VFS.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  *
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
+ * 
+ * @since 6.0.0
  */
 public class CmsImportFolder {
 
@@ -75,9 +77,9 @@ public class CmsImportFolder {
     /** Will be true if the import resource is a valid ZIP file. */
     private boolean m_validZipFile;
 
-    /** The import resource ZIP stream to load resources from. */    
+    /** The import resource ZIP stream to load resources from. */
     private ZipInputStream m_zipStreamIn;
-    
+
     /**
      * Constructor for a new CmsImportFolder that will read from a ZIP file.<p>
      *
@@ -87,12 +89,9 @@ public class CmsImportFolder {
      * @param noSubFolder if false no sub folder will be created 
      * @throws CmsException if something goes wrong
      */
-    public CmsImportFolder(
-        byte[] content, 
-        String importPath, 
-        CmsObject cms, 
-        boolean noSubFolder
-    ) throws CmsException {
+    public CmsImportFolder(byte[] content, String importPath, CmsObject cms, boolean noSubFolder)
+    throws CmsException {
+
         m_importPath = importPath;
         m_cms = cms;
         try {
@@ -114,7 +113,9 @@ public class CmsImportFolder {
      * @param cms a OpenCms context to provide the permissions
      * @throws CmsException if something goes wrong
      */
-    public CmsImportFolder(String importFolderName, String importPath, CmsObject cms) throws CmsException {
+    public CmsImportFolder(String importFolderName, String importPath, CmsObject cms)
+    throws CmsException {
+
         try {
             m_importFolderName = importFolderName;
             m_importPath = importPath;
@@ -132,8 +133,21 @@ public class CmsImportFolder {
             // all is done, unlock the resources
             m_cms.unlockResource(m_importPath);
         } catch (Exception e) {
-            throw new CmsVfsException(Messages.get().container(Messages.ERR_IMPORT_FOLDER_2, importFolderName, importPath), e);
+            throw new CmsVfsException(Messages.get().container(
+                Messages.ERR_IMPORT_FOLDER_2,
+                importFolderName,
+                importPath), e);
         }
+    }
+
+    /**
+     * Returns true if a valid ZIP file was imported.<p>
+     * 
+     * @return true if a valid ZIP file was imported
+     */
+    public boolean isValidZipFile() {
+
+        return m_validZipFile;
     }
 
     /**
@@ -144,6 +158,7 @@ public class CmsImportFolder {
      * @throws Exception if something goes wrong during file IO
      */
     private byte[] getFileBytes(File file) throws Exception {
+
         FileInputStream fileStream = new FileInputStream(file);
         int charsRead = 0;
         int size = new Long(file.length()).intValue();
@@ -176,7 +191,7 @@ public class CmsImportFolder {
             }
         }
     }
-    
+
     /**
      * Imports the resources from the folder in the real file system to the OpenCms VFS.<p>
      *
@@ -185,6 +200,7 @@ public class CmsImportFolder {
      * @throws Exception if something goes wrong during file IO 
      */
     private void importResources(File folder, String importPath) throws Exception {
+
         String[] diskFiles = folder.list();
         File currentFile;
 
@@ -215,6 +231,7 @@ public class CmsImportFolder {
      * @throws Exception if something goes wrong during file IO 
      */
     private void importZipResource(ZipInputStream zipStreamIn, String importPath, boolean noSubFolder) throws Exception {
+
         boolean isFolder = false;
         boolean exit = false;
         int j, r, stop, charsRead, size;
@@ -223,7 +240,7 @@ public class CmsImportFolder {
         int offset = 0;
         byte[] buffer = null;
         boolean resourceExists;
-        
+
         while (true) {
             // handle the single entries ...
             j = 0;
@@ -253,7 +270,7 @@ public class CmsImportFolder {
                 path[j] = st.nextToken();
                 j++;
             }
-            stop = isFolder?path.length:(path.length - 1);
+            stop = isFolder ? path.length : (path.length - 1);
 
             if (noSubFolder) {
                 stop = 0;
@@ -268,7 +285,7 @@ public class CmsImportFolder {
                 actImportPath += path[r];
                 actImportPath += "/";
             }
-            if (! isFolder) {
+            if (!isFolder) {
                 // import file into cms
                 int type = OpenCms.getResourceManager().getDefaultTypeForName(path[path.length - 1]).getTypeId();
                 size = new Long(entry.getSize()).intValue();
@@ -326,24 +343,26 @@ public class CmsImportFolder {
                 }
 
                 filename = actImportPath + path[path.length - 1];
-                
+
                 try {
                     m_cms.lockResource(filename);
-                    
+
                     m_cms.readResource(filename);
                     resourceExists = true;
                 } catch (CmsException e) {
                     resourceExists = false;
                 }
-                
+
                 if (resourceExists) {
                     CmsResource res = m_cms.readResource(filename, CmsResourceFilter.ALL);
-                    
+
                     //m_cms.deleteAllProperties(filename);
                     //m_cms.replaceResource(filename, type, Collections.EMPTY_MAP, buffer);
                     m_cms.replaceResource(filename, res.getTypeId(), buffer, Collections.EMPTY_LIST);
-                    
-                    OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
+
+                    OpenCms.fireCmsEvent(new CmsEvent(
+                        I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                        Collections.singletonMap("resource", res)));
                 } else {
                     m_cms.createResource(actImportPath + path[path.length - 1], type, buffer, Collections.EMPTY_LIST);
                 }
@@ -357,14 +376,5 @@ public class CmsImportFolder {
             // at least one entry, got a valid zip file ...
             m_validZipFile = true;
         }
-    }
-
-    /**
-     * Returns true if a valid ZIP file was imported.<p>
-     * 
-     * @return true if a valid ZIP file was imported
-     */
-    public boolean isValidZipFile() {
-        return m_validZipFile;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPointDriver.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,15 +45,17 @@ import org.apache.commons.logging.Log;
 /**
  * Provides methods to write export points to the "real" file system.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
+ * 
+ * @since 6.0.0
  */
 public class CmsExportPointDriver {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsExportPointDriver.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsExportPointDriver.class);
+
     /** The export points resolved to a lookup map. */
     private HashMap m_exportpointLookupMap;
 

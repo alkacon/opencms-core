@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbException.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,10 +38,11 @@ import org.opencms.main.CmsException;
 /**
  * Signals that a low-level exception occured when accessing the OpenCms database.<p>
  * 
- * @author Alexander Kandzior (a.kandziot@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Alexander Kandzior 
  * 
- * @since 5.7.3
+ * @version $Revision: 1.2 $
+ * 
+ * @since 6.0.0
  */
 public class CmsDbException extends CmsDataAccessException {
 

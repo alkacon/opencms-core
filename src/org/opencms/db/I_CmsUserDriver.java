@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,13 +44,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Definitions of all required user driver methods.
+ * Definitions of all required user driver methods. <p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Thomas Weckert 
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.53 $ $Date: 2005/05/16 13:46:55 $
- * @since 5.1
+ * @version $Revision: 1.54 $
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
 
@@ -146,7 +147,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @throws CmsDataAccessException if operation was not succesfull
      */
-    void createUserInGroup(CmsDbContext dbc, CmsUUID userid, CmsUUID groupid, Object reservedParam) throws CmsDataAccessException;
+    void createUserInGroup(CmsDbContext dbc, CmsUUID userid, CmsUUID groupid, Object reservedParam)
+    throws CmsDataAccessException;
 
     /**
      * Deletes all access control entries (ACEs) belonging to a resource.<p>
@@ -157,7 +159,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void deleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource) throws CmsDataAccessException;
+    void deleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource)
+    throws CmsDataAccessException;
 
     /**
      * Deletes a group.<p>
@@ -222,7 +225,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return true, if a user with the specified name exists, false otherwise
      * @throws CmsDataAccessException if something goes wrong
      */
-    boolean existsUser(CmsDbContext dbc, String username, int usertype, Object reservedParam) throws CmsDataAccessException;
+    boolean existsUser(CmsDbContext dbc, String username, int usertype, Object reservedParam)
+    throws CmsDataAccessException;
 
     /**
      * Returns the SqlManager of this driver.<p>
@@ -435,7 +439,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsDataAccessException if something goes wrong
      * @throws CmsPasswordEncryptionException if the password of the user could not be encrypted
      */
-    CmsUser readUser(CmsDbContext dbc, String name, String password, int type) throws CmsDataAccessException, CmsPasswordEncryptionException;
+    CmsUser readUser(CmsDbContext dbc, String name, String password, int type)
+    throws CmsDataAccessException, CmsPasswordEncryptionException;
 
     /**
      * Reads a user from the database, only if the password is correct.<p>
@@ -451,7 +456,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsDataAccessException if something goes wrong
      * @throws CmsPasswordEncryptionException if the password of the user could not be encrypted
      */
-    CmsUser readUser(CmsDbContext dbc, String name, String password, String remoteAddress, int type) throws CmsDataAccessException, CmsPasswordEncryptionException;
+    CmsUser readUser(CmsDbContext dbc, String name, String password, String remoteAddress, int type)
+    throws CmsDataAccessException, CmsPasswordEncryptionException;
 
     /**
      * Reads all existing users of the given type.<p>
@@ -487,7 +493,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void removeAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource) throws CmsDataAccessException;
+    void removeAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource)
+    throws CmsDataAccessException;
 
     /**
      * Removes all access control entries belonging to a principal.<p>
@@ -526,7 +533,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param resource the id of the resource
      * @throws CmsDataAccessException if something goes wrong
      */
-    void undeleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource) throws CmsDataAccessException;
+    void undeleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource)
+    throws CmsDataAccessException;
 
     /**
      * Writes an access control entry.<p>

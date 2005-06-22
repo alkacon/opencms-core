@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbIoException.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,12 +37,13 @@ import org.opencms.main.CmsException;
 /**
  * Signals that an IO exception occured when reading from or writing to the OpenCms database.<p>
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author Michael Moossen 
  * 
- * @since 5.7.3
+ * @version $Revision: 1.3 $
+ * 
+ * @since 6.0.0
  */
-public class CmsDbIoException extends CmsDbException {    
+public class CmsDbIoException extends CmsDbException {
 
     /**
      * Creates a new localized Exception.<p>
@@ -53,7 +54,7 @@ public class CmsDbIoException extends CmsDbException {
 
         super(container);
     }
-    
+
     /**
      * Creates a new localized Exception that also containes a root cause.<p>
      * 
@@ -63,14 +64,13 @@ public class CmsDbIoException extends CmsDbException {
     public CmsDbIoException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }   
-    
-    
+    }
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsDbIoException(container, cause);
     }
 }

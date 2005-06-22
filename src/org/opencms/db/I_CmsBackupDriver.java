@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,10 +51,12 @@ import java.util.List;
  * get published. A unique backup tag ID is used to identify a set of resource that 
  * were saved during one backup process.<p>
  * 
- * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.46 $ $Date: 2005/05/16 13:46:55 $
- * @since 5.1
+ * @author Michael Emmerich 
+ * @author Thomas Weckert 
+ * 
+ * @version $Revision: 1.47 $
+ * 
+ * @since 6.0.0
  */
 public interface I_CmsBackupDriver {
 

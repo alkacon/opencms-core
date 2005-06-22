@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSetNextRule.java,v $
- * Date   : $Date: 2005/06/17 13:33:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,15 +78,15 @@ import org.xml.sax.Attributes;
  * given <code>{@link java.lang.Class}[]</code>: It is used as argument on the position 
  * where the <code>Class[]</code> has an instance of the same type as it's own <code>Class</code>.<p>
  * 
- * 
- * @author Craig McClanahan (original)
- * @author Achim Westermann (modification)(a.westermann@alkacon.com)
- * @version $Revision: 1.2 $
- * 
- * @since 6.0
- * 
  * @see org.apache.commons.digester.CallMethodRule
  * @see org.apache.commons.digester.SetNextRule
+ * 
+ * @author Craig McClanahan 
+ * @author Achim Westermann 
+ * 
+ * @version $Revision: 1.3 $
+ * 
+ * @since 6.0.0
  */
 
 public class CmsSetNextRule extends Rule {

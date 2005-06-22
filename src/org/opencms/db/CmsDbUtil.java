@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2005/05/20 14:29:15 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,17 +50,16 @@ import org.apache.commons.logging.Log;
  * This class is used to create primary keys as integers for Cms database tables that
  * don't have a UUID primary key.<p>
  * 
- * @version $Revision: 1.9 
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @since 5.1
+ * @author Thomas Weckert 
+ * @author Carsten Weinholz 
+ * 
+ * @version $Revision: 1.18 $
+ * 
+ * @since 6.0.0
  */
 public final class CmsDbUtil {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDbUtil.class);  
-    
     /** Hashtable with border id's. */
     private static Hashtable c_borderId;
 
@@ -72,6 +71,9 @@ public final class CmsDbUtil {
 
     /** Grow value. */
     private static final int C_GROW_VALUE = 10;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDbUtil.class);
 
     /**
      * Default constructor.<p>
@@ -195,7 +197,8 @@ public final class CmsDbUtil {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             if (stmt != null) {
                 try {
@@ -287,7 +290,8 @@ public final class CmsDbUtil {
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             // close all db-resources
             if (res != null) {
@@ -323,8 +327,7 @@ public final class CmsDbUtil {
         PreparedStatement stmt = null;
 
         try {
-            stmt = conn
-                .prepareStatement("UPDATE CMS_SYSTEMID SET ID=? WHERE CMS_SYSTEMID.TABLE_KEY=? AND CMS_SYSTEMID.ID=?");
+            stmt = conn.prepareStatement("UPDATE CMS_SYSTEMID SET ID=? WHERE CMS_SYSTEMID.TABLE_KEY=? AND CMS_SYSTEMID.ID=?");
             stmt.setInt(1, newId);
             stmt.setString(2, tableName);
             stmt.setInt(3, oldId);
@@ -333,7 +336,8 @@ public final class CmsDbUtil {
             return (amount == 1);
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), e);
+                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
             if (stmt != null) {
                 try {

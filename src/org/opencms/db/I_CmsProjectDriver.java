@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2005/06/14 15:53:26 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,20 +48,20 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Definitions of all required project driver methods.
+ * Definitions of all required project driver methods. <p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com) 
+ * @author Thomas Weckert 
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.70 $ $Date: 2005/06/14 15:53:26 $
- * @since 5.1
+ * @version $Revision: 1.71 $
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsProjectDriver {
 
     /** The type ID to identify project driver implementations. */
     int C_DRIVER_TYPE_ID = 1;
-    
-    
+
     /** The name of the temp file project. */
     String C_TEMP_FILE_PROJECT_NAME = "tempFileProject";
 
@@ -478,7 +478,8 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readPublishedResources(CmsDbContext dbc, int projectId, CmsUUID publishHistoryId) throws CmsDataAccessException;
+    List readPublishedResources(CmsDbContext dbc, int projectId, CmsUUID publishHistoryId)
+    throws CmsDataAccessException;
 
     /**
      * Returns the parameters of a resource in the table of all published template resources.<p>
@@ -506,11 +507,8 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readStaticExportResources(
-        CmsDbContext dbc,
-        CmsProject currentProject,
-        int parameterResources,
-        long timestamp) throws CmsDataAccessException;
+    List readStaticExportResources(CmsDbContext dbc, CmsProject currentProject, int parameterResources, long timestamp)
+    throws CmsDataAccessException;
 
     /**
      * Removes the project id from all resources within a project.<p>
@@ -537,7 +535,7 @@ public interface I_CmsProjectDriver {
      * @throws CmsDataAccessException if operation was not successful
      */
     void writeProject(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
-    
+
     /**
      * Inserts an entry in the publish history for a published VFS resource.<p>
      * 

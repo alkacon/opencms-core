@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,11 +50,12 @@ import java.util.Map;
 /**
  * Object to conveniently access and modify the users workplace settings.<p>
  *
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.27 $
+ * @author  Andreas Zahner 
+ * @author  Michael Emmerich 
  * 
- * @since 5.1.12
+ * @version $Revision: 1.28 $
+ * 
+ * @since 6.0.0
  */
 public class CmsUserSettings {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,11 +89,12 @@ import org.apache.commons.logging.Log;
  * The security manager checks the permissions required for a user action invoke by the Cms object. If permissions 
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Michael Moossen (m.mmoossen@alkacon.com)
+ * @author Thomas Weckert 
+ * @author Michael Moossen 
  * 
- * @version $Revision: 1.77 $
- * @since 5.5.2
+ * @version $Revision: 1.78 $
+ * 
+ * @since 6.0.0
  */
 public final class CmsSecurityManager {
 

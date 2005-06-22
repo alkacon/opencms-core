@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2005/06/13 10:00:03 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.db;
 
 import org.opencms.main.CmsLog;
@@ -38,59 +38,61 @@ import org.opencms.util.CmsStringUtil;
 /**
  * Provides access to the names of the OpenCms default users and groups.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Armen Markarian (a.markarian@alkacon.com)
+ * @author Alexander Kandzior 
+ * @author Armen Markarian 
  * 
- * @version $Revision: 1.25 $ $Date: 2005/06/13 10:00:03 $
- * @since 5.1.5
+ * @version $Revision: 1.26 $
+ * 
+ * @since 6.0.0
  */
 public class CmsDefaultUsers {
 
-    /** Default name for the "Admin" user. */
-    public static final String C_DEFAULT_USER_ADMIN = "Admin";
-    
-    /** Default name for the "Export" user. */
-    public static final String C_DEFAULT_USER_EXPORT = "Export";
-    
-    /** Default name for the "Guest" user. */
-    public static final String C_DEFAULT_USER_GUEST = "Guest";
-    
     /** Default name for the "Administrators" group. */
     public static final String C_DEFAULT_GROUP_ADMINISTRATORS = "Administrators";
+
+    /** Default name for the "Guests" group. */
+    public static final String C_DEFAULT_GROUP_GUESTS = "Guests";
 
     /** Default name for the "Projectmanagers" group. */
     public static final String C_DEFAULT_GROUP_PROJECTMANAGERS = "Projectmanagers";
 
-    /** Default name for the "Guests" group. */
-    public static final String C_DEFAULT_GROUP_GUESTS = "Guests";
-    
     /** Default name for the "Users" group. */
     public static final String C_DEFAULT_GROUP_USERS = "Users";
-    
+
+    /** Default name for the "Admin" user. */
+    public static final String C_DEFAULT_USER_ADMIN = "Admin";
+
+    /** Default name for the "Export" user. */
+    public static final String C_DEFAULT_USER_EXPORT = "Export";
+
+    /** Default name for the "Guest" user. */
+    public static final String C_DEFAULT_USER_GUEST = "Guest";
+
     // member variables    
     private String m_groupAdministrators;
     private String m_groupGuests;
-    private String m_groupProjectmanagers;    
+    private String m_groupProjectmanagers;
     private String m_groupUsers;
     private String m_userAdmin;
     private String m_userExport;
     private String m_userGuest;
-    
+
     /**
      * Constructor that initializes all names with default values.<p>
      * 
      * See the constants of this class for the defaule values that are uses.<p> 
      */
     public CmsDefaultUsers() {
+
         m_userAdmin = C_DEFAULT_USER_ADMIN;
         m_userGuest = C_DEFAULT_USER_GUEST;
-        m_userExport = C_DEFAULT_USER_EXPORT;        
+        m_userExport = C_DEFAULT_USER_EXPORT;
         m_groupAdministrators = C_DEFAULT_GROUP_ADMINISTRATORS;
         m_groupProjectmanagers = C_DEFAULT_GROUP_PROJECTMANAGERS;
         m_groupUsers = C_DEFAULT_GROUP_USERS;
         m_groupGuests = C_DEFAULT_GROUP_GUESTS;
-    } 
-    
+    }
+
     /**
      * Public constructor. <p>
      * 
@@ -142,16 +144,16 @@ public class CmsDefaultUsers {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_USERS_GROUP_1, getGroupUsers()));
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_GUESTS_GROUP_1, getGroupGuests()));
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_DEFAULT_USER_NAMES_INITIALIZED_0));
-        }    
+        }
     }
 
     /**
      * Returns the name of the administrators group.<p>
      * 
      * @return the name of the administrators group
-     */ 
+     */
     public String getGroupAdministrators() {
-        
+
         return m_groupAdministrators;
     }
 
@@ -161,7 +163,7 @@ public class CmsDefaultUsers {
      * @return the name of the guests group
      */
     public String getGroupGuests() {
-        
+
         return m_groupGuests;
     }
 
@@ -171,7 +173,7 @@ public class CmsDefaultUsers {
      * @return the name of the project managers group
      */
     public String getGroupProjectmanagers() {
-        
+
         return m_groupProjectmanagers;
     }
 
@@ -181,7 +183,7 @@ public class CmsDefaultUsers {
      * @return the name of the users group
      */
     public String getGroupUsers() {
-        
+
         return m_groupUsers;
     }
 
@@ -191,17 +193,17 @@ public class CmsDefaultUsers {
      * @return the name of the default administrator user
      */
     public String getUserAdmin() {
-        
+
         return m_userAdmin;
     }
-      
+
     /**
      * Returns the name of the user used to generate the static export.<p>
      * 
      * @return the name of the user used to generate the static export
      */
     public String getUserExport() {
-        
+
         return m_userExport;
     }
 
@@ -211,10 +213,10 @@ public class CmsDefaultUsers {
      * @return the name of the default guest user
      */
     public String getUserGuest() {
-        
+
         return m_userGuest;
     }
-    
+
     /**
      * Checks if a given group name is the name of one of the OpenCms default groups.<p>
      *
@@ -228,17 +230,17 @@ public class CmsDefaultUsers {
      * @see #getGroupGuests()
      */
     public boolean isDefaultGroup(String groupName) {
-        
+
         if ((groupName == null) || (groupName.length() == 0)) {
             return false;
         }
 
-        return m_groupAdministrators.equals(groupName) 
-            || m_groupProjectmanagers.equals(groupName) 
-            || m_groupUsers.equals(groupName) 
+        return m_groupAdministrators.equals(groupName)
+            || m_groupProjectmanagers.equals(groupName)
+            || m_groupUsers.equals(groupName)
             || m_groupGuests.equals(groupName);
     }
-    
+
     /**
      * Checks if a given user name is the name of one of the OpenCms default users.<p>
      *
@@ -249,15 +251,13 @@ public class CmsDefaultUsers {
      * @see #getUserAdmin()
      * @see #getUserExport()
      * @see #getUserGuest()
-     */    
+     */
     public boolean isDefaultUser(String userName) {
-        
+
         if ((userName == null) || (userName.length() == 0)) {
             return false;
         }
-        
-        return m_userAdmin.equals(userName) 
-        || m_userGuest.equals(userName) 
-        || m_userExport.equals(userName);        
+
+        return m_userAdmin.equals(userName) || m_userGuest.equals(userName) || m_userExport.equals(userName);
     }
 }

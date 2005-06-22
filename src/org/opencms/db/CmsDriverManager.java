@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.528 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.529 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,13 +106,14 @@ import org.apache.commons.logging.Log;
 /**
  * The OpenCms driver manager.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com) 
+ * @author Alexander Kandzior 
+ * @author Thomas Weckert 
+ * @author Carsten Weinholz 
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.528 $
- * @since 5.1
+ * @version $Revision: 1.529 $
+ * 
+ * @since 6.0.0
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
 
@@ -263,12 +264,31 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public static final int C_UPDATE_STRUCTURE_STATE = 2;
 
     /**
+     * 
+     */
+    public static final String CONFIGURATION_BACKUP = "driver.backup";
+
+    /**
      * A string in the configuration-file.
      */
     public static final String CONFIGURATION_CACHE = "cache";
 
+    /**
+     * A string in the configuration-file.
+     */
+    public static final String CONFIGURATION_DB = "db";
+
+    /** "driver.project" string in the configuration-file. */
+    public static final String CONFIGURATION_PROJECT = "driver.project";
+
     /** "driver.user" string in the configuration-file. */
     public static final String CONFIGURATION_USER = "driver.user";
+
+    /** "driver.vfs" string in the configuration-file. */
+    public static final String CONFIGURATION_VFS = "driver.vfs";
+
+    /** "driver.workflow" string in the configuration-file. */
+    public static final String CONFIGURATION_WORKFLOW = "driver.workflow";
 
     /** Indicates to match resources NOT having the given state. */
     public static final int READMODE_EXCLUDE_STATE = 8;
@@ -365,25 +385,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /** The workflow driver. */
     private I_CmsWorkflowDriver m_workflowDriver;
-
-    /**
-     * 
-     */
-    public static final String CONFIGURATION_BACKUP = "driver.backup";
-
-    /**
-     * A string in the configuration-file.
-     */
-    public static final String CONFIGURATION_DB = "db";
-
-    /** "driver.project" string in the configuration-file. */
-    public static final String CONFIGURATION_PROJECT = "driver.project";
-
-    /** "driver.vfs" string in the configuration-file. */
-    public static final String CONFIGURATION_VFS = "driver.vfs";
-
-    /** "driver.workflow" string in the configuration-file. */
-    public static final String CONFIGURATION_WORKFLOW = "driver.workflow";
 
     /**
      * Private constructor, initializes some required member variables.<p> 

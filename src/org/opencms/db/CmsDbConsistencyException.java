@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbConsistencyException.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,11 @@ import org.opencms.main.CmsException;
 /**
  * Signals that a data source consistency problem has been detected.<p> 
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2005/05/16 13:46:55 $
- * @since 5.1.2
+ * @author Michael Moossen 
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 6.0.0
  */
 public class CmsDbConsistencyException extends CmsDbException {
 

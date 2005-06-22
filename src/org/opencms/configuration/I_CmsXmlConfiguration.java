@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2005/06/17 09:18:17 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,11 @@ import org.dom4j.Element;
 /**
  * Each configurable element in OpenCms must implement this interface.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @since 5.3
+ * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.19 $
+ * 
+ * @since 6.0.0
  */
 public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandler {
 

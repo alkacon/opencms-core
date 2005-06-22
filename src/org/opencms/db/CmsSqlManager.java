@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSqlManager.java,v $
- * Date   : $Date: 2005/03/04 15:10:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,23 @@ import java.util.List;
 /**
  * Superclass for all SQL manager implementations.<p>
  * 
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2005/03/04 15:10:29 $
- * @since 6.0 alpha 3
+ * @author Carsten Weinholz 
+ * 
+ * @version $Revision: 1.4 $
+ * 
+ * @since 6.0.0
  */
 public class CmsSqlManager {
 
     private CmsDriverManager m_driverManager;
+
+    /**
+     * Protected constructor to allow only subclassing.<p> 
+     */
+    protected CmsSqlManager() {
+
+        // hides the public constructor
+    }
 
     /**
      * Creates a new SQL manager from the provided driver manager.<p> 
@@ -55,14 +65,6 @@ public class CmsSqlManager {
     protected CmsSqlManager(CmsDriverManager driverManager) {
 
         m_driverManager = driverManager;
-    }
-
-    /**
-     * Protected constructor to allow only subclassing.<p> 
-     */
-    protected CmsSqlManager() {
-
-        // hides the public constructor
     }
 
     /**

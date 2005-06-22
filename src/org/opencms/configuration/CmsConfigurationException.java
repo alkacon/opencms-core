@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationException.java,v $
- * Date   : $Date: 2005/05/19 16:05:45 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,12 @@ import org.opencms.main.CmsException;
 /**
  * Exceptions that occur during the XML configuration process.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @since 5.3
+ * @author Alexander Kandzior
+ * @author Jan Baudisch 
+ * 
+ * @version $Revision: 1.14 $
+ * 
+ * @since 6.0.0
  */
 public class CmsConfigurationException extends CmsException { 
     

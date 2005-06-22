@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2005/06/21 15:49:59 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,9 +57,11 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * To obtain information about the connections, please use the
  * {@link org.opencms.db.CmsSqlManager}.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.37 $ $Date: 2005/06/21 15:49:59 $
- * @since 5.1
+ * @author Thomas Weckert 
+ * 
+ * @version $Revision: 1.38 $
+ * 
+ * @since 6.0.0
  */
 public final class CmsDbPool {
 

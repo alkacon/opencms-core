@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbSqlException.java,v $
- * Date   : $Date: 2005/05/18 09:10:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,11 @@ import org.apache.commons.dbcp.DelegatingPreparedStatement;
 /**
  * Used to signal sql related issues.<p> 
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.3 $
- * @since 5.7.3
+ * @author Michael Moossen 
+ * 
+ * @version $Revision: 1.4 $
+ * 
+ * @since 6.0.0
  */
 /**
  * Comment for <code>CmsDbSqlException</code>.<p>
@@ -69,17 +71,8 @@ public class CmsDbSqlException extends CmsDbException {
     public CmsDbSqlException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }   
-    
-    
-    /**
-     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
-     */
-    public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
-        return new CmsDbSqlException(container, cause);
-    }   
-    
+    }
+
     /**
      * Returns the query that let the statement crash.<p>
      * 
@@ -98,7 +91,15 @@ public class CmsDbSqlException extends CmsDbException {
                 // the query that crashed
                 return s.toString();
             }
-        } 
+        }
         return "";
-    }    
+    }
+
+    /**
+     * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
+     */
+    public CmsException createException(CmsMessageContainer container, Throwable cause) {
+
+        return new CmsDbSqlException(container, cause);
+    }
 }

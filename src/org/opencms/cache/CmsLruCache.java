@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2005/04/20 15:10:18 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,11 +51,15 @@ import org.apache.commons.logging.Log;
  * <p>
  * To add/remove cached objects from the data structure that stores them, the objects have to
  * implement the methods defined in the interface I_CmsLruCacheObject to be notified when they
- * are added/removed from the CmsFlexLruCache.
+ * are added/removed from the CmsFlexLruCache.<p>
  *
  * @see org.opencms.cache.I_CmsLruCacheObject
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $
+ * 
+ * @author Thomas Weckert 
+ * 
+ * @version $Revision: 1.17 $
+ * 
+ * @since 6.0.0
  */
 public class CmsLruCache extends java.lang.Object {
     

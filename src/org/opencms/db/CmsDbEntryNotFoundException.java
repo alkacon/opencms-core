@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbEntryNotFoundException.java,v $
- * Date   : $Date: 2005/05/16 13:46:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,12 @@ import org.opencms.main.CmsException;
  * Signals that an attempt to read an object from a data source, that
  * is supposed to exist, was not successfull.<p> 
  * 
- * @author Michael Moossen (m.moossen@alkacon.com)
- * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Michael Moossen 
+ * @author Thomas Weckert 
  * 
- * @version $Revision: 1.1 $ 
- * @since 5.7.3
+ * @version $Revision: 1.2 $
+ * 
+ * @since 6.0.0
  */
 public class CmsDbEntryNotFoundException extends CmsDbException {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPoint.java,v $
- * Date   : $Date: 2005/06/12 11:18:22 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,11 @@ import org.opencms.main.OpenCms;
 /**
  * Contains the data of a single export point.<p>
  *  
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
- * @since 5.3
+ * @version $Revision: 1.7 $
+ * 
+ * @since 6.0.0
  */
 public class CmsExportPoint {
 

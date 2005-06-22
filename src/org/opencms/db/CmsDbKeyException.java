@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbKeyException.java,v $
- * Date   : $Date: 2005/05/17 16:13:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/22 09:13:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,11 @@ import org.opencms.main.CmsException;
  * Signals that a foreign key in the VFS STRUCTURE, RESOURCES or FILES database tables is either
  * invalid or empty.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
- * @since 5.1.4
+ * @author Thomas Weckert 
+ * 
+ * @version $Revision: 1.3 $
+ * 
+ * @since 6.0.0
  */
 public class CmsDbKeyException extends CmsDbException {
 
@@ -53,7 +55,7 @@ public class CmsDbKeyException extends CmsDbException {
 
         super(container);
     }
-    
+
     /**
      * Creates a new localized Exception that also containes a root cause.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2005/06/16 14:21:43 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/22 09:13:16 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,8 +66,11 @@ import org.xml.sax.SAXException;
  * Reads the individual configuration class nodes first and creaes new 
  * instances of the "base" configuration classes.<p>
  * 
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @since 5.3
+ * @author Alexander Kandzior 
+ * 
+ * @version $Revision: 1.26 $
+ * 
+ * @since 6.0.0
  */
 public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
