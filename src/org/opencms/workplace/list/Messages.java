@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2005/06/16 16:32:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/22 08:02:52 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -118,7 +118,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LIST_EMPTY_0 = "GUI_LIST_EMPTY_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_LIST_INTERVAL_FORMAT_0 = "GUI_LIST_INTERVAL_FORMAT_0";
+    public static final String GUI_LIST_INTERVAL_FORMAT_4 = "GUI_LIST_INTERVAL_FORMAT_4";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_PAGING_FILTER_TEXT_3 = "GUI_LIST_PAGING_FILTER_TEXT_3";
