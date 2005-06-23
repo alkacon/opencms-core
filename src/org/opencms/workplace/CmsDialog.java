@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2005/06/23 11:35:44 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,12 @@ package org.opencms.workplace;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.tools.CmsToolDialog;
@@ -53,12 +55,14 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.83 $ 
+ * @version $Revision: 1.84 $ 
  * 
  * @since 6.0.0 
  */
@@ -208,6 +212,9 @@ public class CmsDialog extends CmsToolDialog {
 
     /** Key name for the throwable attribute. */
     protected static final String ATTRIBUTE_THROWABLE = "throwable";
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDialog.class);
 
     private int m_action;
     private String m_paramAction;
@@ -1242,6 +1249,58 @@ public class CmsDialog extends CmsToolDialog {
         }
 
         return "";
+    }
+    
+    /**
+     * Checks if the permissions of the current user on the resource to use in the dialog are sufficient.<p>
+     * 
+     * Automatically generates a CmsMessageContainer object with an error message and stores it in the users session.<p>
+     * 
+     * @param required the required permissions for the dialog
+     * @param neededForFolder if true, the permissions are required for the parent folder of the resource (e.g. for editors)
+     * @return true if the permissions are sufficient, otherwise false
+     */
+    protected boolean checkResourcePermissions(CmsPermissionSet required, boolean neededForFolder) {
+        
+        return checkResourcePermissions(required, neededForFolder, Messages.get()
+            .container(Messages.GUI_ERR_RESOURCE_PERMISSIONS_2, getParamResource(), required.getPermissionString()));  
+    }
+    
+    /**
+     * Checks if the permissions of the current user on the resource to use in the dialog are sufficient.<p>
+     * 
+     * Automatically generates a CmsMessageContainer object with an error message and stores it in the users session.<p>
+     * 
+     * @param required the required permissions for the dialog
+     * @param neededForFolder if true, the permissions are required for the parent folder of the resource (e.g. for editors)
+     * @param errorMessage the message container that is stored in the session in case the permissions are not sufficient
+     * @return true if the permissions are sufficient, otherwise false
+     */
+    protected boolean checkResourcePermissions(CmsPermissionSet required, boolean neededForFolder, CmsMessageContainer errorMessage) {
+        
+        boolean hasPermissions = false;
+        try {
+            CmsResource res;
+            if (neededForFolder) {
+                // check permissions for the folder the resource is in
+                res = getCms().readResource(CmsResource.getParentFolder(getParamResource()));
+            } else {
+                res = getCms().readResource(getParamResource());
+            }
+            hasPermissions = getCms().hasPermissions(res, required, false, CmsResourceFilter.IGNORE_EXPIRATION);
+        } catch (CmsException e) {
+            // should usually never happen
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
+            }
+        }
+        
+        if (! hasPermissions) {
+            // store the error message in the users session
+            getSettings().setErrorMessage(errorMessage);
+        }
+        
+        return hasPermissions;  
     }
 
     /**

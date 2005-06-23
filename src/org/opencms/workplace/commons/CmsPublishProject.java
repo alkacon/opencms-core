@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/23 11:35:44 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsReport;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -390,6 +391,12 @@ public class CmsPublishProject extends CmsReport {
         // set the publishing type: publish project or direct publish
         if (CmsStringUtil.isNotEmpty(getParamResource())) {
             setParamDirectpublish("true");
+            
+            // check the required permissions to publish the resource directly     
+            if (! checkResourcePermissions(CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false)) {
+                // no publish permissions for the resource, set cancel action to close dialog
+                setParamAction(DIALOG_CANCEL);
+            }
         }
         // set the action for the JSP switch 
         if (DIALOG_CONFIRMED.equals(getParamAction())) {

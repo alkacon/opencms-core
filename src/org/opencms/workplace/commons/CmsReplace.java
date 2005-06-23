@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsReplace.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/23 11:35:44 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -58,7 +59,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,6 +150,13 @@ public class CmsReplace extends CmsDialog {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
+        
+        // check the required permissions to replace the resource       
+        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+            // no write permissions for the resource, set cancel action to close dialog
+            setParamAction(DIALOG_CANCEL);
+        }
+        
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 

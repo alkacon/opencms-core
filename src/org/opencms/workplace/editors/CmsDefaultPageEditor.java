@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/23 11:35:44 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
@@ -65,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -439,33 +438,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     public void setParamOldelementname(String oldElementName) {
 
         m_paramOldelementname = oldElementName;
-    }
-
-    /**
-     * Closes the editor and redirects to the workplace or the resource depending on the editor mode.<p>
-     * 
-     * @throws IOException if a redirection fails
-     * @throws JspException if including a JSP fails
-     */
-    protected void actionClose() throws IOException, JspException {
-
-        if ("true".equals(getParamDirectedit())) {
-            // editor is in direct edit mode
-            if (!"".equals(getParamBacklink())) {
-                // set link to the specified back link target
-                setParamCloseLink(getJsp().link(getParamBacklink()));
-            } else {
-                // set link to the edited resource
-                setParamCloseLink(getJsp().link(getParamResource()));
-            }
-            // save initialized instance of this class in request attribute for included sub-elements
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            // load the common JSP close dialog
-            getJsp().include(C_FILE_DIALOG_CLOSE);
-        } else {
-            // redirect to the workplace explorer view 
-            sendCmsRedirect(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
-        }
     }
 
     /**

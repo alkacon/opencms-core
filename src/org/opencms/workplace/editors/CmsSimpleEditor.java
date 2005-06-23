@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/23 11:35:44 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.IOException;
@@ -62,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -170,33 +169,6 @@ public class CmsSimpleEditor extends CmsEditor {
     public String getEditorResourceUri() {
 
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
-    }
-
-    /**
-     * Closes the editor and redirects to the workplace or the resource depending on the editor mode.<p>
-     * 
-     * @throws IOException if a redirection fails
-     * @throws JspException if including a JSP fails
-     */
-    protected void actionClose() throws IOException, JspException {
-
-        if ("true".equals(getParamDirectedit())) {
-            // editor is in direct edit mode
-            if (!"".equals(getParamBacklink())) {
-                // set link to the specified back link target
-                setParamCloseLink(getJsp().link(getParamBacklink()));
-            } else {
-                // set link to the edited resource
-                setParamCloseLink(getJsp().link(getParamResource()));
-            }
-            // save initialized instance of this class in request attribute for included sub-elements
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-            // load the common JSP close dialog
-            getJsp().include(C_FILE_DIALOG_CLOSE);
-        } else {
-            // redirect to the workplace explorer view 
-            sendCmsRedirect(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
-        }
     }
 
     /**

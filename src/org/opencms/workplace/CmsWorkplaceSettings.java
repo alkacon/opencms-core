@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/06/23 11:35:44 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.tools.CmsToolUserData;
@@ -47,7 +48,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 6.0.0 
  */
@@ -55,6 +56,7 @@ public class CmsWorkplaceSettings {
 
     private String m_currentSite;
     private Object m_dialogObject;
+    private CmsMessageContainer m_errorMessage;
     private String m_explorerFlaturl;
     private String m_explorerMode;
     private int m_explorerPage;
@@ -105,6 +107,16 @@ public class CmsWorkplaceSettings {
     public Object getDialogObject() {
 
         return m_dialogObject;
+    }
+    
+    /**
+     * Returns the error message to display in the workplace.<p>
+     *
+     * @return the error message to display in the workplace
+     */
+    public CmsMessageContainer getErrorMessage() {
+
+        return m_errorMessage;
     }
 
     /**
@@ -408,6 +420,16 @@ public class CmsWorkplaceSettings {
     public void setDialogObject(Object dialogObject) {
 
         m_dialogObject = dialogObject;
+    }
+    
+    /**
+     * Sets the error message to display in the workplace.<p>
+     *
+     * @param errorMessage the error message to display in the workplace
+     */
+    public synchronized void setErrorMessage(CmsMessageContainer errorMessage) {
+
+        m_errorMessage = errorMessage;
     }
 
     /**

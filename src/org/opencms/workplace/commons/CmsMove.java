@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/23 11:35:44 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.CmsDialog;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -203,6 +204,13 @@ public class CmsMove extends CmsDialog {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
+        
+        // check the required permissions to rename/move the resource       
+        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+            // no write permissions for the resource, set cancel action to close dialog
+            setParamAction(DIALOG_CANCEL);
+        }
+        
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 

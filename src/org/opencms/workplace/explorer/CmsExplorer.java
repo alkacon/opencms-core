@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/23 11:35:44 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -564,6 +564,15 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(",");
         content.append(selectedPage);
         content.append("); \n");
+        
+        if (getSettings().getErrorMessage() != null) {
+            // display error message as JavaScript alert
+            content.append("alert(\"");
+            content.append(CmsStringUtil.escapeJavaScript(getSettings().getErrorMessage().key(getLocale())));
+            content.append("\");\n");
+            // delete error message container in settings
+            getSettings().setErrorMessage(null);
+        }
 
         content.append("}\n");
         return content.toString();

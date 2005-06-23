@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorFrameset.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/23 11:35:44 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.editors;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -52,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -162,5 +163,18 @@ public class CmsEditorFrameset extends CmsEditor {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
+        
+        // check the required permissions to edit the resource       
+        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, true)) {
+            // not write permissions in the folder, close editor
+            try {
+                actionClose();
+            } catch (Exception e) {
+                // should usually never happen
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
+                }
+            }
+        }
     }
 }
