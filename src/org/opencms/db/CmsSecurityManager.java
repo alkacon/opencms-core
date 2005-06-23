@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/23 14:18:53 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2005/06/23 18:06:27 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.83 $
+ * @version $Revision: 1.84 $
  * 
  * @since 6.0.0
  */
@@ -356,9 +356,8 @@ public final class CmsSecurityManager {
     public void changeLock(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        checkOfflineProject(dbc);
         try {
-            checkOfflineProject(dbc);
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
             m_driverManager.changeLock(dbc, resource);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -5260,7 +5259,7 @@ public final class CmsSecurityManager {
             // check lock state only if required
             CmsLock lock = m_driverManager.getLock(dbc, resource);
             // if the resource is not locked by the current user, write and control 
-            // access must case a permission error that must not be cached
+            // access must cause a permission error that must not be cached
             if (checkLock || !lock.isNullLock()) {
                 if (!dbc.currentUser().getId().equals(lock.getUserId())) {
                     return PERM_NOTLOCKED;
@@ -5297,7 +5296,6 @@ public final class CmsSecurityManager {
 
         Integer result;
         if ((requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions.getPermissions()) {
-
             result = PERM_ALLOWED_INTEGER;
         } else {
             result = PERM_DENIED_INTEGER;
@@ -5369,12 +5367,13 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param resource the resource on which permissions are required
      * @param requiredPermissions the set of permissions required to access the resource
+     * @param permissions the permissions to check
      * 
      * @throws CmsSecurityException if the required permissions are not satisfied
      * @throws CmsLockException if the lock status is not as required
      * @throws CmsVfsResourceNotFoundException if the required resource has been filtered
      */
-    private void checkPermissions(
+    protected void checkPermissions(
         CmsRequestContext context,
         CmsResource resource,
         CmsPermissionSet requiredPermissions,

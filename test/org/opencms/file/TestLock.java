@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/23 18:06:27 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,18 @@
  
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestResourceFilter;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,23 +51,12 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.lock.CmsLock;
-import org.opencms.lock.CmsLockException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestProperties;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestResourceFilter;
-
 /**
  * Unit tests for lock operation.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class TestLock extends OpenCmsTestCase {
   
@@ -464,8 +465,58 @@ public class TestLock extends OpenCmsTestCase {
         assertLock(cms, sibling1, CmsLock.C_TYPE_EXCLUSIVE);
         assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
         assertLock(cms, sibling2, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        
+        // now revoke write permissions for user "test2"
+        cms.chacc(source, I_CmsPrincipal.C_PRINCIPAL_USER, "test2", 0, CmsPermissionSet.PERMISSION_WRITE, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
 
-    }    
+        // switch to user "test2"
+        cms.loginUser("test2" , "test2");
+        cms.getRequestContext().setCurrentProject(offlineProject);
+                
+        Exception error = null;
+        try {
+            // try to steal lock from the source
+            cms.changeLock(source);
+        } catch (CmsPermissionViolationException e) {
+            error = e;
+        }
+        assertNotNull(error);
+        try {
+            // try to steal lock from the first sibling
+            cms.changeLock(sibling1);
+        } catch (CmsPermissionViolationException e) {
+            error = e;
+        }
+        assertNotNull(error);
+        try {
+            // try to steal lock from the second sibling
+            cms.changeLock(sibling2);
+        } catch (CmsPermissionViolationException e) {
+            error = e;
+        }
+        assertNotNull(error);        
+        
+        // login as user "Admin" again
+        cms.loginUser("Admin" , "admin");
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        
+        // assert the locks are still there
+        assertLock(cms, sibling1, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, sibling2, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        
+        // login as user "test1" again
+        cms.loginUser("test1" , "test1");
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        
+        // steal lock from second sibling
+        cms.changeLock(sibling2);
+        
+        // assert the locks for siblings are there
+        assertLock(cms, sibling2, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, sibling1, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+    } 
     
     /**
      * Tests lock status of a resource during sibling creation.<p>
@@ -519,7 +570,7 @@ public class TestLock extends OpenCmsTestCase {
         assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
         assertLock(cms, destination1, CmsLock.C_TYPE_SHARED_EXCLUSIVE);        
         assertLock(cms, destination2, CmsLock.C_TYPE_SHARED_EXCLUSIVE);    
-    }
+    }    
     
     /**
      * Tests an inherited lock in a resource delete scenario.<p>

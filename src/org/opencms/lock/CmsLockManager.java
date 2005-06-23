@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/06/23 18:06:27 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  * 
@@ -193,43 +193,6 @@ public final class CmsLockManager {
         }
 
         return count;
-    }
-
-    /**
-     * Returns the lock of the exclusive locked sibling pointing to the resource record of a 
-     * specified resource name.<p>
-     * 
-     * @param driverManager the driver manager
-     * @param dbc the current database context
-     * @param resource the specified resource
-     * 
-     * @return the lock of the exclusive locked sibling
-     * @throws CmsException if somethong goes wrong
-     */
-    public CmsLock getExclusiveLockedSibling(CmsDriverManager driverManager, CmsDbContext dbc, CmsResource resource)
-    throws CmsException {
-
-        CmsResource sibling = null;
-        String resourcename = resource.getRootPath();
-
-        // check first if the specified resource itself is already the exclusive locked sibling
-        if (m_exclusiveLocks.containsKey(resourcename)) {
-            // yup...
-            return (CmsLock)m_exclusiveLocks.get(resourcename);
-        }
-
-        // nope, fetch all siblings of the resource to the same content record
-        List siblings = internalReadSiblings(driverManager, dbc, resource);
-
-        for (int i = 0; i < siblings.size(); i++) {
-            sibling = (CmsResource)siblings.get(i);
-
-            if (m_exclusiveLocks.containsKey(sibling.getRootPath())) {
-                return (CmsLock)m_exclusiveLocks.get(sibling.getRootPath());
-            }
-        }
-
-        return CmsLock.getNullLock();
     }
 
     /**

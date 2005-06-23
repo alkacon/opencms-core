@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/23 18:06:27 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TestProjects extends OpenCmsTestCase {
   
@@ -201,6 +201,10 @@ public class TestProjects extends OpenCmsTestCase {
         cms.createResource("/folder3/", CmsResourceTypeFolder.getStaticTypeId(), null, Collections.EMPTY_LIST);
         cms.createResource("/folder3/test.txt", CmsResourceTypePlain.getStaticTypeId(), "".getBytes(), Collections.EMPTY_LIST);
         cms.unlockResource(resource);
+                
+        // switch to the offline project
+        CmsProject offlineProject = cms.readProject("Offline");
+        cms.getRequestContext().setCurrentProject(offlineProject);
         
         // now delete the project - all changes in the project must be undone
         cms.deleteProject(project.getId());

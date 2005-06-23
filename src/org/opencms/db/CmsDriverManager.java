@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.532 $
+ * Date   : $Date: 2005/06/23 18:06:27 $
+ * Version: $Revision: 1.533 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexRequestContextInfo;
 import org.opencms.i18n.CmsMessageContainer;
@@ -111,7 +112,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.532 $
+ * @version $Revision: 1.533 $
  * 
  * @since 6.0.0
  */
@@ -852,51 +853,62 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * @see CmsObject#changeLock(String)
      * @see I_CmsResourceType#changeLock(CmsObject, CmsSecurityManager, CmsResource)
+     * 
+     * @see CmsSecurityManager#hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
      */
     public void changeLock(CmsDbContext dbc, CmsResource resource) throws CmsException, CmsSecurityException {
 
-        // Stealing a lock: checking permissions will throw an exception because the
-        // resource is still locked for the other user. Therefore the resource is unlocked
-        // before the permissions of the new user are checked. If the new user 
-        // has insufficient permissions, the previous lock is restored later.
-
-        // save the lock of the resource itself
-        if (getLock(dbc, resource).isNullLock()) {
+        // get the current lock
+        CmsLock currentLock = getLock(dbc, resource);
+        // check if the resource is locked at all
+        if (currentLock.isNullLock()) {
             throw new CmsLockException(Messages.get().container(
                 Messages.ERR_CHANGE_LOCK_UNLOCKED_RESOURCE_1,
                 dbc.getRequestContext().getSitePath(resource)));
+        } else if (currentLock.getUserId().equals(dbc.currentUser().getId())
+            && (currentLock.getProjectId() == dbc.currentProject().getId())
+            && (currentLock.getType() == CmsLock.C_TYPE_EXCLUSIVE)) {
+            // the current lock requires no change
+            return;
         }
 
-        // save the lock of the resource's exclusive locked sibling
-        CmsLock exclusiveLock = m_lockManager.getExclusiveLockedSibling(this, dbc, resource);
-
-        // remove the lock
-        m_lockManager.removeResource(this, dbc, resource, true);
-
-        // clear permission cache so the change is detected
-        m_securityManager.clearPermissionCache();
-
-        try {
-            // try to lock the resource
+        // duplicate logic from CmsSecurityManager#hasPermissions() because lock state can't be ignored
+        // if another user has locked the file, the current user can never get WRITE permissions with the default check
+        int denied = 0;
+        // check if the current user is admin
+        boolean canIgnorePermissions = m_securityManager.hasRole(dbc, CmsRole.VFS_MANAGER);
+        // if the resource type is jsp
+        // write is only allowed for administrators
+        if (!canIgnorePermissions && (resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId())) {
+            if (!m_securityManager.hasRole(dbc, CmsRole.DEVELOPER)) {
+                denied |= CmsPermissionSet.PERMISSION_WRITE;
+            }
+        }
+        CmsPermissionSetCustom permissions;
+        if (canIgnorePermissions) {
+            // if the current user is administrator, anything is allowed
+            permissions = new CmsPermissionSetCustom(~0);
+        } else {
+            // otherwise, get the permissions from the access control list
+            permissions = getPermissions(dbc, resource, dbc.currentUser());
+        }
+        // revoke the denied permissions
+        permissions.denyPermissions(denied);
+        // now check if write permission is granted
+        if ((CmsPermissionSet.ACCESS_WRITE.getPermissions() & permissions.getPermissions()) != CmsPermissionSet.ACCESS_WRITE.getPermissions()) {
+            // check failed, throw exception
             m_securityManager.checkPermissions(
-                dbc,
+                dbc.getRequestContext(),
                 resource,
                 CmsPermissionSet.ACCESS_WRITE,
-                false,
-                CmsResourceFilter.ALL);
-            lockResource(dbc, resource, CmsLock.C_MODE_COMMON);
-        } catch (CmsSecurityException e) {
-            // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
-            // a new user with insufficient permissions on the resource
-            m_lockManager.addResource(
-                this,
-                dbc,
-                resource,
-                exclusiveLock.getUserId(),
-                exclusiveLock.getProjectId(),
-                CmsLock.C_MODE_COMMON);
-            throw e;
+                CmsSecurityManager.PERM_DENIED);
         }
+        // if we got here write permission is granted on the target
+
+        // remove the old lock
+        m_lockManager.removeResource(this, dbc, resource, true);
+        // apply the new lock
+        lockResource(dbc, resource, CmsLock.C_MODE_COMMON);
     }
 
     /**
