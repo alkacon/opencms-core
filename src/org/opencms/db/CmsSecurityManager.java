@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2005/06/23 14:18:53 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.82 $
+ * @version $Revision: 1.83 $
  * 
  * @since 6.0.0
  */
@@ -399,7 +399,7 @@ public final class CmsSecurityManager {
         // collect the resources to look up
         List resources = new ArrayList();
         if (recursive) {
-            resources = readResourcesWithProperty(context, context.getSitePath(resource), propertyDefinition);
+            resources = readResourcesWithProperty(context, resource.getRootPath(), propertyDefinition);
         } else {
             resources.add(resource);
         }
