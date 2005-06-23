@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/23 13:18:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,7 +133,7 @@ public class CmsAdminMenu extends CmsToolDialog {
             group = new CmsAdminMenuGroup(gid, groupName);
             addGroup(group, position);
         }
-        String id = "item" + group.getMenuItems().size();
+        String id = "item" + group.getId() + group.getMenuItems().size();
         CmsAdminMenuItem item = new CmsAdminMenuItem(id, name, icon, link, helpText, enabled, target);
         group.addMenuItem(item, position);
         return item;
