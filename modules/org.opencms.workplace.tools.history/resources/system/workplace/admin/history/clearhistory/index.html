@@ -86,7 +86,11 @@ function validateForm() {
      * @param disableFunc JS function which determines if a date should be disabled or not
      */
 
-%><%= wp.calendarInit("date", "triggercalendar", "tR", false, false, true, "disallowDate") %>
+%><%
+	if (wp.isHistoryEnabled()) {
+		out.print(wp.calendarInit("date", "triggercalendar", "tR", false, false, true, "disallowDate"));
+	}
+%>
 
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>

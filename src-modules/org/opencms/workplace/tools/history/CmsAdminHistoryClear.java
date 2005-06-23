@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/23 13:27:24 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,6 +103,7 @@ public class CmsAdminHistoryClear extends CmsReport {
 
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        
         switch (getAction()) {
             case ACTION_REPORT_UPDATE:
                 setParamAction(REPORT_UPDATE);
@@ -137,12 +138,11 @@ public class CmsAdminHistoryClear extends CmsReport {
     public String buildClearForm() {
 
         StringBuffer retValue = new StringBuffer(512);
-        boolean histEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
         int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
 
         // append settings info or disabled message if history is disabled
         retValue.append(dialogBlockStart(key("label.admin.history.settings")));
-        if (histEnabled) {
+        if (isHistoryEnabled()) {
             retValue.append(maxVersions + " ");
             retValue.append(key("input.history.clear.versioninfo"));
             retValue.append("<br>" + key("input.history.clear.selectinfo"));
@@ -153,7 +153,7 @@ public class CmsAdminHistoryClear extends CmsReport {
         retValue.append(dialogSpacer());
 
         // append input fields if history is enabled
-        if (histEnabled) {
+        if (isHistoryEnabled()) {
             retValue.append("<table border=\"0\">\n");
             retValue.append("<tr>\n");
             retValue.append("<td>" + key("input.history.clear.number") + "</td>\n");
@@ -189,6 +189,16 @@ public class CmsAdminHistoryClear extends CmsReport {
 
         return buildSelectNumbers("versions", attributes, 0, OpenCms.getSystemInfo().getVersionHistoryMaxCount());
     }
+    
+    /**
+     * Returns true if the version history is enabled, otherwise false.<p>
+     * 
+     * @return true if the version history is enabled, otherwise false
+     */
+    public boolean isHistoryEnabled() {
+        
+        return OpenCms.getSystemInfo().isVersionHistoryEnabled();
+    }
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
@@ -197,11 +207,18 @@ public class CmsAdminHistoryClear extends CmsReport {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
+        
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
-        if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
-            setAction(ACTION_SAVE_EDIT);
+        if (DIALOG_SAVE_EDIT.equals(getParamAction())) {         
+            if (isHistoryEnabled()) {
+                // history is enabled, start clearing
+                setAction(ACTION_SAVE_EDIT);
+            } else {
+                // history is disabled, return to admin view
+                setAction(ACTION_CANCEL);
+            }
         } else if (REPORT_UPDATE.equals(getParamAction())) {
             setAction(ACTION_REPORT_UPDATE);
         } else if (REPORT_BEGIN.equals(getParamAction())) {
