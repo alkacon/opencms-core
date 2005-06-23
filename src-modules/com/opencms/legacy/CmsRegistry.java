@@ -1,12 +1,12 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2005/06/23 10:47:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 14:01:14 $
+ * Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2002  Alkacon Software (http://www.alkacon.com)
 *
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
@@ -54,10 +54,10 @@ import org.w3c.dom.NodeList;
  * e.g. the mail server settings for the task management,
  * the workplace views and other items.<p>
  *
- * @author Thomas Weckert  
- * @author Alexander Kandzior 
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @deprecated The registry has been replaced by the new XML configuration.
  */

@@ -1,20 +1,19 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2005/06/23 10:47:13 $
-* Version: $Revision: 1.10 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
+ * Date   : $Date: 2005/06/23 14:01:14 $
+ * Version: $Revision: 1.11 $
+ *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002  Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -48,9 +47,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlException;
 
-import com.opencms.defaults.master.CmsMasterContent;
-import com.opencms.defaults.master.CmsMasterDataSet;
-import com.opencms.defaults.master.CmsMasterMedia;
+import com.opencms.defaults.master.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -75,16 +72,16 @@ import org.dom4j.Element;
  * Holds the functionaility to import resources from the filesystem
  * or a zip file into the OpenCms COS.
  *
- * @author Alexander Kandzior 
- * @author Michael Emmerich  
- * @author Thomas Weckert  
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Michael Emmerich (m.emmerich@alkacon.com) 
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.10 $ $Date: 2005/06/23 10:47:13 $
+ * @version $Revision: 1.11 $ $Date: 2005/06/23 14:01:14 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImportModuledata.class);
 
@@ -98,69 +95,14 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @param report a report object to output the progress information to
      */
     public CmsImportModuledata(CmsObject cms, String importFile, String importPath, I_CmsReport report) {
+
         // set member variables
         m_cms = cms;
         m_importFile = importFile;
         m_importPath = importPath;
         m_report = report;
         m_importingChannelData = true;
-        m_importImplementations = OpenCms.getImportExportManager().getImportVersionClasses();   
-     }
-
-    /**
-     * Imports the moduledata and writes them to the cms even if there already exist 
-     * conflicting files.<p>
-     * 
-     * @throws CmsImportExportException if something goes wrong
-     * @throws CmsXmlException if the manifest of the import could not be unmarshalled
-     */
-    public synchronized void importResources() throws CmsImportExportException, CmsXmlException {
-        // initialize the import
-        openImportFile();
-        m_report.println(Messages.get().container(Messages.RPT_IMPORT_VERSION_1, new Integer(m_importVersion)), I_CmsReport.C_FORMAT_NOTE);
-        try {
-            // first import the channels
-            m_report.println(Messages.get().container(Messages.RPT_IMPORT_CHANNELS_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
-            //importAllResources(null, null, null, null, null);
-            // now find the correct import implementation    
-            m_cms.getRequestContext().saveSiteRoot();
-            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);     
-            Iterator i = m_importImplementations.iterator();
-                while (i.hasNext()) {
-                    I_CmsImport imp = (I_CmsImport)i.next();
-                    if (imp.getVersion() == m_importVersion) {
-                        // this is the correct import version, so call it for the import process
-                        imp.importResources(m_cms, m_importPath, m_report, 
-                                        m_digest, m_importResource, m_importZip, m_docXml, null, null, null, null, null);
-                        break;                    
-                     }
-                 }   
-            m_cms.getRequestContext().restoreSiteRoot();
-            m_report.println(Messages.get().container(Messages.RPT_IMPORT_CHANNELS_END_0), I_CmsReport.C_FORMAT_HEADLINE);
- 
-            // now import the moduledata
-            m_report.println(Messages.get().container(Messages.RPT_IMPORT_MODULE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
-            importModuleMasters();
-            m_report.println(Messages.get().container(Messages.RPT_IMPORT_MODULE_END_0), I_CmsReport.C_FORMAT_HEADLINE);
-        } catch (CmsXmlException e) { 
-            
-            throw e;
-        } catch (CmsImportExportException e) {
-            
-            throw e;
-        } catch (CmsException e) {
-            m_report.println(e);
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_COS_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
-            }
-            
-            throw new CmsImportExportException(message, e);            
-        } finally {
-            // close the import file
-            closeImportFile();
-        }
+        m_importImplementations = OpenCms.getImportExportManager().getImportVersionClasses();
     }
 
     /**
@@ -172,14 +114,14 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
 
         // get list of legacy modules that have a publish class
         Iterator it = CmsLegacyModuleAction.getLegacyModulePublishClasses().iterator();
-       
+
         // now get the subIds of each module
         Hashtable availableModules = new Hashtable();
         while (it.hasNext()) {
             String classname = (String)it.next();
             // get the subId of the module
             try {
-                int subId = getContentDefinition(classname, new Class[] {CmsObject.class }, new Object[] {m_cms }).getSubId();
+                int subId = getContentDefinition(classname, new Class[] {CmsObject.class}, new Object[] {m_cms}).getSubId();
                 // put the subid and the classname into the hashtable of available modules
                 availableModules.put("" + subId, classname);
             } catch (Exception e) {
@@ -199,15 +141,19 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
 
             // walk through all files in manifest
             for (int i = 0; i < length; i++) {
-                currentMasterElement = (Element) masterNodes.get(i);
+                currentMasterElement = (Element)masterNodes.get(i);
                 // get the subid of the modulemaster
-                subid = CmsImport.getChildElementTextValue(currentMasterElement, CmsExportModuledata.C_EXPORT_TAG_MASTER_SUBID);
+                subid = CmsImport.getChildElementTextValue(
+                    currentMasterElement,
+                    CmsExportModuledata.C_EXPORT_TAG_MASTER_SUBID);
                 // check if there exists a module with this subid
                 String classname = (String)availableModules.get(subid);
                 if ((classname != null) && !("".equals(classname.trim()))) {
                     // import the dataset, the channelrelation and the media
-                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_2, 
-                        String.valueOf(i + 1), String.valueOf(length)), I_CmsReport.C_FORMAT_NOTE); 
+                    m_report.print(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(i + 1),
+                        String.valueOf(length)), I_CmsReport.C_FORMAT_NOTE);
                     importMaster(subid, classname, currentMasterElement);
                 }
             }
@@ -217,72 +163,139 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     }
 
     /**
-     * Imports a single master.<p>
+     * Imports the moduledata and writes them to the cms even if there already exist 
+     * conflicting files.<p>
      * 
-     * @param subId the subid of the module
-     * @param classname the name of the module class
-     * @param masterElement the current element of the xml file
-     * @throws CmsException in case something goes wrong
+     * @throws CmsImportExportException if something goes wrong
+     * @throws CmsXmlException if the manifest of the import could not be unmarshalled
      */
-    protected void importMaster(String subId, String classname, Element masterElement) throws CmsException {
-        CmsMasterDataSet newDataset = new CmsMasterDataSet();
-        Vector channelRelations = new Vector();
-        Vector masterMedia = new Vector();
-        
-        m_report.print(org.opencms.importexport.Messages.get().container(
-            org.opencms.importexport.Messages.RPT_IMPORTING_0), I_CmsReport.C_FORMAT_NOTE);
-        
-        // try to get the dataset
-        try {
-            int subIdInt = Integer.parseInt(subId);
-            newDataset = getMasterDataSet(subIdInt, masterElement);
-        } catch (Exception e) {
-            m_report.println(e);
-            throw new CmsLegacyException("Cannot get dataset ", e);
-        }
-        
-        m_report.print(Messages.get().container(Messages.RPT_ARGUMENT_2, 
-            CmsEncoder.escapeHtml(newDataset.m_title), classname));
-        m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));   
-        
+    public synchronized void importResources() throws CmsImportExportException, CmsXmlException {
 
-        // try to get the channelrelations
+        // initialize the import
+        openImportFile();
+        m_report.println(
+            Messages.get().container(Messages.RPT_IMPORT_VERSION_1, new Integer(m_importVersion)),
+            I_CmsReport.C_FORMAT_NOTE);
         try {
-            channelRelations = getMasterChannelRelation(masterElement);
-        } catch (Exception e) {
+            // first import the channels
+            m_report.println(
+                Messages.get().container(Messages.RPT_IMPORT_CHANNELS_BEGIN_0),
+                I_CmsReport.C_FORMAT_HEADLINE);
+            //importAllResources(null, null, null, null, null);
+            // now find the correct import implementation    
+            m_cms.getRequestContext().saveSiteRoot();
+            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+            Iterator i = m_importImplementations.iterator();
+            while (i.hasNext()) {
+                I_CmsImport imp = (I_CmsImport)i.next();
+                if (imp.getVersion() == m_importVersion) {
+                    // this is the correct import version, so call it for the import process
+                    imp.importResources(
+                        m_cms,
+                        m_importPath,
+                        m_report,
+                        m_digest,
+                        m_importResource,
+                        m_importZip,
+                        m_docXml,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null);
+                    break;
+                }
+            }
+            m_cms.getRequestContext().restoreSiteRoot();
+            m_report.println(
+                Messages.get().container(Messages.RPT_IMPORT_CHANNELS_END_0),
+                I_CmsReport.C_FORMAT_HEADLINE);
+
+            // now import the moduledata
+            m_report.println(
+                Messages.get().container(Messages.RPT_IMPORT_MODULE_BEGIN_0),
+                I_CmsReport.C_FORMAT_HEADLINE);
+            importModuleMasters();
+            m_report.println(Messages.get().container(Messages.RPT_IMPORT_MODULE_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+        } catch (CmsXmlException e) {
+
+            throw e;
+        } catch (CmsImportExportException e) {
+
+            throw e;
+        } catch (CmsException e) {
             m_report.println(e);
-            throw new CmsLegacyException("Cannot get channelrelations ", e);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_COS_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, e);
+            }
+
+            throw new CmsImportExportException(message, e);
+        } finally {
+            // close the import file
+            closeImportFile();
         }
-        
-        // try to get the media
+    }
+
+    /**
+     * Gets the content definition class method constructor.<p>
+     * 
+     * @param classname the name of the cd class
+     * @param classes types needed for cd constructor
+     * @param objects objects needed for cd constructor
+     * @return content definition object
+     */
+    protected CmsMasterContent getContentDefinition(String classname, Class[] classes, Object[] objects) {
+
+        CmsMasterContent cd = null;
         try {
-            masterMedia = getMasterMedia(masterElement);
+            Class cdClass = Class.forName(classname);
+            Constructor co = cdClass.getConstructor(classes);
+            cd = (CmsMasterContent)co.newInstance(objects);
+        } catch (InvocationTargetException ite) {
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Invocation target exception", ite);
+            }
+        } catch (NoSuchMethodException nsm) {
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Requested method was not found", nsm);
+            }
+        } catch (InstantiationException ie) {
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("The reflected class is abstract", ie);
+            }
         } catch (Exception e) {
-            m_report.println(e);
-            throw new CmsLegacyException("Cannot get media ", e);
+            if (CmsLog.getLog(this).isWarnEnabled()) {
+                CmsLog.getLog(this).warn("Other exception", e);
+            }
         }
-        
-        // add the channels and media to the dataset
-        newDataset.m_channelToAdd = channelRelations;
-        newDataset.m_mediaToAdd = masterMedia;
-        // create the new content definition
-        CmsMasterContent newMaster = getContentDefinition(classname, new Class[] {CmsObject.class, CmsMasterDataSet.class }, new Object[] {m_cms, newDataset });
-        
-        try {
-            CmsUUID userId = newMaster.getOwner();
-            CmsUUID groupId = newMaster.getGroupId();
-            // first insert the new master
-            newMaster.importMaster();
-            // now update the master because user and group might be changed
-            newMaster.chown(m_cms, userId);
-            newMaster.chgrp(m_cms, groupId);
-        } catch (Exception e) {
-            m_report.println(e);
-            throw new CmsLegacyException("Cannot write master ", e);
+        return cd;
+    }
+
+    /**
+     * Gets the channel relations for the master from the xml file.<p>
+     * 
+     * @param masterElement the current element of the xml file
+     * @return vector containing the ids of all channels of the master
+     */
+    protected Vector getMasterChannelRelation(Element masterElement) {
+
+        Vector channelRelations = new Vector();
+        // get the channelnames of the master
+        List channelNodes = masterElement.selectNodes("*/" + CmsExportModuledata.C_EXPORT_TAG_MASTER_CHANNELNAME);
+
+        // walk through all channelrelations
+        for (int j = 0; j < channelNodes.size(); j++) {
+            // get the name of the channel
+            String channelName = ((Element)channelNodes.get(j)).getTextTrim();
+            // try to read the channel and get its channelid
+            if ((channelName != null) && !("".equals(channelName.trim()))) {
+                channelRelations.addElement(channelName);
+            }
         }
-        
-        m_report.println(org.opencms.report.Messages.get().container(
-            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+        return channelRelations;
     }
 
     /**
@@ -294,30 +307,29 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @throws CmsException in case something goes wrong
      */
     protected CmsMasterDataSet getMasterDataSet(int subId, Element masterElement) throws CmsException {
-        String datasetfile = null, username = null, groupname = null, accessFlags = null, 
-            publicationDate = null, purgeDate = null, creationDate = null, flags = null, 
-            feedId = null, feedReference = null, feedFilename = null, title = null,
-            master_id = null;
-            
+
+        String datasetfile = null, username = null, groupname = null, accessFlags = null, publicationDate = null, purgeDate = null, creationDate = null, flags = null, feedId = null, feedReference = null, feedFilename = null, title = null, master_id = null;
+
         CmsMasterDataSet newDataset = new CmsMasterDataSet();
 
         // get the file with the dataset of the master
-        datasetfile = ((Element) masterElement.selectNodes("./" + CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET).get(0)).getTextTrim();
-       
+        datasetfile = ((Element)masterElement.selectNodes("./" + CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET).get(0)).getTextTrim();
+
         Document datasetXml = CmsImportVersion1.getXmlDocument(getFileInputStream(datasetfile));
-        Element dataset = (Element) datasetXml.getRootElement().selectNodes("./" + CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET).get(0);
-        
+        Element dataset = (Element)datasetXml.getRootElement().selectNodes(
+            "./" + CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET).get(0);
+
         // get the information from the dataset and add it to the dataset
         // first add the subid
         newDataset.m_subId = subId;
-                
+
         master_id = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_ID);
         if (master_id != null) {
             newDataset.m_masterId = new CmsUUID(master_id);
         } else {
             newDataset.m_masterId = CmsUUID.getNullUUID();
         }
-        
+
         // get the id of the user or set the owner to the current user
         username = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_USER);
         CmsUUID userId = null;
@@ -329,7 +341,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             // userId will be current user
             userId = m_cms.getRequestContext().currentUser().getId();
         }
-        
+
         newDataset.m_userId = userId;
         // get the id of the group or set the group to the current user        
         groupname = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_GROUP);
@@ -356,7 +368,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             newDataset.m_accessFlags = com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         }
         // set the publication date
-        publicationDate = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PUBLICATIONDATE);
+        publicationDate = CmsImport.getChildElementTextValue(
+            dataset,
+            CmsExportModuledata.C_EXPORT_TAG_MASTER_PUBLICATIONDATE);
         try {
             newDataset.m_publicationDate = convertDate(publicationDate);
         } catch (Exception e) {
@@ -371,7 +385,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         // set the creation date if possible
         try {
-        creationDate = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_CREATEDATE);
+            creationDate = CmsImport.getChildElementTextValue(
+                dataset,
+                CmsExportModuledata.C_EXPORT_TAG_MASTER_CREATEDATE);
             newDataset.m_dateCreated = convertDate(creationDate);
         } catch (Exception e) {
             // ignore
@@ -391,7 +407,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             // ignore
         }
         // set the feedreference
-        feedReference = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDREFERENCE);
+        feedReference = CmsImport.getChildElementTextValue(
+            dataset,
+            CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDREFERENCE);
         try {
             newDataset.m_feedReference = Integer.parseInt(feedReference);
         } catch (Exception e) {
@@ -405,7 +423,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         newDataset.m_title = title;
         // set the values of data_big
         for (int i = 0; i < newDataset.m_dataBig.length; i++) {
-            String filename = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATABIG + i);
+            String filename = CmsImport.getChildElementTextValue(
+                dataset,
+                CmsExportModuledata.C_EXPORT_TAG_MASTER_DATABIG + i);
             String value = new String();
             if (filename != null && !"".equals(filename.trim())) {
                 // get the value from the file
@@ -415,7 +435,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         // get the values of data_medium
         for (int i = 0; i < newDataset.m_dataMedium.length; i++) {
-            String filename = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAMEDIUM + i);
+            String filename = CmsImport.getChildElementTextValue(
+                dataset,
+                CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAMEDIUM + i);
             String value = new String();
             if (filename != null && !"".equals(filename.trim())) {
                 // get the value from the file
@@ -425,7 +447,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         // get the values of data_small
         for (int i = 0; i < newDataset.m_dataSmall.length; i++) {
-            String filename = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASMALL + i);
+            String filename = CmsImport.getChildElementTextValue(
+                dataset,
+                CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASMALL + i);
             String value = new String();
             if (filename != null && !"".equals(filename.trim())) {
                 // get the value from the file
@@ -435,7 +459,8 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         // get the values of data_int
         for (int i = 0; i < newDataset.m_dataInt.length; i++) {
-            String value = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAINT + i);
+            String value = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAINT
+                + i);
             try {
                 newDataset.m_dataInt[i] = new Integer(value).intValue();
             } catch (Exception e) {
@@ -444,7 +469,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         // get the values of data_reference
         for (int i = 0; i < newDataset.m_dataReference.length; i++) {
-            String value = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAREFERENCE + i);
+            String value = CmsImport.getChildElementTextValue(
+                dataset,
+                CmsExportModuledata.C_EXPORT_TAG_MASTER_DATAREFERENCE + i);
             try {
                 newDataset.m_dataReference[i] = new Integer(value).intValue();
             } catch (Exception e) {
@@ -453,7 +480,8 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         }
         // get the values of data_date
         for (int i = 0; i < newDataset.m_dataDate.length; i++) {
-            String value = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATADATE + i);
+            String value = CmsImport.getChildElementTextValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_DATADATE
+                + i);
             try {
                 newDataset.m_dataDate[i] = convertDate(value);
             } catch (Exception e) {
@@ -464,29 +492,6 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     }
 
     /**
-     * Gets the channel relations for the master from the xml file.<p>
-     * 
-     * @param masterElement the current element of the xml file
-     * @return vector containing the ids of all channels of the master
-     */
-    protected Vector getMasterChannelRelation(Element masterElement) {
-        Vector channelRelations = new Vector();
-        // get the channelnames of the master
-        List channelNodes = masterElement.selectNodes("*/" + CmsExportModuledata.C_EXPORT_TAG_MASTER_CHANNELNAME);
-
-        // walk through all channelrelations
-        for (int j = 0; j < channelNodes.size(); j++) {
-            // get the name of the channel
-            String channelName = ((Element) channelNodes.get(j)).getTextTrim();
-            // try to read the channel and get its channelid
-            if ((channelName != null) && !("".equals(channelName.trim()))) {
-                channelRelations.addElement(channelName);
-            }
-        }
-        return channelRelations;
-    }
-
-    /**
      * Gets the media of the master from the xml file.<p>
      * 
      * @param masterElement The current element of the xml file
@@ -494,13 +499,14 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @throws CmsException in case something goes wrong
      */
     protected Vector getMasterMedia(Element masterElement) throws CmsException {
+
         Vector masterMedia = new Vector();
         // get the mediafiles of the master
         List mediaNodes = masterElement.selectNodes("*/" + CmsExportModuledata.C_EXPORT_TAG_MASTER_MEDIA);
         // walk through all media
         for (int j = 0; j < mediaNodes.size(); j++) {
             // get the name of the file where the mediadata is stored
-            String mediaFilename = ((Element) mediaNodes.get(j)).getTextTrim();
+            String mediaFilename = ((Element)mediaNodes.get(j)).getTextTrim();
             // try to get the information of the media
             if ((mediaFilename != null) && !("".equals(mediaFilename.trim()))) {
                 CmsMasterMedia newMedia = getMediaData(mediaFilename);
@@ -511,80 +517,101 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     }
 
     /**
-     * Gets the information for a single media from the media file.<p>
+     * Imports a single master.<p>
      * 
-     * @param mediaFilename the name of the xml file that contains the media information
-     * @return the media information from the media file
+     * @param subId the subid of the module
+     * @param classname the name of the module class
+     * @param masterElement the current element of the xml file
      * @throws CmsException in case something goes wrong
      */
-    private CmsMasterMedia getMediaData(String mediaFilename) throws CmsException {
-        String position = null, width = null, height = null, size = null, mimetype = null, 
-            type = null, title = null, name = null, description = null, contentfile = null;
-        CmsMasterMedia newMedia = null;
-        Document mediaXml = null;
-        Element rootElement = null;
-        byte[] mediacontent = null;
-        
-        newMedia = new CmsMasterMedia();
-        mediaXml = CmsImportVersion1.getXmlDocument(getFileInputStream(mediaFilename));
-        rootElement = mediaXml.getRootElement();
-        
-        position = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_POSITION).get(0)).getTextTrim();        
+    protected void importMaster(String subId, String classname, Element masterElement) throws CmsException {
+
+        CmsMasterDataSet newDataset = new CmsMasterDataSet();
+        Vector channelRelations = new Vector();
+        Vector masterMedia = new Vector();
+
+        m_report.print(org.opencms.importexport.Messages.get().container(
+            org.opencms.importexport.Messages.RPT_IMPORTING_0), I_CmsReport.C_FORMAT_NOTE);
+
+        // try to get the dataset
         try {
-            newMedia.setPosition(Integer.parseInt(position));
-        } catch (Exception e) {
-            // ignore
-        }
-        
-        width = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_WIDTH).get(0)).getTextTrim();
-        try {
-            newMedia.setWidth(Integer.parseInt(width));
-        } catch (Exception e) {
-            // ignore
-        }
-        
-        height = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_HEIGHT).get(0)).getTextTrim();
-        try {
-            newMedia.setHeight(Integer.parseInt(height));
-        } catch (Exception e) {
-            // ignore
-        }
-        
-        size = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_SIZE).get(0)).getTextTrim();
-        try {
-            newMedia.setSize(Integer.parseInt(size));
-        } catch (Exception e) {
-            // ignore
-        }
-        
-        mimetype = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_MIMETYPE).get(0)).getTextTrim();
-        newMedia.setMimetype(mimetype);
-        
-        type = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_TYPE).get(0)).getTextTrim();
-        try {
-            newMedia.setType(Integer.parseInt(type));
-        } catch (Exception e) {
-            // ignore
-        }
-        
-        title = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_TITLE).get(0)).getTextTrim();
-        newMedia.setTitle(title);
-        
-        name = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_NAME).get(0)).getTextTrim();
-        newMedia.setName(name);
-        
-        description = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_DESCRIPTION).get(0)).getTextTrim();
-        newMedia.setDescription(description);
-        
-        contentfile = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_CONTENT).get(0)).getTextTrim();
-        try {
-            mediacontent = getFileBytes(contentfile);
+            int subIdInt = Integer.parseInt(subId);
+            newDataset = getMasterDataSet(subIdInt, masterElement);
         } catch (Exception e) {
             m_report.println(e);
-        }       
-        newMedia.setMedia(mediacontent);
-        
-        return newMedia;
+            throw new CmsLegacyException("Cannot get dataset ", e);
+        }
+
+        m_report.print(Messages.get().container(
+            Messages.RPT_ARGUMENT_2,
+            CmsEncoder.escapeHtml(newDataset.m_title),
+            classname));
+        m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
+        // try to get the channelrelations
+        try {
+            channelRelations = getMasterChannelRelation(masterElement);
+        } catch (Exception e) {
+            m_report.println(e);
+            throw new CmsLegacyException("Cannot get channelrelations ", e);
+        }
+
+        // try to get the media
+        try {
+            masterMedia = getMasterMedia(masterElement);
+        } catch (Exception e) {
+            m_report.println(e);
+            throw new CmsLegacyException("Cannot get media ", e);
+        }
+
+        // add the channels and media to the dataset
+        newDataset.m_channelToAdd = channelRelations;
+        newDataset.m_mediaToAdd = masterMedia;
+        // create the new content definition
+        CmsMasterContent newMaster = getContentDefinition(classname, new Class[] {
+            CmsObject.class,
+            CmsMasterDataSet.class}, new Object[] {m_cms, newDataset});
+
+        try {
+            CmsUUID userId = newMaster.getOwner();
+            CmsUUID groupId = newMaster.getGroupId();
+            // first insert the new master
+            newMaster.importMaster();
+            // now update the master because user and group might be changed
+            newMaster.chown(m_cms, userId);
+            newMaster.chgrp(m_cms, groupId);
+        } catch (Exception e) {
+            m_report.println(e);
+            throw new CmsLegacyException("Cannot write master ", e);
+        }
+
+        m_report.println(
+            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+            I_CmsReport.C_FORMAT_OK);
+    }
+
+    /**
+     * Coverts a String Date in long.<p>
+     *
+     * @param date String
+     * @return long converted date
+     */
+    private long convertDate(String date) {
+
+        java.text.SimpleDateFormat formatterFullTime = new SimpleDateFormat("M/d/yy h:mm a");
+        long adate = 0;
+        try {
+            adate = formatterFullTime.parse(date).getTime();
+        } catch (ParseException e) {
+            java.text.SimpleDateFormat formatterFullTimeDe = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            try {
+                adate = formatterFullTimeDe.parse(date).getTime();
+            } catch (ParseException e2) {
+                // ignore
+            }
+        }
+
+        return adate;
     }
 
     /**
@@ -595,6 +622,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @throws CmsException in case something goes wrong
      */
     private InputStream getFileInputStream(String filename) throws CmsException {
+
         try {
             // is this a zip-file?
             if (m_importZip != null) {
@@ -612,62 +640,83 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     }
 
     /**
-     * Coverts a String Date in long.<p>
-     *
-     * @param date String
-     * @return long converted date
-     */
-    private long convertDate(String date) {
-       
-        java.text.SimpleDateFormat formatterFullTime = new SimpleDateFormat("M/d/yy h:mm a");
-        long adate = 0;
-        try {
-            adate = formatterFullTime.parse(date).getTime();
-        } catch (ParseException e) {
-            java.text.SimpleDateFormat formatterFullTimeDe = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-            try {
-                adate = formatterFullTimeDe.parse(date).getTime();
-            } catch (ParseException e2) {
-            // ignore
-            }
-        }
-
-
-        return adate;
-    }
-
-
-    /**
-     * Gets the content definition class method constructor.<p>
+     * Gets the information for a single media from the media file.<p>
      * 
-     * @param classname the name of the cd class
-     * @param classes types needed for cd constructor
-     * @param objects objects needed for cd constructor
-     * @return content definition object
+     * @param mediaFilename the name of the xml file that contains the media information
+     * @return the media information from the media file
+     * @throws CmsException in case something goes wrong
      */
-    protected CmsMasterContent getContentDefinition(String classname, Class[] classes, Object[] objects) {
-        CmsMasterContent cd = null;
+    private CmsMasterMedia getMediaData(String mediaFilename) throws CmsException {
+
+        String position = null, width = null, height = null, size = null, mimetype = null, type = null, title = null, name = null, description = null, contentfile = null;
+        CmsMasterMedia newMedia = null;
+        Document mediaXml = null;
+        Element rootElement = null;
+        byte[] mediacontent = null;
+
+        newMedia = new CmsMasterMedia();
+        mediaXml = CmsImportVersion1.getXmlDocument(getFileInputStream(mediaFilename));
+        rootElement = mediaXml.getRootElement();
+
+        position = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_POSITION).get(
+            0)).getTextTrim();
         try {
-            Class cdClass = Class.forName(classname);
-            Constructor co = cdClass.getConstructor(classes);
-            cd = (CmsMasterContent)co.newInstance(objects);
-        } catch (InvocationTargetException ite) {
-            if (CmsLog.getLog(this).isWarnEnabled()) {
-                CmsLog.getLog(this).warn("Invocation target exception", ite);
-            }
-        } catch (NoSuchMethodException nsm) {
-            if (CmsLog.getLog(this).isWarnEnabled()) {
-                CmsLog.getLog(this).warn("Requested method was not found", nsm);
-            }
-        } catch (InstantiationException ie) {
-            if (CmsLog.getLog(this).isWarnEnabled()) {
-                CmsLog.getLog(this).warn("The reflected class is abstract", ie);
-            }
+            newMedia.setPosition(Integer.parseInt(position));
         } catch (Exception e) {
-            if (CmsLog.getLog(this).isWarnEnabled()) {
-                CmsLog.getLog(this).warn("Other exception", e);
-            }
+            // ignore
         }
-        return cd;
+
+        width = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_WIDTH).get(0)).getTextTrim();
+        try {
+            newMedia.setWidth(Integer.parseInt(width));
+        } catch (Exception e) {
+            // ignore
+        }
+
+        height = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_HEIGHT).get(0)).getTextTrim();
+        try {
+            newMedia.setHeight(Integer.parseInt(height));
+        } catch (Exception e) {
+            // ignore
+        }
+
+        size = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_SIZE).get(0)).getTextTrim();
+        try {
+            newMedia.setSize(Integer.parseInt(size));
+        } catch (Exception e) {
+            // ignore
+        }
+
+        mimetype = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_MIMETYPE).get(
+            0)).getTextTrim();
+        newMedia.setMimetype(mimetype);
+
+        type = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_TYPE).get(0)).getTextTrim();
+        try {
+            newMedia.setType(Integer.parseInt(type));
+        } catch (Exception e) {
+            // ignore
+        }
+
+        title = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_TITLE).get(0)).getTextTrim();
+        newMedia.setTitle(title);
+
+        name = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_NAME).get(0)).getTextTrim();
+        newMedia.setName(name);
+
+        description = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_DESCRIPTION).get(
+            0)).getTextTrim();
+        newMedia.setDescription(description);
+
+        contentfile = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_CONTENT).get(
+            0)).getTextTrim();
+        try {
+            mediacontent = getFileBytes(contentfile);
+        } catch (Exception e) {
+            m_report.println(e);
+        }
+        newMedia.setMedia(mediacontent);
+
+        return newMedia;
     }
 }

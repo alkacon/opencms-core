@@ -1,15 +1,15 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2005/06/23 10:47:13 $
-* Version: $Revision: 1.8 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
+ * Date   : $Date: 2005/06/23 14:01:14 $
+ * Version: $Revision: 1.9 $
+ *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002  Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -49,9 +49,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsXmlSaxWriter;
 
-import com.opencms.defaults.master.CmsMasterContent;
-import com.opencms.defaults.master.CmsMasterDataSet;
-import com.opencms.defaults.master.CmsMasterMedia;
+import com.opencms.defaults.master.*;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -78,129 +76,129 @@ import org.xml.sax.SAXException;
  * Holds the functionaility to export channels and modulemasters from the cms
  * to the filesystem.
  *
- * @author Alexander Kandzior 
- * @author Michael Emmerich 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.8 $ $Date: 2005/06/23 10:47:13 $
+ * @version $Revision: 1.9 $ $Date: 2005/06/23 14:01:14 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
-    
+
+    /** Manifest tag: master. */
+    public static String C_EXPORT_TAG_MASTER = "master";
+
+    /** Manifest tag: access_flags. */
+    public static String C_EXPORT_TAG_MASTER_ACCESSFLAGS = "access_flags";
+
+    /** Manifest tag: channelname. */
+    public static String C_EXPORT_TAG_MASTER_CHANNELNAME = "channelname";
+
+    /** Manifest tag: channelrelations. */
+    public static String C_EXPORT_TAG_MASTER_CHANNELREL = "channelrelations";
+
+    /** Manifest tag: creation_date. */
+    public static String C_EXPORT_TAG_MASTER_CREATEDATE = "create_date";
+
+    /** Manifest tag: data_big_. */
+    public static String C_EXPORT_TAG_MASTER_DATABIG = "data_big_";
+
+    /** Manifest tag: data_date_. */
+    public static String C_EXPORT_TAG_MASTER_DATADATE = "data_date_";
+
+    /** Manifest tag: data_int_. */
+    public static String C_EXPORT_TAG_MASTER_DATAINT = "data_int_";
+
+    /** Manifest tag: data_medium_. */
+    public static String C_EXPORT_TAG_MASTER_DATAMEDIUM = "data_medium_";
+
+    /** Manifest tag: data_reference_. */
+    public static String C_EXPORT_TAG_MASTER_DATAREFERENCE = "data_reference_";
+
+    /** Manifest tag: dataset. */
+    public static String C_EXPORT_TAG_MASTER_DATASET = "dataset";
+
+    /** Manifest tag: data_small_. */
+    public static String C_EXPORT_TAG_MASTER_DATASMALL = "data_small_";
+
+    /** Manifest tag: feed_filename. */
+    public static String C_EXPORT_TAG_MASTER_FEEDFILENAME = "feed_filename";
+
+    /** Manifest tag: feed_id. */
+    public static String C_EXPORT_TAG_MASTER_FEEDID = "feed_id";
+
+    /** Manifest tag: feed_reference. */
+    public static String C_EXPORT_TAG_MASTER_FEEDREFERENCE = "feed_reference";
+
+    /** Manifest tag: flags. */
+    public static String C_EXPORT_TAG_MASTER_FLAGS = "flags";
+
+    /** Manifest tag: group_name. */
+    public static String C_EXPORT_TAG_MASTER_GROUP = "group_name";
+
+    /** Manifest tag: master ID. */
+    public static String C_EXPORT_TAG_MASTER_ID = "master_id";
+
+    /** Manifest tag: media. */
+    public static String C_EXPORT_TAG_MASTER_MEDIA = "media";
+
+    /** Manifest tag: mediaset. */
+    public static String C_EXPORT_TAG_MASTER_MEDIASET = "mediaset";
+
+    /** Manifest tag: publication_date. */
+    public static String C_EXPORT_TAG_MASTER_PUBLICATIONDATE = "publication_date";
+
+    /** Manifest tag: purge_date. */
+    public static String C_EXPORT_TAG_MASTER_PURGEDATE = "purge_date";
+
+    /** Manifest tag: sub_id. */
+    public static String C_EXPORT_TAG_MASTER_SUBID = "sub_id";
+
+    /** Manifest tag: title. */
+    public static String C_EXPORT_TAG_MASTER_TITLE = "title";
+
+    /** Manifest tag: user_name. */
+    public static String C_EXPORT_TAG_MASTER_USER = "user_name";
+
+    /** Manifest tag: masters. */
+    public static String C_EXPORT_TAG_MASTERS = "masters";
+
+    /** Manifest tag: media_content. */
+    public static String C_EXPORT_TAG_MEDIA_CONTENT = "media_content";
+
+    /** Manifest tag: media_description. */
+    public static String C_EXPORT_TAG_MEDIA_DESCRIPTION = "media_description";
+
+    /** Manifest tag: media_height. */
+    public static String C_EXPORT_TAG_MEDIA_HEIGHT = "media_height";
+
+    /** Manifest tag: media_mimetype. */
+    public static String C_EXPORT_TAG_MEDIA_MIMETYPE = "media_mimetype";
+
+    /** Manifest tag: media_name. */
+    public static String C_EXPORT_TAG_MEDIA_NAME = "media_name";
+
+    /** Manifest tag: media_position. */
+    public static String C_EXPORT_TAG_MEDIA_POSITION = "media_position";
+
+    /** Manifest tag: media_size. */
+    public static String C_EXPORT_TAG_MEDIA_SIZE = "media_size";
+
+    /** Manifest tag: media_title. */
+    public static String C_EXPORT_TAG_MEDIA_TITLE = "media_title";
+
+    /** Manifest tag: media_type. */
+    public static String C_EXPORT_TAG_MEDIA_TYPE = "media_type";
+
+    /** Manifest tag: media_width. */
+    public static String C_EXPORT_TAG_MEDIA_WIDTH = "media_width";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExportModuledata.class);
 
-    /** Manifest tag: master. */   
-    public static String C_EXPORT_TAG_MASTER = "master";
-
-    /** Manifest tag: access_flags. */   
-    public static String C_EXPORT_TAG_MASTER_ACCESSFLAGS = "access_flags";
-
-    /** Manifest tag: channelname. */   
-    public static String C_EXPORT_TAG_MASTER_CHANNELNAME = "channelname";
-
-    /** Manifest tag: channelrelations. */   
-    public static String C_EXPORT_TAG_MASTER_CHANNELREL = "channelrelations";
-
-    /** Manifest tag: data_big_. */   
-    public static String C_EXPORT_TAG_MASTER_DATABIG = "data_big_";
-
-    /** Manifest tag: data_date_. */   
-    public static String C_EXPORT_TAG_MASTER_DATADATE = "data_date_";
-
-    /** Manifest tag: data_int_. */   
-    public static String C_EXPORT_TAG_MASTER_DATAINT = "data_int_";
-
-    /** Manifest tag: data_medium_. */   
-    public static String C_EXPORT_TAG_MASTER_DATAMEDIUM = "data_medium_";
-
-    /** Manifest tag: data_reference_. */   
-    public static String C_EXPORT_TAG_MASTER_DATAREFERENCE = "data_reference_";
-
-    /** Manifest tag: dataset. */   
-    public static String C_EXPORT_TAG_MASTER_DATASET = "dataset";
-    
-    /** Manifest tag: data_small_. */   
-    public static String C_EXPORT_TAG_MASTER_DATASMALL = "data_small_";
-    
-    /** Manifest tag: feed_filename. */   
-    public static String C_EXPORT_TAG_MASTER_FEEDFILENAME = "feed_filename";
-    
-    /** Manifest tag: feed_id. */   
-    public static String C_EXPORT_TAG_MASTER_FEEDID = "feed_id";
-    
-    /** Manifest tag: feed_reference. */   
-    public static String C_EXPORT_TAG_MASTER_FEEDREFERENCE = "feed_reference";
-    
-    /** Manifest tag: flags. */   
-    public static String C_EXPORT_TAG_MASTER_FLAGS = "flags";
-    
-    /** Manifest tag: group_name. */   
-    public static String C_EXPORT_TAG_MASTER_GROUP = "group_name";
-    
-    /** Manifest tag: master ID. */   
-    public static String C_EXPORT_TAG_MASTER_ID = "master_id";    
-    
-    /** Manifest tag: media. */   
-    public static String C_EXPORT_TAG_MASTER_MEDIA = "media";
-    
-    /** Manifest tag: mediaset. */   
-    public static String C_EXPORT_TAG_MASTER_MEDIASET = "mediaset";
-    
-    /** Manifest tag: publication_date. */   
-    public static String C_EXPORT_TAG_MASTER_PUBLICATIONDATE = "publication_date";
-    
-    /** Manifest tag: purge_date. */   
-    public static String C_EXPORT_TAG_MASTER_PURGEDATE = "purge_date";
-    
-    /** Manifest tag: creation_date. */
-    public static String C_EXPORT_TAG_MASTER_CREATEDATE = "create_date";
-    
-    /** Manifest tag: sub_id. */   
-    public static String C_EXPORT_TAG_MASTER_SUBID = "sub_id";
-    
-    /** Manifest tag: title. */   
-    public static String C_EXPORT_TAG_MASTER_TITLE = "title";
-    
-    /** Manifest tag: user_name. */   
-    public static String C_EXPORT_TAG_MASTER_USER = "user_name";
-    
-    /** Manifest tag: masters. */   
-    public static String C_EXPORT_TAG_MASTERS = "masters";
-    
-    /** Manifest tag: media_content. */   
-    public static String C_EXPORT_TAG_MEDIA_CONTENT = "media_content";
-    
-    /** Manifest tag: media_description. */   
-    public static String C_EXPORT_TAG_MEDIA_DESCRIPTION = "media_description";
-    
-    /** Manifest tag: media_height. */   
-    public static String C_EXPORT_TAG_MEDIA_HEIGHT = "media_height";
-    
-    /** Manifest tag: media_mimetype. */   
-    public static String C_EXPORT_TAG_MEDIA_MIMETYPE = "media_mimetype";
-    
-    /** Manifest tag: media_name. */   
-    public static String C_EXPORT_TAG_MEDIA_NAME = "media_name";
-    
-    /** Manifest tag: media_position. */   
-    public static String C_EXPORT_TAG_MEDIA_POSITION = "media_position";
-    
-    /** Manifest tag: media_size. */   
-    public static String C_EXPORT_TAG_MEDIA_SIZE = "media_size";
-    
-    /** Manifest tag: media_title. */   
-    public static String C_EXPORT_TAG_MEDIA_TITLE = "media_title";
-    
-    /** Manifest tag: media_type. */   
-    public static String C_EXPORT_TAG_MEDIA_TYPE = "media_type";
-    
-    /** Manifest tag: media_width. */   
-    public static String C_EXPORT_TAG_MEDIA_WIDTH = "media_width";
-    
     /** The channelid and the resourceobject of the exported channels. */
-    private Set m_exportedChannelIds;    
-    
+    private Set m_exportedChannelIds;
+
     /** Holds information about contents that have already been exported. */
     private Vector m_exportedMasters = new Vector();
 
@@ -215,7 +213,14 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      * 
      * @throws CmsImportExportException if something goes wrong
      */
-    public CmsExportModuledata(CmsObject cms, String exportFile, String[] resourcesToExport, String[] modulesToExport, I_CmsReport report) throws CmsImportExportException {
+    public CmsExportModuledata(
+        CmsObject cms,
+        String exportFile,
+        String[] resourcesToExport,
+        String[] modulesToExport,
+        I_CmsReport report)
+    throws CmsImportExportException {
+
         setCms(cms);
         setReport(report);
         setExportFileName(exportFile);
@@ -230,12 +235,16 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             exportNode = openExportFile();
 
             // first export the cos folders (ie. channels)               
-            getReport().println(Messages.get().container(Messages.RPT_EXPORT_CHANNELS_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+            getReport().println(
+                Messages.get().container(Messages.RPT_EXPORT_CHANNELS_BEGIN_0),
+                I_CmsReport.C_FORMAT_HEADLINE);
 
             getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
             // export all the resources
             exportAllResources(exportNode, resourcesToExport);
-            getReport().println(Messages.get().container(Messages.RPT_EXPORT_CHANNELS_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+            getReport().println(
+                Messages.get().container(Messages.RPT_EXPORT_CHANNELS_END_0),
+                I_CmsReport.C_FORMAT_HEADLINE);
 
             // get the modules to export
             Vector modules = new Vector();
@@ -246,7 +255,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
                     moduleNames.addElement(modulesToExport[i]);
                 }
             }
-            
+
             List moduleExportables = CmsLegacyModuleAction.getLegacyModulePublishClasses();
             // if there was no module selected then select all exportable modules,
             // else get only the modules from Hashtable that were selected
@@ -274,61 +283,69 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
 
         } catch (CmsException e) {
             getReport().println(e);
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_COS_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1, getExportFileName());
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_COS_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1,
+                getExportFileName());
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message, e);
             }
-            
+
             throw new CmsImportExportException(message, e);
         } catch (SAXException se) {
             getReport().println(se);
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_COS_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1, getExportFileName());
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_COS_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1,
+                getExportFileName());
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message, se);
             }
-            
+
             throw new CmsImportExportException(message, se);
         } catch (IOException ioe) {
             getReport().println(ioe);
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_COS_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1, getExportFileName());
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_COS_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1,
+                getExportFileName());
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message, ioe);
             }
-            
+
             throw new CmsImportExportException(message, ioe);
         } finally {
             // restore the site root
             getCms().getRequestContext().restoreSiteRoot();
         }
     }
-    
+
     /**
      * @see org.opencms.importexport.CmsExport#addChildResources(java.lang.String)
      */
     protected void addChildResources(String folderName) throws CmsImportExportException, IOException, SAXException {
-        
+
         try {
             // collect channel id information
             String channelId = getCms().readFolder(folderName, CmsResourceFilter.IGNORE_EXPIRATION).getResourceId().toString();
             if (channelId != null) {
                 getExportedChannelIds().add(channelId);
             }
-            
+
             // continue with super implementation
             super.addChildResources(folderName);
         } catch (CmsImportExportException e) {
-            
+
             throw e;
         } catch (CmsException e) {
-            
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_COS_IMPORTEXPORT_ERROR_ADDING_CHILD_RESOURCES_1, folderName);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_COS_IMPORTEXPORT_ERROR_ADDING_CHILD_RESOURCES_1,
+                folderName);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message, e);
             }
-            
+
             throw new CmsImportExportException(message, e);
         }
     }
@@ -339,30 +356,31 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      * @return the set of already exported channel Ids
      */
     protected Set getExportedChannelIds() {
+
         return m_exportedChannelIds;
-    }        
-    
+    }
+
     /**
      * @see org.opencms.importexport.CmsExport#getExportNodeName()
      */
     protected String getExportNodeName() {
-        
+
         return com.opencms.core.I_CmsConstants.C_EXPORT_TAG_MODULEXPORT;
-    }        
-    
+    }
+
     /**
      * @see org.opencms.importexport.CmsExport#getResourceNodeName()
      */
     protected String getResourceNodeName() {
-        
+
         return "channels";
-    }        
-    
+    }
+
     /** 
      * @see org.opencms.importexport.CmsExport#isIgnoredProperty(org.opencms.file.CmsProperty)
      */
     protected boolean isIgnoredProperty(CmsProperty property) {
-        
+
         if (property == null) {
             return true;
         }
@@ -376,8 +394,9 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      * @param exportedChannelIds the set of already exported channel Ids
      */
     protected void setExportedChannelIds(Set exportedChannelIds) {
+
         m_exportedChannelIds = exportedChannelIds;
-    }    
+    }
 
     /**
      * Exports the content definition data,
@@ -390,8 +409,11 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      * @throws SAXException if something goes wrong procesing the manifest.xml
      */
     private void exportCos(Element parent, String classname, Set exportedChannelIds) throws CmsException, SAXException {
+
         // output something to the report for the data
-        getReport().println(Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_1, classname), I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().println(
+            Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_1, classname),
+            I_CmsReport.C_FORMAT_HEADLINE);
 
         Iterator keys = exportedChannelIds.iterator();
         // get the subId of the module
@@ -407,7 +429,11 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             try {
                 Vector allDatasets = new Vector();
                 // execute the static method readAllByChannel of the content definition class
-                allDatasets = (Vector)Class.forName(classname).getMethod("readAllByChannel", new Class[] {CmsObject.class, String.class, Integer.class}).invoke(null, new Object[] {getCms(), channelId, new Integer(subId)});
+                allDatasets = (Vector)Class.forName(classname).getMethod(
+                    "readAllByChannel",
+                    new Class[] {CmsObject.class, String.class, Integer.class}).invoke(
+                    null,
+                    new Object[] {getCms(), channelId, new Integer(subId)});
 
                 for (int i = 0; i < allDatasets.size(); i++) {
                     CmsMasterDataSet curDataset = (CmsMasterDataSet)allDatasets.elementAt(i);
@@ -453,7 +479,9 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         getSaxWriter().writeClose(masters);
         parent.remove(masters);
 
-        getReport().println(Messages.get().container(Messages.RPT_EXPORT_MODULE_END_0, classname), I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().println(
+            Messages.get().container(Messages.RPT_EXPORT_MODULE_END_0, classname),
+            I_CmsReport.C_FORMAT_HEADLINE);
     }
 
     /**
@@ -468,16 +496,22 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      * @throws CmsException if something goes wrong
      * @throws SAXException if something goes wrong procesing the manifest.xml
      */
-    private void exportCosModule(Element parent, String classname, CmsMasterDataSet dataset, int masterNr, int subId) throws CmsException, SAXException {
+    private void exportCosModule(Element parent, String classname, CmsMasterDataSet dataset, int masterNr, int subId)
+    throws CmsException, SAXException {
+
         // output something to the report for the resource
-        
-        getReport().print(Messages.get().container(Messages.RPT_EXPORT_WITH_ID_2, 
-            dataset.m_title, dataset.m_masterId), I_CmsReport.C_FORMAT_NOTE);
+
+        getReport().print(
+            Messages.get().container(Messages.RPT_EXPORT_WITH_ID_2, dataset.m_title, dataset.m_masterId),
+            I_CmsReport.C_FORMAT_NOTE);
 
         // the name of the XML-file where the dataset is stored
         String dataSetFile = "dataset_" + subId + "_" + masterNr + ".xml";
         // create new mastercontent for getting channels and media
-        CmsMasterContent content = getContentDefinition(classname, new Class[] {CmsObject.class, CmsMasterDataSet.class}, new Object[] {getCms(), dataset});
+        CmsMasterContent content = getContentDefinition(
+            classname,
+            new Class[] {CmsObject.class, CmsMasterDataSet.class},
+            new Object[] {getCms(), dataset});
         // write these informations to the xml-manifest
         Element master = parent.addElement(C_EXPORT_TAG_MASTER);
 
@@ -505,8 +539,9 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         }
         // write the XML
         digestElement(parent, master);
-        getReport().println(org.opencms.report.Messages.get().container(
-            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+        getReport().println(
+            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+            I_CmsReport.C_FORMAT_OK);
     }
 
     /**
@@ -520,11 +555,13 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      * 
      * @throws CmsException if something goes wrong
      */
-    private void exportCosModuleData(CmsMasterDataSet dataset, String filename, int masterNr, int subId) throws CmsException {
+    private void exportCosModuleData(CmsMasterDataSet dataset, String filename, int masterNr, int subId)
+    throws CmsException {
 
         // create a new xml document
         Document doc = DocumentHelper.createDocument();
-        Element data = doc.addElement(com.opencms.core.I_CmsConstants.C_EXPORT_TAG_MODULEXPORT).addElement(C_EXPORT_TAG_MASTER_DATASET);
+        Element data = doc.addElement(com.opencms.core.I_CmsConstants.C_EXPORT_TAG_MODULEXPORT).addElement(
+            C_EXPORT_TAG_MASTER_DATASET);
 
         // add the data of the contentdefinition
         // get the name of the owner
@@ -545,18 +582,20 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
                 CmsLog.getLog(this).error("Unable to read group with id " + dataset.m_groupId, e);
             }
         }
-        
+
         data.addElement(C_EXPORT_TAG_MASTER_ID).addText(dataset.m_masterId.toString());
         data.addElement(C_EXPORT_TAG_MASTER_USER).addText(ownerName);
         data.addElement(C_EXPORT_TAG_MASTER_GROUP).addText(groupName);
         data.addElement(C_EXPORT_TAG_MASTER_ACCESSFLAGS).addText(Integer.toString(dataset.m_accessFlags));
-        data.addElement(C_EXPORT_TAG_MASTER_PUBLICATIONDATE).addText(CmsDateUtil.getDateTimeShort(dataset.m_publicationDate));
+        data.addElement(C_EXPORT_TAG_MASTER_PUBLICATIONDATE).addText(
+            CmsDateUtil.getDateTimeShort(dataset.m_publicationDate));
         data.addElement(C_EXPORT_TAG_MASTER_PURGEDATE).addText(CmsDateUtil.getDateTimeShort(dataset.m_purgeDate));
         data.addElement(C_EXPORT_TAG_MASTER_FLAGS).addText(Integer.toString(dataset.m_flags));
         data.addElement(C_EXPORT_TAG_MASTER_FEEDID).addText(Integer.toString(dataset.m_feedId));
         data.addElement(C_EXPORT_TAG_MASTER_FEEDREFERENCE).addText(Integer.toString(dataset.m_feedReference));
-        data.addElement(C_EXPORT_TAG_MASTER_FEEDFILENAME).addText(dataset.m_feedFilename!=null?dataset.m_feedFilename:"");
-        data.addElement(C_EXPORT_TAG_MASTER_TITLE).addCDATA(dataset.m_title!=null?dataset.m_title:"");
+        data.addElement(C_EXPORT_TAG_MASTER_FEEDFILENAME).addText(
+            dataset.m_feedFilename != null ? dataset.m_feedFilename : "");
+        data.addElement(C_EXPORT_TAG_MASTER_TITLE).addCDATA(dataset.m_title != null ? dataset.m_title : "");
 
         // get the values of data_big from the string array
         for (int i = 0; i < dataset.m_dataBig.length; i++) {
@@ -612,7 +651,9 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             ZipEntry entry = new ZipEntry(filename);
             getExportZipStream().putNextEntry(entry);
             // generate the SAX XML writer 
-            CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(new OutputStreamWriter(getExportZipStream()), OpenCms.getSystemInfo().getDefaultEncoding());                    
+            CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(
+                new OutputStreamWriter(getExportZipStream()),
+                OpenCms.getSystemInfo().getDefaultEncoding());
             // write the document
             (new SAXWriter(saxHandler, saxHandler)).write(doc);
             // close zip entry
@@ -643,7 +684,9 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      * 
      * @throws CmsException if something goes wrong
      */
-    private void exportCosModuleMedia(CmsMasterMedia media, String filename, int masterNr, int subId, int mediaId) throws CmsException {
+    private void exportCosModuleMedia(CmsMasterMedia media, String filename, int masterNr, int subId, int mediaId)
+    throws CmsException {
+
         // create a new xml document
         Document doc = DocumentHelper.createDocument();
         Element data = doc.addElement(com.opencms.core.I_CmsConstants.C_EXPORT_TAG_MODULEXPORT);
@@ -654,11 +697,12 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         em.addElement(C_EXPORT_TAG_MEDIA_WIDTH).addText(Integer.toString(media.getWidth()));
         em.addElement(C_EXPORT_TAG_MEDIA_HEIGHT).addText(Integer.toString(media.getHeight()));
         em.addElement(C_EXPORT_TAG_MEDIA_SIZE).addText(Integer.toString(media.getSize()));
-        em.addElement(C_EXPORT_TAG_MEDIA_MIMETYPE).addText(media.getMimetype()!=null?media.getMimetype():"");
+        em.addElement(C_EXPORT_TAG_MEDIA_MIMETYPE).addText(media.getMimetype() != null ? media.getMimetype() : "");
         em.addElement(C_EXPORT_TAG_MEDIA_TYPE).addText(Integer.toString(media.getType()));
-        em.addElement(C_EXPORT_TAG_MEDIA_TITLE).addCDATA(media.getTitle()!=null?media.getTitle():"");
-        em.addElement(C_EXPORT_TAG_MEDIA_NAME).addCDATA(media.getName()!=null?media.getName():"");
-        em.addElement(C_EXPORT_TAG_MEDIA_DESCRIPTION).addCDATA(media.getDescription()!=null?media.getDescription():"");
+        em.addElement(C_EXPORT_TAG_MEDIA_TITLE).addCDATA(media.getTitle() != null ? media.getTitle() : "");
+        em.addElement(C_EXPORT_TAG_MEDIA_NAME).addCDATA(media.getName() != null ? media.getName() : "");
+        em.addElement(C_EXPORT_TAG_MEDIA_DESCRIPTION).addCDATA(
+            media.getDescription() != null ? media.getDescription() : "");
         // now add the name of the file where the media content is stored and write this file
         String contentFilename = "mediacontent_" + subId + "_" + masterNr + "_" + mediaId + ".dat";
         em.addElement(C_EXPORT_TAG_MEDIA_CONTENT).addText(contentFilename);
@@ -668,7 +712,9 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             ZipEntry entry = new ZipEntry(filename);
             getExportZipStream().putNextEntry(entry);
             // generate the SAX XML writer 
-            CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(new OutputStreamWriter(getExportZipStream()), OpenCms.getSystemInfo().getDefaultEncoding());                     
+            CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(
+                new OutputStreamWriter(getExportZipStream()),
+                OpenCms.getSystemInfo().getDefaultEncoding());
             // write the document
             (new SAXWriter(saxHandler, saxHandler)).write(doc);
             // close zip entry
@@ -698,6 +744,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      * @return a master content definition object instance created with the reflection API
      */
     private CmsMasterContent getContentDefinition(String classname, Class[] classes, Object[] objects) {
+
         CmsMasterContent cd = null;
         try {
             Class cdClass = Class.forName(classname);
@@ -744,6 +791,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      * @param content contents to write to the file
      */
     private void writeExportFile(String filename, byte[] content) {
+
         try {
             // store the userinfo in zip-file
             ZipEntry entry = new ZipEntry(filename);

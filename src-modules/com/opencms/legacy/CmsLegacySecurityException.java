@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacySecurityException.java,v $
- * Date   : $Date: 2005/06/23 10:47:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/23 14:01:14 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,9 +41,9 @@ import java.util.Locale;
  * Exception to keep the legacy packages com.opencms.* and com.opencms.*
  * with the old exception handling mechanism running.<p>
  * 
- * @author Alexander Kandzior 
- * @author Jan Baudisch 
- * @version $Revision: 1.8 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Jan Baudisch (j.baudisch@alkacon.com)
+ * @version $Revision: 1.9 $
  * @since 5.1.4
  */
 public class CmsLegacySecurityException extends CmsSecurityException {
