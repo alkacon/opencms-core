@@ -531,12 +531,16 @@
 			<destination>system/workplace/views/admin/admin-close.html</destination>
 			<type>jsp</type>
 			<uuidresource>c201a1d6-738d-11d9-be77-2f77a917d9ae</uuidresource>
-			<datelastmodified>Wed, 02 Feb 2005 15:37:26 GMT</datelastmodified>
+			<datelastmodified>Thu, 23 Jun 2005 12:26:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 31 Jan 2005 13:41:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Admin Close frame]]></value>
@@ -549,7 +553,7 @@
 			<destination>system/workplace/views/admin/admin-fs.html</destination>
 			<type>jsp</type>
 			<uuidresource>bbe95589-6933-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Tue, 31 May 2005 09:49:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 23 Jun 2005 12:26:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 18 Jan 2005 09:31:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -557,7 +561,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[false]]></value>
+					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -571,7 +575,7 @@
 			<destination>system/workplace/views/admin/admin-main.html</destination>
 			<type>jsp</type>
 			<uuidresource>9086a075-6937-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Thu, 02 Jun 2005 13:02:33 GMT</datelastmodified>
+			<datelastmodified>Thu, 23 Jun 2005 12:26:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 18 Jan 2005 09:58:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -579,7 +583,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[false]]></value>
+					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -593,7 +597,7 @@
 			<destination>system/workplace/views/admin/admin-menu.html</destination>
 			<type>jsp</type>
 			<uuidresource>fea1427f-6933-11d9-aaa9-2f77a917d9ae</uuidresource>
-			<datelastmodified>Thu, 10 Feb 2005 16:01:30 GMT</datelastmodified>
+			<datelastmodified>Thu, 23 Jun 2005 12:26:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 18 Jan 2005 09:33:22 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -601,7 +605,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[false]]></value>
+					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -615,12 +619,16 @@
 			<destination>system/workplace/views/admin/external-fs.html</destination>
 			<type>jsp</type>
 			<uuidresource>aa33e1cf-738d-11d9-be77-2f77a917d9ae</uuidresource>
-			<datelastmodified>Fri, 11 Feb 2005 12:05:35 GMT</datelastmodified>
+			<datelastmodified>Thu, 23 Jun 2005 12:27:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 31 Jan 2005 13:40:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[External Admin frameset]]></value>
@@ -633,7 +641,7 @@
 			<destination>system/workplace/views/admin/tool-fs.html</destination>
 			<type>jsp</type>
 			<uuidresource>7b535ff3-d0e5-11d9-ac67-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Mon, 02 May 2005 13:35:51 GMT</datelastmodified>
+			<datelastmodified>Thu, 23 Jun 2005 12:27:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 02 May 2005 12:09:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -641,7 +649,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[false]]></value>
+					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -655,7 +663,7 @@
 			<destination>system/workplace/views/admin/tool-title.html</destination>
 			<type>jsp</type>
 			<uuidresource>7b55d0f9-d0e5-11d9-ac67-b920ebfd9bc1</uuidresource>
-			<datelastmodified>Mon, 02 May 2005 12:22:12 GMT</datelastmodified>
+			<datelastmodified>Thu, 23 Jun 2005 12:27:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 02 May 2005 12:10:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -663,7 +671,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[false]]></value>
+					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
 					<name>Title</name>
