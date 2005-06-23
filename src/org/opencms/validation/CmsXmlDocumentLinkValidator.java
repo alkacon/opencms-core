@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsXmlDocumentLinkValidator.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 15:48:58 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert
  *   
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -209,6 +209,7 @@ public class CmsXmlDocumentLinkValidator {
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         inner.next()), I_CmsReport.C_FORMAT_WARNING);
                 }
+                report.println();
             }
 
             report.println(
