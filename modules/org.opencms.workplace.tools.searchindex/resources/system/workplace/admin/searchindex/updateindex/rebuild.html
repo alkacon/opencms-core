@@ -1,6 +1,7 @@
 <%@ page import="
 
 org.opencms.workplace.*,
+org.opencms.workplace.tools.*,
 org.opencms.workplace.tools.searchindex.*,
 org.opencms.search.*
 
@@ -13,10 +14,11 @@ org.opencms.search.*
 	
 switch (wp.getAction()) {
 
+case CmsDialog.ACTION_REPORT_END:
 case CmsDialog.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
-
-	wp.actionCloseDialog();
+    wp.setParamCloseLink(CmsToolManager.linkForToolPath(wp.getJsp(), "/searchindex/"));
+    wp.actionCloseDialog();
 
 break;
 
@@ -31,7 +33,6 @@ case CmsDialog.ACTION_REPORT_UPDATE:
 break;
 //////////////////// ACTION: show start dialog
 case CmsDialog.ACTION_DEFAULT:
-case CmsDialog.ACTION_REPORT_END:
 default:
 
 	wp.setParamAction(CmsDialog.DIALOG_CONFIRMED);
