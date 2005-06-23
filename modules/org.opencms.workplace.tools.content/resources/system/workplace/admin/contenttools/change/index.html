@@ -74,20 +74,33 @@ default:
 <%= wp.dialogBlockEnd() %>
 <%= wp.dialogSpacer() %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<% if(wp.hasValidationErrors()) { %>
+<%= wp.dialogBlockStart(null) %>
+<table border="0" cellpadding="4" cellspacing="0">
+	<tr>
+		<td style="vertical-align: middle;"><img src="<%=wp.getSkinUri() %>commons/error.png" border="0"></td>
+		<td style="vertical-align: middle;"><%= wp.getErrorMessage() %></td> 
+	</tr> 
+</table>
+<%= wp.dialogBlockEnd() %>
+<%= wp.dialogSpacer() %>
+<% } %>
 
-<%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<input type="hidden" name="action" value="<%=wp.getParamAction()%>">
+<input type="hidden" name="framename" value="admin_content">
+<input type="hidden" name="title" value="<%=wp.getParamTitle()%>">
+<input type="hidden" name="dialogtype" value="<%=wp.DIALOG_TYPE%>">
 
 <table border="0" width="100%">
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.propertychange.resource") %></td>
-	<td class="maxwidth"><input name="<%= wp.PARAM_RESOURCE %>" type="text" value="" class="maxwidth" style="width: 99%"></td>
+	<td class="maxwidth"><input name="<%= wp.PARAM_RESOURCE %>" type="text" value="<%= wp.getParamResource()==null?"":wp.getParamResource() %>" class="maxwidth" style="width: 99%"></td>
 	<td><%=wp.button("javascript:top.openTreeWin('param_resource', true, 'main', '"+wp.PARAM_RESOURCE+"', document);", null, "folder", "button.search", 0)%></td>
 </tr>
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.propertychange.recursive") %></td>
-	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_RECURSIVE %>" type="checkbox" value="true"></td>    
+	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_RECURSIVE %>" type="checkbox" value="true"<% if ("true".equals(wp.getParamRecursive())) { out.print("checked=\"checked\""); } %>></td>    
 </tr>
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.property") %></td>
@@ -95,11 +108,11 @@ default:
 </tr>
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.propertychange.oldvalue") %></td>
-	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_OLDVALUE %>" type="text" value="" class="maxwidth" style="width: 99%"></td>
+	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_OLDVALUE %>" type="text" value="<%= wp.getParamOldValue()==null?"":wp.getParamOldValue() %>" class="maxwidth" style="width: 99%"></td>
 </tr>
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.editpropertyinfo") %></td>
-	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_NEWVALUE %>" type="text" value="" class="maxwidth" style="width: 99%"></td>
+	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_NEWVALUE %>" type="text" value="<%= wp.getParamNewValue()==null?"":wp.getParamNewValue() %>" class="maxwidth" style="width: 99%"></td>
 </tr>
 </table>
 

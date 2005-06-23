@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyDelete.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/23 15:39:30 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * @author  Andreas Zahner 
  * @author  Armen Markarian 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -306,7 +306,7 @@ public class CmsPropertyDelete extends CmsDialog {
      */
     public String buildSelectProperty(String attributes) {
 
-        return CmsPropertyChange.buildSelectProperty(getCms(), key("please.select"), attributes);
+        return CmsPropertyChange.buildSelectProperty(getCms(), key("please.select"), attributes, "");
     }
 
     /**

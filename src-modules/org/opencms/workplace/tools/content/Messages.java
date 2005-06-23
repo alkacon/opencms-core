@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/23 15:39:30 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,6 +84,22 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1 = "GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROP_CHANGE_VALIDATE_VFS_RESOURCE_0 = "GUI_PROP_CHANGE_VALIDATE_VFS_RESOURCE_0"; 
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROP_CHANGE_VALIDATE_SELECT_PROPERTY_0 = "GUI_PROP_CHANGE_VALIDATE_SELECT_PROPERTY_0"; 
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROP_CHANGE_VALIDATE_OLD_PROP_VALUE_0 = "GUI_PROP_CHANGE_VALIDATE_OLD_PROP_VALUE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROP_CHANGE_VALIDATE_OLD_PROP_PATTERN_0 = "GUI_PROP_CHANGE_VALIDATE_OLD_PROP_PATTERN_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROP_CHANGE_VALIDATE_NEW_PROP_VALUE_0 = "GUI_PROP_CHANGE_VALIDATE_NEW_PROP_VALUE_0";
+
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_COPY_2 = "RPT_COPY_2";
