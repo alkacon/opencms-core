@@ -1,8 +1,7 @@
-
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsVfsIndexResource.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/23 16:41:19 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +33,7 @@ package org.opencms.search;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.OpenCms;
 import org.opencms.search.documents.A_CmsVfsDocument;
 
@@ -44,7 +44,7 @@ import org.opencms.search.documents.A_CmsVfsDocument;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,8 +68,8 @@ public class CmsVfsIndexResource extends A_CmsIndexResource {
             m_type = res.getTypeId();
         }
 
-        // TODO: Add check for encoding property or otherwise care about the encoding here
-        m_mimeType = OpenCms.getResourceManager().getMimeType(res.getName(), null);
+        // default to plain text mime type if no matching file extension id found
+        m_mimeType = OpenCms.getResourceManager().getMimeType(res.getName(), null, CmsResourceManager.MIMETYPE_TEXT);
         m_path = res.getRootPath();
     }
 

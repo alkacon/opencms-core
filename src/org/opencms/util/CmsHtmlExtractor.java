@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlExtractor.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/23 16:41:19 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,9 @@
 // Revision Control Information
 //
 // $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlExtractor.java,v $
-// $Author: a.westermann $
-// $Date: 2005/06/23 11:11:24 $
-// $Revision: 1.7 $
+// $Author: a.kandzior $
+// $Date: 2005/06/23 16:41:19 $
+// $Revision: 1.8 $
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -73,7 +73,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,8 +107,6 @@ public final class CmsHtmlExtractor {
         parser.setLexer(lexer);
 
         StringBean stringBean = new StringBean();
-        // stringBean.setParser(parser);
-
         parser.visitAllNodesWith(stringBean);
 
         return stringBean.getStrings();

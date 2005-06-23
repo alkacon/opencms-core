@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/23 16:41:19 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,8 +149,11 @@ public class CmsResourceManager {
         }
     }
 
-    /** The default mimetype. */
-    private static final String C_DEFAULT_MIMETYPE = "text/html";
+    /** The mimetype <code>"text/html"</code>. */
+    public static final String MIMETYPE_HTML = "text/html";
+
+    /** The mimetype <code>"text/plain"</code>. */
+    public static final String MIMETYPE_TEXT = "text/plain";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceManager.class);
@@ -511,11 +514,35 @@ public class CmsResourceManager {
      * If an encoding parameter that is not <code>null</code> is provided,
      * the returned mime type is extended with a <code>; charset={encoding}</code> setting.<p> 
      * 
+     * If no mime type for the given filename can be determined, the
+     * default <code>{@link #MIMETYPE_HTML}</code> is used.<p>
+     * 
      * @param filename the file name to check the mime type for
      * @param encoding the default encoding (charset) in case of mime types is of type "text"
+     * 
      * @return the mime type for a specified file
      */
     public String getMimeType(String filename, String encoding) {
+
+        return getMimeType(filename, encoding, MIMETYPE_HTML);
+    }
+
+    /**
+     * Returns the mime type for a specified file name.<p>
+     * 
+     * If an encoding parameter that is not <code>null</code> is provided,
+     * the returned mime type is extended with a <code>; charset={encoding}</code> setting.<p> 
+     * 
+     * If no mime type for the given filename can be determined, the
+     * privided default is used.<p>
+     * 
+     * @param filename the file name to check the mime type for
+     * @param encoding the default encoding (charset) in case of mime types is of type "text"
+     * @param defaultMimeType the default mime type to use if no matching type for the filename is found
+     * 
+     * @return the mime type for a specified file
+     */
+    public String getMimeType(String filename, String encoding, String defaultMimeType) {
 
         String mimetype = null;
         int lastDot = filename.lastIndexOf('.');
@@ -524,7 +551,7 @@ public class CmsResourceManager {
             mimetype = (String)m_mimeTypes.get(filename.substring(lastDot + 1).toLowerCase());
         }
         if (mimetype == null) {
-            mimetype = C_DEFAULT_MIMETYPE;
+            mimetype = defaultMimeType;
         }
         StringBuffer result = new StringBuffer(mimetype);
         if ((encoding != null) && mimetype.startsWith("text") && (mimetype.indexOf("charset") == -1)) {
