@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/23 15:27:07 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -263,6 +264,40 @@ public class CmsLogin extends CmsJspLoginBean {
             return null;
         }
 
+        if (m_action == ACTION_LOGIN) {
+            // clear message
+            m_message = null;
+            // login is successful, check if the requested resource can be read
+            if (!getCmsObject().existsResource(m_requestedResource)) {
+                // requested resource does either not exist or is not readable by user
+                if (CmsWorkplaceAction.C_JSP_WORKPLACE_URI.equals(m_requestedResource)) {
+                    // we know the Workplace exists, so the user does not have access to the Workplace
+                    // probalbly this is a "Guest" user in a default setup where "Guest" has no access to the Workplace
+                    m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0);
+                    m_action = ACTION_DISPLAY;
+                } else if (getCmsObject().existsResource(CmsWorkplaceAction.C_JSP_WORKPLACE_URI)) {
+                    // resource does either not exist or is not readable, but general workplace permissions are granted
+                    m_message = Messages.get().container(Messages.GUI_LOGIN_UNKNOWN_RESOURCE_1, m_requestedResource);
+                    m_requestedResource = CmsWorkplaceAction.C_JSP_WORKPLACE_URI;
+                } else {
+                    // resource does not exist and no general workplace permissions granted
+                    m_message = Messages.get().container(
+                        Messages.GUI_LOGIN_FAILED_NO_TARGET_PERMISSIONS_1,
+                        m_requestedResource);
+                    m_action = ACTION_DISPLAY;
+                }
+            }
+            if (m_action == ACTION_DISPLAY) {
+                // the login was invalid
+                m_requestedResource = null;
+                // destroy the generated session
+                HttpSession session = getRequest().getSession(false);
+                if (session != null) {
+                    session.invalidate();
+                }
+            }
+        }
+
         return displayLoginForm();
     }
 
@@ -310,8 +345,9 @@ public class CmsLogin extends CmsJspLoginBean {
      * 
      * @param html the html buffer to append the script to
      * @param requestedResource the requested resource to open in a new window
+     * @param message the message to display if the originally requested resource is not available
      */
-    protected void appendWorkplaceOpenerScript(StringBuffer html, String requestedResource) {
+    protected void appendWorkplaceOpenerScript(StringBuffer html, String requestedResource, CmsMessageContainer message) {
 
         String winId = "OpenCms" + System.currentTimeMillis();
 
@@ -319,22 +355,29 @@ public class CmsLogin extends CmsJspLoginBean {
 
         html.append("function doOnload() {\n");
 
+        // display missing resource warning if required
+        if (message != null) {
+            html.append("\talert(\"");
+            html.append(CmsStringUtil.escapeJavaScript(message.key(m_locale)));
+            html.append("\");\n");
+        }
+
         // display login message if required
         CmsLoginMessage loginMessage = OpenCms.getLoginManager().getLoginMessage();
         if ((loginMessage != null) && (loginMessage.isActive())) {
-            String message;
+            String msg;
             if (loginMessage.isLoginForbidden()) {
                 // login forbidden for normal users, current user must be Administrator
-                message = Messages.get().container(
+                msg = Messages.get().container(
                     Messages.GUI_LOGIN_SUCCESS_WITH_MESSAGE_2,
                     loginMessage.getMessage(),
                     new Date(loginMessage.getTimeEnd())).key(m_locale);
             } else {
                 // just display the message
-                message = loginMessage.getMessage();
+                msg = loginMessage.getMessage();
             }
             html.append("\talert(\"");
-            html.append(CmsStringUtil.escapeJavaScript(message));
+            html.append(CmsStringUtil.escapeJavaScript(msg));
             html.append("\");\n");
         }
 
@@ -429,7 +472,7 @@ public class CmsLogin extends CmsJspLoginBean {
             appendDefaultLoginScript(html, m_message);
         } else if (m_action == ACTION_LOGIN) {
             // append window opener script
-            appendWorkplaceOpenerScript(html, m_requestedResource);
+            appendWorkplaceOpenerScript(html, m_requestedResource, m_message);
         }
 
         html.append("</head>\n");

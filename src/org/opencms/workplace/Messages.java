@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/23 15:27:07 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,7 +110,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_WIDGET_VALIDATION_WARNING_2 = "GUI_EDITOR_WIDGET_VALIDATION_WARNING_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERR_RESOURCE_PERMISSIONS_2 = "GUI_ERR_RESOURCE_PERMISSIONS_2";
 
@@ -125,6 +125,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_FAILED_DISABLED_0 = "GUI_LOGIN_FAILED_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_FAILED_NO_TARGET_PERMISSIONS_1 = "GUI_LOGIN_FAILED_NO_TARGET_PERMISSIONS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0 = "GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_FAILED_TEMP_DISABLED_0 = "GUI_LOGIN_FAILED_TEMP_DISABLED_0";
@@ -170,6 +176,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_TITLE_0 = "GUI_LOGIN_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_UNKNOWN_RESOURCE_1 = "GUI_LOGIN_UNKNOWN_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_USERNAME_0 = "GUI_LOGIN_USERNAME_0";
