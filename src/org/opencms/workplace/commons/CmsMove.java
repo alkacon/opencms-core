@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/23 12:45:52 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,8 +115,9 @@ public class CmsMove extends CmsDialog {
 
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        CmsResource sourceRes = null;
         try {
-            CmsResource sourceRes = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
+            sourceRes = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             boolean isFolder = sourceRes.isFolder();
             if (performMoveOperation(isFolder)) {
                 // if no exception is caused and "true" is returned move operation was successful
@@ -137,23 +138,52 @@ public class CmsMove extends CmsDialog {
                 // "false" returned, display "please wait" screen
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
             }
-        } catch (CmsVfsResourceAlreadyExistsException e) {
-            // prepare common message part
-            String message = "<p>\n"
-                + key("source")
-                + ": "
-                + getParamResource()
-                + "<br>\n"
-                + key("target")
-                + ": "
-                + getParamTarget()
-                + "\n</p>\n";
-            // file move operation but file already exists, show confirmation dialog
-            setParamMessage(message + key("confirm.message.copy"));
-            getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM);
         } catch (Throwable e) {
-            // error during move operation, show error dialog
-            includeErrorpage(this, e);
+            // check if this exception requires a confirmation or error screen
+            if ((e instanceof CmsVfsResourceAlreadyExistsException) && !(sourceRes.isFolder())) {
+                // file copy but file already exists, now check target file type
+                int targetType = -1;
+                boolean restoreSiteRoot = false;
+                try {
+                    if (CmsSiteManager.getSiteRoot(getParamTarget()) != null) {
+                        getCms().getRequestContext().saveSiteRoot();
+                        getCms().getRequestContext().setSiteRoot("/");
+                        restoreSiteRoot = true;
+                    }
+                    CmsResource targetRes = getCms().readResource(getParamTarget());
+                    targetType = targetRes.getTypeId();
+                } catch (CmsException e2) {
+                    // can usually be ignored
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e2.getLocalizedMessage());
+                    }
+                } finally {
+                    if (restoreSiteRoot) {
+                        getCms().getRequestContext().restoreSiteRoot();
+                    }
+                }
+                if (sourceRes.getTypeId() == targetType) {
+                    // prepare common message part
+                    String message = "<p>\n"
+                        + key("source")
+                        + ": "
+                        + getParamResource()
+                        + "<br>\n"
+                        + key("target")
+                        + ": "
+                        + getParamTarget()
+                        + "\n</p>\n";
+                    // file type of target is the same as source, show confirmation dialog
+                    setParamMessage(message + key("confirm.message.copy"));
+                    getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM);
+                } else {
+                    // file type is different, create error message
+                    includeErrorpage(this, e);
+                }
+            } else {
+                // error during copy, show error dialog
+                includeErrorpage(this, e);
+            }
         }
     }
 
@@ -311,10 +341,11 @@ public class CmsMove extends CmsDialog {
             if (targetRes != null) {
                 if (DIALOG_CONFIRMED.equals(getParamAction())) {
                     // delete existing target resource if confirmed by the user
+                    checkLock(target);
                     getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
                 } else {
                     // throw exception to indicate that the target exists
-                    throw new CmsException(Messages.get().container(
+                    throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
                         Messages.ERR_MOVE_FAILED_TARGET_EXISTS_2,
                         getParamResource(),
                         getJsp().getRequestContext().removeSiteRoot(target)));
