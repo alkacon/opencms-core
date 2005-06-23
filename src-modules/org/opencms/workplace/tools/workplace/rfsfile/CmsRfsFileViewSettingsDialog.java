@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileViewSettingsDialog.java,v $
- * Date   : $Date: 2005/06/23 09:05:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/23 10:26:23 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,12 +61,15 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
 
+    /** localized messages Keys prefix. */
+    public static final String C_KEY_PREFIX = "logfile";
+    
     /**
      * @param jsp the CmsJspActionElement.
      */
@@ -147,6 +150,7 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
      */
     protected void defineWidgets() {
 
+        setKeyPrefix(C_KEY_PREFIX);
         super.defineWidgets();
         addWidget(new CmsWidgetDialogParameter(m_logView, "isLogfile", "page1", new CmsCheckboxWidget("true")));
         addWidget(new CmsWidgetDialogParameter(m_logView, "filePath", "page1", new CmsComboWidget(

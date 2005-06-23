@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/CmsSynchronizeSettingsDialog.java,v $
- * Date   : $Date: 2005/06/23 09:05:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 10:26:23 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,9 +62,12 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
+    /** localized messages Keys prefix. */
+    public static final String C_KEY_PREFIX = "sync";
+    
     /** The synchronize settings which are edited on this dialog. */
     private CmsSynchronizeSettings m_synchronizeSettings;
-
+    
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -143,7 +146,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
         result.append(createDialogRowsHtml(2, 2));
         result.append(createWidgetTableEnd());
         result.append(dialogBlockEnd());
-
+        
         // close widget table
         result.append(createWidgetTableEnd());
 
@@ -157,7 +160,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
 
         // initialize the object to use for the dialog
         initSynchronizeSettingsObject();
-
+        setKeyPrefix(C_KEY_PREFIX);
         addWidget(new CmsWidgetDialogParameter(m_synchronizeSettings, "enabled", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(
             m_synchronizeSettings,
@@ -172,7 +175,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
             new CmsVfsFileWidget(false, ""),
             1,
             CmsWidgetDialogParameter.MAX_OCCURENCES));
-
+        
     }
 
     /**
