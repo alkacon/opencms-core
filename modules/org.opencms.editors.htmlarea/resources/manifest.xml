@@ -17,7 +17,7 @@
 <p>This module adds the popular Open Source HTML editor "HtmlArea" to the OpenCms Workplace.</p>
 <p>Install this module if you want a WYSIWYG editor for Mozilla based browsers.
 The version of HtmlArea is 3.0 RC1.</p>
-<p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
+<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
 		<version>0.9.2</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>

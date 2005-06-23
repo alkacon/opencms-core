@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[
 <p>This module contains demo resources for OpenCms 6.0 XML content.</p>
-<p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
+<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
 		<version>0.9.12</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
@@ -774,7 +774,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Alkacon Software - The OpenCms experts]]></value>
+					<value><![CDATA[Alkacon Software GmbH  - The OpenCms experts]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

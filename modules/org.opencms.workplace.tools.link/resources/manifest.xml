@@ -13,7 +13,7 @@
 		<nicename><![CDATA[OpenCms 6.0 Link Checking Tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
-		<description><![CDATA[This module contains the OpenCms administration tools for validating links in xml documents and pointer links. (c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
+		<description><![CDATA[This module contains the OpenCms administration tools for validating links in xml documents and pointer links. (c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
 		<version>0.9.5</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>

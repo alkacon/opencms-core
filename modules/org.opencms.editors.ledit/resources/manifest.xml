@@ -16,7 +16,7 @@
 		<description><![CDATA[
 <p>This module adds the AY-Software LEdit Editor to the OpenCms Workplace.</p>
 <p>Install this module if you want to use this ActiveX editor in OpenCms.</p>
-<p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
+<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
 		<version>0.9.2</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>

@@ -16,7 +16,7 @@
 		<description><![CDATA[
 <p>This module contains the OpenCms administration tools for managing the content of resources.<p>
 <p>Its includes file properties and content elements management tools.<p>
-<p><i>(c) 2004-2005 by Alkacon Software (http://www.alkacon.com).</i></p>
+<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
 		<version>0.9.6</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>

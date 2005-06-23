@@ -14,7 +14,7 @@
     <display-name>OpenCms JSP standard taglib</display-name>
     <description>
         The standard OpenCms / JSP integration tag library.
-        Developed by Alkacon Software / Alexander Kandzior (a.kandzior@alkacon.de)
+        Developed by Alkacon Software GmbH / Alexander Kandzior (a.kandzior@alkacon.de)
     </description>
 
     <tag>

@@ -14,7 +14,7 @@
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms Workplace maintainance tools.<p>
-<p><i>(c) 2005 by Alkacon Software (http://www.alkacon.com).</i></p>]]></description>
+<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
 		<version>0.9.3</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
