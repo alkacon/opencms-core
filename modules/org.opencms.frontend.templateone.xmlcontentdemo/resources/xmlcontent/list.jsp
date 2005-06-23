@@ -6,7 +6,7 @@
 
 <cms:include file="list_content.html" element="header" editable="true"/> 
 
-<cms:contentload collector="${property.collector}" param="${property.xmlcontent-demo}article_${number}.html|25" editable="true">
+<cms:contentload collector="${property.collector}" param="${property.xmlcontent-demo}article_${number}.html|article" editable="true">
 
 <div class="element">
 

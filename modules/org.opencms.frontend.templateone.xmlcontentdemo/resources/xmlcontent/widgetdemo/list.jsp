@@ -6,7 +6,7 @@
 
 <cms:include file="list_content.html" element="header" editable="true"/>
 
-<cms:contentload collector="allInFolderDateReleasedDesc" param="${property.xmlcontent-demo}widgetdemo_${number}|26" editable="true">
+<cms:contentload collector="allInFolderDateReleasedDesc" param="${property.xmlcontent-demo}widgetdemo_${number}|widgetdemo" editable="true">
 
 <%@ include file="detail_include.txt" %>
 

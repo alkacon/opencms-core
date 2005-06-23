@@ -1,7 +1,7 @@
 <%@ page session="false" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
 
-<cms:contentload collector="allInSubTreeDateReleasedDesc" property="xmlcontent-side-uri" param="/article_${number}.html|25|4" editable="true">
+<cms:contentload collector="allInSubTreeDateReleasedDesc" property="xmlcontent-side-uri" param="/article_${number}.html|article|4" editable="true">
 
 <div class="element2">
 
