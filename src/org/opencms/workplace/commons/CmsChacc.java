@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/06/22 15:33:02 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/23 08:04:29 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -631,6 +631,7 @@ public class CmsChacc extends CmsDialog {
         // set flags to show editable or non editable entries
         setEditable(false);
         setInheritOption(false);
+        String resName = getParamResource();
 
         try {
             // get the current users' permissions
@@ -641,6 +642,10 @@ public class CmsChacc extends CmsDialog {
             if (resource.isFolder()) {
                 // only folders have the inherit option activated
                 setInheritOption(true);
+                if (! resName.endsWith("/")) {
+                    // append manually a "/" to folder name to avoid issues with check if resource is in project
+                    resName += "/";
+                }
             }
         } catch (CmsException e) {
             // can usually be ignored
@@ -648,11 +653,12 @@ public class CmsChacc extends CmsDialog {
                 LOG.info(e.getLocalizedMessage());
             }
         }
-
+        
         // check the current users permission to change access control entries
-        if ((!getCms().getRequestContext().currentProject().isOnlineProject() && getCms().isInsideCurrentProject(
-            getParamResource()))
-            && (getCms().hasRole(CmsRole.VFS_MANAGER) || ((m_curPermissions.getAllowedPermissions() & CmsPermissionSet.PERMISSION_CONTROL) > 0 && !((m_curPermissions.getDeniedPermissions() & CmsPermissionSet.PERMISSION_CONTROL) > 0)))) {
+        if ((!getCms().getRequestContext().currentProject().isOnlineProject() && getCms().isInsideCurrentProject(resName))
+            && (getCms().hasRole(CmsRole.VFS_MANAGER) || ((m_curPermissions.getAllowedPermissions() 
+            & CmsPermissionSet.PERMISSION_CONTROL) > 0 && !((m_curPermissions.getDeniedPermissions() 
+            & CmsPermissionSet.PERMISSION_CONTROL) > 0)))) {
             setEditable(true);
         }
     }
