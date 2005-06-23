@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.133 $
+ * Date   : $Date: 2005/06/23 13:26:54 $
+ * Version: $Revision: 1.134 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.Map;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.133 $
+ * @version $Revision: 1.134 $
  * 
  * @since 6.0.0 
  */
@@ -1400,7 +1400,9 @@ public class CmsObject {
     }
 
     /**
-     * Returns all users of a given group.<p>
+     * Returns all direct users of a given group.<p>
+     *
+     * Users that are "indirectly" in the group are not returned in the result.<p>
      *
      * @param groupname the name of the group to get all users for
      * 
