@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo1.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -56,8 +55,9 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
- * @since 5.9.1
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
 
@@ -85,8 +85,7 @@ public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
-    
+
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
@@ -95,7 +94,7 @@ public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
         // not implemented for this demo
 
     }
-    
+
     /**
      * Builds the HTML for the demo1 form.<p>
      * 
@@ -154,6 +153,14 @@ public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return new String[] {"page1"};
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
@@ -182,14 +189,5 @@ public class CmsAdminWidgetDemo1 extends CmsWidgetDialog {
             // set the default action               
             setAction(ACTION_DEFAULT);
         }
-    }
-    
-    
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
-     */
-    protected String[] getPageArray() {
-
-        return new String[] {"page1"};
     }
 }

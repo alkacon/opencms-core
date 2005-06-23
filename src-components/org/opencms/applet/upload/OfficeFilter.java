@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/OfficeFilter.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/23 09:05:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,17 +30,21 @@
  */
 
 package org.opencms.applet.upload;
+
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
-
 
 /**
  * Filter for fileselector box, filters office files.<p>
  * 
  * Filetypes returned by this filter are DOC, XLS, PPT and PDF.
- * Based on the Java 1.4 example.
+ * Based on the Java 1.4 example.<p>
  *
  * @author Michael Emmerich 
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class OfficeFilter extends FileFilter {
 
@@ -49,13 +53,14 @@ public class OfficeFilter extends FileFilter {
      * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
      */
     public boolean accept(File f) {
+
         if (f.isDirectory()) {
             return true;
         }
 
         String extension = FileUploadUtils.getExtension(f);
         if (extension != null) {
-            return (extension.equals("doc") || extension.equals("xls") || extension.equals("pdf") || extension.equals("ppt")); 
+            return (extension.equals("doc") || extension.equals("xls") || extension.equals("pdf") || extension.equals("ppt"));
         } else {
             return false;
         }
@@ -65,6 +70,7 @@ public class OfficeFilter extends FileFilter {
      * @see javax.swing.filechooser.FileFilter#getDescription()
      */
     public String getDescription() {
+
         return "Office";
     }
 }

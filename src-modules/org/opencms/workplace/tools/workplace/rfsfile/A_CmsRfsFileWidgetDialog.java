@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/A_CmsRfsFileWidgetDialog.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,10 +54,10 @@ import javax.servlet.jsp.PageContext;
  *  
  * 
  * @author  Achim Westermann 
- * @version $Revision: 1.3 $
  * 
- * @since 6.0
- *  
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsRfsFileWidgetDialog extends CmsWidgetDialog {
 

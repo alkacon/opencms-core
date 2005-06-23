@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,8 +54,10 @@ import javax.servlet.jsp.PageContext;
  * User groups view.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.4 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsUserGroupsList extends A_CmsUserGroupsList {
 
@@ -199,9 +201,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
         // get column for state
         CmsListColumnDefinition stateCol = metadata.getColumnDefinition(LIST_COLUMN_STATE);
         // add remove action
-        CmsGroupStateAction stateAction = new CmsGroupStateAction(
-            LIST_ACTION_REMOVE, getCms(),
-            getParamUsername());
+        CmsGroupStateAction stateAction = new CmsGroupStateAction(LIST_ACTION_REMOVE, getCms(), getParamUsername());
         stateAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_REMOVE_NAME_0));
         stateAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_REMOVE_HELP_0));
         stateAction.setIconPath(ICON_MINUS);
@@ -209,9 +209,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
         // get column for name
         CmsListColumnDefinition nameCol = metadata.getColumnDefinition("cn");
         // add default remove action
-        CmsGroupStateAction removeAction = new CmsGroupStateAction(
-            LIST_DEFACTION_REMOVE, getCms(),
-            getParamUsername());
+        CmsGroupStateAction removeAction = new CmsGroupStateAction(LIST_DEFACTION_REMOVE, getCms(), getParamUsername());
         removeAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_REMOVE_NAME_0));
         removeAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_REMOVE_HELP_0));
         nameCol.setDefaultAction(removeAction);

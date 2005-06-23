@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/06/22 14:33:36 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/23 09:05:02 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,8 +74,10 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * @author Andreas Zahner  
- * @version $Revision: 1.21 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.22 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSchedulerList extends A_CmsListDialog {
 
@@ -93,9 +95,6 @@ public class CmsSchedulerList extends A_CmsListDialog {
 
     /** List action edit. */
     public static final String LIST_ACTION_EDIT = "ae";
-
-    /** List action edit. */
-    public static final String LIST_DEFACTION_EDIT = "de";
 
     /** List column activate. */
     public static final String LIST_COLUMN_ACTIVATE = "ca";
@@ -120,6 +119,9 @@ public class CmsSchedulerList extends A_CmsListDialog {
 
     /** List column next execution. */
     public static final String LIST_COLUMN_NEXTEXE = "cx";
+
+    /** List action edit. */
+    public static final String LIST_DEFACTION_EDIT = "de";
 
     /** List detail context info. */
     public static final String LIST_DETAIL_CONTEXTINFO = "dc";

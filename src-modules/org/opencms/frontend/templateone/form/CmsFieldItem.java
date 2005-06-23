@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldItem.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.frontend.templateone.form;
 
 /**
@@ -38,24 +38,27 @@ package org.opencms.frontend.templateone.form;
  * and represents an item for these types.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.4 $
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsFieldItem {
-    
+
     private boolean m_isSelected;
     private String m_label;
     private String m_value;
-    
+
     /**
      * Empty constructor creates an empty field item.<p>
      */
     public CmsFieldItem() {
-        
+
         m_label = "";
         m_isSelected = false;
         m_value = "";
     }
-    
+
     /**
      * Constructor that creates an initialized field item.<p>
      * 
@@ -64,12 +67,12 @@ public class CmsFieldItem {
      * @param isSelected true if the current item is selected, otherwise false
      */
     public CmsFieldItem(String value, String label, boolean isSelected) {
-        
+
         m_label = label;
         m_isSelected = isSelected;
         m_value = value;
     }
-    
+
     /**
      * Returns the label text of the field item.<p>
      * 
@@ -79,7 +82,7 @@ public class CmsFieldItem {
 
         return m_label;
     }
-    
+
     /**
      * Returns the value of the field item.<p>
      * 
@@ -89,7 +92,7 @@ public class CmsFieldItem {
 
         return m_value;
     }
-    
+
     /**
      * Returns if the current item is selected or not.<p>
      * 
@@ -99,7 +102,7 @@ public class CmsFieldItem {
 
         return m_isSelected;
     }
-    
+
     /**
      * Sets the label text of the field item.<p>
      * 
@@ -109,7 +112,7 @@ public class CmsFieldItem {
 
         m_label = label;
     }
-    
+
     /**
      * Sets if the current item is selected or not.<p>
      * 
@@ -119,7 +122,7 @@ public class CmsFieldItem {
 
         m_isSelected = isSelected;
     }
-    
+
     /**
      * Sets the value of the field item.<p>
      * 

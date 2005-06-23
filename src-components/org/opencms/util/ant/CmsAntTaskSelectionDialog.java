@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,10 @@ import javax.swing.border.Border;
  * This is a highly configurable Swing GUI dialog for selection.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.5 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  * 
  * @see CmsAntTaskSelectionPrompt
  */
@@ -55,31 +57,31 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
 
     /** Array of all entries. */
     private String[] m_allList = null;
-    /** Array of by default selected items. */
-    private String[] m_defList = null;
-    /** Associated ant task. */
-    private final CmsAntTaskSelectionPrompt m_promptTask;
-    
+
     /** Border. */
     private final Border m_border = BorderFactory.createEmptyBorder(C_BORDER_SIZE, C_BORDER_SIZE, 0, C_BORDER_SIZE);
-    /** Label for prompt. */
-    private JLabel m_label = null;
-    /** Main Panel. */
-    private final JPanel m_content = new JPanel();
-    /** Scrollable view. */
-    private final JScrollPane m_view = new JScrollPane(m_content);
-    /** Array of selection buttons, check boxes or radio buttons. */
-    private JToggleButton[] m_selections = null;
     /** Panel for buttons. */
     private final JPanel m_buttons = new JPanel();
-    /** Ok button. */
-    private final JButton m_ok = new JButton("Ok");
     /** Cancel button. */
     private final JButton m_cancel = new JButton("Cancel");
+    /** Main Panel. */
+    private final JPanel m_content = new JPanel();
+    /** Array of by default selected items. */
+    private String[] m_defList = null;
+    /** Label for prompt. */
+    private JLabel m_label = null;
+    /** Ok button. */
+    private final JButton m_ok = new JButton("Ok");
+    /** Associated ant task. */
+    private final CmsAntTaskSelectionPrompt m_promptTask;
     /** Select all button. */
     private final JButton m_selAll = new JButton("All");
+    /** Array of selection buttons, check boxes or radio buttons. */
+    private JToggleButton[] m_selections = null;
     /** Select none button. */
     private final JButton m_selNone = new JButton("None");
+    /** Scrollable view. */
+    private final JScrollPane m_view = new JScrollPane(m_content);
 
     /**
      * Default Constructor.<p>
@@ -94,7 +96,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         m_allList = m_promptTask.getAllValues().split(CmsAntTaskSelectionPrompt.LIST_SEPARATOR);
         m_defList = getDefaultList();
         m_label = new JLabel(m_promptTask.getPrompt());
-        
+
         addWindowListener(new WindowAdapter() {
 
             public void windowClosed(WindowEvent e) {
@@ -127,9 +129,13 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         m_content.setLayout(new GridLayout(m_selections.length, 1));
         for (int i = 0; i < m_selections.length; i++) {
             if (m_promptTask.isSingleSelection()) {
-                m_selections[i] = new JRadioButton(m_allList[i].trim(), firstPositionOfItemInArray(m_defList, m_allList[i]) != -1);
+                m_selections[i] = new JRadioButton(m_allList[i].trim(), firstPositionOfItemInArray(
+                    m_defList,
+                    m_allList[i]) != -1);
             } else {
-                m_selections[i] = new JCheckBox(m_allList[i].trim(), firstPositionOfItemInArray(m_defList, m_allList[i]) != -1);
+                m_selections[i] = new JCheckBox(
+                    m_allList[i].trim(),
+                    firstPositionOfItemInArray(m_defList, m_allList[i]) != -1);
             }
             m_content.add(m_selections[i]);
         }
@@ -138,10 +144,14 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
             for (int i = 0; i < m_selections.length; i++) {
                 group.add(m_selections[i]);
             }
-        } 
+        }
         getContentPane().add(m_view, BorderLayout.CENTER);
 
-        m_buttons.setBorder(BorderFactory.createEmptyBorder(C_BORDER_SIZE, C_BORDER_SIZE, C_BORDER_SIZE / 2, C_BORDER_SIZE));
+        m_buttons.setBorder(BorderFactory.createEmptyBorder(
+            C_BORDER_SIZE,
+            C_BORDER_SIZE,
+            C_BORDER_SIZE / 2,
+            C_BORDER_SIZE));
         m_ok.addActionListener(this);
         m_buttons.add(m_ok);
         m_cancel.addActionListener(this);
@@ -159,15 +169,15 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         if (e.getActionCommand().equals(m_ok.getText()) || e.getActionCommand().equals(m_cancel.getText())) {
             m_aborted = !e.getActionCommand().equals(m_ok.getText());
             setVisible(false);
-        }  else if (e.getActionCommand().equals(m_selAll.getText())) {
+        } else if (e.getActionCommand().equals(m_selAll.getText())) {
             for (int i = 0; i < m_selections.length; i++) {
                 m_selections[i].setSelected(true);
             }
-        }  else if (e.getActionCommand().equals(m_selNone.getText())) {
+        } else if (e.getActionCommand().equals(m_selNone.getText())) {
             for (int i = 0; i < m_selections.length; i++) {
                 m_selections[i].setSelected(false);
             }
-        } 
+        }
     }
 
     /**

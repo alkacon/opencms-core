@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldValue.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.frontend.templateone.form;
 
 import java.util.Iterator;
@@ -40,26 +40,29 @@ import java.util.Iterator;
  * or the final page after submission.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.4 $
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsFieldValue {
-    
-    private String m_label;   
+
+    private String m_label;
     private boolean m_show;
     private String m_value;
-    
+
     /**
      * Constructor that creates an initialized field item.<p>
      * 
      * @param field the form field to create the value from 
-     */ 
+     */
     public CmsFieldValue(CmsField field) {
-            
+
         if (field.needsItems()) {
             // check which item has been selected
             StringBuffer fieldValue = new StringBuffer(8);
             Iterator k = field.getItems().iterator();
-            boolean isSelected = false;             
+            boolean isSelected = false;
             while (k.hasNext()) {
                 CmsFieldItem currentItem = (CmsFieldItem)k.next();
                 if (currentItem.isSelected()) {
@@ -73,7 +76,7 @@ public class CmsFieldValue {
             m_value = fieldValue.toString();
         } else {
             // for other field types, append value
-            m_value = field.getValue(); 
+            m_value = field.getValue();
         }
 
         if (CmsField.C_TYPE_HIDDEN.equals(field.getType())) {
@@ -83,11 +86,11 @@ public class CmsFieldValue {
             // all other fields are shown           
             m_show = true;
         }
-        
+
         // set the label String of current field
         m_label = field.getLabel();
     }
-    
+
     /**
      * Returns the label text of the field item.<p>
      * 
@@ -97,7 +100,7 @@ public class CmsFieldValue {
 
         return m_label;
     }
-    
+
     /**
      * Returns the value of the field item.<p>
      * 
@@ -107,7 +110,7 @@ public class CmsFieldValue {
 
         return m_value;
     }
-    
+
     /**
      * Returns if the current item is shown or not.<p>
      * 
@@ -117,7 +120,7 @@ public class CmsFieldValue {
 
         return m_show;
     }
-    
+
     /**
      * Sets the label text of the field item.<p>
      * 
@@ -127,7 +130,7 @@ public class CmsFieldValue {
 
         m_label = label;
     }
-    
+
     /**
      * Sets if the current item is shown or not.<p>
      * 
@@ -137,7 +140,7 @@ public class CmsFieldValue {
 
         m_show = show;
     }
-    
+
     /**
      * Sets the value of the field item.<p>
      * 

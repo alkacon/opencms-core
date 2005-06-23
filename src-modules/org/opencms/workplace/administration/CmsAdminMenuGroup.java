@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenuGroup.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,19 +41,21 @@ import java.util.List;
  * Container for menu items that generates the necesary html code for a group of items.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.2 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsAdminMenuGroup {
+
+    /** Item container. */
+    private final CmsIdentifiableObjectContainer m_container = new CmsIdentifiableObjectContainer(true, true);
 
     /** Dhtml id, from name. */
     private final String m_id;
 
     /** Name of the group. */
     private final String m_name;
-
-    /** Item container. */
-    private final CmsIdentifiableObjectContainer m_container = new CmsIdentifiableObjectContainer(true, true);
 
     /**
      * Default Constructor.<p> 
@@ -65,26 +67,6 @@ public class CmsAdminMenuGroup {
 
         m_id = id;
         m_name = name;
-    }
-
-    /**
-     * Returns the dhtml unique id.<p>
-     *
-     * @return the dhtml unique id
-     */
-    public String getId() {
-
-        return m_id;
-    }
-
-    /**
-     * Returns the group name.<p>
-     *
-     * @return the group name
-     */
-    public String getName() {
-
-        return m_name;
     }
 
     /**
@@ -113,6 +95,16 @@ public class CmsAdminMenuGroup {
     }
 
     /**
+     * Returns the dhtml unique id.<p>
+     *
+     * @return the dhtml unique id
+     */
+    public String getId() {
+
+        return m_id;
+    }
+
+    /**
      * Retuns a list of menu items.<p>
      * 
      * @return a list of <code>{@link CmsAdminMenuItem}</code>s
@@ -120,6 +112,16 @@ public class CmsAdminMenuGroup {
     public List getMenuItems() {
 
         return m_container.elementList();
+    }
+
+    /**
+     * Returns the group name.<p>
+     *
+     * @return the group name
+     */
+    public String getName() {
+
+        return m_name;
     }
 
     /**
@@ -176,8 +178,7 @@ public class CmsAdminMenuGroup {
         html.append("'>\n");
         html.append("\t<tr>\n");
         html.append("\t\t<td class='titleBorder'>\n");
-        html
-            .append("\t\t\t<table border='0' cellspacing='0' cellpadding='0' width='100%' class='navTitle' onMouseOver='mouseGroupEvent(this, true);' onMouseOut='mouseGroupEvent(this, false);' onClick=\"return openGroup('");
+        html.append("\t\t\t<table border='0' cellspacing='0' cellpadding='0' width='100%' class='navTitle' onMouseOver='mouseGroupEvent(this, true);' onMouseOut='mouseGroupEvent(this, false);' onClick=\"return openGroup('");
         html.append(getId());
         html.append("');\" >\n");
         html.append("\t\t\t\t<tr>\n");

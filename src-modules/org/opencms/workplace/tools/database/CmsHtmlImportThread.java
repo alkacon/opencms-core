@@ -43,19 +43,21 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsHtmlImportThread extends A_CmsReportThread {
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlImportThread.class);
-    
+
     /** the CmsObject to use. */
     private CmsObject m_cms;
-    
+
     /** reference to the HtmlImport. */
     private CmsHtmlImport m_htmlImport;
-    
+
     /**
      * Constructor, creates a new HtmlImportThreat.<p>
      * 
@@ -63,7 +65,7 @@ public class CmsHtmlImportThread extends A_CmsReportThread {
      * @param imp the HtmlImport Object
      */
     public CmsHtmlImportThread(CmsObject cms, CmsHtmlImport imp) {
-      
+
         super(cms, "test test");
         initHtmlReport(cms.getRequestContext().getLocale());
         m_cms = cms;
@@ -71,27 +73,28 @@ public class CmsHtmlImportThread extends A_CmsReportThread {
         m_htmlImport = imp;
         start();
     }
-    
+
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
-        
+
         return getReport().getReportUpdate();
-    }   
-    
+    }
+
     /**
      * The run method which starts the import process.<p>
      */
     public void run() {
-        try {             
+
+        try {
             // do the import                
-            m_htmlImport.startImport(getReport());         
+            m_htmlImport.startImport(getReport());
         } catch (Exception e) {
             getReport().println(e);
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage());
             }
         }
-    }      
+    }
 }

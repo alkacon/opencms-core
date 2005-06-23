@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerToolHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 09:05:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace.tools.scheduler;
 
 import org.opencms.file.CmsObject;
@@ -40,10 +40,20 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * has not the needed privileges.<p>
  * 
  * @author Michael Moossen 
- * @version $Revision: 1.2 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSchedulerToolHandler extends A_CmsToolHandler {
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
+     */
+    public boolean isEnabled(CmsObject cms) {
+
+        return true;
+    }
 
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
@@ -51,14 +61,5 @@ public class CmsSchedulerToolHandler extends A_CmsToolHandler {
     public boolean isVisible(CmsObject cms) {
 
         return cms.hasRole(CmsRole.SCHEDULER_MANAGER);
-    }
-
-    
-    /**
-     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
-     */
-    public boolean isEnabled(CmsObject cms) {
-
-        return true;
     }
 }

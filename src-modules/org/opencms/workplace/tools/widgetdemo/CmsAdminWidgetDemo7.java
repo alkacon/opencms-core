@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo7.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,8 +53,9 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
- * @since 5.9.1
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
 
@@ -88,7 +89,7 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
@@ -117,7 +118,7 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
         }
         return result.toString();
     }
-    
+
     /**
      * Creates the dialog HTML for all occurences of one widget parameter.<p>  
      * 
@@ -130,7 +131,7 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
 
         List sequence = (List)getParameters().get(base.getName());
         int count = sequence.size();
-        
+
         // check if value is optional or multiple
         boolean addValue = false;
         if (count < base.getMaxOccurs()) {
@@ -140,7 +141,7 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
         if (count > base.getMinOccurs()) {
             removeValue = true;
         }
-        
+
         // check if value is present
         boolean disabledElement = false;
         if (count < 1) {
@@ -149,7 +150,7 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
             sequence.add(base);
             count = 1;
             if (base.getMinOccurs() == 0) {
-                disabledElement = true;    
+                disabledElement = true;
             }
         }
 
@@ -197,23 +198,23 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
             result.append("<td>");
             if (addValue || removeValue) {
                 result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-                 
+
                 if (!addValue) {
                     result.append(dialogHorizontalSpacer(24));
                 } else {
                     result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
                     result.append(buildAddElement(base.getName(), p.getIndex(), addValue));
                 }
-                
+
                 if (removeValue) {
                     if (!addValue) {
                         result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
                     }
                     result.append(buildRemoveElement(base.getName(), p.getIndex(), removeValue));
                 }
-                
+
                 result.append("</tr></table></td>");
-                
+
                 result.append("</tr></table>");
             }
             result.append("</td>");
@@ -230,7 +231,7 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         m_jobInfo = new CmsScheduledJobInfo();
-        m_contextInfo = new CmsContextInfo();        
+        m_contextInfo = new CmsContextInfo();
 
         addWidget(new CmsWidgetDialogParameter("stringwidget", new CmsInputWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("textwidget", new CmsTextareaWidget(), 0, 5));
@@ -242,6 +243,14 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter("htmlgalwidget", new CmsHtmlGalleryWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("tablegalwidget", new CmsTableGalleryWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("extgalwidget", new CmsLinkGalleryWidget(), 0, 5));
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return new String[] {"page1"};
     }
 
     /**
@@ -293,13 +302,5 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
             // set the default action               
             setAction(ACTION_DEFAULT);
         }
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
-     */
-    protected String[] getPageArray() {
-
-        return new String[] {"page1"};
     }
 }

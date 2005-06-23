@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo9.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,8 +51,9 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
- * @since 5.9.1
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
 
@@ -89,7 +90,7 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
@@ -198,11 +199,46 @@ public class CmsAdminWidgetDemo9 extends CmsWidgetDialog {
 
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.userName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.projectName", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.siteRoot", dC.getSiteRoot(), PAGES[0], new CmsVfsFileWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.requestedUri", dC.getRequestedUri(), PAGES[0], new CmsVfsFileWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.localeName", dC.getLocaleName(), PAGES[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.encoding", dC.getEncoding(), PAGES[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.remoteAddr", dC.getRemoteAddr(), PAGES[0], new CmsInputWidget(), 0, 1));
+        addWidget(new CmsWidgetDialogParameter(
+            m_jobInfo,
+            "contextInfo.siteRoot",
+            dC.getSiteRoot(),
+            PAGES[0],
+            new CmsVfsFileWidget(),
+            0,
+            1));
+        addWidget(new CmsWidgetDialogParameter(
+            m_jobInfo,
+            "contextInfo.requestedUri",
+            dC.getRequestedUri(),
+            PAGES[0],
+            new CmsVfsFileWidget(),
+            0,
+            1));
+        addWidget(new CmsWidgetDialogParameter(
+            m_jobInfo,
+            "contextInfo.localeName",
+            dC.getLocaleName(),
+            PAGES[0],
+            new CmsInputWidget(),
+            0,
+            1));
+        addWidget(new CmsWidgetDialogParameter(
+            m_jobInfo,
+            "contextInfo.encoding",
+            dC.getEncoding(),
+            PAGES[0],
+            new CmsInputWidget(),
+            0,
+            1));
+        addWidget(new CmsWidgetDialogParameter(
+            m_jobInfo,
+            "contextInfo.remoteAddr",
+            dC.getRemoteAddr(),
+            PAGES[0],
+            new CmsInputWidget(),
+            0,
+            1));
 
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGES[0], new CmsCheckboxWidget()));

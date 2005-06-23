@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/23 09:05:02 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,6 +61,10 @@ import org.apache.commons.httpclient.methods.MultipartPostMethod;
  * File Upload Applet, displays a file selector box to upload multiple resources into OpenCms.<p>
  * 
  * @author Michael Emmerich 
+ * 
+ * @version $Revision: 1.12 $ 
+ * 
+ * @since 6.0.0 
  */
 public class FileUploadApplet extends JApplet implements Runnable {
 

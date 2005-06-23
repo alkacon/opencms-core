@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,34 +38,37 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Andreas Zahner 
- * @since 5.9.2
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_FILE_EXPORT_0 = "ERR_ACTION_FILE_EXPORT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_FILE_UPLOAD_1 = "ERR_ACTION_FILE_UPLOAD_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FILE_NOT_FOUND_1 = "ERR_FILE_NOT_FOUND_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FILE_NOT_SPECIFIED_0 = "ERR_FILE_NOT_SPECIFIED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FILE_NOT_WRITTEN_0 = "ERR_FILE_NOT_WRITTEN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FOLDER_NOT_CREATED_0 = "ERR_FOLDER_NOT_CREATED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_FILE_BYTES_1 = "ERR_GET_FILE_BYTES_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_HTMLIMPORT_PARSE_1 = "ERR_HTMLIMPORT_PARSE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASE_ADMIN_TOOL_GROUP_0 = "GUI_DATABASE_ADMIN_TOOL_GROUP_0";
 
@@ -74,46 +77,46 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASE_ADMIN_TOOL_NAME_0 = "GUI_DATABASE_ADMIN_TOOL_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASE_EXPORT_FILE_BLOCK_0 = "GUI_DATABASE_EXPORT_FILE_BLOCK_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASE_EXPORT_RESOURCES_BLOCK_0 = "GUI_DATABASE_EXPORT_RESOURCES_BLOCK_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASE_EXPORT_SETTINGS_BLOCK_0 = "GUI_DATABASE_EXPORT_SETTINGS_BLOCK_0";
-    
-    /** Message constant for key in the resource bundle. */ 
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASE_IMPORT_BLOCK_0 = "GUI_DATABASE_IMPORT_BLOCK_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASE_IMPORT_FILE_0 = "GUI_DATABASE_IMPORT_FILE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_HELP_EXPORTFILE_1 = "GUI_EDITOR_HELP_EXPORTFILE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPORTSERVER_ADMIN_TOOL_HELP_0 = "GUI_EXPORTSERVER_ADMIN_TOOL_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPORTSERVER_ADMIN_TOOL_NAME_0 = "GUI_EXPORTSERVER_ADMIN_TOOL_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0 = "GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_ADMIN_TOOL_HELP_0 = "GUI_HTMLIMPORT_ADMIN_TOOL_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_ADMIN_TOOL_NAME_0 = "GUI_HTMLIMPORT_ADMIN_TOOL_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_CONSTRAINT_OFFLINE_0 = "GUI_HTMLIMPORT_CONSTRAINT_OFFLINE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_DESTDIR_1 = "GUI_HTMLIMPORT_DESTDIR_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_DIALOG_TITLE_0 = "GUI_HTMLIMPORT_DIALOG_TITLE_0";
 
@@ -134,64 +137,64 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_TEMPLATE_1 = "GUI_HTMLIMPORT_TEMPLATE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMPORTEXPORT_ADMIN_TOOL_GROUP_0 = "GUI_IMPORTEXPORT_ADMIN_TOOL_GROUP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMPORTHTTP_ADMIN_TOOL_HELP_0 = "GUI_IMPORTHTTP_ADMIN_TOOL_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMPORTHTTP_ADMIN_TOOL_NAME_0 = "GUI_IMPORTHTTP_ADMIN_TOOL_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMPORTSERVER_ADMIN_TOOL_HELP_0 = "GUI_IMPORTSERVER_ADMIN_TOOL_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMPORTSERVER_ADMIN_TOOL_NAME_0 = "GUI_IMPORTSERVER_ADMIN_TOOL_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_STATEXP_ADMIN_TOOL_HELP_0 = "GUI_STATEXP_ADMIN_TOOL_HELP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_STATEXP_ADMIN_TOOL_NAME_0 = "GUI_STATEXP_ADMIN_TOOL_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_STATEXP_THREAD_NAME_0 = "GUI_STATEXP_THREAD_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_HTMLIMPORT_CONVERSION_ERROR_0 = "LOG_HTMLIMPORT_CONVERSION_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_HTMLIMPORT_CONVERSION_ERROR_1 = "LOG_HTMLIMPORT_CONVERSION_ERROR_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_ARROW_RIGHT_0 = "RPT_ARROW_RIGHT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CREATE_EXTERNAL_LINK_0 = "RPT_CREATE_EXTERNAL_LINK_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CREATE_FILE_0 = "RPT_CREATE_FILE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CREATE_FOLDER_0 = "RPT_CREATE_FOLDER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CREATE_INDEX_0 = "RPT_CREATE_INDEX_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_HTML_IMPORT_BEGIN_0 = "RPT_HTML_IMPORT_BEGIN_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_HTML_IMPORT_END_0 = "RPT_HTML_IMPORT_END_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IMPORT_0 = "RPT_IMPORT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_OVERWRITE_0 = "RPT_OVERWRITE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SKIP_EXTERNAL_0 = "RPT_SKIP_EXTERNAL_0";
 

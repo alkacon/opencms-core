@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupStateAction.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,10 @@ import java.util.List;
  * Shows direct/indirect assigned groups and enabled/disabled a remove action.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.5 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsGroupStateAction extends CmsListDefaultAction {
 

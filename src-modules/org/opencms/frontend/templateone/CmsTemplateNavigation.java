@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,10 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.19 $
+ * 
+ * @version $Revision: 1.20 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
 
@@ -116,9 +119,6 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     /** Name of the property key to determine if the current element is shown in headnav. */
     public static final String C_PROPERTY_HEADNAV_USE = "style_head_nav_showitem";
 
-    /** Indicates if accessible version is shown. */
-    private boolean m_showAccessibleVersion;
-
     /** Stores the path to the head navigation start folder. */
     private String m_headNavFolder;
 
@@ -151,6 +151,9 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
 
     /** Stores the substituted path to the modules resources. */
     private String m_resPath;
+
+    /** Indicates if accessible version is shown. */
+    private boolean m_showAccessibleVersion;
 
     /** Flag that determines if the head navigation 1st row should use images instead of text links. */
     private boolean m_showHeadNavImages;

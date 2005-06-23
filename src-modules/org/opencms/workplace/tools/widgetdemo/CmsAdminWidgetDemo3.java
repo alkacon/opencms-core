@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo3.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,8 +60,9 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $
- * @since 5.9.1
+ * @version $Revision: 1.11 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsAdminWidgetDemo3 extends CmsWidgetDialog {
 
@@ -92,7 +93,7 @@ public class CmsAdminWidgetDemo3 extends CmsWidgetDialog {
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
@@ -196,8 +197,8 @@ public class CmsAdminWidgetDemo3 extends CmsWidgetDialog {
             // close table
             result.append("</table>\n");
         } catch (Throwable t) {
-            LOG.error(org.opencms.workplace.editors.Messages.get()
-                .key(org.opencms.workplace.editors.Messages.ERR_XML_EDITOR_0), t);
+            LOG.error(org.opencms.workplace.editors.Messages.get().key(
+                org.opencms.workplace.editors.Messages.ERR_XML_EDITOR_0), t);
         }
         return result.toString();
     }
@@ -213,7 +214,7 @@ public class CmsAdminWidgetDemo3 extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter("vfsfilewidget", new CmsVfsFileWidget()));
         addWidget(new CmsWidgetDialogParameter("imagegalwidget", new CmsImageGalleryWidget()));
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */

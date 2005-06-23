@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsList.java,v $
- * Date   : $Date: 2005/06/22 14:33:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,8 +66,10 @@ import javax.servlet.jsp.PageContext;
  * Main user account management view.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.6 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsGroupsList extends A_CmsListDialog {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyChange.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.tools.content;
 
 import org.opencms.file.CmsObject;
@@ -57,52 +58,53 @@ import org.apache.commons.logging.Log;
  * <ul>
  * <li>/administration/properties/change/index.html
  * </ul>
+ * <p>
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.7 $
  * 
- * @since 5.5.3
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsPropertyChange extends CmsDialog {
 
     /** Value for the action: show result. */
     public static final int ACTION_SHOWRESULT = 100;
-    
+
     /** Request parameter value for the action: show result. */
     public static final String DIALOG_SHOWRESULT = "showresult";
-    
+
     /** The dialog type. */
     public static final String DIALOG_TYPE = "propertychange";
     /** Request parameter name for the property name. */
-    public static final String PARAM_NEWVALUE = "newvalue"; 
+    public static final String PARAM_NEWVALUE = "newvalue";
     /** Request parameter name for the property name. */
-    public static final String PARAM_OLDVALUE = "oldvalue";    
+    public static final String PARAM_OLDVALUE = "oldvalue";
     /** Request parameter name for the property name. */
-    public static final String PARAM_PROPERTYNAME = "propertyname";  
+    public static final String PARAM_PROPERTYNAME = "propertyname";
     /** Request parameter name for the property name. */
-    public static final String PARAM_RECURSIVE = "recursive"; 
-    
+    public static final String PARAM_RECURSIVE = "recursive";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPropertyChange.class);
 
-    
     private List m_changedResources;
-    
+
     private String m_paramNewValue;
     private String m_paramOldValue;
     private String m_paramPropertyName;
     private String m_paramRecursive;
-    
+
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsPropertyChange(CmsJspActionElement jsp) {
-        
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -111,10 +113,10 @@ public class CmsPropertyChange extends CmsDialog {
      * @param res the JSP response
      */
     public CmsPropertyChange(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-        
+
         this(new CmsJspActionElement(context, req, res));
-    }          
-    
+    }
+
     /**
      * Builds the html for the property definition select box.<p>
      * 
@@ -124,7 +126,7 @@ public class CmsPropertyChange extends CmsDialog {
      * @return the html for the property definition select box
      */
     public static String buildSelectProperty(CmsObject cms, String selectValue, String attributes) {
-        
+
         List propertyDef = new ArrayList();
         try {
             // get all property definitions
@@ -135,19 +137,19 @@ public class CmsPropertyChange extends CmsDialog {
                 LOG.info(e);
             }
         }
-        
+
         int propertyCount = propertyDef.size();
         List options = new ArrayList(propertyCount + 1);
         options.add(CmsEncoder.escapeXml(selectValue));
-        
-        for (int i=0; i<propertyCount; i++) {
+
+        for (int i = 0; i < propertyCount; i++) {
             // loop property definitions and get definition name
             CmsPropertyDefinition currDef = (CmsPropertyDefinition)propertyDef.get(i);
             options.add(CmsEncoder.escapeXml(currDef.getName()));
         }
-        
+
         CmsDialog wp = new CmsDialog(null);
-        return wp.buildSelect(attributes, options, options, -1); 
+        return wp.buildSelect(attributes, options, options, -1);
     }
 
     /**
@@ -156,48 +158,48 @@ public class CmsPropertyChange extends CmsDialog {
      * @throws JspException if problems including sub-elements occur
      */
     public void actionChange() throws JspException {
-        
+
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
             boolean recursive = Boolean.valueOf(getParamRecursive()).booleanValue();
-            if (performChangeOperation(recursive))  {
+            if (performChangeOperation(recursive)) {
                 // if no exception is caused and "true" is returned change property operation was successful
-                setAction(ACTION_SHOWRESULT); 
-            } else  {
+                setAction(ACTION_SHOWRESULT);
+            } else {
                 // "false" returned, display "please wait" screen
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
-            }    
-        } catch (Throwable e) {              
+            }
+        } catch (Throwable e) {
             // error while changing property values, show error dialog
             includeErrorpage(this, e);
-            
+
         }
-    } 
-    
+    }
+
     /**
      * Builds the html for the result list of resources where the property was changed.<p>
      * 
      * @return the html for the result list
      */
     public String buildResultList() {
-        
+
         StringBuffer result = new StringBuffer(16);
         if (getChangedResources() != null && getChangedResources().size() > 0) {
             // at least one resource property value has been changed, show list
-            for (int i=0; i<getChangedResources().size(); i++) {
+            for (int i = 0; i < getChangedResources().size(); i++) {
                 CmsResource res = (CmsResource)getChangedResources().get(i);
                 String resName = getCms().getSitePath(res);
                 result.append(resName);
                 result.append("<br>\n");
-            }    
+            }
         } else {
             // nothing was changed, show message
             result.append(key("input.propertychange.result.none"));
         }
         return result.toString();
     }
-    
+
     /**
      * Builds the html for the property definition select box.<p>
      * 
@@ -205,10 +207,10 @@ public class CmsPropertyChange extends CmsDialog {
      * @return the html for the property definition select box
      */
     public String buildSelectProperty(String attributes) {
-        
+
         return buildSelectProperty(getCms(), key("please.select"), attributes);
     }
-    
+
     /**
      * Returns the value of the newvalue parameter.<p>
      *
@@ -218,7 +220,7 @@ public class CmsPropertyChange extends CmsDialog {
 
         return m_paramNewValue;
     }
-    
+
     /**
      * Returns the value of the oldvalue parametere.<p>
      *
@@ -228,7 +230,7 @@ public class CmsPropertyChange extends CmsDialog {
 
         return m_paramOldValue;
     }
-    
+
     /**
      * Returns the value of the propertyname parameter.<p>
      *
@@ -238,7 +240,7 @@ public class CmsPropertyChange extends CmsDialog {
 
         return m_paramPropertyName;
     }
-    
+
     /**
      * Returns the value of the recursive parameter.<p>
      *
@@ -248,25 +250,25 @@ public class CmsPropertyChange extends CmsDialog {
 
         return m_paramRecursive;
     }
-    
+
     /**
      * Returns the height for the result list of changed resources.<p>
      * 
      * @return the height for the result list of changed resources
      */
     public String getResultListHeight() {
-        
+
         if (getChangedResources() != null && getChangedResources().size() > 0) {
             int height = getChangedResources().size() * 14;
             if (height > 300) {
-                height = 300;    
+                height = 300;
             }
             return "" + height;
         } else {
             return "14";
         }
-    } 
-    
+    }
+
     /**
      * Sets the value of the newvalue parameter.<p>
      *
@@ -276,7 +278,7 @@ public class CmsPropertyChange extends CmsDialog {
 
         m_paramNewValue = paramNewValue;
     }
-    
+
     /**
      * Sets the value of the oldvalue parameter.<p>
      *
@@ -286,7 +288,7 @@ public class CmsPropertyChange extends CmsDialog {
 
         m_paramOldValue = paramOldValue;
     }
-    
+
     /**
      * Sets the value of the propertyname parameter.<p>
      *
@@ -296,7 +298,7 @@ public class CmsPropertyChange extends CmsDialog {
 
         m_paramPropertyName = paramPropertyName;
     }
-    
+
     /**
      * Sets the value of the recursive parameter.<p>
      *
@@ -311,7 +313,7 @@ public class CmsPropertyChange extends CmsDialog {
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        
+
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
@@ -323,15 +325,15 @@ public class CmsPropertyChange extends CmsDialog {
             setAction(ACTION_OK);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
             setAction(ACTION_WAIT);
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
-        } else {                        
+        } else {
             setAction(ACTION_DEFAULT);
             // build title for change property value dialog     
             setParamTitle(key("title.propertychange"));
-        }      
+        }
     }
-    
+
     /**
      * Returns the changed resources that were affected by the property change action.<p>
      *
@@ -341,7 +343,7 @@ public class CmsPropertyChange extends CmsDialog {
 
         return m_changedResources;
     }
-    
+
     /**
      * Performs the main property change value operation on the resource property.<p>
      * 
@@ -352,20 +354,25 @@ public class CmsPropertyChange extends CmsDialog {
     private boolean performChangeOperation(boolean recursive) throws CmsException {
 
         // on recursive property changes display "please wait" screen
-        if (recursive && ! DIALOG_WAIT.equals(getParamAction())) {
+        if (recursive && !DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
         }
-        
+
         // lock the selected resource
-        checkLock(getParamResource());        
+        checkLock(getParamResource());
         // change the property values    
         List changedResources = new ArrayList();
-        changedResources = getCms().changeResourcesInFolderWithProperty(getParamResource(), getParamPropertyName(), getParamOldValue(), getParamNewValue(), recursive);
+        changedResources = getCms().changeResourcesInFolderWithProperty(
+            getParamResource(),
+            getParamPropertyName(),
+            getParamOldValue(),
+            getParamNewValue(),
+            recursive);
         setChangedResources(changedResources);
         return true;
     }
-    
+
     /**
      * Sets the changed resources that were affected by the property change action.<p>
      *

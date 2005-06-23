@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImageFileView.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 09:05:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,9 +43,13 @@ import javax.swing.filechooser.FileView;
 /**
  * Image File View class, plugs image preview into the file selector box.<p>
  * 
- * Based on the Java 1.4 example.
+ * Based on the Java 1.4 example.<p>
+ * 
  * @author Michael Emmerich 
  *
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public class ImageFileView extends FileView {
 

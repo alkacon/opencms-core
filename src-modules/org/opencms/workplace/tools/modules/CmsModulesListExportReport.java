@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesListExportReport.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,8 +52,10 @@ import javax.servlet.jsp.PageContext;
  * Provides a report for exporting modules.<p> 
  *
  * @author  Michael Emmerich 
- * @version $Revision: 1.5 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsModulesListExportReport extends A_CmsListReport {
 
@@ -123,19 +125,19 @@ public class CmsModulesListExportReport extends A_CmsListReport {
         // get all module resources
         List resList = OpenCms.getModuleManager().getModule(moduleName).getResources();
         // check if all resources are valid
-        ArrayList resListCopy = new ArrayList();  
+        ArrayList resListCopy = new ArrayList();
         for (Iterator it = resList.iterator(); it.hasNext();) {
             String res = (String)it.next();
             try {
                 if (res != null) {
-                    getCms().readResource(res);       
-                    resListCopy.add(res);                 
+                    getCms().readResource(res);
+                    resListCopy.add(res);
                 }
             } catch (CmsException e) {
                 // resource did not exist / could not be read
             }
-        }  
-             
+        }
+
         String[] resources = new String[resListCopy.size()];
 
         for (int i = 0; i < resListCopy.size(); i++) {
@@ -154,9 +156,9 @@ public class CmsModulesListExportReport extends A_CmsListReport {
         moduleExportHandler.setModuleName(moduleName.replace('\\', '/'));
         moduleExportHandler.setAdditionalResources(resources);
         moduleExportHandler.setDescription(Messages.get().key(
-            getLocale(), 
-            Messages.GUI_MODULES_LIST_EXPORT_REPORT_HANDLER_NAME_1, 
-            new Object[]{moduleExportHandler.getModuleName()}));
+            getLocale(),
+            Messages.GUI_MODULES_LIST_EXPORT_REPORT_HANDLER_NAME_1,
+            new Object[] {moduleExportHandler.getModuleName()}));
 
         return moduleExportHandler;
     }

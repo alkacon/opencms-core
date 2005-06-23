@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,10 @@ import org.apache.commons.logging.Log;
  * output formats of a submitted form.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.10 $
+ * 
+ * @version $Revision: 1.11 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsFormHandler extends CmsJspActionElement {
 
@@ -312,7 +315,7 @@ public class CmsFormHandler extends CmsJspActionElement {
      * @param formConfigUri URI of the form configuration file, if not provided, current URI is used for configuration
      * @throws Exception if creating the form configuration objects fails
      */
-    public void init (HttpServletRequest req, String formConfigUri) throws Exception {
+    public void init(HttpServletRequest req, String formConfigUri) throws Exception {
 
         setErrors(new HashMap());
         m_fieldValues = null;
@@ -354,7 +357,7 @@ public class CmsFormHandler extends CmsJspActionElement {
                 theMail.setFrom(getFormConfiguration().getMailFrom());
             }
             theMail.setTo(createInternetAddresses(mailTo));
-            theMail.setSubject(getFormConfiguration().getMailSubjectPrefix() 
+            theMail.setSubject(getFormConfiguration().getMailSubjectPrefix()
                 + getFormConfiguration().getConfirmationMailSubject());
             theMail.setHtmlMsg(createMailTextFromFields(true, true));
             theMail.setTextMsg(createMailTextFromFields(false, true));

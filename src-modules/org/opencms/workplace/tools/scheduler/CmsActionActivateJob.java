@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Attic/CmsActionActivateJob.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/23 09:05:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace.tools.scheduler;
 
 import org.opencms.file.CmsObject;
@@ -43,11 +43,12 @@ import org.opencms.workplace.list.I_CmsListDirectAction;
  * @author Michael Moossen 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.3 $
- * @since 5.7.3
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
-public class CmsActionActivateJob  extends A_CmsListTwoStatesAction {
-    
+public class CmsActionActivateJob extends A_CmsListTwoStatesAction {
+
     /**
      * Default Constructor.<p>
      *
@@ -58,16 +59,16 @@ public class CmsActionActivateJob  extends A_CmsListTwoStatesAction {
 
         super(id, cms);
     }
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListToggleAction#selectAction()
      */
     public I_CmsListDirectAction selectAction() {
 
-        if (getItem() != null) {          
+        if (getItem() != null) {
             String jobId = getItem().getId();
             CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(jobId);
-            if (! job.isActive()) {
+            if (!job.isActive()) {
                 // activate job action
                 return getFirstAction();
             }
@@ -75,5 +76,5 @@ public class CmsActionActivateJob  extends A_CmsListTwoStatesAction {
         // deactivate job action
         return getSecondAction();
     }
-    
+
 }

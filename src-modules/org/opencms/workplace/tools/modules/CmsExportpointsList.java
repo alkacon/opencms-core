@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsList.java,v $
- * Date   : $Date: 2005/06/22 14:33:36 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,8 +65,10 @@ import javax.servlet.jsp.PageContext;
  * Module exportpoint view.<p>
  * 
  * @author Michael Emmerich  
- * @version $Revision: 1.8 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsExportpointsList extends A_CmsListDialog {
 
@@ -75,9 +77,6 @@ public class CmsExportpointsList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_ACTION_EDIT = "ae";
-
-    /** list action id constant. */
-    public static final String LIST_DEFACTION_EDIT = "de";
 
     /** List column delete. */
     public static final String LIST_COLUMN_DELETE = "cd";
@@ -93,6 +92,9 @@ public class CmsExportpointsList extends A_CmsListDialog {
 
     /** List column name. */
     public static final String LIST_COLUMN_URI = "cu";
+
+    /** list action id constant. */
+    public static final String LIST_DEFACTION_EDIT = "de";
 
     /** list id constant. */
     public static final String LIST_ID = "lmep";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2005/06/22 14:33:36 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,8 +68,10 @@ import javax.servlet.jsp.PageContext;
  * Main project management view.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.10 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.11 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsProjectsList extends A_CmsListDialog {
 
@@ -89,10 +91,10 @@ public class CmsProjectsList extends A_CmsListDialog {
     public static final String LIST_ACTION_PUBLISH = "ap";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_PUBLISH_ENABLED = "ape";
+    public static final String LIST_ACTION_PUBLISH_DISABLED = "apd";
 
     /** list action id constant. */
-    public static final String LIST_ACTION_PUBLISH_DISABLED = "apd";
+    public static final String LIST_ACTION_PUBLISH_ENABLED = "ape";
 
     /** list action id constant. */
     public static final String LIST_ACTION_UNLOCK = "au";

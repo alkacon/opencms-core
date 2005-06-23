@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSendEmailDialog.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,8 +55,9 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
- * @since 5.9.1
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsSendEmailDialog extends A_CmsMessageDialog {
 
@@ -110,6 +111,26 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
         }
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
+    }
+
+    /**
+     * Returns a warning if users have been excluded.<p>
+     * 
+     * @return a warning
+     */
+    public String getExcludedUsers() {
+
+        return m_excludedUsers;
+    }
+
+    /**
+     * Sets the warning message if users have been excluded.<p>
+     * 
+     * @param excludedUsers the warning message
+     */
+    public void setExcludedUsers(String excludedUsers) {
+
+        m_excludedUsers = excludedUsers;
     }
 
     /**
@@ -167,56 +188,6 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
     }
 
     /**
-     * Returns a warning if users have been excluded.<p>
-     * 
-     * @return a warning
-     */
-    public String getExcludedUsers() {
-
-        return m_excludedUsers;
-    }
-
-    /**
-     * Sets the warning message if users have been excluded.<p>
-     * 
-     * @param excludedUsers the warning message
-     */
-    public void setExcludedUsers(String excludedUsers) {
-
-        m_excludedUsers = excludedUsers;
-    }
-
-    /**
-     * Returns a semicolon separated list of email addresses.<p>
-     * 
-     * @return a semicolon separated list of email addresses
-     */
-    private String getEmailAddresses() {
-
-        List emails = new ArrayList();
-        Iterator itIds = idsList().iterator();
-        while (itIds.hasNext()) {
-            String id = itIds.next().toString();
-            CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(id);
-            if (session != null) {
-                String emailAddress = session.getUser().getEmail();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(emailAddress) && !emails.contains(emailAddress)) {
-                    emails.add(emailAddress);
-                }
-            }
-        }
-        StringBuffer result = new StringBuffer(256);
-        Iterator itEmails = emails.iterator();
-        while (itEmails.hasNext()) {
-            result.append(itEmails.next().toString());
-            if (itEmails.hasNext()) {
-                result.append("; ");
-            }
-        }
-        return result.toString();
-    }
-
-    /**
      * Returns a semicolon separated list of user names.<p>
      * 
      * @return a semicolon separated list of user names
@@ -265,6 +236,36 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
         while (itUsers.hasNext()) {
             result.append(itUsers.next().toString());
             if (itUsers.hasNext()) {
+                result.append("; ");
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns a semicolon separated list of email addresses.<p>
+     * 
+     * @return a semicolon separated list of email addresses
+     */
+    private String getEmailAddresses() {
+
+        List emails = new ArrayList();
+        Iterator itIds = idsList().iterator();
+        while (itIds.hasNext()) {
+            String id = itIds.next().toString();
+            CmsSessionInfo session = OpenCms.getSessionManager().getSessionInfo(id);
+            if (session != null) {
+                String emailAddress = session.getUser().getEmail();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(emailAddress) && !emails.contains(emailAddress)) {
+                    emails.add(emailAddress);
+                }
+            }
+        }
+        StringBuffer result = new StringBuffer(256);
+        Iterator itEmails = emails.iterator();
+        while (itEmails.hasNext()) {
+            result.append(itEmails.next().toString());
+            if (itEmails.hasNext()) {
                 result.append("; ");
             }
         }

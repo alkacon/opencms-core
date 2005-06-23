@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsToolHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,18 +40,12 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * has not the needed privileges.<p>
  * 
  * @author Michael Moossen 
- * @version $Revision: 1.2 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsProjectsToolHandler extends A_CmsToolHandler {
-
-    /**
-     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
-     */
-    public boolean isVisible(CmsObject cms) {
-
-        return cms.hasRole(CmsRole.PROJECT_MANAGER);
-    }
 
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
@@ -59,5 +53,13 @@ public class CmsProjectsToolHandler extends A_CmsToolHandler {
     public boolean isEnabled(CmsObject cms) {
 
         return true;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
+     */
+    public boolean isVisible(CmsObject cms) {
+
+        return cms.hasRole(CmsRole.PROJECT_MANAGER);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsContextInfoDetailsFormatter.java,v $
- * Date   : $Date: 2005/06/22 15:26:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/23 09:05:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,28 +43,29 @@ import java.util.Map;
  * This list item detail formatter creates a two column table to represent a context info object.<p>
  * 
  * @author Michael Moossen 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.7.3
  */
 public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
 
-    /** User message header. */
-    private CmsMessageContainer m_userMessage;
-    /** Project message header. */
-    private CmsMessageContainer m_projectMessage;
-    /** RootSite message header. */
-    private CmsMessageContainer m_rootSiteMessage;
-    /** Locale message header. */
-    private CmsMessageContainer m_localeMessage;
-    /** Remote message header. */
-    private CmsMessageContainer m_remoteAddrMessage;
-    /** Encoding message header. */
-    private CmsMessageContainer m_encodingMessage;
-    /** Request message header. */
-    private CmsMessageContainer m_requestedURIMessage;
     /** Cache for localized messages. */
     private Map m_cache = new HashMap();
-    
+    /** Encoding message header. */
+    private CmsMessageContainer m_encodingMessage;
+    /** Locale message header. */
+    private CmsMessageContainer m_localeMessage;
+    /** Project message header. */
+    private CmsMessageContainer m_projectMessage;
+    /** Remote message header. */
+    private CmsMessageContainer m_remoteAddrMessage;
+    /** Request message header. */
+    private CmsMessageContainer m_requestedURIMessage;
+    /** RootSite message header. */
+    private CmsMessageContainer m_rootSiteMessage;
+
+    /** User message header. */
+    private CmsMessageContainer m_userMessage;
+
     /**
      * Default constructor.<p>
      */
@@ -79,7 +80,7 @@ public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {
     public String format(Object data, Locale locale) {
 
         Map cache = (Map)m_cache.get(locale);
-        if (cache==null) {
+        if (cache == null) {
             cache = new HashMap();
             cache.put(m_userMessage, m_userMessage.key(locale));
             cache.put(m_projectMessage, m_projectMessage.key(locale));

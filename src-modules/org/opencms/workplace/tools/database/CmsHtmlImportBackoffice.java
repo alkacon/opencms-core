@@ -40,30 +40,33 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.TreeMap;
 
-
 /**
  * This class contains some utility methods for the HTMLImport Backoffice.<p>
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsHtmlImportBackoffice {
-    
+
     private CmsHtmlImportBackoffice() {
+
         // intentionally left blank
     }
-    
+
     /**
      * Returns a selectbox with all available locales.<p>
      * @param selectedLocale the selected Locale 
      * @return a selectbox with all available locales
      */
     public static String getLocales(Locale selectedLocale) {
+
         // the output buffer
-        StringBuffer output = new StringBuffer();        
+        StringBuffer output = new StringBuffer();
         try {
-            Iterator i = OpenCms.getLocaleManager().getAvailableLocales().iterator();     
+            Iterator i = OpenCms.getLocaleManager().getAvailableLocales().iterator();
             // generate the HTML code for the selectbox
             output.append("<select  name=\"locale\"  width=80 size=\"1\">");
 
@@ -71,7 +74,7 @@ public final class CmsHtmlImportBackoffice {
             while (i.hasNext()) {
                 Locale locale = (Locale)i.next();
                 String language = locale.getLanguage();
-                String displayLanguage = locale.getDisplayLanguage();                
+                String displayLanguage = locale.getDisplayLanguage();
                 output.append("<option ");
                 if (selectedLocale.equals(locale)) {
                     output.append("selected ");
@@ -80,29 +83,30 @@ public final class CmsHtmlImportBackoffice {
                 output.append(language);
                 output.append("\">");
                 output.append(displayLanguage);
-            }        
+            }
             output.append("</select>");
         } catch (Exception e) {
-            System.err.println(e);          
+            System.err.println(e);
         }
-       
+
         return new String(output);
     }
 
-   /**
-    * Creates a selectbox with all available templates in the OpenCms system.<p>
-    * 
-    * @param cms the current CmsObject
-    * @param selectedTemplate the preselcted template
-    * @return HTML-Code for the selectbox, containing all templates
-    */
+    /**
+     * Creates a selectbox with all available templates in the OpenCms system.<p>
+     * 
+     * @param cms the current CmsObject
+     * @param selectedTemplate the preselcted template
+     * @return HTML-Code for the selectbox, containing all templates
+     */
     public static String getTemplates(CmsObject cms, String selectedTemplate) {
+
         // the output buffer
-        StringBuffer output = new StringBuffer();        
+        StringBuffer output = new StringBuffer();
         TreeMap templates = null;
-        
+
         try {
-            templates = CmsNewResourceXmlPage.getTemplates(cms);      
+            templates = CmsNewResourceXmlPage.getTemplates(cms);
 
             // generate the HTML code for the selectbox
             output.append("<select name=\"template\" width=\"80\" size=\"1\">");
@@ -120,12 +124,12 @@ public final class CmsHtmlImportBackoffice {
                 output.append(path);
                 output.append("\">");
                 output.append(title);
-            }        
+            }
             output.append("</select>");
         } catch (CmsException e) {
-            System.err.println(e);          
+            System.err.println(e);
         }
-       
+
         return new String(output);
-    } 
+    }
 }

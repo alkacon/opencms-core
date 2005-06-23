@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEdit.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,9 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.7 $
- * @since 5.9.1
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsModulesEdit extends CmsModulesEditBase {
 
@@ -73,7 +74,7 @@ public class CmsModulesEdit extends CmsModulesEditBase {
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
      * 
@@ -100,8 +101,8 @@ public class CmsModulesEdit extends CmsModulesEditBase {
             result.append(createDialogRowsHtml(6, 7));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-        } 
-        
+        }
+
         // close table
         result.append(createWidgetTableEnd());
 
@@ -127,8 +128,7 @@ public class CmsModulesEdit extends CmsModulesEditBase {
         addWidget(new CmsWidgetDialogParameter(m_module, "actionClass", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "authorName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "authorEmail", PAGES[0], new CmsInputWidget()));
-   
+
     }
 
- 
 }

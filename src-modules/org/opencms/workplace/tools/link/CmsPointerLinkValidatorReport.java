@@ -52,9 +52,10 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Jan Baudisch 
- * @version $Revision: 1.3 $
  * 
- * @since 5.1.10
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsPointerLinkValidatorReport extends A_CmsListReport {
 

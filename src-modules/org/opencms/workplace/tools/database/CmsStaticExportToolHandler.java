@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsStaticExportToolHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,10 @@ import org.opencms.workplace.tools.CmsOnlyAdminToolHandler;
  * has not the needed privileges.<p>
  * 
  * @author Michael Moossen 
- * @version $Revision: 1.2 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsStaticExportToolHandler extends CmsOnlyAdminToolHandler {
 

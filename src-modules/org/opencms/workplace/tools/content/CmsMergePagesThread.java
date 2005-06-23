@@ -41,8 +41,13 @@ import org.apache.commons.logging.Log;
  * Thread for merging content pages.<p>
  * 
  * @author Michael Emmerich 
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsMergePagesThread extends A_CmsReportThread {
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMergePagesThread.class);
 
@@ -56,7 +61,9 @@ public class CmsMergePagesThread extends A_CmsReportThread {
      */
     public CmsMergePagesThread(CmsObject cms, CmsMergePages mergePages) {
 
-        super(cms, Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_MERGE_PAGES_THREAD_NAME_0, null));
+        super(
+            cms,
+            Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_MERGE_PAGES_THREAD_NAME_0, null));
         cms.getRequestContext().setUpdateSessionEnabled(false);
         initHtmlReport(cms.getRequestContext().getLocale());
         m_mergePages = mergePages;
@@ -84,6 +91,6 @@ public class CmsMergePagesThread extends A_CmsReportThread {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage());
             }
-        }        
+        }
     }
 }

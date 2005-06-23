@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo6.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,19 +57,26 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
- * @since 5.9.1
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
-    
+
     /** Value for the action: display dialog page 1. */
     public static final int ACTION_DISPLAY_PAGE_1 = 301;
-    
+
     /** Value for the action: display dialog page 2. */
-    public static final int ACTION_DISPLAY_PAGE_2 = 302;    
+    public static final int ACTION_DISPLAY_PAGE_2 = 302;
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "widgetdemo6";
+
+    /** Defines which pages are valid for this dialog. */
+    public static final String[] PAGE_ARRAY = {"page1", "page2"};
+
+    /** The allowed pages for this dialog in a List. */
+    public static final List PAGE_LIST = Arrays.asList(PAGE_ARRAY);
 
     /** The OpenCms context info object used for the job info. */
     CmsContextInfo m_contextInfo;
@@ -77,12 +84,6 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
     /** The job info object that is edited on this dialog. */
     CmsScheduledJobInfo m_jobInfo;
 
-    /** Defines which pages are valid for this dialog. */
-    public static final String[] PAGE_ARRAY = {"page1", "page2"};
-    
-    /** The allowed pages for this dialog in a List. */
-    public static final List PAGE_LIST = Arrays.asList(PAGE_ARRAY);    
-    
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -92,7 +93,7 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
 
         super(jsp);
     }
-        
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -104,7 +105,7 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
@@ -126,13 +127,13 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
         try {
             // create the dialog HTML
             result.append(createDialogHtml());
-        } catch (Throwable t) {            
+        } catch (Throwable t) {
             // since this is just a simple example...
             t.printStackTrace();
         }
         return result.toString();
     }
-    
+
     /**
      * Creats the HTML for the buttons on the dialog.<p>
      * 
@@ -149,12 +150,23 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsDialog#getCancelAction()
+     */
+    public String getCancelAction() {
+
+        // set the default action
+        setParamPage(PAGE_ARRAY[0]);
+
+        return DIALOG_SET;
+    }
+
+    /**
      * Creates the list of widgets for this dialog.<p>
      */
     protected void defineWidgets() {
 
         Object o = getSettings().getDialogObject();
-        if (! (o instanceof CmsScheduledJobInfo)) {
+        if (!(o instanceof CmsScheduledJobInfo)) {
             // create a new job info
             m_jobInfo = new CmsScheduledJobInfo();
             m_contextInfo = new CmsContextInfo();
@@ -163,7 +175,7 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
             // reuse job info object stored in session
             m_jobInfo = (CmsScheduledJobInfo)o;
             m_contextInfo = m_jobInfo.getContextInfo();
-        }        
+        }
 
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "jobName", PAGE_ARRAY[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "className", PAGE_ARRAY[0], new CmsInputWidget()));
@@ -178,7 +190,15 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(m_contextInfo, "remoteAddr", PAGE_ARRAY[1], new CmsInputWidget()));
 
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", PAGE_ARRAY[1], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGE_ARRAY[1], new CmsCheckboxWidget()));       
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGE_ARRAY[1], new CmsCheckboxWidget()));
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return PAGE_ARRAY;
     }
 
     /**
@@ -191,12 +211,12 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamPage()) || !PAGE_LIST.contains(getParamPage())) {
             // ensure a valid page is set
             setParamPage(PAGE_ARRAY[0]);
         }
-        
+
         // fill the widget map
         defineWidgets();
         fillWidgetValues(request);
@@ -232,64 +252,45 @@ public class CmsAdminWidgetDemo6 extends CmsWidgetDialog {
             actionToggleElement();
             setAction(ACTION_DEFAULT);
         } else if (DIALOG_BACK.equals(getParamAction())) {
-                       
+
             setAction(ACTION_DEFAULT);
             List errors = commitWidgetValues(PAGE_ARRAY[1]);
-            
+
             if (errors.size() > 0) {
                 setAction(ACTION_ERROR);
                 try {
-                    includeErrorpage(this, (Throwable)errors.get(0));   
+                    includeErrorpage(this, (Throwable)errors.get(0));
                 } catch (JspException e) {
                     // ignore
                 }
                 return;
             }
-            
+
             setParamPage(PAGE_ARRAY[0]);
-            
+
         } else if (DIALOG_CONTINUE.equals(getParamAction())) {
-            
+
             setAction(ACTION_DEFAULT);
             List errors = commitWidgetValues(PAGE_ARRAY[0]);
-            
+
             if (errors.size() > 0) {
                 setAction(ACTION_ERROR);
                 try {
-                    includeErrorpage(this, (Throwable)errors.get(0));   
+                    includeErrorpage(this, (Throwable)errors.get(0));
                 } catch (JspException e) {
                     // ignore
                 }
                 return;
             }
-            
+
             setParamPage(PAGE_ARRAY[1]);
-            
+
         } else {
             // set the default action               
             setAction(ACTION_DEFAULT);
         }
-        
+
         // save the current state of the job (may be changed because of the widget values)
-        getSettings().setDialogObject(m_jobInfo);        
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsDialog#getCancelAction()
-     */
-    public String getCancelAction() {
-
-        // set the default action
-        setParamPage(PAGE_ARRAY[0]);
-        
-        return DIALOG_SET;
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
-     */
-    protected String[] getPageArray() {
-
-        return PAGE_ARRAY;
+        getSettings().setDialogObject(m_jobInfo);
     }
 }

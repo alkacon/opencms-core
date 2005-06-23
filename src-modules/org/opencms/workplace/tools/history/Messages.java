@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,12 +38,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Jan Baudisch 
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ADMIN_HISTORY_CLEAR_THREAD_NAME_1 = "GUI_ADMIN_HISTORY_CLEAR_THREAD_NAME_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_DATE_1 = "ERR_INVALID_DATE_1";
@@ -53,6 +53,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_POSITIVE_INT_0 = "ERR_NO_POSITIVE_INT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADMIN_HISTORY_CLEAR_THREAD_NAME_1 = "GUI_ADMIN_HISTORY_CLEAR_THREAD_NAME_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String RPT_DELETE_HISTORY_BEGIN_0 = "RPT_DELETE_HISTORY_BEGIN_0";

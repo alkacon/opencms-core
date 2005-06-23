@@ -41,6 +41,10 @@ import org.apache.commons.logging.Log;
  * Thread for element rename.<p>
  * 
  * @author Armen Markarian 
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsElementRenameThread extends A_CmsReportThread {
 
@@ -85,6 +89,6 @@ public class CmsElementRenameThread extends A_CmsReportThread {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getMessage());
             }
-        }        
+        }
     }
 }

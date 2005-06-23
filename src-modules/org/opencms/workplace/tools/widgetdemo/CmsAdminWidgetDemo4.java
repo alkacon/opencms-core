@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo4.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,8 +66,9 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
- * @since 5.9.1
+ * @version $Revision: 1.14 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
 

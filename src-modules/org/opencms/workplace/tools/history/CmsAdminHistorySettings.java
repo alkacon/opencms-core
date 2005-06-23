@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,22 +49,24 @@ import javax.servlet.jsp.PageContext;
  * <ul>
  * <li>/system/workplace/administration/history/settings/index.html
  * </ul>
+ * <p>
  *
  * @author  Andreas Zahner 
- * @version $Revision: 1.6 $
  * 
- * @since 5.1
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsAdminHistorySettings extends CmsDialog {
-    
-    /** The dialog type. */
-    public static final String DIALOG_TYPE = "historysettings";
     
     /** Value for the action: save the settings. */
     public static final int ACTION_SAVE_EDIT = 300;
     
     /** Request parameter value for the action: save the settings. */
     public static final String DIALOG_SAVE_EDIT = "saveedit";
+    
+    /** The dialog type. */
+    public static final String DIALOG_TYPE = "historysettings";
 
     /**
      * Public constructor with JSP action element.<p>
@@ -87,24 +89,24 @@ public class CmsAdminHistorySettings extends CmsDialog {
     }
     
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * Performs the change of the history settings, this method is called by the JSP.<p>
+     * 
+     * @param request the HttpServletRequest
+     * @throws JspException if something goes wrong
      */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
-            setAction(ACTION_SAVE_EDIT);
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
-            setAction(ACTION_CANCEL);
-        } else { 
-            // set the default action               
-            setAction(ACTION_DEFAULT); 
-            setParamTitle(key("label.admin.history.settings"));
-        }      
-    } 
+    public void actionEdit(HttpServletRequest request) throws JspException {
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        try {
+            performEditOperation(request);
+            // set the request parameters before returning to the overview
+            actionCloseDialog();              
+        } catch (CmsIllegalArgumentException e) {
+            // error setting history values, show error dialog
+            
+            includeErrorpage(this, e);
+        }
+    }
     
     /**
      * Builds the HTML for the history settings input form.<p>
@@ -152,24 +154,24 @@ public class CmsAdminHistorySettings extends CmsDialog {
     }
     
     /**
-     * Performs the change of the history settings, this method is called by the JSP.<p>
-     * 
-     * @param request the HttpServletRequest
-     * @throws JspException if something goes wrong
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
-    public void actionEdit(HttpServletRequest request) throws JspException {
-        // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        try {
-            performEditOperation(request);
-            // set the request parameters before returning to the overview
-            actionCloseDialog();              
-        } catch (CmsIllegalArgumentException e) {
-            // error setting history values, show error dialog
-            
-            includeErrorpage(this, e);
-        }
-    }
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
+            setAction(ACTION_SAVE_EDIT);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+            setAction(ACTION_CANCEL);
+        } else { 
+            // set the default action               
+            setAction(ACTION_DEFAULT); 
+            setParamTitle(key("label.admin.history.settings"));
+        }      
+    } 
     
     /**
      * Performs the change of the history settings.<p>

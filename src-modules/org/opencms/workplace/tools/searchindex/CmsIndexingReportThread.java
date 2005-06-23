@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.5 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -58,17 +58,18 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
  * Implements methods to utilize a report thread for <code>CmsIndexingReport</code>.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.4 $
- * @since 5.3.1
- * @param Illegal old header!!!
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsIndexingReportThread extends A_CmsReportThread {
 
-    /** The name of the index to refresh or null for all indexes. */
-    private String m_indexName;
-
     /** The last error occured. */
     private Throwable m_error;
+
+    /** The name of the index to refresh or null for all indexes. */
+    private String m_indexName;
 
     /**
      * Creates an indexing Thread for full update.<p>
@@ -93,8 +94,10 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      */
     public CmsIndexingReportThread(CmsObject cms, String indexName) {
 
-        super(cms, Messages.get().key(cms.getRequestContext().getLocale(), 
-            Messages.GUI_INDEXING_THREAD_NAME_1, new Object[]{indexName}));
+        super(cms, Messages.get().key(
+            cms.getRequestContext().getLocale(),
+            Messages.GUI_INDEXING_THREAD_NAME_1,
+            new Object[] {indexName}));
         initHtmlReport(cms.getRequestContext().getLocale());
 
         m_indexName = indexName;
@@ -129,7 +132,9 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      */
     public void run() {
 
-        getReport().println(Messages.get().container(Messages.RPT_REBUILD_SEARCH_INDEXES_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().println(
+            Messages.get().container(Messages.RPT_REBUILD_SEARCH_INDEXES_BEGIN_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
         try {
 
             if (m_indexName == null) {
@@ -137,14 +142,19 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
             } else {
                 OpenCms.getSearchManager().updateIndex(m_indexName, getReport());
             }
-            getReport().println(Messages.get().container(Messages.RPT_REBUILD_SEARCH_INDEXES_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+            getReport().println(
+                Messages.get().container(Messages.RPT_REBUILD_SEARCH_INDEXES_END_0),
+                I_CmsReport.C_FORMAT_HEADLINE);
         } catch (CmsVfsResourceNotFoundException e) {
-            
-            getReport().println(Messages.get().container(Messages.RPT_SEARCH_CONFIG_NOT_FOUND_0), I_CmsReport.C_FORMAT_NOTE);
+
+            getReport().println(
+                Messages.get().container(Messages.RPT_SEARCH_CONFIG_NOT_FOUND_0),
+                I_CmsReport.C_FORMAT_NOTE);
             m_error = e;
         } catch (CmsException exc) {
-            getReport().println(org.opencms.search.Messages.get().container(
-                org.opencms.search.Messages.RPT_SEARCH_INDEXING_FAILED_0), I_CmsReport.C_FORMAT_WARNING);
+            getReport().println(
+                org.opencms.search.Messages.get().container(org.opencms.search.Messages.RPT_SEARCH_INDEXING_FAILED_0),
+                I_CmsReport.C_FORMAT_WARNING);
             getReport().println(exc);
             m_error = exc;
         }

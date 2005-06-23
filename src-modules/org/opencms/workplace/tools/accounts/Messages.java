@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,10 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Michael Moossen 
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
@@ -110,6 +113,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_USERROLES_DIRECT_ROLE_1 = "ERR_USERROLES_DIRECT_ROLE_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ACCOUNTS_ADMIN_TOOL_GROUP_0 = "GUI_ACCOUNTS_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ACCOUNTS_ADMIN_TOOL_HELP_0 = "GUI_ACCOUNTS_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_ACCOUNTS_ADMIN_TOOL_NAME_0 = "GUI_ACCOUNTS_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EDITGROUP_ADMIN_TOOL_GROUP_0 = "GUI_EDITGROUP_ADMIN_TOOL_GROUP_0";
@@ -230,15 +242,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_ADMIN_TOOL_NAME_0 = "GUI_GROUPS_ADMIN_TOOL_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_ACCOUNTS_ADMIN_TOOL_GROUP_0 = "GUI_ACCOUNTS_ADMIN_TOOL_GROUP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_ACCOUNTS_ADMIN_TOOL_HELP_0 = "GUI_ACCOUNTS_ADMIN_TOOL_HELP_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_ACCOUNTS_ADMIN_TOOL_NAME_0 = "GUI_ACCOUNTS_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_CHILDS_NAME_0 = "GUI_GROUPS_DETAIL_CHILDS_NAME_0";

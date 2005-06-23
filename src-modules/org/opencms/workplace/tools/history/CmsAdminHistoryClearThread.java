@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClearThread.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,9 @@ import org.opencms.report.I_CmsReport;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.4 $
- * @since 5.1.12
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsAdminHistoryClearThread extends A_CmsReportThread {
 
@@ -59,19 +60,21 @@ public class CmsAdminHistoryClearThread extends A_CmsReportThread {
      * @param params the necessary parameters to delete the backup versions
      */
     public CmsAdminHistoryClearThread(CmsObject cms, Map params) {
-        super(
-            cms,
-            Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_ADMIN_HISTORY_CLEAR_THREAD_NAME_1, 
-                new Object[] {cms.getRequestContext().currentProject().getName()}));
+
+        super(cms, Messages.get().key(
+            cms.getRequestContext().getLocale(),
+            Messages.GUI_ADMIN_HISTORY_CLEAR_THREAD_NAME_1,
+            new Object[] {cms.getRequestContext().currentProject().getName()}));
         m_params = params;
         initHtmlReport(cms.getRequestContext().getLocale());
         start();
     }
-    
+
     /**
      * @see org.opencms.report.A_CmsReportThread#getError()
      */
     public Throwable getError() {
+
         return m_error;
     }
 
@@ -79,25 +82,29 @@ public class CmsAdminHistoryClearThread extends A_CmsReportThread {
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
+
         return getReport().getReportUpdate();
     }
 
     /**
      * @see java.lang.Runnable#run()
      */
-    public void run() {              
-        getReport().println(Messages.get().container(Messages.RPT_DELETE_HISTORY_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
-        
+    public void run() {
+
+        getReport().println(
+            Messages.get().container(Messages.RPT_DELETE_HISTORY_BEGIN_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
+
         // get the necessary parameters from the map
         int versions = Integer.parseInt((String)m_params.get("versions"));
         long timeStamp = Long.parseLong((String)m_params.get("timeStamp"));
-    
+
         // delete the backup files
         try {
             getCms().deleteBackups(timeStamp, versions, getReport());
         } catch (CmsException e) {
             getReport().println(e);
-        }         
-        getReport().println(Messages.get().container(Messages.RPT_DELETE_HISTORY_END_0), I_CmsReport.C_FORMAT_HEADLINE);       
+        }
+        getReport().println(Messages.get().container(Messages.RPT_DELETE_HISTORY_END_0), I_CmsReport.C_FORMAT_HEADLINE);
     }
 }

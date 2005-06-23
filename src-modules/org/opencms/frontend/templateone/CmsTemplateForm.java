@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateForm.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,10 @@ import org.apache.commons.httpclient.util.URIUtil;
  * Provides methods to build interactive JSP forms.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.8 $
+ * 
+ * @version $Revision: 1.9 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class CmsTemplateForm extends CmsTemplateBean {
 
@@ -141,8 +144,7 @@ public abstract class CmsTemplateForm extends CmsTemplateBean {
         if (theAddress == null) {
             return false;
         }
-        return (theAddress.lastIndexOf(".") < (theAddress.length() - 2) && theAddress.lastIndexOf(".") > theAddress
-            .indexOf("@"));
+        return (theAddress.lastIndexOf(".") < (theAddress.length() - 2) && theAddress.lastIndexOf(".") > theAddress.indexOf("@"));
     }
 
     /**

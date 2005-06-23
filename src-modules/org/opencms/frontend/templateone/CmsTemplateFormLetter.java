@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormLetter.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,10 @@ import org.apache.commons.logging.Log;
  * Provides methods to build the page "letter to the editor" form.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.9 $
+ * 
+ * @version $Revision: 1.10 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsTemplateFormLetter extends CmsTemplateForm {
 

@@ -64,7 +64,9 @@ import org.w3c.tidy.Tidy;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsHtmlImportConverter {
 

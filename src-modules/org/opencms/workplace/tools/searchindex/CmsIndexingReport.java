@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReport.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.3 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -59,9 +59,10 @@ import javax.servlet.jsp.PageContext;
  * Implements methods for <code>CmsReport</code> to display the indexing progress.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.2 $
- * @since 5.3.1
- * @param Illegal old header.
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsIndexingReport extends CmsReport {
 

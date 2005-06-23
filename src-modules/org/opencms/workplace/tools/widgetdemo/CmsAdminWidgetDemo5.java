@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo5.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,8 +57,9 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
- * @since 5.9.1
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsAdminWidgetDemo5 extends CmsWidgetDialog {
 
@@ -92,7 +93,7 @@ public class CmsAdminWidgetDemo5 extends CmsWidgetDialog {
 
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
@@ -114,7 +115,7 @@ public class CmsAdminWidgetDemo5 extends CmsWidgetDialog {
         try {
             // create the dialog HTML
             result.append(createDialogHtml());
-        } catch (Throwable t) {            
+        } catch (Throwable t) {
             // since this is just a simple example...
             t.printStackTrace();
         }
@@ -127,7 +128,7 @@ public class CmsAdminWidgetDemo5 extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         m_jobInfo = new CmsScheduledJobInfo();
-        m_contextInfo = new CmsContextInfo();        
+        m_contextInfo = new CmsContextInfo();
 
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "jobName", new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "className", new CmsInputWidget()));
@@ -143,17 +144,24 @@ public class CmsAdminWidgetDemo5 extends CmsWidgetDialog {
 
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", new CmsCheckboxWidget()));
-        
 
         List testList = new ArrayList();
         testList.add("value1");
         testList.add("another value");
-        addWidget(new CmsWidgetDialogParameter(testList, "theList", new CmsInputWidget()));        
-        
+        addWidget(new CmsWidgetDialogParameter(testList, "theList", new CmsInputWidget()));
+
         Map testMap = new TreeMap();
         testMap.put("key1", "value1");
         testMap.put("key2", "another value");
-        addWidget(new CmsWidgetDialogParameter(testMap, "theMap", new CmsInputWidget()));        
+        addWidget(new CmsWidgetDialogParameter(testMap, "theMap", new CmsInputWidget()));
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return new String[] {"page1"};
     }
 
     /**
@@ -205,13 +213,5 @@ public class CmsAdminWidgetDemo5 extends CmsWidgetDialog {
             // set the default action               
             setAction(ACTION_DEFAULT);
         }
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
-     */
-    protected String[] getPageArray() {
-
-        return new String[] {"page1"};
     }
 }

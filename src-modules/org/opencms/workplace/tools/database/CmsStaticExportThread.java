@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsStaticExportThread.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,19 +46,21 @@ import javax.servlet.ServletException;
  * 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.2 $
- * @since 5.1.10
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsStaticExportThread extends A_CmsReportThread {
 
     private Throwable m_error;
-    
+
     /**
      * Creates a static export Thread.<p>
      * 
      * @param cms the current cms context
      */
     public CmsStaticExportThread(CmsObject cms) {
+
         super(cms, Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_STATEXP_THREAD_NAME_0, null));
         initHtmlReport(cms.getRequestContext().getLocale());
         start();
@@ -68,6 +70,7 @@ public class CmsStaticExportThread extends A_CmsReportThread {
      * @see org.opencms.report.A_CmsReportThread#getError()
      */
     public Throwable getError() {
+
         return m_error;
     }
 
@@ -75,6 +78,7 @@ public class CmsStaticExportThread extends A_CmsReportThread {
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
+
         return getReport().getReportUpdate();
     }
 
@@ -82,25 +86,29 @@ public class CmsStaticExportThread extends A_CmsReportThread {
      * @see java.lang.Runnable#run()
      */
     public void run() {
-        
-        getReport().println(org.opencms.staticexport.Messages.get().container(
-            org.opencms.staticexport.Messages.RPT_STATICEXPORT_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+
+        getReport().println(
+            org.opencms.staticexport.Messages.get().container(
+                org.opencms.staticexport.Messages.RPT_STATICEXPORT_BEGIN_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
         try {
             OpenCms.getStaticExportManager().exportFullStaticRender(true, getReport());
         } catch (CmsException e) {
             getReport().println(e);
         } catch (IOException e) {
-            getReport().println(e);            
+            getReport().println(e);
         } catch (ServletException e) {
             getReport().println(e);
-        }    
-     
+        }
+
         // append runtime statistics to report
-        getReport().print(org.opencms.report.Messages.get().container(
-            org.opencms.report.Messages.RPT_STAT_0));
-        getReport().println(org.opencms.report.Messages.get().container(
-            org.opencms.report.Messages.RPT_STAT_DURATION_1, getReport().formatRuntime()));     
-        getReport().println(org.opencms.staticexport.Messages.get().container(
-            org.opencms.staticexport.Messages.RPT_STATICEXPORT_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_STAT_0));
+        getReport().println(
+            org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_STAT_DURATION_1,
+                getReport().formatRuntime()));
+        getReport().println(
+            org.opencms.staticexport.Messages.get().container(org.opencms.staticexport.Messages.RPT_STATICEXPORT_END_0),
+            I_CmsReport.C_FORMAT_HEADLINE);
     }
 }

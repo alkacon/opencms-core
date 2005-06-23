@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/Attic/CmsField.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.frontend.templateone.form;
 
 import java.util.ArrayList;
@@ -40,7 +41,10 @@ import java.util.List;
  * e.g. the field type, label, name, validation rule, etc.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.5 $
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsField {
 
@@ -58,29 +62,29 @@ public class CmsField {
     public static final String C_TYPE_TEXT = "text";
     /** HTML field type: textarea. */
     public static final String C_TYPE_TEXTAREA = "textarea";
-    
+
     /** Regular expression to validate email addresses. */
     public static final String C_VALIDATION_EMAIL = "(\\w[-._\\w]*\\w@\\w[-._\\w]*\\w\\.\\w{2,4})";
-    
-    private List m_items;  
+
+    private List m_items;
     private String m_label;
     private boolean m_mandatory;
     private String m_name;
     private String m_type;
     private String m_validationExpression;
     private String m_value;
-    
+
     /**
      * Default constructor, creates an empty CmsField object.<p>
      */
     public CmsField() {
-        
+
         m_items = new ArrayList();
         m_mandatory = false;
         m_value = "";
         m_validationExpression = "";
     }
-    
+
     /**
      * Returns the list of items for select boxes, radio buttons and checkboxes.<p>
      * 
@@ -94,70 +98,70 @@ public class CmsField {
      * @return the list of items for select boxes, radio buttons and checkboxes
      */
     public List getItems() {
-        
+
         return m_items;
     }
-    
+
     /**
      * Returns the description text of the input field.<p>
      * 
      * @return the description text of the input field
      */
     public String getLabel() {
-        
+
         return m_label;
     }
-    
+
     /**
      * Returns the name of the input field.<p>
      * 
      * @return the name of the input field
      */
     public String getName() {
-        
+
         return m_name;
     }
-    
+
     /**
      * Returns the type of the input field, e.g. "text" or "select".<p>
      * 
      * @return the type of the input field
      */
     public String getType() {
-        
+
         return m_type;
     }
-    
+
     /**
      * Returns the regular expression that is used for validation of the field.<p>
      * 
      * @return the regular expression that is used for validation of the field
      */
     public String getValidationExpression() {
-        
+
         return m_validationExpression;
     }
-    
+
     /**
      * Returns the initial value of the field.<p>
      * 
      * @return the initial value of the field
      */
     public String getValue() {
-        
+
         return m_value;
     }
-    
+
     /**
      * Returns if this input field is mandatory.<p>
      * 
      * @return true if this input field is mandatory, otherwise false
      */
     public boolean isMandatory() {
-        
+
         return m_mandatory;
     }
-    
+
     /**
      * Checks if an item list is needed for this field.<p>
      * 
@@ -167,7 +171,7 @@ public class CmsField {
 
         return (C_TYPE_CHECKBOX.equals(getType()) || C_TYPE_SELECT.equals(getType()) || C_TYPE_RADIO.equals(this.getType()));
     }
-    
+
     /**
      * Sets the list of items for select boxes, radio buttons and checkboxes.<p>
      * 
@@ -181,68 +185,68 @@ public class CmsField {
      * @param items the list of items for select boxes, radio buttons and checkboxes
      */
     public void setItems(List items) {
-        
+
         m_items = items;
     }
-    
+
     /**
      * Sets the description text of the input field.<p>
      * 
      * @param description the description text of the input field
      */
     protected void setLabel(String description) {
-        
+
         m_label = description;
     }
-    
+
     /**
      * Sets if this input field is mandatory.<p>
      * 
      * @param mandatory true if this input field is mandatory, otherwise false
      */
     protected void setMandatory(boolean mandatory) {
-        
+
         m_mandatory = mandatory;
     }
-    
+
     /**
      * Sets the name of the input field.<p>
      * 
      * @param name the name of the input field
      */
     protected void setName(String name) {
-        
+
         m_name = name;
     }
-    
+
     /**
      * Sets the type of the input field, e.g. "text" or "select".<p>
      * 
      * @param type the type of the input field
      */
     protected void setType(String type) {
-        
+
         m_type = type;
     }
-    
+
     /**
      * Sets the regular expression that is used for validation of the field.<p>
      * 
      * @param expression the regular expression that is used for validation of the field
      */
     protected void setValidationExpression(String expression) {
-        
+
         m_validationExpression = expression;
     }
-    
+
     /**
      * Sets the initial value of the field.<p>
      * 
      * @param value the initial value of the field
      */
     protected void setValue(String value) {
-        
+
         m_value = value;
     }
-    
+
 }

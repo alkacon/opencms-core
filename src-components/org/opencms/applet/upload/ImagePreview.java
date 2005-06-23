@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImagePreview.java,v $
- * Date   : $Date: 2005/06/22 10:38:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 09:05:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,16 +50,20 @@ import javax.swing.JFileChooser;
 /**
  * Image preview for the file select box.<p>
  * 
- * Based on the Java 1.4 example
+ * Based on the Java 1.4 example.<p>
  * 
  * @author Michael Emmerich 
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public class ImagePreview extends JComponent implements PropertyChangeListener {
 
     private static final int C_MODE_EMPTY = 0;
     private static final int C_MODE_IMAGE = 1;
     private static final int C_MODE_TEXT = 2;
-    
+
     private File m_file;
     private Font m_font;
     private String m_messageNoPreview;

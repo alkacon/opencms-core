@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,12 +52,12 @@ import org.apache.commons.logging.Log;
  * Provides methods to build the dynamic CSS style sheet of template one.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.13 $
+ * 
+ * @version $Revision: 1.14 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsTemplateStyleSheet extends CmsJspActionElement {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsTemplateStyleSheet.class);
 
     /** Default file name of the CSS configuration file. */
     public static final String C_FILENAME_CONFIGFILE = "configuration_css";
@@ -70,6 +70,9 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
 
     /** Name of the property key to set the path to the configuration file. */
     public static final String C_PROPERTY_CONFIGFILE = "properties_style";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTemplateStyleSheet.class);
 
     /** Stores the style sheet configuration. */
     private CmsXmlContent m_configuration;
@@ -139,8 +142,7 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
             value = m_configuration.getStringValue(getCmsObject(), key, getRequestContext().getLocale());
             if (CmsStringUtil.isEmpty(value)) {
                 // value not found for current Locale, try to get it from first found Locale
-                value = m_configuration
-                    .getStringValue(getCmsObject(), key, (Locale)m_configuration.getLocales().get(0));
+                value = m_configuration.getStringValue(getCmsObject(), key, (Locale)m_configuration.getLocales().get(0));
             }
         } catch (Exception e) {
             // log error in debug mode
@@ -312,7 +314,7 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
                             C_NODE_OPTIONALCONFIG + "/headlines.set",
                             getRequestContext().getLocale());
                         // get default value String from XSD
-                        selectedValues = value.getContentDefinition().getContentHandler().getConfiguration(value);   
+                        selectedValues = value.getContentDefinition().getContentHandler().getConfiguration(value);
                         // get default size sequence from beginning of String
                         selectedValues = selectedValues.substring(0, selectedValues.indexOf('*'));
                     } else {

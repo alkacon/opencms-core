@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesListGroupFormatter.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 09:05:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,11 +40,13 @@ import java.util.Locale;
  * This list item detail formatter creates a nice output for modules groups.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.2 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsModulesListGroupFormatter implements I_CmsListFormatter {
-  
+
     /**
      * Default constructor.<p>
      */
@@ -57,18 +59,18 @@ public class CmsModulesListGroupFormatter implements I_CmsListFormatter {
      * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, java.util.Locale)
      */
     public String format(Object data, Locale locale) {
- 
+
         StringBuffer html = new StringBuffer(32);
-        
+
         String group = (String)data;
-        
+
         // simple solution so far, if no group name is given, display some dashes
         if (CmsStringUtil.isEmpty(group)) {
             html.append("---");
         } else {
             html.append(group);
         }
-        
+
         return html.toString();
     }
 
