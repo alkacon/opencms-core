@@ -1,31 +1,30 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskList.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.3 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskList.java,v $
+ * Date   : $Date: 2005/06/23 13:09:23 $
+ * Version: $Revision: 1.4 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2001  The OpenCms Group
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.org 
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.workplace;
 
@@ -35,13 +34,12 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskService;
 
 import com.opencms.legacy.CmsLegacyException;
-import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -60,14 +58,14 @@ import org.w3c.dom.Element;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/23 13:09:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
-    
+
     /**
      * Handling of the special workplace <CODE>&lt;TASKLIST&gt;</CODE> tags.
      * <P>
@@ -83,57 +81,67 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed button.
-     * @throws CmsException
+     * @throws CmsException if somethign goes wrong
      */
-    
-    public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, 
-            Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        
+
+    public Object handleSpecialWorkplaceTag(
+        CmsObject cms,
+        Element n,
+        A_CmsXmlContent doc,
+        Object callingObject,
+        Hashtable parameters,
+        CmsXmlLanguageFile lang) throws CmsException {
+
         // Get list definition values
         CmsXmlWpTemplateFile listdef = getTaskListDefinitions(cms);
         CmsRequestContext context = cms.getRequestContext();
         String listMethod = n.getAttribute("method");
-        
+
         // call the method for generating projectlist elements
         Method callingMethod = null;
         List list = new ArrayList();
         try {
-            callingMethod = callingObject.getClass().getMethod(listMethod, new Class[] {
-                CmsObject.class, CmsXmlLanguageFile.class
-            });
-            list = (List)callingMethod.invoke(callingObject, new Object[] {
-                cms, lang
-            });
-        }
-        catch(NoSuchMethodException exc) {
-            
+            callingMethod = callingObject.getClass().getMethod(
+                listMethod,
+                new Class[] {CmsObject.class, CmsXmlLanguageFile.class});
+            list = (List)callingMethod.invoke(callingObject, new Object[] {cms, lang});
+        } catch (NoSuchMethodException exc) {
+
             // The requested method was not found.
-            throwException("Could not find method " + listMethod + " in calling class " + callingObject.getClass().getName() 
-                    + " for generating lasklist content.", CmsLegacyException.C_NOT_FOUND);
-        }
-        catch(InvocationTargetException targetEx) {
-            
+            throwException("Could not find method "
+                + listMethod
+                + " in calling class "
+                + callingObject.getClass().getName()
+                + " for generating lasklist content.", CmsLegacyException.C_NOT_FOUND);
+        } catch (InvocationTargetException targetEx) {
+
             // the method could be invoked, but throwed a exception            
             // itself. Get this exception and throw it again.              
             Throwable e = targetEx.getTargetException();
-            if(!(e instanceof CmsException)) {
-                
+            if (!(e instanceof CmsException)) {
+
                 // Only print an error if this is NO CmsException
-                throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() 
-                        + " throwed an exception. " + e);
-            }
-            else {
-                
+                throwException("User method "
+                    + listMethod
+                    + " in calling class "
+                    + callingObject.getClass().getName()
+                    + " throwed an exception. "
+                    + e);
+            } else {
+
                 // This is a CmsException                
                 // Error printing should be done previously.
                 throw (CmsException)e;
             }
+        } catch (Exception exc2) {
+            throwException("User method "
+                + listMethod
+                + " in calling class "
+                + callingObject.getClass().getName()
+                + " was found but could not be invoked. "
+                + exc2, CmsLegacyException.C_XML_NO_USER_METHOD);
         }
-        catch(Exception exc2) {
-            throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() 
-                    + " was found but could not be invoked. " + exc2, CmsLegacyException.C_XML_NO_USER_METHOD);
-        }
-        
+
         /** StringBuffer for the generated output */
         StringBuffer result = new StringBuffer();
         String priority;
@@ -149,26 +157,30 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
-        GregorianCalendar newcal = new GregorianCalendar(cal.get(Calendar.YEAR), 
-                cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        GregorianCalendar newcal = new GregorianCalendar(
+            cal.get(Calendar.YEAR),
+            cal.get(Calendar.MONTH),
+            cal.get(Calendar.DAY_OF_MONTH),
+            0,
+            0,
+            0);
         long now = newcal.getTime().getTime();
         CmsTaskService taskService = cms.getTaskService();
-        for(int i = 0;i < list.size();i++) {
-            
+        for (int i = 0; i < list.size(); i++) {
+
             // get the actual project
             CmsTask task = (CmsTask)list.get(i);
             CmsProject project = null;
             projectname = "?";
             try {
                 project = taskService.readProject(task);
-            }
-            catch(Exception exc) {
-                
+            } catch (Exception exc) {
+
                 // no project - continue with next task
                 continue;
             }
-            if((project == null) || (project.getFlags() == com.opencms.core.I_CmsConstants.C_PROJECT_STATE_ARCHIVE)) {
-                
+            if ((project == null) || (project.getFlags() == com.opencms.core.I_CmsConstants.C_PROJECT_STATE_ARCHIVE)) {
+
                 // project was published - continue
                 continue;
             }
@@ -178,7 +190,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
             timeout = task.getTimeOut().getTime();
             listdef.setData("taskid", task.getId() + "");
             listdef.setData("count", i + "");
-            
+
             // making the context menus depending on the state of the task and             
             // the role of the user
             CmsUser owner = null;
@@ -186,58 +198,47 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
             try {
                 owner = taskService.readOwner(task);
                 ownerName = owner.getName();
-            }
-            catch(Exception exc) {
-                
-            
-            // ignore the exception
+            } catch (Exception exc) {
+
+                // ignore the exception
             }
             CmsUser editor = null;
             try {
                 editor = taskService.readAgent(task);
-            }
-            catch(Exception exc) {
-                
-            
-            // ignore the exception
+            } catch (Exception exc) {
+
+                // ignore the exception
             }
             CmsGroup role = null;
             String roleName = "";
             try {
                 role = taskService.readGroup(task);
                 roleName = role.getName();
-            }
-            catch(Exception exc) {
-                
-            
-            // ignore the exception
+            } catch (Exception exc) {
+
+                // ignore the exception
             }
             boolean isOwner = context.currentUser().equals(owner);
             boolean isEditor = context.currentUser().equals(editor);
             boolean isInRole = false;
             try {
                 isInRole = cms.userInGroup(context.currentUser().getName(), roleName);
+            } catch (Exception exc) {
+
+                // ignore the exception
             }
-            catch(Exception exc) {
-                
-            
-            // ignore the exception
-            }
-            
+
             // now decide which contex menu is appropriate
-            if(task.getState() == CmsTaskService.TASK_STATE_ENDED) {
-                if(isOwner) {
+            if (task.getState() == CmsTaskService.TASK_STATE_ENDED) {
+                if (isOwner) {
                     contextmenu = "task1";
-                }
-                else {
-                    if(isEditor) {
+                } else {
+                    if (isEditor) {
                         contextmenu = "task2";
-                    }
-                    else {
-                        if(isInRole) {
+                    } else {
+                        if (isInRole) {
                             contextmenu = "task3";
-                        }
-                        else {
+                        } else {
                             contextmenu = "task3";
                         }
                     }
@@ -245,68 +246,56 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
                 listdef.setData("contextmenu", contextmenu);
                 stateIcon = listdef.getProcessedDataValue("ok", callingObject);
                 style = listdef.getProcessedDataValue("style_ok", callingObject);
-            }
-            else {
-                if(task.getPercentage() == 0) {
-                    if(isOwner && isEditor) {
+            } else {
+                if (task.getPercentage() == 0) {
+                    if (isOwner && isEditor) {
                         contextmenu = "task4";
-                    }
-                    else {
-                        if(isOwner) {
+                    } else {
+                        if (isOwner) {
                             contextmenu = "task5";
-                        }
-                        else {
-                            if(isEditor) {
+                        } else {
+                            if (isEditor) {
                                 contextmenu = "task6";
-                            }
-                            else {
-                                if(isInRole) {
+                            } else {
+                                if (isInRole) {
                                     contextmenu = "task7";
-                                }
-                                else {
+                                } else {
                                     contextmenu = "task8";
                                 }
                             }
                         }
                     }
                     listdef.setData("contextmenu", contextmenu);
-                    if(timeout < now) {
+                    if (timeout < now) {
                         stateIcon = listdef.getProcessedDataValue("alert", callingObject);
                         style = listdef.getProcessedDataValue("style_alert", callingObject);
-                    }
-                    else {
+                    } else {
                         stateIcon = listdef.getProcessedDataValue("new", callingObject);
                         style = listdef.getProcessedDataValue("style_new", callingObject);
                     }
-                }
-                else {
-                    if(isOwner && isEditor) {
+                } else {
+                    if (isOwner && isEditor) {
                         contextmenu = "task9";
-                    }
-                    else {
-                        if(isOwner) {
+                    } else {
+                        if (isOwner) {
                             contextmenu = "task10";
-                        }
-                        else {
-                            if(isEditor) {
+                        } else {
+                            if (isEditor) {
                                 contextmenu = "task11";
-                            }
-                            else {
-                                if(isInRole) {
+                            } else {
+                                if (isInRole) {
                                     contextmenu = "task12";
-                                }
-                                else {
+                                } else {
                                     contextmenu = "task13";
                                 }
                             }
                         }
                     }
                     listdef.setData("contextmenu", contextmenu);
-                    if(timeout < now) {
+                    if (timeout < now) {
                         stateIcon = listdef.getProcessedDataValue("alert", callingObject);
                         style = listdef.getProcessedDataValue("style_alert", callingObject);
-                    }
-                    else {
+                    } else {
                         stateIcon = listdef.getProcessedDataValue("activ", callingObject);
                         style = listdef.getProcessedDataValue("style_activ", callingObject);
                     }
@@ -318,37 +307,29 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
             String from = "";
             try {
                 agent = taskService.readAgent(task).getName();
-            }
-            catch(Exception exc) {
-                
-            
-            // ignore the exception
+            } catch (Exception exc) {
+
+                // ignore the exception
             }
             try {
                 group = taskService.readGroup(task).getName();
-            }
-            catch(Exception exc) {
-                
-            
-            // ignore the exception
+            } catch (Exception exc) {
+
+                // ignore the exception
             }
             try {
                 due = CmsDateUtil.getDateShort(timeout);
-            }
-            catch(Exception exc) {
-                
-            
-            // ignore the exception
+            } catch (Exception exc) {
+
+                // ignore the exception
             }
             try {
                 from = CmsDateUtil.getDateShort(startTime);
+            } catch (Exception exc) {
+
+                // ignore the exception
             }
-            catch(Exception exc) {
-                
-            
-            // ignore the exception
-            }
-            
+
             // get the processed list.
             listdef.setData("stateicon", stateIcon);
             listdef.setData("style", style);
@@ -365,7 +346,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
         }
         return result.toString();
     }
-    
+
     /**
      * Indicates if the results of this class are cacheable.
      * 
@@ -376,9 +357,14 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, 
-            Hashtable parameters, String templateSelector) {
+
+    public boolean isCacheable(
+        CmsObject cms,
+        String templateFile,
+        String elementName,
+        Hashtable parameters,
+        String templateSelector) {
+
         return false;
     }
 }
