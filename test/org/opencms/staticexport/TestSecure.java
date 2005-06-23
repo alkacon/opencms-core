@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestSecure.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,17 +54,27 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
- * @since 5.5.0
+ * @since 6.0.0
  */
 public class TestSecure extends OpenCmsTestCase {
+
+    /** the prefix of the normal server. */
+    private static final String SERVER_NORMAL = "http://localhost";
 
     /** the prefix of the secure server. */
     private static final String SERVER_SECURE = "https://localhost";
 
-    /** the prefix of the normal server. */
-    private static final String SERVER_NORMAL = "http://localhost";
+    /**
+     * Default JUnit constructor.<p>
+     * 
+     * @param arg0 JUnit parameters
+     */
+    public TestSecure(String arg0) {
+
+        super(arg0);
+    }
 
     /**
      * Test suite for this test class.<p>
@@ -101,30 +111,28 @@ public class TestSecure extends OpenCmsTestCase {
     }
 
     /**
-     * Default JUnit constructor.<p>
+     * Test if links in XML-pages are converted to html-links with correct server prefixes.<p>
      * 
-     * @param arg0 JUnit parameters
-     */
-    public TestSecure(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test if the site configuration succeeded.<p>
-     * 
+     * make a link from one site to another site, and check, if the correct prefixes are set 
      * @throws Exception in case something goes wrong
      */
-    public void testSecureServerConfig() throws Exception {
+    public void testLinkInXmlPage() throws Exception {
 
         CmsObject cms = getCmsObject();
-        echo("Testing the configuration");
 
-        // test, if a secure server exists for the current site
-        assertTrue(CmsSiteManager.getCurrentSite(cms).hasSecureServer());
+        echo("Testing security of links");
+        CmsProject onlineProject = cms.readProject("Online");
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        cms.getRequestContext().setSiteRoot("/sites/default");
+        String filename = "/folder1/page1.html";
 
-        // test, if the secure server is 'https:www.mysite.com'
-        assertEquals(SERVER_SECURE, CmsSiteManager.getCurrentSite(cms).getSecureUrl());
+        CmsFile file = cms.readFile(filename);
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
+
+        String element = "body";
+
+        String text = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertTrue(text.indexOf(SERVER_SECURE) != -1);
 
     }
 
@@ -168,28 +176,20 @@ public class TestSecure extends OpenCmsTestCase {
     }
 
     /**
-     * Test if links in XML-pages are converted to html-links with correct server prefixes.<p>
+     * Test if the site configuration succeeded.<p>
      * 
-     * make a link from one site to another site, and check, if the correct prefixes are set 
      * @throws Exception in case something goes wrong
      */
-    public void testLinkInXmlPage() throws Exception {
+    public void testSecureServerConfig() throws Exception {
 
         CmsObject cms = getCmsObject();
+        echo("Testing the configuration");
 
-        echo("Testing security of links");
-        CmsProject onlineProject = cms.readProject("Online");
-        cms.getRequestContext().setCurrentProject(onlineProject);
-        cms.getRequestContext().setSiteRoot("/sites/default");
-        String filename = "/folder1/page1.html";
+        // test, if a secure server exists for the current site
+        assertTrue(CmsSiteManager.getCurrentSite(cms).hasSecureServer());
 
-        CmsFile file = cms.readFile(filename);
-        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
-
-        String element = "body";
-
-        String text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertTrue(text.indexOf(SERVER_SECURE) != -1);
+        // test, if the secure server is 'https:www.mysite.com'
+        assertEquals(SERVER_SECURE, CmsSiteManager.getCurrentSite(cms).getSecureUrl());
 
     }
 
@@ -226,16 +226,16 @@ public class TestSecure extends OpenCmsTestCase {
 
         // the converted HTML must have links with normal and secure server prefixes of the first site
         String text = page.getStringValue(cms, element, Locale.ENGLISH);
-        
+
         System.out.println(text);
-        
+
         assertTrue(text.indexOf(SERVER_SECURE) != -1);
         assertTrue(text.indexOf(SERVER_NORMAL) != -1);
     }
 
-    private void assertHasSecurePrefix(String link) {
+    private void assertHasNoPrefix(String link) {
 
-        assertTrue(link.startsWith(SERVER_SECURE));
+        assertTrue(link.startsWith("/"));
     }
 
     private void assertHasNormalPrefix(String link) {
@@ -243,9 +243,9 @@ public class TestSecure extends OpenCmsTestCase {
         assertTrue(link.startsWith(SERVER_NORMAL));
     }
 
-    private void assertHasNoPrefix(String link) {
+    private void assertHasSecurePrefix(String link) {
 
-        assertTrue(link.startsWith("/"));
+        assertTrue(link.startsWith(SERVER_SECURE));
     }
 
 }

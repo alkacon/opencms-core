@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestValidFilename.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,9 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
- * @since 5.5.1
+ * @since 6.0.0
  */
 public class TestValidFilename extends TestCase {
 
@@ -50,41 +50,42 @@ public class TestValidFilename extends TestCase {
      * @param arg0 JUnit parameters
      */
     public TestValidFilename(String arg0) {
+
         super(arg0);
     }
-    
+
     /**
      * Tests the file name validation method in the class CmsDriverManager.<p>
      * 
      * @throws Exception if something goes wrong
      */
     public void testValidateResourceName() throws Exception {
-       
+
         // PLEASE NOTE: This logic is NOT yet used by OpenCms, this is planned for the future
-        
+
         // according to windows, the following characters are illegal:
         // \ / : * ? " < > |
-        
+
         // accoring to JSR 170, the following characters are illegal:
         // / : [ ] * ' " |
-        
+
         // technically, for OpenCms only the following char can not be part of a file: /
-        
+
         // for HTML URL building, the following chars are "reserved characters" (see RFC 1738)
         // ; / ? : @ = &
-        
+
         // stupidity tests
-        assertFalse(CmsStringUtil.validateResourceName(null));        
+        assertFalse(CmsStringUtil.validateResourceName(null));
         assertFalse(CmsStringUtil.validateResourceName(""));
-        
+
         // all valid chard according to the "old" OpenCms logic
         assertTrue(CmsStringUtil.validateResourceName("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~$"));
-        
+
         // add some of the new valid chars
         assertTrue(CmsStringUtil.validateResourceName("Copy of abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~$"));
         assertTrue(CmsStringUtil.validateResourceName("Some German umlauts - הצüÄÖÜ‗"));
         assertTrue(CmsStringUtil.validateResourceName("Some more western European special chars - יטפבאûםל"));
-        
+
         assertTrue(CmsStringUtil.validateResourceName("my File"));
         // Window logic invalid chars
         assertFalse(CmsStringUtil.validateResourceName(" my File"));
@@ -101,15 +102,15 @@ public class TestValidFilename extends TestCase {
         assertFalse(CmsStringUtil.validateResourceName("my<file"));
         assertFalse(CmsStringUtil.validateResourceName("my>file"));
         assertFalse(CmsStringUtil.validateResourceName("my|file"));
-        
+
         // JSR 170 chars
         assertTrue(CmsStringUtil.validateResourceName("my[file"));
         assertTrue(CmsStringUtil.validateResourceName("my]file"));
         assertTrue(CmsStringUtil.validateResourceName("my'file"));
-        
+
         // HTML reserved chars 
         assertTrue(CmsStringUtil.validateResourceName("my&file"));
         assertTrue(CmsStringUtil.validateResourceName("my=file"));
-        assertTrue(CmsStringUtil.validateResourceName("my@file"));        
+        assertTrue(CmsStringUtil.validateResourceName("my@file"));
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,25 +44,27 @@ import java.util.List;
 import org.dom4j.Document;
 import org.xml.sax.InputSource;
 
-
-
 /**
  * Tests for the OpenCms configuration handling.<p>
  * 
  * @author Alexander Kandzior 
- * @since 5.3
+ * 
+ * @version $Revision: 1.13 $
+ * 
+ * @since 6.0.0
  */
 public class TestConfiguration extends OpenCmsTestCase {
-  
+
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestConfiguration(String arg0) {
+
         super(arg0, false);
     }
-    
+
     /**
      * Loads the configuration using the configuration manager,
      * if anyting goes wrong an exception is thrown and the test fails.<p>
@@ -71,10 +73,10 @@ public class TestConfiguration extends OpenCmsTestCase {
      * @throws Exception if something goes wrong
      */
     public void testLoadXmlConfiguration() throws Exception {
-            
+
         // get the file name of the input resource
         String inputFile = CmsFileUtil.getResourcePathFromClassloader("org/opencms/configuration/");
-        
+
         // generate the configuration manager
         CmsConfigurationManager manager = new CmsConfigurationManager(inputFile);
         // now digest the XML
@@ -102,8 +104,8 @@ public class TestConfiguration extends OpenCmsTestCase {
             System.out.println("---");
             System.out.println(CmsXmlUtils.marshal(outputDoc, "UTF-8"));
             System.out.println("---");
-            
+
             assertEquals(outputDoc, inputDoc);
         }
-    }    
+    }
 }

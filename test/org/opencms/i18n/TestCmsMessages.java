@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessages.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.i18n;
 
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -40,9 +41,36 @@ import junit.framework.TestCase;
  * Tests for the CmsMessages.<p>
  * 
  * @author Alexander Kandzior 
- * @since 5.3
+ * 
+ * @version $Revision: 1.6 $
+ * 
+ * @since 6.0.0
  */
 public class TestCmsMessages extends TestCase {
+
+    /**
+     * Tests parameter replacement in messages.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMessageWithParameters() throws Exception {
+
+        String value;
+
+        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);
+
+        value = messages.key("editor.xmlcontent.validation.error");
+        assertEquals("Invalid value \"{0}\" according to rule {1}", value);
+
+        value = messages.key("editor.xmlcontent.validation.error", new Object[] {"'value'", "'rule'"});
+        assertEquals("Invalid value \"'value'\" according to rule 'rule'", value);
+
+        value = messages.key("editor.xmlcontent.validation.warning");
+        assertEquals("Bad value \"{0}\" according to rule {1}", value);
+
+        value = messages.key("editor.xmlcontent.validation.warning", new Object[] {"some value", "the rule"});
+        assertEquals("Bad value \"some value\" according to rule the rule", value);
+    }
 
     /**
      * Tests for for missing localized keys.<p>
@@ -50,20 +78,20 @@ public class TestCmsMessages extends TestCase {
      * @throws Exception if the test fails
      */
     public void testUnknownKeys() throws Exception {
-        
+
         String value = null;
-        
+
         // check for null value
         assertTrue(CmsMessages.isUnknownKey(value));
-        
+
         // test key formatted as unknown 
         value = CmsMessages.formatUnknownKey("somekey");
         assertTrue(CmsMessages.isUnknownKey(value));
-        
+
         // check a value certainly NOT unknown
         value = "Title";
         assertFalse(CmsMessages.isUnknownKey(value));
-        
+
         // the empty String is also NOT an unknown key
         value = "";
         assertFalse(CmsMessages.isUnknownKey(value));
@@ -78,28 +106,4 @@ public class TestCmsMessages extends TestCase {
         assertFalse(CmsMessages.isUnknownKey(defaultValue));
         assertEquals(defaultValue, value);
     }
-    
-    /**
-     * Tests parameter replacement in messages.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testMessageWithParameters() throws Exception {
-        
-        String value;
-        
-        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);
-        
-        value = messages.key("editor.xmlcontent.validation.error");
-        assertEquals("Invalid value \"{0}\" according to rule {1}", value);
-        
-        value = messages.key("editor.xmlcontent.validation.error", new Object[]{"'value'", "'rule'"});
-        assertEquals("Invalid value \"'value'\" according to rule 'rule'", value);
-        
-        value = messages.key("editor.xmlcontent.validation.warning");
-        assertEquals("Bad value \"{0}\" according to rule {1}", value);
-        
-        value = messages.key("editor.xmlcontent.validation.warning", new Object[]{"some value", "the rule"});
-        assertEquals("Bad value \"some value\" according to rule the rule", value);
-    }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestConfiguration.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,32 +41,36 @@ import org.dom4j.Element;
  * Dummy class for configuration testing.<p>
  * 
  * @author Alexander Kandzior 
- * @since 5.3
+ * 
+ * @version $Revision: 1.14 $
+ * 
+ * @since 6.0.0
  */
 public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
-    
+
     /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-tests.dtd";
-    
+
     /** The name of the default XML file for this configuration. */
     private static final String C_DEFAULT_XML_FILE_NAME = "opencms-tests.xml";
-    
+
     /** Test content 1. */
     private String m_content1;
-    
+
     /** Test content 2. */
     private String m_content2;
-    
+
     /**
      * The public contructor is hidden to prevent generation of instances of this class.<p> 
      */
     public CmsTestConfiguration() {
+
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);
         if (CmsLog.getLog(this).isDebugEnabled()) {
             CmsLog.getLog(this).debug("Empty constructor called on " + this);
-        }  
+        }
     }
-    
+
     /**
      * Test method to add a value.<p>
      * 
@@ -74,18 +78,20 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
      * @param value the value of the test
      */
     public void addTest(String name, String value) {
+
         if ("test1".equals(name)) {
             m_content1 = value;
         }
         if ("test2".equals(name)) {
             m_content2 = value;
-        }        
-    }   
+        }
+    }
 
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
      */
     public void addXmlDigesterRules(Digester digester) {
+
         // add test rules
         digester.addCallMethod("*/tests/test", "addTest", 2);
         digester.addCallParam("*/tests/test", 0, A_NAME);
@@ -96,6 +102,7 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
      * @see org.opencms.configuration.I_CmsXmlConfiguration#generateXml(org.dom4j.Element)
      */
     public Element generateXml(Element parent) {
+
         Element testElement = parent.addElement("tests");
         if (m_content1 != null) {
             testElement.addElement("test").addAttribute(A_NAME, "test1").addText(m_content1);
@@ -110,6 +117,7 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
      * @see org.opencms.configuration.I_CmsXmlConfiguration#getDtdFilename()
      */
     public String getDtdFilename() {
+
         return C_CONFIGURATION_DTD_NAME;
-    }    
+    }
 }

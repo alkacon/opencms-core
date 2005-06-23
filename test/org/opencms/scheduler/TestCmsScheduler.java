@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,17 +54,18 @@ import org.quartz.impl.StdSchedulerFactory;
  * Test cases for the OpenCms scheduler thread pool.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.12 $
  * 
- * @since 5.1
+ * @version $Revision: 1.13 $
+ * 
+ * @since 6.0.0
  */
 public class TestCmsScheduler extends TestCase {
 
-    /** Number of threads to run. */
-    public static final int THREADS_TO_RUN = 20;
-
     /** Number of seconds to wait. */
     public static final int SECONDS_TO_WAIT = 30;
+
+    /** Number of threads to run. */
+    public static final int THREADS_TO_RUN = 20;
     
     /**
      * Default JUnit constructor.<p>
@@ -77,119 +78,32 @@ public class TestCmsScheduler extends TestCase {
     }
     
     /**
-     * Initializes a Quartz schduler.<p>
-     * 
-     * @return the initialized scheduler
-     * @throws Exception in case something goes wrong
-     */
-    private Scheduler initOpenCmsScheduler() throws Exception  {
-        
-        Properties properties = new Properties();
-        properties.put("org.quartz.scheduler.instanceName", "OpenCmsScheduler");
-        properties.put("org.quartz.scheduler.threadName", "OpenCms: Scheduler");
-        properties.put("org.quartz.scheduler.rmi.export", "false");
-        properties.put("org.quartz.scheduler.rmi.proxy", "false");
-        properties.put("org.quartz.scheduler.xaTransacted", "false");
-        properties.put("org.quartz.threadPool.class", "org.opencms.scheduler.CmsSchedulerThreadPool");
-        properties.put("org.quartz.jobStore.misfireThreshold", "60000");
-        properties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
-
-        SchedulerFactory schedulerFactory = new StdSchedulerFactory(properties);
-        Scheduler scheduler = schedulerFactory.getScheduler();
-
-        scheduler.getMetaData();
-        scheduler.start();
-        
-        // also make sure CmsUUID is initialized
-        CmsUUID.init(CmsUUID.getDummyEthernetAddress());
-        
-        return scheduler;
-    }
-
-    /**
-     * Tests execution of jobs using CmsSchedulerThreadPool.<p>
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public void testBasicJobExecution() throws Exception {
-
-        System.out.println("Testing the OpenCms tread pool.");
-        Scheduler scheduler = initOpenCmsScheduler();        
-        
-        JobDetail[] jobDetail = new JobDetail[THREADS_TO_RUN];
-        SimpleTrigger[] trigger = new SimpleTrigger[THREADS_TO_RUN];
-
-        for (int i = 0; i < jobDetail.length; i++) {
-            jobDetail[i] = new JobDetail(
-                "myJob" + i, 
-                Scheduler.DEFAULT_GROUP, 
-                TestCmsJob.class);
-
-            trigger[i] = new SimpleTrigger(
-                "myTrigger" + i, 
-                Scheduler.DEFAULT_GROUP, 
-                new Date(), 
-                null, 
-                0,
-                0L);
-        }
-
-        for (int i = 0; i < THREADS_TO_RUN; i++) {
-            scheduler.scheduleJob(jobDetail[i], trigger[i]);
-        }
-
-        int seconds = 0;
-        do {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                fail("Something caused the waiting test thread to interrupt!");
-            }
-            seconds++;
-        } while ((seconds < SECONDS_TO_WAIT) && (TestCmsJob.m_running > 0));
-
-
-        if (TestCmsJob.m_running <= 0) {
-            System.out.println("Success: All threads are finished.");
-        } else {
-            fail("Some threads in the pool are still running after " + SECONDS_TO_WAIT + " seconds.");
-        }
-        
-        scheduler.shutdown();        
-    }
-    
-    /**
-     * Tests launching of an OpenCms job.<p>
+     * Tests activating and deactivating of scheduled jobs.<p>
      *  
      * @throws Exception if something goes wrong
      */
-    public void testCmsJobLaunch() throws Exception {
+    public void testActivateAndDeactivateJob() throws Exception {
 
-        System.out.println("Trying to run an OpenCms job 5x.");
+        System.out.println("Trying to activate and deactivate an OpenCms job from the OpenCms scheduler.");
         TestScheduledJob.m_runCount = 0;
         
-        Scheduler scheduler = initOpenCmsScheduler();
-        
-        JobDetail jobDetail = new JobDetail(
-            "cmsLaunch",
-            Scheduler.DEFAULT_GROUP, 
-            CmsScheduleManager.class);
-        
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
-        CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
+        CmsContextInfo contextInfo = new CmsContextInfo();
+        contextInfo.setUserName(OpenCms.getDefaultUsers().getUserAdmin());
         jobInfo.setContextInfo(contextInfo);
-        jobInfo.setClassName(TestScheduledJob.class.getName());  
+        jobInfo.setClassName(TestScheduledJob.class.getName());          
+        jobInfo.setCronExpression("0/2 * * * * ?");
         
-        JobDataMap jobData = new JobDataMap();      
-        jobData.put(CmsScheduleManager.C_SCHEDULER_JOB_INFO, jobInfo);
+        // set this job as "not active"
+        jobInfo.setActive(false);
+                
+        List jobs = new ArrayList();
+        jobs.add(jobInfo);
+        // create the scheduler with the test job
+        CmsScheduleManager scheduler = new CmsScheduleManager(jobs);
         
-        jobDetail.setJobDataMap(jobData);
-        
-        CronTrigger trigger = new CronTrigger("cmsLaunchTrigger", Scheduler.DEFAULT_GROUP);
-        
-        trigger.setCronExpression("0/2 * * * * ?");
-        
-        scheduler.scheduleJob(jobDetail, trigger);
+        // initialize the manager, this will start the scheduled jobs
+        scheduler.initialize(null);
         
         int seconds = 0;
         do {
@@ -199,17 +113,79 @@ public class TestCmsScheduler extends TestCase {
                 fail("Something caused the waiting test thread to interrupt!");
             }
             seconds++;
-        } while ((seconds < SECONDS_TO_WAIT) && (TestScheduledJob.m_runCount < 5));
+        } while (seconds < 5);
 
+        // make sure the job was not run but still exists in the OpenCms scheduler
+        if (TestScheduledJob.m_runCount > 0) {
+            fail("Test job was incorrectly run '" + TestScheduledJob.m_runCount + "' times in OpenCms scheduler.");
+        }
+        assertEquals(1, scheduler.getJobs().size());
+        CmsScheduledJobInfo info = (CmsScheduledJobInfo)scheduler.getJobs().get(0);
+        assertEquals(jobInfo.getId(), info.getId());
+        assertEquals(jobInfo.getClassName(), info.getClassName());
+        assertEquals(false, info.isActive());
+        assertNull(info.getExecutionTimeNext());
+        
+        // no set the job active and re-schedule it
+        info = (CmsScheduledJobInfo)info.clone();
+        info.setActive(true);
+        scheduler.scheduleJob(null, info);
+        
+        seconds = 0;
+        do {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                fail("Something caused the waiting test thread to interrupt!");
+            }
+            seconds++;
+        } while ((seconds < SECONDS_TO_WAIT) && (TestScheduledJob.m_runCount < 3));
 
-        if (TestScheduledJob.m_runCount == 5) {
-            System.out.println("Success: Test job was run 5 times.");
+        if (TestScheduledJob.m_runCount == 3) {
+            System.out.println("Test job was correctly run 3 times in OpenCms scheduler.");
         } else {
             fail("Test class not run after " + SECONDS_TO_WAIT + " seconds.");
+        }                        
+        
+        assertEquals(1, scheduler.getJobs().size());
+        info = (CmsScheduledJobInfo)scheduler.getJobs().get(0);
+        assertEquals(jobInfo.getId(), info.getId());
+        assertEquals(jobInfo.getClassName(), info.getClassName());
+        assertEquals(true, info.isActive());
+        assertNotNull(info.getExecutionTimeNext());
+        
+        // reset the count
+        TestScheduledJob.m_runCount = 0;
+
+        // deactivate the job again and re-schedule it
+        info = (CmsScheduledJobInfo)info.clone();
+        info.setActive(false);
+        scheduler.scheduleJob(null, info);        
+        
+        seconds = 0;
+        do {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                fail("Something caused the waiting test thread to interrupt!");
+            }
+            seconds++;
+        } while (seconds < 5);
+
+        // make sure the job was not run but still exists in the OpenCms scheduler
+        if (TestScheduledJob.m_runCount > 0) {
+            fail("Test job was incorrectly run '" + TestScheduledJob.m_runCount + "' times in OpenCms scheduler.");
         }
-       
-        scheduler.shutdown();        
-    }
+        assertEquals(1, scheduler.getJobs().size());
+        info = (CmsScheduledJobInfo)scheduler.getJobs().get(0);
+        assertEquals(jobInfo.getId(), info.getId());
+        assertEquals(jobInfo.getClassName(), info.getClassName());
+        assertEquals(false, info.isActive());
+        assertNull(info.getExecutionTimeNext());
+        
+        // shutdown the scheduler
+        scheduler.shutDown();        
+    }   
 
     /**
      * Tests adding and removing a job to the OpenCms schedule manager.<p>
@@ -345,34 +321,91 @@ public class TestCmsScheduler extends TestCase {
         // shutdown the scheduler
         scheduler.shutDown();        
     }
+
+    /**
+     * Tests execution of jobs using CmsSchedulerThreadPool.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testBasicJobExecution() throws Exception {
+
+        System.out.println("Testing the OpenCms tread pool.");
+        Scheduler scheduler = initOpenCmsScheduler();        
+        
+        JobDetail[] jobDetail = new JobDetail[THREADS_TO_RUN];
+        SimpleTrigger[] trigger = new SimpleTrigger[THREADS_TO_RUN];
+
+        for (int i = 0; i < jobDetail.length; i++) {
+            jobDetail[i] = new JobDetail(
+                "myJob" + i, 
+                Scheduler.DEFAULT_GROUP, 
+                TestCmsJob.class);
+
+            trigger[i] = new SimpleTrigger(
+                "myTrigger" + i, 
+                Scheduler.DEFAULT_GROUP, 
+                new Date(), 
+                null, 
+                0,
+                0L);
+        }
+
+        for (int i = 0; i < THREADS_TO_RUN; i++) {
+            scheduler.scheduleJob(jobDetail[i], trigger[i]);
+        }
+
+        int seconds = 0;
+        do {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                fail("Something caused the waiting test thread to interrupt!");
+            }
+            seconds++;
+        } while ((seconds < SECONDS_TO_WAIT) && (TestCmsJob.m_running > 0));
+
+
+        if (TestCmsJob.m_running <= 0) {
+            System.out.println("Success: All threads are finished.");
+        } else {
+            fail("Some threads in the pool are still running after " + SECONDS_TO_WAIT + " seconds.");
+        }
+        
+        scheduler.shutdown();        
+    }
     
     /**
-     * Tests activating and deactivating of scheduled jobs.<p>
+     * Tests launching of an OpenCms job.<p>
      *  
      * @throws Exception if something goes wrong
      */
-    public void testActivateAndDeactivateJob() throws Exception {
+    public void testCmsJobLaunch() throws Exception {
 
-        System.out.println("Trying to activate and deactivate an OpenCms job from the OpenCms scheduler.");
+        System.out.println("Trying to run an OpenCms job 5x.");
         TestScheduledJob.m_runCount = 0;
         
+        Scheduler scheduler = initOpenCmsScheduler();
+        
+        JobDetail jobDetail = new JobDetail(
+            "cmsLaunch",
+            Scheduler.DEFAULT_GROUP, 
+            CmsScheduleManager.class);
+        
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
-        CmsContextInfo contextInfo = new CmsContextInfo();
-        contextInfo.setUserName(OpenCms.getDefaultUsers().getUserAdmin());
+        CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
         jobInfo.setContextInfo(contextInfo);
-        jobInfo.setClassName(TestScheduledJob.class.getName());          
-        jobInfo.setCronExpression("0/2 * * * * ?");
+        jobInfo.setClassName(TestScheduledJob.class.getName());  
         
-        // set this job as "not active"
-        jobInfo.setActive(false);
-                
-        List jobs = new ArrayList();
-        jobs.add(jobInfo);
-        // create the scheduler with the test job
-        CmsScheduleManager scheduler = new CmsScheduleManager(jobs);
+        JobDataMap jobData = new JobDataMap();      
+        jobData.put(CmsScheduleManager.C_SCHEDULER_JOB_INFO, jobInfo);
         
-        // initialize the manager, this will start the scheduled jobs
-        scheduler.initialize(null);
+        jobDetail.setJobDataMap(jobData);
+        
+        CronTrigger trigger = new CronTrigger("cmsLaunchTrigger", Scheduler.DEFAULT_GROUP);
+        
+        trigger.setCronExpression("0/2 * * * * ?");
+        
+        scheduler.scheduleJob(jobDetail, trigger);
         
         int seconds = 0;
         do {
@@ -382,79 +415,17 @@ public class TestCmsScheduler extends TestCase {
                 fail("Something caused the waiting test thread to interrupt!");
             }
             seconds++;
-        } while (seconds < 5);
+        } while ((seconds < SECONDS_TO_WAIT) && (TestScheduledJob.m_runCount < 5));
 
-        // make sure the job was not run but still exists in the OpenCms scheduler
-        if (TestScheduledJob.m_runCount > 0) {
-            fail("Test job was incorrectly run '" + TestScheduledJob.m_runCount + "' times in OpenCms scheduler.");
-        }
-        assertEquals(1, scheduler.getJobs().size());
-        CmsScheduledJobInfo info = (CmsScheduledJobInfo)scheduler.getJobs().get(0);
-        assertEquals(jobInfo.getId(), info.getId());
-        assertEquals(jobInfo.getClassName(), info.getClassName());
-        assertEquals(false, info.isActive());
-        assertNull(info.getExecutionTimeNext());
-        
-        // no set the job active and re-schedule it
-        info = (CmsScheduledJobInfo)info.clone();
-        info.setActive(true);
-        scheduler.scheduleJob(null, info);
-        
-        seconds = 0;
-        do {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                fail("Something caused the waiting test thread to interrupt!");
-            }
-            seconds++;
-        } while ((seconds < SECONDS_TO_WAIT) && (TestScheduledJob.m_runCount < 3));
 
-        if (TestScheduledJob.m_runCount == 3) {
-            System.out.println("Test job was correctly run 3 times in OpenCms scheduler.");
+        if (TestScheduledJob.m_runCount == 5) {
+            System.out.println("Success: Test job was run 5 times.");
         } else {
             fail("Test class not run after " + SECONDS_TO_WAIT + " seconds.");
-        }                        
-        
-        assertEquals(1, scheduler.getJobs().size());
-        info = (CmsScheduledJobInfo)scheduler.getJobs().get(0);
-        assertEquals(jobInfo.getId(), info.getId());
-        assertEquals(jobInfo.getClassName(), info.getClassName());
-        assertEquals(true, info.isActive());
-        assertNotNull(info.getExecutionTimeNext());
-        
-        // reset the count
-        TestScheduledJob.m_runCount = 0;
-
-        // deactivate the job again and re-schedule it
-        info = (CmsScheduledJobInfo)info.clone();
-        info.setActive(false);
-        scheduler.scheduleJob(null, info);        
-        
-        seconds = 0;
-        do {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                fail("Something caused the waiting test thread to interrupt!");
-            }
-            seconds++;
-        } while (seconds < 5);
-
-        // make sure the job was not run but still exists in the OpenCms scheduler
-        if (TestScheduledJob.m_runCount > 0) {
-            fail("Test job was incorrectly run '" + TestScheduledJob.m_runCount + "' times in OpenCms scheduler.");
         }
-        assertEquals(1, scheduler.getJobs().size());
-        info = (CmsScheduledJobInfo)scheduler.getJobs().get(0);
-        assertEquals(jobInfo.getId(), info.getId());
-        assertEquals(jobInfo.getClassName(), info.getClassName());
-        assertEquals(false, info.isActive());
-        assertNull(info.getExecutionTimeNext());
-        
-        // shutdown the scheduler
-        scheduler.shutDown();        
-    }   
+       
+        scheduler.shutdown();        
+    }
     
     /**
      * Tests launching of an OpenCms job with the OpenCms schedule manager.<p>
@@ -558,5 +529,35 @@ public class TestCmsScheduler extends TestCase {
        
         // shutdown the scheduler
         scheduler.shutDown();        
+    }
+    
+    /**
+     * Initializes a Quartz schduler.<p>
+     * 
+     * @return the initialized scheduler
+     * @throws Exception in case something goes wrong
+     */
+    private Scheduler initOpenCmsScheduler() throws Exception  {
+        
+        Properties properties = new Properties();
+        properties.put("org.quartz.scheduler.instanceName", "OpenCmsScheduler");
+        properties.put("org.quartz.scheduler.threadName", "OpenCms: Scheduler");
+        properties.put("org.quartz.scheduler.rmi.export", "false");
+        properties.put("org.quartz.scheduler.rmi.proxy", "false");
+        properties.put("org.quartz.scheduler.xaTransacted", "false");
+        properties.put("org.quartz.threadPool.class", "org.opencms.scheduler.CmsSchedulerThreadPool");
+        properties.put("org.quartz.jobStore.misfireThreshold", "60000");
+        properties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
+
+        SchedulerFactory schedulerFactory = new StdSchedulerFactory(properties);
+        Scheduler scheduler = schedulerFactory.getScheduler();
+
+        scheduler.getMetaData();
+        scheduler.start();
+        
+        // also make sure CmsUUID is initialized
+        CmsUUID.init(CmsUUID.getDummyEthernetAddress());
+        
+        return scheduler;
     }
 }

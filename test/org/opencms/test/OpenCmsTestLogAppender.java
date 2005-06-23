@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestLogAppender.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,10 @@ import org.apache.log4j.spi.LoggingEvent;
  * causing the running test to fail.<p> 
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.6 $
  * 
- * @since 5.5.0
+ * @version $Revision: 1.7 $
+ * 
+ * @since 6.0.0
  */
 public class OpenCmsTestLogAppender extends ConsoleAppender {
 

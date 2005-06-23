@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/23 14:27:28 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 6.0.0 
  */
@@ -492,7 +492,6 @@ public class CmsRequestContext {
      * and reset it in a <code>try { // do something // } finaly { // reset URI // }</code> statement.<p>
      * 
      * @param value the value to set the Uri to, must be a complete OpenCms path name like /system/workplace/stlye.css
-     * @since 5.0 beta 1
      */
     public void setUri(String value) {
 

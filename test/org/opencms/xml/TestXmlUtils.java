@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/TestXmlUtils.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,16 +28,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.xml;
 
 import junit.framework.TestCase;
 
 /**
  * @author Alexander Kandzior 
- * @version $Revision: 1.6 $
  * 
- * @since 5.5.4
+ * @version $Revision: 1.7 $
+ * 
+ * @since 6.0.0
  */
 public class TestXmlUtils extends TestCase {
 
@@ -47,57 +48,57 @@ public class TestXmlUtils extends TestCase {
      * @throws Exception in case the test fails
      */
     public void testCreateXpath() throws Exception {
-        
+
         assertEquals("Title[1]", CmsXmlUtils.createXpath("Title", 1));
         assertEquals("Title[1]/Test[1]", CmsXmlUtils.createXpath("Title/Test", 1));
         assertEquals("Title[1]/Test[1]/Toast[1]", CmsXmlUtils.createXpath("Title/Test/Toast", 1));
-        assertEquals("Title[4]/Test[2]/Toast[1]", CmsXmlUtils.createXpath("Title[4]/Test[2]/Toast[1]", 1));        
+        assertEquals("Title[4]/Test[2]/Toast[1]", CmsXmlUtils.createXpath("Title[4]/Test[2]/Toast[1]", 1));
         assertEquals("Title[1]/Test[2]/Toast[2]", CmsXmlUtils.createXpath("Title/Test[2]/Toast", 2));
         assertEquals("Title[1]/Test[1]/Toast[1]/Toll[5]", CmsXmlUtils.createXpath("Title/Test/Toast/Toll", 5));
     }
-    
-    /**
-     * Test case for the Xpath simplification.
-     * 
-     * @throws Exception in case the test fails
-     */
-    public void testSimplifyXpath() throws Exception {
-                
-        assertEquals("Title[1]", CmsXmlUtils.simplifyXpath("/Title[1]"));
-        assertEquals("Title[1]", CmsXmlUtils.simplifyXpath("Title[1]/"));
-        assertEquals("Title[1]", CmsXmlUtils.simplifyXpath("/Title[1]/"));
-        
-        assertEquals("Title", CmsXmlUtils.simplifyXpath("/Title"));
-        assertEquals("Title", CmsXmlUtils.simplifyXpath("Title/"));
-        assertEquals("Title", CmsXmlUtils.simplifyXpath("/Title/"));
-    }
-    
+
     /**
      * Test case for the Xpath index cut off.
      * 
      * @throws Exception in case the test fails
      */
     public void testGetXpathIndex() throws Exception {
-        
+
         assertEquals("", CmsXmlUtils.getXpathIndex("Title"));
         assertEquals("[1]", CmsXmlUtils.getXpathIndex("Title[1]"));
-        assertEquals("[1]", CmsXmlUtils.getXpathIndex("Title[4]/Test[2]/Toast[1]"));        
+        assertEquals("[1]", CmsXmlUtils.getXpathIndex("Title[4]/Test[2]/Toast[1]"));
         assertEquals("", CmsXmlUtils.getXpathIndex("Title/Test[2]/Toast"));
         assertEquals("[5]", CmsXmlUtils.getXpathIndex("Title/Test/Toast/Toll[5]"));
     }
-    
+
     /**
      * Test case for the Xpath remove methods.
      * 
      * @throws Exception in case the test fails
      */
     public void testRemoveXpath() throws Exception {
-        
+
         assertEquals("Title", CmsXmlUtils.removeXpath("Title[1]"));
         assertEquals("Title/Test", CmsXmlUtils.removeXpath("Title[1]/Test[1]"));
         assertEquals("Title/Test/Toast", CmsXmlUtils.removeXpath("Title[1]/Test[1]/Toast"));
-        assertEquals("Title/Test/Toast", CmsXmlUtils.removeXpath("Title/Test[2]/Toast[1]"));        
+        assertEquals("Title/Test/Toast", CmsXmlUtils.removeXpath("Title/Test[2]/Toast[1]"));
         assertEquals("Title/Test/Toast", CmsXmlUtils.removeXpath("Title/Test[2]/Toast"));
-        assertEquals("Title/Test/Toast/Toll", CmsXmlUtils.removeXpath("Title[1]/Test[1]/Toast[1]/Toll[5]"));      
+        assertEquals("Title/Test/Toast/Toll", CmsXmlUtils.removeXpath("Title[1]/Test[1]/Toast[1]/Toll[5]"));
+    }
+
+    /**
+     * Test case for the Xpath simplification.
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testSimplifyXpath() throws Exception {
+
+        assertEquals("Title[1]", CmsXmlUtils.simplifyXpath("/Title[1]"));
+        assertEquals("Title[1]", CmsXmlUtils.simplifyXpath("Title[1]/"));
+        assertEquals("Title[1]", CmsXmlUtils.simplifyXpath("/Title[1]/"));
+
+        assertEquals("Title", CmsXmlUtils.simplifyXpath("/Title"));
+        assertEquals("Title", CmsXmlUtils.simplifyXpath("Title/"));
+        assertEquals("Title", CmsXmlUtils.simplifyXpath("/Title/"));
     }
 }

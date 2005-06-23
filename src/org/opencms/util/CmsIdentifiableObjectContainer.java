@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -55,8 +55,10 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      * Internal class just for taking care of the positions in the container.<p>
      * 
      * @author Michael Moossen  
-     * @version $Revision: 1.6 $
-     * @since 5.7.3
+     * 
+     * @version $Revision: 1.7 $
+     * 
+     * @since 6.0.0
      */
     private class CmsIdObjectElement {
 

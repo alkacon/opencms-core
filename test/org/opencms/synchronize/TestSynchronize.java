@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,8 +57,10 @@ import junit.framework.TestSuite;
  * JUnit test cases for the VFS/RFS synchronization.<p>
  * 
  * @author Thomas Weckert  
- * @since 5.3.6
- * @version $Revision: 1.14 $
+ *  
+ * @version $Revision: 1.15 $
+ * 
+ * @since 6.0.0
  */
 public class TestSynchronize extends OpenCmsTestCase {
 
@@ -78,15 +80,16 @@ public class TestSynchronize extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
         suite.setName(TestSynchronize.class.getName());
-        
+
         suite.addTest(new TestSynchronize("testSynchronize"));
-        suite.addTest(new TestSynchronize("testLoadSaveSynchronizeSettings"));        
+        suite.addTest(new TestSynchronize("testLoadSaveSynchronizeSettings"));
         suite.addTest(new TestSynchronize("testSynchronizeSeveralFolders"));
-        
+
         TestSetup wrapper = new TestSetup(suite) {
 
             protected void setUp() {
@@ -103,52 +106,52 @@ public class TestSynchronize extends OpenCmsTestCase {
 
         return wrapper;
     }
-    
+
     /**
      * Tests loading and saving the user synchronize settings.<p>
      * 
      * @throws Exception if the test fails
      */
     public void testLoadSaveSynchronizeSettings() throws Exception {
-        
+
         CmsObject cms = getCmsObject();
         echo("Testing loading and saving the synchronization settings of a user");
-        
+
         CmsUserSettings userSettings = new CmsUserSettings(cms.getRequestContext().currentUser());
         // default sync settings are null
         assertNull(userSettings.getSynchronizeSettings());
-        
+
         String source = "/folder1/";
         String dest = getTestDataPath("");
         if (dest.endsWith(File.separator)) {
-            dest = dest.substring(0, dest.length() -1);
+            dest = dest.substring(0, dest.length() - 1);
         }
-        
+
         CmsSynchronizeSettings syncSettings = new CmsSynchronizeSettings();
         syncSettings.setEnabled(true);
         ArrayList sourceList = new ArrayList();
         sourceList.add(source);
         syncSettings.setSourceListInVfs(sourceList);
         syncSettings.setDestinationPathInRfs(dest);
-                
+
         // store the settings
         userSettings.setSynchronizeSettings(syncSettings);
         userSettings.save(cms);
-        
+
         // login another user
         cms.loginUser("test1", "test1");
-        
+
         userSettings = new CmsUserSettings(cms.getRequestContext().currentUser());
         // default sync settings are null for this user
         assertNull(userSettings.getSynchronizeSettings());
-        
+
         // login another user
-        cms.loginUser(OpenCms.getDefaultUsers().getUserAdmin(), "admin");        
-        
+        cms.loginUser(OpenCms.getDefaultUsers().getUserAdmin(), "admin");
+
         userSettings = new CmsUserSettings(cms.getRequestContext().currentUser());
         syncSettings = userSettings.getSynchronizeSettings();
         assertNotNull(syncSettings);
-        
+
         assertTrue(syncSettings.isEnabled());
         assertEquals(source, syncSettings.getSourceListInVfs().get(0));
         assertEquals(dest, syncSettings.getDestinationPathInRfs());
@@ -168,19 +171,19 @@ public class TestSynchronize extends OpenCmsTestCase {
 
         // save what gets synchronized
         CmsSynchronizeSettings syncSettings = new CmsSynchronizeSettings();
-        
+
         String dest = getTestDataPath("") + "sync1" + File.separator;
         File destFolder = new File(dest);
-        if (! destFolder.exists()) {
+        if (!destFolder.exists()) {
             destFolder.mkdirs();
         }
-        
+
         syncSettings.setDestinationPathInRfs(dest);
         ArrayList sourceList = new ArrayList();
         sourceList.add(source);
         syncSettings.setSourceListInVfs(sourceList);
         syncSettings.setEnabled(true);
-        
+
         try {
             CmsObject cms = getCmsObject();
             echo("Testing synchronization of files and folders");
@@ -201,9 +204,9 @@ public class TestSynchronize extends OpenCmsTestCase {
                 CmsResource resource = (CmsResource)tree.get(i);
 
                 int type = resource.getTypeId();
-                if (((type == CmsResourceTypePlain.getStaticTypeId())) 
-                || (type == CmsResourceTypeJsp.getStaticTypeId())
-                || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
+                if (((type == CmsResourceTypePlain.getStaticTypeId()))
+                    || (type == CmsResourceTypeJsp.getStaticTypeId())
+                    || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
                     // modify date last modified on resource
                     touchResourceInRfs(cms, resource, syncSettings);
                 }
@@ -211,7 +214,7 @@ public class TestSynchronize extends OpenCmsTestCase {
 
             // sleep 2 seconds to avoid issues with file system timing
             Thread.sleep(2000);
-            
+
             // synchronize everything back to the VFS
             new CmsSynchronize(cms, syncSettings, new CmsShellReport());
 
@@ -220,29 +223,28 @@ public class TestSynchronize extends OpenCmsTestCase {
                 CmsResource vfsResource = (CmsResource)tree.get(i);
                 int type = vfsResource.getTypeId();
                 String vfsname = cms.getSitePath(vfsResource);
-                
-                System.out.println("( " + i + " / " + (n-1) + " ) Checking " + vfsname);
-                if (((type == CmsResourceTypePlain.getStaticTypeId())) 
-                || (type == CmsResourceTypeJsp.getStaticTypeId()) 
-                || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
+
+                System.out.println("( " + i + " / " + (n - 1) + " ) Checking " + vfsname);
+                if (((type == CmsResourceTypePlain.getStaticTypeId()))
+                    || (type == CmsResourceTypeJsp.getStaticTypeId())
+                    || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
                     // assert the resource state
-                    assertState(cms, vfsname, I_CmsConstants.C_STATE_CHANGED);                    
+                    assertState(cms, vfsname, I_CmsConstants.C_STATE_CHANGED);
                     // assert the modification date
                     File rfsResource = new File(getRfsPath(cms, vfsResource, syncSettings));
-                    assertDateLastModifiedAfter(cms, vfsname, rfsResource.lastModified());                    
+                    assertDateLastModifiedAfter(cms, vfsname, rfsResource.lastModified());
                 } else {
                     assertState(cms, vfsname, I_CmsConstants.C_STATE_UNCHANGED);
                 }
             }
 
         } finally {
-            
+
             // remove the test data
             echo("Purging directory " + dest);
             CmsFileUtil.purgeDirectory(new File(dest));
         }
     }
-
 
     /**
      * Tests the synchronize function with more then one source folder.<p>
@@ -251,16 +253,15 @@ public class TestSynchronize extends OpenCmsTestCase {
      */
     public void testSynchronizeSeveralFolders() throws Exception {
 
-
         // save what gets synchronized
         CmsSynchronizeSettings syncSettings = new CmsSynchronizeSettings();
-        
+
         String dest = getTestDataPath("") + "sync2" + File.separator;
         File destFolder = new File(dest);
-        if (! destFolder.exists()) {
+        if (!destFolder.exists()) {
             destFolder.mkdirs();
         }
-        
+
         syncSettings.setDestinationPathInRfs(dest);
         ArrayList sourceList = new ArrayList();
         sourceList.add("/folder1/subfolder11/");
@@ -268,7 +269,7 @@ public class TestSynchronize extends OpenCmsTestCase {
         sourceList.add("/folder2/subfolder21/");
         syncSettings.setSourceListInVfs(sourceList);
         syncSettings.setEnabled(true);
-        
+
         try {
             CmsObject cms = getCmsObject();
             echo("Testing synchronization of several folders");
@@ -280,7 +281,7 @@ public class TestSynchronize extends OpenCmsTestCase {
 
             Iterator it = syncSettings.getSourceListInVfs().iterator();
             List tree = new ArrayList();
-            
+
             // modify resources in the RFS
             while (it.hasNext()) {
                 String source = (String)it.next();
@@ -301,7 +302,7 @@ public class TestSynchronize extends OpenCmsTestCase {
 
             // sleep 2 seconds to avoid issues with file system timing
             Thread.sleep(2000);
-            
+
             // synchronize everything back to the VFS
             new CmsSynchronize(cms, syncSettings, new CmsShellReport());
 
@@ -310,35 +311,35 @@ public class TestSynchronize extends OpenCmsTestCase {
                 CmsResource vfsResource = (CmsResource)tree.get(i);
                 int type = vfsResource.getTypeId();
                 String vfsname = cms.getSitePath(vfsResource);
-                
-                System.out.println("( " + i + " / " + (n-1) + " ) Checking " + vfsname);
-                if (((type == CmsResourceTypePlain.getStaticTypeId())) 
-                || (type == CmsResourceTypeJsp.getStaticTypeId()) 
-                || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
+
+                System.out.println("( " + i + " / " + (n - 1) + " ) Checking " + vfsname);
+                if (((type == CmsResourceTypePlain.getStaticTypeId()))
+                    || (type == CmsResourceTypeJsp.getStaticTypeId())
+                    || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
                     // assert the resource state
-                    assertState(cms, vfsname, I_CmsConstants.C_STATE_CHANGED);                    
+                    assertState(cms, vfsname, I_CmsConstants.C_STATE_CHANGED);
                     // assert the modification date
                     File rfsResource = new File(getRfsPath(cms, vfsResource, syncSettings));
-                    assertDateLastModifiedAfter(cms, vfsname, rfsResource.lastModified());                    
+                    assertDateLastModifiedAfter(cms, vfsname, rfsResource.lastModified());
                 } else {
                     assertState(cms, vfsname, I_CmsConstants.C_STATE_UNCHANGED);
                 }
             }
 
         } finally {
-            
+
             // remove the test data
             echo("Purging directory " + dest);
             CmsFileUtil.purgeDirectory(new File(dest));
         }
     }
-    
+
     private String getRfsPath(CmsObject cms, CmsResource resource, CmsSynchronizeSettings syncSettings) {
-                
+
         String path = syncSettings.getDestinationPathInRfs() + cms.getSitePath(resource);
         return CmsFileUtil.normalizePath(path);
     }
-    
+
     /**
      * "Touches" the last modification date of a resource the RFS so that it is
      * synchronized back to the VFS as a modified resource.<p>

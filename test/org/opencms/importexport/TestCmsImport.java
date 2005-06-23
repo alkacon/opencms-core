@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImport.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,17 +28,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.importexport;
 
 import junit.framework.TestCase;
 
 /**
+ * @param Please leave a comment here.
+ *
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
- * @version $Revision: 1.7 $
  * 
- * @since 5.0
+ * @version $Revision: 1.8 $
+ * 
+ * @since 6.0.0
  */
 public class TestCmsImport extends TestCase {
 
@@ -48,14 +51,47 @@ public class TestCmsImport extends TestCase {
      * @param arg0 JUnit parameters
      */
     public TestCmsImport(String arg0) {
+
         super(arg0);
     }
-    
+
+    /**
+     * Runs a test for the conversion of the digest encoding.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testConvertDigestEncoding() throws Throwable {
+
+        A_CmsImport imp = new CmsImportVersion4();
+        String result;
+
+        // test 'password'
+        result = imp.convertDigestEncoding("dfcd4cbbda27e5569d03a75e38024f19");
+        assertEquals(result, "X03MO1qnZdYdgyfeuILPmQ==");
+
+        // test 'admin'
+        result = imp.convertDigestEncoding("a1a3afa9fad72527c309ca8eca009f43");
+        assertEquals(result, "ISMvKXpXpadDiUoOSoAfww==");
+
+        // test 'test'
+        result = imp.convertDigestEncoding("890feb4dc6a153f34a5ece03a6a73476");
+        assertEquals(result, "CY9rzUYh03PK3k6DJie09g==");
+
+        // test '12345678901234567890'
+        result = imp.convertDigestEncoding("7d0566ad1b6bc5c207f16ce8049832f1");
+        assertEquals(result, "/YXmLZvrRUKHcexohBiycQ==");
+
+        // test 'undnocheins'
+        result = imp.convertDigestEncoding("7fd2de3ccff5567c2fc64fe744283452");
+        assertEquals(result, "/1JevE911vyvRs9nxKi00g==");
+    }
+
     /**
      * Runs a test for the import of content.<p>  
      */
     public void testSetDirectories() {
-        String[] rules = { 
+
+        String[] rules = {
             "s#/default/vfs/content/bodys/(.*)#/default/vfs/system/bodies/$1#",
             "s#/default/vfs/pics/system/(.*)#/default/vfs/system/workplace/resources/$1#",
             "s#/default/vfs/pics/(.*)#/default/vfs/system/galleries/pics/$1#",
@@ -66,13 +102,11 @@ public class TestCmsImport extends TestCase {
             "s#/default/vfs/moduledemos/(.*)#/default/vfs/system/moduledemos/$1#",
             "s#/default/vfs/system/workplace/config/language/(.*)#/default/vfs/system/workplace/locales/$1#",
             "s#/default/vfs/system/workplace/css/(.*)#/default/vfs/system/workplace/resources/$1#",
-            "s#/default/vfs/system/workplace/templates/js/(.*)#/default/vfs/system/workplace/scripts/$1#"
-        };
-        
+            "s#/default/vfs/system/workplace/templates/js/(.*)#/default/vfs/system/workplace/scripts/$1#"};
+
         String content, result;
-        
-        content =         
-            "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
+
+        content = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
             + "<PAGE>\n"
             + "    <class>com.opencms.template.CmsXmlTemplate</class>\n"
             + "    <masterTemplate>/system/modules/org.opencms.frontend/templates/group_main</masterTemplate>\n"
@@ -81,9 +115,8 @@ public class TestCmsImport extends TestCase {
             + "        <TEMPLATE>/content/bodys/group/de/index.html</TEMPLATE>\n"
             + "    </ELEMENTDEF>\n"
             + "</PAGE>";
-        
-        result =         
-            "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
+
+        result = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
             + "<PAGE>\n"
             + "    <class>com.opencms.template.CmsXmlTemplate</class>\n"
             + "    <masterTemplate>/system/modules/org.opencms.frontend/templates/group_main</masterTemplate>\n"
@@ -91,59 +124,26 @@ public class TestCmsImport extends TestCase {
             + "        <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\n"
             + "        <TEMPLATE>/system/bodies/group/de/index.html</TEMPLATE>\n"
             + "    </ELEMENTDEF>\n"
-            + "</PAGE>";        
-        
-        content = CmsImportVersion2.setDirectories(content, rules);        
-        assertEquals(content, result);        
-            
-        content =      
-            ".hbackground {background:url(/open/cms/system/modules/li.castle.frontend/pics/bg_1.gif) no-repeat; background-color:#FFFFFF; }\n"
-            + ".hibackground {background:url(/open/cms/system/modules/li.castle.frontend/pics/bg_1_cai_cpe.gif); no-repeat; background-color:#FFFFFF; }"        
+            + "</PAGE>";
+
+        content = CmsImportVersion2.setDirectories(content, rules);
+        assertEquals(content, result);
+
+        content = ".hbackground {background:url(/open/cms/system/modules/li.castle.frontend/pics/bg_1.gif) no-repeat; background-color:#FFFFFF; }\n"
+            + ".hibackground {background:url(/open/cms/system/modules/li.castle.frontend/pics/bg_1_cai_cpe.gif); no-repeat; background-color:#FFFFFF; }"
             + "<img src=\"{OpenCmsContext}/pics/test/\">\n"
             + "picDir=/system/modules/li.castle.frontend/pics/\n"
             + "<img alt=\"Slogan CPE\" src=\"]]><LINK><![CDATA[/pics/castle/slogan_cpe_de.gif]]></LINK><![CDATA[\">";
-        
-        result =         
-            ".hbackground {background:url(/open/cms/system/modules/li.castle.frontend/pics/bg_1.gif) no-repeat; background-color:#FFFFFF; }\n"
-            + ".hibackground {background:url(/open/cms/system/modules/li.castle.frontend/pics/bg_1_cai_cpe.gif); no-repeat; background-color:#FFFFFF; }"        
+
+        result = ".hbackground {background:url(/open/cms/system/modules/li.castle.frontend/pics/bg_1.gif) no-repeat; background-color:#FFFFFF; }\n"
+            + ".hibackground {background:url(/open/cms/system/modules/li.castle.frontend/pics/bg_1_cai_cpe.gif); no-repeat; background-color:#FFFFFF; }"
             + "<img src=\"{OpenCmsContext}/system/galleries/pics/test/\">\n"
             + "picDir=/system/modules/li.castle.frontend/pics/\n"
-            + "<img alt=\"Slogan CPE\" src=\"]]><LINK><![CDATA[/system/galleries/pics/castle/slogan_cpe_de.gif]]></LINK><![CDATA[\">";           
-        
-        content = CmsImportVersion2.setDirectories(content, rules);      
-        
-        System.out.println(content);  
-        assertEquals(content, result);           
-    }
+            + "<img alt=\"Slogan CPE\" src=\"]]><LINK><![CDATA[/system/galleries/pics/castle/slogan_cpe_de.gif]]></LINK><![CDATA[\">";
 
-    /**
-     * Runs a test for the conversion of the digest encoding.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testConvertDigestEncoding() throws Throwable {
-        
-        A_CmsImport imp = new CmsImportVersion4();
-        String result;
-        
-        // test 'password'
-        result = imp.convertDigestEncoding("dfcd4cbbda27e5569d03a75e38024f19");
-        assertEquals(result, "X03MO1qnZdYdgyfeuILPmQ==");
-        
-        // test 'admin'
-        result = imp.convertDigestEncoding("a1a3afa9fad72527c309ca8eca009f43");
-        assertEquals(result, "ISMvKXpXpadDiUoOSoAfww==");
-        
-        // test 'test'
-        result = imp.convertDigestEncoding("890feb4dc6a153f34a5ece03a6a73476");
-        assertEquals(result, "CY9rzUYh03PK3k6DJie09g==");
-        
-        // test '12345678901234567890'
-        result = imp.convertDigestEncoding("7d0566ad1b6bc5c207f16ce8049832f1");
-        assertEquals(result, "/YXmLZvrRUKHcexohBiycQ==");
-        
-        // test 'undnocheins'
-        result = imp.convertDigestEncoding("7fd2de3ccff5567c2fc64fe744283452");
-        assertEquals(result, "/1JevE911vyvRs9nxKi00g==");    
+        content = CmsImportVersion2.setDirectories(content, rules);
+
+        System.out.println(content);
+        assertEquals(content, result);
     }
 }

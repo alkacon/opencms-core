@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsDateUtil.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,10 @@ import junit.framework.TestCase;
  * Test cases for the class "CmsDateUtil".<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.6 $
  * 
- * @since 5.0
+ * @version $Revision: 1.7 $
+ * 
+ * @since 6.0.0
  */
 public class TestCmsDateUtil extends TestCase {
 

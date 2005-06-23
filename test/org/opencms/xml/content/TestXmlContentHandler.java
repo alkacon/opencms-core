@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestXmlContentHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,16 +28,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.xml.content;
 
 /**
  * Test handler for XML content.
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.5 $
  * 
- * @since 5.5.4
+ * @version $Revision: 1.6 $
+ * 
+ * @since 6.0.0
  */
 public class TestXmlContentHandler extends CmsDefaultXmlContentHandler {
 
@@ -45,6 +46,7 @@ public class TestXmlContentHandler extends CmsDefaultXmlContentHandler {
      * Creates a new instance.<p>
      */
     public TestXmlContentHandler() {
+
         super();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsModuleMessageBundles.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.i18n;
 
 /**
@@ -37,8 +37,9 @@ package org.opencms.i18n;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.13 $
- * @since 5.9.1
+ * @version $Revision: 1.14 $
+ * 
+ * @since 6.0.0
  */
 public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
 
@@ -48,7 +49,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     protected I_CmsMessageBundle[] getTestMessageBundles() {
 
         return new I_CmsMessageBundle[] {
-            org.opencms.frontend.templateone.Messages.get(), 
+            org.opencms.frontend.templateone.Messages.get(),
             org.opencms.frontend.templateone.form.Messages.get(),
             org.opencms.frontend.templateone.modules.Messages.get(),
             org.opencms.workplace.administration.Messages.get(),
@@ -57,11 +58,11 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
             org.opencms.workplace.tools.history.Messages.get(),
             org.opencms.workplace.tools.modules.Messages.get(),
             org.opencms.workplace.tools.scheduler.Messages.get(),
-            org.opencms.workplace.tools.searchindex.Messages.get(), 
+            org.opencms.workplace.tools.searchindex.Messages.get(),
             org.opencms.workplace.tools.accounts.Messages.get(),
             org.opencms.workplace.tools.projects.Messages.get(),
             org.opencms.workplace.tools.widgetdemo.Messages.get(),
-            org.opencms.workplace.tools.workplace.Messages.get(), 
+            org.opencms.workplace.tools.workplace.Messages.get(),
             org.opencms.workplace.tools.workplace.rfsfile.Messages.get(),
             org.opencms.workplace.tools.workplace.broadcast.Messages.get()};
     }

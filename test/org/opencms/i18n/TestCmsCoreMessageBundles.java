@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsCoreMessageBundles.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.i18n;
 
 /**
@@ -38,8 +38,11 @@ package org.opencms.i18n;
  * @author Achim Westermann 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.6 $
- * @since 5.9.1
+ * @version $Revision: 1.7 $
+ * 
+ * @version $Revision: 1.7 $
+ * 
+ * @since 6.0.0
  */
 public final class TestCmsCoreMessageBundles extends TestCmsMessageBundles {
 

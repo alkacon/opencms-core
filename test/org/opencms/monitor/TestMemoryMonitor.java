@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/monitor/TestMemoryMonitor.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.monitor;
 
 import org.opencms.main.CmsContextInfo;
@@ -45,55 +45,62 @@ import junit.framework.TestSuite;
  * Tests for the memory monitor.<p>
  * 
  * @author Alexander Kandzior 
- * @since 5.5.4
+ * 
+ * @version $Revision: 1.8 $
+ * 
+ * @since 6.0.0
  */
 public class TestMemoryMonitor extends OpenCmsTestCase {
-    
+
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestMemoryMonitor(String arg0) {
+
         super(arg0);
     }
-    
+
     /**
      * Test suite for this test class.<p>
      * 
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestMemoryMonitor.class.getName());
-             
+
         suite.addTest(new TestMemoryMonitor("testMemoryMonitor"));
-         
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
+
                 setupOpenCms("simpletest", "/sites/default/");
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
+
         return wrapper;
-    }     
-    
+    }
+
     /**
      * Tests the memory monitor.<p>
      * 
      * @throws Exception if something goes wrong
      */
     public void testMemoryMonitor() throws Exception {
-        
+
         System.out.println("Testing the OpenCms memory monitor.");
-                
+
         // generate job description 
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
         CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
@@ -102,10 +109,10 @@ public class TestMemoryMonitor extends OpenCmsTestCase {
         jobInfo.setClassName(CmsMemoryMonitor.class.getName());
         jobInfo.setReuseInstance(true);
         jobInfo.setCronExpression("0/4 * * * * ?");
-        
+
         // add the job to the manager
         OpenCms.getScheduleManager().scheduleJob(getCmsObject(), jobInfo);
-        
+
         int seconds = 0;
         do {
             try {
@@ -115,7 +122,7 @@ public class TestMemoryMonitor extends OpenCmsTestCase {
             }
             seconds++;
         } while (seconds < 19);
-        
+
         assertEquals(5, OpenCms.getMemoryMonitor().getLogCount());
     }
 }

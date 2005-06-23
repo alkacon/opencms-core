@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.xml.page;
 
 import org.opencms.configuration.CmsConfigurationManager;
@@ -55,142 +55,179 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
- * @since 5.5.0
+ * @since 6.0.0
  */
 public class TestCmsXmlPage extends TestCase {
 
-    private static final String C_XMLPAGE_SCHEMA_SYSTEM_ID = CmsConfigurationManager.C_DEFAULT_DTD_PREFIX + "xmlpage.xsd";
-        
+    private static final String C_XMLPAGE_SCHEMA_SYSTEM_ID = CmsConfigurationManager.C_DEFAULT_DTD_PREFIX
+        + "xmlpage.xsd";
+
     private static final String UTF8 = CmsEncoder.C_UTF8_ENCODING;
-        
+
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestCmsXmlPage(String arg0) {
+
         super(arg0);
     }
-    
+
     /**
-     * Tests accessing element names in the XML page.<p>
+     * Tests reading and updating link elements from the XML page.<p> 
      * 
      * @throws Exception in case something goes wrong
      */
-    public void testXmlPageRenameElement() throws Exception {
-        
-        // create a XML entity resolver for test case
-        CmsXmlContentTypeManager.createTypeManagerForTestCases();
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-        
-        System.out.println("Testing renaming element in the XML page\n");
-        
-        // load stored XML page
-        String pageStr = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);
-        
-        // create a new XML page with this content
-        CmsXmlPage page = CmsXmlPageFactory.unmarshal(pageStr, UTF8, resolver);        
-           
-        page.renameValue("body2", "bodyNEW", Locale.ENGLISH);
-        page.validateXmlStructure(resolver); 
-        page.marshal();
-        // check if page has the element 'body2NEW'
-        assertTrue(page.hasValue("bodyNEW", Locale.ENGLISH)); 
-        // check if page has the element 'body2'
-        assertFalse(page.hasValue("body2", Locale.ENGLISH));
-        System.out.println(page.toString());
-    }
-    
-    /**
-     * Tests accessing element names in the XML page.<p>
-     * 
-     * @throws Exception in case something goes wrong
-     */
-    public void testXmlPageElementNames() throws Exception {
-        
+    public void testUpdateXmlPageLink() throws Exception {
+
         // create a XML entity resolver
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-        
-        System.out.println("Testing element name access in the XML page\n");
-        
-        // load stored XML page
-        String pageStr = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);
-        
-        // create a new XML page with this content
-        CmsXmlPage page = CmsXmlPageFactory.unmarshal(pageStr, UTF8, resolver);        
-           
-        assertTrue(page.hasValue("body", Locale.ENGLISH));
-        assertTrue(page.hasValue("body2", Locale.ENGLISH));
-        assertTrue(page.hasValue("body", Locale.GERMAN));
 
-        List names; 
-        
-        names = page.getNames(Locale.ENGLISH);
-        assertEquals(2, names.size());
-        assertTrue(names.contains("body"));
-        assertTrue(names.contains("body2"));        
-        
-        names = page.getNames(Locale.GERMAN);
-        assertEquals(1, names.size());
-        assertTrue(names.contains("body"));
-        
-        page.addLocale(null, Locale.FRENCH);
-        page.addValue("newbody", Locale.FRENCH);
-        page.addValue("newbody2", Locale.FRENCH);
-        page.addValue("anotherbody", Locale.FRENCH);
-        
-        names = page.getNames(Locale.FRENCH);
-        assertEquals(3, names.size());
-        assertTrue(names.contains("newbody"));
-        assertTrue(names.contains("newbody2"));                
-        assertTrue(names.contains("anotherbody"));
-        
-        page.removeValue("body2", Locale.ENGLISH); 
-        names = page.getNames(Locale.ENGLISH);
-        assertEquals(1, names.size());
-        assertTrue(names.contains("body"));
-        
-        page.removeLocale(Locale.GERMAN);
-        names = page.getNames(Locale.GERMAN);
-        assertEquals(0, names.size());
-        
-        boolean success = false;
-        try {
-            page.addValue("body[0]", Locale.ENGLISH);
-        } catch (CmsIllegalArgumentException e) {
-            success = true;
-        }
-        if (! success) {
-            throw new Exception("Multiple element name creation possible"); 
-        }
-        
-        success = false;
-        try {
-            page.addValue("body[1]", Locale.ENGLISH);
-        } catch (CmsIllegalArgumentException e) {
-            success = true;
-        }
-        if (! success) {
-            throw new Exception("Page element name creation with index [1] possible"); 
-        }        
+        CmsXmlPage page;
+        CmsLink link;
+        String content;
+
+        // validate xmlpage 4
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-4.xml", UTF8);
+        page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        // test values provided in input
+        assertEquals("/sites/default/test.html", link.getTarget());
+        assertEquals(null, link.getAnchor());
+        assertEquals(null, link.getQuery());
+
+        // validate xmlpage 3
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-3.xml", UTF8);
+        page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        // test values provided in input
+        assertEquals("/sites/default/folder1/image2.gif", link.getTarget());
+        assertEquals("test", link.getAnchor());
+        assertEquals("param=1&param2=2", link.getQuery());
+
+        // update xml page link with components
+        link.updateLink("/test/link1/changed2.gif", "foo", "a=b&c=d");
+        // page.marshal();
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        assertEquals("/test/link1/changed2.gif", link.getTarget());
+        assertEquals("foo", link.getAnchor());
+        assertEquals("a=b&c=d", link.getQuery());
+
+        // update xml page link with uri
+        link.updateLink("/foo/bar/link/test.jpg#bar?c=d&x=y");
+        page.marshal();
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        assertEquals("/foo/bar/link/test.jpg", link.getTarget());
+        assertEquals("bar", link.getAnchor());
+        assertEquals("c=d&x=y", link.getQuery());
+
+        // update xml page link with components, query null
+        link.updateLink("/test/link1/changed3.jpg", "bizz", null);
+        page.marshal();
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        assertEquals("/test/link1/changed3.jpg", link.getTarget());
+        assertEquals("bizz", link.getAnchor());
+        assertEquals(null, link.getQuery());
+
+        // update xml page link with components, anchor null
+        link.updateLink("/test/link1/changed4.jpg", null, "c=d&x=y");
+        page.marshal();
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        assertEquals("/test/link1/changed4.jpg", link.getTarget());
+        assertEquals(null, link.getAnchor());
+        assertEquals("c=d&x=y", link.getQuery());
+
+        // update xml page link with uri without components
+        link.updateLink("/foo/bar/baz/test.png");
+        page.marshal();
+        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
+        assertEquals("/foo/bar/baz/test.png", link.getTarget());
+        assertEquals(null, link.getAnchor());
+        assertEquals(null, link.getQuery());
     }
-    
+
+    /**
+     * Test validating a XML page with the XML page schema.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testValidateXmlPageWithSchema() throws Exception {
+
+        CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
+        typeManager.addContentType(CmsXmlHtmlValue.class);
+
+        // create a XML entity resolver
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+        String content;
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage.xsd", UTF8);
+
+        // store schema in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(C_XMLPAGE_SCHEMA_SYSTEM_ID, content.getBytes(UTF8));
+
+        // validate the minimal xmlpage
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-minimal.xml", UTF8);
+        CmsXmlUtils.validateXmlStructure(content.getBytes(UTF8), UTF8, resolver);
+
+        // validate the xmlpage 2
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-1.xml", UTF8);
+        CmsXmlUtils.validateXmlStructure(content.getBytes(UTF8), UTF8, resolver);
+
+        // validate the xmlpage 3
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);
+        CmsXmlUtils.validateXmlStructure(content.getBytes(UTF8), UTF8, resolver);
+    }
+
+    /**
+     * Tests using a XML page with a XML content definition.<p> 
+     * 
+     * @throws Exception  in case something goes wrong
+     */
+    public void testXmlPageAsXmlContentDefinition() throws Exception {
+
+        CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
+        typeManager.addContentType(CmsXmlHtmlValue.class);
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+
+        String content;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage.xsd", UTF8);
+        CmsXmlContentDefinition cd1 = CmsXmlContentDefinition.unmarshal(content, C_XMLPAGE_SCHEMA_SYSTEM_ID, resolver);
+
+        // create new content definition form objects
+        CmsXmlContentDefinition cd2 = new CmsXmlContentDefinition("page", C_XMLPAGE_SCHEMA_SYSTEM_ID);
+        cd2.addType(new CmsXmlHtmlValue("element", "0", String.valueOf(Integer.MAX_VALUE)));
+
+        // ensure content definitions are equal
+        assertEquals(cd1, cd2);
+
+        // obtain content definition from a XML page
+        String pageStr = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-minimal.xml", UTF8);
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(pageStr, UTF8, resolver);
+        CmsXmlContentDefinition cd3 = page.getContentDefinition();
+
+        // ensure content definitions are equal
+        assertEquals(cd1, cd3);
+    }
+
     /**
      * Tests creating a XMl page (final version) with the API.<p>
      * 
      * @throws Exception in case something goes wrong
      */
     public void testXmlPageCreateMinimal() throws Exception {
-        
+
         // create a XML entity resolver
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-        
+
         String pageStr = CmsXmlPageFactory.createDocument(Locale.ENGLISH, UTF8);
         System.out.println("Testing creation of a minimal valid XML page:\n");
         System.out.println(pageStr);
-        
+
         // now compare against stored version of minimal XML page 
         String minimalPageStr = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-minimal.xml", UTF8);
         // remove windows-style linebreaks
@@ -198,78 +235,104 @@ public class TestCmsXmlPage extends TestCase {
         assertEquals(pageStr, minimalPageStr);
 
         // create a new XML page with this content, marshal it and compare
-        CmsXmlPage page = CmsXmlPageFactory.unmarshal(pageStr, UTF8, resolver);        
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(pageStr, UTF8, resolver);
         byte[] bytes = page.marshal();
-        String newPageStr = new String(bytes, UTF8);                
-        assertEquals(pageStr, newPageStr);        
+        String newPageStr = new String(bytes, UTF8);
+        assertEquals(pageStr, newPageStr);
     }
-    
+
     /**
-     * Tests writing elements to the "old", pre 5.5.0 version of the XML page.<p>
+     * Tests accessing element names in the XML page.<p>
      * 
      * @throws Exception in case something goes wrong
      */
-    public void testXmlPageWriteOldVersion() throws Exception {
-                
+    public void testXmlPageElementNames() throws Exception {
+
         // create a XML entity resolver
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-        
-        CmsXmlPage page;
-        String content; 
-        
-        // validate "old" xmlpage 1
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-old-1.xml", UTF8);        
-        page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
-        page.addValue("body3", Locale.ENGLISH);
-        page.setStringValue(null, "body3", Locale.ENGLISH, "English WRITTEN! Image <img src=\"/test/image.gif\" />");        
-        assertTrue(page.hasValue("body3", Locale.ENGLISH));
-        CmsLinkTable table = page.getLinkTable("body3", Locale.ENGLISH);
-        assertTrue(table.getLink("link0").isInternal());
-        assertEquals("English WRITTEN! Image <img src=\"/test/image.gif\" />", page.getStringValue(null, "body3", Locale.ENGLISH));        
+
+        System.out.println("Testing element name access in the XML page\n");
+
+        // load stored XML page
+        String pageStr = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);
+
+        // create a new XML page with this content
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(pageStr, UTF8, resolver);
+
+        assertTrue(page.hasValue("body", Locale.ENGLISH));
+        assertTrue(page.hasValue("body2", Locale.ENGLISH));
+        assertTrue(page.hasValue("body", Locale.GERMAN));
+
+        List names;
+
+        names = page.getNames(Locale.ENGLISH);
+        assertEquals(2, names.size());
+        assertTrue(names.contains("body"));
+        assertTrue(names.contains("body2"));
+
+        names = page.getNames(Locale.GERMAN);
+        assertEquals(1, names.size());
+        assertTrue(names.contains("body"));
+
+        page.addLocale(null, Locale.FRENCH);
+        page.addValue("newbody", Locale.FRENCH);
+        page.addValue("newbody2", Locale.FRENCH);
+        page.addValue("anotherbody", Locale.FRENCH);
+
+        names = page.getNames(Locale.FRENCH);
+        assertEquals(3, names.size());
+        assertTrue(names.contains("newbody"));
+        assertTrue(names.contains("newbody2"));
+        assertTrue(names.contains("anotherbody"));
+
+        page.removeValue("body2", Locale.ENGLISH);
+        names = page.getNames(Locale.ENGLISH);
+        assertEquals(1, names.size());
+        assertTrue(names.contains("body"));
+
+        page.removeLocale(Locale.GERMAN);
+        names = page.getNames(Locale.GERMAN);
+        assertEquals(0, names.size());
+
+        boolean success = false;
+        try {
+            page.addValue("body[0]", Locale.ENGLISH);
+        } catch (CmsIllegalArgumentException e) {
+            success = true;
+        }
+        if (!success) {
+            throw new Exception("Multiple element name creation possible");
+        }
+
+        success = false;
+        try {
+            page.addValue("body[1]", Locale.ENGLISH);
+        } catch (CmsIllegalArgumentException e) {
+            success = true;
+        }
+        if (!success) {
+            throw new Exception("Page element name creation with index [1] possible");
+        }
     }
-    
-    /**
-     * Tests writing elements to the updated, final version of the XML page.<p> 
-     *
-     * @throws Exception in case something goes wrong
-     */
-    public void testXmlPageWriteFinalVersion() throws Exception {
-                
-        // create a XML entity resolver
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-        
-        CmsXmlPage page;
-        String content; 
-        
-        // validate "final" xmlpage 1
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-1.xml", UTF8);        
-        page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
-        page.addValue("body3", Locale.ENGLISH);
-        page.setStringValue(null, "body3", Locale.ENGLISH, "English WRITTEN! Image <img src=\"/test/image.gif\" />");        
-        assertTrue(page.hasValue("body3", Locale.ENGLISH));
-        CmsLinkTable table = page.getLinkTable("body3", Locale.ENGLISH);
-        assertTrue(table.getLink("link0").isInternal());
-        assertEquals("English WRITTEN! Image <img src=\"/test/image.gif\" />", page.getStringValue(null, "body3", Locale.ENGLISH));        
-    }
-    
+
     /**
      * Tests acessing XML page values via lovales.<p> 
      *
      * @throws Exception in case something goes wrong
      */
     public void testXmlPageLocaleAccess() throws Exception {
-                
+
         // create a XML entity resolver
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-        
+
         CmsXmlPage page;
-        String content; 
-        
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);        
+        String content;
+
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);
         page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
 
         List locales;
-        
+
         locales = page.getLocales("body");
         assertEquals(2, locales.size());
         assertTrue(locales.contains(Locale.ENGLISH));
@@ -278,207 +341,170 @@ public class TestCmsXmlPage extends TestCase {
         locales = page.getLocales("body2");
         assertEquals(1, locales.size());
         assertTrue(locales.contains(Locale.ENGLISH));
-    }    
-        
+    }
+
     /**
      * Tests reading elements from the updated, final version of the XML page.<p> 
      * 
      * @throws Exception  in case something goes wrong
-     */    
+     */
     public void testXmlPageReadFinalVersion() throws Exception {
-        
+
         // create a XML entity resolver
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-        
+
         CmsXmlPage page;
-        String content; 
-        
+        String content;
+
         // validate "final" xmlpage 1
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-1.xml", UTF8);        
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-1.xml", UTF8);
         page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
         assertTrue(page.hasValue("body", Locale.ENGLISH));
         CmsLinkTable table = page.getLinkTable("body", Locale.ENGLISH);
         assertTrue(table.getLink("link0").isInternal());
-        assertEquals("English! Image <img src=\"/sites/default/folder1/image2.gif\" />", page.getStringValue(null, "body", Locale.ENGLISH));        
-        
+        assertEquals("English! Image <img src=\"/sites/default/folder1/image2.gif\" />", page.getStringValue(
+            null,
+            "body",
+            Locale.ENGLISH));
+
         // validate "final" xmlpage 2
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);        
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);
         page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
         assertTrue(page.hasValue("body", Locale.ENGLISH));
         assertTrue(page.hasValue("body", Locale.GERMAN));
-        assertTrue(page.hasValue("body2", Locale.ENGLISH));   
-        assertEquals("English! Image <img src=\"/sites/default/folder1/image2.gif\" />", page.getStringValue(null, "body", Locale.ENGLISH));        
-        assertEquals("English 2!", page.getStringValue(null, "body2", Locale.ENGLISH));        
-        assertEquals("Deutsch! Image <img src=\"/sites/default/folder1/image2.gif\" />", page.getStringValue(null, "body", Locale.GERMAN));
+        assertTrue(page.hasValue("body2", Locale.ENGLISH));
+        assertEquals("English! Image <img src=\"/sites/default/folder1/image2.gif\" />", page.getStringValue(
+            null,
+            "body",
+            Locale.ENGLISH));
+        assertEquals("English 2!", page.getStringValue(null, "body2", Locale.ENGLISH));
+        assertEquals("Deutsch! Image <img src=\"/sites/default/folder1/image2.gif\" />", page.getStringValue(
+            null,
+            "body",
+            Locale.GERMAN));
     }
-    
+
     /**
      * Tests reading elements from the "old", pre 5.5.0 version of the XML page.<p>
      * 
      * @throws Exception in case something goes wrong
      */
     public void testXmlPageReadOldVersion() throws Exception {
-                
+
         // create a XML entity resolver
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-        
+
         CmsXmlPage page;
-        String content; 
-        
+        String content;
+
         // validate "old" xmlpage 1
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-old-1.xml", UTF8);        
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-old-1.xml", UTF8);
         page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
         assertTrue(page.hasValue("body", Locale.ENGLISH));
         CmsLinkTable table = page.getLinkTable("body", Locale.ENGLISH);
         assertTrue(table.getLink("link0").isInternal());
-        assertEquals("English! Image <img src=\"/sites/default/folder1/image2.gif\" />", page.getStringValue(null, "body", Locale.ENGLISH));        
+        assertEquals("English! Image <img src=\"/sites/default/folder1/image2.gif\" />", page.getStringValue(
+            null,
+            "body",
+            Locale.ENGLISH));
 
         // validate "old" xmlpage 2
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-old-2.xml", UTF8);        
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-old-2.xml", UTF8);
         page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
         assertTrue(page.hasValue("body", Locale.ENGLISH));
         assertTrue(page.hasValue("body", Locale.GERMAN));
-        assertTrue(page.hasValue("body2", Locale.ENGLISH));      
-        assertEquals("English! Image <img src=\"/sites/default/folder1/image2.gif\" />", page.getStringValue(null, "body", Locale.ENGLISH));        
-        assertEquals("English 2!", page.getStringValue(null, "body2", Locale.ENGLISH));        
-        assertEquals("Deutsch! Image <img src=\"/sites/default/folder1/image2.gif\" />", page.getStringValue(null, "body", Locale.GERMAN));        
+        assertTrue(page.hasValue("body2", Locale.ENGLISH));
+        assertEquals("English! Image <img src=\"/sites/default/folder1/image2.gif\" />", page.getStringValue(
+            null,
+            "body",
+            Locale.ENGLISH));
+        assertEquals("English 2!", page.getStringValue(null, "body2", Locale.ENGLISH));
+        assertEquals("Deutsch! Image <img src=\"/sites/default/folder1/image2.gif\" />", page.getStringValue(
+            null,
+            "body",
+            Locale.GERMAN));
     }
-    
+
     /**
-     * Test validating a XML page with the XML page schema.<p>
+     * Tests accessing element names in the XML page.<p>
      * 
      * @throws Exception in case something goes wrong
      */
-    public void testValidateXmlPageWithSchema() throws Exception {
-    
-        CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
-        typeManager.addContentType(CmsXmlHtmlValue.class);    
-        
-        // create a XML entity resolver
+    public void testXmlPageRenameElement() throws Exception {
+
+        // create a XML entity resolver for test case
+        CmsXmlContentTypeManager.createTypeManagerForTestCases();
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-        String content;        
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage.xsd", UTF8);
-        
-        // store schema in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_XMLPAGE_SCHEMA_SYSTEM_ID, content.getBytes(UTF8));
-        
-        // validate the minimal xmlpage
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-minimal.xml", UTF8);
-        CmsXmlUtils.validateXmlStructure(content.getBytes(UTF8), UTF8, resolver);        
 
-        // validate the xmlpage 2
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-1.xml", UTF8);
-        CmsXmlUtils.validateXmlStructure(content.getBytes(UTF8), UTF8, resolver);        
+        System.out.println("Testing renaming element in the XML page\n");
 
-        // validate the xmlpage 3
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);
-        CmsXmlUtils.validateXmlStructure(content.getBytes(UTF8), UTF8, resolver);        
-    }    
-    
+        // load stored XML page
+        String pageStr = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);
+
+        // create a new XML page with this content
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(pageStr, UTF8, resolver);
+
+        page.renameValue("body2", "bodyNEW", Locale.ENGLISH);
+        page.validateXmlStructure(resolver);
+        page.marshal();
+        // check if page has the element 'body2NEW'
+        assertTrue(page.hasValue("bodyNEW", Locale.ENGLISH));
+        // check if page has the element 'body2'
+        assertFalse(page.hasValue("body2", Locale.ENGLISH));
+        System.out.println(page.toString());
+    }
+
     /**
-     * Tests using a XML page with a XML content definition.<p> 
-     * 
-     * @throws Exception  in case something goes wrong
-     */
-    public void testXmlPageAsXmlContentDefinition() throws Exception {
-        
-        CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
-        typeManager.addContentType(CmsXmlHtmlValue.class);        
-        
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-        
-        String content;        
-                
-        // unmarshal content definition
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage.xsd", UTF8);
-        CmsXmlContentDefinition cd1 = CmsXmlContentDefinition.unmarshal(content, C_XMLPAGE_SCHEMA_SYSTEM_ID, resolver);
-        
-        // create new content definition form objects
-        CmsXmlContentDefinition cd2 = new CmsXmlContentDefinition("page", C_XMLPAGE_SCHEMA_SYSTEM_ID);
-        cd2.addType(new CmsXmlHtmlValue("element", "0", String.valueOf(Integer.MAX_VALUE)));    
-        
-        // ensure content definitions are equal
-        assertEquals(cd1, cd2);
-        
-        // obtain content definition from a XML page
-        String pageStr = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-minimal.xml", UTF8);
-        CmsXmlPage page = CmsXmlPageFactory.unmarshal(pageStr, UTF8, resolver);    
-        CmsXmlContentDefinition cd3 = page.getContentDefinition();
-
-        // ensure content definitions are equal
-        assertEquals(cd1, cd3);    
-    }    
-    
-    /**
-     * Tests reading and updating link elements from the XML page.<p> 
-     * 
+     * Tests writing elements to the updated, final version of the XML page.<p> 
+     *
      * @throws Exception in case something goes wrong
-     */    
-    public void testUpdateXmlPageLink() throws Exception {
-        
+     */
+    public void testXmlPageWriteFinalVersion() throws Exception {
+
         // create a XML entity resolver
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-        
+
         CmsXmlPage page;
-        CmsLink link;
-        String content; 
-        
-        // validate xmlpage 4
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-4.xml", UTF8);        
+        String content;
+
+        // validate "final" xmlpage 1
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-1.xml", UTF8);
         page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
-        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
-        // test values provided in input
-        assertEquals("/sites/default/test.html", link.getTarget());
-        assertEquals(null, link.getAnchor());
-        assertEquals(null, link.getQuery());
-        
-        // validate xmlpage 3
-        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-3.xml", UTF8);        
+        page.addValue("body3", Locale.ENGLISH);
+        page.setStringValue(null, "body3", Locale.ENGLISH, "English WRITTEN! Image <img src=\"/test/image.gif\" />");
+        assertTrue(page.hasValue("body3", Locale.ENGLISH));
+        CmsLinkTable table = page.getLinkTable("body3", Locale.ENGLISH);
+        assertTrue(table.getLink("link0").isInternal());
+        assertEquals("English WRITTEN! Image <img src=\"/test/image.gif\" />", page.getStringValue(
+            null,
+            "body3",
+            Locale.ENGLISH));
+    }
+
+    /**
+     * Tests writing elements to the "old", pre 5.5.0 version of the XML page.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testXmlPageWriteOldVersion() throws Exception {
+
+        // create a XML entity resolver
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+
+        CmsXmlPage page;
+        String content;
+
+        // validate "old" xmlpage 1
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-old-1.xml", UTF8);
         page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
-        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
-        // test values provided in input
-        assertEquals("/sites/default/folder1/image2.gif", link.getTarget());
-        assertEquals("test", link.getAnchor());
-        assertEquals("param=1&param2=2", link.getQuery());
-        
-        // update xml page link with components
-        link.updateLink("/test/link1/changed2.gif", "foo", "a=b&c=d");
-        // page.marshal();
-        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
-        assertEquals("/test/link1/changed2.gif", link.getTarget());
-        assertEquals("foo", link.getAnchor());
-        assertEquals("a=b&c=d", link.getQuery());
-        
-        // update xml page link with uri
-        link.updateLink("/foo/bar/link/test.jpg#bar?c=d&x=y");
-        page.marshal();
-        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
-        assertEquals("/foo/bar/link/test.jpg", link.getTarget());
-        assertEquals("bar", link.getAnchor());
-        assertEquals("c=d&x=y", link.getQuery());
-        
-        // update xml page link with components, query null
-        link.updateLink("/test/link1/changed3.jpg", "bizz", null);
-        page.marshal();
-        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
-        assertEquals("/test/link1/changed3.jpg", link.getTarget());
-        assertEquals("bizz", link.getAnchor());
-        assertEquals(null, link.getQuery());
-        
-        // update xml page link with components, anchor null
-        link.updateLink("/test/link1/changed4.jpg", null, "c=d&x=y");
-        page.marshal();
-        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
-        assertEquals("/test/link1/changed4.jpg", link.getTarget());
-        assertEquals(null, link.getAnchor());
-        assertEquals("c=d&x=y", link.getQuery());
-        
-        // update xml page link with uri without components
-        link.updateLink("/foo/bar/baz/test.png");
-        page.marshal();
-        link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
-        assertEquals("/foo/bar/baz/test.png", link.getTarget());
-        assertEquals(null, link.getAnchor());
-        assertEquals(null, link.getQuery());        
+        page.addValue("body3", Locale.ENGLISH);
+        page.setStringValue(null, "body3", Locale.ENGLISH, "English WRITTEN! Image <img src=\"/test/image.gif\" />");
+        assertTrue(page.hasValue("body3", Locale.ENGLISH));
+        CmsLinkTable table = page.getLinkTable("body3", Locale.ENGLISH);
+        assertTrue(table.getLink("link0").isInternal());
+        assertEquals("English WRITTEN! Image <img src=\"/test/image.gif\" />", page.getStringValue(
+            null,
+            "body3",
+            Locale.ENGLISH));
     }
 }

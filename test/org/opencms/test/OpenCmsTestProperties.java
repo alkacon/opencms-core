@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestProperties.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/23 14:27:27 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,10 +43,14 @@ import org.apache.commons.collections.ExtendedProperties;
  * Reads and manages the test.properties file.<p>
  * 
  * @author Michael Moossen 
- * @version $Revision: 1.11 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.12 $
+ * 
+ * @since 6.0.0
  */
 public final class OpenCmsTestProperties {
+
+    private static ExtendedProperties m_configuration;
 
     /**
      * the singleton instance.
@@ -59,6 +63,11 @@ public final class OpenCmsTestProperties {
     private String m_basePath;
 
     /**
+     * the database to use. 
+     */
+    private String m_dbProduct;
+
+    /**
      * the path to the data test folder.
      */
     private String m_testDataPath;
@@ -67,13 +76,6 @@ public final class OpenCmsTestProperties {
      * the path to the webapp test folder.
      */
     private String m_testWebappPath;
-
-    /**
-     * the database to use. 
-     */
-    private String m_dbProduct;
-
-    private static ExtendedProperties m_configuration;
 
     /**
      * private default constructor.
@@ -146,6 +148,24 @@ public final class OpenCmsTestProperties {
     }
 
     /**
+     * @return the parsed configuration file ('test.properties')
+     */
+
+    public ExtendedProperties getConfiguration() {
+
+        return m_configuration;
+    }
+
+    /**
+     * 
+     * @return a String identifying the db.product property value of the 'test.properties' value.
+     */
+    public String getDbProduct() {
+
+        return m_dbProduct;
+    }
+
+    /**
      * @return the path to the data test directory
      */
     public String getTestDataPath() {
@@ -159,24 +179,6 @@ public final class OpenCmsTestProperties {
     public String getTestWebappPath() {
 
         return m_testWebappPath;
-    }
-
-    /**
-     * 
-     * @return a String identifying the db.product property value of the 'test.properties' value.
-     */
-    public String getDbProduct() {
-
-        return m_dbProduct;
-    }
-
-    /**
-     * @return the parsed configuration file ('test.properties')
-     */
-
-    public ExtendedProperties getConfiguration() {
-
-        return m_configuration;
     }
 
 }
