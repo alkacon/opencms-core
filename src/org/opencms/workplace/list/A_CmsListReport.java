@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListReport.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,12 +45,14 @@ import javax.servlet.jsp.PageContext;
  * Provides a report in the list widget.<p> 
  *
  * @author  Michael Emmerich 
- * @version $Revision: 1.3 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsListReport extends CmsReport {
 
-     /**
+    /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
@@ -58,7 +60,7 @@ public abstract class A_CmsListReport extends CmsReport {
     public A_CmsListReport(CmsJspActionElement jsp) {
 
         super(jsp);
-   
+
     }
 
     /**
@@ -71,9 +73,9 @@ public abstract class A_CmsListReport extends CmsReport {
     public A_CmsListReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
- 
+
     }
-      
+
     /**
      * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
      */
@@ -88,7 +90,8 @@ public abstract class A_CmsListReport extends CmsReport {
      * 
      * @throws JspException if dialog actions fail
      */
-    public void displayReport() throws  JspException {
+    public void displayReport() throws JspException {
+
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
@@ -120,7 +123,6 @@ public abstract class A_CmsListReport extends CmsReport {
      * @return the reportd thread to use for this report.
      */
     public abstract I_CmsReportThread initializeThread();
-
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)

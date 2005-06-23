@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,8 +49,10 @@ import java.util.Locale;
  * Html list column definition.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.17 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.18 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsListColumnDefinition {
 
@@ -81,6 +83,9 @@ public class CmsListColumnDefinition {
     /** Unique id. */
     private final String m_id;
 
+    /** List id. */
+    private String m_listId;
+
     /** Display name. */
     private CmsMessageContainer m_name;
 
@@ -92,9 +97,6 @@ public class CmsListColumnDefinition {
 
     /** Column width. */
     private String m_width;
-
-    /** List id. */
-    private String m_listId;
 
     /**
      * Default Constructor.<p>
@@ -120,16 +122,6 @@ public class CmsListColumnDefinition {
             listAction.setListId(m_listId);
         }
         m_actionList.add(listAction);
-    }
-
-    /**
-     * Sets the id of the list.<p>
-     * 
-     * @param listId the id of the list
-     */
-    /*package*/void setListId(String listId) {
-
-        m_listId = listId;
     }
 
     /**
@@ -416,7 +408,7 @@ public class CmsListColumnDefinition {
      * @param defaultAction the default Action to set
      */
     public void setDefaultAction(CmsListDefaultAction defaultAction) {
-        
+
         m_defaultAction = defaultAction;
         if (m_listId != null) {
             m_defaultAction.setListId(m_listId);
@@ -513,5 +505,15 @@ public class CmsListColumnDefinition {
     public void setWidth(String width) {
 
         m_width = width;
+    }
+
+    /**
+     * Sets the id of the list.<p>
+     * 
+     * @param listId the id of the list
+     */
+    /*package*/void setListId(String listId) {
+
+        m_listId = listId;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,11 +69,13 @@ import org.apache.commons.logging.Log;
  * <ul>
  * <li>/commons/newresource_xmlpage.jsp
  * </ul>
+ * <p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.16 $
  * 
- * @since 5.3.3
+ * @version $Revision: 1.17 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsNewResourceXmlPage extends CmsNewResource {
 

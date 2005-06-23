@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,14 +64,16 @@ import org.apache.commons.fileupload.FileItem;
  * <ul>
  * <li>/commons/newresource_upload.jsp
  * </ul>
+ * <p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.14 $
  * 
- * @since 5.3.3
+ * @version $Revision: 1.15 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsNewResourceUpload extends CmsNewResource {
-    
+
     /** The value for the resource upload applet action. */
     public static final int ACTION_APPLET = 140;
 
@@ -228,7 +230,8 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 if (maxFileSizeBytes > 0 && size > maxFileSizeBytes) {
                     // file size is larger than maximum allowed file size, throw an error
                     throw new CmsWorkplaceException(Messages.get().container(
-                        Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1, new Long(maxFileSizeBytes / 1024)));
+                        Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1,
+                        new Long(maxFileSizeBytes / 1024)));
                 }
                 byte[] content = fi.get();
                 fi.delete();
@@ -271,7 +274,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         } catch (Throwable e) {
             // error uploading file, show error dialog
             setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_UPLOAD_FILE_0));
-            includeErrorpage(this, e);   
+            includeErrorpage(this, e);
         }
     }
 

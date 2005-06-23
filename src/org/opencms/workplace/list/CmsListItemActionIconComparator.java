@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemActionIconComparator.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,10 @@ import java.util.Locale;
  * if not, the <code>{@link Comparable}</code> interface is used.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.3 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  * 
  * @see org.opencms.workplace.list.CmsListColumnDefinition
  */

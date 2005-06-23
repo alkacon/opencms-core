@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsDownloadGallery.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,9 +46,10 @@ import javax.servlet.jsp.PageContext;
  * Generates the download gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Armen Markarian 
- * @version $Revision: 1.9 $
  * 
- * @since 5.5.2
+ * @version $Revision: 1.10 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsDownloadGallery extends A_CmsGallery {
 

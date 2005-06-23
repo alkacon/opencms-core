@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,9 +71,10 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * @author Armen Markarian 
- * @version $Revision: 1.14 $
  * 
- * @since 5.5.2
+ * @version $Revision: 1.15 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsGallery extends CmsDialog {
 

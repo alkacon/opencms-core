@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDateMacroFormatter.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
@@ -36,21 +36,22 @@ import org.opencms.i18n.CmsMessageContainer;
 import java.util.Date;
 import java.util.Locale;
 
-
 /**
  * Formatter for dates.<p>
  * 
  * The 'never' message will be displayed if the date is null or <code>{@link Date#getTime()}==0</code>.<p>
  * 
  * @author Michael Moossen 
- * @version $Revision: 1.2 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsListDateMacroFormatter extends CmsListMacroFormatter {
 
     /** Constant for never. */
     private final CmsMessageContainer m_never;
-    
+
     /**
      * Default constructor that sets the mask to use.<p>
      * 
@@ -72,10 +73,10 @@ public class CmsListDateMacroFormatter extends CmsListMacroFormatter {
             return m_never.key(locale);
         }
         if (data instanceof Date) {
-            if (((Date)data).getTime()==0) {
+            if (((Date)data).getTime() == 0) {
                 return m_never.key(locale);
             }
-        } 
+        }
         return super.format(data, locale);
     }
 }

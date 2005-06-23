@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,26 +53,27 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
- * @since 5.1.10
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsPublishThread extends A_CmsReportThread {
-    
+
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsPublishThread.class); 
-    
-    /** The list of resources to publish. */
-    private CmsPublishList m_publishList;
-    
+    private static final Log LOG = CmsLog.getLog(CmsPublishThread.class);
+
     /** The CmsObject used to start this thread. */
     private CmsObject m_cms;
-    
+
+    /** The list of resources to publish. */
+    private CmsPublishList m_publishList;
+
     /** The workplace settings of the current user. */
     private CmsWorkplaceSettings m_settings;
 
     /** Flag for updating the user info. */
     private boolean m_updateSessionInfo;
-    
+
     /**
      * Creates a Thread that publishes the Cms resources contained in the specified Cms publish 
      * list.<p>
@@ -84,14 +85,12 @@ public class CmsPublishThread extends A_CmsReportThread {
      * @see org.opencms.file.CmsObject#getPublishList()
      */
     public CmsPublishThread(CmsObject cms, CmsPublishList publishList, CmsWorkplaceSettings settings) {
-        super(cms, Messages.get().key(
-            cms.getRequestContext().getLocale(),
-            Messages.GUI_PUBLISH_TRHEAD_NAME_0,
-            null));
+
+        super(cms, Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_PUBLISH_TRHEAD_NAME_0, null));
         m_cms = cms;
         m_publishList = publishList;
         m_settings = settings;
-        
+
         // if the project to publish is a temporary project, we have to update the
         // user info after publishing
         if (m_cms.getRequestContext().currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
@@ -99,14 +98,15 @@ public class CmsPublishThread extends A_CmsReportThread {
         } else {
             m_updateSessionInfo = false;
         }
-        
+
         initHtmlReport(cms.getRequestContext().getLocale());
     }
-    
+
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
+
         return getReport().getReportUpdate();
     }
 
@@ -114,6 +114,7 @@ public class CmsPublishThread extends A_CmsReportThread {
      * @see java.lang.Runnable#run()
      */
     public void run() {
+
         try {
             getReport().println(
                 Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_BEGIN_0),
@@ -130,7 +131,7 @@ public class CmsPublishThread extends A_CmsReportThread {
             LOG.error(Messages.get().key(Messages.LOG_PUBLISH_PROJECT_FAILED_0), e);
         }
     }
-        
+
     /**
      * Updates the project information in the user session and the workplace settings 
      * after a temporary project is published and deleted.<p>
@@ -138,9 +139,10 @@ public class CmsPublishThread extends A_CmsReportThread {
      * This is nescessary to prevent the access to a nonexisting project.<p>
      */
     private void updateSessionInfo() {
+
         // get the session menager
-        CmsSessionManager sessionManager = OpenCms.getSessionManager();      
-         
+        CmsSessionManager sessionManager = OpenCms.getSessionManager();
+
         // get all sessions
         List userSessions = sessionManager.getSessionInfos();
         Iterator i = userSessions.iterator();
@@ -162,8 +164,7 @@ public class CmsPublishThread extends A_CmsReportThread {
                         m_cms.getRequestContext().currentProject().getName()),
                     I_CmsReport.C_FORMAT_DEFAULT);
             }
-        }        
+        }
     }
-    
-    
+
 }

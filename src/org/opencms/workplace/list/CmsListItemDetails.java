@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemDetails.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,8 +41,10 @@ import org.opencms.i18n.CmsMessageContainer;
  * For detail contents you may use HTML code.<p>
  * 
  * @author Michael Moossen 
- * @version $Revision: 1.6 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsListItemDetails extends CmsListColumnDefinition {
 
@@ -72,6 +74,26 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
     }
 
     /**
+     * Returns the current active action.<p>
+     *
+     * @return the current active action
+     */
+    public I_CmsListAction getAction() {
+
+        return isVisible() ? m_hideAction : m_showAction;
+    }
+
+    /**
+     * Returns the id of the first column to include.<p>
+     *
+     * @return the id of the first column to include
+     */
+    public String getAtColumn() {
+
+        return m_atColumn;
+    }
+
+    /**
      * Sets the id of the first column to include.<p>
      *
      * @param atColumn the id of the first column to set
@@ -92,33 +114,13 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
     }
 
     /**
-     * Sets the show details Action.<p>
-     *
-     * @param showAction the showdetails Action to set
-     */
-    public void setShowAction(I_CmsListAction showAction) {
-
-        m_showAction = showAction;
-    }
-
-    /**
-     * Sets the name of the show action.<p>
+     * Sets the help text of the hide action.<p>
      * 
-     * @param showActionName the name of the show action
+     * @param hideActionHelp the help text of the hide action
      */
-    public void setShowActionName(CmsMessageContainer showActionName) {
+    public void setHideActionHelpText(CmsMessageContainer hideActionHelp) {
 
-        m_showAction.setName(showActionName);
-    }
-
-    /**
-     * Sets the help text of the show action.<p>
-     * 
-     * @param showActionHelp the help text of the show action
-     */
-    public void setShowActionHelpText(CmsMessageContainer showActionHelp) {
-
-        m_showAction.setHelpText(showActionHelp);
+        m_hideAction.setHelpText(hideActionHelp);
     }
 
     /**
@@ -132,43 +134,43 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
     }
 
     /**
-     * Sets the help text of the hide action.<p>
-     * 
-     * @param hideActionHelp the help text of the hide action
-     */
-    public void setHideActionHelpText(CmsMessageContainer hideActionHelp) {
-
-        m_hideAction.setHelpText(hideActionHelp);
-    }
-
-    /**
-     * Returns the current active action.<p>
-     *
-     * @return the current active action
-     */
-    public I_CmsListAction getAction() {
-
-        return isVisible() ? m_hideAction : m_showAction;
-    }
-
-    /**
-     * Returns the id of the first column to include.<p>
-     *
-     * @return the id of the first column to include
-     */
-    public String getAtColumn() {
-
-        return m_atColumn;
-    }
-    
-    /**
      * Sets the id of the list.<p>
      * 
      * @param listId the id of the list
      */
     public void setListId(String listId) {
-        
+
         m_hideAction.setListId(listId);
         m_showAction.setListId(listId);
+    }
+
+    /**
+     * Sets the show details Action.<p>
+     *
+     * @param showAction the showdetails Action to set
+     */
+    public void setShowAction(I_CmsListAction showAction) {
+
+        m_showAction = showAction;
+    }
+
+    /**
+     * Sets the help text of the show action.<p>
+     * 
+     * @param showActionHelp the help text of the show action
+     */
+    public void setShowActionHelpText(CmsMessageContainer showActionHelp) {
+
+        m_showAction.setHelpText(showActionHelp);
+    }
+
+    /**
+     * Sets the name of the show action.<p>
+     * 
+     * @param showActionName the name of the show action
+     */
+    public void setShowActionName(CmsMessageContainer showActionName) {
+
+        m_showAction.setName(showActionName);
     }
 }

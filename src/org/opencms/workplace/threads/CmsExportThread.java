@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsExportThread.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,14 +45,15 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
- * @since 5.1.10
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsExportThread extends A_CmsReportThread {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsExportThread.class); 
-    
+    private static final Log LOG = CmsLog.getLog(CmsExportThread.class);
+
     private I_CmsImportExportHandler m_handler;
 
     /**
@@ -63,6 +64,7 @@ public class CmsExportThread extends A_CmsReportThread {
      * @param old flag for old report mode
      */
     public CmsExportThread(CmsObject cms, I_CmsImportExportHandler handler, boolean old) {
+
         super(cms, "OpenCms: " + handler.getDescription());
         m_handler = handler;
         if (old) {
@@ -76,6 +78,7 @@ public class CmsExportThread extends A_CmsReportThread {
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
+
         return getReport().getReportUpdate();
     }
 
@@ -83,6 +86,7 @@ public class CmsExportThread extends A_CmsReportThread {
      * @see java.lang.Runnable#run()
      */
     public void run() {
+
         try {
             OpenCms.getImportExportManager().exportData(getCms(), m_handler, getReport());
         } catch (CmsException e) {

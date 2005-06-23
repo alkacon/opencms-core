@@ -43,26 +43,28 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsPointerLinkValidatorThread extends A_CmsReportThread {
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPointerLinkValidatorThread.class);
-    
+
     /** the CmsObject to use. */
     private CmsObject m_cms;
-    
+
     /** reference to the HtmlImport. */
     private CmsPointerLinkValidator m_externLinkValidator;
-    
+
     /**
      * Constructor, creates a new CmsExternLinkValidationThread.<p>
      * 
      * @param cms the current CmsObject
      */
     public CmsPointerLinkValidatorThread(CmsObject cms) {
-      
+
         super(cms, "test test");
         initHtmlReport(cms.getRequestContext().getLocale());
         m_cms = cms;
@@ -71,27 +73,28 @@ public class CmsPointerLinkValidatorThread extends A_CmsReportThread {
         m_externLinkValidator.setReport(getReport());
         start();
     }
-    
+
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
-        
+
         return getReport().getReportUpdate();
-    }   
-    
+    }
+
     /**
      * The run method which starts the import process.<p>
      */
     public void run() {
-        try {             
+
+        try {
             // do the validation                
-            m_externLinkValidator.validateLinks(m_cms);         
+            m_externLinkValidator.validateLinks(m_cms);
         } catch (Exception e) {
             getReport().println(e);
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage());
             }
         }
-    }      
+    }
 }

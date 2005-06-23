@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,11 +71,13 @@ import org.apache.commons.logging.Log;
  * <li>/views/explorer/explorer_files.jsp
  * <li>/views/explorer/explorer_body_fs.jsp
  * </ul>
+ * <p>
  *
  * @author  Alexander Kandzior 
- * @version $Revision: 1.19 $
  * 
- * @since 5.1
+ * @version $Revision: 1.20 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsExplorer extends CmsWorkplace {
 

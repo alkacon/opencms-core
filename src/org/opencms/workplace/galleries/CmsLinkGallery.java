@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,19 +56,21 @@ import org.apache.commons.logging.Log;
  * <ul>
  * <li>/commons/galeries/download_fs.jsp
  * </ul>
+ * <p>
  * 
  * @author Armen Markarian 
- * @version $Revision: 1.12 $
  * 
- * @since 5.5.2
+ * @version $Revision: 1.13 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsLinkGallery extends A_CmsGallery {
-    
+
     /** URI of the image gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "link_fs.jsp";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLinkGallery.class);  
+    private static final Log LOG = CmsLog.getLog(CmsLinkGallery.class);
 
     /**
      * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
@@ -152,8 +154,7 @@ public class CmsLinkGallery extends A_CmsGallery {
                         getParamResourcePath());
                     String keywords = getJsp().property(CmsPropertyDefinition.PROPERTY_KEYWORDS, getParamResourcePath());
                     String lastmodified = getMessages().getDateTime(res.getDateLastModified());
-                    html
-                        .append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: middle; width:100%; background-color: ThreeDFace; margin: 0;\">");
+                    html.append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: middle; width:100%; background-color: ThreeDFace; margin: 0;\">");
                     // file target
                     String linkTarget = getCms().getSitePath(res);
                     html.append("<tr align=\"left\">");
@@ -217,8 +218,7 @@ public class CmsLinkGallery extends A_CmsGallery {
         StringBuffer wizardUrl = new StringBuffer(8);
         wizardUrl.append(getJsp().link(
             C_PATH_DIALOGS
-                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePointer.getStaticTypeName())
-                    .getNewResourceUri()));
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePointer.getStaticTypeName()).getNewResourceUri()));
         wizardUrl.append("?action=newform&");
         wizardUrl.append(CmsNewResourceUpload.PARAM_REDIRECTURL);
         wizardUrl.append("=");

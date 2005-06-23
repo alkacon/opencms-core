@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,35 +38,36 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Andreas Zahner 
- * @since 5.9.2
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HELP_BUTTON_BACK_0 = "GUI_HELP_BUTTON_BACK_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HELP_BUTTON_CLOSE_0 = "GUI_HELP_BUTTON_CLOSE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HELP_BUTTON_CONTENTS_0 = "GUI_HELP_BUTTON_CONTENTS_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HELP_BUTTON_NEXT_0 = "GUI_HELP_BUTTON_NEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HELP_FRAMESET_TITLE_0 = "GUI_HELP_FRAMESET_TITLE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HELP_NAVIGATION_HEAD_0 = "GUI_HELP_NAVIGATION_HEAD_0";
-
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.help.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
 
     /**
      * Hides the public constructor for this utility class.<p>

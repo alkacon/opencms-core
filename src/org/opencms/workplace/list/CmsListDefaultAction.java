@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDefaultAction.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,8 +42,10 @@ import java.text.MessageFormat;
  * Implementation of a default action in a html list column.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.11 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.12 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsListDefaultAction extends CmsListDirectAction {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,11 +80,13 @@ import org.dom4j.io.DocumentSource;
  * <ul>
  * <li>/commons/newcvsfile_upload.jsp
  * </ul>
+ * <p>
  * 
  * @author Jan Baudisch 
- * @version $Revision: 1.10 $
  * 
- * @since 5.7.3
+ * @version $Revision: 1.11 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsNewCsvFile extends CmsNewResourceUpload {
 

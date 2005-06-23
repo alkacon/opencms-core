@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/22 14:33:36 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,8 +56,10 @@ import javax.servlet.jsp.JspWriter;
  * Provides a dialog with a list widget.<p> 
  *
  * @author  Michael Moossen 
- * @version $Revision: 1.24 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.25 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsListDialog extends CmsDialog {
 
@@ -201,7 +203,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
         String listId,
         CmsMessageContainer listName,
         String sortedColId,
-        CmsListOrderEnum sortOrder, String searchableColId) {
+        CmsListOrderEnum sortOrder,
+        String searchableColId) {
 
         super(jsp);
         m_listId = listId;
@@ -218,7 +221,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
             getList().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
             // sort the list
             getList().setSortedColumn(sortedColId, getLocale());
-            if (sortOrder!=null && sortOrder==CmsListOrderEnum.ORDER_DESCENDING) {
+            if (sortOrder != null && sortOrder == CmsListOrderEnum.ORDER_DESCENDING) {
                 getList().setSortedColumn(sortedColId, getLocale());
             }
             // save the current state of the list

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsDatabaseImportThread.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,10 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
- * @version $Revision: 1.4 $
- * @since 5.1.10
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsDatabaseImportThread extends A_CmsReportThread {
 
@@ -63,6 +65,7 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
      * @param old flag for report mode
      */
     public CmsDatabaseImportThread(CmsObject cms, String importFile, boolean old) {
+
         super(cms, Messages.get().key(
             cms.getRequestContext().getLocale(),
             Messages.GUI_DB_IMPORT_THREAD_NAME_1,
@@ -73,12 +76,13 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
         } else {
             initHtmlReport(cms.getRequestContext().getLocale());
         }
-      }
+    }
 
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
+
         return getReport().getReportUpdate();
     }
 
@@ -86,6 +90,7 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
      * @see java.lang.Runnable#run()
      */
     public void run() {
+
         try {
             OpenCms.getImportExportManager().importData(getCms(), m_importFile, I_CmsConstants.C_ROOT, getReport());
         } catch (CmsException e) {

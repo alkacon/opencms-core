@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,22 +49,20 @@ import org.apache.commons.logging.Log;
  * in the new resource dialog.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.12 $
  * 
- * @since 5.3.3
+ * @version $Revision: 1.13 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsExplorerTypeSettings implements Comparable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorerTypeSettings.class);
 
+    private CmsExplorerTypeAccess m_access;
+
     /** Flag for showing that this is an additional resource type which defined in a module. */
     private boolean m_addititionalModuleExplorerType;
-    
-    /** Optional class name for a new resource handler. */
-    private String m_newResourceHandlerClassName;
-
-    private CmsExplorerTypeAccess m_access;
     private boolean m_autoSetNavigation;
     private boolean m_autoSetTitle;
     private CmsExplorerContextMenu m_contextMenu;
@@ -73,6 +71,9 @@ public class CmsExplorerTypeSettings implements Comparable {
     private String m_icon;
     private String m_key;
     private String m_name;
+
+    /** Optional class name for a new resource handler. */
+    private String m_newResourceHandlerClassName;
     private Integer m_newResourceOrder;
     private String m_newResourcePage;
     private String m_newResourceUri;

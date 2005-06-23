@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContent.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,10 +50,13 @@ import javax.servlet.jsp.PageContext;
  * <ul>
  * <li>/commons/newresource_xmlcontent.jsp
  * </ul>
+ * <p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.9 $
  * 
+ * @version $Revision: 1.10 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsNewResourceXmlContent extends CmsNewResource {
 
@@ -63,9 +66,10 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
      * @param jsp an initialized JSP action element
      */
     public CmsNewResourceXmlContent(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -74,42 +78,17 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
      * @param res the JSP response
      */
     public CmsNewResourceXmlContent(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
-    }    
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_OK.equals(getParamAction())) {
-            setAction(ACTION_OK);                            
-        } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
-            setAction(ACTION_SUBMITFORM);  
-        } else if (DIALOG_NEWFORM.equals(getParamAction())) {
-            setAction(ACTION_NEWFORM);
-            setParamTitle(key("title.new" + getParamNewResourceType()));
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {
-            setAction(ACTION_CANCEL);
-        } else {                        
-            setAction(ACTION_DEFAULT);
-            // build title for new resource dialog     
-            setParamTitle(key("title.new"));
-        }      
     }
-    
- 
-    
+
     /**
      * Creates the resource using the specified resource name and the newresourcetype parameter.<p>
      * 
      * @throws JspException if inclusion of error dialog fails
      */
     public void actionCreateResource() throws JspException {
+
         try {
             // calculate the new resource Title property value
             String title = computeNewTitleProperty();
@@ -119,15 +98,39 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType());
             List properties = createResourceProperties(fullResourceName, resType.getTypeName(), title);
             // create the folder            
-            getCms().createResource(
-                fullResourceName, 
-                resType.getTypeId(), null, properties);           
-            setParamResource(fullResourceName); 
+            getCms().createResource(fullResourceName, resType.getTypeId(), null, properties);
+            setParamResource(fullResourceName);
             setResourceCreated(true);
         } catch (Throwable e) {
             // error creating file, show error dialog
-            includeErrorpage(this, e);   
+            includeErrorpage(this, e);
         }
     }
-   
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_OK.equals(getParamAction())) {
+            setAction(ACTION_OK);
+        } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
+            setAction(ACTION_SUBMITFORM);
+        } else if (DIALOG_NEWFORM.equals(getParamAction())) {
+            setAction(ACTION_NEWFORM);
+            setParamTitle(key("title.new" + getParamNewResourceType()));
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            setAction(ACTION_CANCEL);
+        } else {
+            setAction(ACTION_DEFAULT);
+            // build title for new resource dialog     
+            setParamTitle(key("title.new"));
+        }
+    }
+
 }

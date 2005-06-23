@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/A_CmsListToggleAction.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,10 @@ import org.opencms.i18n.CmsMessageContainer;
  * You have to extend this class and implement the <code>{@link #selectAction()}</code> method.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.6 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsListToggleAction extends CmsListDirectAction {
 
@@ -52,6 +54,14 @@ public abstract class A_CmsListToggleAction extends CmsListDirectAction {
     protected A_CmsListToggleAction(String id) {
 
         super(id);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.CmsListDirectAction#getColumn()
+     */
+    public String getColumn() {
+
+        return selectAction().getColumn();
     }
 
     /**
@@ -76,14 +86,6 @@ public abstract class A_CmsListToggleAction extends CmsListDirectAction {
     public String getIconPath() {
 
         return selectAction().getIconPath();
-    }
-
-    /**
-     * @see org.opencms.workplace.list.CmsListDirectAction#getColumn()
-     */
-    public String getColumn() {
-
-        return selectAction().getColumn();
     }
 
     /**

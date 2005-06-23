@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,9 +58,10 @@ import org.apache.commons.logging.Log;
  * in the OpenCms configuration.<p> 
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.7 $
  * 
- * @since 5.3.3
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsExplorerContextMenu {
 

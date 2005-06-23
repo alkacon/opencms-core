@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsReportTestThread.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,8 +41,9 @@ import org.opencms.file.CmsObject;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
- * @since 5.1.10
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsReportTestThread extends A_CmsReportThread {
 
@@ -56,10 +57,9 @@ public class CmsReportTestThread extends A_CmsReportThread {
      */
     public CmsReportTestThread(CmsObject cms, int count) {
 
-        super(cms, Messages.get().key(
-            cms.getRequestContext().getLocale(),
-            Messages.GUI_REPORT_TEST_THREAD_NAME_0,
-            null));
+        super(
+            cms,
+            Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_REPORT_TEST_THREAD_NAME_0, null));
         m_count = count;
         initHtmlReport(cms.getRequestContext().getLocale());
         start();
@@ -77,10 +77,9 @@ public class CmsReportTestThread extends A_CmsReportThread {
      * @see java.lang.Runnable#run()
      */
     public void run() {
+
         I_CmsReport report = getReport();
-        report.println(
-            Messages.get().container(Messages.RPT_TEST_REPORT_BEGIN_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_TEST_REPORT_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
         for (int i = 0; i < m_count; i++) {
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_SUCCESSION_2,
@@ -93,8 +92,6 @@ public class CmsReportTestThread extends A_CmsReportThread {
                 // just continue
             }
         }
-        getReport().println(
-            Messages.get().container(Messages.RPT_TEST_REPORT_END_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().println(Messages.get().container(Messages.RPT_TEST_REPORT_END_0), I_CmsReport.C_FORMAT_HEADLINE);
     }
 }

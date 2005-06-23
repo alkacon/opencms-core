@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,10 @@ import java.util.Locale;
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.26 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.27 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsHtmlList {
 
@@ -461,7 +463,10 @@ public class CmsHtmlList {
         js.append("admin/javascript/list.js'></script>\n");
         js.append("<script type='text/javascript'>\n");
         js.append("\tvar noSelHelp = '");
-        js.append(CmsStringUtil.escapeJavaScript(Messages.get().key(locale, Messages.GUI_LIST_ACTION_NO_SELECTION_0, null)));
+        js.append(CmsStringUtil.escapeJavaScript(Messages.get().key(
+            locale,
+            Messages.GUI_LIST_ACTION_NO_SELECTION_0,
+            null)));
         js.append("';\n");
         js.append("</script>\n");
         return js.toString();
@@ -846,7 +851,7 @@ public class CmsHtmlList {
 
         StringBuffer html = new StringBuffer(512);
         // help & confirmation text for actions if needed
-        if (m_visibleItems!=null && !m_visibleItems.isEmpty()) {
+        if (m_visibleItems != null && !m_visibleItems.isEmpty()) {
             Iterator cols = getMetadata().getListColumns().iterator();
             while (cols.hasNext()) {
                 CmsListColumnDefinition col = (CmsListColumnDefinition)cols.next();
@@ -858,7 +863,7 @@ public class CmsHtmlList {
                     html.append(action.confirmationTextHtml(wp));
                 }
                 I_CmsListDirectAction defAction = col.getDefaultAction();
-                if (defAction!=null) {
+                if (defAction != null) {
                     defAction.setItem((CmsListItem)m_visibleItems.get(0));
                     html.append(defAction.helpTextHtml(wp));
                     html.append(defAction.confirmationTextHtml(wp));

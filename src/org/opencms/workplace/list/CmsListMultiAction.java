@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMultiAction.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,10 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * Default implementation of a list multi action.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.10 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.11 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsListMultiAction extends A_CmsListAction {
 

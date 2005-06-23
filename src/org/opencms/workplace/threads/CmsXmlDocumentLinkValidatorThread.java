@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsXmlDocumentLinkValidatorThread.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,26 +43,27 @@ import org.apache.commons.logging.Log;
 /**
  * A report thread for the HTML link validator.<p>
  * 
- * @author Thomas Weckert  
- * @version $Revision: 1.2 $ $Date: 2005/06/22 10:38:29 $
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsXmlDocumentLinkValidatorThread extends A_CmsReportThread {
-    
+
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsXmlDocumentLinkValidatorThread.class); 
-    
+    private static final Log LOG = CmsLog.getLog(CmsXmlDocumentLinkValidatorThread.class);
+
     /** A Cms resource to be published directly.<p> */
     private CmsResource m_directPublishResource;
-    
+
     /** True if also the siblings of a Cms resource to be published directly should be validated.<p> */
     private boolean m_directPublishSiblings;
-    
+
     /** Flag that indicates whether the publish list should be svaed in the workplace settings. */
     private boolean m_savePublishList;
-    
+
     /** The current user's workplace settings.<p> */
     private CmsWorkplaceSettings m_settings;
-    
+
     /**
      * Creates a thread that validates the HTML links (hrefs and images) in all unpublished Cms 
      * files of the current (offline) project, if the files resource types implement the interface 
@@ -78,19 +79,21 @@ public class CmsXmlDocumentLinkValidatorThread extends A_CmsReportThread {
      * @see org.opencms.file.CmsObject#getPublishList()
      */
     public CmsXmlDocumentLinkValidatorThread(CmsObject cms) {
-        super(cms, Messages.get().key(cms.getRequestContext().getLocale(), 
-            Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1, 
-            new Object[]{cms.getRequestContext().currentProject().getName()}));
-        
+
+        super(cms, Messages.get().key(
+            cms.getRequestContext().getLocale(),
+            Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1,
+            new Object[] {cms.getRequestContext().currentProject().getName()}));
+
         m_directPublishResource = null;
         m_directPublishSiblings = false;
-        m_savePublishList = false;  
+        m_savePublishList = false;
         m_settings = null;
-        
+
         initHtmlReport(cms.getRequestContext().getLocale());
         start();
     }
-    
+
     /**
      * Creates a thread that validates the HTML links (hrefs and images) in the unpublished Cms 
      * file of the current (offline) project, if the file's resource type implements the interface 
@@ -110,7 +113,12 @@ public class CmsXmlDocumentLinkValidatorThread extends A_CmsReportThread {
      * @param settings the current user's workplace settings
      * @see org.opencms.file.CmsObject#getPublishList(CmsResource, boolean)
      */
-    public CmsXmlDocumentLinkValidatorThread(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings, CmsWorkplaceSettings settings) {
+    public CmsXmlDocumentLinkValidatorThread(
+        CmsObject cms,
+        CmsResource directPublishResource,
+        boolean directPublishSiblings,
+        CmsWorkplaceSettings settings) {
+
         super(cms, Messages.get().key(
             cms.getRequestContext().getLocale(),
             Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1,
@@ -119,7 +127,7 @@ public class CmsXmlDocumentLinkValidatorThread extends A_CmsReportThread {
         m_directPublishSiblings = directPublishSiblings;
         m_savePublishList = true;
         m_settings = settings;
-                
+
         initHtmlReport(cms.getRequestContext().getLocale());
         start();
     }
@@ -128,6 +136,7 @@ public class CmsXmlDocumentLinkValidatorThread extends A_CmsReportThread {
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
+
         return getReport().getReportUpdate();
     }
 
@@ -135,8 +144,9 @@ public class CmsXmlDocumentLinkValidatorThread extends A_CmsReportThread {
      * @see java.lang.Runnable#run()
      */
     public void run() {
+
         CmsPublishList publishList = null;
-        
+
         try {
             // get the list of resources that actually get published
             if (m_directPublishResource != null) {
@@ -144,10 +154,10 @@ public class CmsXmlDocumentLinkValidatorThread extends A_CmsReportThread {
             } else {
                 publishList = getCms().getPublishList();
             }
-            
+
             // validate the HTML links in these resources
             getCms().validateHtmlLinks(publishList, getReport());
-            
+
             if (m_savePublishList && m_settings != null) {
                 // save the publish list optionally to be processed by further workplace threads
                 m_settings.setPublishList(publishList);
@@ -157,7 +167,7 @@ public class CmsXmlDocumentLinkValidatorThread extends A_CmsReportThread {
                 // overwrite the publish list in any case with null
                 m_settings.setPublishList(null);
             }
-            
+
             getReport().println(e);
             LOG.error(Messages.get().key(Messages.ERR_LINK_VALIDATION_0), e);
         }

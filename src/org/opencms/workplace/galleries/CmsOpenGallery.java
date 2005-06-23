@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsOpenGallery.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,19 +54,21 @@ import org.apache.commons.logging.Log;
  * <ul>
  * <li>/commons/opengallery.jsp
  * </ul>
+ * <p>
  *
  * @author Armen Markarian 
- * @version $Revision: 1.7 $
  * 
- * @since 5.1
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsOpenGallery extends CmsDialog {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsOpenGallery.class);  
-    
     /** The dialog type. */
     public static final String DIALOG_TYPE = "opengallery";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsOpenGallery.class);
 
     /**
      * Public constructor with JSP action element.<p>
@@ -109,9 +111,12 @@ public class CmsOpenGallery extends CmsDialog {
                 }
                 // get the matching gallery type name
                 galleryType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-                String galleryUri = A_CmsGallery.C_PATH_GALLERIES + A_CmsGallery.C_OPEN_URI_SUFFIX
-                    + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME
-                    + "=" + galleryType;
+                String galleryUri = A_CmsGallery.C_PATH_GALLERIES
+                    + A_CmsGallery.C_OPEN_URI_SUFFIX
+                    + "?"
+                    + A_CmsGallery.PARAM_GALLERY_TYPENAME
+                    + "="
+                    + galleryType;
                 jsOpener.append("window.open('");
                 jsOpener.append(getJsp().link(galleryUri));
                 jsOpener.append("&");
@@ -128,7 +133,7 @@ public class CmsOpenGallery extends CmsDialog {
             }
         } catch (CmsException e) {
             // requested type is not configured
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_OPEN_GALLERY_1, galleryType); 
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_OPEN_GALLERY_1, galleryType);
             LOG.error(message.key(), e);
             throw new CmsRuntimeException(message, e);
         }

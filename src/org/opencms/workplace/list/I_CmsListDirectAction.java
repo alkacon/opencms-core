@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/I_CmsListDirectAction.java,v $
- * Date   : $Date: 2005/06/22 10:38:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,48 +38,13 @@ import org.opencms.workplace.CmsWorkplace;
  * directly on a list item.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.5 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsListDirectAction extends I_CmsListAction {
 
-    /**
-     * Returns the current item.<p>
-     * 
-     * @return the current item
-     */
-    CmsListItem getItem();
-
-    /**
-     * Sets the current item, should be called before the <code>{@link #buttonHtml(org.opencms.workplace.CmsWorkplace)}</code> method.<p>
-     * 
-     * @param item the item
-     */
-    void setItem(CmsListItem item);
-    
-    /**
-     * Returns the id of the column to use as parameter for the helptext and confirmation message.<p>
-     * 
-     * @return the id of the column to use 
-     */
-    String getColumn();
-    
-    /**
-     * Sets the id of the column to use as parameter for the helptext and confirmation message.<p>
-     * 
-     * @param columnId the id of the column to use
-     */
-    void setColumn(String columnId);
-    
-    /**
-     * Generates a help text div tag, to use in lists where all items use the same help text.<p>
-     * 
-     * @param wp the workplace instance
-     * 
-     * @return html code
-     */
-    String helpTextHtml(CmsWorkplace wp);
-    
     /**
      * Generates a confirmation text div tag, to use in lists where all items use 
      * the same confirmation text.<p>
@@ -89,5 +54,42 @@ public interface I_CmsListDirectAction extends I_CmsListAction {
      * @return html code
      */
     String confirmationTextHtml(CmsWorkplace wp);
-    
+
+    /**
+     * Returns the id of the column to use as parameter for the helptext and confirmation message.<p>
+     * 
+     * @return the id of the column to use 
+     */
+    String getColumn();
+
+    /**
+     * Returns the current item.<p>
+     * 
+     * @return the current item
+     */
+    CmsListItem getItem();
+
+    /**
+     * Generates a help text div tag, to use in lists where all items use the same help text.<p>
+     * 
+     * @param wp the workplace instance
+     * 
+     * @return html code
+     */
+    String helpTextHtml(CmsWorkplace wp);
+
+    /**
+     * Sets the id of the column to use as parameter for the helptext and confirmation message.<p>
+     * 
+     * @param columnId the id of the column to use
+     */
+    void setColumn(String columnId);
+
+    /**
+     * Sets the current item, should be called before the <code>{@link #buttonHtml(org.opencms.workplace.CmsWorkplace)}</code> method.<p>
+     * 
+     * @param item the item
+     */
+    void setItem(CmsListItem item);
+
 }

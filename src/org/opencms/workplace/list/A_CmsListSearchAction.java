@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListSearchAction.java,v $
- * Date   : $Date: 2005/06/22 10:38:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 07:58:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,10 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * It provides the default show all action accessor and the rendering method.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.5 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.6 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
 
