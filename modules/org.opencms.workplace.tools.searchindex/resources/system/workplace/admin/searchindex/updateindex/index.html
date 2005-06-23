@@ -7,11 +7,6 @@
     // initialize the workplace class
     CmsDialog wp = new CmsPropertyChange(pageContext, request, response);
 
-    if (wp.getAction()==CmsDialog.ACTION_CANCEL) {
-    	wp.actionCloseDialog();
-    	return;
-    }
-
     // Create a JSP action element
     CmsJspActionElement cms = wp.getJsp();
     
@@ -71,7 +66,7 @@
 
 <p>
 
-	<form method="post" action='<%=cms.link("/system/workplace/administration/searchindex/updateindex/rebuild.html") + "?style=" + wp.getParamStyle() %>'>
+	<form method="post" action='<%=cms.link("/system/workplace/admin/searchindex/updateindex/rebuild.html") + "?style=" + wp.getParamStyle() %>'>
     	<input type="submit" value="Rebuild All">
 	</form>
 
