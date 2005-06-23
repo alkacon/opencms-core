@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsContextInfoDetailsFormatter.java,v $
- * Date   : $Date: 2005/06/23 10:47:33 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 11:12:02 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,7 +18,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software, please see the
+ * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -43,7 +43,7 @@ import java.util.Map;
  * This list item detail formatter creates a two column table to represent a context info object.<p>
  * 
  * @author Michael Moossen 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.7.3
  */
 public class CmsContextInfoDetailsFormatter implements I_CmsListFormatter {

@@ -3,8 +3,8 @@ package org.opencms.applet.upload;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadThread.java,v $
- * Date   : $Date: 2005/06/23 10:47:10 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/23 11:11:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,7 +21,7 @@ package org.opencms.applet.upload;
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software, please see the
+ * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -37,7 +37,7 @@ package org.opencms.applet.upload;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
