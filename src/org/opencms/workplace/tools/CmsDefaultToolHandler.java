@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsDefaultToolHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,12 +39,13 @@ import org.opencms.file.CmsObject;
  * Always enabled and visible.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.9 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.10 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsDefaultToolHandler extends A_CmsToolHandler {
 
-    
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
      */
@@ -52,8 +53,7 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
 
         return true;
     }
-    
-    
+
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */

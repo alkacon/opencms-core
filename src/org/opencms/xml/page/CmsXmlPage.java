@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2005/06/22 10:38:29 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,9 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 
@@ -104,8 +106,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     public static final String C_PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
 
     /** The DTD address of the OpenCms xmlpage. */
-    public static final String C_XMLPAGE_XSD_SYSTEM_ID = CmsConfigurationManager.C_DEFAULT_DTD_PREFIX
-        + "xmlpage.xsd";
+    public static final String C_XMLPAGE_XSD_SYSTEM_ID = CmsConfigurationManager.C_DEFAULT_DTD_PREFIX + "xmlpage.xsd";
 
     /** Name of the anchor node. */
     public static final String NODE_ANCHOR = "anchor";
@@ -180,9 +181,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     public void addLocale(CmsObject cms, Locale locale) throws CmsXmlException {
 
         if (hasLocale(locale)) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XML_PAGE_LOCALE_EXISTS_1,
-                locale));
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_XML_PAGE_LOCALE_EXISTS_1, locale));
         }
         // add element node for Locale
         getContentDefinition().createLocale(cms, this, m_document.getRootElement(), locale);
@@ -204,9 +203,8 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     public void addValue(String name, Locale locale) throws CmsIllegalArgumentException {
 
         if (name.indexOf('[') >= 0) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_XML_PAGE_CONTAINS_INDEX_1,
-                name));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_XML_PAGE_CONTAINS_INDEX_1, name));
         }
 
         if (hasValue(name, locale)) {
@@ -278,13 +276,9 @@ public class CmsXmlPage extends A_CmsXmlDocument {
             try {
                 source = resolver.resolveEntity(null, C_XMLPAGE_XSD_SYSTEM_ID);
                 // store content definition in static variable
-                m_contentDefinition = CmsXmlContentDefinition.unmarshal(
-                    source,
-                    C_XMLPAGE_XSD_SYSTEM_ID,
-                    resolver);
+                m_contentDefinition = CmsXmlContentDefinition.unmarshal(source, C_XMLPAGE_XSD_SYSTEM_ID, resolver);
             } catch (CmsXmlException e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_XML_PAGE_UNMARSHAL_CONTENDDEF_0), e);
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_PAGE_UNMARSHAL_CONTENDDEF_0), e);
             }
         }
         return m_contentDefinition;
@@ -384,8 +378,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      *         given locale already exists in the xmlpage or the the old value does not exist for the locale in the xmlpage.
      * 
      */
-    public void renameValue(String oldValue, String newValue, Locale locale)
-    throws CmsIllegalArgumentException {
+    public void renameValue(String oldValue, String newValue, Locale locale) throws CmsIllegalArgumentException {
 
         CmsXmlHtmlValue oldXmlHtmlValue = (CmsXmlHtmlValue)getValue(oldValue, locale);
         if (oldXmlHtmlValue == null) {
@@ -458,8 +451,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      * 
      * @throws CmsXmlException if something goes wrong
      */
-    public void setStringValue(CmsObject cms, String name, Locale locale, String content)
-    throws CmsXmlException {
+    public void setStringValue(CmsObject cms, String name, Locale locale, String content) throws CmsXmlException {
 
         CmsXmlHtmlValue value = (CmsXmlHtmlValue)getValue(name, locale);
 
@@ -486,10 +478,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
      */
-    protected void initDocument(
-        Document document,
-        String encoding,
-        CmsXmlContentDefinition definition) {
+    protected void initDocument(Document document, String encoding, CmsXmlContentDefinition definition) {
 
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
         m_document = document;
@@ -515,8 +504,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                     String name = element.attributeValue(ATTRIBUTE_NAME);
 
                     String elementEnabled = element.attributeValue(ATTRIBUTE_ENABLED);
-                    boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(
-                        elementEnabled).booleanValue();
+                    boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(elementEnabled).booleanValue();
 
                     // create an element type from the XML node                    
                     CmsXmlHtmlValue value = new CmsXmlHtmlValue(this, element, locale);
@@ -559,22 +547,18 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         Document newDocument = DocumentHelper.createDocument();
         Element root = newDocument.addElement(NODE_PAGES);
         root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
-        root.addAttribute(
-            I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION,
-            C_XMLPAGE_XSD_SYSTEM_ID);
+        root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, C_XMLPAGE_XSD_SYSTEM_ID);
 
         Map pages = new HashMap();
 
-        for (Iterator i = m_document.getRootElement().element(NODE_ELEMENTS).elementIterator(
-            NODE_ELEMENT); i.hasNext();) {
+        for (Iterator i = m_document.getRootElement().element(NODE_ELEMENTS).elementIterator(NODE_ELEMENT); i.hasNext();) {
 
             Element elem = (Element)i.next();
             try {
                 String elementName = elem.attributeValue(ATTRIBUTE_NAME);
                 String elementLang = elem.attributeValue(ATTRIBUTE_LANGUAGE);
                 String elementEnabled = elem.attributeValue(ATTRIBUTE_ENABLED);
-                boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(elementEnabled)
-                    .booleanValue();
+                boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(elementEnabled).booleanValue();
 
                 Element page = (Element)pages.get(elementLang);
                 if (page == null) {
@@ -583,9 +567,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                     pages.put(elementLang, page);
                 }
 
-                Element newElement = page.addElement(NODE_ELEMENT).addAttribute(
-                    ATTRIBUTE_NAME,
-                    elementName);
+                Element newElement = page.addElement(NODE_ELEMENT).addAttribute(ATTRIBUTE_NAME, elementName);
                 if (!enabled) {
                     newElement.addAttribute(ATTRIBUTE_ENABLED, String.valueOf(enabled));
                 }

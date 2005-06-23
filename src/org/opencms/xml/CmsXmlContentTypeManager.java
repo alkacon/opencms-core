@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,8 +64,9 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
- * @since 5.5.0
+ * @version $Revision: 1.26 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsXmlContentTypeManager {
 
@@ -130,8 +131,7 @@ public class CmsXmlContentTypeManager {
             typeManager.initialize(null);
         } catch (CmsRoleViolationException e) {
             // this should never happen
-            throw new CmsRuntimeException(Messages.get()
-                .container(Messages.ERR_INIT_TYPE_MANAGER_0));
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_INIT_TYPE_MANAGER_0));
         }
         return typeManager;
     }
@@ -183,7 +183,9 @@ public class CmsXmlContentTypeManager {
         try {
             type = addContentType(classClazz);
         } catch (Exception e) {
-            LOG.error(Messages.get().key(Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1, classClazz.getName()), e);
+            LOG.error(
+                Messages.get().key(Messages.LOG_INIT_XML_CONTENT_SCHEMA_TYPE_CLASS_ERROR_1, classClazz.getName()),
+                e);
             return;
         }
 

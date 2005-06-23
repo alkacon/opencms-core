@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,18 @@ import org.opencms.workplace.CmsWorkplace;
  * Default skeleton for an html icon button.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.11 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.12 $ 
+ * 
+ * @since 6.0.0 
  */
 public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
 
     /** Constant for an empty message. */
     public static final CmsMessageContainer C_EMPTY_MESSAGE = Messages.get().container(Messages.GUI_EMPTY_MESSAGE_0);
+
+    /** unique id. */
+    protected String m_id;
 
     /** Enabled flag. */
     private boolean m_enabled = true;
@@ -55,9 +60,6 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
 
     /** Path to the icon. */
     private String m_iconPath;
-
-    /** unique id. */
-    protected String m_id;
 
     /** Display name. */
     private CmsMessageContainer m_name;

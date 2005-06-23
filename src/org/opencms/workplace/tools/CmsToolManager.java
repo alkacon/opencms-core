@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,8 +63,10 @@ import org.apache.commons.logging.Log;
  * several tool related methods.<p>
  *
  * @author Michael Moossen  
- * @version $Revision: 1.30 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.31 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsToolManager {
 
@@ -602,13 +604,13 @@ public class CmsToolManager {
             path = getParent(wp, path);
         }
         // navigate until to reach a valid tool
-        while (resolveAdminTool(path)==null) {
+        while (resolveAdminTool(path) == null) {
             // log failure
             LOG.warn(Messages.get().key(wp.getLocale(), Messages.LOG_MISSING_ADMIN_TOOL_1, new Object[] {path}));
             // try parent
             path = getParent(wp, path);
         }
-        
+
         // navegate until to reach a visible path
         while (!resolveAdminTool(path).getHandler().isEnabled(wp.getCms())) {
             LOG.warn(Messages.get().key(
@@ -617,7 +619,7 @@ public class CmsToolManager {
                 new Object[] {resolveAdminTool(path), path}));
             path = getParent(wp, path);
         }
-        
+
         return path;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsHtmlIconButtonStyleEnum.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,25 +52,27 @@ import java.util.List;
  * <p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.3 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.4 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class CmsHtmlIconButtonStyleEnum {
 
     /** Constant for ascending ordering. */
     public static final CmsHtmlIconButtonStyleEnum BIG_ICON_TEXT = new CmsHtmlIconButtonStyleEnum("bigicontext");
 
-    /** Constant for descending ordering. */
-    public static final CmsHtmlIconButtonStyleEnum SMALL_ICON_TEXT = new CmsHtmlIconButtonStyleEnum("smallicontext");
-
     /** Constant for none ordering. */
     public static final CmsHtmlIconButtonStyleEnum SMALL_ICON_ONLY = new CmsHtmlIconButtonStyleEnum("smallicononly");
 
-    /** Array constant for column sorting. */
-    private static final CmsHtmlIconButtonStyleEnum[] C_VALUES = {BIG_ICON_TEXT, SMALL_ICON_TEXT, SMALL_ICON_ONLY};
+    /** Constant for descending ordering. */
+    public static final CmsHtmlIconButtonStyleEnum SMALL_ICON_TEXT = new CmsHtmlIconButtonStyleEnum("smallicontext");
 
     /** List of ordering constants.     */
     public static final List VALUES = Collections.unmodifiableList(Arrays.asList(C_VALUES));
+
+    /** Array constant for column sorting. */
+    private static final CmsHtmlIconButtonStyleEnum[] C_VALUES = {BIG_ICON_TEXT, SMALL_ICON_TEXT, SMALL_ICON_ONLY};
 
     /** Internal representation. */
     private final String m_style;

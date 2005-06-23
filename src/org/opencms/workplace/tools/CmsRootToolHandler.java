@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsRootToolHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,28 +39,13 @@ import org.opencms.file.CmsObject;
  * Always enabled and visible.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.2 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsRootToolHandler extends A_CmsToolHandler {
-    
-    /**
-     * @see org.opencms.workplace.tools.A_CmsToolHandler#setup(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public boolean setup(CmsObject cms, String resourcePath) {
 
-        setName("${key." + Messages.GUI_ADMIN_VIEW_ROOT_NAME_0+ "}");
-        setHelpText("${key." + Messages.GUI_ADMIN_VIEW_ROOT_HELP_0+ "}");
-        setDisabledHelpText(getHelpText());
-        setIconPath("admin/images/deficon.png");
-        setSmallIconPath(getIconPath());
-        setPath("/");
-        setGroup("");
-        setPosition(1);   
-        setLink(resourcePath);
-        return true;
-    }
-    
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
      */
@@ -68,13 +53,29 @@ public class CmsRootToolHandler extends A_CmsToolHandler {
 
         return true;
     }
-    
-    
+
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */
     public boolean isVisible(CmsObject cms) {
 
+        return true;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#setup(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public boolean setup(CmsObject cms, String resourcePath) {
+
+        setName("${key." + Messages.GUI_ADMIN_VIEW_ROOT_NAME_0 + "}");
+        setHelpText("${key." + Messages.GUI_ADMIN_VIEW_ROOT_HELP_0 + "}");
+        setDisabledHelpText(getHelpText());
+        setIconPath("admin/images/deficon.png");
+        setSmallIconPath(getIconPath());
+        setPath("/");
+        setGroup("");
+        setPosition(1);
+        setLink(resourcePath);
         return true;
     }
 }

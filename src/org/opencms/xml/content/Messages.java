@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,71 +37,72 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @author Achim Westermann 
- * @since 5.7.3
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
-public final class Messages extends A_CmsMessageBundle { 
-    
+public final class Messages extends A_CmsMessageBundle {
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XML_SCHEMA_IO_0 = "ERR_XML_SCHEMA_IO_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XML_SCHEMA_PARSE_0 = "ERR_XML_SCHEMA_PARSE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_2 = "ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_3 = "ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_3";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_CONFIG_ELEM_UNKNOWN_1 = "ERR_XMLCONTENT_CONFIG_ELEM_UNKNOWN_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_ELEM_MAXOCCURS_2 = "ERR_XMLCONTENT_ELEM_MAXOCCURS_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_ELEM_MINOCCURS_2 = "ERR_XMLCONTENT_ELEM_MINOCCURS_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_INVALID_ELEM_LAYOUTWIDGET_1 = "ERR_XMLCONTENT_INVALID_ELEM_LAYOUTWIDGET_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_INVALID_ELEM_MAPPING_1 = "ERR_XMLCONTENT_INVALID_ELEM_MAPPING_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_INVALID_ELEM_VALIDATION_1 = "ERR_XMLCONTENT_INVALID_ELEM_VALIDATION_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_INVALID_ENC_1 = "ERR_XMLCONTENT_INVALID_ENC_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_INVALID_TYPE_1 = "ERR_XMLCONTENT_INVALID_TYPE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_INVALID_WIDGET_3 = "ERR_XMLCONTENT_INVALID_WIDGET_3";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_MISSING_LOCALE_1 = "ERR_XMLCONTENT_MISSING_LOCALE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_MISSING_PREVIEW_URI_2 = "ERR_XMLCONTENT_MISSING_PREVIEW_URI_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_MISSING_RESOURCE_BUNDLE_NAME_2 = "ERR_XMLCONTENT_MISSING_RESOURCE_BUNDLE_NAME_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_MISSING_SCHEMA_0 = "ERR_XMLCONTENT_MISSING_SCHEMA_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_RESOLVE_FILE_NOT_FOUND_0 = "ERR_XMLCONTENT_RESOLVE_FILE_NOT_FOUND_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_1 = "ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1 = "ERR_XMLCONTENT_UNKNOWN_ELEM_PATH_SCHEMA_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_UNMARSHAL_0 = "ERR_XMLCONTENT_UNMARSHAL_0";
 
@@ -110,20 +111,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_XMLCONTENT_INVALID_ELEM_2 = "LOG_XMLCONTENT_INVALID_ELEM_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_XMLCONTENT_RESOLVE_MAPPING_1 = "LOG_XMLCONTENT_RESOLVE_MAPPING_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_XMLCONTENT_VALIDATION_ERR_2 = "LOG_XMLCONTENT_VALIDATION_ERR_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_XMLCONTENT_VALIDATION_WARN_2 = "LOG_XMLCONTENT_VALIDATION_WARN_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_XMLCONTENT_VISIT_1 = "LOG_XMLCONTENT_VISIT_1";
-
-   
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.xml.content.messages";

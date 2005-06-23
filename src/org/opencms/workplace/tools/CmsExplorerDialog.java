@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsExplorerDialog.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,23 +46,15 @@ import javax.servlet.jsp.PageContext;
  * Dialog for explorer views in the administration view.<p>
  * 
  * @author Michael Moossen 
- * @version $Revision: 1.2 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsExplorerDialog extends CmsDialog {
 
     /** List of explorer tools. */
     public static final List C_EXPLORER_TOOLS = new ArrayList();
-
-    /* fill the explorer tools list */
-    static {
-        C_EXPLORER_TOOLS.add("/projects/files");
-        C_EXPLORER_TOOLS.add("/galleryoverview/downloadgallery");
-        C_EXPLORER_TOOLS.add("/galleryoverview/htmlgallery");
-        C_EXPLORER_TOOLS.add("/galleryoverview/imagegallery");
-        C_EXPLORER_TOOLS.add("/galleryoverview/linkgallery");
-        C_EXPLORER_TOOLS.add("/galleryoverview/tablegallery");
-    }
 
     /**
      * Public constructor with JSP action element.<p>
@@ -84,6 +76,16 @@ public class CmsExplorerDialog extends CmsDialog {
     public CmsExplorerDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /* fill the explorer tools list */
+    static {
+        C_EXPLORER_TOOLS.add("/projects/files");
+        C_EXPLORER_TOOLS.add("/galleryoverview/downloadgallery");
+        C_EXPLORER_TOOLS.add("/galleryoverview/htmlgallery");
+        C_EXPLORER_TOOLS.add("/galleryoverview/imagegallery");
+        C_EXPLORER_TOOLS.add("/galleryoverview/linkgallery");
+        C_EXPLORER_TOOLS.add("/galleryoverview/tablegallery");
     }
 
     /**

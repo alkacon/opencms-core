@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentMappingVisitor.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,9 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
- * @since 5.5.4
+ * @version $Revision: 1.7 $ 
+ * 
+ * @since 6.0.0 
  */
 class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
 
@@ -98,8 +99,7 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
         try {
             value.getContentDefinition().getContentHandler().resolveMapping(m_cms, m_content, value);
         } catch (CmsException e) {
-            LOG.error(Messages.get()
-                .key(Messages.LOG_XMLCONTENT_RESOLVE_MAPPING_1, value.getPath()), e);
+            LOG.error(Messages.get().key(Messages.LOG_XMLCONTENT_RESOLVE_MAPPING_1, value.getPath()), e);
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsToolHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,24 +40,19 @@ import org.opencms.file.CmsObject;
  * <code>{@link org.opencms.workplace.tools.CmsToolManager}</code>.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.12 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.13 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsToolHandler {
 
     /**
-     * Returns the displayed name.<p>
-     *
-     * @return the name
+     * Returns the help text if disabled.<p>
+     * 
+     * @return the help text if disabled
      */
-    String getName();
-
-    /**
-     * Returns the name for the menu or navbar.<p>
-     *
-     * @return the short name
-     */
-    String getShortName();
+    String getDisabledHelpText();
 
     /**
      * Returns the group.<p>
@@ -74,13 +69,6 @@ public interface I_CmsToolHandler {
     String getHelpText();
 
     /**
-     * Returns the help text if disabled.<p>
-     * 
-     * @return the help text if disabled
-     */
-    String getDisabledHelpText();
-
-    /**
      * Returns the path to the icon.<p>
      * 
      * @return the path to the icon
@@ -93,6 +81,13 @@ public interface I_CmsToolHandler {
      * @return the link
      */
     String getLink();
+
+    /**
+     * Returns the displayed name.<p>
+     *
+     * @return the name
+     */
+    String getName();
 
     /**
      * Returns the needed parameters.<p>
@@ -114,6 +109,13 @@ public interface I_CmsToolHandler {
      * @return the position
      */
     float getPosition();
+
+    /**
+     * Returns the name for the menu or navbar.<p>
+     *
+     * @return the short name
+     */
+    String getShortName();
 
     /**
      * Returns the path to an optional small(16x16) icon.<p>
@@ -139,7 +141,7 @@ public interface I_CmsToolHandler {
      * @return <code>true</code> if visible
      */
     boolean isVisible(CmsObject cms);
-    
+
     /**
      * Main method that somehow setups the admin tool handler.<p>
      * 

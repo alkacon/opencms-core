@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValidationVisitor.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,9 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
- * @since 5.5.4
+ * @version $Revision: 1.8 $ 
+ * 
+ * @since 6.0.0 
  */
 class CmsXmlContentValidationVisitor implements I_CmsXmlContentValueVisitor {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,10 @@ import org.opencms.workplace.CmsWorkplace;
  * Interface for html buttons with icon.<p>
  * 
  * @author Michael Moossen  
- * @version $Revision: 1.2 $
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.3 $ 
+ * 
+ * @since 6.0.0 
  */
 public interface I_CmsHtmlIconButton {
 
@@ -100,19 +102,19 @@ public interface I_CmsHtmlIconButton {
      * @param helpText the help Text to set
      */
     void setHelpText(CmsMessageContainer helpText);
-    
+
     /**
      * Sets the icon Path.<p>
      *
      * @param iconPath the icon Path to set
      */
     void setIconPath(String iconPath);
-    
+
     /**
      * Sets the name.<p>
      *
      * @param name the name to set
      */
     void setName(CmsMessageContainer name);
-    
+
 }

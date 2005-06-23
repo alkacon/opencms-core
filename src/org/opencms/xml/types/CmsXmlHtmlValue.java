@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,16 +58,17 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $
- * @since 5.5.0
+ * @version $Revision: 1.31 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsXmlHtmlValue.class);
-
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME = "OpenCmsHtml";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlHtmlValue.class);
 
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
@@ -150,9 +151,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                 value.setStringValue(cms, defaultValue);
             } catch (CmsRuntimeException e) {
                 // should not happen if default value is correct
-                LOG.error(Messages.get().key(
-                    Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1,
-                    defaultValue), e);
+                LOG.error(Messages.get().key(Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1, defaultValue), e);
                 element.clearContent();
             }
         }
@@ -278,8 +277,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                 // replace links in HTML by macros and fill link table      
                 value = linkProcessor.replaceLinks(value);
             } catch (Exception exc) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_HTML_DATA_PROCESSING_0));
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_HTML_DATA_PROCESSING_0));
             }
         }
 

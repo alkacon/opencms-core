@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,8 +62,9 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $
- * @since 5.5.4
+ * @version $Revision: 1.32 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
@@ -198,9 +199,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
         if (defaultValue != null) {
             // return the default value with processed macros
-            CmsMacroResolver resolver = CmsMacroResolver.newInstance()
-                .setCmsObject(cms)
-                .setMessages(getMessages(locale));
+            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setMessages(
+                getMessages(locale));
             return resolver.resolveMacros(defaultValue);
         }
         // no default value is available
@@ -335,8 +335,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         // get the original VFS file from the content
         CmsFile file = content.getFile();
         if (file == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_RESOLVE_FILE_NOT_FOUND_0));
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_XMLCONTENT_RESOLVE_FILE_NOT_FOUND_0));
         }
 
         // get filename
@@ -585,11 +584,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         additionalValues.put(CmsMacroResolver.KEY_VALIDATION_REGEX, ((!matchResult) ? "!" : "") + regex);
         additionalValues.put(CmsMacroResolver.KEY_VALIDATION_PATH, value.getPath());
 
-        CmsMacroResolver resolver = CmsMacroResolver.newInstance()
-            .setCmsObject(cms)
-            .setMessages(getMessages(cms.getRequestContext().getLocale()))
-            .setAdditionalMacros(additionalValues);
-        
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setMessages(
+            getMessages(cms.getRequestContext().getLocale())).setAdditionalMacros(additionalValues);
+
         return resolver.resolveMacros(message);
     }
 

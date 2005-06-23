@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2005/06/22 10:38:16 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,10 @@ import org.xml.sax.InputSource;
  * Also provides a cache for XML content schema definitions.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.17 $ 
+ * 
+ * @version $Revision: 1.18 $ 
+ * 
+ * @since 6.0.0 
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
@@ -330,8 +333,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             } finally {
                 m_cms.getRequestContext().restoreSiteRoot();
             }
-        } else if (systemId.substring(0, systemId.lastIndexOf("/") + 1).equalsIgnoreCase(CmsConfigurationManager.C_DEFAULT_DTD_PREFIX)) {
-            
+        } else if (systemId.substring(0, systemId.lastIndexOf("/") + 1).equalsIgnoreCase(
+            CmsConfigurationManager.C_DEFAULT_DTD_PREFIX)) {
+
             // default DTD location in the org.opencms.configuration package
             String location = null;
             try {
@@ -348,8 +352,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
                 LOG.error(Messages.get().key(Messages.LOG_DTD_NOT_FOUND_1, location), t);
-            }            
-            
+            }
+
         }
 
         // use the default behaviour (i.e. resolve through external URL)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/23 08:12:45 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,16 +38,19 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Alexander Kandzior 
- * @since 5.7.3
+ * 
+ * @version $Revision: 1.5 $ 
+ * 
+ * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_HTML_DATA_PROCESSING_0 = "ERR_HTML_DATA_PROCESSING_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NESTED_GETVALUE_0 = "ERR_NESTED_GETVALUE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NESTED_NEWINSTANCE_0 = "ERR_NESTED_NEWINSTANCE_0";
 
@@ -56,13 +59,13 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NESTED_SETVALUE_0 = "ERR_NESTED_SETVALUE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1 = "ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_LINK_PROCESS_FAILED_0 = "ERR_XMLCONTENT_LINK_PROCESS_FAILED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_LOAD_SCHEMA_1 = "ERR_XMLCONTENT_LOAD_SCHEMA_1";
 
