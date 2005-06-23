@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishJob.java,v $
- * Date   : $Date: 2005/06/22 14:19:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 10:47:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,7 +50,7 @@ import java.util.Map;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */

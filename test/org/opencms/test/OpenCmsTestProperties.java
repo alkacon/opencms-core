@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestProperties.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/23 10:47:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2005 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,7 +43,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * Reads and manages the test.properties file.<p>
  * 
  * @author Michael Moossen 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.7.3
  */
 public final class OpenCmsTestProperties {

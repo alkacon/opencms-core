@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2005/06/23 09:05:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 10:47:32 $
+ * Version: $Revision: 1.6 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -9,7 +9,7 @@
  * modules of the Alkacon OpenCms Software library published by
  * Alkacon Software, unless otherwise noted.
  *
- * Copyright (C) 2003 - 2005 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com) (http://www.alkacon.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
