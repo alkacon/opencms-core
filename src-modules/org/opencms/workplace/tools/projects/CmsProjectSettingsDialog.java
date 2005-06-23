@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/CmsProjectSettingsDialog.java,v $
- * Date   : $Date: 2005/06/23 09:05:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,13 +51,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Comment for <code>CmsProjectSettingsDialog</code>.<p>
- * 
- * @param Please write a class comment
+ * Dialog for editing the users project specific settings.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */

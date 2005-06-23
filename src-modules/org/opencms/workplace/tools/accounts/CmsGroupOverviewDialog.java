@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupOverviewDialog.java,v $
- * Date   : $Date: 2005/06/23 09:05:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -154,9 +154,9 @@ public class CmsGroupOverviewDialog extends CmsEditGroupDialog {
     }
 
     /**
-     * Checks if the User overview has to be displayed.<p>
+     * Checks if the group overview has to be displayed.<p>
      * 
-     * @return <code>true</code> if the user overview has to be displayed
+     * @return <code>true</code> if the group overview has to be displayed
      */
     private boolean isOverview() {
 

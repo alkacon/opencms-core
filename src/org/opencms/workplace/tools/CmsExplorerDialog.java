@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsExplorerDialog.java,v $
- * Date   : $Date: 2005/06/23 08:12:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWidgetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,12 +46,10 @@ import javax.servlet.jsp.PageContext;
  * Dialog for explorer views in the administration view.<p>
  * 
  * @author Michael Moossen 
- * 
- * @version $Revision: 1.3 $ 
- * 
- * @since 6.0.0 
+ * @version $Revision: 1.4 $
+ * @since 5.7.3
  */
-public class CmsExplorerDialog extends CmsDialog {
+public class CmsExplorerDialog extends CmsWidgetDialog {
 
     /** List of explorer tools. */
     public static final List C_EXPLORER_TOOLS = new ArrayList();
@@ -78,14 +76,21 @@ public class CmsExplorerDialog extends CmsDialog {
         this(new CmsJspActionElement(context, req, res));
     }
 
-    /* fill the explorer tools list */
+    /* fill the explorer tools list, do not forget to add the message bundle also */
     static {
-        C_EXPLORER_TOOLS.add("/projects/files");
         C_EXPLORER_TOOLS.add("/galleryoverview/downloadgallery");
         C_EXPLORER_TOOLS.add("/galleryoverview/htmlgallery");
         C_EXPLORER_TOOLS.add("/galleryoverview/imagegallery");
         C_EXPLORER_TOOLS.add("/galleryoverview/linkgallery");
         C_EXPLORER_TOOLS.add("/galleryoverview/tablegallery");
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
+     */
+    public void actionCommit() {
+
+        // not used
     }
 
     /**
@@ -104,5 +109,37 @@ public class CmsExplorerDialog extends CmsDialog {
         out.println(dialogEnd());
         out.println(bodyEnd());
         out.println(htmlEnd());
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
+     */
+    protected void defineWidgets() {
+
+        // not used
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        // not used
+        return new String[] {"page1"};
+    }
+
+    
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#initMessages()
+     */
+    protected void initMessages() {
+
+        // add specific dialog resource bundle
+        // for project title
+        addMessages("org.opencms.workplace.tools.projects.messages");
+        // for gallery overview title
+        addMessages("org.opencms.workplace.workplace");
+        // add default resource bundles
+        super.initMessages();
     }
 }

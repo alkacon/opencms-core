@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesOverview.java,v $
- * Date   : $Date: 2005/06/23 09:05:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -53,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -263,18 +262,6 @@ public class CmsModulesOverview extends CmsWidgetDialog {
 
         super.initWorkplaceRequestValues(settings, request);
 
-        String moduleName = getParamModule();
-        CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
-
-        if (module == null) {
-            setAction(ACTION_CANCEL);
-            try {
-                actionCloseDialog();
-            } catch (JspException e) {
-                // noop
-            }
-        }
-
         // refresh the list
         Map objects = (Map)getSettings().getListObject();
         if (objects != null) {
@@ -284,5 +271,18 @@ public class CmsModulesOverview extends CmsWidgetDialog {
 
         // save the current state of the module (may be changed because of the widget values)
         setDialogObject(m_module);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        String moduleName = getParamModule();
+        // check module
+        CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+        if (module == null) {
+            throw new Exception();
+        }
     }
 }

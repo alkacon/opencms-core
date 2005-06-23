@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2005/06/23 09:05:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,15 +58,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Dialog to edit new and existing group in the administration view.<p>
+ * Dialog to edit new an existing group in the administration view.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -354,25 +353,20 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
         // initialize parameters and dialog actions in super implementation
         super.initWorkplaceRequestValues(settings, request);
 
-        if (!isNewGroup()) {
-            // test the needed parameters
-            try {
-                getCms().readGroup(getParamGroupname());
-                getCms().readGroup(new CmsUUID(getParamGroupid()));
-            } catch (Exception e) {
-                // redirect to parent if parameters not available
-                setAction(ACTION_CANCEL);
-                try {
-                    actionCloseDialog();
-                } catch (JspException e1) {
-                    // noop
-                }
-                return;
-            }
-        }
-
         // save the current state of the group (may be changed because of the widget values)
         setDialogObject(m_group);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        if (!isNewGroup()) {
+            // test the needed parameters
+            getCms().readGroup(getParamGroupname());
+            getCms().readGroup(new CmsUUID(getParamGroupid()));
+        }
     }
 
     /**
@@ -400,9 +394,9 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Checks if the User overview has to be displayed.<p>
+     * Checks if the new Group dialog has to be displayed.<p>
      * 
-     * @return <code>true</code> if the user overview has to be displayed
+     * @return <code>true</code> if the new Group dialog has to be displayed
      */
     private boolean isNewGroup() {
 

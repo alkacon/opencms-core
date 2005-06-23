@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/23 07:58:47 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,9 +161,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /** Activation decision Flag. */
     private boolean m_active;
-
-    /** Initialization error. */
-    private CmsRuntimeException m_initError;
 
     /** the internal list. */
     private CmsHtmlList m_list;
@@ -831,11 +828,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
             }
             return;
         }
-        // if parameters ok, then no initialization Error should have been thrown
-        if (m_initError != null) {
-            // so throw it
-            throw m_initError;
-        }
     }
 
     /**
@@ -951,7 +943,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 initializeDetail(((CmsListItemDetails)itDetails.next()).getId());
             }
         } catch (Exception e) {
-            m_initError = new CmsRuntimeException(Messages.get().container(
+            throw new CmsRuntimeException(Messages.get().container(
                 Messages.ERR_LIST_FILL_1,
                 getList().getName().key(getLocale()),
                 null), e);

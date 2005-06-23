@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesDependenciesList.java,v $
- * Date   : $Date: 2005/06/23 09:05:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.tools.modules;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -66,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -183,7 +182,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
             // delete a dependency
             CmsModule module = (CmsModule)OpenCms.getModuleManager().getModule(moduleName).clone();
             deleteDependency(module, dependencyName);
-        } else if (getParamListAction().equals(LIST_ACTION_EDIT)) {
+        } else if (getParamListAction().equals(LIST_ACTION_EDIT) || getParamListAction().equals(LIST_DEFACTION_EDIT)) {
             // edit a dependency from the list
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             getToolManager().jspForwardTool(this, "/modules/edit/dependencies/edit", params);
@@ -353,7 +352,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
         if (OpenCms.getModuleManager().getModule(getParamModule()) == null) {
             // just throw a dummy exception here since getModule does not produce an exception when a 
             // module is not found
-            throw new CmsIllegalStateException(Messages.get().container(Messages.GUI_DELETEMODULE_ADMIN_TOOL_HELP_0));
+            throw new Exception();
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2005/06/23 09:05:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -61,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -352,25 +351,21 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
         // initialize parameters and dialog actions in super implementation
         super.initWorkplaceRequestValues(settings, request);
 
-        if (!isNewProject()) {
-            // test the needed parameters
-            try {
-                getCms().readProject(getParamProjectname());
-                getCms().readProject(new Integer(getParamProjectid()).intValue());
-            } catch (Exception e) {
-                // redirect to parent if parameters not available
-                setAction(ACTION_CANCEL);
-                try {
-                    actionCloseDialog();
-                } catch (JspException e1) {
-                    // noop
-                }
-                return;
-            }
-        }
-
         // save the current state of the project (may be changed because of the widget values)
         setDialogObject(m_project);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        if (!isNewProject()) {
+            // test the needed parameters
+            getCms().readProject(getParamProjectname());
+            getCms().readProject(new Integer(getParamProjectid()).intValue());
+        }
+
     }
 
     /** 

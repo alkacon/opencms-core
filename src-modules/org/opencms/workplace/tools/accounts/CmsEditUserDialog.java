@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
- * Date   : $Date: 2005/06/23 09:05:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,15 +54,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Dialog to edit new and existing user in the administration view.<p>
+ * Dialog to edit new an existing user in the administration view.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -358,23 +357,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         // initialize parameters and dialog actions in super implementation
         super.initWorkplaceRequestValues(settings, request);
 
-        if (!isNewUser()) {
-            // test the needed parameters
-            try {
-                getCms().readUser(getParamUsername());
-                getCms().readUser(new CmsUUID(getParamUserid()));
-            } catch (Exception e) {
-                // redirect to parent if parameters not available
-                setAction(ACTION_CANCEL);
-                try {
-                    actionCloseDialog();
-                } catch (JspException e1) {
-                    // noop
-                }
-                return;
-            }
-        }
-
         // save the current state of the user and pwd (may be changed because of the widget values)
         Map dialogObject = new HashMap();
         dialogObject.put(C_USER_OBJECT, m_user);
@@ -383,9 +365,22 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Checks if the User overview has to be displayed.<p>
+     * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        if (!isNewUser()) {
+            // test the needed parameters
+            getCms().readUser(getParamUsername());
+            getCms().readUser(new CmsUUID(getParamUserid()));
+        }
+
+    }
+
+    /**
+     * Checks if the new user dialog has to be displayed.<p>
      * 
-     * @return <code>true</code> if the user overview has to be displayed
+     * @return <code>true</code> if the new user dialog has to be displayed
      */
     private boolean isNewUser() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsOverview.java,v $
- * Date   : $Date: 2005/06/23 09:05:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -55,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -292,38 +291,31 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
 
         super.initWorkplaceRequestValues(settings, request);
 
-        String moduleName = getParamModule();
-        CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
-        if (module == null) {
-            setAction(ACTION_CANCEL);
-            try {
-                actionCloseDialog();
-            } catch (JspException e) {
-                // noop
-            }
-        } else {
-            String exportpointName = getParamExportpoint();
-            List exportpoints = module.getExportPoints();
-            Iterator i = exportpoints.iterator();
-            boolean found = false;
-            while (i.hasNext()) {
-                CmsExportPoint exp = (CmsExportPoint)i.next();
-                if (exp.getUri().equals(exportpointName)) {
-                    found = true;
-                }
-            }
-            if (!found) {
-                setAction(ACTION_CANCEL);
-                try {
-                    actionCloseDialog();
-                } catch (JspException e) {
-                    // noop
-                }
-            }
-        }
-
         // save the current state of the module (may be changed because of the widget values)
         setDialogObject(m_exportpoint);
 
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        String moduleName = getParamModule();
+        // check module
+        CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+        if (module == null) {
+            throw new Exception();
+        }
+        // check export point
+        Iterator it = module.getExportPoints().iterator();
+        while (it.hasNext()) {
+            CmsExportPoint ep = (CmsExportPoint)it.next();
+            if (ep.getUri().equals(getParamExportpoint())) {
+                // export point found
+                return;
+            }
+        }
+        throw new Exception();
     }
 }

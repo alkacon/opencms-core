@@ -190,13 +190,13 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/projects/project_files.html</source>
-			<destination>system/workplace/admin/projects/project_files.html</destination>
+			<source>system/workplace/admin/projects/project_files-fs.html</source>
+			<destination>system/workplace/admin/projects/project_files-fs.html</destination>
 			<type>jsp</type>
-			<uuidresource>cb5bbdbd-d8ce-11d9-a5d9-efaaea26ed93</uuidresource>
-			<datelastmodified>Fri, 10 Jun 2005 15:15:47 GMT</datelastmodified>
+			<uuidresource>fb3aa9b0-e3bd-11d9-b8a4-b1fdb8b4e144</uuidresource>
+			<datelastmodified>Thu, 23 Jun 2005 08:27:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 09 Jun 2005 10:11:07 GMT</datecreated>
+			<datecreated>Thu, 23 Jun 2005 08:08:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -205,7 +205,7 @@
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property>
-					<name>export</name>
+					<name>cache</name>
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
@@ -230,11 +230,33 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Project Files]]></value>
+					<value><![CDATA[Tool with Explorer View Frameset]]></value>
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
 					<value><![CDATA[params:projectid=${param.projectid}&projectname=${param.projectname}&action=initial|path:/projects/files]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/projects/project_files.html</source>
+			<destination>system/workplace/admin/projects/project_files.html</destination>
+			<type>jsp</type>
+			<uuidresource>cb5bbdbd-d8ce-11d9-a5d9-efaaea26ed93</uuidresource>
+			<datelastmodified>Thu, 23 Jun 2005 08:12:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Jun 2005 10:11:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Project Files]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

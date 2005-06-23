@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/06/23 09:05:02 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -430,5 +431,39 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
         // save the current state of the job (may be changed because of the widget values)
         setDialogObject(m_jobInfo);
+    }
+
+    /**
+     * Checks if the new job dialog has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the new job dialog has to be displayed
+     */
+    private boolean isNewJob() {
+
+        return getCurrentToolPath().equals("/scheduler/new");
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        if (!isNewJob()) {
+            // test if params are available
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamJobid())
+                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamJobname())) {
+                // validate the params
+                Iterator it = OpenCms.getScheduleManager().getJobs().iterator();
+                while (it.hasNext()) {
+                    CmsScheduledJobInfo job = (CmsScheduledJobInfo)it.next();
+                    if (job.getId().equals(getParamJobid()) && job.getJobName().equals(getParamJobname())) {
+                        // params are ok!
+                        return;
+                    }
+                }
+            }
+            // params are no valid
+            throw new Exception();
+        }
     }
 }

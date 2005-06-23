@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditBase.java,v $
- * Date   : $Date: 2005/06/23 09:05:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -225,5 +225,30 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
 
         // save the current state of the module (may be changed because of the widget values)
         setDialogObject(m_module);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        String moduleName = getParamModule();
+        // check module
+        if (!isNewModule()) {
+            CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+            if (module == null) {
+                throw new Exception();
+            }
+        }
+    }
+
+    /**
+     * Checks if the new module dialog has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the new module dialog has to be displayed
+     */
+    private boolean isNewModule() {
+
+        return getCurrentToolPath().equals("/modules/new");
     }
 }

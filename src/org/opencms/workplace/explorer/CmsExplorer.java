@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/06/23 07:58:47 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,10 +97,10 @@ public class CmsExplorer extends CmsWorkplace {
     private static final String C_PARAMETER_PAGE = "page";
 
     /** The "projectfilter" parameter. */
-    private static final String C_PARAMETER_PROJECTFILTER = "projectfilter";
+    public static final String C_PARAMETER_PROJECTFILTER = "projectfilter";
 
     /** The "projectid" parameter. */
-    private static final String C_PARAMETER_PROJECTID = "projectid";
+    public static final String C_PARAMETER_PROJECTID = "projectid";
 
     /** The "resource" parameter. */
     private static final String C_PARAMETER_RESOURCE = "resource";

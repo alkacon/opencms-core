@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsEdit.java,v $
- * Date   : $Date: 2005/06/23 09:05:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -62,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -337,20 +336,34 @@ public class CmsExportpointsEdit extends CmsWidgetDialog {
 
         super.initWorkplaceRequestValues(settings, request);
 
-        String moduleName = getParamModule();
-        CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
-        if (module == null) {
-            setAction(ACTION_CANCEL);
-            try {
-                actionCloseDialog();
-            } catch (JspException e) {
-                // noop
-            }
-        }
-
         // save the current state of the module (may be changed because of the widget values)
         setDialogObject(m_exportpoint);
 
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        String moduleName = getParamModule();
+        // check module
+        CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+        if (module == null) {
+            throw new Exception();
+        }
+        // check export point
+        if (!isNewExportPoint()) {
+            Iterator it = module.getExportPoints().iterator();
+            while (it.hasNext()) {
+                CmsExportPoint ep = (CmsExportPoint)it.next();
+                if (ep.getUri().equals(getParamExportpoint())) {
+                    // export point found
+                    return;
+                }
+            }
+            throw new Exception();
+        }
     }
 
     /**
@@ -366,5 +379,15 @@ public class CmsExportpointsEdit extends CmsWidgetDialog {
         result.add(new CmsSelectWidgetOption("WEB-INF/classes/"));
         result.add(new CmsSelectWidgetOption("WEB-INF/lib/"));
         return result;
+    }
+
+    /**
+     * Checks if the new export point dialog has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the new export point dialog has to be displayed
+     */
+    private boolean isNewExportPoint() {
+
+        return getCurrentToolPath().equals("/modules/edit/exportpoints/new");
     }
 }

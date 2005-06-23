@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/22 15:33:02 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/06/23 10:11:48 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 6.0.0 
  */
@@ -1367,6 +1367,20 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             setParamPage((String)getPages().get(0));
         }
 
+        // test the needed parameters
+        try {
+            validateParamaters();
+        } catch (Exception e) {
+            // close if parameters not available
+            setAction(ACTION_CANCEL);
+            try {
+                actionCloseDialog();
+            } catch (JspException e1) {
+                // noop
+            }
+            return;
+        }
+
         // fill the widget map
         defineWidgets();
         fillWidgetValues(request);
@@ -1467,6 +1481,18 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected void setValidationErrorList(List errors) {
 
         m_validationErrorList = errors;
+    }
+
+    /**
+     * Should be overriden for parameter validation.<p>
+     * 
+     * The exception is never seen by the user, so it can be just a <code>new Exception()</code>.<p>
+     * 
+     * @throws Exception if the parameters are not valid
+     */
+    protected void validateParamaters() throws Exception {
+
+        // valid by default
     }
 
     /**
