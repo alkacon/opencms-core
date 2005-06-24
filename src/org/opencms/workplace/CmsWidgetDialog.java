@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/24 08:02:20 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2005/06/24 09:11:44 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 6.0.0 
  */
@@ -386,14 +386,15 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 setParamAction(DIALOG_OK);
                 actionCommit();
                 if (closeDialogOnCommit()) {
+                    setAction(ACTION_CANCEL);
                     actionCloseDialog();
                     break;
                 }
+                setAction(ACTION_DEFAULT);
 
             case ACTION_DEFAULT:
             default:
                 // ACTION: show dialog (default)
-                setParamAction(DIALOG_SAVE);
                 if (!writeLater) {
                     writeDialog();
                 }
