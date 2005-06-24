@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/24 14:15:19 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,12 +213,6 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
-        // check the required permissions to lock/unlock the resource       
-        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
-            // no write permissions for the resource, set cancel action to close dialog
-            setParamAction(DIALOG_CANCEL);
-        }
           
         // set the action for the JSP switch 
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
@@ -230,6 +224,12 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
             case TYPE_LOCK:
                 setParamTitle(key("messagebox.title.lock"));
                 setParamDialogtype(DIALOG_TYPE_LOCK);
+                // check the required permissions to lock/unlock the resource       
+                if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+                    // no write permissions for the resource, set cancel action to close dialog
+                    setAction(ACTION_CANCEL);
+                    return;
+                }
                 break;
             case TYPE_LOCKCHANGE:
                 setParamTitle(key("messagebox.title.lockchange"));
