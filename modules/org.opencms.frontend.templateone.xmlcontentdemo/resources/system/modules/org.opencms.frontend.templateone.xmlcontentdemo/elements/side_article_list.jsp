@@ -7,7 +7,7 @@
 
 <b><cms:contentshow element="Title" /></b><br>
 <cms:contentshow element="Teaser" /><br>
-<small><a href="<cms:link><cms:contentshow element="opencms:filename" /></cms:link>">read more...</a></small>
+<small><a href="<cms:link><cms:contentshow element="${opencms.filename}" /></cms:link>">read more...</a></small>
 
 </div>
 
