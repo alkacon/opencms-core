@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/06/24 08:02:20 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 6.0.0 
  */
@@ -351,6 +351,24 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      */
     public void displayDialog() throws JspException, IOException, ServletException {
 
+        displayDialog(false);
+    }
+
+    /**
+     * Performs the dialog actions depending on the initialized action and displays the dialog form if needed.<p>
+     * 
+     * @param writeLater if <code>true</code> no output is written, 
+     *                   you have to call manually the <code>{@link #defaultActionHtml()}</code> method.
+     * 
+     * @throws JspException if dialog actions fail
+     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
+     * @throws ServletException in case of errros forwarding to the required result page
+     */
+    public void displayDialog(boolean writeLater) throws JspException, IOException, ServletException {
+
+        if (isForwarded()) {
+            return;
+        }
         switch (getAction()) {
 
             case ACTION_CANCEL:
@@ -376,8 +394,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             default:
                 // ACTION: show dialog (default)
                 setParamAction(DIALOG_SAVE);
-                JspWriter out = getJsp().getJspContext().getOut();
-                out.print(defaultActionHtml());
+                if (!writeLater) {
+                    writeDialog();
+                }
         }
     }
 
@@ -697,6 +716,32 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Writes the dialog html code, only if the <code>{@link #ACTION_DEFAULT}</code> is set.<p>
+     * 
+     * @throws JspException if dialog actions fail
+     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
+     */
+    public void writeDialog() throws IOException, JspException {
+
+        if (isForwarded()) {
+            return;
+        }
+        switch (getAction()) {
+            case ACTION_CANCEL:
+            case ACTION_ERROR:
+            case ACTION_SAVE:
+                break;
+
+            case ACTION_DEFAULT:
+            default:
+                // ACTION: show dialog (default)
+                setParamAction(DIALOG_SAVE);
+                JspWriter out = getJsp().getJspContext().getOut();
+                out.print(defaultActionHtml());
+        }
     }
 
     /**

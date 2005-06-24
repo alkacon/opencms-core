@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsTwoListsDialogBuilder.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/24 08:02:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.jsp.JspWriter;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,7 +79,7 @@ public class CmsTwoListsDialogBuilder {
      * 
      * @return html code
      */
-    public String defaultActionHtml() {
+    protected String defaultActionHtml() {
 
         StringBuffer result = new StringBuffer(2048);
         result.append(defaultActionHtmlStart());
@@ -93,7 +93,7 @@ public class CmsTwoListsDialogBuilder {
      * 
      * @return html code
      */
-    public String defaultActionHtmlContent() {
+    protected String defaultActionHtmlContent() {
 
         StringBuffer result = new StringBuffer(2048);
         result.append("<table id='twolists' cellpadding='0' cellspacing='0' align='center' width='100%'>\n");
@@ -115,7 +115,7 @@ public class CmsTwoListsDialogBuilder {
      * 
      * @return html code
      */
-    public String defaultActionHtmlEnd() {
+    protected String defaultActionHtmlEnd() {
 
         StringBuffer result = new StringBuffer(2048);
         result.append(m_activeWp.dialogEnd());
@@ -129,7 +129,7 @@ public class CmsTwoListsDialogBuilder {
      * 
      * @return html code
      */
-    public String defaultActionHtmlStart() {
+    protected String defaultActionHtmlStart() {
 
         StringBuffer result = new StringBuffer(2048);
         result.append(m_activeWp.htmlStart(null));
@@ -148,12 +148,47 @@ public class CmsTwoListsDialogBuilder {
      */
     public void displayDialog() throws JspException, IOException, ServletException {
 
+        displayDialog(false);
+    }
+
+    
+    /**
+     * Writes the dialog html code, only if the <code>{@link org.opencms.workplace.CmsDialog#ACTION_DEFAULT}</code> is set.<p>
+     * 
+     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
+     */
+    public void writeDialog() throws IOException {
+
+        if (m_activeWp.isForwarded() || m_passiveWp.isForwarded()) {
+            return;
+        }
+
+        JspWriter out = m_activeWp.getJsp().getJspContext().getOut();
+        out.print(defaultActionHtml());
+    }
+    
+    /**
+     * Display method for two list dialogs, executes actions, but only displays if needed.<p>
+     * 
+     * @param writeLater if <code>true</code> no output is written, 
+     *                   you have to call manually the <code>{@link #defaultActionHtml()}</code> method.
+     * 
+     * @throws JspException if dialog actions fail
+     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
+     * @throws ServletException in case of errros forwarding to the required result page
+     */
+    public void displayDialog(boolean writeLater) throws JspException, IOException, ServletException {
+
         // perform the active list actions
         m_activeWp.actionDialog();
+        if (m_activeWp.isForwarded()) {
+            return;
+        }
+
         m_activeWp.refreshList();
         m_passiveWp.refreshList();
 
-        if (m_activeWp.getJsp().getResponse().isCommitted()) {
+        if (writeLater) {
             return;
         }
         JspWriter out = m_activeWp.getJsp().getJspContext().getOut();

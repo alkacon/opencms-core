@@ -3,11 +3,17 @@
 <%
 	// initialize the widget dialog
 	CmsGroupOverviewDialog wpWidget = new CmsGroupOverviewDialog(pageContext, request, response);
-	// perform the widget actions	
-	wpWidget.displayDialog();
-
+	// perform the widget actions   
+	wpWidget.displayDialog(true);
+	if (wpWidget.isForwarded()) {
+		return;
+	}
 	// initialize the list dialog
-    CmsShowGroupUsersList wpList = new CmsShowGroupUsersList(pageContext, request, response);
-	// perform the list actions	
-	wpList.displayDialog();
+	CmsShowGroupUsersList wpList = new CmsShowGroupUsersList(wpWidget.getJsp());
+	// perform the list actions 
+	wpList.displayDialog(true);
+	// write the content of widget dialog
+	wpWidget.writeDialog();
+	// write the content of list dialog
+	wpList.writeDialog();
 %>

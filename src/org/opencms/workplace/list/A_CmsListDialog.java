@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/24 08:02:20 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,6 +204,10 @@ public abstract class A_CmsListDialog extends CmsDialog {
         String searchableColId) {
 
         super(jsp);
+        if (isForwarded()) {
+            return;
+        }
+
         m_listId = listId;
         // try to read the list from the session
         listRecovery(listId);
@@ -272,14 +276,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
             actionCloseDialog();
             return;
         }
+        if (isForwarded()) {
+            return;
+        }
+        // TODO: check the need for this
         refreshList();
         switch (getAction()) {
-
-            case ACTION_CANCEL:
-                // ACTION: cancel button pressed
-                actionCloseDialog();
-                return;
-
             //////////////////// ACTION: default actions
             case ACTION_LIST_SEARCH:
             case ACTION_LIST_SORT:
@@ -307,23 +309,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 // ACTION: show dialog (default)
                 setParamAction(DIALOG_INITIAL);
         }
-    }
-
-    /**
-     * Generates the dialog starting html code.<p>
-     * 
-     * @return html code
-     */
-    public String defaultActionHtml() {
-
-        if (getList() != null && getList().getAllContent().isEmpty()) {
-            refreshList();
-        }
-        StringBuffer result = new StringBuffer(2048);
-        result.append(defaultActionHtmlStart());
-        result.append(defaultActionHtmlContent());
-        result.append(defaultActionHtmlEnd());
-        return result.toString();
     }
 
     /**
@@ -396,12 +381,26 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public void displayDialog() throws JspException, IOException, ServletException {
 
+        displayDialog(false);
+    }
+
+    /**
+     * Performs the dialog actions depending on the initialized action and displays the dialog form if needed.<p>
+     * 
+     * @param writeLater if <code>true</code> no output is written, 
+     *                   you have to call manually the <code>{@link #defaultActionHtml()}</code> method.
+     * 
+     * @throws JspException if dialog actions fail
+     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
+     * @throws ServletException in case of errros forwarding to the required result page
+     */
+    public void displayDialog(boolean writeLater) throws JspException, IOException, ServletException {
+
         actionDialog();
-        if (getJsp().getResponse().isCommitted()) {
+        if (writeLater) {
             return;
         }
-        JspWriter out = getJsp().getJspContext().getOut();
-        out.print(defaultActionHtml());
+        writeDialog();
     }
 
     /**
@@ -595,7 +594,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * This method re-read the rows of the list, the user should call this method after executing an action
      * that add or remove rows to the list. 
      */
-    public void refreshList() {
+    public synchronized void refreshList() {
 
         if (getList() == null) {
             return;
@@ -713,6 +712,37 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public void setParamSortCol(String sortCol) {
 
         m_paramSortCol = sortCol;
+    }
+
+    /**
+     * Writes the dialog html code, only if the <code>{@link #ACTION_DEFAULT}</code> is set.<p>
+     * 
+     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
+     */
+    public void writeDialog() throws IOException {
+
+        if (isForwarded()) {
+            return;
+        }
+        JspWriter out = getJsp().getJspContext().getOut();
+        out.print(defaultActionHtml());
+    }
+
+    /**
+     * Generates the dialog starting html code.<p>
+     * 
+     * @return html code
+     */
+    protected String defaultActionHtml() {
+
+        if (getList() != null && getList().getAllContent().isEmpty()) {
+            refreshList();
+        }
+        StringBuffer result = new StringBuffer(2048);
+        result.append(defaultActionHtmlStart());
+        result.append(defaultActionHtmlContent());
+        result.append(defaultActionHtmlEnd());
+        return result.toString();
     }
 
     /**

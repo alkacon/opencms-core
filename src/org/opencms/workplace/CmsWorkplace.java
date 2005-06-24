@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.135 $
+ * Date   : $Date: 2005/06/24 08:02:20 $
+ * Version: $Revision: 1.136 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.135 $ 
+ * @version $Revision: 1.136 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,6 +164,9 @@ public abstract class CmsWorkplace {
     /** Helper variable to store the id of the current project. */
     private int m_currentProjectId = -1;
 
+    /** Flag for indicating that request forwarded was. */
+    private boolean m_forwarded;
+
     /** The current JSP action element. */
     private CmsJspActionElement m_jsp;
 
@@ -190,7 +193,7 @@ public abstract class CmsWorkplace {
 
     /** The current OpenCms users workplace settings. */
     private CmsWorkplaceSettings m_settings;
-
+    
     /**
      * Public constructor.<p>
      * 
@@ -200,7 +203,7 @@ public abstract class CmsWorkplace {
 
         initWorkplaceMembers(jsp);
     }
-
+    
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -1420,6 +1423,17 @@ public abstract class CmsWorkplace {
         return pageHtml(HTML_START, title);
     }
 
+    
+    /**
+     * Returns the forwarded flag.<p>
+     *
+     * @return the forwarded flag
+     */
+    public boolean isForwarded() {
+
+        return m_forwarded;
+    }
+
     /**
      * Returns true if the online help for the users current workplace language is installed.<p>
      * 
@@ -1730,6 +1744,17 @@ public abstract class CmsWorkplace {
     public void sendCmsRedirect(String location) throws IOException {
 
         getJsp().getResponse().sendRedirect(OpenCms.getSystemInfo().getOpenCmsContext() + location);
+    }
+    
+    
+    /**
+     * Sets the forwarded flag.<p>
+     *
+     * @param forwarded the forwarded flag to set
+     */
+    public void setForwarded(boolean forwarded) {
+
+        m_forwarded = forwarded;
     }
 
     /**

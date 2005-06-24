@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/06/24 08:02:20 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -429,6 +429,7 @@ public class CmsToolManager {
         if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
             newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), null));
         }
+        wp.setForwarded(true);
         // forward to the requested page uri
         CmsRequestUtil.forwardRequest(
             wp.getJsp().link(pagePath),
@@ -470,6 +471,7 @@ public class CmsToolManager {
             }
             newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
         }
+        wp.setForwarded(true);
         // forward to the requested tool uri
         CmsRequestUtil.forwardRequest(
             wp.getJsp().link(C_VIEW_JSPPAGE_LOCATION),

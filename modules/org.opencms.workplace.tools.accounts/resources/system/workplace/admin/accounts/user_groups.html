@@ -1,17 +1,22 @@
 <%@ page import="org.opencms.workplace.tools.accounts.*" 
          buffer="none" %>
 <%     
+	// initialize info dialog
+	CmsUserOverviewDialog wpInfo = new CmsUserOverviewDialog(pageContext, request, response);
+	// perform the widget actions 
+	wpInfo.displayDialog(true);
+	if (wpInfo.isForwarded()) {
+		return;
+	}
+	// initialize list dialogs
+	CmsUserGroupsList wpUserGroups = new CmsUserGroupsList(pageContext, request, response);
+	CmsNotUserGroupsList wpNotUserGroups = new CmsNotUserGroupsList(pageContext, request, response);
+	CmsTwoListsDialog wpTwoLists = new CmsTwoListsDialog(wpUserGroups, wpNotUserGroups);
+	// perform the active list actions
+	wpTwoLists.displayDialog(true);
 
-    // start dialog
-    CmsUserOverviewDialog wpInfo = new CmsUserOverviewDialog(pageContext, request, response);
-
-    // perform the widget actions and display the dialog
-    wpInfo.displayDialog();
-
-    CmsUserGroupsList wpUserGroups = new CmsUserGroupsList(pageContext, request, response);
-    CmsNotUserGroupsList wpNotUserGroups = new CmsNotUserGroupsList(pageContext, request, response);
-
-    CmsTwoListsDialog wpTwoLists = new CmsTwoListsDialog(wpUserGroups, wpNotUserGroups);
-    // perform the active list actions & display the 2 lists
-    wpTwoLists.displayDialog();
+	// write the content of widget dialog
+	wpInfo.writeDialog();
+	// write the content of list dialog
+	wpTwoLists.writeDialog();   
 %>
