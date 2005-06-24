@@ -4,7 +4,7 @@
 				 		org.opencms.workplace.*,
 						org.opencms.workplace.commons.*,
 				 		org.opencms.workplace.editors.CmsDialogElements,
-				 		org.opencms.workplace.tools.content.*,
+				 		org.opencms.workplace.tools.database.*,
 				 		org.opencms.workplace.*, 
 						org.opencms.workplace.administration.*" %>
 										 
@@ -21,7 +21,7 @@
 	CmsHtmlImportReport wp = new CmsHtmlImportReport(pageContext, request, response);	
 		
 	// initialize the import class	
-	CmsHtmlImport imp = new CmsHtmlImport( cms, request, wp);
+	CmsHtmlImport imp = new CmsHtmlImport( cms, request);
 	
 //////////////////// start of switch statement 
 	
@@ -38,13 +38,13 @@ case CmsDialog.ACTION_CONFIRMED:
 case CmsDialog.ACTION_REPORT_BEGIN:
 case CmsDialog.ACTION_REPORT_UPDATE:
 case CmsDialog.ACTION_REPORT_END:
-//////////////////// ACTION: clear history			
-	
+//////////////////// ACTION: clear history	
+
 	boolean isValid = true;															
 	if (wp.getAction() == CmsDialog.ACTION_CONFIRMED) {
 		try {				
 			imp.checkParameters();
-		} catch (CmsParameterValidationException e) {
+		} catch (Exception e) {
 			isValid = false;
 			errorMessage = e.getMessage();
 		}
@@ -53,7 +53,7 @@ case CmsDialog.ACTION_REPORT_END:
 		wp.setHtmlImport(imp);
 		wp.actionReport();
 		break;
-	}
+	}		
 
 
 //////////////////// ACTION: show start dialog
