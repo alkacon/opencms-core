@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/24 15:47:40 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,20 +70,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDialogElements extends CmsDialog {
 
-    /** Value for the action: delete the content of an element. */
-    public static final int ACTION_DELETECONTENT = 200;
-
     /** Value for the action: update the elements of the page. */
     public static final int ACTION_UPDATE_ELEMENTS = 210;
-
-    /** Request parameter value for the action: delete the content of an element. */
-    public static final String DIALOG_DELETECONTENT = "deletecontent";
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "elementselector";
@@ -105,7 +99,6 @@ public class CmsDialogElements extends CmsDialog {
 
     /** The element locale. */
     private Locale m_elementLocale;
-    private String m_paramDeleteElementContent;
 
     // Special parameters used by this dialog
     private String m_paramElementlanguage;
@@ -241,27 +234,6 @@ public class CmsDialogElements extends CmsDialog {
     }
 
     /**
-     * Deletes the content of an element specified in the parameter "deleteelement".<p>
-     */
-    public void actionDeleteElementContent() {
-
-        try {
-            CmsFile file = getCms().readFile(getParamTempfile(), CmsResourceFilter.IGNORE_EXPIRATION);
-            CmsXmlPage page = CmsXmlPageFactory.unmarshal(getCms(), file);
-            // set the content of the element to an empty String
-            page.setStringValue(getCms(), getParamDeleteElement(), getElementLocale(), "");
-            // write the temporary file
-            file.setContents(page.marshal());
-            getCms().writeFile(file);
-        } catch (CmsException e) {
-            // should usually never happen
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e);
-            }
-        }
-    }
-
-    /**
      * Updates the enabled/diabled status of all elements of the current page.<p>
      * 
      * @throws JspException if there is an error including the error page
@@ -279,6 +251,7 @@ public class CmsDialogElements extends CmsDialog {
                 // get the current list element
                 CmsDialogElement element = (CmsDialogElement)i.next();
                 if (element.isMandantory()
+                    || element.getName().equals(getParamElementname())
                     || "true".equals(getJsp().getRequest().getParameter(PREFIX_PARAM_BODY + element.getName()))) {
                     if (!element.isExisting()) {
                         // create element in order to enable it properly 
@@ -291,15 +264,8 @@ public class CmsDialogElements extends CmsDialog {
                     }
                 } else {
                     if (element.isExisting()) {
-                        // must set enabled to true or check for contains always fails
-                        page.setEnabled(element.getName(), getElementLocale(), true);
-                        // disable element if it is already existing
-                        if (page.getStringValue(getCms(), element.getName(), getElementLocale()) == null) {
-                            // element is not defined in template, empty and disabled - remove it
-                            page.removeValue(element.getName(), getElementLocale());
-                        } else {
-                            page.setEnabled(element.getName(), getElementLocale(), false);
-                        }
+                        // remove element if it is already existing
+                        page.removeValue(element.getName(), getElementLocale());
                     }
                 }
             }
@@ -337,11 +303,8 @@ public class CmsDialogElements extends CmsDialog {
         retValue.append("\t<td class=\"textbold\" unselectable=\"on\">&nbsp;&nbsp;"
             + key("editor.dialog.elements.enabled")
             + "&nbsp;&nbsp;</td>\n");
-        retValue.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\" unselectable=\"on\">"
-            + key("editor.dialog.elements.deletecontent")
-            + "</td>\n");
         retValue.append("</tr>\n");
-        retValue.append("<tr><td><span style=\"height: 6px;\"></span></td></tr>\n");
+        retValue.append("<tr><td colspan=\"2\"><span style=\"height: 6px;\"></span></td></tr>\n");
 
         try {
 
@@ -361,35 +324,27 @@ public class CmsDialogElements extends CmsDialog {
                 retValue.append("<tr>\n");
                 retValue.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">" + element.getNiceName());
                 retValue.append("</td>\n");
-                retValue.append("\t<td class=\"textcenter\" unselectable=\"on\"><input type=\"checkbox\" name=\""
-                    + PREFIX_PARAM_BODY
-                    + element.getName()
-                    + "\" value=\"true\"");
+                retValue.append("\t<td class=\"textcenter\" unselectable=\"on\"><input type=\"checkbox\" name=\"");
+                retValue.append(PREFIX_PARAM_BODY);
+                retValue.append(element.getName());
+                retValue.append("\" value=\"true\"");
 
                 if ((!page.hasValue(element.getName(), getElementLocale()) && element.isMandantory())
                     || page.isEnabled(element.getName(), getElementLocale())) {
                     retValue.append(" checked=\"checked\"");
                 }
-                if (element.isMandantory()) {
+                if (element.isMandantory() || element.getName().equals(getParamElementname())) {
                     retValue.append(" disabled=\"disabled\"");
                 }
                 retValue.append(">");
-                retValue.append("</td>\n");
-                retValue.append("\t<td class=\"textcenter\" unselectable=\"on\">");
-                retValue.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-                if (page.getStringValue(getCms(), element.getName(), getElementLocale()) != null) {
-                    // current element has content that can be deleted
-                    retValue.append(button(
-                        "javascript:confirmDelete('" + element.getName() + "');",
-                        null,
-                        "deletecontent.png",
-                        "button.delete",
-                        0));
-                } else {
-                    // current element is empty
-                    retValue.append(button(null, null, "deletecontent_in.png", "button.delete", 0));
-                }
-                retValue.append("</tr></table>");
+                retValue.append("<script type=\"text/javascript\">registerElement(\"");
+                
+                retValue.append(element.getName());
+                retValue.append("\", ");
+                retValue.append(page.isEnabled(element.getName(), getElementLocale()));
+                retValue.append(");</script>");
+                
+                
                 retValue.append("</td>\n");
                 retValue.append("</tr>\n");
             }
@@ -442,16 +397,6 @@ public class CmsDialogElements extends CmsDialog {
     }
 
     /**
-     * Returns the element name to delete its content.<p>
-     * 
-     * @return the element name to delete its content
-     */
-    public String getParamDeleteElement() {
-
-        return m_paramDeleteElementContent;
-    }
-
-    /**
      * Returns the current element language.<p>
      * 
      * @return the current element language
@@ -479,16 +424,6 @@ public class CmsDialogElements extends CmsDialog {
     public String getParamTempfile() {
 
         return m_paramTempFile;
-    }
-
-    /**
-     * Sets the element name to delete its content.<p>
-     * 
-     * @param deleteElement the element name to delete its content
-     */
-    public void setParamDeleteElement(String deleteElement) {
-
-        m_paramDeleteElementContent = deleteElement;
     }
 
     /**
@@ -531,9 +466,7 @@ public class CmsDialogElements extends CmsDialog {
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
-        if (DIALOG_DELETECONTENT.equals(getParamAction())) {
-            setAction(ACTION_DELETECONTENT);
-        } else if (DIALOG_UPDATE_ELEMENTS.equals(getParamAction())) {
+        if (DIALOG_UPDATE_ELEMENTS.equals(getParamAction())) {
             setAction(ACTION_UPDATE_ELEMENTS);
         } else {
             setAction(ACTION_DEFAULT);
