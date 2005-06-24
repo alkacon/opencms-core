@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/06/24 13:46:17 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2005/06/24 13:48:35 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.86 $ 
+ * @version $Revision: 1.87 $ 
  * 
  * @since 6.0.0 
  */
@@ -1284,9 +1284,9 @@ public class CmsDialog extends CmsToolDialog {
             CmsResource res;
             if (neededForFolder) {
                 // check permissions for the folder the resource is in
-                res = getCms().readResource(CmsResource.getParentFolder(getParamResource()));
+                res = getCms().readResource(CmsResource.getParentFolder(getParamResource()), CmsResourceFilter.ALL);
             } else {
-                res = getCms().readResource(getParamResource());
+                res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             }
             hasPermissions = getCms().hasPermissions(res, required, false, CmsResourceFilter.ALL);
         } catch (CmsException e) {
