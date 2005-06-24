@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2005/06/24 16:42:52 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.89 $ 
+ * @version $Revision: 1.90 $ 
  * 
  * @since 6.0.0 
  * 
@@ -598,10 +598,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 Messages.get().key(Messages.LOG_UNSUPPORTED_ENC_1, controller.getCurrentRequest().getElementUri()),
                 e);
             try {
-                content = new String(byteContent, CmsEncoder.ENCODING_ISO_8859_1);
-                encoding = CmsEncoder.ENCODING_ISO_8859_1;
+                encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+                content = new String(byteContent, encoding);
             } catch (UnsupportedEncodingException e2) {
-                // should not happen since ISO-8859-1 is always a valid encoding
+                // should not happen since default encoding is always a valid encoding (checked during system startup)
                 content = new String(byteContent);
             }
         }
@@ -1041,11 +1041,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 String encoding;
                 try {
                     contents = CmsFile.upgrade(resource, cms).getContents();
-                    // check the "content-encoding" property for the JSP
-                    encoding = cms.readPropertyObject(
-                        jspVfsName,
-                        CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
-                        false).getValue(CmsEncoder.ENCODING_ISO_8859_1);
+                    // check the "content-encoding" property for the JSP, use system default if not found on path
+                    encoding = cms.readPropertyObject(jspVfsName, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue(
+                        OpenCms.getSystemInfo().getDefaultEncoding());
                     encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
                 } catch (CmsException e) {
                     controller.setThrowable(e, jspVfsName);

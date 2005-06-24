@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.207 $
+ * Date   : $Date: 2005/06/24 16:42:52 $
+ * Version: $Revision: 1.208 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -125,7 +125,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.207 $ 
+ * @version $Revision: 1.208 $ 
  * 
  * @since 6.0.0 
  */
@@ -806,10 +806,11 @@ public final class OpenCmsCore {
         // get the system configuration
         CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)m_configurationManager.getConfiguration(CmsSystemConfiguration.class);
 
-        // check the opencms.properties for the encoding setting
+        // check if the encoding setting is valid
         String setEncoding = systemConfiguration.getDefaultContentEncoding();
         String defaultEncoding = CmsEncoder.lookupEncoding(setEncoding, null);
         if (defaultEncoding == null) {
+            // we can not start without a valid encoding setting
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ENCODING_1, setEncoding));
         }
         if (CmsLog.INIT.isInfoEnabled()) {

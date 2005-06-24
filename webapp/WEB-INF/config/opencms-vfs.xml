@@ -49,11 +49,7 @@
 						<property>
 							<name>export</name>
 							<value type="shared"><![CDATA[false]]></value>
-						</property>
-						<property>
-							<name>content-encoding</name>
-							<value type="shared"><![CDATA[${opencms.default.encoding}]]></value>
-						</property>			
+						</property>		
 					</properties>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypePointer" name="pointer" id="5"/>
