@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/24 14:13:08 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -234,7 +234,7 @@ public class CmsExplorer extends CmsWorkplace {
         }
         content.append("\");\n");
         content.append("top.rD();\n");
-        List reloadTreeFolders = (List)getJsp().getRequest().getAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE);
+        List reloadTreeFolders = (List)getJsp().getRequest().getAttribute(REQUEST_ATTRIBUTE_RELOADTREE);
         if (reloadTreeFolders != null) {
             // folder tree has to be reloaded after copy, delete, move, rename operation
             String reloadFolder = "";

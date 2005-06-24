@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.137 $
+ * Date   : $Date: 2005/06/24 14:13:08 $
+ * Version: $Revision: 1.138 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.137 $ 
+ * @version $Revision: 1.138 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,11 +132,14 @@ public abstract class CmsWorkplace {
     /** Constant for the JSP common report page. */
     protected static final String C_FILE_REPORT_OUTPUT = C_DIALOG_PATH_COMMON + "report.jsp";
 
-    /** Key name for the request attribute to reload the folder tree view. */
-    protected static final String C_REQUEST_ATTRIBUTE_RELOADTREE = "__CmsWorkplace.RELOADTREE";
-
     /** Key name for the session workplace class. */
     protected static final String C_SESSION_WORKPLACE_CLASS = "__CmsWorkplace.WORKPLACE_CLASS";
+    
+    /** Key name for the request attribute to indicate a multipart request was already parsed. */
+    protected static final String REQUEST_ATTRIBUTE_MULTIPART = "__CmsWorkplace.MULTIPART";
+
+    /** Key name for the request attribute to reload the folder tree view. */
+    protected static final String REQUEST_ATTRIBUTE_RELOADTREE = "__CmsWorkplace.RELOADTREE";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkplace.class);
@@ -1161,14 +1164,20 @@ public abstract class CmsWorkplace {
      */
     public void fillParamValues(HttpServletRequest request) {
 
-        // check if this is a multipart request 
-        m_multiPartFileItems = CmsRequestUtil.readMultipartFileItems(request);
-        if (m_multiPartFileItems != null) {
-            // this was indeed a multipart form request
-            m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(
-                getCms().getRequestContext().getEncoding(),
-                m_multiPartFileItems);
-        } else {
+        m_parameterMap = null;
+        // ensure a multipart request is pared only once (for "forward" screnarios with reports)
+        if (null == request.getAttribute(REQUEST_ATTRIBUTE_MULTIPART)) {
+            // check if this is a multipart request 
+            m_multiPartFileItems = CmsRequestUtil.readMultipartFileItems(request);
+            if (m_multiPartFileItems != null) {
+                // this was indeed a multipart form request
+                m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(
+                    getCms().getRequestContext().getEncoding(),
+                    m_multiPartFileItems);
+                request.setAttribute(REQUEST_ATTRIBUTE_MULTIPART, Boolean.TRUE);
+            }
+        }
+        if (m_parameterMap == null) {
             // the request was a "normal" request
             m_parameterMap = request.getParameterMap();
         }

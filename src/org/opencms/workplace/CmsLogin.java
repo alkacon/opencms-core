@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/06/23 15:27:07 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/24 14:13:08 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -268,9 +268,14 @@ public class CmsLogin extends CmsJspLoginBean {
             // clear message
             m_message = null;
             // login is successful, check if the requested resource can be read
-            if (!getCmsObject().existsResource(m_requestedResource)) {
+            String resource = CmsRequestUtil.splitUri(m_requestedResource)[0];
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(resource)) {
+                // bad resource name, use workplace as default
+                resource = CmsWorkplaceAction.C_JSP_WORKPLACE_URI;
+            }
+            if (!getCmsObject().existsResource(resource)) {
                 // requested resource does either not exist or is not readable by user
-                if (CmsWorkplaceAction.C_JSP_WORKPLACE_URI.equals(m_requestedResource)) {
+                if (CmsWorkplaceAction.C_JSP_WORKPLACE_URI.equals(resource)) {
                     // we know the Workplace exists, so the user does not have access to the Workplace
                     // probalbly this is a "Guest" user in a default setup where "Guest" has no access to the Workplace
                     m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0);
