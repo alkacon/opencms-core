@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/06/24 11:57:48 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/24 13:24:54 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,19 +112,18 @@ public class CmsLinkGallery extends A_CmsGallery {
             return button(null, null, "apply_in.png", "button.paste", 0);
         } else {
             String uri = getParamResourcePath();
-            if (CmsStringUtil.isEmpty(getParamDialogMode())) {
-                // in editor mode, create a valid link from resource path
-                uri = getJsp().link(uri);
-            } else if (MODE_WIDGET.equals(getParamDialogMode())) {
+            if (MODE_WIDGET.equals(getParamDialogMode())) {
                 // get real link target in widget mode from file content
                 try {
                     CmsResource res = getCms().readResource(getParamResourcePath());
-                    CmsFile file = getCms().readFile(getCms().getSitePath(res));
-                    uri = new String(file.getContents());
+                    uri = new String(CmsFile.upgrade(res, getCms()).getContents());
                 } catch (CmsException e) {
                     // this should never happen
                     LOG.error(e);
                 }
+            } else {
+                // in editor mode, create a valid link from resource path
+                uri = getJsp().link(uri);
             }
 
             return button(
@@ -148,6 +147,11 @@ public class CmsLinkGallery extends A_CmsGallery {
             if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
                 CmsResource res = getCms().readResource(getParamResourcePath());
                 if (res != null) {
+                    // file target
+                    String pointer = new String(CmsFile.upgrade(res, getCms()).getContents());
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(pointer)) {
+                        pointer = getJsp().link(getCms().getSitePath(res));
+                    }
                     String title = getPropertyValue(res, CmsPropertyDefinition.PROPERTY_TITLE);
                     String description = getJsp().property(
                         CmsPropertyDefinition.PROPERTY_DESCRIPTION,
@@ -155,8 +159,6 @@ public class CmsLinkGallery extends A_CmsGallery {
                     String keywords = getJsp().property(CmsPropertyDefinition.PROPERTY_KEYWORDS, getParamResourcePath());
                     String lastmodified = getMessages().getDateTime(res.getDateLastModified());
                     html.append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: middle; width:100%; background-color: ThreeDFace; margin: 0;\">");
-                    // file target
-                    String linkTarget = getCms().getSitePath(res);
                     html.append("<tr align=\"left\">");
                     html.append("<td width=\"35%\"><b>");
                     html.append(key("input.linkto"));
@@ -166,7 +168,7 @@ public class CmsLinkGallery extends A_CmsGallery {
                     html.append(getJsp().link(getCms().getSitePath(res)));
                     html.append("','_preview','')");
                     html.append("\">");
-                    html.append(linkTarget);
+                    html.append(pointer);
                     html.append("</a></td>");
                     // file name
                     html.append(previewRow(key("label.name"), res.getName()));
