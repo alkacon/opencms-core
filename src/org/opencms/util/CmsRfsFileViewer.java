@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/24 09:19:55 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,17 +37,19 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
@@ -70,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,6 +133,19 @@ public class CmsRfsFileViewer implements Cloneable {
         }
 
         /**
+         * Returns the amount of lines of text available from the underlying file.<p> 
+         * 
+         * This method performs fast because it already has access to the line number 
+         * index. <p> 
+         * 
+         * @return the amount of lines of text available from the underlying file.
+         */
+        public int lineCount() {
+
+            return m_breakPositions.size();
+        }
+
+        /**
          * Log reporting of freed index.<p>
          * 
          * Do not invoke explicitly or the log reader gets confused. 
@@ -144,9 +159,9 @@ public class CmsRfsFileViewer implements Cloneable {
 
             super.finalize();
             // switch to info!
-            if (LOG.isInfoEnabled()) {
+            if (LOG.isDebugEnabled()) {
                 // sizeof Long is 16 Bytes
-                LOG.info(Messages.get().key(
+                LOG.debug(Messages.get().key(
                     Messages.LOG_FILEVIEW_INDEX_EXPIRE_OK_2,
                     CmsFileUtil.formatFilesize(m_breakPositions.size() * 16, Locale.getDefault()),
                     m_file.getAbsolutePath()));
@@ -172,21 +187,43 @@ public class CmsRfsFileViewer implements Cloneable {
          * 
          * @param breakNumber the number defining that this break position marks the  n<sup>th</sup> break 
          *        in the underlying file.  
+         * @param linesToRead the number of lines that are desired to be read. This allows 
+         *        to shift the break number in case the position is at the file end. 
          * 
          * @return the file offset to position zero in characters of this break or 
          *         offset to the character position where the last 10 lines begin if the 
          *         requested linebreak is higher than the amount of lines in the underlying file
          */
-        public long getLineBreakPosition(int breakNumber) {
+        public long getLineBreakPosition(int breakNumber, int linesToRead) {
 
+            // using m_windowSize instead of param linesToRead would be more elegant 
+            // but was impossible because of the workplace clone() - security idiom: 
+            // the shifted CmsRfsFileLineIndexInfo instances would access wrong value.
             int sz = m_breakPositions.size();
 
             if (breakNumber <= sz) {
+                // for the last window don't take it too square with the window position 
+                // (which is a computed arg to this method: m_windowPos*m_windowSize): 
+                // Display a full window: 
+
+                if (sz - breakNumber < linesToRead) {
+                    // more would fit into the last window.
+                    breakNumber = sz - linesToRead;
+                    if (breakNumber < 0) {
+                        // window is bigger than lines in file
+                        breakNumber = 0;
+                    }
+                }
                 // valid number of line...
                 return ((Number)m_breakPositions.get(breakNumber)).longValue();
             } else {
-                // out of range: don't throw exception, return last 10 lines.
-                return ((Number)m_breakPositions.get(sz - 10)).longValue();
+                // out of range: don't throw exception, return last window lines.
+                if (m_windowSize > sz) {
+                    breakNumber = sz - linesToRead;
+                } else {
+                    breakNumber = 0;
+                }
+                return ((Number)m_breakPositions.get(breakNumber)).longValue();
             }
         }
 
@@ -240,13 +277,12 @@ public class CmsRfsFileViewer implements Cloneable {
             // first line at 0.
             addLineBreakPosition(0);
             LineNumberReader reader = null;
+            m_creationTime = System.currentTimeMillis();
             try {
-                long linePos = 0;
-                reader = new LineNumberReader(new BufferedReader(new InputStreamReader(new FileInputStream(m_file))));
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    linePos += line.length();
-                    CmsRfsFileLineIndexInfo.this.addLineBreakPosition(linePos);
+                InputStreamCounter streamPeeker = new InputStreamCounter(new FileInputStream(m_file));
+                reader = new LineNumberReader(streamPeeker, 1);
+                while (reader.readLine() != null) {
+                    CmsRfsFileLineIndexInfo.this.addLineBreakPosition(streamPeeker.position());
                     synchronized (CmsRfsFileLineIndexInfo.this) {
                         CmsRfsFileLineIndexInfo.this.notify();
                     }
@@ -264,6 +300,183 @@ public class CmsRfsFileViewer implements Cloneable {
                 }
             }
         }
+    }
+
+    /**
+     * 
+     * An internal <code>InputStreamReader</code> that proxies a "real" 
+     * <code>InputStreamReader</code> and counts the chars read. <p> 
+     * 
+     * This allows counting characters even if some higher io decorator is 
+     * used. For example a <code>{@link LineNumberReader}</code> would allow 
+     * to count the characters of the lines to be read from outside but not the 
+     * line delimiters which are file or system dependant.<p>
+     * 
+     * <b>Do not decorate instances with <code>{@link java.io.BufferedReader}</code> 
+     * unless you specify a buffer size for it's constructor.</b>
+     * Those instances will internally read big portions to cache before the 
+     * outside using code has read it. <br>
+     * Remember that a <code>{@link LineNumberedReader}</code> is a <code>BufferedReader</code>: 
+     * use the constructor specifying the buffer size with value '1'.<p>
+     * 
+     * @author Achim Westermann
+     * 
+     * @version $Revision: 1.8 $
+     * 
+     * @since 6.0.0
+     */
+    private class InputStreamCounter extends InputStreamReader {
+
+        private InputStreamReader m_delegate;
+        private long m_position;
+
+        /**
+         * Returns the position of the last character read from the underlying stream.<p>
+         * 
+         * @return the position of the last character read from the underlying stream
+         */
+        public long position() {
+
+            return m_position;
+        }
+
+        /**
+         * @see InputStreamReader#InputStreamReader(java.io.InputStream)
+         */
+        public InputStreamCounter(InputStream in) {
+
+            super(in);
+            m_delegate = new InputStreamReader(in);
+
+        }
+
+        /**
+         * @see InputStreamReader#InputStreamReader(java.io.InputStream, String)
+         */
+        public InputStreamCounter(InputStream in, String charsetName)
+        throws UnsupportedEncodingException {
+
+            super(in, charsetName);
+            m_delegate = new InputStreamReader(in, charsetName);
+
+        }
+
+        /**
+         * @see InputStreamReader#InputStreamReader(java.io.InputStream, java.nio.charset.Charset)
+         */
+        public InputStreamCounter(InputStream in, Charset cs) {
+
+            super(in, cs);
+
+        }
+
+        /**
+         * @see InputStreamReader#InputStreamReader(java.io.InputStream, java.nio.charset.CharsetDecoder)
+         */
+        public InputStreamCounter(InputStream in, CharsetDecoder dec) {
+
+            super(in, dec);
+            m_delegate = new InputStreamReader(in, dec);
+
+        }
+
+        /**
+         * @see InputStreamReader#close()
+         */
+        public void close() throws IOException {
+
+            m_delegate.close();
+            m_position = 0;
+        }
+
+        /**
+         * @see InputStreamReader#getEncoding()
+         */
+        public String getEncoding() {
+
+            return m_delegate.getEncoding();
+        }
+
+        /**
+         * Read a character from the proxied <code>InputStreamReader</code> 
+         * and increase the internal position.<p>
+         * 
+         * @see InputStreamReader#read()
+         */
+        public int read() throws IOException {
+
+            int result = m_delegate.read();
+            if (result != -1) {
+                m_position++;
+            }
+            return result;
+        }
+
+        /**
+         * Read the <code>char[]</code> from the proxied <code>InputStreamReader</code> 
+         * and increase the internal position.<p>
+         * 
+         * @see InputStreamReader#read(char[])
+         */
+
+        public int read(char[] cbuf) throws IOException {
+
+            int result = m_delegate.read(cbuf);
+            if (result != -1) {
+                m_position += result;
+            }
+            return result;
+        }
+
+        /**
+         * Read the <code>char[]</code> from the proxied <code>InputStreamReader</code> 
+         * and increase the internal position.<p>
+         * 
+         * @see InputStreamReader#read(char[], int, int)
+         */
+        public int read(char[] cbuf, int off, int len) throws IOException {
+
+            int result = m_delegate.read(cbuf, off, len);
+            if (result != -1) {
+                m_position += result;
+            }
+            return result;
+
+        }
+
+        /**
+         * @see InputStreamReader#ready()
+         */
+        public boolean ready() throws IOException {
+
+            return m_delegate.ready();
+        }
+
+        /**
+         * Reset the proxied <code>InputStreamReader</code> 
+         * and the internal position.<p>
+         * 
+         * @see InputStreamReader#reset()
+         */
+        public void reset() throws IOException {
+
+            m_delegate.reset();
+            m_position = 0;
+        }
+
+        /**
+         * Skip on the proxied <code>InputStreamReader</code> 
+         * and increase the internal position.<p>
+         * 
+         * @see InputStreamReader#skip(long)
+         */
+        public long skip(long n) throws IOException {
+
+            long result = m_delegate.skip(n);
+            m_position -= result;
+            return result;
+        }
+
     }
 
     /** The log object for this class. */
@@ -300,10 +513,10 @@ public class CmsRfsFileViewer implements Cloneable {
     private boolean m_isLogfile;
 
     /** The current window (numbered from zero to amount of possible different windows).  */
-    private int m_windowPos;
+    protected int m_windowPos;
 
     /** The amount of lines to show. */
-    private int m_windowSize;
+    protected int m_windowSize;
 
     /**
      * Creates an instance with default settings that tries to use the log file path obtained 
@@ -346,13 +559,23 @@ public class CmsRfsFileViewer implements Cloneable {
     public Object clone() {
 
         CmsRfsFileViewer clone = new CmsRfsFileViewer();
-        // strings are immutable: no outside modification possible.
-        clone.m_filePath = m_filePath;
+        try {
+            // strings are immutable: no outside modification possible.
+            clone.setFilePath(m_filePath);
+        } catch (CmsRfsException e) {
+            // will never happen because m_filePath was verified in setFilePath of this instance.
+        } catch (CmsRuntimeException e) {
+            // will never happen because m_filePath was verified in setFilePath of this instance.
+        }
         clone.m_fileEncoding = m_fileEncoding;
         clone.m_isLogfile = m_isLogfile;
         clone.m_enabled = m_enabled;
-        clone.m_windowPos = m_windowPos;
-        clone.m_windowSize = m_windowSize;
+        //clone.m_windowPos = m_windowPos;
+        clone.setWindowSize(m_windowSize);
+        // this is a self-managed cache of line indices that won't be persisted
+        // drop old index entries before copy
+        expireIndices();
+        clone.m_fileName2lineIndex = m_fileName2lineIndex;
         // allow clone-modifications. 
         clone.m_frozen = false;
         return clone;
@@ -449,8 +672,14 @@ public class CmsRfsFileViewer implements Cloneable {
             Reader reader = null;
             try {
                 reader = new InputStreamReader(new FileInputStream(m_filePath), m_fileEncoding);
-                long skip = lineInfo.getLineBreakPosition(m_windowPos * m_windowSize);
-                reader.skip(skip);
+                long skip = lineInfo.getLineBreakPosition(m_windowPos * m_windowSize, m_windowSize);
+                // this might look complicated but avoids infinite loops (expect the worst from implementation relying on)
+                int maxSkipTries = 100;
+                while (skip > 0 && maxSkipTries > 0) {
+                    long skipped = reader.skip(skip);
+                    skip -= skipped;
+                    maxSkipTries--;
+                }
                 LineNumberReader lineReader = new LineNumberReader(reader);
                 StringBuffer result = new StringBuffer();
                 String read = lineReader.readLine();
@@ -573,6 +802,8 @@ public class CmsRfsFileViewer implements Cloneable {
                     m_filePath = file.getCanonicalPath();
                     // early indexing.
                     initIndexer(m_filePath);
+                    // scroll to last window: 
+                    scrollToFileEnd();
                 }
             }
         } catch (FileNotFoundException fnfe) {
@@ -587,6 +818,29 @@ public class CmsRfsFileViewer implements Cloneable {
                 new Object[] {String.valueOf(path)}), ioex);
 
         }
+    }
+
+    /**
+     * Internally sets the member <code>m_windowPos</code> to the last available 
+     * window of <code>m_windowSize</code> windows to let further calls to 
+     * <code>{@link #readFilePortion()}</code> display the end of the file. <p> 
+     * 
+     * This method is triggered when a new file is chosen 
+     * (<code>{@link #setFilePath(String)}</code>) because the amount of lines changes. 
+     * This method is also triggered when a different window size is chosen 
+     * (<code>{@link #setWindowSize(int)}</code>) because the amount of lines to display change. 
+     * 
+     * 
+     */
+    private void scrollToFileEnd() {
+
+        CmsRfsFileLineIndexInfo lineInfo = initIndexer(m_filePath);
+        // shift the window position to the end of the file: 
+        float lines = lineInfo.lineCount();
+        // if 11.75 windows are available, we don't want to end on window nr. 10 
+        int availWindows = (int)Math.ceil(lines / m_windowSize);
+        // availWindows are available but m_windowPos starts with window nr. zero. 
+        m_windowPos = availWindows - 1;
     }
 
     /**
@@ -650,6 +904,8 @@ public class CmsRfsFileViewer implements Cloneable {
 
         checkFrozen();
         m_windowSize = windowSize;
+        // go to last window (nice for logfiles)
+        scrollToFileEnd();
     }
 
     /**
