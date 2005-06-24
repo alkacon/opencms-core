@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/24 12:45:06 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -154,7 +154,7 @@ public class CmsDisplayResource extends CmsDialog {
         if (CmsStringUtil.isNotEmpty(getParamVersionid())) {
             byte[] result = getBackupResourceContent(getCms(), getParamResource(), getParamVersionid());
             if (result != null) {
-                // get the top level ressponse to change the content type
+                // get the top level response to change the content type
                 m_controller.getTopResponse().setContentType(
                     OpenCms.getResourceManager().getMimeType(
                         getParamResource(),
