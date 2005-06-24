@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/06/24 08:02:20 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2005/06/24 13:46:17 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.85 $ 
+ * @version $Revision: 1.86 $ 
  * 
  * @since 6.0.0 
  */
@@ -1288,7 +1288,7 @@ public class CmsDialog extends CmsToolDialog {
             } else {
                 res = getCms().readResource(getParamResource());
             }
-            hasPermissions = getCms().hasPermissions(res, required, false, CmsResourceFilter.IGNORE_EXPIRATION);
+            hasPermissions = getCms().hasPermissions(res, required, false, CmsResourceFilter.ALL);
         } catch (CmsException e) {
             // should usually never happen
             if (LOG.isInfoEnabled()) {
