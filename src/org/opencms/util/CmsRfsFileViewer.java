@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2005/06/24 13:58:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/24 15:23:42 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,19 +131,6 @@ public class CmsRfsFileViewer implements Cloneable {
             m_file = toIndex;
             rebuildIndex();
 
-        }
-
-        /**
-         * Returns the amount of lines of text available from the underlying file.<p> 
-         * 
-         * This method performs fast because it already has access to the line number 
-         * index. <p> 
-         * 
-         * @return the amount of lines of text available from the underlying file.
-         */
-        public int lineCount() {
-
-            return m_breakPositions.size();
         }
 
         /**
@@ -240,6 +227,19 @@ public class CmsRfsFileViewer implements Cloneable {
         }
 
         /**
+         * Returns the amount of lines of text available from the underlying file.<p> 
+         * 
+         * This method performs fast because it already has access to the line number 
+         * index. <p> 
+         * 
+         * @return the amount of lines of text available from the underlying file.
+         */
+        public int lineCount() {
+
+            return m_breakPositions.size();
+        }
+
+        /**
          * Set the maximum age in milliseconds this line number index may have.<p> 
          * 
          * @param maxIndexAge the maximum age in milliseconds this line number index may have to set 
@@ -322,7 +322,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.9 $
+     * @version $Revision: 1.10 $
      * 
      * @since 6.0.0
      */
@@ -332,33 +332,12 @@ public class CmsRfsFileViewer implements Cloneable {
         private long m_position;
 
         /**
-         * Returns the position of the last character read from the underlying stream.<p>
-         * 
-         * @return the position of the last character read from the underlying stream
-         */
-        public long position() {
-
-            return m_position;
-        }
-
-        /**
          * @see InputStreamReader#InputStreamReader(java.io.InputStream)
          */
         public InputStreamCounter(InputStream in) {
 
             super(in);
             m_delegate = new InputStreamReader(in);
-
-        }
-
-        /**
-         * @see InputStreamReader#InputStreamReader(java.io.InputStream, String)
-         */
-        public InputStreamCounter(InputStream in, String charsetName)
-        throws UnsupportedEncodingException {
-
-            super(in, charsetName);
-            m_delegate = new InputStreamReader(in, charsetName);
 
         }
 
@@ -382,6 +361,17 @@ public class CmsRfsFileViewer implements Cloneable {
         }
 
         /**
+         * @see InputStreamReader#InputStreamReader(java.io.InputStream, String)
+         */
+        public InputStreamCounter(InputStream in, String charsetName)
+        throws UnsupportedEncodingException {
+
+            super(in, charsetName);
+            m_delegate = new InputStreamReader(in, charsetName);
+
+        }
+
+        /**
          * @see InputStreamReader#close()
          */
         public void close() throws IOException {
@@ -396,6 +386,16 @@ public class CmsRfsFileViewer implements Cloneable {
         public String getEncoding() {
 
             return m_delegate.getEncoding();
+        }
+
+        /**
+         * Returns the position of the last character read from the underlying stream.<p>
+         * 
+         * @return the position of the last character read from the underlying stream
+         */
+        public long position() {
+
+            return m_position;
         }
 
         /**
@@ -492,6 +492,12 @@ public class CmsRfsFileViewer implements Cloneable {
     /** The path to the underlying file. */
     protected String m_filePath;
 
+    /** The current window (numbered from zero to amount of possible different windows).  */
+    protected int m_windowPos;
+
+    /** The amount of lines to show. */
+    protected int m_windowSize;
+
     /** Decides whethter the view onto the underlying file via readFilePortion is enabled. */
     private boolean m_enabled;
 
@@ -512,12 +518,6 @@ public class CmsRfsFileViewer implements Cloneable {
      * in more convenient ways (in future versions) because the format is known. 
      */
     private boolean m_isLogfile;
-
-    /** The current window (numbered from zero to amount of possible different windows).  */
-    protected int m_windowPos;
-
-    /** The amount of lines to show. */
-    protected int m_windowSize;
 
     /**
      * Creates an instance with default settings that tries to use the log file path obtained 
@@ -841,29 +841,6 @@ public class CmsRfsFileViewer implements Cloneable {
     }
 
     /**
-     * Internally sets the member <code>m_windowPos</code> to the last available 
-     * window of <code>m_windowSize</code> windows to let further calls to 
-     * <code>{@link #readFilePortion()}</code> display the end of the file. <p> 
-     * 
-     * This method is triggered when a new file is chosen 
-     * (<code>{@link #setFilePath(String)}</code>) because the amount of lines changes. 
-     * This method is also triggered when a different window size is chosen 
-     * (<code>{@link #setWindowSize(int)}</code>) because the amount of lines to display change. 
-     * 
-     * 
-     */
-    private void scrollToFileEnd() {
-
-        CmsRfsFileLineIndexInfo lineInfo = initIndexer(m_filePath);
-        // shift the window position to the end of the file: 
-        float lines = lineInfo.lineCount();
-        // if 11.75 windows are available, we don't want to end on window nr. 10 
-        int availWindows = (int)Math.ceil(lines / m_windowSize);
-        // availWindows are available but m_windowPos starts with window nr. zero. 
-        m_windowPos = availWindows - 1;
-    }
-
-    /**
      * Package friendly access that allows the <code>{@link org.opencms.workplace.CmsWorkplaceManager}</code> 
      * to "freeze" this instance within the system-wide assignment in it's 
      * <code>{@link org.opencms.workplace.CmsWorkplaceManager#setFileViewSettings(org.opencms.file.CmsObject, CmsRfsFileViewer)}</code> method.<p>
@@ -929,6 +906,39 @@ public class CmsRfsFileViewer implements Cloneable {
     }
 
     /**
+     * Return a line number index for the given file path.<p>
+     * 
+     * Implementation allows control of eventual caching of line number indexes 
+     * for files. <p>
+     * 
+     * This method should never called from outside. It's visibility is set only 
+     * for unit tests concerning the indexing mechanism.<p>
+     * 
+     * This compilation unit uses indices (indexes) for fast reading / skipping of files that have 
+     * to be dropped to free memory. Threads had to be avoided so this method will 
+     * also check on all other remaining indices expiration time to drop them.<p>
+     * 
+     * 
+     * @param filePath the String denoting a valid path to a file in the real file system 
+     * @return a line number index for the given file path
+     */
+    protected CmsRfsFileLineIndexInfo initIndexer(String filePath) {
+
+        synchronized (m_fileName2lineIndex) {
+            CmsRfsFileLineIndexInfo result = (CmsRfsFileLineIndexInfo)m_fileName2lineIndex.get(filePath);
+            if (result != null) {
+                // nop
+            } else {
+                // create a new instance, this will be slow: 
+                result = new CmsRfsFileLineIndexInfo(new File(filePath));
+                m_fileName2lineIndex.put(filePath, result);
+
+            }
+            return result;
+        }
+    }
+
+    /**
      * Internal helper that throws a <code>{@link CmsRuntimeException}</code> if the 
      * configuration of this instance has been frozen ({@link #setFrozen(boolean)}).<p>
      * 
@@ -968,35 +978,25 @@ public class CmsRfsFileViewer implements Cloneable {
     }
 
     /**
-     * Return a line number index for the given file path.<p>
+     * Internally sets the member <code>m_windowPos</code> to the last available 
+     * window of <code>m_windowSize</code> windows to let further calls to 
+     * <code>{@link #readFilePortion()}</code> display the end of the file. <p> 
      * 
-     * Implementation allows control of eventual caching of line number indexes 
-     * for files. <p>
-     * 
-     * This method should never called from outside. It's visibility is set only 
-     * for unit tests concerning the indexing mechanism.<p>
-     * 
-     * This compilation unit uses indices (indexes) for fast reading / skipping of files that have 
-     * to be dropped to free memory. Threads had to be avoided so this method will 
-     * also check on all other remaining indices expiration time to drop them.<p>
+     * This method is triggered when a new file is chosen 
+     * (<code>{@link #setFilePath(String)}</code>) because the amount of lines changes. 
+     * This method is also triggered when a different window size is chosen 
+     * (<code>{@link #setWindowSize(int)}</code>) because the amount of lines to display change. 
      * 
      * 
-     * @param filePath the String denoting a valid path to a file in the real file system 
-     * @return a line number index for the given file path
      */
-    protected CmsRfsFileLineIndexInfo initIndexer(String filePath) {
+    private void scrollToFileEnd() {
 
-        synchronized (m_fileName2lineIndex) {
-            CmsRfsFileLineIndexInfo result = (CmsRfsFileLineIndexInfo)m_fileName2lineIndex.get(filePath);
-            if (result != null) {
-                // nop
-            } else {
-                // create a new instance, this will be slow: 
-                result = new CmsRfsFileLineIndexInfo(new File(filePath));
-                m_fileName2lineIndex.put(filePath, result);
-
-            }
-            return result;
-        }
+        CmsRfsFileLineIndexInfo lineInfo = initIndexer(m_filePath);
+        // shift the window position to the end of the file: 
+        float lines = lineInfo.lineCount();
+        // if 11.75 windows are available, we don't want to end on window nr. 10 
+        int availWindows = (int)Math.ceil(lines / m_windowSize);
+        // availWindows are available but m_windowPos starts with window nr. zero. 
+        m_windowPos = availWindows - 1;
     }
 }
