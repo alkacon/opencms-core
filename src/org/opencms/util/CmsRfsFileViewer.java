@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2005/06/24 09:19:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/24 13:58:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,6 +58,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Stack;
 
 import org.apache.commons.logging.Log;
 
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -321,7 +322,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.8 $
+     * @version $Revision: 1.9 $
      * 
      * @since 6.0.0
      */
@@ -683,10 +684,29 @@ public class CmsRfsFileViewer implements Cloneable {
                 LineNumberReader lineReader = new LineNumberReader(reader);
                 StringBuffer result = new StringBuffer();
                 String read = lineReader.readLine();
-                for (int i = m_windowSize; i > 0 && read != null; i--) {
-                    result.append(read);
-                    result.append('\n');
-                    read = lineReader.readLine();
+
+                // logfile treatment is different
+                // we invert the lines: latest come first
+                if (m_isLogfile) {
+                    // java hall of shame candidate... but standard
+                    Stack inverter = new Stack();
+                    for (int i = m_windowSize; i > 0 && read != null; i--) {
+                        inverter.push(read);
+                        read = lineReader.readLine();
+                    }
+                    // pop-off:
+                    while (!inverter.isEmpty()) {
+                        result.append(inverter.pop());
+                        result.append('\n');
+                    }
+
+                } else {
+
+                    for (int i = m_windowSize; i > 0 && read != null; i--) {
+                        result.append(read);
+                        result.append('\n');
+                        read = lineReader.readLine();
+                    }
                 }
                 return CmsEncoder.escapeXml(result.toString());
             } catch (IOException ioex) {
