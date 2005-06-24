@@ -329,6 +329,8 @@ div.navleft {
 	width: 21%;
 	vertical-align: top;
 	height: 100%;
+	background-color: <%= navLeftBg %>; 
+	background-image: url(<%= navLeftImgBgUri %>);
 }
 
 /* left navigation image row */
