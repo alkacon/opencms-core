@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/23 18:06:27 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2005/06/24 15:51:09 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.84 $
+ * @version $Revision: 1.85 $
  * 
  * @since 6.0.0
  */
@@ -384,7 +384,7 @@ public final class CmsSecurityManager {
      * @throws CmsVfsException for now only when the search for the oldvalue failed. 
      * @throws CmsException if operation was not successful
      */
-    public List changeResourcesInFolderWithProperty(
+    public synchronized List changeResourcesInFolderWithProperty(
         CmsRequestContext context,
         CmsResource resource,
         String propertyDefinition,
