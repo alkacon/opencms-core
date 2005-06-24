@@ -42,7 +42,6 @@ switch (wp.getAction()) {
 
 <%= wp.dialogEnd() %>
 
-<%= wp.createDownloadScript() %>
 
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>

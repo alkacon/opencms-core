@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDownloadDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/24 14:02:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,31 +152,6 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
     }
 
     /**
-     * Returns the javascript function code that is triggered by the custom OK button 
-     * generated in <code>{@link #dialogButtonsOkCancel()}</code>.<p>
-     * 
-     * @return the javascript function code that is triggered by the custom OK button 
-     *         generated in <code>{@link #dialogButtonsOkCancel()}</code>
-     */
-    public String createDownloadScript() {
-
-        StringBuffer result = new StringBuffer();
-        result.append("<script type=\"text/javascript\">\r\n");
-        result.append("<!--\r\n");
-        result.append("<!--\r\n");
-        result.append("function  download(file){\r\n");
-        result.append("  //window.alert(\"downloading \"+file); \r\n");
-        result.append("   window.location.href = \"");
-        result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp"));
-        result.append("?filePath=\" + file;\r\n");
-        result.append(" }\r\n");
-        result.append("//-->\r\n");
-        result.append("</script>\r\n");
-
-        return result.toString();
-    }
-
-    /**
      * Returns the HTML for a button that triggers a file download with 
      * <code>{@link CmsRfsFileDownloadServlet}</code> and a button for the chancel action.<p>
      *  
@@ -189,14 +164,14 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
         StringBuffer result = new StringBuffer();
         result.append("<!-- button row start -->\r\n");
         result.append("<div class=\"dialogbuttons\" unselectable=\"on\">\r\n");
-        result.append("<input name=\"ok\" value=\"");
+        result.append("<a name=\"ok\" class=\"inputButton\" target=\"_self\" href=\"");
+        result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp?filePath=")).append(
+            m_downloadFile.getAbsolutePath().replace('\\', '/')).append("\">");
         result.append(org.opencms.workplace.Messages.get().key(
             getLocale(),
             org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_DOWNLOAD_0,
             null));
-        result.append("\" type=\"button\" onClick=\"download('");
-        result.append(m_downloadFile.getAbsolutePath().replace('\\', '/'));
-        result.append("')\"class=\"dialogbutton\">\r\n");
+        result.append("</a>\r\n");
         result.append("<input name=\"cancel\" type=\"button\" value=\"");
         result.append(org.opencms.workplace.Messages.get().key(
             getLocale(),
