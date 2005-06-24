@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2005/06/24 15:40:02 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -74,7 +75,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.77 $ 
+ * @version $Revision: 1.78 $ 
  * 
  * @since 6.0.0 
  */
@@ -160,6 +161,16 @@ class CmsShellCommands implements I_CmsShellCommands {
             principalName = OpenCms.getImportExportManager().translateUser(principalName);
         }
         m_cms.chacc(resourceName, principalType, principalName, permissionString);
+    }
+
+    /**
+     * Clears all OpenCms internal caches.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void clearCaches() throws Exception {
+
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
     }
 
     /**
@@ -674,7 +685,10 @@ class CmsShellCommands implements I_CmsShellCommands {
         String folder = CmsResource.getFolderPath(m_cms.getRequestContext().getUri());
         List resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
         System.out.println("\n"
-            + Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_LS_2, new Object[] {folder, resources}));
+            + Messages.get().key(
+                m_shell.getLocale(),
+                Messages.GUI_SHELL_LS_2,
+                new Object[] {folder, new Integer(resources.size())}));
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource r = (CmsResource)i.next();
