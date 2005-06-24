@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/24 09:55:32 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -582,7 +582,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             // iterate over the properties
             while (i.hasNext()) {
                 String curProperty = (String)i.next();
-                String paramValue = CmsEncoder.decode(request.getParameter(PREFIX_VALUE + curProperty));
+                String paramValue = request.getParameter(PREFIX_VALUE + curProperty);
                 String oldValue = request.getParameter(PREFIX_HIDDEN + curProperty);
                 writeProperty(curProperty, paramValue, oldValue);
             }

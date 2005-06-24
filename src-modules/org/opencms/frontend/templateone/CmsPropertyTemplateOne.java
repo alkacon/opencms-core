@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/24 09:55:32 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -464,7 +464,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             // loop over the default properties
             for (int i = 0; i < C_DEFAULT_PROPERTIES.length; i++) {
                 String curProperty = C_DEFAULT_PROPERTIES[i];
-                String paramValue = CmsEncoder.decode(request.getParameter(PREFIX_VALUE + curProperty));
+                String paramValue = request.getParameter(PREFIX_VALUE + curProperty);
                 String oldValue = request.getParameter(PREFIX_HIDDEN + curProperty);
                 writeProperty(curProperty, paramValue, oldValue);
             }
@@ -472,7 +472,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             // loop over all properties
             for (int i = 0; i < C_ALL_PROPERTIES.length; i++) {
                 String curProperty = C_ALL_PROPERTIES[i];
-                String paramValue = CmsEncoder.decode(request.getParameter(PREFIX_VALUE + curProperty));
+                String paramValue = request.getParameter(PREFIX_VALUE + curProperty);
                 String oldValue = request.getParameter(PREFIX_HIDDEN + curProperty);
                 writeProperty(curProperty, paramValue, oldValue);
             }
