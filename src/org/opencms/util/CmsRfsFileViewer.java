@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2005/06/24 15:23:42 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/24 15:53:22 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -322,7 +322,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.10 $
+     * @version $Revision: 1.11 $
      * 
      * @since 6.0.0
      */
@@ -820,10 +820,12 @@ public class CmsRfsFileViewer implements Cloneable {
                 // avoid that the indexing thread is inited but before he opens m_filepath this is changed by a further call.
                 synchronized (this) {
                     m_filePath = file.getCanonicalPath();
-                    // early indexing.
-                    initIndexer(m_filePath);
-                    // scroll to last window: 
-                    scrollToFileEnd();
+                    if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
+                        // early indexing.
+                        initIndexer(m_filePath);
+                        // scroll to last window: 
+                        scrollToFileEnd();
+                    }
                 }
             }
         } catch (FileNotFoundException fnfe) {
@@ -902,7 +904,9 @@ public class CmsRfsFileViewer implements Cloneable {
         checkFrozen();
         m_windowSize = windowSize;
         // go to last window (nice for logfiles)
-        scrollToFileEnd();
+        if (CmsStringUtil.isNotEmpty(m_filePath)) {
+            scrollToFileEnd();
+        }
     }
 
     /**
@@ -991,6 +995,10 @@ public class CmsRfsFileViewer implements Cloneable {
      */
     private void scrollToFileEnd() {
 
+        if (OpenCms.getRunLevel() < OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
+            // no scrolling if system not yet fully initialized
+            return;
+        }
         CmsRfsFileLineIndexInfo lineInfo = initIndexer(m_filePath);
         // shift the window position to the end of the file: 
         float lines = lineInfo.lineCount();
