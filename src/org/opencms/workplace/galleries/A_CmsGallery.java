@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/24 11:57:48 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -1189,7 +1189,7 @@ public abstract class A_CmsGallery extends CmsDialog {
      */
     public String wizardButton() {
 
-        return button("javascript:wizard();", null, "wizard.png", OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+        return button("javascript:wizard();", null, "upload.png", OpenCms.getWorkplaceManager().getExplorerTypeSetting(
             "upload").getKey(), 0);
     }
 

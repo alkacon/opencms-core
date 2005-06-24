@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/24 11:57:48 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -237,7 +237,7 @@ public class CmsLinkGallery extends A_CmsGallery {
      */
     public String wizardButton() {
 
-        return button("javascript:wizard();", null, "wizard", "title.new", 0);
+        return button("javascript:wizard();", null, "upload.png", "title.new", 0);
     }
 
     /**

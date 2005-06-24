@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsTableGallery.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/24 11:57:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,7 +143,7 @@ public class CmsTableGallery extends CmsHtmlGallery {
         return button(
             uploadUrl.toString(),
             "gallery_fs",
-            "wizard",
+            "upload.png",
             OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getKey(),
             0);
     }
