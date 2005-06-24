@@ -15,6 +15,15 @@
 
 <script type="text/javascript">
 
+function resizeWindow() {
+	var wantedHeight = document.body.offsetHeight;
+	if (wantedHeight > screen.availHeight) {
+		wantedHeight = screen.availHeight;
+	}
+	window.dialogHeight = wantedHeight + "px";
+	window.dialogWidth = (document.body.offsetWidth + 20) + "px";
+}
+
 var ColorSelected = -1;
 var colorField = null;
 
@@ -207,17 +216,17 @@ function checkField(elementId, checkFieldId) {
 
 <table border="0" cellpadding="3" cellspacing="0">
 <tr>
-  <td><%= wp.key("input.height") %>:</td>
+  <td style="white-space: nowrap;"><%= wp.key("input.height") %>:</td>
   <td><input id="TDHeight" type="text" size="7" maxlength="7" style="width:150px;" name="TDHeight" onkeypress="event.returnValue=IsDigit();"></td>
-  <td><%= wp.key("input.borderinfo") %></td>
+  <td style="white-space: nowrap;"><%= wp.key("input.borderinfo") %></td>
 </tr>
 <tr>
-  <td><%= wp.key("input.width") %>: </td>
+  <td style="white-space: nowrap;"><%= wp.key("input.width") %>: </td>
   <td><input id="TDWidth" type="text" size="7" maxlength="7" style="width:150px;" name="TDWidth" onkeypress="event.returnValue=IsDigit();"></td>
-  <td><%= wp.key("input.borderinfo") %></td>
+  <td style="white-space: nowrap;"><%= wp.key("input.borderinfo") %></td>
 </tr>  
 <tr>
-  <td><%= wp.key("input.align") %>: </td>
+  <td style="white-space: nowrap;"><%= wp.key("input.align") %>: </td>
   <td colspan="2"><select name="TDAlign" id="TDAlign" size="1" style="width:150px;">
         <option value=""><%= wp.key("editor.dialog.table.notspecified") %></option>
         <option value="left"><%= wp.key("input.alignleft") %></option>
@@ -226,7 +235,7 @@ function checkField(elementId, checkFieldId) {
       </select>
 </tr>
 <tr>
-  <td><%= wp.key("input.valign") %>: </td>
+  <td style="white-space: nowrap;"><%= wp.key("input.valign") %>: </td>
   <td colspan="2"><select name="TDVAlign" id="TDVAlign" size="1" style="width:150px;">
         <option value=""><%= wp.key("editor.dialog.table.notspecified") %></option>
         <option value="top"><%= wp.key("input.valigntop") %></option>
@@ -236,7 +245,7 @@ function checkField(elementId, checkFieldId) {
       </select>
 </tr>
 <tr>
-  <td><%= wp.key("input.tbgcolor") %>:</td>
+  <td style="white-space: nowrap;"><%= wp.key("input.tbgcolor") %>:</td>
   <td><input type="text" id="TBGColor" size=7 maxlength="7" name="TBGColor" style="width:150px;" onkeyup="previewColor('TBGColor', 'TBGColor');"></td>
   <td><table border="0" cellpadding="0" cellspacing="0">
   		<tr>
@@ -246,7 +255,7 @@ function checkField(elementId, checkFieldId) {
   </td>
 </tr>
 <tr>
-  <td><%= wp.key("input.tbordercolor") %>:</td>
+  <td style="white-space: nowrap;"><%= wp.key("input.tbordercolor") %>:</td>
   <td><input type="text" id="TBorderColor" size=7 maxlength="7" name="TBorderColor" style="width:150px;" onkeyup="previewColor('TBorderColor', 'TBorderColor');"></td>
   <td><table border="0" cellpadding="0" cellspacing="0">
   		<tr>
@@ -261,6 +270,10 @@ function checkField(elementId, checkFieldId) {
 <%= wp.dialogButtonsOkCancel(null, "onclick=\"window.close();\"") %>
 </form>
 
-<%= wp.dialogEnd() %>
+<%= wp.dialogEnd() %><script type="text/javascript">
+<!--
+setTimeout("resizeWindow()", 100);
+//-->
+</script>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>

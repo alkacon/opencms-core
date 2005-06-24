@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.msdhtml/resources/system/workplace/editors/msdhtml/Attic/edithtml.js,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/24 09:03:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -790,7 +790,7 @@ function checkTableSelection() {
 	
 			//get new attributes
 			var args2 = new Array();
-			args2 = showModalDialog("dialogs/table_new.jsp?titleType=edit", args1, "dialogWidth:600px; dialogHeight:270px; resizable: yes; help: no; status: no; scroll: no;");
+			args2 = showModalDialog("dialogs/table_new.jsp?titleType=edit", args1, "dialogWidth:600px; resizable: yes; help: no; status: no; scroll: no;");
 	
 			// set the new attributes
 			if (args2 != null) {
@@ -877,7 +877,7 @@ function checkTableElSelection(type) {
 				args1["title"] = type;
 
 				// call dialog
-				args2 = showModalDialog("dialogs/table_element.jsp?titleType=" + type, args1, "dialogWidth:490px; dialogHeight:290px; resizable: yes; help: no; status: no; scroll: no;");
+				args2 = showModalDialog("dialogs/table_element.jsp?titleType=" + type, args1, "resizable: yes; help: no; status: no; scroll: no;");
 
 				// args == null if cancel button was pressed
 				if (args2 != null) {
@@ -913,7 +913,7 @@ function checkTableElSelection(type) {
 		} else {
 			// no parent found with tag.name == TR or TD
 			args1["error_notable"] = "true";
-			showModalDialog( workplacePath + "action/edit_html_changetable_el.html", args1,"font-family:Verdana; font-size:12; dialogWidth:50em; dialogHeight:32em");
+			showModalDialog( workplacePath + "action/edit_html_changetable_el.html", args1,"font-family:Verdana; font-size:12; dialogWidth:50px; dialogHeight:32px");
 		}
 	} else {
 		// text or picture or control selected
@@ -950,7 +950,7 @@ function InsertTable() {
 	arr = null;
 
 	// Call the "addtable" dialog and receive its results in the arr array
-	arr = showModalDialog("dialogs/table_new.jsp", args, "dialogWidth:600px; dialogHeight:270px; resizable: yes; help: no; status: no; scroll: no;");
+	arr = showModalDialog("dialogs/table_new.jsp", args, "dialogWidth:600px; resizable: yes; help: no; status: no; scroll: no;");
 	if (arr != null) {
 
 	// Initialize table object. Values from the arr array are processed for creating the Control call

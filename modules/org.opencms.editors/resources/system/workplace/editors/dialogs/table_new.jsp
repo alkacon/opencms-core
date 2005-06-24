@@ -195,6 +195,15 @@ function checkField(elementId, checkFieldId) {
 	}
 }
 
+function resizeWindow() {
+	var wantedHeight = document.body.offsetHeight;
+	if (wantedHeight > screen.availHeight) {
+		wantedHeight = screen.availHeight;
+	}
+	window.dialogHeight = wantedHeight + "px";
+	window.dialogWidth = (document.body.offsetWidth + 20) + "px";
+}
+
 </script>
 
 <%= wp.bodyStart("dialog", "onload=\"init();\"") %>
@@ -272,6 +281,10 @@ function checkField(elementId, checkFieldId) {
 <%= wp.dialogButtonsOkCancel(null, "onclick=\"window.close();\"") %>
 </form>
 
-<%= wp.dialogEnd() %>
+<%= wp.dialogEnd() %><script type="text/javascript">
+<!--
+setTimeout("resizeWindow()", 100);
+//-->
+</script>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
