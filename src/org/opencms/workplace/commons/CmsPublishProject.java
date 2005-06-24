@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/24 14:07:22 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -389,14 +389,9 @@ public class CmsPublishProject extends CmsReport {
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the publishing type: publish project or direct publish
+       
         if (CmsStringUtil.isNotEmpty(getParamResource())) {
             setParamDirectpublish("true");
-            
-            // check the required permissions to publish the resource directly     
-            if (! checkResourcePermissions(CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false)) {
-                // no publish permissions for the resource, set cancel action to close dialog
-                setParamAction(DIALOG_CANCEL);
-            }
         }
         // set the action for the JSP switch 
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
@@ -430,6 +425,12 @@ public class CmsPublishProject extends CmsReport {
             setAction(ACTION_DEFAULT);
             // set parameters depending on publishing type
             if ("true".equals(getParamDirectpublish())) {
+                // check the required permissions to publish the resource directly     
+                if (! checkResourcePermissions(CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false)) {
+                    // no publish permissions for the resource, set cancel action to close dialog
+                    setAction(ACTION_CANCEL);
+                    return;
+                }
                 // determine resource name, last modified date and last modified user of resource
                 computePublishResource();
                 // add the title for the direct publish dialog 
