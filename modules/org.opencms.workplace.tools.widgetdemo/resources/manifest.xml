@@ -20,7 +20,7 @@
 		<version>0.9.6</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
-		<datecreated>Fri, 13 May 2005 14:05:46 GMT</datecreated>
+		<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
@@ -39,9 +39,9 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 12 May 2005 14:21:04 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -59,9 +59,9 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 08 Aug 2003 13:02:00 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -84,9 +84,9 @@
 		<file>
 			<destination>system/workplace/admin</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 25 Jan 2005 16:09:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Jan 2005 09:18:52 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -100,9 +100,9 @@
 		<file>
 			<destination>system/workplace/admin/widgetdemo</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 04 May 2005 10:10:01 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 May 2005 09:37:13 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -142,9 +142,9 @@
 			<destination>system/workplace/admin/widgetdemo/demo1.html</destination>
 			<type>jsp</type>
 			<uuidresource>775dc893-be0c-11d9-99bb-8f99d6d3132a</uuidresource>
-			<datelastmodified>Sat, 07 May 2005 11:18:57 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2005 08:54:33 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -188,9 +188,9 @@
 			<destination>system/workplace/admin/widgetdemo/demo2.html</destination>
 			<type>jsp</type>
 			<uuidresource>169604b8-be0e-11d9-be2a-8f99d6d3132a</uuidresource>
-			<datelastmodified>Sat, 07 May 2005 11:18:30 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 06 May 2005 09:06:10 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -234,9 +234,9 @@
 			<destination>system/workplace/admin/widgetdemo/demo3.html</destination>
 			<type>jsp</type>
 			<uuidresource>5b010dc2-bed4-11d9-a112-8f99d6d3132a</uuidresource>
-			<datelastmodified>Sat, 07 May 2005 10:40:19 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2005 08:45:25 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -280,9 +280,9 @@
 			<destination>system/workplace/admin/widgetdemo/demo4.html</destination>
 			<type>jsp</type>
 			<uuidresource>a0771c4e-beec-11d9-855f-8f99d6d3132a</uuidresource>
-			<datelastmodified>Sat, 07 May 2005 13:58:41 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 07 May 2005 11:39:09 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -326,9 +326,9 @@
 			<destination>system/workplace/admin/widgetdemo/demo5.html</destination>
 			<type>jsp</type>
 			<uuidresource>62acabc9-c09a-11d9-ac1c-8f99d6d3132a</uuidresource>
-			<datelastmodified>Mon, 09 May 2005 14:57:09 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 09 May 2005 14:55:29 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -372,9 +372,9 @@
 			<destination>system/workplace/admin/widgetdemo/demo6.html</destination>
 			<type>jsp</type>
 			<uuidresource>62acabc9-c09a-11d9-ac1c-8f99d6d3132b</uuidresource>
-			<datelastmodified>Mon, 09 May 2005 14:57:09 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 09 May 2005 14:55:29 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -418,9 +418,9 @@
 			<destination>system/workplace/admin/widgetdemo/demo7.html</destination>
 			<type>jsp</type>
 			<uuidresource>4f51fe00-c2db-11d9-a8f1-33d66f662bde</uuidresource>
-			<datelastmodified>Thu, 12 May 2005 14:26:23 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 12 May 2005 11:45:16 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -464,9 +464,9 @@
 			<destination>system/workplace/admin/widgetdemo/demo8.html</destination>
 			<type>jsp</type>
 			<uuidresource>4c7273a7-c2f7-11d9-8b1b-0bba6f0b9755</uuidresource>
-			<datelastmodified>Thu, 12 May 2005 15:10:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 12 May 2005 15:05:37 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -510,9 +510,9 @@
 			<destination>system/workplace/admin/widgetdemo/demo9.html</destination>
 			<type>jsp</type>
 			<uuidresource>e33c6e18-c392-11d9-bec1-0bba6f0b9755</uuidresource>
-			<datelastmodified>Fri, 13 May 2005 10:05:46 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 13 May 2005 09:39:22 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

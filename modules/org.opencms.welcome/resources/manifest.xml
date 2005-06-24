@@ -23,7 +23,7 @@ It will also remove the "default" template.</p>
 		<version>3.9.4</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
-		<datecreated>Mon, 20 Sep 2004 16:00:00 GMT</datecreated>
+		<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies/>
@@ -41,9 +41,9 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>release</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 25 Apr 2005 08:58:57 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 01 Mar 2003 00:29:49 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -75,9 +75,9 @@ It will also remove the "default" template.</p>
 			<destination>release/installation.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>0fe6cf2e-2a34-11d8-9147-c2dcabc28482</uuidresource>
-			<datelastmodified>Fri, 27 Aug 2004 15:42:41 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 09 Dec 2003 10:40:10 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -105,9 +105,9 @@ It will also remove the "default" template.</p>
 			<destination>release/mailinglist.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>167d141b-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 27 Aug 2004 15:42:55 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 24 Apr 2003 12:51:42 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -135,9 +135,9 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_5.0.0.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>16844011-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 27 Aug 2004 15:42:01 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 30 Apr 2003 07:43:44 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -173,9 +173,9 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_5.0b2.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>168b44f7-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 27 Aug 2004 15:42:35 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 30 Apr 2003 08:27:03 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -211,9 +211,9 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_5.0rc1.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>168fffed-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 27 Aug 2004 15:42:28 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 30 Apr 2003 08:28:05 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -249,9 +249,9 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_5.0rc2.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>16972ae3-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 27 Aug 2004 15:42:21 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 30 Apr 2003 08:27:50 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -287,9 +287,9 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_6.0a1.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>1fd32591-6614-11d8-ab96-cbfb51df5f23</uuidresource>
-			<datelastmodified>Mon, 25 Oct 2004 14:43:40 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 23 Feb 2004 15:22:42 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -317,9 +317,9 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_6.0a2.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>3110a51d-2694-11d9-ac66-05a14f60fff0</uuidresource>
-			<datelastmodified>Mon, 25 Oct 2004 15:55:12 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Oct 2004 14:43:10 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -347,9 +347,9 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_6.0a3.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>36969f65-4abf-11d9-a566-e9c35273ab48</uuidresource>
-			<datelastmodified>Fri, 10 Dec 2004 15:23:20 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Dec 2004 15:21:49 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -377,9 +377,9 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_6.0b1.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>eac79f8a-8020-11d9-af9a-dbbb8757907e</uuidresource>
-			<datelastmodified>Wed, 16 Feb 2005 13:46:48 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 16 Feb 2005 13:44:45 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -407,9 +407,9 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_6.0b2.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>005d31c9-a1cf-11d9-87af-1559aed72023</uuidresource>
-			<datelastmodified>Thu, 31 Mar 2005 10:26:37 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 31 Mar 2005 10:24:02 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -437,9 +437,9 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_6.0b3.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>1865c8a3-b568-11d9-b5b7-5fde9e2f6a72</uuidresource>
-			<datelastmodified>Mon, 25 Apr 2005 09:01:48 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Apr 2005 08:57:47 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -467,9 +467,9 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_6.0rc1.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>1865c8a3-b568-11d9-b5b7-5fde8e2f6a72</uuidresource>
-			<datelastmodified>Mon, 25 Apr 2005 09:01:48 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Apr 2005 08:57:47 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -497,9 +497,9 @@ It will also remove the "default" template.</p>
 			<destination>release/notes_6.0rc2.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>9f1adb82-df2d-11d9-8b1a-157a1a2d4854</uuidresource>
-			<datelastmodified>Fri, 17 Jun 2005 13:12:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 17 Jun 2005 12:45:02 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -527,9 +527,9 @@ It will also remove the "default" template.</p>
 			<destination>release/upgrade.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>169e56d9-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 27 Aug 2004 15:42:49 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 24 Apr 2003 09:39:14 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -557,9 +557,9 @@ It will also remove the "default" template.</p>
 			<destination>release/welcome.html</destination>
 			<type>jsp</type>
 			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Mon, 25 Oct 2004 17:12:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 06 Aug 2003 09:49:13 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -597,9 +597,9 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Apr 2005 08:46:58 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -617,9 +617,9 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -628,9 +628,9 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules/org.opencms.welcome</destination>
 			<type>folder</type>
-			<datelastmodified>Sat, 01 Mar 2003 00:29:49 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 01 Mar 2003 00:29:49 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -644,9 +644,9 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules/org.opencms.welcome/default_bodies</destination>
 			<type>folder</type>
-			<datelastmodified>Fri, 13 Feb 2004 09:19:39 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 13 Feb 2004 09:19:39 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -657,9 +657,9 @@ It will also remove the "default" template.</p>
 			<destination>system/modules/org.opencms.welcome/default_bodies/default</destination>
 			<type>plain</type>
 			<uuidresource>c0080cf9-5e05-11d8-865d-ad3adbb53365</uuidresource>
-			<datelastmodified>Thu, 08 Jan 2004 16:15:14 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 13 Feb 2004 09:19:39 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -673,9 +673,9 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules/org.opencms.welcome/elements</destination>
 			<type>folder</type>
-			<datelastmodified>Sat, 01 Mar 2003 00:29:49 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 01 Mar 2003 00:29:49 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -686,9 +686,9 @@ It will also remove the "default" template.</p>
 			<destination>system/modules/org.opencms.welcome/elements/checklibs.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>2150f2ca-26a6-11d9-ac66-05a14f60fff0</uuidresource>
-			<datelastmodified>Mon, 25 Oct 2004 17:32:25 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Oct 2004 16:51:34 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -712,9 +712,9 @@ It will also remove the "default" template.</p>
 			<destination>system/modules/org.opencms.welcome/elements/login_element.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>c70b997b-997c-11d8-9067-cb7004c5994f</uuidresource>
-			<datelastmodified>Thu, 29 Apr 2004 01:45:13 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 29 Apr 2004 01:30:20 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -742,9 +742,9 @@ It will also remove the "default" template.</p>
 			<destination>system/modules/org.opencms.welcome/elements/welcome_nav.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>16b86e9f-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 13 Feb 2004 14:17:52 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 01 Mar 2003 00:29:49 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -770,9 +770,9 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules/org.opencms.welcome/resources</destination>
 			<type>folder</type>
-			<datelastmodified>Sat, 01 Mar 2003 00:29:49 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 01 Mar 2003 00:29:49 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -783,9 +783,9 @@ It will also remove the "default" template.</p>
 			<destination>system/modules/org.opencms.welcome/resources/logo_alkacon.gif</destination>
 			<type>image</type>
 			<uuidresource>5c99ec74-6614-11d8-ab96-cbfb51df5f23</uuidresource>
-			<datelastmodified>Mon, 23 Feb 2004 15:24:29 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 23 Feb 2004 15:24:24 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -796,9 +796,9 @@ It will also remove the "default" template.</p>
 			<destination>system/modules/org.opencms.welcome/resources/logo_opencms_large.gif</destination>
 			<type>image</type>
 			<uuidresource>16d4f765-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 12 Dec 2003 13:29:03 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 01 Mar 2003 00:29:49 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -814,9 +814,9 @@ It will also remove the "default" template.</p>
 			<destination>system/modules/org.opencms.welcome/resources/logo_opencms_power.gif</destination>
 			<type>image</type>
 			<uuidresource>16dc235b-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 12 Dec 2003 13:29:13 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 01 Mar 2003 00:29:49 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -832,9 +832,9 @@ It will also remove the "default" template.</p>
 			<destination>system/modules/org.opencms.welcome/resources/welcome.css</destination>
 			<type>plain</type>
 			<uuidresource>16e5c051-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 12 Dec 2003 13:29:22 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 24 Apr 2003 12:54:32 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -852,9 +852,9 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules/org.opencms.welcome/templates</destination>
 			<type>folder</type>
-			<datelastmodified>Sat, 01 Mar 2003 00:29:49 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 01 Mar 2003 00:29:49 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -865,9 +865,9 @@ It will also remove the "default" template.</p>
 			<destination>system/modules/org.opencms.welcome/templates/empty</destination>
 			<type>jsp</type>
 			<uuidresource>a6fa79f4-5e05-11d8-865d-ad3adbb53365</uuidresource>
-			<datelastmodified>Tue, 24 Feb 2004 09:16:40 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 13 Feb 2004 09:18:57 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -895,9 +895,9 @@ It will also remove the "default" template.</p>
 			<destination>system/modules/org.opencms.welcome/templates/welcome</destination>
 			<type>jsp</type>
 			<uuidresource>16f1802c-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Tue, 24 Feb 2004 09:52:30 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 01 Mar 2003 00:29:50 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -925,9 +925,9 @@ It will also remove the "default" template.</p>
 			<destination>index.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Mon, 25 Oct 2004 17:12:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 06 Aug 2003 09:49:13 GMT</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

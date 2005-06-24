@@ -23,7 +23,7 @@
 		<version>0.9.2</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
-		<datecreated>Mon, 20 Sep 2004 18:00:00 CEST</datecreated>
+		<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies/>
@@ -40,9 +40,9 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 06 Sep 2004 12:08:25 CEST</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 06 Sep 2004 12:08:25 CEST</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -51,9 +51,9 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -62,9 +62,9 @@
 		<file>
 			<destination>system/modules/org.opencms.legacy.compatibility</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 04 Aug 2004 14:49:11 CEST</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 Aug 2004 14:49:11 CEST</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -78,9 +78,9 @@
 		<file>
 			<destination>system/modules/org.opencms.legacy.compatibility/setup</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 04 Aug 2004 14:49:52 CEST</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 Aug 2004 14:49:52 CEST</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -91,9 +91,9 @@
 			<destination>system/modules/org.opencms.legacy.compatibility/setup/generic.sql</destination>
 			<type>plain</type>
 			<uuidresource>db250378-e614-11d8-a7a0-b55a670cf783</uuidresource>
-			<datelastmodified>Mon, 06 Sep 2004 16:35:49 CEST</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 Aug 2004 14:50:25 CEST</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -104,9 +104,9 @@
 			<destination>system/modules/org.opencms.legacy.compatibility/setup/mysql.sql</destination>
 			<type>plain</type>
 			<uuidresource>cf1824e2-e614-11d8-a7a0-b55a670cf783</uuidresource>
-			<datelastmodified>Tue, 07 Sep 2004 10:14:56 CEST</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 Aug 2004 14:50:05 CEST</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -117,9 +117,9 @@
 			<destination>system/modules/org.opencms.legacy.compatibility/setup/oracle.sql</destination>
 			<type>plain</type>
 			<uuidresource>d4f15625-e614-11d8-a7a0-b55a670cf783</uuidresource>
-			<datelastmodified>Wed, 04 Aug 2004 14:50:15 CEST</datelastmodified>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 04 Aug 2004 14:50:15 CEST</datecreated>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
