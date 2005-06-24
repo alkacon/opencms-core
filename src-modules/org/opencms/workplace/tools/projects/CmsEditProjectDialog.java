@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,9 +80,6 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
 
     /** Stores the value of the request parameter for the project id. */
     private String m_paramProjectid;
-
-    /** Stores the value of the request parameter for the project name. */
-    private String m_paramProjectname;
 
     /** Auxiliary Property for better representation of the bean VFS resources. */
     private List m_resources;
@@ -181,16 +178,6 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
     }
 
     /**
-     * Returns the project name parameter value.<p>
-     * 
-     * @return the project name parameter value
-     */
-    public String getParamProjectname() {
-
-        return m_paramProjectname;
-    }
-
-    /**
      * Returns the list of VFS resources that belong to this project.<p>
      *
      * @return the list of VFS resources that belong to this project
@@ -208,16 +195,6 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
     public void setParamProjectid(String projectId) {
 
         m_paramProjectid = projectId;
-    }
-
-    /**
-     * Sets the project name parameter value.<p>
-     * 
-     * @param projectName the project name parameter value
-     */
-    public void setParamProjectname(String projectName) {
-
-        m_paramProjectname = projectName;
     }
 
     /**
@@ -362,8 +339,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
 
         if (!isNewProject()) {
             // test the needed parameters
-            getCms().readProject(getParamProjectname());
-            getCms().readProject(new Integer(getParamProjectid()).intValue());
+            getCms().readProject(new Integer(getParamProjectid()).intValue()).getName();
         }
 
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolGroup.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,7 +142,7 @@ public class CmsToolGroup {
             html.append(item.buttonHtml(wp));
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(html.toString())) {
-            html.insert(0, ((CmsToolDialog)wp).iconsBlockAreaStart(wp.resolveMacros(getName())));
+            html.insert(0, ((CmsToolDialog)wp).iconsBlockAreaStart(getName()));
             html.append(((CmsToolDialog)wp).iconsBlockAreaEnd());
         }
         return html.toString();

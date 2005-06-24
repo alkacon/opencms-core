@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.14 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,7 +140,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
                 while (it.hasNext()) {
                     I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
                     if (action instanceof CmsGroupDisabledStateAction) {
-                        ((CmsGroupDisabledStateAction)action).setUserName(getParamUsername());
+                        ((CmsGroupDisabledStateAction)action).setUserName(m_paramUsername);
                     }
                 }
             }
@@ -159,9 +159,9 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the user name parameter value.<p>
-     * 
-     * @return the user name parameter value
+     * Returns the User name parameter.<p>
+     *
+     * @return the User name paramter
      */
     public String getParamUsername() {
 
@@ -176,16 +176,6 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     public void setParamUserid(String userId) {
 
         m_paramUserid = userId;
-    }
-
-    /**
-     * Sets the user name parameter value.<p>
-     * 
-     * @param userName the user name parameter value
-     */
-    public void setParamUsername(String userName) {
-
-        m_paramUsername = userName;
     }
 
     /**
@@ -265,7 +255,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             CmsGroupDisabledStateAction iconAction = new CmsGroupDisabledStateAction(
                 LIST_ACTION_ICON,
                 getCms(),
-                getParamUsername());
+                m_paramUsername);
             // adds a direct group icon
             CmsListDirectAction dirAction = new CmsListDirectAction(LIST_ACTION_ICON_DIRECT);
             dirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_NAME_0));
@@ -333,7 +323,6 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
-        getCms().readUser(getParamUsername());
-        getCms().readUser(new CmsUUID(getParamUserid()));
+        m_paramUsername = getCms().readUser(new CmsUUID(getParamUserid())).getName();
     }
 }

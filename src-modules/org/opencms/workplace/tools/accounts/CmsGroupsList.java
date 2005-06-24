@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsList.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -67,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,7 +166,8 @@ public class CmsGroupsList extends A_CmsListDialog {
      */
     public void actionDeleteGroup() throws Exception {
 
-        String groupName = getJsp().getRequest().getParameter(CmsEditGroupDialog.PARAM_GROUPNAME);
+        String groupName = getCms().readUser(
+            new CmsUUID(getJsp().getRequest().getParameter(CmsEditGroupDialog.PARAM_GROUPID))).getName();
         getCms().deleteGroup(groupName);
         refreshList();
         actionCloseDialog();
@@ -245,7 +247,6 @@ public class CmsGroupsList extends A_CmsListDialog {
         String groupName = getSelectedItem().get(LIST_COLUMN_NAME).toString();
 
         Map params = new HashMap();
-        params.put(CmsEditGroupDialog.PARAM_GROUPNAME, groupName);
         params.put(CmsEditGroupDialog.PARAM_GROUPID, groupId);
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);

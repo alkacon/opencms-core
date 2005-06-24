@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,9 +131,9 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the user name parameter value.<p>
-     * 
-     * @return the user name parameter value
+     * Returns the Group name parameter.<p>
+     *
+     * @return the Group name paramter
      */
     public String getParamGroupname() {
 
@@ -148,16 +148,6 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     public void setParamGroupid(String userId) {
 
         m_paramGroupid = userId;
-    }
-
-    /**
-     * Sets the user name parameter value.<p>
-     * 
-     * @param userName the user name parameter value
-     */
-    public void setParamGroupname(String userName) {
-
-        m_paramGroupname = userName;
     }
 
     /**
@@ -290,7 +280,6 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
-        getCms().readGroup(getParamGroupname());
-        getCms().readGroup(new CmsUUID(getParamGroupid()));
+        m_paramGroupname = getCms().readGroup(new CmsUUID(getParamGroupid())).getName();
     }
 }

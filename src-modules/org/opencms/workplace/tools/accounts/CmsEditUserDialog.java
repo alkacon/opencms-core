@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
- * Date   : $Date: 2005/06/24 09:11:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,9 +76,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     /** Request parameter name for the user id. */
     public static final String PARAM_USERID = "userid";
 
-    /** Request parameter name for the user name. */
-    public static final String PARAM_USERNAME = "username";
-
     /** Session parameter name for the pwd info object. */
     private static final Object C_PWD_OBJECT = "PWD_INFO";
 
@@ -90,9 +87,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
 
     /** Stores the value of the request parameter for the user id. */
     private String m_paramUserid;
-
-    /** Stores the value of the request parameter for the user name. */
-    private String m_paramUsername;
 
     /** The password information object. */
     private CmsPasswordInfo m_pwdInfo;
@@ -184,16 +178,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the user name parameter value.<p>
-     * 
-     * @return the user name parameter value
-     */
-    public String getParamUsername() {
-
-        return m_paramUsername;
-    }
-
-    /**
      * Sets the user id parameter value.<p>
      * 
      * @param userId the user id parameter value
@@ -201,16 +185,6 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     public void setParamUserid(String userId) {
 
         m_paramUserid = userId;
-    }
-
-    /**
-     * Sets the user name parameter value.<p>
-     * 
-     * @param userName the user name parameter value
-     */
-    public void setParamUsername(String userName) {
-
-        m_paramUsername = userName;
     }
 
     /**
@@ -359,8 +333,7 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
 
         if (!isNewUser()) {
             // test the needed parameters
-            getCms().readUser(getParamUsername());
-            getCms().readUser(new CmsUUID(getParamUserid()));
+            getCms().readUser(new CmsUUID(getParamUserid())).getName(); 
         }
 
     }

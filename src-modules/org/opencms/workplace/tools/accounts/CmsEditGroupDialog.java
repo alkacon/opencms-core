@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,17 +80,11 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
     /** Request parameter name for the user id. */
     public static final String PARAM_GROUPID = "groupid";
 
-    /** Request parameter name for the user name. */
-    public static final String PARAM_GROUPNAME = "groupname";
-
     /** The user object that is edited on this dialog. */
     protected CmsGroup m_group;
 
     /** Stores the value of the request parameter for the group id. */
     private String m_paramGroupid;
-
-    /** Stores the value of the request parameter for the group name. */
-    private String m_paramGroupname;
 
     /** Auxiliary Property for better representation of the bean parentId property. */
     private String m_parentGroup;
@@ -173,16 +167,6 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the user name parameter value.<p>
-     * 
-     * @return the user name parameter value
-     */
-    public String getParamGroupname() {
-
-        return m_paramGroupname;
-    }
-
-    /**
      * Returns the parent Group name.<p>
      *
      * @return the parent Group name
@@ -200,16 +184,6 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
     public void setParamGroupid(String userId) {
 
         m_paramGroupid = userId;
-    }
-
-    /**
-     * Sets the user name parameter value.<p>
-     * 
-     * @param userName the user name parameter value
-     */
-    public void setParamGroupname(String userName) {
-
-        m_paramGroupname = userName;
     }
 
     /**
@@ -364,8 +338,8 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
 
         if (!isNewGroup()) {
             // test the needed parameters
-            getCms().readGroup(getParamGroupname());
-            getCms().readGroup(new CmsUUID(getParamGroupid()));
+            getCms().readGroup(new CmsUUID(getParamGroupid())).getName(); 
+
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenuGroup.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.administration;
 
 import org.opencms.util.CmsIdentifiableObjectContainer;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.tools.CmsToolMacroResolver;
 
 import java.util.Iterator;
 import java.util.List;
@@ -42,7 +43,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -183,7 +184,7 @@ public class CmsAdminMenuGroup {
         html.append("');\" >\n");
         html.append("\t\t\t\t<tr>\n");
         html.append("\t\t\t\t\t<td class='titleText' width='100%'>");
-        html.append(wp.resolveMacros(getName()));
+        html.append(CmsToolMacroResolver.resolveMacros(getName(), wp));
         html.append("</td>\n");
         html.append("\t\t\t\t</tr>\n");
         html.append("\t\t\t</table>\n");

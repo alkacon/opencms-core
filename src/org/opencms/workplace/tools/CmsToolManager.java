@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/24 08:02:20 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -251,7 +251,7 @@ public class CmsToolManager {
             html = buttonHtml + C_NAVBAR_SEPARATOR + html;
         }
 
-        return wp.resolveMacros("<div class='pathbar'>\n" + html + "&nbsp;</div>\n");
+        return CmsToolMacroResolver.resolveMacros("<div class='pathbar'>\n" + html + "&nbsp;</div>\n", wp);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/24 08:02:20 $
- * Version: $Revision: 1.136 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.137 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.136 $ 
+ * @version $Revision: 1.137 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,7 +193,7 @@ public abstract class CmsWorkplace {
 
     /** The current OpenCms users workplace settings. */
     private CmsWorkplaceSettings m_settings;
-    
+
     /**
      * Public constructor.<p>
      * 
@@ -203,7 +203,7 @@ public abstract class CmsWorkplace {
 
         initWorkplaceMembers(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -1331,6 +1331,19 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Returns the current used macro resolver instance.<p>
+     * 
+     * @return the macro resolver
+     */
+    public CmsMacroResolver getMacroResolver() {
+
+        if (m_macroResolver == null) {
+            resolveMacros("");
+        }
+        return m_macroResolver;
+    }
+
+    /**
      * Returns the current used message object.<p>
      * 
      * @return the current used message object
@@ -1423,7 +1436,6 @@ public abstract class CmsWorkplace {
         return pageHtml(HTML_START, title);
     }
 
-    
     /**
      * Returns the forwarded flag.<p>
      *
@@ -1745,8 +1757,7 @@ public abstract class CmsWorkplace {
 
         getJsp().getResponse().sendRedirect(OpenCms.getSystemInfo().getOpenCmsContext() + location);
     }
-    
-    
+
     /**
      * Sets the forwarded flag.<p>
      *

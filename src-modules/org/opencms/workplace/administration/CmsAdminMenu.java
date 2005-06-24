@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/06/23 13:18:56 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.tools.CmsTool;
 import org.opencms.workplace.tools.CmsToolDialog;
+import org.opencms.workplace.tools.CmsToolMacroResolver;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.Iterator;
@@ -51,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +127,7 @@ public class CmsAdminMenu extends CmsToolDialog {
         float position,
         String target) {
 
-        groupName = resolveMacros(groupName);
+        groupName = CmsToolMacroResolver.resolveMacros(groupName, this);
         CmsAdminMenuGroup group = getGroup(groupName);
         if (group == null) {
             String gid = "group" + m_groupContainer.elementList().size();

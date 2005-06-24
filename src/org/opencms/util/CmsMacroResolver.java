@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,7 +152,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     protected PageContext m_jspPageContext;
 
     /** Indicates if unresolved macros should be kept "as is" or replaced by an empty String. */
-    protected boolean m_keepEmptyMacors;
+    protected boolean m_keepEmptyMacros;
 
     /** The messages resource bundle to resolve localized keys with. */
     protected CmsMessages m_messages;
@@ -161,7 +161,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     protected String m_resourceName;
 
     /**
-     * Adds macro delelimiters to the given input, 
+     * Adds macro delimiters to the given input, 
      * for example <code>key</code> becomes <code>${key}</code>.<p>
      * 
      * @param input the input to format as a macro
@@ -228,7 +228,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         CmsMacroResolver resolver = new CmsMacroResolver();
         resolver.m_cms = cms;
         resolver.m_messages = messages;
-        resolver.m_keepEmptyMacors = true;
+        resolver.m_keepEmptyMacros = true;
         return resolver.resolveMacros(input);
     }
 
@@ -530,7 +530,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      */
     public boolean isKeepEmptyMacros() {
 
-        return m_keepEmptyMacors;
+        return m_keepEmptyMacros;
     }
 
     /**
@@ -613,7 +613,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      */
     public CmsMacroResolver setKeepEmptyMacros(boolean keepEmptyMacros) {
 
-        m_keepEmptyMacors = keepEmptyMacros;
+        m_keepEmptyMacros = keepEmptyMacros;
         return this;
     }
 

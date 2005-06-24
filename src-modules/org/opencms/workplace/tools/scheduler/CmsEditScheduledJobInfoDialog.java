@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,9 +89,6 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /** Stores the value of the request parameter for the job id. */
     private String m_paramJobid;
-
-    /** Stores the value of the request parameter for the job name. */
-    private String m_paramJobname;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -150,16 +147,6 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the job name parameter value.<p>
-     * 
-     * @return the job name parameter value
-     */
-    public String getParamJobname() {
-
-        return m_paramJobname;
-    }
-
-    /**
      * Sets the job id parameter value.<p>
      * 
      * @param jobid the job id parameter value
@@ -167,16 +154,6 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     public void setParamJobid(String jobid) {
 
         m_paramJobid = jobid;
-    }
-
-    /**
-     * Sets the job name parameter value.<p>
-     * 
-     * @param jobname the job name parameter value
-     */
-    public void setParamJobname(String jobname) {
-
-        m_paramJobname = jobname;
     }
 
     /**
@@ -434,29 +411,18 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Checks if the new job dialog has to be displayed.<p>
-     * 
-     * @return <code>true</code> if the new job dialog has to be displayed
-     */
-    private boolean isNewJob() {
-
-        return getCurrentToolPath().equals("/scheduler/new");
-    }
-
-    /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
     protected void validateParamaters() throws Exception {
 
         if (!isNewJob()) {
             // test if params are available
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamJobid())
-                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamJobname())) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamJobid())) {
                 // validate the params
                 Iterator it = OpenCms.getScheduleManager().getJobs().iterator();
                 while (it.hasNext()) {
                     CmsScheduledJobInfo job = (CmsScheduledJobInfo)it.next();
-                    if (job.getId().equals(getParamJobid()) && job.getJobName().equals(getParamJobname())) {
+                    if (job.getId().equals(getParamJobid())) {
                         // params are ok!
                         return;
                     }
@@ -465,5 +431,15 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             // params are no valid
             throw new Exception();
         }
+    }
+
+    /**
+     * Checks if the new job dialog has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the new job dialog has to be displayed
+     */
+    private boolean isNewJob() {
+
+        return getCurrentToolPath().equals("/scheduler/new");
     }
 }

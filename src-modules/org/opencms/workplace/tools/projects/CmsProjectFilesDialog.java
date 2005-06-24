@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,9 +66,6 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
 
     /** Stores the value of the request parameter for the project id. */
     private String m_paramProjectid;
-
-    /** Stores the value of the request parameter for the project name. */
-    private String m_paramProjectname;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -184,8 +181,10 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
      */
     public void displayFrameSet() throws JspException, IOException {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamProjectid())
-            || CmsStringUtil.isEmptyOrWhitespaceOnly(getParamProjectname())) {
+        try {
+            // validate parameter
+            getCms().readProject(new Integer(getParamProjectid()).intValue()).getName();
+        } catch (Exception e) {
             setAction(ACTION_CANCEL);
             actionCloseDialog();
             return;
@@ -206,16 +205,6 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
     }
 
     /**
-     * Returns the project name parameter value.<p>
-     * 
-     * @return the project name parameter value
-     */
-    public String getParamProjectname() {
-
-        return m_paramProjectname;
-    }
-
-    /**
      * Sets the project id parameter value.<p>
      * 
      * @param projectId the project id parameter value
@@ -223,16 +212,6 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
     public void setParamProjectid(String projectId) {
 
         m_paramProjectid = projectId;
-    }
-
-    /**
-     * Sets the project name parameter value.<p>
-     * 
-     * @param projectName the project name parameter value
-     */
-    public void setParamProjectname(String projectName) {
-
-        m_paramProjectname = projectName;
     }
 
     /**

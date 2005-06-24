@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,7 +185,8 @@ public class CmsUsersList extends A_CmsListDialog {
      */
     public void actionDeleteUser() throws Exception {
 
-        String userName = getJsp().getRequest().getParameter(CmsEditUserDialog.PARAM_USERNAME);
+        String userName = getCms().readUser(
+            new CmsUUID(getJsp().getRequest().getParameter(CmsEditUserDialog.PARAM_USERID))).getName();
         getCms().deleteUser(userName);
         refreshList();
         actionCloseDialog();
@@ -265,7 +266,6 @@ public class CmsUsersList extends A_CmsListDialog {
         String userName = getSelectedItem().get(LIST_COLUMN_LOGIN).toString();
 
         Map params = new HashMap();
-        params.put(CmsEditUserDialog.PARAM_USERNAME, userName);
         params.put(CmsEditUserDialog.PARAM_USERID, userId);
         // set action parameter to initial dialog call
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);

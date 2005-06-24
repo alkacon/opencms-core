@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenuItem.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/24 11:24:57 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.administration;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
+import org.opencms.workplace.tools.CmsToolMacroResolver;
 
 /**
  * Html icon button implementation that generates the
@@ -41,7 +42,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -195,7 +196,7 @@ public class CmsAdminMenuItem {
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");
         html.append("</table>\n");
-        return wp.resolveMacros(html.toString());
+        return CmsToolMacroResolver.resolveMacros(html.toString(), wp);
     }
 
 }
