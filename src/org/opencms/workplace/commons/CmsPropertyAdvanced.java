@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/06/24 14:13:08 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/24 16:10:32 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialogSelector;
 import org.opencms.workplace.CmsTabDialog;
@@ -77,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -762,7 +763,16 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 m_isEditable = new Boolean(false);
 
             } else {
-                // we are in an offline project, check lock state
+                // we are in an offline project
+                
+                // check permissions
+                if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+                    getSettings().setErrorMessage(null);
+                    m_isEditable = new Boolean(false);
+                    return m_isEditable.booleanValue();    
+                }
+                
+                // check lock state
                 String resourceName = getParamResource();
                 CmsResource file = null;
                 CmsLock lock = null;
