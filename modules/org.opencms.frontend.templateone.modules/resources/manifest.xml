@@ -1880,6 +1880,10 @@
 					<value><![CDATA[4.5]]></value>
 				</property>
 				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>				
+				<property>
 					<name>style_show_head_img</name>
 					<value><![CDATA[true]]></value>
 				</property>
