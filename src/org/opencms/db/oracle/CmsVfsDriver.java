@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/24 16:27:52 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 6.0.0 
  */
@@ -116,11 +116,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         boolean wasInTransaction = false;
         try {
             conn = m_sqlManager.getConnection(dbc, project.getId());
-            if (conn.getMetaData().getDriverMajorVersion() < 9) {
-                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE8_CONTENTS_UPDATECONTENT");
-            } else {
-                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_UPDATECONTENT");
-            }
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_UPDATECONTENT");
 
             wasInTransaction = !conn.getAutoCommit();
             if (!wasInTransaction) {

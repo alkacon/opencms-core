@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/06/24 16:27:52 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 6.0.0 
  */
@@ -85,7 +85,6 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      */
     public static OutputStream getOutputStreamFromBlob(ResultSet res, String name) throws SQLException {
 
-        // TODO: check/find a solution for Oracle 8/9/10
         int todo = 0;
         // TODO: perform blob check only once and store Oracle version in a static privae member 
         // TODO: best do this during system startup / db init phase once
@@ -96,7 +95,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             blob.truncate(0);
             return blob.setBinaryStream(0L);
         } catch (SQLException e) {
-            // oracle 9   
+            // oracle 9 & 8
             ((oracle.sql.BLOB)blob).trim(0);
             return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
         }
@@ -105,7 +104,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         //((oracle.sql.BLOB)blob).truncate(0);
         //return blob.setBinaryStream(0L);
 
-        // this is the code for Oracle 9 (doesn't work with Oracle 8)                
+        // this is the code for Oracle 9 (& 8 if using the same jdbc driver as provided by oracle9: ojdbc14.jar)
         //((oracle.sql.BLOB)blob).trim(0);
         //return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
     }
@@ -328,11 +327,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             }
 
             // update user_info in this special way because of using blob
-            if (conn.getMetaData().getDriverMajorVersion() < 9) {
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE8_USERS_UPDATEINFO");
-            } else {
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_UPDATEINFO");
-            }
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_UPDATEINFO");
             stmt.setString(1, userId.toString());
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {

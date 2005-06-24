@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-modules.dtd">
+
+<opencms>
+    <modules>
+    	<module>
+    		<name>org.opencms.configuration.TestModule1</name>
+    		<nicename>OpenCms configuration test module</nicename>
+    		<class>org.opencms.module.TestModuleActionImpl</class>
+			<description><![CDATA[A module to test the OpenCms module configuration]]></description>
+			<version>1.0</version>
+			<authorname>Alexander Kandzior</authorname>
+			<authoremail>alex@opencms.org</authoremail>
+			<datecreated>Mon, 12 Jul 2004 10:00:00 GMT</datecreated>
+			<userinstalled>Admin</userinstalled>
+			<dateinstalled>Tue, 13 Jul 2004 11:00:00 GMT</dateinstalled>
+			<dependencies/>
+			<exportpoints/>
+			<resources>
+				<resource uri="/types/"/>
+			</resources>		
+			<parameters>
+				<param name="param1">value1</param>
+				<param name="param2">value2</param>
+			</parameters>
+            <resourcetypes>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="article" id="12">
+					<properties>
+						<property>
+							<name>Title</name>
+							<value><![CDATA[Test title]]></value>
+						</property>
+						<property>
+							<name>Description</name>
+							<value type="shared"><![CDATA[${currentuser.name}_${resource.site.path}_${resource.root.path}]]></value>
+						</property>				
+						<property>
+							<name>template-elements</name>
+							<value><![CDATA[/system/modules/org.opencms.frontend.templateone.form/pages/form.html]]></value>
+						</property>				
+					</properties>
+					<param name="schema">/sites/default/xmlcontent/article.xsd</param>
+				</type>	
+			</resourcetypes>				
+    	</module>
+    </modules>    
+</opencms>    

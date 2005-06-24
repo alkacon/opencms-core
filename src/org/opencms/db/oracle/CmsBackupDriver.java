@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2005/06/24 16:27:52 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Michael Emmerich   
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 6.0.0 
  */
@@ -247,11 +247,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             }
 
             // select the backup record for update            
-            if (conn.getMetaData().getDriverMajorVersion() < 9) {
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE8_CONTENTS_UPDATEBACKUP");
-            } else {
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_UPDATEBACKUP");
-            }
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_UPDATEBACKUP");
             stmt.setString(1, contentId.toString());
             stmt.setString(2, backupId.toString());
 

@@ -114,7 +114,7 @@
             </and>            
         </condition>
 
-        <condition property="build.excludes" value="org/opencms/db/oracle/**">
+        <condition property="build.excludes" value="org/opencms/db/oracle/**,org/opencms/db/oracle8/**">
             <not>
             	<available file="${opencms.inputlib.oracle}"/>
             </not>
