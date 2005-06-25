@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2005/06/25 08:40:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/25 08:43:47 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,10 @@
 
 package org.opencms.file;
 
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -41,7 +43,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0 
  */
@@ -86,6 +88,20 @@ public class CmsGroup implements I_CmsPrincipal {
         m_description = description;
         m_flags = flags;
         m_parentId = parentId;
+    }
+
+    /**
+     * Validates a group name.<p>
+     * 
+     * The parameter should not be empty.<p>
+     * 
+     * @param name the login to validate
+     */
+    public static void checkName(String name) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_GROUPNAME_VALIDATION_0, name));
+        }
     }
 
     /**
@@ -283,6 +299,7 @@ public class CmsGroup implements I_CmsPrincipal {
      */
     public void setName(String name) {
 
+        checkName(name);
         m_name = name;
     }
 

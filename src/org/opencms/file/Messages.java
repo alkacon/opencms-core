@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/25 08:43:47 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0 
  */
@@ -56,7 +56,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_FIRSTNAME_EMPTY_0 = "ERR_FIRSTNAME_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_GROUPNAME_VALIDATION_1 = "ERR_GROUPNAME_VALIDATION_1";
+    public static final String ERR_GROUPNAME_VALIDATION_0 = "ERR_GROUPNAME_VALIDATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LASTNAME_EMPTY_0 = "ERR_LASTNAME_EMPTY_0";
