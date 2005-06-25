@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/24 14:13:08 $
- * Version: $Revision: 1.138 $
+ * Date   : $Date: 2005/06/25 09:10:09 $
+ * Version: $Revision: 1.139 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
@@ -78,6 +79,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.collections.Buffer;
 import org.apache.commons.logging.Log;
 
 /**
@@ -86,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.138 $ 
+ * @version $Revision: 1.139 $ 
  * 
  * @since 6.0.0 
  */
@@ -1214,6 +1216,39 @@ public abstract class CmsWorkplace {
                 }
             }
         }
+    }
+    
+    /**
+     * Returns the message String for the broadcast message alert of the workplace.<p>
+     * 
+     * Caution: returns the pure message String (not escaped) or null, if no message is pending.<p>
+     * 
+     * @return the message String for the broadcast message alert of the workplace
+     */
+    public String getBroadcastMessageString() {
+
+        String sessionId = getSession().getId();
+        Buffer messageQueue = OpenCms.getSessionManager().getBroadcastQueue(sessionId);
+        if (!messageQueue.isEmpty()) {
+            // create message String
+            StringBuffer result = new StringBuffer(512);
+            // the user has pending messages, display them all
+            while (!messageQueue.isEmpty()) {
+                CmsBroadcast message = (CmsBroadcast)messageQueue.remove();
+                result.append('[');
+                result.append(getMessages().getDateTime(message.getSendTime()));
+                result.append("] ");
+                result.append(key("label.broadcastmessagefrom"));
+                result.append(' ');
+                result.append(message.getUser().getName());
+                result.append(":\n");
+                result.append(message.getMessage());
+                result.append("\n\n");
+            }
+            return result.toString();
+        }
+        // no message pending, return null
+        return null;
     }
 
     /**

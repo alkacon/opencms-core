@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/06/23 14:40:25 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2005/06/25 09:10:09 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -58,7 +57,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.Buffer;
 import org.apache.commons.logging.Log;
 
 /**
@@ -74,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.79 $ 
+ * @version $Revision: 1.80 $ 
  * 
  * @since 6.0.0 
  */
@@ -153,29 +151,15 @@ public class CmsFrameset extends CmsWorkplace {
     public String getBroadcastMessage() {
 
         StringBuffer result = new StringBuffer(512);
-        String sessionId = getSession().getId();
+        String message = getBroadcastMessageString();
 
-        Buffer messageQueue = OpenCms.getSessionManager().getBroadcastQueue(sessionId);
-        if (!messageQueue.isEmpty()) {
+        if (CmsStringUtil.isNotEmpty(message)) {
             // create a javascript alert for the message 
             result.append("\n<script type=\"text/javascript\">\n<!--\n");
             // the timeout gives the frameset enough time to load before the alert is shown
             result.append("setTimeout(\"alert(unescape('");
             // the user has pending messages, display them all
-            while (!messageQueue.isEmpty()) {
-                CmsBroadcast message = (CmsBroadcast)messageQueue.remove();
-                StringBuffer msg = new StringBuffer(256);
-                msg.append('[');
-                msg.append(getMessages().getDateTime(message.getSendTime()));
-                msg.append("] ");
-                msg.append(key("label.broadcastmessagefrom"));
-                msg.append(' ');
-                msg.append(message.getUser().getName());
-                msg.append(":\n");
-                msg.append(message.getMessage());
-                msg.append("\n\n");
-                result.append(CmsEncoder.escape(msg.toString(), getEncoding()));
-            }
+            result.append(CmsEncoder.escape(message, getEncoding()));
             result.append("'));\", 2000);");
             result.append("\n//-->\n</script>");
         }
