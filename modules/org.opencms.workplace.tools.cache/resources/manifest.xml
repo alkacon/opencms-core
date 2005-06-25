@@ -86,7 +86,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.cache.CmsCacheAdminToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -98,11 +98,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.view.groups.flexcache}]]></value>
+					<value><![CDATA[${key.GUI_CACHE_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.flexcache.description}]]></value>
+					<value><![CDATA[${key.GUI_CACHE_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -110,7 +110,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.flexcache.admin.heading}:${key.flexcache.admin.heading.short}]]></value>
+					<value><![CDATA[${key.GUI_CACHE_ADMIN_TOOL_NAME_0}:${key.GUI_CACHE_ADMIN_TOOL_SHORT_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>

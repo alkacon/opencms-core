@@ -109,7 +109,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -155,7 +155,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.link.CmsLinkValidationToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -195,7 +195,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.link.CmsLinkValidationToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -237,7 +237,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.link.CmsLinkValidationToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -279,7 +279,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.link.CmsLinkValidationToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>

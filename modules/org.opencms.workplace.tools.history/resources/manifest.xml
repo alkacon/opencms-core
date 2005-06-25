@@ -138,7 +138,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.history.CmsFileHistoryToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -196,7 +196,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.history.CmsFileHistoryToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>

@@ -91,11 +91,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.view.groups.galleryoverview}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.galleryoverview.description}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -103,7 +103,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.icon.galleryoverview}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -123,7 +123,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -135,11 +135,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.galleryoverview.groups.downloadgallery}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.downloadgallery.description}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -147,7 +147,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.icon.downloadgallery}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -193,7 +193,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -205,11 +205,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.galleryoverview.groups.htmlgallery}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_HTML_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.htmlgallery.description}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_HTML_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -217,7 +217,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.icon.htmlgallery}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_HTML_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -263,7 +263,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -275,11 +275,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.galleryoverview.groups.tablegallery}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_TABLE_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.tablegallery.description}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_TABLE_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -287,7 +287,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.icon.tablegallery}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_TABLE_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -333,7 +333,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -345,11 +345,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.galleryoverview.groups.imagegallery}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_IMAGE_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.imagegallery.description}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_IMAGE_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -357,7 +357,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.icon.imagegallery}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_IMAGE_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -403,7 +403,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.galleryoverview.CmsGalleriesToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -415,11 +415,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.galleryoverview.groups.linkgallery}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_LINK_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.linkgallery.description}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_LINK_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -427,7 +427,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.icon.linkgallery}]]></value>
+					<value><![CDATA[${key.GUI_GALLERIES_LINK_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>

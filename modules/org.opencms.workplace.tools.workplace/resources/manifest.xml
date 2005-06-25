@@ -112,7 +112,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -203,7 +203,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -253,7 +253,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -299,7 +299,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -394,7 +394,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -444,7 +444,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -494,7 +494,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -539,7 +539,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -589,7 +589,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -675,7 +675,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.workplace.CmsWorkplaceToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
