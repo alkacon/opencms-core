@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/06/24 14:13:08 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/25 10:18:59 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -396,7 +396,9 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append(winId);
         html.append("\") {\n");
         html.append("\t\twindow.opener = workplaceWin;\n");
-        html.append("\t\twindow.close();\n");
+        html.append("\t\tif (workplaceWin != null) {\n");
+        html.append("\t\t\twindow.close();\n");
+        html.append("\t\t}\n");
         html.append("\t}\n");
         html.append("}\n");
 
@@ -432,13 +434,15 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("\tvar openerStr = \"width=\" + winWidth + \",height=\" + winHeight + \",left=\" + winLeft + \",top=\" + winTop + \",location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes\";\n");
         html.append("\tvar OpenCmsWin = window.open(url, name, openerStr);\n");
         html.append("\n");
-        html.append("\tif (! OpenCmsWin.opener) {\n");
-        html.append("\t\tOpenCmsWin.opener = self;\n");
-        html.append("\t}\n");
-        html.append("\tif (OpenCmsWin.focus) {\n");
-        html.append("\t\tOpenCmsWin.focus();\n");
-        html.append("\t}\n");
-        html.append("\t\n");
+        html.append("\ttry{\n");
+        html.append("\t\tif (! OpenCmsWin.opener) {\n");
+        html.append("\t\t\tOpenCmsWin.opener = self;\n");
+        html.append("\t\t}\n");
+        html.append("\t\tif (OpenCmsWin.focus) {\n");
+        html.append("\t\t\tOpenCmsWin.focus();\n");
+        html.append("\t\t}\n");
+        html.append("\t} catch (e) {}\n");        
+        html.append("\n");
         html.append("\treturn OpenCmsWin;\n");
         html.append("}\n");
 
