@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/25 13:44:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,22 +38,11 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0 
  */
 public class CmsPropertyDefinition implements Cloneable, Comparable {
-
-    /**
-     * The module property key name to specifiy additional resources which are
-     * part of a module outside of {system/modules}.
-     */
-    public static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES = "additionalresources";
-
-    /**
-     * Character to separate additional resources specified in the module properties.
-     */
-    public static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR = ";";
 
     /** Property for the active method in the administration view. */
     public static final String PROPERTY_ACTIV = "activemethod";
@@ -63,6 +52,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property to control the Java class for body. */
     public static final String PROPERTY_BODY_CLASS = "templateclass";
+
+    /** The name of the VFS property that controls the caching. */
+    public static final String PROPERTY_CACHE = "cache";
 
     /** Property for the channel id. */
     public static final String PROPERTY_CHANNELID = "ChannelId";

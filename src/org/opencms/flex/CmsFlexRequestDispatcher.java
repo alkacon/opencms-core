@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/06/25 13:44:14 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.loader.I_CmsResourceLoader;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -332,8 +333,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                             // read caching property from requested VFS resource                                     
                             cacheProperty = cms.readPropertyObject(
                                 m_vfsTarget,
-                                I_CmsResourceLoader.C_LOADER_CACHEPROPERTY,
-                                false).getValue();
+                                CmsPropertyDefinition.PROPERTY_CACHE,
+                                true).getValue();
                             if (cacheProperty == null) {
                                 // caching property not set, use default for resource type
                                 cacheProperty = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getCachePropertyDefault();

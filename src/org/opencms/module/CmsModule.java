@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/25 13:44:14 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.module;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -60,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  * 
@@ -128,6 +127,17 @@ public class CmsModule implements Comparable {
 
     /** The version of this module. */
     private CmsModuleVersion m_version;
+
+    /**
+     * The module property key name to specifiy additional resources which are
+     * part of a module outside of {system/modules}.
+     */
+    private static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES = "additionalresources";
+
+    /**
+     * Character to separate additional resources specified in the module properties.
+     */
+    private static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR = ";";
 
     /**
      * Creates a new, empty CmsModule object.<p>
@@ -901,11 +911,11 @@ public class CmsModule implements Comparable {
         List resources = new ArrayList(m_resources);
 
         String additionalResources;
-        additionalResources = (String)parameters.get(CmsPropertyDefinition.MODULE_PROPERTY_ADDITIONAL_RESOURCES);
+        additionalResources = (String)parameters.get(MODULE_PROPERTY_ADDITIONAL_RESOURCES);
         if (additionalResources != null) {
             StringTokenizer tok = new StringTokenizer(
                 additionalResources,
-                CmsPropertyDefinition.MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
+                MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR);
             while (tok.hasMoreTokens()) {
                 String resource = tok.nextToken().trim();
                 if ((!"-".equals(resource)) && (!resources.contains(resource))) {

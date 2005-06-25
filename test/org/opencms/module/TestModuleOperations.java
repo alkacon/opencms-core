@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/25 13:44:14 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.module;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -57,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
 
@@ -215,7 +214,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         resources.add(res3);
         resources.add(res4);
 
-        String sep = CmsPropertyDefinition.MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR;
+        String sep = ";";
         String additionalResources = res1 + sep + res2 + sep + res3 + sep + res4;
 
         CmsModule module1;
@@ -224,7 +223,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         additionalResources += sep + "-" + sep + res5;
 
         Map parameters = new HashMap();
-        parameters.put(CmsPropertyDefinition.MODULE_PROPERTY_ADDITIONAL_RESOURCES, additionalResources);
+        parameters.put("additionalresources", additionalResources);
 
         module1 = new CmsModule(
             moduleName,

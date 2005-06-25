@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/06/24 16:42:52 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2005/06/25 13:44:14 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.90 $ 
+ * @version $Revision: 1.91 $ 
  * 
  * @since 6.0.0 
  * 
@@ -358,8 +358,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         // read "cache" property for requested VFS resource to check for special "stream" and "bypass" values                                    
         String cacheProperty = cms.readPropertyObject(
             cms.getSitePath(file),
-            I_CmsResourceLoader.C_LOADER_CACHEPROPERTY,
-            false).getValue();
+            CmsPropertyDefinition.PROPERTY_CACHE,
+            true).getValue();
         if (cacheProperty != null) {
             cacheProperty = cacheProperty.trim();
             if (CACHE_PROPERTY_STREAM.equals(cacheProperty)) {
