@@ -1,7 +1,6 @@
 <%@ page import="
 	org.opencms.workplace.explorer.*,
 	org.opencms.jsp.*"
-	buffer="none"
 %><%
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	CmsTree wp = new CmsTree(cms);

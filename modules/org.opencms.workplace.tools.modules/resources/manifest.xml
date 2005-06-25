@@ -24,17 +24,13 @@
 		<dependencies>
 			<dependency name="org.opencms.workplace" version="0.9.0"/>
 		</dependencies>
-		<exportpoints>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.modules/classes/" destination="WEB-INF/classes/"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.modules/lib/" destination="WEB-INF/lib/"/>
-		</exportpoints>
+		<exportpoints />
 		<resources>
-			<resource uri="/system/modules/org.opencms.workplace.tools.modules/"/>
 			<resource uri="/system/workplace/admin/modules/"/>
 			<resource uri="/system/workplace/resources/tools/modules/"/>
 		</resources>
 		<parameters>
-			<param name="additionalresources">/system/modules/org.opencms.workplace.tools.modules/;/system/workplace/admin/modules/;/system/workplace/resources/tools/modules/</param>
+			<param name="additionalresources">/system/workplace/admin/modules/;/system/workplace/resources/tools/modules/</param>
 		</parameters>
 	</module>
 	<files>
@@ -57,162 +53,6 @@
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
-		</file>
-		<file>
-			<destination>system/modules</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.modules</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.modules/classes</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>internal</name>
-					<value><![CDATA[36]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.modules/classes/org</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>internal</name>
-					<value><![CDATA[36]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.modules/classes/org/opencms</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>internal</name>
-					<value><![CDATA[36]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.modules/classes/org/opencms/workplace</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>internal</name>
-					<value><![CDATA[36]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.modules/classes/org/opencms/workplace/tools</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>internal</name>
-					<value><![CDATA[36]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.modules/classes/org/opencms/workplace/tools/modules</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>internal</name>
-					<value><![CDATA[36]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.modules/default_bodies</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.modules/lib</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.modules/templates</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace</destination>
@@ -252,6 +92,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Administration View]]></value>
@@ -314,10 +158,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -368,10 +208,6 @@
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -418,10 +254,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -476,10 +308,6 @@
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -522,10 +350,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -580,10 +404,6 @@
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -630,10 +450,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -655,10 +471,6 @@
 				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
-				</property>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -702,10 +514,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
@@ -756,10 +564,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -814,10 +618,6 @@
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -864,10 +664,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -922,10 +718,6 @@
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -971,10 +763,6 @@
 				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
-				</property>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -1022,10 +810,6 @@
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -1072,10 +856,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -1138,10 +918,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -1163,10 +939,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -1189,10 +961,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -1215,10 +983,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>

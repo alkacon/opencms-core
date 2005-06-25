@@ -1,6 +1,6 @@
 <%@ page import= "org.opencms.jsp.*, 
 						org.opencms.workplace.galleries.*,
-						org.opencms.util.CmsStringUtil" buffer="none" session="false" %>
+						org.opencms.util.CmsStringUtil" session="false" %>
 <%	
 
 	// initialize action element for link substitution

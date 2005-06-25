@@ -1,6 +1,6 @@
 <%@ page import="org.opencms.workplace.*,
                  org.opencms.workplace.editors.*,
-                 org.opencms.jsp.util.*" buffer="none" %><%
+                 org.opencms.jsp.util.*" %><%
 	
 	// get workplace class from request attribute
 	CmsDialog wp = CmsDialog.initCmsDialog(pageContext, request, response);

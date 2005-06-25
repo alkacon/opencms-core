@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.workplace.commons.*" buffer="none" %><%	
+<%@ page import="org.opencms.workplace.commons.*" %><%	
 
 	// initialize the workplace class
 	CmsPropertyCustom wp = new CmsPropertyCustom(pageContext, request, response);

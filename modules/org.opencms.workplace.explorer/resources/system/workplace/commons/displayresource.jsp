@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.workplace.commons.*" buffer="none" session="false" %><%	
+<%@ page import="org.opencms.workplace.commons.*" session="false" %><%	
 
 	// initialize the workplace class
 	CmsDisplayResource wp = new CmsDisplayResource(pageContext, request, response);

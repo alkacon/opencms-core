@@ -1,8 +1,8 @@
-<%@ page buffer="none" import="
+<%@ page import="
 
-        org.opencms.main.*,
+	org.opencms.main.*,
 	org.opencms.workplace.*,
-        org.opencms.validation.*,
+    org.opencms.validation.*,
 	org.opencms.workplace.tools.workplace.*
 
 "%><%	

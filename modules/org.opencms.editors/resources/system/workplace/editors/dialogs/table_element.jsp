@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.workplace.*" buffer="none" %><%	
+<%@ page import="org.opencms.workplace.*" %><%	
 
 	// initialize the workplace class
 	CmsDialog wp = new CmsDialog(pageContext, request, response);

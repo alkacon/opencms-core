@@ -30,66 +30,16 @@ The version of HtmlArea is 3.0 RC1.</p>
 		</dependencies>
 		<exportpoints/>
 		<resources>
-			<resource uri="/system/modules/org.opencms.editors.htmlarea/"/>
 			<resource uri="/system/workplace/editors/htmlarea/"/>
 			<resource uri="/system/workplace/resources/editors/htmlarea/"/>
 		</resources>
 		<parameters>
-			<param name="additionalresources">/system/modules/org.opencms.editors.htmlarea/;/system/workplace/editors/htmlarea/;/system/workplace/resources/editors/htmlarea/</param>
+			<param name="additionalresources">/system/workplace/editors/htmlarea/;/system/workplace/resources/editors/htmlarea/</param>
 		</parameters>
 	</module>
 	<files>
 		<file>
 			<destination>system</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.editors.htmlarea</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.editors.htmlarea/default_bodies</destination>
-			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.editors.htmlarea/templates</destination>
 			<type>folder</type>
 			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -132,7 +82,12 @@ The version of HtmlArea is 3.0 RC1.</p>
 			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>

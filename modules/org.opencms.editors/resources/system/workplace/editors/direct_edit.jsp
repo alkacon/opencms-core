@@ -5,7 +5,6 @@
 	org.opencms.jsp.*,
 	java.util.*,
 	org.opencms.i18n.*"
-	buffer="none"
 	session="false" %><%
 
 // Create a JSP action element

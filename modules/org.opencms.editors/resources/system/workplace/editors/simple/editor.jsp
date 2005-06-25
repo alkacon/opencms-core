@@ -4,7 +4,6 @@
 	org.opencms.workplace.help.*,
 	org.opencms.jsp.*,
 	java.util.*"
-	buffer="none"
 %><%
 	
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);

@@ -2,7 +2,6 @@
     org.opencms.main.*,
 	org.opencms.workplace.*,
 	org.opencms.jsp.*"
-	buffer="none"
 %><%
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	CmsFrameset wp = new CmsFrameset(cms);

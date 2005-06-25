@@ -79,7 +79,12 @@
 			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -173,10 +178,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -235,10 +236,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>

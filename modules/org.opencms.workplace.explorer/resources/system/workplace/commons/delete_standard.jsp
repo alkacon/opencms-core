@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.workplace.commons.*" buffer="none" %><%	
+<%@ page import="org.opencms.workplace.commons.*" %><%	
 
 	// initialize the workplace class
 	CmsDelete wp = new CmsDelete(pageContext, request, response);

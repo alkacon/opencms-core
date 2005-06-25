@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.jsp.*, org.opencms.workplace.editors.*" buffer="none" session="false" %><%	
+<%@ page import="org.opencms.jsp.*, org.opencms.workplace.editors.*" session="false" %><%	
 
 	// initialize the workplace class
 	CmsEditorFrameset wp = new CmsEditorFrameset(new CmsJspActionElement(pageContext, request, response));

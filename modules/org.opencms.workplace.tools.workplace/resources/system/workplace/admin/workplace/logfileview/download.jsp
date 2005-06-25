@@ -1,6 +1,4 @@
-<%@ page 
-	buffer="none" 
-	import="org.opencms.workplace.tools.workplace.rfsfile.*,org.opencms.workplace.CmsDialog" %><%	
+<%@ page import="org.opencms.workplace.tools.workplace.rfsfile.*,org.opencms.workplace.CmsDialog" %><%	
 
 	// initialize the workplace class
 	CmsRfsFileDownloadDialog wp = new CmsRfsFileDownloadDialog(pageContext, request, response);

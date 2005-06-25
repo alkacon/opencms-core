@@ -1,7 +1,6 @@
 <%@ page import="
 	org.opencms.jsp.*,
 	org.opencms.workplace.editors.*"
-	buffer="none"
 	session="false"
 %><%
 

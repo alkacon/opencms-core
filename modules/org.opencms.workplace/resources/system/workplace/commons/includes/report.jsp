@@ -1,4 +1,4 @@
-<%@ page buffer="none" import="
+<%@ page import="
 	org.opencms.workplace.*, org.opencms.report.I_CmsReport"%>
 <%	
     // get workplace class from request attribute

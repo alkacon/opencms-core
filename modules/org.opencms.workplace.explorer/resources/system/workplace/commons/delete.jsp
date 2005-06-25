@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.workplace.*" buffer="none" %><%	
+<%@ page import="org.opencms.workplace.*" %><%	
 
 	// initialise the JSP action element
 	org.opencms.jsp.CmsJspActionElement cms = new org.opencms.jsp.CmsJspActionElement(pageContext, request, response);

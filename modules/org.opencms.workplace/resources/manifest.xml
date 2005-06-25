@@ -152,6 +152,10 @@
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
 					<name>template</name>
 					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
 				</property>
@@ -169,10 +173,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -194,10 +194,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -269,6 +265,10 @@
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -286,10 +286,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -365,7 +361,12 @@
 			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -395,10 +396,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -421,10 +418,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -447,10 +440,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -473,10 +462,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -517,10 +502,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -569,10 +550,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[true]]></value>
 				</property>
@@ -589,10 +566,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[true]]></value>
@@ -611,10 +584,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[true]]></value>
 				</property>
@@ -631,10 +600,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[true]]></value>
@@ -653,10 +618,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[true]]></value>
 				</property>
@@ -672,6 +633,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Gallery dialogs]]></value>
@@ -727,10 +692,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -748,10 +709,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -771,10 +728,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -792,10 +745,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -815,10 +764,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -837,10 +782,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -858,10 +799,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -2400,7 +2337,12 @@
 			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -2414,10 +2356,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -2440,10 +2378,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Top Frameset Definition]]></value>
@@ -2461,10 +2395,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Top Frameset Definition]]></value>
@@ -2483,10 +2413,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>

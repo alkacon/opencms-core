@@ -2,7 +2,6 @@
                  org.opencms.file.CmsResource,
                  org.opencms.main.*,
                  org.opencms.site.CmsSiteManager"
-        buffer="none"
 %><%
         
         // initialize the workplace class

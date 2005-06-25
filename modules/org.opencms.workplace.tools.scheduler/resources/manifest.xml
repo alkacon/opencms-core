@@ -93,6 +93,10 @@
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Administration View]]></value>
 				</property>
@@ -154,10 +158,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
@@ -220,10 +220,6 @@
 				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
-				</property>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
 					<name>export</name>

@@ -5,7 +5,6 @@
 	org.opencms.workplace.explorer.*,
 	org.opencms.jsp.*,
 	java.util.*"
-	buffer="none"
 	session="false"
 %><%
 	

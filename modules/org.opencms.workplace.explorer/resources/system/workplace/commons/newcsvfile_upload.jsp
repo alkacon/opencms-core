@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.workplace.explorer.*" buffer="none" %><%	
+<%@ page import="org.opencms.workplace.explorer.*" %><%	
 
 	// initialize the workplace class
 	CmsNewCsvFile wp = new CmsNewCsvFile(pageContext, request, response);

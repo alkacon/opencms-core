@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.workplace.explorer.*" buffer="none" %><%	
+<%@ page import="org.opencms.workplace.explorer.*" %><%	
 
 	// initialize the workplace class
 	CmsNewResourceXmlPage wp = (CmsNewResourceXmlPage)CmsNewResource.getNewResourceHandler(org.opencms.file.types.CmsResourceTypeXmlPage.getStaticTypeName(), "org.opencms.workplace.explorer.CmsNewResourceXmlPage", pageContext, request, response);

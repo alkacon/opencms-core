@@ -1,6 +1,5 @@
 <%@ page import="
 	org.opencms.workplace.commons.*"
-	buffer="none"
 %><%
 	
 	// initialize the workplace class

@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.util.*,org.opencms.workplace.editors.*" buffer="none" %><%	
+<%@ page import="org.opencms.util.*,org.opencms.workplace.editors.*" %><%	
 
 	// initialize the workplace class
 	CmsDialogElements wp = new CmsDialogElements(pageContext, request, response);
