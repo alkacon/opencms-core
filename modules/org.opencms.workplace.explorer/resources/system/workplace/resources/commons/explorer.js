@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/06/25 10:06:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/25 11:44:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -901,10 +901,9 @@ function displayHead(doc, pages, actpage){
 
 	+ buttonSep(0, 0, 0)
 	+ button("javascript:top.histGoBack();", null, "back.png", vr.langback, buttonType)
-	+ btUp
-	// + button("javascript:top.dispSearchForm();", null, "search", vr.langsearch, buttonType)
-	+ btWizard
 	+ btUpload
+	+ btWizard
+	+ btUp
 
 	+ buttonSep(5, 5, 1)
 	+ "<td>"+vr.langadress+"&nbsp;</td>\n"
