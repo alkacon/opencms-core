@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/25 10:35:46 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2005/06/25 12:45:06 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.86 $
+ * @version $Revision: 1.87 $
  * 
  * @since 6.0.0
  */
@@ -198,7 +198,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             m_driverManager.addUserToGroup(dbc, username, groupname);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_ADD_USER_GROUP_FAILED_2, username, groupname), e);
@@ -464,7 +464,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
 
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             m_driverManager.changeUserType(dbc, userId, userType);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_CHANGE_USER_TYPE_WITH_ID_1, userId.toString()), e);
@@ -488,7 +488,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
 
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             m_driverManager.changeUserType(dbc, username, userType);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_CHANGE_USER_TYPE_WITH_NAME_1, username), e);
@@ -929,7 +929,7 @@ public final class CmsSecurityManager {
      * @return a <code>{@link CmsGroup}</code> object representing the newly created group
      * 
      * @throws CmsException if operation was not successful.
-     * @throws CmsRoleViolationException if the  role {@link CmsRole#USER_MANAGER} is not owned by the current user.
+     * @throws CmsRoleViolationException if the  role {@link CmsRole#ACCOUNT_MANAGER} is not owned by the current user.
      * 
      */
     public CmsGroup createGroup(CmsRequestContext context, String name, String description, int flags, String parent)
@@ -939,7 +939,7 @@ public final class CmsSecurityManager {
 
         CmsGroup result = null;
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             result = m_driverManager.createGroup(dbc, new CmsUUID(), name, description, flags, parent);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_CREATE_GROUP_1, name), e);
@@ -1214,7 +1214,7 @@ public final class CmsSecurityManager {
      * @see CmsObject#createUser(String, String, String, Map)
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#USER_MANAGER}
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
      */
     public CmsUser createUser(
         CmsRequestContext context,
@@ -1227,7 +1227,7 @@ public final class CmsSecurityManager {
 
         CmsUser result = null;
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             result = m_driverManager.createUser(dbc, name, password, description, additionalInfos);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_CREATE_USER_1, name), e);
@@ -1301,7 +1301,7 @@ public final class CmsSecurityManager {
      *
      * @throws CmsException if operation was not succesful
      * @throws CmsSecurityException if the group is a default group.
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#USER_MANAGER}
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
      * 
      */
     public void deleteGroup(CmsRequestContext context, String name)
@@ -1315,7 +1315,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // catch own exception as special cause for general "Error deleting group". 
-            checkRole(dbc, CmsRole.USER_MANAGER);
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             m_driverManager.deleteGroup(dbc, name);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, name), e);
@@ -2475,7 +2475,7 @@ public final class CmsSecurityManager {
      * @return the imported user
      *
      * @throws CmsException if something goes wrong
-     * @throws CmsRoleViolationException if the  role {@link CmsRole#USER_MANAGER} is not owned by the current user.
+     * @throws CmsRoleViolationException if the  role {@link CmsRole#ACCOUNT_MANAGER} is not owned by the current user.
      */
     public CmsUser importUser(
         CmsRequestContext context,
@@ -2496,7 +2496,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
 
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             newUser = m_driverManager.importUser(
                 dbc,
                 id,
@@ -4311,7 +4311,7 @@ public final class CmsSecurityManager {
      * @param groupname the name of the group
      * 
      * @throws CmsException if operation was not succesful
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#USER_MANAGER}
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
      * 
      */
     public void removeUserFromGroup(CmsRequestContext context, String username, String groupname)
@@ -4319,7 +4319,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             m_driverManager.removeUserFromGroup(dbc, username, groupname);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_REMOVE_USER_FROM_GROUP_2, username, groupname), e);
@@ -4451,7 +4451,7 @@ public final class CmsSecurityManager {
      *                      group should be deleted.
      * 
      * @throws CmsException if operation was not succesful
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#USER_MANAGER}
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
      * 
      */
     public void setParentGroup(CmsRequestContext context, String groupName, String parentGroupName)
@@ -4460,7 +4460,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
 
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             m_driverManager.setParentGroup(dbc, groupName, parentGroupName);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_SET_PARENT_GROUP_2, parentGroupName, groupName), e);
@@ -4477,14 +4477,14 @@ public final class CmsSecurityManager {
      * @param newPassword the new password
      * 
      * @throws CmsException if operation was not succesfull
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#USER_MANAGER}
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
      */
     public void setPassword(CmsRequestContext context, String username, String newPassword)
     throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             m_driverManager.setPassword(dbc, username, newPassword);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_SET_PASSWORD_1, username), e);
@@ -4837,14 +4837,14 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param group the group that should be written
      *
-     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#USER_MANAGER} for the current project. 
+     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#ACCOUNT_MANAGER} for the current project. 
      * @throws CmsException if operation was not succesfull
      */
     public void writeGroup(CmsRequestContext context, CmsGroup group) throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             m_driverManager.writeGroup(dbc, group);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_WRITE_GROUP_1, group.getName()), e);
@@ -5067,7 +5067,7 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param user the user to be updated
      *
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#USER_MANAGER} for the current project. 
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER} for the current project. 
      * @throws CmsException if operation was not succesful
      */
     public void writeUser(CmsRequestContext context, CmsUser user) throws CmsException, CmsRoleViolationException {
@@ -5076,7 +5076,7 @@ public final class CmsSecurityManager {
         try {
             if (!context.currentUser().equals(user)) {
                 // a user is allowed to write his own data (e.g. for "change preferences")
-                checkRole(dbc, CmsRole.USER_MANAGER);
+                checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             }
             m_driverManager.writeUser(dbc, user);
         } catch (Exception e) {
@@ -5402,7 +5402,7 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param user the user to be deleted
      * 
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#USER_MANAGER}
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
      * @throws CmsSecurityException in case the user is a default user 
      * @throws CmsException if something goes wrong
      */
@@ -5415,7 +5415,7 @@ public final class CmsSecurityManager {
         }
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRole(dbc, CmsRole.USER_MANAGER);
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
             m_driverManager.deleteUser(dbc, context.currentProject(), user.getId());
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_USER_1, user.getName()), e);

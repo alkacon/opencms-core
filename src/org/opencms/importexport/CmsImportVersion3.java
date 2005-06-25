@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2005/06/25 12:45:06 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.65 $ 
+ * @version $Revision: 1.66 $ 
  * 
  * @since 6.0.0 
  * 
@@ -147,7 +147,7 @@ public class CmsImportVersion3 extends A_CmsImport {
         m_importingChannelData = false;
         try {
             // first import the user information
-            if (cms.hasRole(CmsRole.USER_MANAGER)) {
+            if (cms.hasRole(CmsRole.ACCOUNT_MANAGER)) {
                 importGroups();
                 importUsers();
             }

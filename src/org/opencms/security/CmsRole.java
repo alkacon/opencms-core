@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/25 12:45:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.List;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,7 +92,7 @@ public final class CmsRole {
 
     /** The "PROJECT_MANAGER" role. */
     public static final CmsRole PROJECT_MANAGER = new CmsRole("PROJECT_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
-    
+
     /** The "PROPERTY_MANAGER" role. */
     public static final CmsRole PROPERTY_MANAGER = new CmsRole(
         "PROPERTY_MANAGER",
@@ -117,8 +117,11 @@ public final class CmsRole {
         "SCHEDULER_MANAGER",
         new CmsRole[] {CmsRole.ADMINISTRATOR});
 
-    /** The "USER_MANAGER" role. */
-    public static final CmsRole USER_MANAGER = new CmsRole("USER_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
+    /** The "SEARCH_MANAGER" role. */
+    public static final CmsRole SEARCH_MANAGER = new CmsRole("SEARCH_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
+
+    /** The "ACCOUNT_MANAGER" role. */
+    public static final CmsRole ACCOUNT_MANAGER = new CmsRole("ACCOUNT_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
 
     /** The "VFS_MANAGER" role. */
     public static final CmsRole VFS_MANAGER = new CmsRole("VFS_MANAGER", new CmsRole[] {CmsRole.ADMINISTRATOR});
@@ -135,7 +138,7 @@ public final class CmsRole {
 
     /** The "WORKPLACE_USER" role. */
     public static final CmsRole WORKPLACE_USER = new CmsRole("WORKPLACE_USER", new CmsRole[] {CmsRole.ADMINISTRATOR});
-    
+
     /** 
      * The "SYSTEM_USER" role.<p>
      *
@@ -227,11 +230,12 @@ public final class CmsRole {
 
         // TODO: Don't base all roles only on the "Administrator" group
         MODULE_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
-        USER_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
+        ACCOUNT_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
         EXPORT_DATABASE.m_groupName = defaultUsers.getGroupAdministrators();
         IMPORT_DATABASE.m_groupName = defaultUsers.getGroupAdministrators();
         DEVELOPER.m_groupName = defaultUsers.getGroupAdministrators();
         SCHEDULER_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
+        SEARCH_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
         VFS_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
         RESOURCE_TYPE_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
         HISTORY_MANAGER.m_groupName = defaultUsers.getGroupAdministrators();
@@ -246,11 +250,12 @@ public final class CmsRole {
             PROJECT_MANAGER,
             WORKPLACE_USER,
             MODULE_MANAGER,
-            USER_MANAGER,
+            ACCOUNT_MANAGER,
             EXPORT_DATABASE,
             IMPORT_DATABASE,
             DEVELOPER,
             SCHEDULER_MANAGER,
+            SEARCH_MANAGER,
             VFS_MANAGER,
             RESOURCE_TYPE_MANAGER,
             HISTORY_MANAGER,
