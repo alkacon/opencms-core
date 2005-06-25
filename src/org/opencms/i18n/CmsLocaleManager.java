@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/06/25 12:03:26 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/06/25 12:03:55 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -451,6 +451,27 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the "best" default locale for the given resource.<p>
+     * 
+     * @param cms the current cms permission object
+     * @param resourceName the name of the resource
+     * @return an array of default locale names
+     * 
+     * @see #getDefaultLocales(CmsObject, String)
+     */
+    public Locale getDefaultLocale(CmsObject cms, String resourceName) {
+
+        List defaultLocales = getDefaultLocales(cms, resourceName);
+        Locale result;
+        if (defaultLocales.size() > 0) {
+            result = (Locale)defaultLocales.get(0);
+        } else {
+            result = getDefaultLocale();
+        }
+        return result;
+    }
+
+    /**
      * Returns the list of default locale names configured in <code>opencms.properties</code>.<p>
      * 
      * @return the list of default locale names, e.g. <code>en, de</code>
@@ -491,27 +512,6 @@ public class CmsLocaleManager implements I_CmsEventListener {
         } else {
             return result;
         }
-    }
-    
-    /**
-     * Returns the "best" default locale for the given resource.<p>
-     * 
-     * @param cms the current cms permission object
-     * @param resourceName the name of the resource
-     * @return an array of default locale names
-     * 
-     * @see #getDefaultLocales(CmsObject, String)
-     */
-    public Locale getDefaultLocale(CmsObject cms, String resourceName) {
-        
-        List defaultLocales = getDefaultLocales(cms, resourceName);
-        Locale result;
-        if (defaultLocales.size() > 0) {
-            result = (Locale)defaultLocales.get(0);
-        } else {
-            result = getDefaultLocale();
-        }
-        return result;        
     }
 
     /**

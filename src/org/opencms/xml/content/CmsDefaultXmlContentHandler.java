@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/06/25 12:03:26 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -45,11 +46,13 @@ import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -62,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -316,10 +319,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     public void resolveMapping(CmsObject cms, CmsXmlContent content, I_CmsXmlContentValue value) throws CmsException {
 
-        // TODO: this implememtation does not handle multiple mappings to a key,
-        // e.g. it may be possible for several nested schema to map somehting to the "Title" property
-        // in the current implementation the result (i.e. which mappings "wins") is undefined
-
         if (!value.isSimpleType()) {
             // no mappings for a nested schema are possible
             // note that the sub-elemenets of the nested schema ARE mapped by the node visitor,
@@ -338,46 +337,75 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             throw new CmsXmlException(Messages.get().container(Messages.ERR_XMLCONTENT_RESOLVE_FILE_NOT_FOUND_0));
         }
 
-        // get filename
-        String filename = cms.getSitePath(content.getFile());
-
-        // get the mapping for the element name
-        String mapping = getMapping(value.getName());
+        // get the mapping for the element name        
+        String mapping = getMapping(value.getPath());
 
         if (CmsStringUtil.isNotEmpty(mapping)) {
 
-            // get the string value of the current node
-            String stringValue = value.getStringValue(cms);
+            // get root path of the file 
+            String rootPath = content.getFile().getRootPath();
 
-            if (mapping.startsWith(C_MAPTO_PROPERTY)) {
+            try {
+                // try / catch to ensure site root is always restored
+                cms.getRequestContext().saveSiteRoot();
+                cms.getRequestContext().setSiteRoot("/");
 
-                // this is a property mapping
-                String property = mapping.substring(C_MAPTO_PROPERTY.length());
-                // just store the string value in the selected property
-                cms.writePropertyObject(filename, new CmsProperty(property, stringValue, null));
+                // read all siblings of the file
+                List siblings = cms.readSiblings(rootPath, CmsResourceFilter.IGNORE_EXPIRATION);
 
-            } else if (mapping.startsWith(C_MAPTO_ATTRIBUTE)) {
+                // for multilanguage mappings, we need to ensure 
+                // a) all siblings are handled
+                // b) only the "right" locale is mapped to a sibling
 
-                // this is an attribute mapping                        
-                String attribute = mapping.substring(C_MAPTO_ATTRIBUTE.length());
-                switch (C_ATTRIBUTES_LIST.indexOf(attribute)) {
-                    case 0: // datereleased
-                        long date;
-                        date = Long.valueOf(stringValue).longValue();
-                        if (date == 0) {
-                            date = CmsResource.DATE_RELEASED_DEFAULT;
+                for (int i = 0; i < siblings.size(); i++) {
+                    // get filename
+                    String filename = ((CmsResource)siblings.get(i)).getRootPath();
+                    Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, filename);
+
+                    if (!locale.equals(value.getLocale())) {
+                        // only map property if the locale fits
+                        continue;
+                    }
+
+                    // get the string value of the current node
+                    String stringValue = value.getStringValue(cms);
+
+                    if (mapping.startsWith(C_MAPTO_PROPERTY)) {
+
+                        // this is a property mapping
+                        String property = mapping.substring(C_MAPTO_PROPERTY.length());
+                        // just store the string value in the selected property
+                        cms.writePropertyObject(filename, new CmsProperty(property, stringValue, null));
+
+                    } else if (mapping.startsWith(C_MAPTO_ATTRIBUTE)) {
+
+                        // this is an attribute mapping                        
+                        String attribute = mapping.substring(C_MAPTO_ATTRIBUTE.length());
+                        switch (C_ATTRIBUTES_LIST.indexOf(attribute)) {
+                            case 0: // datereleased
+                                long date;
+                                date = Long.valueOf(stringValue).longValue();
+                                if (date == 0) {
+                                    date = CmsResource.DATE_RELEASED_DEFAULT;
+                                }
+                                file.setDateReleased(date);
+                                break;
+                            case 1: // dateexpired
+                                date = Long.valueOf(stringValue).longValue();
+                                if (date == 0) {
+                                    date = CmsResource.DATE_EXPIRED_DEFAULT;
+                                }
+                                file.setDateExpired(date);
+                                break;
+                            default: 
+                                // TODO: handle invalid / other mappings                                
                         }
-                        file.setDateReleased(date);
-                        break;
-                    case 1: // dateexpired
-                        date = Long.valueOf(stringValue).longValue();
-                        if (date == 0) {
-                            date = CmsResource.DATE_EXPIRED_DEFAULT;
-                        }
-                        file.setDateExpired(date);
-                        break;
-                    default: // TODO: handle invalid / other mappings                                
+                    }
                 }
+
+            } finally {
+                // restore the saved site root
+                cms.getRequestContext().restoreSiteRoot();
             }
         }
     }
@@ -473,7 +501,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 elementName));
         }
 
-        m_elementMappings.put(elementName, mapping);
+        // store mappings as Xpath to allow better control about what is mapped
+        String xpath = CmsXmlUtils.createXpath(elementName, 1);
+        m_elementMappings.put(xpath, mapping);
     }
 
     /**

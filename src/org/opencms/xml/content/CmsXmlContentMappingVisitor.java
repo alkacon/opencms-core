@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentMappingVisitor.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/25 12:03:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.xml.content;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import org.apache.commons.logging.Log;
@@ -46,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,6 +61,9 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
 
     /** The XML content the mappings are resolved for. */
     CmsXmlContent m_content;
+
+    /** The "main" content definition, used for all mappings. */
+    CmsXmlContentDefinition m_definition;
 
     /** The error handler instance that stores the errors and warnings found. */
     CmsXmlContentErrorHandler m_errorHandler;
@@ -75,6 +79,7 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
         // store references
         m_cms = cms;
         m_content = content;
+        m_definition = content.getContentDefinition();
     }
 
     /**
@@ -97,7 +102,7 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
         }
 
         try {
-            value.getContentDefinition().getContentHandler().resolveMapping(m_cms, m_content, value);
+            m_definition.getContentHandler().resolveMapping(m_cms, m_content, value);
         } catch (CmsException e) {
             LOG.error(Messages.get().key(Messages.LOG_XMLCONTENT_RESOLVE_MAPPING_1, value.getPath()), e);
         }

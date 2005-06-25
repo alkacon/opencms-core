@@ -27,7 +27,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.workplace.workplace" />			
+			<resourcebundle name="org.opencms.xml.content.testmessages" />			
 			<validationrules>
 				<rule element="Test" regex="!.*err.*" message="${validation.path}: ${key.editor.xmlcontent.validation.error|${validation.value}|${validation.regex}}" />
 				<rule element="Test" regex="!.*warn.*" type="warning" message=" ${validation.path}: ${key.editor.xmlcontent.validation.warning|${validation.value}|${validation.regex}}" />

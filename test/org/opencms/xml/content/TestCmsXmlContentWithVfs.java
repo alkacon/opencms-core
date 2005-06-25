@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/06/24 16:26:49 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/06/25 12:03:26 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,6 +56,7 @@ import org.opencms.xml.types.CmsXmlStringValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -69,7 +70,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -118,6 +119,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationExtended"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationLocale"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMappings"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testMappingsWithManyLocales"));   
+        suite.addTest(new TestCmsXmlContentWithVfs("testMappingsOfNestedContent"));        
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundle"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMacros"));
 
@@ -798,12 +801,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         value1 = xmlcontent.addValue(cms, "Option", Locale.ENGLISH, 0);
         assertEquals(
-            "Author: Hans Mustermann (Admin), Heidestraße 17, München - hans.mustermann@germany.de",
+            "The author is: Hans Mustermann (Admin), Heidestraße 17, München - hans.mustermann@germany.de",
             value1.getStringValue(cms));
 
         value1 = xmlcontent.addValue(cms, "Option", Locale.GERMAN, 0);
         assertEquals(
-            "Author: Hans Mustermann (Admin), Heidestraße 17, München - hans.mustermann@germany.de",
+            "Der Autor ist: Hans Mustermann (Admin), Heidestraße 17, München - hans.mustermann@germany.de",
             value1.getStringValue(cms));
 
         // output the current document
@@ -832,8 +835,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
 
-        String iso = "ISO-8859-1";
-
         String content;
         CmsXmlContent xmlcontent;
 
@@ -842,11 +843,11 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             "org/opencms/xml/content/xmlcontent-definition-8.xsd",
             CmsEncoder.C_UTF8_ENCODING);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_8, content.getBytes(iso));
+        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_ISO_8859_1));
 
         // now read the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", iso);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, iso, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", CmsEncoder.ENCODING_ISO_8859_1);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_ISO_8859_1, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
 
@@ -855,7 +856,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         cms.createResource(
             resourcename,
             OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
-            content.getBytes(iso),
+            content.getBytes(CmsEncoder.ENCODING_ISO_8859_1),
             Collections.EMPTY_LIST);
 
         CmsFile file = cms.readFile(resourcename);
@@ -870,11 +871,151 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         value = xmlcontent.addValue(cms, "String", Locale.ENGLISH, 0);
         value.setStringValue(cms, titleStr);
 
-        file.setContents(xmlcontent.toString().getBytes(iso));
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
         cms.writeFile(file);
 
         titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
         assertEquals(titleStr, titleProperty.getValue());
+    }
+    
+    
+    /**
+     * Tests the element mappings from the appinfo node if there is more then one locale.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testMappingsWithManyLocales() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing mapping of values in the XML content with locales");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+        CmsXmlContent xmlcontent;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-8.xsd",
+            CmsEncoder.C_UTF8_ENCODING);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+
+        // now read the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", CmsEncoder.ENCODING_ISO_8859_1);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_ISO_8859_1, resolver);
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+        
+        // create "en" property
+        List properties = new ArrayList();
+        properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
+
+        String resourcenameEn = "/mappingtext_en.html";
+        String resourcenameDe = "/mappingtext_de.html";
+        // create a file in the VFS with this content (required for mappings to work)
+        cms.createResource(
+            resourcenameEn,
+            OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
+            content.getBytes(CmsEncoder.ENCODING_ISO_8859_1),
+            properties);
+
+        // copy the resource as a sibling to "de"
+        cms.copyResource(resourcenameEn, resourcenameDe, org.opencms.main.I_CmsConstants.C_COPY_AS_SIBLING);
+        // now lock the "DE" sibling
+        cms.changeLock(resourcenameDe);
+        // add the "DE" locale property to the german version
+        cms.writePropertyObject(resourcenameDe, new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.GERMAN.toString(), null));
+        
+        CmsFile file = cms.readFile(resourcenameDe);
+        xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
+
+        xmlcontent.addLocale(cms, Locale.GERMAN);
+        if (! xmlcontent.hasLocale(Locale.ENGLISH)) {
+           xmlcontent.addLocale(cms, Locale.ENGLISH);
+        }
+        
+        String titleStrEn = "This must be the Title in EN";
+        I_CmsXmlContentValue value;
+        value = xmlcontent.addValue(cms, "String", Locale.ENGLISH, 0);
+        value.setStringValue(cms, titleStrEn);
+        
+        String titleStrDe = "Das ist der Title in DE";
+        value = xmlcontent.addValue(cms, "String", Locale.GERMAN, 0);
+        value.setStringValue(cms, titleStrDe);
+
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+        // finally unlock the resource
+        cms.unlockResource(resourcenameDe);
+        
+        // now check if the properties have been assigned as required to the locales
+        CmsProperty titlePropertyEn = cms.readPropertyObject(resourcenameEn, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertEquals(titleStrEn, titlePropertyEn.getValue());
+        
+        CmsProperty titlePropertyDe = cms.readPropertyObject(resourcenameDe, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertEquals(titleStrDe, titlePropertyDe.getValue());
+    }
+    
+    /**
+     * Tests the element mappings from the appinfo node for nested XML content.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testMappingsOfNestedContent() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing mapping of values in the XML content with nested elements");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+        CmsXmlContent xmlcontent;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-7.xsd",
+            CmsEncoder.C_UTF8_ENCODING);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+
+        // now read the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.C_UTF8_ENCODING);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+
+        String resourcename = "/mappingtest_nested.html";
+        // create a file in the VFS with this content (required for mappings to work)
+        cms.createResource(
+            resourcename,
+            OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
+            content.getBytes(CmsEncoder.ENCODING_ISO_8859_1),
+            Collections.EMPTY_LIST);
+
+        CmsFile file = cms.readFile(resourcename);
+        xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
+
+        CmsProperty titleProperty;
+        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertSame(titleProperty, CmsProperty.getNullProperty());
+
+        String titleStr = "This must be the Title (not nested)";
+        I_CmsXmlContentValue value;
+        value = xmlcontent.getValue("Test", Locale.ENGLISH);
+        assertEquals(value.getStringValue(cms), "Another Test");  
+        value.setStringValue(cms, titleStr);
+        
+        String descStr = "This must be the Description (which IS nested)";
+        value = xmlcontent.getValue("Cascade/Toast", Locale.ENGLISH);
+        assertEquals(value.getStringValue(cms), "Toast");        
+        value.setStringValue(cms, descStr);
+
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+
+        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertEquals(titleStr, titleProperty.getValue());
+        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        assertEquals(descStr, titleProperty.getValue());
     }
 
     /**
