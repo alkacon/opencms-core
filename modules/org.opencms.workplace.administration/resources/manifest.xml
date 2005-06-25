@@ -585,7 +585,11 @@
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
 				</property>
-				<property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+                <property>
 					<name>Title</name>
 					<value><![CDATA[Administration View]]></value>
 				</property>

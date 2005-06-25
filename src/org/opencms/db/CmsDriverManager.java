@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/23 18:06:27 $
- * Version: $Revision: 1.533 $
+ * Date   : $Date: 2005/06/25 08:40:38 $
+ * Version: $Revision: 1.534 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,7 +112,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.533 $
+ * @version $Revision: 1.534 $
  * 
  * @since 6.0.0
  */
@@ -1359,11 +1359,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public CmsGroup createGroup(CmsDbContext dbc, CmsUUID id, String name, String description, int flags, String parent)
     throws CmsIllegalArgumentException, CmsDataAccessException {
 
-        name = name.trim();
-        validFilename(name);
-
         // check the lenght of the groupname
-        if (name.length() > 1) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+            name = name.trim();
             return m_userDriver.createGroup(dbc, id, name, description, flags, parent, null);
         } else {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_GROUPNAME_1, name));
