@@ -323,10 +323,6 @@
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
@@ -431,10 +427,6 @@
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
@@ -487,10 +479,6 @@
 				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -595,10 +583,6 @@
 				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -723,10 +707,6 @@
 					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
@@ -785,10 +765,6 @@
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
@@ -841,10 +817,6 @@
 				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -905,10 +877,6 @@
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>NavPos</name>
 					<value><![CDATA[6]]></value>
 				</property>
@@ -957,10 +925,6 @@
 				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -1013,10 +977,6 @@
 					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -1067,10 +1027,6 @@
 					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -1119,10 +1075,6 @@
 				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -1191,10 +1143,6 @@
 					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -1224,10 +1172,6 @@
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Report for exporting modules]]></value>
 				</property>
@@ -1248,10 +1192,6 @@
 				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -1282,10 +1222,6 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
 					<name>Title</name>

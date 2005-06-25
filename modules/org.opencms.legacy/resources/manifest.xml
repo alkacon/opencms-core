@@ -1907,10 +1907,6 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -1961,10 +1957,6 @@
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Dialog - Delete property]]></value>
 				</property>
@@ -2007,10 +1999,6 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -2052,10 +2040,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -2101,10 +2085,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -2497,10 +2477,6 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Download Gallery Overview]]></value>
@@ -2545,10 +2521,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -2595,10 +2567,6 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Image Gallery Overview]]></value>
@@ -2644,10 +2612,6 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Link Gallery Overview]]></value>
@@ -2692,10 +2656,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -2768,10 +2728,6 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -2813,10 +2769,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -4034,10 +3986,6 @@
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Search index page]]></value>
 				</property>
@@ -4080,10 +4028,6 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -4104,10 +4048,6 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -4231,10 +4171,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>

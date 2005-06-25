@@ -568,10 +568,6 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>cache</name>
 					<value><![CDATA[uri;user]]></value>
 				</property>
@@ -696,10 +692,6 @@ It will also remove the "default" template.</p>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Checks for required libraries]]></value>
@@ -727,10 +719,6 @@ It will also remove the "default" template.</p>
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Simple user login element]]></value>
 				</property>
@@ -755,10 +743,6 @@ It will also remove the "default" template.</p>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -938,10 +922,6 @@ It will also remove the "default" template.</p>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>

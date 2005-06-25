@@ -174,10 +174,6 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Download Gallery Overview]]></value>
@@ -247,10 +243,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -322,10 +314,6 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Table Gallery Overview]]></value>
@@ -396,10 +384,6 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Image Gallery Overview]]></value>
@@ -469,10 +453,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
 				</property>
 				<property>
 					<name>Title</name>

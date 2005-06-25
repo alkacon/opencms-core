@@ -157,10 +157,6 @@
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
 				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -212,10 +208,6 @@
 				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -272,10 +264,6 @@
 					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
 				</property>
 				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -324,10 +312,6 @@
 				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -383,10 +367,6 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[1]]></value>
@@ -439,10 +419,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -498,10 +474,6 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[3]]></value>
@@ -555,10 +527,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -644,10 +612,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
 				</property>
@@ -720,10 +684,6 @@
 					<value><![CDATA[bypass]]></value>
 				</property>
 				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -752,10 +712,6 @@
 				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>

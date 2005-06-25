@@ -167,10 +167,6 @@ The version of HtmlArea is 3.0 RC1.</p>
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[HtmlArea WYSIWYG editor]]></value>
 				</property>

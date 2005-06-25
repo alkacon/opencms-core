@@ -254,10 +254,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -330,10 +326,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
