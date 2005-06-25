@@ -60,7 +60,7 @@ String editId = "directedit_".concat(String.valueOf(rnd.nextInt()));
 //-->
 </script>
 <div class="ocms_de_bt" id="buttons_<%= editId %>">
-<form name="form_<%= editId %>" id="form_<%= editId %>" method="post" action="<%= editLink %>" class="ocms_nomargin">
+<form name="form_<%= editId %>" id="form_<%= editId %>" method="post" action="<%= editLink %>" class="ocms_nomargin" target="_top">
 <input type="hidden" name="resource" value="<%= editTarget %>">
 <input type="hidden" name="directedit" value="true">
 <input type="hidden" name="elementlanguage" value="<%= editLocale %>">
