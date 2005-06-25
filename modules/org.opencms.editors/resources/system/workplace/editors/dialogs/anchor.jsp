@@ -19,6 +19,7 @@ function pasteLink() {
 	linkInformation["href"] = "";
 	linkInformation["name"] = document.NEU.linkanchor.value;
 	linkInformation["target"] = "";
+	linkInformation["title"] = "";
 	if (linkEditorStyleInputs) {
 		linkInformation["style"] = document.NEU.linkstyle.value;
 		linkInformation["class"] = document.NEU.linkstyleclass.value;

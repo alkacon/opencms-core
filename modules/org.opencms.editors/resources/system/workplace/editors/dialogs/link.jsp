@@ -40,6 +40,7 @@ function pasteLink() {
 	linkInformation["href"] = linkAnchor;
 	linkInformation["name"] = "";
 	linkInformation["target"] = linktarget;
+	linkInformation["title"] = "";
 	if (linkEditorStyleInputs) {
 		linkInformation["style"] = document.NEU.linkstyle.value;
 		linkInformation["class"] = document.NEU.linkstyleclass.value;

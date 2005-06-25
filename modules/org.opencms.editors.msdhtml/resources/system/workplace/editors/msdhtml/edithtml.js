@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.msdhtml/resources/system/workplace/editors/msdhtml/Attic/edithtml.js,v $
- * Date   : $Date: 2005/06/24 09:03:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/25 15:18:43 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -140,6 +140,12 @@ function createLink(linkInformation) {
 	  			} else {
 	      			el.removeAttribute("HREF", false);
 	  			}
+	  			
+	  			if (linkInformation["title"].length > 0) {	
+	      			el.setAttribute("TITLE", linkInformation["title"], 0);
+	  			} else {
+	      			el.removeAttribute("TITLE", false);
+	  			}
 	
 	  			if ((linkInformation["target"].length > 0) && (linkInformation["href"].length > 0)) {
 	      			el.target = linkInformation["target"];
@@ -167,6 +173,9 @@ function createLink(linkInformation) {
 			if((linkInformation["target"].length > 0) && (linkInformation["href"].length > 0)) {			  
 				thelink += "target='"+linkInformation["target"]+"' ";
 			}					  
+			if (linkInformation["title"].length > 0) { 
+				thelink += "title='"+linkInformation["title"]+"' ";
+			}
 			if (USE_LINKSTYLEINPUTS) {
 				if(linkInformation["style"].length > 0) {		  
 					thelink += "style='"+linkInformation["style"]+"' ";

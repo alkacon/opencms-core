@@ -25,7 +25,7 @@
 		%>
 			if (top.window.opener.hasSelectedText() == true) {
 				// text selected.
-				setLink(uri);
+				setLink(uri, title);
 			} else {
 				pasteLink(uri, title, desc);
 			}
@@ -45,6 +45,7 @@
 		linkInformation["target"] = document.form.linktarget.options[document.form.linktarget.selectedIndex].value;
 		linkInformation["style"] = "";
 		linkInformation["class"] = "";
+		linkInformation["title"] = title;
 		top.window.opener.getSelectedLink();
 		top.window.opener.createLink(linkInformation);
 		top.window.close();

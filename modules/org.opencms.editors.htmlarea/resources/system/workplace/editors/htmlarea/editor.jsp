@@ -294,6 +294,9 @@ function createLink(linkInformation) {
 				linkAnchor += ' href="' + linkInformation["href"] + '"';
 				linkAnchor += ' target="' + linkInformation["target"] + '"';
 			}
+			if (linkInformation["title"] != null && linkInformation["title"] != "") {
+				linkAnchor += ' title="' + linkInformation["title"] + '"';
+			} 
 			if (USE_LINKSTYLEINPUTS) { 
 				if (linkInformation["style"] != "") {
 					linkAnchor += ' style="' + linkInformation["style"] + '"';
@@ -347,6 +350,12 @@ function createLink(linkInformation) {
 		
 	}
 	
+	if (linkInformation["title"] != null && linkInformation["title"] != "") {
+		a.title = linkInformation["title"];
+	} else {
+		a.removeAttribute("title");
+	}
+	
 	if (USE_LINKSTYLEINPUTS) {
 		if (linkInformation["style"] != "") {
 			// does not work: a.style.setAttribute("CSSTEXT", linkInformation["style"]);
@@ -359,7 +368,6 @@ function createLink(linkInformation) {
 			a.removeAttribute("class");
 		}
 	}
-	
 	__editor.selectNodeContents(a);
 	__editor.updateToolbar();
 }
