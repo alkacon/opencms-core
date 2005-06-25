@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Attic/CmsRfsFileDownloadServlet.java,v $
- * Date   : $Date: 2005/06/25 15:40:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/25 16:51:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,7 +121,7 @@ public final class CmsRfsFileDownloadServlet extends HttpServlet {
 
             CmsFlexController controller = CmsFlexController.getController(req);
             res = controller.getTopResponse();
-            res.setContentType("application/download");
+            res.setContentType("application/octet-stream");
 
             InputStream in = null;
 
