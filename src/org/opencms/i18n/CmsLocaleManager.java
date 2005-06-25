@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/06/25 12:03:26 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -463,9 +463,15 @@ public class CmsLocaleManager implements I_CmsEventListener {
     /**
      * Returns an array of default locales for the given resource.<p>
      * 
+     * Use this method in case you need to get all available default options for a resource,
+     * if you just need the "best" default locale for a resource, 
+     * use <code>{@link #getDefaultLocale(CmsObject, String)}</code>.<p>
+     * 
      * @param cms the current cms permission object
      * @param resourceName the name of the resource
      * @return an array of default locale names
+     * 
+     * @see #getDefaultLocale(CmsObject, String)
      */
     public List getDefaultLocales(CmsObject cms, String resourceName) {
 
@@ -485,6 +491,27 @@ public class CmsLocaleManager implements I_CmsEventListener {
         } else {
             return result;
         }
+    }
+    
+    /**
+     * Returns the "best" default locale for the given resource.<p>
+     * 
+     * @param cms the current cms permission object
+     * @param resourceName the name of the resource
+     * @return an array of default locale names
+     * 
+     * @see #getDefaultLocales(CmsObject, String)
+     */
+    public Locale getDefaultLocale(CmsObject cms, String resourceName) {
+        
+        List defaultLocales = getDefaultLocales(cms, resourceName);
+        Locale result;
+        if (defaultLocales.size() > 0) {
+            result = (Locale)defaultLocales.get(0);
+        } else {
+            result = getDefaultLocale();
+        }
+        return result;        
     }
 
     /**
