@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDownloadDialog.java,v $
- * Date   : $Date: 2005/06/24 14:02:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/25 15:40:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,8 +112,18 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
         result.append("    <td>");
         result.append(Messages.get().key(Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FNAME_0));
         result.append(":</td>\n");
-        result.append("    <td class=\"dialogerror\"><b>");
-        result.append(m_downloadFile.getName());
+        result.append("    <td ><b>");
+
+        result.append("      <a name=\"ok\" target=\"_self\" class=\"dialogerror\" href=\"");
+        result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp?filePath=")).append(
+            m_downloadFile.getAbsolutePath().replace('\\', '/')).append("\">");
+        result.append(org.opencms.workplace.Messages.get().key(
+            getLocale(),
+            org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_DOWNLOAD_0,
+            null));
+        result.append(" ").append(m_downloadFile.getName());
+        result.append("      </a>\r\n");
+
         result.append("</b></td>\r\n");
         result.append("  </tr>\r\n");
 
@@ -164,15 +174,14 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
         StringBuffer result = new StringBuffer();
         result.append("<!-- button row start -->\r\n");
         result.append("<div class=\"dialogbuttons\" unselectable=\"on\">\r\n");
-        result.append("<a name=\"ok\" class=\"inputButton\" target=\"_self\" href=\"");
-        result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp?filePath=")).append(
-            m_downloadFile.getAbsolutePath().replace('\\', '/')).append("\">");
-        result.append(org.opencms.workplace.Messages.get().key(
+        result.append("  <p>\r\n    ");
+        result.append(Messages.get().key(
             getLocale(),
-            org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_DOWNLOAD_0,
-            null));
-        result.append("</a>\r\n");
-        result.append("<input name=\"cancel\" type=\"button\" value=\"");
+            Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_INSTRUCTION_1,
+            new Object[] {m_downloadFile.getName()}));
+        result.append("  </p>\r\n");
+
+        result.append("<input name=\"back\" type=\"button\" value=\"");
         result.append(org.opencms.workplace.Messages.get().key(
             getLocale(),
             org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_BACK_0,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Attic/CmsRfsFileDownloadServlet.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/25 15:40:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,12 +120,18 @@ public final class CmsRfsFileDownloadServlet extends HttpServlet {
             res.setContentLength((int)downloadFile.length());
 
             CmsFlexController controller = CmsFlexController.getController(req);
-            controller.getTopResponse().setContentType("application/download");
+            res = controller.getTopResponse();
+            res.setContentType("application/download");
 
             InputStream in = null;
-            ServletOutputStream outStream = null;
 
             // push the file:
+            ServletOutputStream outStream = null;
+
+            // getOutputStream() throws IllegalStateException if this servlet 
+            // is triggered from jsp if the jsp directive buffer="none" is set. 
+            // In that case the tomcat jsp-compiler accesses getWriter() before 
+            // this call!!!
             outStream = res.getOutputStream();
             in = new BufferedInputStream(new FileInputStream(downloadFile));
 
