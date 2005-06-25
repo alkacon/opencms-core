@@ -169,6 +169,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -199,6 +203,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[true]]></value>
@@ -217,6 +225,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[true]]></value>

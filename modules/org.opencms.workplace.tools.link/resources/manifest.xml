@@ -153,6 +153,10 @@
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
 				</property>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[1]]></value>
@@ -235,6 +239,10 @@
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
 				</property>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[3]]></value>
@@ -276,6 +284,10 @@
 				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsOnlyAdminToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>

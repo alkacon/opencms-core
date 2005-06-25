@@ -167,6 +167,10 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>

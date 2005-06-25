@@ -154,6 +154,10 @@
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -204,9 +208,9 @@
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
 				</property>
-				<property>
+				<property type="shared">
 					<name>cache</name>
-					<value><![CDATA[false]]></value>
+					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -250,6 +254,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -275,6 +283,10 @@
 				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.projects.CmsProjectsToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -327,6 +339,10 @@
 					<value><![CDATA[org.opencms.workplace.tools.projects.CmsProjectsToolHandler]]></value>
 				</property>
 				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property type="shared">
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
 				</property>
@@ -376,6 +392,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -422,6 +442,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -472,6 +496,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>

@@ -537,7 +537,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
+				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
 				</property>
@@ -559,7 +559,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
+				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
 				</property>
@@ -581,7 +581,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
+				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
 				</property>
@@ -603,7 +603,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
+				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
 				</property>
@@ -625,7 +625,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
+				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
 				</property>
@@ -647,7 +647,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
+				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
 				</property>
@@ -669,7 +669,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
+				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
 				</property>
