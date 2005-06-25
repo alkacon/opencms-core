@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/25 09:10:09 $
- * Version: $Revision: 1.139 $
+ * Date   : $Date: 2005/06/25 10:35:46 $
+ * Version: $Revision: 1.140 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace;
 
+import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.139 $ 
+ * @version $Revision: 1.140 $ 
  * 
  * @since 6.0.0 
  */
@@ -2052,9 +2053,20 @@ public abstract class CmsWorkplace {
         if (settings.getProject() != reqCont.currentProject().getId()) {
             try {
                 reqCont.setCurrentProject(cms.readProject(settings.getProject()));
-            } catch (CmsException e) {
+            } catch (CmsDbEntryNotFoundException e) {
+                try {
+                    // project not found, set current project and settings to online project
+                    reqCont.setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+                    settings.setProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                } catch (CmsException ex) {
+                    // log error
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(ex.getLocalizedMessage());
+                    }
+                }
+            } catch (CmsException e1) {
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
+                    LOG.info(e1.getLocalizedMessage());
                 }
             }
         }

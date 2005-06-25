@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/24 15:51:09 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2005/06/25 10:35:46 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.85 $
+ * @version $Revision: 1.86 $
  * 
  * @since 6.0.0
  */
@@ -1342,20 +1342,13 @@ public final class CmsSecurityManager {
             throw new CmsVfsException(org.opencms.file.Messages.get().container(
                 org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
         }
-        
-        if (projectId == context.currentProject().getId()) {
-            // current project must not be deleted
-            throw new CmsVfsException(Messages.get().container(
-                Messages.ERR_DELETE_PROJECT_CURRENT_1,
-                context.currentProject().getName()));
-        }
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsProject deleteProject = null;
-        try {
+        try { 
             // read the project that should be deleted
             deleteProject = m_driverManager.readProject(dbc, projectId);
-            checkManagerOfProjectRole(dbc, context.currentProject());
+            checkManagerOfProjectRole(dbc, deleteProject);
             m_driverManager.deleteProject(dbc, deleteProject);
         } catch (Exception e) {
             String projectName = deleteProject == null ? String.valueOf(projectId) : deleteProject.getName();

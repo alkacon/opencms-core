@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsPublishProjectReport.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/25 10:35:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,12 +36,14 @@ import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.report.I_CmsReportThread;
 import org.opencms.workplace.list.A_CmsListReport;
 import org.opencms.workplace.threads.CmsPublishThread;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -49,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,5 +122,28 @@ public class CmsPublishProjectReport extends A_CmsListReport {
     public void setParamProjectid(String projectId) {
 
         m_paramProjectid = projectId;
+    }
+    
+    
+    /**
+     * @see org.opencms.workplace.list.A_CmsListReport#displayReport()
+     */
+    public void displayReport() throws JspException {
+
+        switch (getAction()) {
+            case ACTION_REPORT_BEGIN:
+            case ACTION_CONFIRMED:
+            case ACTION_DEFAULT:
+            default:
+                try {
+                    if (getCms().readProject(new Integer(getParamProjectid()).intValue()).getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
+                        // set the flag that this is a temporary project
+                        setParamRefreshWorkplace("true");
+                    }
+                } catch (Exception e) {
+                    // ignore
+                }
+        }
+        super.displayReport();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/24 16:42:52 $
- * Version: $Revision: 1.208 $
+ * Date   : $Date: 2005/06/25 10:35:46 $
+ * Version: $Revision: 1.209 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -125,7 +125,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.208 $ 
+ * @version $Revision: 1.209 $ 
  * 
  * @since 6.0.0 
  */
@@ -1846,7 +1846,13 @@ public final class OpenCmsCore {
     throws CmsException {
 
         CmsUser user = m_securityManager.readUser(userName);
-        CmsProject project = m_securityManager.readProject(projectId);
+        CmsProject project = null;
+        try {
+            project = m_securityManager.readProject(projectId);
+        } catch (CmsDbEntryNotFoundException e) {
+            // project not found, switch to online project
+            project = m_securityManager.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        }
 
         // get requested resource uri
         String requestedResource = null;

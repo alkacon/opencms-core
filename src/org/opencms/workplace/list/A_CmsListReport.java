@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListReport.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/25 10:35:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,7 +106,7 @@ public abstract class A_CmsListReport extends CmsReport {
                 getJsp().include(C_FILE_REPORT_OUTPUT);
                 break;
             case ACTION_REPORT_BEGIN:
-
+            case ACTION_CONFIRMED:
             case ACTION_DEFAULT:
             default:
                 I_CmsReportThread m_thread = initializeThread();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/06/25 09:10:09 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2005/06/25 10:35:46 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.80 $ 
+ * @version $Revision: 1.81 $ 
  * 
  * @since 6.0.0 
  */
@@ -461,6 +462,12 @@ public class CmsFrameset extends CmsWorkplace {
         String project = request.getParameter(PARAM_WP_PROJECT);
         if (project != null) {
             m_reloadRequired = true;
+            try {
+                getCms().readProject(Integer.parseInt(project));
+            } catch (Exception e) {
+                // project not found, set online project
+                project = String.valueOf(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            }
             settings.setProject(Integer.parseInt(project));
         }
 
