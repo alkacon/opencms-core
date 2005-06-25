@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2005/05/19 08:57:22 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/25 11:19:03 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/25 11:19:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -208,7 +208,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
         // select the right language to use
         String currentLanguage = null;
 
-        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        CmsUserSettings settings = new CmsUserSettings(cms);
         currentLanguage = settings.getLocale().toString();
 
         while(keys.hasMoreElements()) {

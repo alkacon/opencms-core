@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/25 11:19:03 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * Implementation of editor tag used to provide settings to include tag.<p>
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -184,7 +184,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
             I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE,
             controller.getCmsObject().getRequestContext().getLocale().toString(),
             true);
-        CmsUserSettings settings = new CmsUserSettings(controller.getCmsObject().getRequestContext().currentUser());
+        CmsUserSettings settings = new CmsUserSettings(controller.getCmsObject());
         CmsJspTagInclude.addParameter(
             parameterMap,
             I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE,

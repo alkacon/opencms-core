@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/06/25 11:19:03 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  * 
@@ -712,7 +712,7 @@ public class CmsShell {
      */
     protected CmsUserSettings initSettings() {
 
-        m_settings = new CmsUserSettings(m_cms.getRequestContext().currentUser());
+        m_settings = new CmsUserSettings(m_cms);
         return m_settings;
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2005/06/08 15:48:00 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/06/25 11:19:03 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -152,7 +152,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
                     // check the settings
                     settings.checkValues(cms);                    
                     
-                    CmsUserSettings userSettings = new CmsUserSettings(cms.getRequestContext().currentUser());
+                    CmsUserSettings userSettings = new CmsUserSettings(cms);
                     userSettings.setSynchronizeSettings(settings);
                     userSettings.save(cms);
 
@@ -182,7 +182,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
             allResources = (String)session.getValue(C_SYNCRESOURCES);
         }
 
-        CmsUserSettings userSettings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        CmsUserSettings userSettings = new CmsUserSettings(cms);
         CmsSynchronizeSettings settings = userSettings.getSynchronizeSettings();
         if (settings == null) {
             settings = new CmsSynchronizeSettings();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/06/25 09:10:09 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/25 11:19:03 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -785,7 +785,7 @@ public class CmsExplorer extends CmsWorkplace {
      */
     private int getUserPreferences() {
 
-        CmsUserSettings settings = new CmsUserSettings(getCms().getRequestContext().currentUser());
+        CmsUserSettings settings = new CmsUserSettings(getCms());
         return settings.getExplorerSettings();
     }
 

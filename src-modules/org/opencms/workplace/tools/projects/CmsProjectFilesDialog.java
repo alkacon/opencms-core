@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/25 11:19:03 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -148,16 +148,13 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
         }
         boolean modeSet = false;
         try {
-            CmsUser user = getCms().getRequestContext().currentUser();
-            if (user != null) {
-                CmsUserSettings settings = new CmsUserSettings(user);
-                CmsUserProjectSettings prjSettings = settings.getProjectSettings();
-                if (prjSettings != null) {
-                    CmsProjectResourcesDisplayMode filter = prjSettings.getProjectFilesMode();
-                    if (filter != null) {
-                        getSettings().setExplorerProjectFilter(filter.toString());
-                        modeSet = true;
-                    }
+            CmsUserSettings settings = new CmsUserSettings(getCms());
+            CmsUserProjectSettings prjSettings = settings.getProjectSettings();
+            if (prjSettings != null) {
+                CmsProjectResourcesDisplayMode filter = prjSettings.getProjectFilesMode();
+                if (filter != null) {
+                    getSettings().setExplorerProjectFilter(filter.toString());
+                    modeSet = true;
                 }
             }
         } catch (Exception e) {

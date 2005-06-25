@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsContextmenue.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/25 11:19:03 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.w3c.dom.NodeList;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/25 11:19:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -87,7 +87,7 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement {
             // get the current langueag
             String currentLocale = null;
 
-            CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+            CmsUserSettings settings = new CmsUserSettings(cms);
             currentLocale = settings.getLocale().toString();
             // create the result
             StringBuffer result = new StringBuffer();

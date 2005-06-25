@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/06/25 10:18:59 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/25 11:19:03 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -217,7 +217,7 @@ public class CmsLogin extends CmsJspLoginBean {
                     m_action = ACTION_LOGIN;
 
                     // set the default project of the user
-                    CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+                    CmsUserSettings settings = new CmsUserSettings(cms);
                     try {
                         CmsProject project = cms.readProject(settings.getStartProject());
                         if (cms.getAllAccessibleProjects().contains(project)) {

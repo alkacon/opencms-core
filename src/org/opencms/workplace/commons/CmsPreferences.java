@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/25 11:19:03 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -1829,7 +1829,7 @@ public class CmsPreferences extends CmsTabDialog {
             return CmsEncoder.decode(preSelection);
         } else {
             // no value found in request, check current user settings (not the member!)
-            CmsUserSettings userSettings = new CmsUserSettings(getSettings().getUser());
+            CmsUserSettings userSettings = new CmsUserSettings(getCms(), getSettings().getUser());
             return userSettings.getPreferredEditor(resourceType);
 
         }
@@ -1842,7 +1842,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     private void fillUserSettings() {
 
-        m_userSettings = new CmsUserSettings(getSettings().getUser());
+        m_userSettings = new CmsUserSettings(getCms(), getSettings().getUser());
     }
 
     /**

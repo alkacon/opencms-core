@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/25 11:19:03 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTaskService;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -53,7 +54,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 6.0.0
  */
@@ -177,9 +178,34 @@ public class CmsUserSettings {
     }
 
     /**
+     * Creates a user settings object with initialized settings of the current user.<p>
+     * 
+     * @param cms the OpenCms context
+     */
+    public CmsUserSettings(CmsObject cms) {
+
+        init(cms, cms.getRequestContext().currentUser());
+    }
+
+    /**
      * Creates a user settings object with initialized settings of the user.<p>
      * 
+     * @param cms the OpenCms context
      * @param user the OpenCms user
+     */
+    public CmsUserSettings(CmsObject cms, CmsUser user) {
+
+        init(cms, user);
+    }
+
+    /**
+     * Creates a user settings object with initialized settings of the user.<p>
+     * 
+     * Some default settings will be unset, if no cms object is given.<p>
+     *  
+     * @param user the current CmsUser
+     * 
+     * @see #CmsUserSettings(CmsObject, CmsUser)
      */
     public CmsUserSettings(CmsUser user) {
 
@@ -530,9 +556,10 @@ public class CmsUserSettings {
     /**
      * Initializes the user settings with the given users setting parameters.<p>
      * 
+     * @param cms the OpenCms context
      * @param user the current CmsUser
      */
-    public void init(CmsUser user) {
+    public void init(CmsObject cms, CmsUser user) {
 
         m_user = user;
 
@@ -763,9 +790,24 @@ public class CmsUserSettings {
         // project settings
         try {
             m_projectSettings = ((CmsUserProjectSettings)m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS));
-        } catch (Throwable t) {
-            // default is to disable the synchronize settings
+        } catch (Throwable t) { 
             m_projectSettings = null;
+        }
+        if (m_projectSettings == null) {
+            // default
+            m_projectSettings = new CmsUserProjectSettings();
+            m_projectSettings.setDeleteAfterPublishing(false);
+            try {
+                m_projectSettings.setManagerGroup(cms.readGroup(CmsDefaultUsers.C_DEFAULT_GROUP_PROJECTMANAGERS).getId());
+            } catch (Exception e) {
+                // ignore
+            }
+            try {
+                m_projectSettings.setUserGroup(cms.readGroup(CmsDefaultUsers.C_DEFAULT_GROUP_USERS).getId());
+            } catch (Exception e) {
+                // ignore
+            }
+            m_projectSettings.setProjectFilesMode(CmsProjectResourcesDisplayMode.ALL_CHANGES);
         }
 
         try {
@@ -773,6 +815,20 @@ public class CmsUserSettings {
         } catch (CmsException e) {
             // to nothing here            
         }
+    }
+
+    /**
+     * Initializes the user settings with the given users setting parameters.<p>
+     * 
+     * Some default settings will be unset, if no cms object is given.<p>
+     *  
+     * @param user the current CmsUser
+     * 
+     * @see #init(CmsObject, CmsUser)
+     */
+    public void init(CmsUser user) {
+
+        init(null, user);
     }
 
     /**

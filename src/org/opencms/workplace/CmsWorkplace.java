@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/25 10:35:46 $
- * Version: $Revision: 1.140 $
+ * Date   : $Date: 2005/06/25 11:19:03 $
+ * Version: $Revision: 1.141 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.140 $ 
+ * @version $Revision: 1.141 $ 
  * 
  * @since 6.0.0 
  */
@@ -429,7 +429,7 @@ public abstract class CmsWorkplace {
         }
         // store the user and it's settings in the Workplace settings
         settings.setUser(user);
-        settings.setUserSettings(new CmsUserSettings(user));
+        settings.setUserSettings(new CmsUserSettings(cms, user));
 
         // return the result settings
         return settings;

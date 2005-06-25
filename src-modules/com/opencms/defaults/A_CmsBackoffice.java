@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2005/06/22 10:38:32 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2005/06/25 11:19:03 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -2098,7 +2098,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         byte[] processResult = null;
 
         // now check if the "do you really want to lock" dialog should be shown.
-        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        CmsUserSettings settings = new CmsUserSettings(cms);
 
         if (!settings.getDialogShowLock()) {
             parameters.put("action", "go");

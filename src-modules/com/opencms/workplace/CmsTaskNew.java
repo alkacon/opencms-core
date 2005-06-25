@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskNew.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/25 11:19:03 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/25 11:19:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -135,7 +135,7 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
         String paraAll = "checked";
         String paraCompletion = "checked";
         String paraDelivery = "checked";
-        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        CmsUserSettings settings = new CmsUserSettings(cms);
         
         // the tasksettings exists - use them
         int messageAt = settings.getTaskMessageValue();

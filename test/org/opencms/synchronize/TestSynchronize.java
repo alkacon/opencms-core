@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/25 11:19:03 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  *  
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0
  */
@@ -117,7 +117,7 @@ public class TestSynchronize extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing loading and saving the synchronization settings of a user");
 
-        CmsUserSettings userSettings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        CmsUserSettings userSettings = new CmsUserSettings(cms);
         // default sync settings are null
         assertNull(userSettings.getSynchronizeSettings());
 
@@ -141,14 +141,14 @@ public class TestSynchronize extends OpenCmsTestCase {
         // login another user
         cms.loginUser("test1", "test1");
 
-        userSettings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        userSettings = new CmsUserSettings(cms);
         // default sync settings are null for this user
         assertNull(userSettings.getSynchronizeSettings());
 
         // login another user
         cms.loginUser(OpenCms.getDefaultUsers().getUserAdmin(), "admin");
 
-        userSettings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        userSettings = new CmsUserSettings(cms);
         syncSettings = userSettings.getSynchronizeSettings();
         assertNotNull(syncSettings);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/25 11:19:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -298,7 +298,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             m_project = new CmsProject();
         }
         try {
-            CmsUserSettings settings = new CmsUserSettings(getCms().getRequestContext().currentUser());
+            CmsUserSettings settings = new CmsUserSettings(getCms());
             m_project.setDeleteAfterPublishing(settings.getProjectSettings().isDeleteAfterPublishing());
         } catch (Exception e) {
             // ignore
