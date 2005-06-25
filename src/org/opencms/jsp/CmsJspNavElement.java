@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/25 15:37:21 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,10 +146,10 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the value of the property C_PROPERTY_DESCRIPTION of this nav element,
+     * Returns the value of the property PROPERTY_DESCRIPTION of this nav element,
      * or <code>null</code> if this property is not set.<p> 
      * 
-     * @return the value of the property C_PROPERTY_DESCRIPTION of this nav element
+     * @return the value of the property PROPERTY_DESCRIPTION of this nav element
      * or <code>null</code> if this property is not set
      */
     public String getDescription() {
@@ -230,11 +230,11 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the value of the property C_PROPERTY_NAVTEXT of this nav element,
+     * Returns the value of the property PROPERTY_NAVTEXT of this nav element,
      * or a warning message if this property is not set 
      * (this method will never return <code>null</code>).<p> 
      * 
-     * @return the value of the property C_PROPERTY_NAVTEXT of this nav element,
+     * @return the value of the property PROPERTY_NAVTEXT of this nav element,
      * or a warning message if this property is not set 
      * (this method will never return <code>null</code>)
      */
@@ -314,10 +314,10 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the value of the property C_PROPERTY_TITLE of this nav element,
+     * Returns the value of the property PROPERTY_TITLE of this nav element,
      * or <code>null</code> if this property is not set.<p> 
      * 
-     * @return the value of the property C_PROPERTY_TITLE of this nav element
+     * @return the value of the property PROPERTY_TITLE of this nav element
      * or <code>null</code> if this property is not set
      */
     public String getTitle() {
@@ -351,8 +351,8 @@ public class CmsJspNavElement implements Comparable {
      * provided.<p>
      * 
      * A resource will be in the nav if at least one of the two properties 
-     * <code>I_CmsConstants.C_PROPERTY_NAVTEXT</code> or 
-     * <code>I_CmsConstants.C_PROPERTY_NAVPOS</code> is set. Otherwise
+     * <code>I_CmsConstants.PROPERTY_NAVTEXT</code> or 
+     * <code>I_CmsConstants.PROPERTY_NAVPOS</code> is set. Otherwise
      * it will be ignored.
      * 
      * This bean does provides static methods to create a new instance 
@@ -399,8 +399,8 @@ public class CmsJspNavElement implements Comparable {
      * otherwise.<p>
      * 
      * A resource is considered to be in the navigation, if <ol>
-     * <li>it has the property C_PROPERTY_NAVTEXT set
-     * <li><em>or</em> it has the property C_PROPERTY_NAVPOS set 
+     * <li>it has the property PROPERTY_NAVTEXT set
+     * <li><em>or</em> it has the property PROPERTY_NAVPOS set 
      * <li><em>and</em> it is not a temporary file that contains a '~' in it's filename.</ol> 
      * 
      * @return <code>true</code> if this nav element is in the navigation, <code>false</code>
