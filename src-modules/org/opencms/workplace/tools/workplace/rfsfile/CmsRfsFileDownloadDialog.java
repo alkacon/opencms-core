@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDownloadDialog.java,v $
- * Date   : $Date: 2005/06/25 15:40:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/25 16:51:28 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,10 +117,6 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
         result.append("      <a name=\"ok\" target=\"_self\" class=\"dialogerror\" href=\"");
         result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp?filePath=")).append(
             m_downloadFile.getAbsolutePath().replace('\\', '/')).append("\">");
-        result.append(org.opencms.workplace.Messages.get().key(
-            getLocale(),
-            org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_DOWNLOAD_0,
-            null));
         result.append(" ").append(m_downloadFile.getName());
         result.append("      </a>\r\n");
 
