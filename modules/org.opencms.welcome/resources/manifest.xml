@@ -571,9 +571,9 @@ It will also remove the "default" template.</p>
 					<name>content-encoding</name>
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;user]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
@@ -693,10 +693,6 @@ It will also remove the "default" template.</p>
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -722,9 +718,9 @@ It will also remove the "default" template.</p>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -752,9 +748,9 @@ It will also remove the "default" template.</p>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -875,9 +871,9 @@ It will also remove the "default" template.</p>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri]]></value>
 				</property>
 				<property>
 					<name>template-elements</name>
@@ -905,9 +901,9 @@ It will also remove the "default" template.</p>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(__element)]]></value>
 				</property>
 				<property>
 					<name>template-elements</name>
@@ -935,9 +931,9 @@ It will also remove the "default" template.</p>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;user]]></value>
 				</property>
 				<property>
 					<name>export</name>

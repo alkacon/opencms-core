@@ -649,9 +649,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(count,elementcount,folder,collector,pageIndex)]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -687,9 +687,9 @@
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
 				</property>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(count,elementcount,folder,collector)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -709,9 +709,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(count,elementcount,folder,categoryfolder,collector,pageIndex)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -731,9 +731,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(count,elementcount,folder,categoryfolder,collector,pageIndex)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -753,9 +753,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(count,elementcount,folder,collector,pageIndex)]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>
@@ -791,9 +791,9 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(count,elementcount,folder,collector)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -821,9 +821,9 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(count,elementcount,folder,collector,pageIndex)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -851,9 +851,9 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(count,elementcount,folder,collector)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -888,9 +888,9 @@
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
 				</property>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(uri)]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -914,9 +914,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(uri)]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -948,9 +948,9 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(uri)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -970,9 +970,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;params=(uri)]]></value>
 				</property>
 				<property>
 					<name>Title</name>

@@ -662,10 +662,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -703,9 +699,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[element;params=(accessible,layout)]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>
@@ -734,16 +730,16 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>
 					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;element;locale;params=(accessible)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -764,16 +760,16 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>content-encoding</name>
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;element;locale;params=(accessible)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -793,9 +789,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;user;params=(accessible)]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -823,9 +819,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -854,16 +850,16 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -884,16 +880,16 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(accessible)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -913,9 +909,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>
@@ -943,9 +939,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;locale;user]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>
@@ -973,9 +969,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[locale;params=(headnavfolder,headnavmenudepth,startfolder,showmenus,site);user]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>
@@ -1003,9 +999,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;user;params=(accessible)]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>
@@ -1045,10 +1041,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -1078,10 +1070,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -1134,9 +1122,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[element;locale;params=(uri,site)]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -1161,10 +1149,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -1186,10 +1170,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -1235,10 +1215,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -1260,10 +1236,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -1287,12 +1259,12 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[params=(title,resourcepath,stylesheeturi,config,site);locale;element]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -1312,10 +1284,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -1338,10 +1306,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -1387,10 +1351,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -1412,10 +1372,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -1439,10 +1395,6 @@
 			<flags>0</flags>
 			<properties>
 				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
@@ -1462,10 +1414,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[true]]></value>
@@ -1526,12 +1474,7 @@
 			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-            </properties>
+			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1544,12 +1487,7 @@
 			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
-            </properties>
+			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1628,13 +1566,13 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[params=(respath,site,config,__locale)]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1650,9 +1588,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[params=(respath,site,config,__locale)]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -1952,9 +1890,9 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
+				<property>
 					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+					<value><![CDATA[uri;element;params=(print,accessible)]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
