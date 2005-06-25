@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/25 12:27:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -321,10 +321,7 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
                         selectedValues = "13-12-11-10-9-9";
                     }
                 } catch (Exception e) {
-                    // error parsing the default String
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().key(Messages.LOG_XSD_HEADLINES_SET_ERR_0));
-                    }
+                    selectedValues = "13-12-11-10-9-9";
                 }
             }
             // split values in parts to get individual size values
