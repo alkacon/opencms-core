@@ -1,0 +1,9 @@
+<p><span style="font-family:'Times New Roman',Times,serif">small sample text
+in Times New Roman</span><br>
+<span style="font-family:'Times New Roman',Times,serif; font-size:200%">large sample text
+in Times New Roman</span></p>
+
+<p><span style="font-family:Verdana">small sample text
+in Verdana</span><br>
+<span style="font-family:Verdana; font-size:200%">large sample text
+in Verdana</span></p>

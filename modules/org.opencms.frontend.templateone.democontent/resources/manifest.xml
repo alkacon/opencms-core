@@ -547,9 +547,9 @@
 		<file>
 			<destination>demopages/search-demo</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 24 Sep 2004 15:27:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Fri, 24 Sep 2004 15:27:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -569,8 +569,46 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demopages/search-demo/excelsheet.xls</source>
-			<destination>demopages/search-demo/excelsheet.xls</destination>
+			<source>demopages/search-demo/index.html</source>
+			<destination>demopages/search-demo/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>d1532b51-0e3e-11d9-b954-d95a698e1ef3</uuidresource>
+			<datelastmodified>Tue, 26 Oct 2004 11:25:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Sep 2004 15:31:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Search demonstration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>	
+		<file>
+			<destination>demopages/search-demo/example-documents</destination>
+			<type>downloadgallery</type>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Example Documents for the Search]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/search-demo/example-documents/excelsheet.xls</source>
+			<destination>demopages/search-demo/example-documents/excelsheet.xls</destination>
 			<type>binary</type>
 			<uuidresource>c6155c85-0e3e-11d9-b954-d95a698e1ef3</uuidresource>
 			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -591,30 +629,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demopages/search-demo/index.html</source>
-			<destination>demopages/search-demo/index.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>d1532b51-0e3e-11d9-b954-d95a698e1ef3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Search demonstration]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demopages/search-demo/OpenCms6_Alkacon_Business.pdf</source>
-			<destination>demopages/search-demo/OpenCms6_Alkacon_Business.pdf</destination>
+			<source>demopages/search-demo/example-documents/OpenCms6_Alkacon_Business.pdf</source>
+			<destination>demopages/search-demo/example-documents/OpenCms6_Alkacon_Business.pdf</destination>
 			<type>binary</type>
 			<uuidresource>89c0c6e0-2741-11d9-b67d-1fd2a335da0f</uuidresource>
 			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -631,8 +647,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demopages/search-demo/TN_0027_OpenCms_Workplace_structure.pdf</source>
-			<destination>demopages/search-demo/TN_0027_OpenCms_Workplace_structure.pdf</destination>
+			<source>demopages/search-demo/example-documents/TN_0027_OpenCms_Workplace_structure.pdf</source>
+			<destination>demopages/search-demo/example-documents/TN_0027_OpenCms_Workplace_structure.pdf</destination>
 			<type>binary</type>
 			<uuidresource>c66418ce-0e3e-11d9-b954-d95a698e1ef3</uuidresource>
 			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -653,8 +669,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demopages/search-demo/wordtestdocument.doc</source>
-			<destination>demopages/search-demo/wordtestdocument.doc</destination>
+			<source>demopages/search-demo/example-documents/wordtestdocument.doc</source>
+			<destination>demopages/search-demo/example-documents/wordtestdocument.doc</destination>
 			<type>binary</type>
 			<uuidresource>c636c73b-0e3e-11d9-b954-d95a698e1ef3</uuidresource>
 			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>

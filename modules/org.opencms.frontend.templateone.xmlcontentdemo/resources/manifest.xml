@@ -1312,6 +1312,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>xmlcontent/widgetdemo/downloads/open_source_wikipedia.rtf</source>
+			<destination>xmlcontent/widgetdemo/downloads/open_source_wikipedia.rtf</destination>
+			<type>binary</type>
+			<uuidresource>c9bf6325-e4ca-11d9-99a7-b7f5f5443f03</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Wikipedia Article about Open Source]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>xmlcontent/widgetdemo/html</destination>
 			<type>htmlgallery</type>
 			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -1340,14 +1358,16 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Simple HTML sample code]]></value>
+					<value><![CDATA[A Sample List in HTML]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>xmlcontent/widgetdemo/images</destination>
-			<type>imagegallery</type>
+			<source>xmlcontent/widgetdemo/html/htmlsample2.txt</source>
+			<destination>xmlcontent/widgetdemo/html/htmlsample2.txt</destination>
+			<type>plain</type>
+			<uuidresource>744c84f9-e4b7-11d9-8813-b7f5f5443f03</uuidresource>
 			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
@@ -1356,31 +1376,13 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Sample Gallery for Images]]></value>
+					<value><![CDATA[HTML Text in Different Fonts and Sizes]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>xmlcontent/widgetdemo/images/workplace.gif</source>
-			<destination>xmlcontent/widgetdemo/images/workplace.gif</destination>
-			<type>image</type>
-			<uuidresource>ccde9543-4a92-11d9-a9ec-7f8d39515329</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Workplace logo]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>xmlcontent/widgetdemo/links</destination>
+			<destination>xmlcontent/widgetdemo/links-alkacon</destination>
 			<type>linkgallery</type>
 			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -1390,14 +1392,84 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Sample Gallery for Links]]></value>
+					<value><![CDATA[Links to Alkacon Software]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>xmlcontent/widgetdemo/links/opencms.org</source>
-			<destination>xmlcontent/widgetdemo/links/opencms.org</destination>
+			<source>xmlcontent/widgetdemo/links-alkacon/alkacon-services</source>
+			<destination>xmlcontent/widgetdemo/links-alkacon/alkacon-services</destination>
+			<type>pointer</type>
+			<uuidresource>cfa5d0ae-e4be-11d9-8813-b7f5f5443f03</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Alkacon Service Overview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/links-alkacon/alkacon.com</source>
+			<destination>xmlcontent/widgetdemo/links-alkacon/alkacon.com</destination>
+			<type>pointer</type>
+			<uuidresource>9fc97719-e4be-11d9-8813-b7f5f5443f03</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Alkacon, the OpenCms experts]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>xmlcontent/widgetdemo/links-opencms</destination>
+			<type>linkgallery</type>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Links about OpenCms]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/links-opencms/opencms-faq</source>
+			<destination>xmlcontent/widgetdemo/links-opencms/opencms-faq</destination>
+			<type>pointer</type>
+			<uuidresource>77f01738-e4bf-11d9-8813-b7f5f5443f03</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms FAQ]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/links-opencms/opencms.org</source>
+			<destination>xmlcontent/widgetdemo/links-opencms/opencms.org</destination>
 			<type>pointer</type>
 			<uuidresource>e4ce3fc9-4a93-11d9-a9ec-7f8d39515329</uuidresource>
 			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -1413,6 +1485,24 @@
 			</properties>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/links-opencms/solution-providers</source>
+			<destination>xmlcontent/widgetdemo/links-opencms/solution-providers</destination>
+			<type>pointer</type>
+			<uuidresource>494008a3-e4bf-11d9-8813-b7f5f5443f03</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Solution Providers]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<destination>xmlcontent/widgetdemo/tables</destination>
 			<type>tablegallery</type>
@@ -1443,6 +1533,42 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Member list example]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/tables/fruit-flies.html</source>
+			<destination>xmlcontent/widgetdemo/tables/fruit-flies.html</destination>
+			<type>plain</type>
+			<uuidresource>dbfad975-e4ba-11d9-8813-b7f5f5443f03</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Statistics About Fruit Flies]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/tables/travel-expenses.html</source>
+			<destination>xmlcontent/widgetdemo/tables/travel-expenses.html</destination>
+			<type>plain</type>
+			<uuidresource>8030d03b-e4bb-11d9-8813-b7f5f5443f03</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Travel Expenses]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
