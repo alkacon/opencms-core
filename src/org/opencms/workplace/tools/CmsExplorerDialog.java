@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsExplorerDialog.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/26 14:52:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -138,8 +138,8 @@ public class CmsExplorerDialog extends CmsWidgetDialog {
         // add specific dialog resource bundle
         // for project title
         addMessages("org.opencms.workplace.tools.projects.messages");
-        // for gallery overview title
-        addMessages("org.opencms.workplace.workplace");
+        // for gallery overview titles 
+        addMessages("org.opencms.workplace.tools.galleryoverview.messages");
         // add default resource bundles
         super.initMessages();
     }
