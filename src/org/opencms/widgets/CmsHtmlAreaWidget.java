@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsHtmlAreaWidget.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/26 15:11:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,12 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.I_CmsWpConstants;
 
+import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -42,11 +46,14 @@ import java.util.Map;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlAreaWidget extends A_CmsWidget {
+    
+    /** VFS path to the available HtmlArea Locales. */
+    public static final String HTMLAREA_LOCALES_VFS = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "resources/editors/htmlarea/lang/";
 
     /**
      * Creates a new html area editor widget.<p>
@@ -66,19 +73,49 @@ public class CmsHtmlAreaWidget extends A_CmsWidget {
 
         super(configuration);
     }
+    
+    /**
+     * Returns the Locale for which HtmlArea has localization data available.<p>
+     * 
+     * @param cms the initialized cmsobject
+     * @param wantedLocale the preferred Locale
+     * @return the Locale for which HtmlArea has localization data available
+     */
+    public static Locale getHtmlAreaLocale(CmsObject cms, Locale wantedLocale) {
+        
+        // check the Locale to use for editor localization
+        if (!cms.existsResource(HTMLAREA_LOCALES_VFS + wantedLocale.toString() + ".js")) {
+            boolean foundLocale = false;
+            Iterator i = OpenCms.getLocaleManager().getDefaultLocales().iterator();
+            // check the available default Locales
+            while (i.hasNext()) {
+                wantedLocale = (Locale)i.next();
+                if (cms.existsResource(HTMLAREA_LOCALES_VFS + wantedLocale.toString() + ".js")) {
+                    // found a valid Locale
+                    foundLocale = true;
+                    break;
+                }
+            }
+            if (! foundLocale) {
+                // did not find any matching Locale, fall back to english
+                wantedLocale = Locale.ENGLISH;
+            }
+        }
+        return wantedLocale;
+    }
 
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
-
+        
         StringBuffer result = new StringBuffer(16);
         result.append("<script type=\"text/javascript\">\n<!--\n");
         result.append("\t_editor_url = \"");
         result.append(CmsWorkplace.getSkinUri());
         result.append("editors/htmlarea/\";\n");
         result.append("\t_editor_lang = \"");
-        result.append(widgetDialog.getLocale());
+        result.append(getHtmlAreaLocale(cms, widgetDialog.getLocale()));
         result.append("\";\n");
         result.append("//-->\n</script>\n");
         result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "editors/htmlarea/htmlarea.js"));

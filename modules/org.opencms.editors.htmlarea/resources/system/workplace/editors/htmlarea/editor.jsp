@@ -1,4 +1,5 @@
 <%@ page import="
+	org.opencms.widgets.*,
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
 	org.opencms.workplace.help.*,
@@ -468,7 +469,7 @@ function confirmExit() {
 
 <script type="text/javascript">
    _editor_url = "<%= wp.getSkinUri() + "editors/htmlarea/" %>";
-   _editor_lang = "<%= wp.getLocale() %>";
+   _editor_lang = "<%= CmsHtmlAreaWidget.getHtmlAreaLocale(cms.getCmsObject(), wp.getLocale()) %>";
 </script>
 
 <script type="text/javascript" src="<%= wp.getSkinUri() + "editors/htmlarea/" %>htmlarea.js"></script>
