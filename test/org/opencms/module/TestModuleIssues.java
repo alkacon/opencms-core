@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleIssues.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/26 15:07:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestModuleIssues extends OpenCmsTestCase {
   
@@ -140,7 +140,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
             fail("Module '" + moduleName + "' was not imported!");
         }
         
-        I_CmsModuleAction actionInstance = OpenCms.getModuleManager().getActionInstance(moduleName);
+        I_CmsModuleAction actionInstance = OpenCms.getModuleManager().getModule(moduleName).getActionInstance();
         
         if (actionInstance == null) {
             fail("Module '" + moduleName + "' has no action instance!");            

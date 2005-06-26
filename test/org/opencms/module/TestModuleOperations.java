@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2005/06/25 13:44:14 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/26 15:07:07 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
 
@@ -123,7 +123,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         }
 
         CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
-        I_CmsModuleAction actionInstance = OpenCms.getModuleManager().getActionInstance(moduleName);
+        I_CmsModuleAction actionInstance = module.getActionInstance();
 
         if (actionInstance == null) {
             fail("Module '" + moduleName + "' has no action instance!");
