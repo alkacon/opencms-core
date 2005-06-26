@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/26 10:42:14 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,12 +147,14 @@ public class CmsChnav extends CmsDialog {
 
         // calculate value for the first navigation position
         float firstValue = 1;
-        try {
-            CmsJspNavElement ne = (CmsJspNavElement)navList.get(0);
-            maxValue = ne.getNavPosition();
-        } catch (Exception e) {
-            // should usually never happen
-            LOG.error(e.getLocalizedMessage());
+        if (navList.size() > 0) {
+            try {
+                CmsJspNavElement ne = (CmsJspNavElement)navList.get(0);
+                maxValue = ne.getNavPosition();
+            } catch (Exception e) {
+                // should usually never happen
+                LOG.error(e.getLocalizedMessage());
+            }
         }
 
         if (maxValue != 0) {
