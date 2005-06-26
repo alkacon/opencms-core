@@ -1,13 +1,12 @@
 <script language="javascript">
 <!--
 	function escapeBrackets(s) {
-		var searchResult = s.search(/\[.+/);
-		if(searchResult != -1) {
+		var searchResultStart = s.search(/\[.+/);
+		var searchResultEnd = s.search(/.+\]/);
+		var cut = (searchResultStart == 0 && searchResultEnd != -1 && s.charAt(s.length - 1) == ']');
+		if (cut) {
 			// cut off the first '['
 			s = s.substring(1,s.length);
-		}
-		searchResult = s.search(/.+\]/);
-		if(searchResult != -1 && s.charAt(s.length - 1) == ']') {
 			// cut off the last ']'
 			s = s.substring(0,s.length-1);
 		}
