@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/26 12:51:32 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -551,12 +551,11 @@ public final class CmsXmlUtils {
      * with the DTD or XML schema used by the document.<p>
      * 
      * @param xmlData a byte array containing a XML document that should be validated
-     * @param encoding the encoding to use when marshalling the XML document (required)
      * @param resolver the XML entitiy resolver to use
      * 
      * @throws CmsXmlException if the validation fails
      */
-    public static void validateXmlStructure(byte[] xmlData, String encoding, EntityResolver resolver)
+    public static void validateXmlStructure(byte[] xmlData, EntityResolver resolver)
     throws CmsXmlException {
 
         XMLReader reader;
@@ -654,6 +653,6 @@ public final class CmsXmlUtils {
 
         // generate bytes from document
         byte[] xmlData = ((ByteArrayOutputStream)marshal(document, new ByteArrayOutputStream(512), encoding)).toByteArray();
-        validateXmlStructure(xmlData, encoding, resolver);
+        validateXmlStructure(xmlData, resolver);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/26 12:51:32 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0
  */
@@ -169,15 +169,15 @@ public class TestCmsXmlPage extends TestCase {
 
         // validate the minimal xmlpage
         content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-minimal.xml", UTF8);
-        CmsXmlUtils.validateXmlStructure(content.getBytes(UTF8), UTF8, resolver);
+        CmsXmlUtils.validateXmlStructure(content.getBytes(UTF8), resolver);
 
         // validate the xmlpage 2
         content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-1.xml", UTF8);
-        CmsXmlUtils.validateXmlStructure(content.getBytes(UTF8), UTF8, resolver);
+        CmsXmlUtils.validateXmlStructure(content.getBytes(UTF8), resolver);
 
         // validate the xmlpage 3
         content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);
-        CmsXmlUtils.validateXmlStructure(content.getBytes(UTF8), UTF8, resolver);
+        CmsXmlUtils.validateXmlStructure(content.getBytes(UTF8), resolver);
     }
 
     /**

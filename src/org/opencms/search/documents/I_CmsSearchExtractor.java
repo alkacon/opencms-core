@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsSearchExtractor.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/26 12:51:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,13 +37,16 @@ import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
 /**
- * Comment for <code>I_CmsSearchExtractor</code>.<p>
+ * Defines a text extractor for the integrated search engine.<p>
  * 
- * @param please add a comment
+ * The job of a search extractor is to extract indexable plain text from 
+ * a resource in the OpenCms VFS. This may be from the resource content, for example 
+ * from a PDF file, or from the resource properties, for example the Title, Keywords and 
+ * Description properties.<p>
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */

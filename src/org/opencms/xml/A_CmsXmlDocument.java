@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/26 12:51:32 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -441,7 +441,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             byte[] xmlData = null;
             // file is set, use bytes from file directly
             xmlData = m_file.getContents();
-            CmsXmlUtils.validateXmlStructure(xmlData, m_encoding, resolver);
+            CmsXmlUtils.validateXmlStructure(xmlData, resolver);
         } else {
             CmsXmlUtils.validateXmlStructure(m_document, m_encoding, resolver);
         }
