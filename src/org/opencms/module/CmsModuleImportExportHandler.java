@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/26 09:35:50 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.module;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.i18n.CmsMessageContainer;
@@ -76,7 +77,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -220,6 +221,8 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         if (!module.getVersion().isUpdated()) {
             // increment version number if not recently updated
             module.getVersion().increment();
+            // update the XML configuration
+            OpenCms.writeConfiguration(CmsModuleConfiguration.class);
         }
         // reset update status so that all following exports auto-increment the number
         module.getVersion().setUpdated(false);
