@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/06/26 14:20:57 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/26 15:54:25 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -383,8 +383,16 @@ public class CmsModuleManager {
             if (module.getActionClass() != null) {
                 // create module instance class
                 I_CmsModuleAction moduleAction = module.getActionInstance();
+                if (module.getActionClass() != null) {
+                    try {
+                        moduleAction = (I_CmsModuleAction)Class.forName(module.getActionClass()).newInstance();
+                    } catch (Exception e) {
+                        CmsLog.INIT.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
+                    }                    
+                }
                 if (moduleAction != null) {
                     count++;
+                    module.setActionInstance(moduleAction);
                     if (CmsLog.INIT.isInfoEnabled()) {
                         CmsLog.INIT.info(Messages.get().key(
                             Messages.INIT_INITIALIZE_MOD_CLASS_1,
@@ -506,10 +514,13 @@ public class CmsModuleManager {
         m_modules.put(module.getName(), module);
 
         try {
-            I_CmsModuleAction moduleAction = module.getActionInstance();
+            I_CmsModuleAction moduleAction = oldModule.getActionInstance();
             // handle module action instance if initialized
             if (moduleAction != null) {
                 moduleAction.moduleUpdate(module);
+                // set the old action instance
+                // the new action instance will be used after a system restart
+                module.setActionInstance(moduleAction);
             }
         } catch (Throwable t) {
             LOG.error(Messages.get().key(Messages.LOG_INSTANCE_UPDATE_ERR_1, module.getName()), t);

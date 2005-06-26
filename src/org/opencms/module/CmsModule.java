@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/26 14:20:57 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/26 15:54:25 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  * 
@@ -85,6 +85,9 @@ public class CmsModule implements Comparable {
 
     /** The module action class name. */
     private String m_actionClass;
+
+    /** Initialized module action instance. */
+    private I_CmsModuleAction m_actionInstance;
 
     /** The email of the author of this module. */
     private String m_authorEmail;
@@ -115,9 +118,6 @@ public class CmsModule implements Comparable {
 
     /** The group of the module. */
     private String m_group;
-
-    /** Initialized module action instance. */
-    private I_CmsModuleAction m_moduleActionInstance;
 
     /** The name of this module, must be a valid Java package name. */
     private String m_name;
@@ -397,15 +397,7 @@ public class CmsModule implements Comparable {
      */
     public I_CmsModuleAction getActionInstance() {
 
-        if (getActionClass() != null && m_moduleActionInstance == null) {
-            // lazzy initialization
-            try {
-                m_moduleActionInstance = (I_CmsModuleAction)Class.forName(getActionClass()).newInstance();
-            } catch (Exception e) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, getName()), e);
-            }
-        }
-        return m_moduleActionInstance;
+        return m_actionInstance;
     }
 
     /**
@@ -672,6 +664,17 @@ public class CmsModule implements Comparable {
             }
             m_actionClass = value;
         }
+    }
+
+    /**
+     * Sets the module action instance for this module.<p>
+     * 
+     * @param actionInstance the module action instance for this module
+     */
+    public void setActionInstance(I_CmsModuleAction actionInstance) {
+
+        m_actionInstance = actionInstance;
+
     }
 
     /**
