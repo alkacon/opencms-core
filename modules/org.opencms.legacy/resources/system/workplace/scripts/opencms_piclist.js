@@ -117,7 +117,7 @@ function doEdit(para)
    }
    case 4: // upload image, open the upload dialog.
    {
-     alert('Not implemented!');
+     alert("Not implemented!");
      break;
    }
    default:

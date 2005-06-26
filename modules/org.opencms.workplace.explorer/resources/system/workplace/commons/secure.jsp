@@ -63,7 +63,7 @@ wp.setParamAction("secure");
       checkedExportOrSecure = true;
     }
     if (document.secure.elements['intern'] != null && document.secure.elements['intern'].checked && checkedExportOrSecure) {
-      alert('<%= wp.key("error.message.secure.notintern") %>');
+      alert("<%= wp.key("error.message.secure.notintern") %>");
       document.secure.elements['intern'].checked = false;
     }
   }
@@ -83,7 +83,7 @@ wp.setParamAction("secure");
         document.secure.elements['export'][1].checked = true;  
       }
       if (checkedExportOrSecure) {
-        alert('<%= wp.key("error.message.secure.noexportsecure") %>');
+        alert("<%= wp.key("error.message.secure.noexportsecure") %>");
       }
     }
 

@@ -57,15 +57,15 @@
                 for(i=0;i<whichform.value.length;i++){
                     if(whichform.value.charAt(i)=="%"){
                         checkok=false;
-                        alert('Unerlaubtes Zeichen in Eingabefeld:'+whichform.value.charAt(i));
+                        alert("Unerlaubtes Zeichen in Eingabefeld:"+whichform.value.charAt(i));
                     }
                     if(whichform.value.charAt(i)=="#"){
                         checkok=false;
-                        alert('Unerlaubtes Zeichen in Eingabefeld:'+whichform.value.charAt(i));
+                        alert("Unerlaubtes Zeichen in Eingabefeld:"+whichform.value.charAt(i));
                     }
                     if(whichform.value.charAt(i)=="&"){
                         checkok=false;
-                        alert('Unerlaubtes Zeichen in Eingabefeld:'+whichform.value.charAt(i));
+                        alert("Unerlaubtes Zeichen in Eingabefeld:"+whichform.value.charAt(i));
                     }
                 }
                 if(checkok && check_fields()){
@@ -79,7 +79,7 @@
 
             function check_fields(){
                 if(document.NEU.neulink.value=="" && document.NEU.linkanchor.value == ""){
-                    alert(']]><LABEL value="input.nolinkvalue" /><![CDATA[');
+                    alert("]]><LABEL value="input.nolinkvalue" /><![CDATA[");
                     document.NEU.neulink.focus();
                     return false;
                 }

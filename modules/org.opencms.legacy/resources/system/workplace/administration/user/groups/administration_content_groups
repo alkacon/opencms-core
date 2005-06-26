@@ -122,7 +122,7 @@ function checkFormData()
     {
         if(entry.charAt(i)=="\"")
         {
-            alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[' + entry.charAt(i));
+            alert("]]><LABEL value="error.message.badcharacter" /><![CDATA[" + entry.charAt(i));
             document.GROUPNEW.GROUPDESC.focus;
             result= false;
         }

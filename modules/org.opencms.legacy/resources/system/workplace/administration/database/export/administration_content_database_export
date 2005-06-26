@@ -72,19 +72,19 @@ function checkFormData()
     var at_pos, entry, strLength;
 
     if(document.DBEXPORT.ALLRES.value.length < 1){
-        alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
+        alert("]]><LABEL value="error.message.datamissing" /><![CDATA[");
         return false;
     }
 
     if (! checkContentAge()) {
-        alert(']]><LABEL value="error.message.contentage" /><![CDATA[');
+        alert("]]><LABEL value="error.message.contentage" /><![CDATA[");
         return false
     }
 
     entry = document.DBEXPORT.VNAME.value;
     strLength=entry.length;
     if (strLength < 1){
-        alert(']]><LABEL value="error.reason.namemissing" /><![CDATA[');
+        alert("]]><LABEL value="error.reason.namemissing" /><![CDATA[");
         document.DBEXPORT.VNAME.focus;
         return false;
     }
@@ -93,7 +93,7 @@ function checkFormData()
     {
         if (charList.indexOf(entry.charAt(i))==-1)
         {
-            alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[' + entry.charAt(i));
+            alert("]]><LABEL value="error.message.badcharacter" /><![CDATA[" + entry.charAt(i));
             document.DBEXPORT.VNAME.focus;
             return false;
         }

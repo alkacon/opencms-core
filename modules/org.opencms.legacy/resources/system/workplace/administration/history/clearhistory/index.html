@@ -46,11 +46,11 @@ function disallowDate(date) {
 function validateForm() {
   // exactly one of the values must be given
   if (document.main.date.value == "" && document.main.versions.value == "") {
-    alert('<%= wp.key("error.message.datamissing") %>');
+    alert("<%= wp.key("error.message.datamissing") %>");
     return false;
   }
   if (document.main.date.value != "" && document.main.versions.value != "") {
-    alert('<%= wp.key("error.message.invalidclearhistorydata") %>');
+    alert("<%= wp.key("error.message.invalidclearhistorydata") %>");
     return false;
   } 
   return true;

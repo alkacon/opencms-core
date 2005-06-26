@@ -180,7 +180,7 @@ function checkVal(item) {
     }
     for (i=0; i<strLength; i++){
         if(nums.indexOf(item.charAt(i)) == -1){
-            alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[' + item.charAt(i));
+            alert("]]><LABEL value="error.message.badcharacter" /><![CDATA[" + item.charAt(i));
             return false;
         }
     }

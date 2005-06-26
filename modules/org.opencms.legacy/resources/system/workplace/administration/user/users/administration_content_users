@@ -311,7 +311,7 @@ function checkFormData(a,b)
         {
             if(entry.charAt(i)=="\"")
             {
-                alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[' + entry.charAt(i));
+                alert("]]><LABEL value="error.message.badcharacter" /><![CDATA[" + entry.charAt(i));
                 form.focus;
                 result= false;
             }

@@ -38,7 +38,7 @@ function inputOK() {
 function checkFormData(form,field,lyr)
 {
     if ( inputOK()==false ) {
-        alert(']]><LABEL value="error.message.datamissing" /><![CDATA[.');
+        alert("]]><LABEL value="error.message.datamissing" /><![CDATA[.");
         return false;
     }
 
@@ -56,7 +56,7 @@ function checkFormData(form,field,lyr)
     {
         if (charList.indexOf(entry.charAt(i))==-1)
         {
-            alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[: '+ entry.charAt(i));
+            alert("]]><LABEL value="error.message.badcharacter" /><![CDATA[: "+ entry.charAt(i));
             if (ie || lyr==null)
                 eval('document.' + form +'.'+ field + '.focus()');
             else if (ns && lyr!=null)

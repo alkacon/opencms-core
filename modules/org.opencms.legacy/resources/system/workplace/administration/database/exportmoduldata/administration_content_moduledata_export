@@ -33,7 +33,7 @@ function checkFormData()
     entry = document.DBEXPORT.VNAME.value;
     strLength=entry.length;
     if (strLength < 1){
-        alert(']]><LABEL value="error.reason.namemissing" /><![CDATA[');
+        alert("]]><LABEL value="error.reason.namemissing" /><![CDATA[");
         document.DBEXPORT.VNAME.focus;
         return false;
     }
@@ -41,13 +41,13 @@ function checkFormData()
     {
         if (charList.indexOf(entry.charAt(i))==-1)
         {
-            alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[' + entry.charAt(i));
+            alert("]]><LABEL value="error.message.badcharacter" /><![CDATA[" + entry.charAt(i));
             document.DBEXPORT.VNAME.focus;
             return false;
         }
     }
     if(document.DBEXPORT.ALLRES.value.length < 1){
-        alert(']]><LABEL value="error.reason.channelsmissing" /><![CDATA[');
+        alert("]]><LABEL value="error.reason.channelsmissing" /><![CDATA[");
         return false;
     }
     return result;

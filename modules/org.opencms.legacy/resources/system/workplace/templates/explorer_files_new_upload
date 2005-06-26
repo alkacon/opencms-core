@@ -272,13 +272,13 @@ function check_text_local()
 {
     if (document.UPLOADPIC.name.value=="")
         {
-            alert(']]><LABEL value="error.reason.namemissing" /><![CDATA[');
+            alert("]]><LABEL value="error.reason.namemissing" /><![CDATA[");
             document.UPLOADPIC.name.focus;
             return false;
         }
     if (document.UPLOADPIC.title.value=="")
         {
-            alert(']]><LABEL value="error.reason.titlemissing" /><![CDATA[');
+            alert("]]><LABEL value="error.reason.titlemissing" /><![CDATA[");
             document.UPLOADPIC.title.focus;
             return false;
         }

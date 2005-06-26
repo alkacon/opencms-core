@@ -334,12 +334,12 @@ function checkDate(eDat)
 // if must be split, to long for browser interpreter
                 if(((eTag == 31) && (eMonat == 02)) || ((eTag == 31) && (eMonat == 04)) || ((eTag == 31) && (eMonat == 06)))
                 {
-                alert('Bitte ueberpruefen Sie den Tag des Datums.');
+                alert("Bitte ueberpruefen Sie den Tag des Datums.");
                 return false;
                 }
                 if((eTag == 30 && eMonat == 02) || (eTag == 31 && eMonat==9) || (eTag==31 && eMonat==11))
                 {
-                alert('Bitte ueberpruefen Sie den Tag des Datums.');
+                alert("Bitte ueberpruefen Sie den Tag des Datums.");
                 return false;
                 }
                 else
