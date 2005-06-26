@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Messages.java,v $
- * Date   : $Date: 2005/06/26 13:07:56 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/26 13:14:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,7 +73,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_MSG_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_MSG_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_TITLE_1 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_TITLE_1";
+    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_TITLE_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_DEF_HELP_0 = "GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_DEF_HELP_0";
