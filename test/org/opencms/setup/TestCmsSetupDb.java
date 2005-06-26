@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupDb.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/26 11:23:00 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,18 @@
 
 package org.opencms.setup;
 
+import org.opencms.scheduler.TestCmsSchedulerInSystem;
 import org.opencms.test.OpenCmsTestCase;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /** 
  * Tests the database creation / removal used during setup.<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -52,6 +56,24 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
     public TestCmsSetupDb(String arg0) {
 
         super(arg0);
+    }
+
+    /**
+     * Test suite for this test class (becasue the order of test cases is important here).<p>
+     * 
+     * @return the test suite
+     */
+    public static Test suite() {
+
+        TestSuite suite = new TestSuite();
+        suite.setName(TestCmsSchedulerInSystem.class.getName());
+
+        suite.addTest(new TestCmsSetupDb("testCreateDatabase"));
+        suite.addTest(new TestCmsSetupDb("testCreateTables"));
+        suite.addTest(new TestCmsSetupDb("testDropTables"));
+        suite.addTest(new TestCmsSetupDb("testDropDatabase"));
+
+        return suite;
     }
 
     /**

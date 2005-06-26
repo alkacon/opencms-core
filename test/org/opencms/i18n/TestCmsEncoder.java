@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsEncoder.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/26 11:23:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -64,7 +64,7 @@ public class TestCmsEncoder extends TestCase {
         {C_STRING_3, C_STRING_1, C_ENC_UTF_8},
         {C_STRING_3, C_STRING_3, C_ENC_US_ASCII},
         {C_STRING_3, C_STRING_1, C_ENC_WINDOWS_1252},
-        {C_STRING_5, C_STRING_4, C_ENC_UTF_8},};
+        {C_STRING_5, C_STRING_4, C_ENC_UTF_8}};
 
     private static final String[][] TESTS_ENCODE = {
         {C_STRING_1, C_STRING_2, C_ENC_ISO_8859_1},
@@ -72,7 +72,7 @@ public class TestCmsEncoder extends TestCase {
         {C_STRING_1, C_STRING_1, C_ENC_UTF_8},
         {C_STRING_1, C_STRING_3, C_ENC_US_ASCII},
         {C_STRING_1, C_STRING_1, C_ENC_WINDOWS_1252},
-        {C_STRING_4, C_STRING_5, C_ENC_US_ASCII},};
+        {C_STRING_4, C_STRING_5, C_ENC_US_ASCII}};
 
     /**
      * @see CmsEncoder#decodeHtmlEntities(String, String) 

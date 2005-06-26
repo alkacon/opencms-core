@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestCmsModuleVersion.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/26 11:23:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestCmsModuleVersion extends TestCase {
     
@@ -155,7 +155,7 @@ public class TestCmsModuleVersion extends TestCase {
         gotError = false;
         try { 
             v1 = new CmsModuleVersion(".2.45.6");
-        } catch (NumberFormatException e) {
+        } catch (CmsIllegalArgumentException e) {
             gotError = true;
         }
         if (! gotError) {
@@ -165,7 +165,7 @@ public class TestCmsModuleVersion extends TestCase {
         gotError = false;
         try { 
             v1 = new CmsModuleVersion("2.45.6.");
-        } catch (NumberFormatException e) {
+        } catch (CmsIllegalArgumentException e) {
             gotError = true;
         }
         if (! gotError) {
@@ -175,7 +175,7 @@ public class TestCmsModuleVersion extends TestCase {
         gotError = false;
         try { 
             v1 = new CmsModuleVersion("wurst");
-        } catch (NumberFormatException e) {
+        } catch (CmsIllegalArgumentException e) {
             gotError = true;
         }
         if (! gotError) {

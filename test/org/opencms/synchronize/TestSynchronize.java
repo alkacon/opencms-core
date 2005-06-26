@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2005/06/25 11:19:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/26 11:23:00 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  *  
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0
  */
@@ -167,7 +167,7 @@ public class TestSynchronize extends OpenCmsTestCase {
      */
     public void testSynchronize() throws Exception {
 
-        String source = "/";
+        String source = "/sites/default/";
 
         // save what gets synchronized
         CmsSynchronizeSettings syncSettings = new CmsSynchronizeSettings();
@@ -188,6 +188,7 @@ public class TestSynchronize extends OpenCmsTestCase {
             CmsObject cms = getCmsObject();
             echo("Testing synchronization of files and folders");
 
+            cms.getRequestContext().setSiteRoot("/");
             storeResources(cms, source);
 
             echo("Synchronizing "
@@ -264,9 +265,9 @@ public class TestSynchronize extends OpenCmsTestCase {
 
         syncSettings.setDestinationPathInRfs(dest);
         ArrayList sourceList = new ArrayList();
-        sourceList.add("/folder1/subfolder11/");
-        sourceList.add("/folder1/subfolder12/");
-        sourceList.add("/folder2/subfolder21/");
+        sourceList.add("/sites/default/folder1/subfolder11/");
+        sourceList.add("/sites/default/folder1/subfolder12/");
+        sourceList.add("/sites/default/folder2/subfolder21/");
         syncSettings.setSourceListInVfs(sourceList);
         syncSettings.setEnabled(true);
 
@@ -274,6 +275,7 @@ public class TestSynchronize extends OpenCmsTestCase {
             CmsObject cms = getCmsObject();
             echo("Testing synchronization of several folders");
 
+            cms.getRequestContext().setSiteRoot("/");
             storeResources(cms, "/");
 
             // synchronize everything to the RFS
