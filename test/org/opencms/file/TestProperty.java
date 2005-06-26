@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/26 12:49:12 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -79,6 +79,7 @@ public class TestProperty extends OpenCmsTestCase {
         suite.addTest(new TestProperty("testCreateProperties"));
         suite.addTest(new TestProperty("testWritePropertyOnFolder"));
         suite.addTest(new TestProperty("testDefaultPropertyCreation"));
+        suite.addTest(new TestProperty("testCaseSensitiveProperties"));
         suite.addTest(new TestProperty("testReadResourcesWithProperty"));
         
         TestSetup wrapper = new TestSetup(suite) {
@@ -302,6 +303,25 @@ public class TestProperty extends OpenCmsTestCase {
         propertyList3.add(property8);
         propertyList3.add(property9);
         createProperties(this, cms, "/index.html", propertyList3);
+    }
+        
+    /**
+     * Tests the proper behaviour for case sensitiveness in property definition names.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCaseSensitiveProperties() throws Throwable {  
+        
+        CmsObject cms = getCmsObject(); 
+        echo("Testing proper behaviour for case sensitiveness in property definition names");
+        CmsProperty myProperty = new CmsProperty("myProperty", "myValue", "myValue");
+        CmsProperty myproperty = new CmsProperty("myproperty", "myvalue", "myvalue");  
+        cms.lockResource("/index.html");
+        cms.writePropertyObject("/index.html", myProperty);
+        cms.writePropertyObject("/index.html", myproperty);
+        cms.unlockResource("/index.html");
+        assertEquals("myValue", cms.readPropertyObject("/index.html", "myProperty", false).getResourceValue());
+        assertEquals("myvalue", cms.readPropertyObject("/index.html", "myproperty", false).getResourceValue());
     }
         
     /**
