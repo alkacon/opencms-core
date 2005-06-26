@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/26 12:47:05 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,14 +37,13 @@ import org.opencms.main.CmsException;
 import java.util.List;
 
 /**
+ * Generic base driver interface.<p>
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
- * @since 6.0.0 
- * 
- * @param Leave a comment here. Why doesn't checkstyle complain about empty interface comments?
+ * @since 6.0.0
  */
 public interface I_CmsDriver {
 
