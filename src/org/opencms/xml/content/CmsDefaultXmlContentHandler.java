@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/06/25 12:03:26 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/26 14:28:18 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -859,9 +859,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             matchResult = false;
             regex = regex.substring(1);
         }
+        
+        String matchValue = valueStr;
+        if (matchValue == null) {
+            // set match value to empty String to avoid exceptions in pattern matcher
+            matchValue = "";
+        }
 
         // use the custom validation pattern
-        if (matchResult != Pattern.matches(regex, valueStr)) {
+        if (matchResult != Pattern.matches(regex, matchValue)) {
             // generate the message
             String message = getValidationMessage(cms, value, regex, valueStr, matchResult, isWarning);
             if (isWarning) {
