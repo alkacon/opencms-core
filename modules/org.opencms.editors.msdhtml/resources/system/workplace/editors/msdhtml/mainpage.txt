@@ -118,14 +118,14 @@ function buttonAction(para) {
 		break;
 	case 4:
 		// open elements window;
-		openWindow = window.open("about:blank", "dialogElementWindow", "width=320,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+		openWindow = window.open("about:blank", "dialogElementWindow", "width=320,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,status=no,dependent=yes");
 		focusCount = 1;
 		document.ELEMENTS.submit();
 		openWindow.focus();
 		break;		
 	case 5:
 		// open properties window;
-		openWindow = window.open("about:blank", "dialogPropertyWindow", "width=600,height=280,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+		openWindow = window.open("about:blank", "dialogPropertyWindow", "width=600,height=280,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,status=no,dependent=yes");
 		focusCount = 1;
 		document.PROPERTIES.submit();
 		openWindow.focus();
