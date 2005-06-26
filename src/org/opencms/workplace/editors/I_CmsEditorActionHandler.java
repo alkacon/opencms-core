@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,13 +41,12 @@ import javax.servlet.jsp.JspException;
 /**
  * Provides a method for performing an individual action if the user pressed a special button in the editor.<p>
  * 
- * You can define the class of your own editor action method in the OpenCms registry.xml by
- * changing the &lt;class&gt; subnode of the system node &lt;editoraction&gt; to another value. 
+ * You can define the class of your own editor action method in the OpenCms XML configuration files.
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */

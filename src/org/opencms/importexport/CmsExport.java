@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsXmlSaxWriter;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -65,12 +66,12 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -93,7 +94,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.74 $ 
+ * @version $Revision: 1.75 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,7 +145,7 @@ public class CmsExport implements Serializable {
     private SAXWriter m_saxWriter;
 
     /** Cache for previously added super folders. */
-    private Vector m_superFolders;
+    private List m_superFolders;
 
     /**
      * Constructs a new uninitialized export, required for special subclass data export.<p>
@@ -278,48 +279,66 @@ public class CmsExport implements Serializable {
      * @param folderNames contains the full pathnames of all folders
      * @param fileNames contains the full pathnames of all files
      */
-    public static void checkRedundancies(Vector folderNames, Vector fileNames) {
+    public static void checkRedundancies(List folderNames, List fileNames) {
 
-        int i, j;
         if (folderNames == null) {
             return;
         }
-        Vector redundant = new Vector();
-        int n = folderNames.size();
-        if (n > 1) {
-            // otherwise no check needed, because there is only one resource
-
-            for (i = 0; i < n; i++) {
-                redundant.addElement(new Boolean(false));
-            }
-            for (i = 0; i < n - 1; i++) {
-                for (j = i + 1; j < n; j++) {
-                    if (((String)folderNames.elementAt(i)).length() < ((String)folderNames.elementAt(j)).length()) {
-                        if (((String)folderNames.elementAt(j)).startsWith((String)folderNames.elementAt(i))) {
-                            redundant.setElementAt(new Boolean(true), j);
-                        }
-                    } else {
-                        if (((String)folderNames.elementAt(i)).startsWith((String)folderNames.elementAt(j))) {
-                            redundant.setElementAt(new Boolean(true), i);
-                        }
+        if (!folderNames.isEmpty()) {
+            Collections.sort(folderNames);
+            List result = new ArrayList();
+            Iterator i = folderNames.iterator();
+            while (i.hasNext()) {
+                // check all folders in the list
+                String folder = (String)i.next();
+                if (CmsStringUtil.isEmpty(folder)) {
+                    // skip empty strings
+                    continue;
+                }
+                boolean valid = true;
+                for (int j = (result.size() - 1); j >= 0; j--) {
+                    // check if this folder is indirectly contained because a parent folder is contained
+                    String check = (String)result.get(j);
+                    if (folder.startsWith(check)) {
+                        valid = false;
+                        break;
                     }
                 }
-            }
-            for (i = n - 1; i >= 0; i--) {
-                if (((Boolean)redundant.elementAt(i)).booleanValue()) {
-                    folderNames.removeElementAt(i);
+                if (valid) {
+                    // the folder is not already contained in the result
+                    result.add(folder);
                 }
             }
+            folderNames.clear();
+            folderNames.addAll(result);
         }
-        // now remove the files who are included automatically in a folder
-        // otherwise there would be a zip exception
-
-        for (i = fileNames.size() - 1; i >= 0; i--) {
-            for (j = 0; j < folderNames.size(); j++) {
-                if (((String)fileNames.elementAt(i)).startsWith((String)folderNames.elementAt(j))) {
-                    fileNames.removeElementAt(i);
+        if (!fileNames.isEmpty()) {
+            Collections.sort(fileNames);
+            List result = new ArrayList();
+            Iterator i = fileNames.iterator();
+            while (i.hasNext()) {
+                // check all folders in the list
+                String file = (String)i.next();
+                if (CmsStringUtil.isEmpty(file)) {
+                    // skip empty strings
+                    continue;
+                }
+                boolean valid = true;
+                for (int j = (folderNames.size() - 1); j >= 0; j--) {
+                    // check if this folder is indirectly contained because a parent folder is contained
+                    String check = (String)folderNames.get(j);
+                    if (file.startsWith(check)) {
+                        valid = false;
+                        break;
+                    }
+                }
+                if (valid) {
+                    // the folder is not already contained in the result
+                    result.add(file);
                 }
             }
+            fileNames.clear();
+            fileNames.addAll(result);
         }
     }
 
@@ -476,13 +495,13 @@ public class CmsExport implements Serializable {
         getSaxWriter().writeOpen(m_resourceNode);
 
         // distinguish folder and file names   
-        Vector folderNames = new Vector();
-        Vector fileNames = new Vector();
+        List folderNames = new ArrayList();
+        List fileNames = new ArrayList();
         for (int i = 0; i < resourcesToExport.length; i++) {
             if (CmsResource.isFolder(resourcesToExport[i])) {
-                folderNames.addElement(resourcesToExport[i]);
+                folderNames.add(resourcesToExport[i]);
             } else {
-                fileNames.addElement(resourcesToExport[i]);
+                fileNames.add(resourcesToExport[i]);
             }
         }
 
@@ -495,7 +514,7 @@ public class CmsExport implements Serializable {
 
         // export the folders
         for (int i = 0; i < folderNames.size(); i++) {
-            String path = (String)folderNames.elementAt(i);
+            String path = (String)folderNames.get(i);
             // first add superfolders to the xml-config file
             addParentFolders(path);
             addChildResources(path);
@@ -698,15 +717,15 @@ public class CmsExport implements Serializable {
     /**
      * Adds all files in fileNames to the manifest.xml file.<p>
      * 
-     * @param fileNames Vector of path Strings, e.g. <code>/folder/index.html</code>
+     * @param fileNames list of path Strings, e.g. <code>/folder/index.html</code>
      * @throws CmsImportExportException2 if something goes wrong
      * @throws SAXException if something goes wrong procesing the manifest.xml
      */
-    private void addFiles(Vector fileNames) throws CmsImportExportException, IOException, SAXException {
+    private void addFiles(List fileNames) throws CmsImportExportException, IOException, SAXException {
 
         if (fileNames != null) {
             for (int i = 0; i < fileNames.size(); i++) {
-                String fileName = (String)fileNames.elementAt(i);
+                String fileName = (String)fileNames.get(i);
 
                 try {
                     CmsFile file = getCms().readFile(fileName, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -745,7 +764,7 @@ public class CmsExport implements Serializable {
 
         Iterator i;
 
-        Vector bodyFileNames = new Vector();
+        List bodyFileNames = new ArrayList();
         String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(
             0,
             I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"));
@@ -787,27 +806,27 @@ public class CmsExport implements Serializable {
 
             // Initialize the "previously added folder cache"
             if (m_superFolders == null) {
-                m_superFolders = new Vector();
+                m_superFolders = new ArrayList();
             }
-            Vector superFolders = new Vector();
+            ArrayList superFolders = new ArrayList();
 
             // Check, if the path is really a folder
             if (resourceName.lastIndexOf(I_CmsConstants.C_ROOT) != (resourceName.length() - 1)) {
                 resourceName = resourceName.substring(0, resourceName.lastIndexOf(I_CmsConstants.C_ROOT) + 1);
             }
             while (resourceName.length() > I_CmsConstants.C_ROOT.length()) {
-                superFolders.addElement(resourceName);
+                superFolders.add(resourceName);
                 resourceName = resourceName.substring(0, resourceName.length() - 1);
                 resourceName = resourceName.substring(0, resourceName.lastIndexOf(I_CmsConstants.C_ROOT) + 1);
             }
             for (int i = superFolders.size() - 1; i >= 0; i--) {
-                String addFolder = (String)superFolders.elementAt(i);
+                String addFolder = (String)superFolders.get(i);
                 if (!m_superFolders.contains(addFolder)) {
                     // This super folder was NOT added previously. Add it now!
                     CmsFolder folder = getCms().readFolder(addFolder, CmsResourceFilter.IGNORE_EXPIRATION);
                     appendResourceToManifest(folder, false);
                     // Remember that this folder was added
-                    m_superFolders.addElement(addFolder);
+                    m_superFolders.add(addFolder);
                 }
             }
         } catch (CmsImportExportException e) {
@@ -1190,7 +1209,7 @@ public class CmsExport implements Serializable {
             e.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(user.getFlags()));
             e.addElement(CmsImportExportManager.N_TAG_ADDRESS).addCDATA(user.getAddress());
             e.addElement(CmsImportExportManager.N_TYPE).addText(Integer.toString(user.getType()));
-            // serialize the hashtable and write the info into a file
+            // serialize the user info and write it into a file
             try {
                 String datfileName = "/~" + CmsImportExportManager.N_USERINFO + "/" + user.getName() + ".dat";
                 // create tag for userinfo
@@ -1200,7 +1219,7 @@ public class CmsExport implements Serializable {
                 oout.writeObject(user.getAdditionalInfo());
                 oout.close();
                 byte[] serializedInfo = bout.toByteArray();
-                // store the serialized  user info hashtable in the zip-file
+                // store the serialized user info in the zip-file
                 ZipEntry entry = new ZipEntry(datfileName);
                 getExportZipStream().putNextEntry(entry);
                 getExportZipStream().write(serializedInfo);

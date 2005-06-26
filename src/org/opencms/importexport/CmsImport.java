@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,12 +53,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -76,23 +74,17 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsImport implements Serializable {
-
-    /** The algorithm for the message digest. */
-    public static final String C_IMPORT_DIGEST = "MD5";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImport.class);
 
     /** The cms context to do the operations with. */
     protected CmsObject m_cms;
-
-    /** Digest for taking a fingerprint of the files. */
-    protected MessageDigest m_digest;
 
     /** The xml manifest-file. */
     protected Document m_docXml;
@@ -186,16 +178,16 @@ public class CmsImport implements Serializable {
     /**
      * Returns a list of files which are both in the import and in the virtual file system.<p>
      * 
-     * @return Vector of Strings, complete path of the files
+     * @return a list of Strings, complete path of the files
      * @throws CmsImportExportException if the import file could not be opened
      * @throws CmsXmlException if the manifest of the import could not be unmarshalled
      */
-    public Vector getConflictingFilenames() throws CmsXmlException, CmsImportExportException {
+    public List getConflictingFilenames() throws CmsXmlException, CmsImportExportException {
 
         List fileNodes;
         Element currentElement;
         String source, destination;
-        Vector conflictNames = new Vector();
+        List conflictNames = new ArrayList();
         //String xpathExpr = null;
 
         if (m_docXml == null) {
@@ -222,7 +214,7 @@ public class CmsImport implements Serializable {
                     exists = false;
                 }
                 if (exists) {
-                    conflictNames.addElement(m_importPath + destination);
+                    conflictNames.add(m_importPath + destination);
                 }
             }
         }
@@ -246,19 +238,19 @@ public class CmsImport implements Serializable {
     }
 
     /**
-     * Returns a Vector of resource names that are needed to create a project for this import.<p>
+     * Returns a list of resource names that are needed to create a project for this import.<p>
      * 
      * It calls the method getConflictingFileNames if needed, to calculate these resources.
      * 
-     * @return a Vector of resource names that are needed to create a project for this import
+     * @return a list of resource names that are needed to create a project for this import
      * @throws CmsImportExportException if ZIP archive could not be closed
      */
-    public Vector getResourcesForProject() throws CmsImportExportException {
+    public List getResourcesForProject() throws CmsImportExportException {
 
         List fileNodes;
         Element currentElement;
         String destination;
-        Vector resources = new Vector();
+        List resources = new ArrayList();
 
         try {
             if (m_importingChannelData) {
@@ -283,10 +275,10 @@ public class CmsImport implements Serializable {
                         try {
                             m_cms.readFolder(resource, CmsResourceFilter.IGNORE_EXPIRATION);
                             // this resource exists in the current project -> add it
-                            resources.addElement(resource);
+                            resources.add(resource);
                         } catch (CmsException exc) {
                             // this resource is missing - we need the root-folder
-                            resources.addElement(I_CmsConstants.C_ROOT);
+                            resources.add(I_CmsConstants.C_ROOT);
                         }
                     }
                 } catch (StringIndexOutOfBoundsException exc) {
@@ -303,8 +295,8 @@ public class CmsImport implements Serializable {
 
         if (resources.contains(I_CmsConstants.C_ROOT)) {
             // we have to import root - forget the rest!
-            resources.removeAllElements();
-            resources.addElement(I_CmsConstants.C_ROOT);
+            resources.clear();
+            resources.add(I_CmsConstants.C_ROOT);
         }
 
         return resources;
@@ -319,29 +311,19 @@ public class CmsImport implements Serializable {
      */
     public synchronized void importResources() throws CmsImportExportException, CmsXmlException {
 
-        importResources(null, null, null, null, null);
+        importResources(null);
     }
 
     /**
      * Imports the resources for a module.<p>
      * 
-     * @param excludeList filenames of files and folders which should not 
-     *      be (over)written in the virtual file system (not used when null)
-     * @param writtenFilenames filenames of the files and folder which have actually been 
-     *      successfully written (not used when null)
-     * @param fileCodes code of the written files (for the registry)
-     *      (not used when null)
-     * @param propertyName name of a property to be added to all resources
-     * @param propertyValue value of that property
+     * @param immutables a list of immutables (filenames of files and/or folders) 
+     *      which should not be (over)written in the VFS (not used when null)
+     * 
      * @throws CmsImportExportException if something goes wrong
      * @throws CmsXmlException if the manifest of the import could not be unmarshalled
      */
-    public synchronized void importResources(
-        Vector excludeList,
-        Vector writtenFilenames,
-        Vector fileCodes,
-        String propertyName,
-        String propertyValue) throws CmsImportExportException, CmsXmlException {
+    public synchronized void importResources(List immutables) throws CmsImportExportException, CmsXmlException {
 
         // initialize the import
         boolean run = false;
@@ -360,15 +342,10 @@ public class CmsImport implements Serializable {
                         m_cms,
                         m_importPath,
                         m_report,
-                        m_digest,
                         m_importResource,
                         m_importZip,
                         m_docXml,
-                        excludeList,
-                        writtenFilenames,
-                        fileCodes,
-                        propertyName,
-                        propertyValue);
+                        immutables);
                     run = true;
                     break;
                 }
@@ -493,9 +470,6 @@ public class CmsImport implements Serializable {
      */
     protected void openImportFile() throws CmsXmlException, CmsImportExportException {
 
-        // create the digest
-        createDigest();
-
         // open the import resource
         getImportResource();
 
@@ -510,31 +484,4 @@ public class CmsImport implements Serializable {
             //ignore the exception, the export file has no version nummber (version 0).
         }
     }
-
-    /**
-     * Read infos from the properties and create a MessageDigest.<p>
-     * 
-     * @throws CmsImportExportException if no message digest could be created
-     */
-    private void createDigest() throws CmsImportExportException {
-
-        // Configurations config = m_cms.getConfigurations();
-
-        String digest = C_IMPORT_DIGEST;
-        // create the digest
-        try {
-            m_digest = MessageDigest.getInstance(digest);
-        } catch (NoSuchAlgorithmException e) {
-
-            CmsMessageContainer message = Messages.get().container(
-                Messages.ERR_IMPORTEXPORT_ERROR_CREATING_DIGEST_1,
-                digest);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(message.key(), e);
-            }
-
-            throw new CmsImportExportException(message, e);
-        }
-    }
-
 }

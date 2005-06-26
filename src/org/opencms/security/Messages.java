@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,6 +106,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UNSUPPORTED_PASSWORD_ENCODING_1 = "ERR_UNSUPPORTED_PASSWORD_ENCODING_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLENAME_ACCOUNT_MANAGER_0 = "GUI_ROLENAME_ACCOUNT_MANAGER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_ADMINISTRATOR_0 = "GUI_ROLENAME_ADMINISTRATOR_0";
 
     /** Message constant for key in the resource bundle. */
@@ -139,10 +142,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLENAME_SCHEDULER_MANAGER_0 = "GUI_ROLENAME_SCHEDULER_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_SYSTEM_USER_0 = "GUI_ROLENAME_SYSTEM_USER_0";
+    public static final String GUI_ROLENAME_SEARCH_MANAGER_0 = "GUI_ROLENAME_SEARCH_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_USER_MANAGER_0 = "GUI_ROLENAME_USER_MANAGER_0";
+    public static final String GUI_ROLENAME_SYSTEM_USER_0 = "GUI_ROLENAME_SYSTEM_USER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_VFS_MANAGER_0 = "GUI_ROLENAME_VFS_MANAGER_0";

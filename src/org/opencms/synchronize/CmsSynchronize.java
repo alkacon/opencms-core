@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.58 $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.59 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,6 +132,11 @@ public class CmsSynchronize {
         // and the FS are valid
         if ((settings != null) && (settings.isSyncEnabled())) {
 
+            // store the current site root
+            m_cms.getRequestContext().saveSiteRoot();
+            // set site to root site
+            m_cms.getRequestContext().setSiteRoot("/");
+            
             // get the destination folder
             m_destinationPathInRfs = settings.getDestinationPathInRfs();
 
@@ -153,11 +158,6 @@ public class CmsSynchronize {
             // create the sync list for this run
             m_syncList = readSyncList();
             m_newSyncList = new HashMap();
-
-            // store the current site root
-            String currentSite = m_cms.getRequestContext().getSiteRoot();
-            // set site to root site
-            m_cms.getRequestContext().setSiteRoot("");
 
             try {
                 Iterator i = settings.getSourceListInVfs().iterator();
@@ -187,7 +187,7 @@ public class CmsSynchronize {
                 writeSyncList();
             } finally {
                 // reset to current site root
-                m_cms.getRequestContext().setSiteRoot(currentSite);
+                m_cms.getRequestContext().restoreSiteRoot();
             }
 
             // free mem

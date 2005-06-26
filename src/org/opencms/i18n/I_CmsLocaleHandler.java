@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/I_CmsLocaleHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,13 +40,13 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * A locale handler returns the locale name to use for the given request context.<p>
  * 
- * By implementing this interface, and configuring <code>registry.xml</code>
+ * By implementing this interface, and configuring OpenCms
  * accordingly, the behaviour for the m_locale selection can be fine-tuned
  * to the exact need of the OpenCms installation.<p>
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
- * Date   : $Date: 2005/06/23 14:01:14 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.11 $ $Date: 2005/06/23 14:01:14 $
+ * @version $Revision: 1.12 $ $Date: 2005/06/26 12:23:30 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -194,14 +194,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
                         m_cms,
                         m_importPath,
                         m_report,
-                        m_digest,
                         m_importResource,
                         m_importZip,
                         m_docXml,
-                        null,
-                        null,
-                        null,
-                        null,
                         null);
                     break;
                 }

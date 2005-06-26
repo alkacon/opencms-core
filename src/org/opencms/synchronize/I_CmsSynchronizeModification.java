@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/I_CmsSynchronizeModification.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,19 +39,9 @@ import java.io.File;
 /**
  * Defines methods which can be pluged into the syncronisation process between VFS and "real" FS.<p>
  * 
- * You can implemnt the interface with your own methods and register your class 
- * in the OpenCms
- * registry.xml at the following nodes: <br>
- * 
- * <synchronizemodifications><br>
- * <class>[your_complete_classname_incl._packages]</class><br>
- * </synchronizemodifications><br><br>
- * <p>
- * 
- * 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2005/06/25 12:45:06 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,15 +47,12 @@ import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.File;
-import java.security.MessageDigest;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.logging.Log;
@@ -72,7 +69,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.81 $ 
+ * @version $Revision: 1.82 $ 
  * 
  * @since 6.0.0 
  * 
@@ -104,58 +101,28 @@ public class CmsImportVersion4 extends A_CmsImport {
     }
 
     /**
-     * Imports the resources for a module.<p>
-     * @param cms the current cms object
-     * @param importPath the path in the cms VFS to import into
-     * @param report a report object to output the progress information to
-     * @param digest digest for taking a fingerprint of the files
-     * @param importResource  the import-resource (folder) to load resources from
-     * @param importZip the import-resource (zip) to load resources from
-     * @param docXml the xml manifest-file 
-     * @param excludeList filenames of files and folders which should not 
-     *      be (over)written in the virtual file system (not used when null)
-     * @param writtenFilenames filenames of the files and folder which have actually been 
-     *      successfully written (not used when null)
-     * @param fileCodes code of the written files (for the registry)
-     *      (not used when null)
-     * @param propertyName name of a property to be added to all resources
-     * @param propertyValue value of that property
-     * @throws CmsImportExportException if something goes wrong
+     * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document, java.util.List)
      */
     public synchronized void importResources(
         CmsObject cms,
         String importPath,
         I_CmsReport report,
-        MessageDigest digest,
         File importResource,
         ZipFile importZip,
         Document docXml,
-        Vector excludeList,
-        Vector writtenFilenames,
-        Vector fileCodes,
-        String propertyName,
-        String propertyValue) throws CmsImportExportException {
+        List immutables) throws CmsImportExportException {
 
         // initialize the import       
         initialize();
         m_cms = cms;
         m_importPath = importPath;
         m_report = report;
-        m_digest = digest;
         m_importResource = importResource;
         m_importZip = importZip;
         m_docXml = docXml;
         m_importingChannelData = false;
         m_linkStorage = new HashMap();
         m_linkPropertyStorage = new HashMap();
-
-        // these lines make Eclipse happy...
-        if (writtenFilenames != null) {
-            writtenFilenames.size();
-        }
-        if (fileCodes != null) {
-            fileCodes.size();
-        }
 
         try {
             // first import the user information
@@ -164,7 +131,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 importUsers();
             }
             // now import the VFS resources
-            readResourcesFromManifest(excludeList, propertyName, propertyValue);
+            readResourcesFromManifest(immutables);
             convertPointerToSiblings();
         } finally {
             cleanUp();
@@ -197,8 +164,8 @@ public class CmsImportVersion4 extends A_CmsImport {
         String email,
         String address,
         String type,
-        Hashtable userInfo,
-        Vector userGroups) throws CmsImportExportException {
+        Map userInfo,
+        List userGroups) throws CmsImportExportException {
 
         boolean convert = false;
 
@@ -267,7 +234,7 @@ public class CmsImportVersion4 extends A_CmsImport {
      * @param datereleased the release date of the resource
      * @param dateexpired the expire date of the resource
      * @param flags the flags of the resource     
-     * @param properties a hashtable with properties for this resource
+     * @param properties a list with properties for this resource
      * 
      * @return imported resource
      */
@@ -370,15 +337,13 @@ public class CmsImportVersion4 extends A_CmsImport {
 
     /**
      * Reads all file nodes plus their meta-information (properties, ACL) 
-     * from manifest.xml and imports them as Cms resources to the VFS.<p>
+     * from the <code>manifest.xml</code> and imports them as Cms resources to the VFS.<p>
      * 
-     * @param excludeList a list of resource names which should not be (over)written in the VFS, or null
-     * @param propertyKey name of a property to be added to all resources, or null
-     * @param propertyValue value of the property to be added to all resources, or null
+     * @param immutables a list of immutables (filenames of files and/or folders) which should not be (over)written in the VFS (not used when null)
+     * 
      * @throws CmsImportExportException if something goes wrong
      */
-    private void readResourcesFromManifest(Vector excludeList, String propertyKey, String propertyValue)
-    throws CmsImportExportException {
+    private void readResourcesFromManifest(List immutables) throws CmsImportExportException {
 
         String source = null, destination = null, uuidresource = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
         long datelastmodified = 0, datecreated = 0, datereleased = 0, dateexpired = 0;
@@ -397,8 +362,8 @@ public class CmsImportVersion4 extends A_CmsImport {
         if (OpenCms.getImportExportManager().getImmutableResources() != null) {
             immutableResources.addAll(OpenCms.getImportExportManager().getImmutableResources());
         }
-        if (excludeList != null) {
-            immutableResources.addAll(excludeList);
+        if (immutables != null) {
+            immutableResources.addAll(immutables);
         }
 
         // get list of ignored properties
@@ -513,11 +478,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                         translatedName));
                     m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                     // get all properties
-                    properties = readPropertiesFromManifest(
-                        currentElement,
-                        propertyKey,
-                        propertyValue,
-                        ignoredProperties);
+                    properties = readPropertiesFromManifest(currentElement, ignoredProperties);
 
                     // import the resource               
                     CmsResource res = importResource(

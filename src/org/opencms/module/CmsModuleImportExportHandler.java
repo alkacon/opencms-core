@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/06/26 09:35:50 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -526,6 +526,6 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         // import the module resources
         CmsImport cmsImport = new CmsImport(cms, importResource, "/", report);
-        cmsImport.importResources(exclusion, new Vector(), new Vector(), null, null);
+        cmsImport.importResources(exclusion);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImport.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.report.I_CmsReport;
 
 import java.io.File;
-import java.security.MessageDigest;
-import java.util.Vector;
+import java.util.List;
 import java.util.zip.ZipFile;
 
 import org.dom4j.Document;
@@ -45,22 +44,12 @@ import org.dom4j.Document;
  * This interface describes a import class which is used to import resources into the VFS.<p>
  * 
  * OpenCms supports different import versions, for each version a own import class must be implemented.
- * A group of common used methods can be found in {@link org.opencms.importexport.A_CmsImport}.<p>
- * 
- * Implementations of this interface must be registered in the registry in the <code>importclasses</code> node,
- * e.g.:<br>
- * 
- * <code>
- * <importclasses>
- * <class>[your_complete_classname_incl._packages]</class>
- * </importclasses>
- * </code>
- * <p>
+ * A group of common used methods can be found in <code>{@link org.opencms.importexport.A_CmsImport}</code>.<p>
  *
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,32 +73,22 @@ public interface I_CmsImport {
     /**
      * Imports the resources.<p>
      * 
-     * @param cms the current cms object
-     * @param importPath the path in the cms VFS to import into
+     * @param cms the current users OpenCms context
+     * @param importPath the path in the OpenCms VFS to import into
      * @param report a report object to output the progress information to
-     * @param digest digest for taking a fingerprint of the files
-     * @param importResource  the import-resource (folder) to load resources from
+     * @param importResource the import-resource (folder) to load resources from
      * @param importZip the import-resource (zip) to load resources from
-     * @param docXml the xml manifest-file
-     * @param excludeList filenames of files and folders which should not be (over)written in the virtual file system (not used when null)
-     * @param writtenFilenames filenames of the files and folder which have actually been successfully written (not used when null)
-     * @param fileCodes code of the written files (for the registry) (not used when null)
-     * @param propertyName name of a property to be added to all resources
-     * @param propertyValue value of that property
+     * @param docXml the <code>manifest.xml</code> file which contains the meta information of the imported files
+     * @param immutables a list of immutables (filenames of files and/or folders) which should not be (over)written in the VFS (not used when null)
+     * 
      * @throws CmsImportExportException if something goes wrong
      */
     void importResources(
         CmsObject cms,
         String importPath,
         I_CmsReport report,
-        MessageDigest digest,
         File importResource,
         ZipFile importZip,
         Document docXml,
-        Vector excludeList,
-        Vector writtenFilenames,
-        Vector fileCodes,
-        String propertyName,
-        String propertyValue) throws CmsImportExportException;
-
+        List immutables) throws CmsImportExportException;
 }

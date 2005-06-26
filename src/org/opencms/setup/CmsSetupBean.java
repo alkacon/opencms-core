@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,8 +190,8 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
 
     /**
      * Restores the opencms.xml either to or from a backup file, depending
-     * whether the setup wizard is executed the first time (the backup registry
-     * doesnt exist) or not (the backup registry exists).
+     * whether the setup wizard is executed the first time (the backup
+     * does not exist) or not (the backup exists).
      * 
      * @param filename something like e.g. "opencms-xml.ori"
      * @param originalFilename the configurations real file name, e.g. "opencms.xml"

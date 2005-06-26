@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/06/25 12:45:06 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,12 +49,9 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.File;
-import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.logging.Log;
@@ -71,7 +68,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.66 $ 
+ * @version $Revision: 1.67 $ 
  * 
  * @since 6.0.0 
  * 
@@ -103,44 +100,22 @@ public class CmsImportVersion3 extends A_CmsImport {
     }
 
     /**
-     * Imports the resources for a module.<p>
-     * @param cms the current cms object
-     * @param importPath the path in the cms VFS to import into
-     * @param report a report object to output the progress information to
-     * @param digest digest for taking a fingerprint of the files
-     * @param importResource  the import-resource (folder) to load resources from
-     * @param importZip the import-resource (zip) to load resources from
-     * @param docXml the xml manifest-file 
-     * @param excludeList filenames of files and folders which should not 
-     *      be (over)written in the virtual file system (not used when null)
-     * @param writtenFilenames filenames of the files and folder which have actually been 
-     *      successfully written (not used when null)
-     * @param fileCodes code of the written files (for the registry)
-     *      (not used when null)
-     * @param propertyName name of a property to be added to all resources
-     * @param propertyValue value of that property
-     * @throws CmsImportExportException if something goes wrong
+     * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document, java.util.List)
      */
     public synchronized void importResources(
         CmsObject cms,
         String importPath,
         I_CmsReport report,
-        MessageDigest digest,
         File importResource,
         ZipFile importZip,
         Document docXml,
-        Vector excludeList,
-        Vector writtenFilenames,
-        Vector fileCodes,
-        String propertyName,
-        String propertyValue) throws CmsImportExportException {
+        List immutables) throws CmsImportExportException {
 
         // initialize the import
         initialize();
         m_cms = cms;
         m_importPath = importPath;
         m_report = report;
-        m_digest = digest;
         m_importResource = importResource;
         m_importZip = importZip;
         m_docXml = docXml;
@@ -152,7 +127,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 importUsers();
             }
             // now import the VFS resources
-            importAllResources(excludeList, writtenFilenames, fileCodes, propertyName, propertyValue);
+            importAllResources(immutables);
         } finally {
             cleanUp();
         }
@@ -184,8 +159,8 @@ public class CmsImportVersion3 extends A_CmsImport {
         String email,
         String address,
         String type,
-        Hashtable userInfo,
-        Vector userGroups) throws CmsImportExportException {
+        Map userInfo,
+        List userGroups) throws CmsImportExportException {
 
         boolean convert = false;
 
@@ -215,23 +190,11 @@ public class CmsImportVersion3 extends A_CmsImport {
     /**
      * Imports the resources and writes them to the cms.<p>
      * 
+     * @param immutables a list of immutables (filenames of files and/or folders) which should not be (over)written in the VFS (not used when null)
      * 
-     * @param excludeList filenames of files and folders which should not 
-     *      be (over)written in the virtual file system (not used when null)
-     * @param writtenFilenames filenames of the files and folder which have actually been 
-     *      successfully written (not used when null)
-     * @param fileCodes code of the written files (for the registry)
-     *      (not used when null)
-     * @param propertyName name of a property to be added to all resources
-     * @param propertyValue value of that property
      * @throws CmsImportExportException if something goes wrong
      */
-    private void importAllResources(
-        Vector excludeList,
-        Vector writtenFilenames,
-        Vector fileCodes,
-        String propertyName,
-        String propertyValue) throws CmsImportExportException {
+    private void importAllResources(List immutables) throws CmsImportExportException {
 
         String source, destination, type, uuidstructure, uuidresource, userlastmodified, usercreated, flags, timestamp;
         long datelastmodified, datecreated;
@@ -246,8 +209,8 @@ public class CmsImportVersion3 extends A_CmsImport {
         }
 
         // clear some required structures at the init phase of the import      
-        if (excludeList == null) {
-            excludeList = new Vector();
+        if (immutables == null) {
+            immutables = new ArrayList();
         }
         // get list of unwanted properties
         List deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
@@ -322,7 +285,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
                 translatedName = m_cms.getRequestContext().removeSiteRoot(translatedName);
                 // if the resource is not immutable and not on the exclude list, import it
-                if (resourceNotImmutable && (!excludeList.contains(translatedName))) {
+                if (resourceNotImmutable && (!immutables.contains(translatedName))) {
                     // print out the information to the report
                     m_report.print(Messages.get().container(Messages.RPT_IMPORTING_0), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(org.opencms.report.Messages.get().container(
@@ -330,11 +293,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                         translatedName));
                     m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0));
                     // get all properties
-                    properties = readPropertiesFromManifest(
-                        currentElement,
-                        propertyName,
-                        propertyValue,
-                        deleteProperties);
+                    properties = readPropertiesFromManifest(currentElement, deleteProperties);
 
                     // import the resource               
                     CmsResource res = importResource(
@@ -348,9 +307,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                         datecreated,
                         usercreated,
                         flags,
-                        properties,
-                        writtenFilenames,
-                        fileCodes);
+                        properties);
 
                     List aceList = new ArrayList();
                     if (res != null) {
@@ -427,11 +384,7 @@ public class CmsImportVersion3 extends A_CmsImport {
      * @param datecreated the creation date of the resource
      * @param usercreated the user who created 
      * @param flags the flags of the resource     
-     * @param properties a hashtable with properties for this resource
-     * @param writtenFilenames filenames of the files and folder which have actually been successfully written
-     *       not used when null
-     * @param fileCodes code of the written files (for the registry)
-     *       not used when null
+     * @param properties a list with properties for this resource
      * 
      * @return imported resource
      */
@@ -446,13 +399,9 @@ public class CmsImportVersion3 extends A_CmsImport {
         long datecreated,
         String usercreated,
         String flags,
-        List properties,
-        Vector writtenFilenames,
-        Vector fileCodes) {
+        List properties) {
 
-        boolean success = true;
         byte[] content = null;
-        String fullname = null;
         CmsResource res = null;
 
         try {
@@ -510,8 +459,8 @@ public class CmsImportVersion3 extends A_CmsImport {
 
             // convert to xml page if wanted
             if (m_convertToXmlPage
-                && (resType.getTypeName().equals(A_CmsImport.C_RESOURCE_TYPE_LEGACY_PAGE_NAME) || resType.getTypeName().equals(
-                    C_RESOURCE_TYPE_NEWPAGE_NAME))) {
+                && (resType.getTypeName().equals(A_CmsImport.RESOURCE_TYPE_LEGACY_PAGE_NAME) || resType.getTypeName().equals(
+                    RESOURCE_TYPE_NEWPAGE_NAME))) {
 
                 if (content != null) {
 
@@ -558,13 +507,10 @@ public class CmsImportVersion3 extends A_CmsImport {
                 I_CmsReport.C_FORMAT_OK);
         } catch (Exception exc) {
             // an error while importing the file
-            success = false;
             m_report.println(exc);
-
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCE_1, destination), exc);
             }
-
             try {
                 // Sleep some time after an error so that the report output has a chance to keep up
                 Thread.sleep(1000);
@@ -572,20 +518,6 @@ public class CmsImportVersion3 extends A_CmsImport {
                 // noop
             }
         }
-
-        byte[] digestContent = {0};
-        if (content != null) {
-            digestContent = m_digest.digest(content);
-        }
-        if (success && (fullname != null)) {
-            if (writtenFilenames != null) {
-                writtenFilenames.addElement(fullname);
-            }
-            if (fileCodes != null) {
-                fileCodes.addElement(new String(digestContent));
-            }
-        }
-
         return res;
     }
 }

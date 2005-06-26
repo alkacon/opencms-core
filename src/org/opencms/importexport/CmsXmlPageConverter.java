@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,11 +47,11 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 
 /**
- * A missing comment for ${type_name} 
+ * Converts legacy pages (OpenCms 5 and earlier) to XML pages (OpenCms 6).<p>
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,5 +151,4 @@ public final class CmsXmlPageConverter {
         return xmlPage;
 
     }
-
 }

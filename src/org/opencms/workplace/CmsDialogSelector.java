@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialogSelector.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,9 @@ import org.opencms.main.OpenCms;
 import org.apache.commons.logging.Log;
 
 /**
- * Selects the dialog which should be displayed by OpenCms depending on the registry value.<p>
+ * Selects the dialog which should be displayed by OpenCms depending on the configuration value.<p>
  * 
- * You can define the class of your dialog handler in the OpenCms registry.xml in the &lt;dialoghandler&gt; node. 
+ * You can define the class of your dialog handler in the OpenCms XML configuration files. 
  * The following files use this class:
  * <ul>
  * <li>/commons/property_html
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  * 
@@ -110,7 +110,7 @@ public class CmsDialogSelector {
             // error getting the dialog class, return to file list
             return CmsWorkplace.C_FILE_EXPLORER_FILELIST;
         }
-        // get the dialog URI from the class defined in the registry 
+        // get the dialog URI from the class defined in the configuration 
         return dialogClass.getDialogUri(getParamResource(), getJsp());
     }
 

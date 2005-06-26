@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2005/06/26 12:23:30 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,16 +55,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -85,7 +82,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.78 $ 
+ * @version $Revision: 1.79 $ 
  * 
  * @since 6.0.0 
  * 
@@ -94,26 +91,23 @@ import org.dom4j.Element;
 
 public abstract class A_CmsImport implements I_CmsImport {
 
-    /** The algorithm for the message digest. */
-    public static final String C_IMPORT_DIGEST = "MD5";
-
     /** The name of the legacy resource type "page". */
-    public static final String C_RESOURCE_TYPE_LEGACY_PAGE_NAME = "page";
-
-    /** The id of the legacy resource type "link". */
-    protected static final int C_RESOURCE_TYPE_LINK_ID = 1024;
-
-    /** The name of the legacy resource type "link". */
-    protected static final String C_RESOURCE_TYPE_LINK_NAME = "link";
-
-    /** The id of the legacy resource type "newpage". */
-    protected static final int C_RESOURCE_TYPE_NEWPAGE_ID = 9;
-
-    /** The name of the legacy resource type "newpage". */
-    protected static final String C_RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
+    public static final String RESOURCE_TYPE_LEGACY_PAGE_NAME = "page";
 
     /** Debug flag to show debug output. */
     protected static final int DEBUG = 0;
+
+    /** The id of the legacy resource type "link". */
+    protected static final int RESOURCE_TYPE_LINK_ID = 1024;
+
+    /** The name of the legacy resource type "link". */
+    protected static final String RESOURCE_TYPE_LINK_NAME = "link";
+
+    /** The id of the legacy resource type "newpage". */
+    protected static final int RESOURCE_TYPE_NEWPAGE_ID = 9;
+
+    /** The name of the legacy resource type "newpage". */
+    protected static final String RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsImport.class);
@@ -123,9 +117,6 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** Flag for conversion to xml pages. */
     protected boolean m_convertToXmlPage;
-
-    /** Digest for taking a fingerprint of the files. */
-    protected MessageDigest m_digest;
 
     /** The xml manifest-file. */
     protected Document m_docXml;
@@ -495,7 +486,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
             if (((parentgroupName != null) && (!"".equals(parentgroupName))) && (parentGroup == null)) {
                 // cannot create group, put on stack and try to create later
-                Hashtable groupData = new Hashtable();
+                Map groupData = new HashMap();
                 groupData.put(CmsImportExportManager.N_NAME, name);
                 groupData.put(CmsImportExportManager.N_DESCRIPTION, description);
                 groupData.put(CmsImportExportManager.N_FLAGS, flags);
@@ -566,7 +557,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 Stack tempStack = m_groupsToCreate;
                 m_groupsToCreate = new Stack();
                 while (tempStack.size() > 0) {
-                    Hashtable groupdata = (Hashtable)tempStack.pop();
+                    Map groupdata = (HashMap)tempStack.pop();
                     name = (String)groupdata.get(CmsImportExportManager.N_NAME);
                     description = (String)groupdata.get(CmsImportExportManager.N_DESCRIPTION);
                     flags = (String)groupdata.get(CmsImportExportManager.N_FLAGS);
@@ -617,8 +608,8 @@ public abstract class A_CmsImport implements I_CmsImport {
         String email,
         String address,
         String type,
-        Hashtable userInfo,
-        Vector userGroups) throws CmsImportExportException {
+        Map userInfo,
+        List userGroups) throws CmsImportExportException {
 
         // create a new user id
         String id = new CmsUUID().toString();
@@ -641,10 +632,10 @@ public abstract class A_CmsImport implements I_CmsImport {
                     Integer.parseInt(flags),
                     Integer.parseInt(type),
                     userInfo);
-                // add user to all groups vector
+                // add user to all groups list
                 for (int i = 0; i < userGroups.size(); i++) {
                     try {
-                        m_cms.addUserToGroup(name, (String)userGroups.elementAt(i));
+                        m_cms.addUserToGroup(name, (String)userGroups.get(i));
                     } catch (CmsException exc) {
                         // ignore
                     }
@@ -678,9 +669,9 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         List userNodes;
         List groupNodes;
+        List userGroups;
         Element currentElement, currentGroup;
-        Vector userGroups;
-        Hashtable userInfo = new Hashtable();
+        Map userInfo = new HashMap();
         String name, description, flags, password, firstname, lastname, email, address, type, pwd, infoNode, defaultGroup;
         // try to get the import resource
         //getImportResource();
@@ -703,7 +694,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 address = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TAG_ADDRESS);
                 type = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TYPE);
                 defaultGroup = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DEFAULTGROUP);
-                // get the userinfo and put it into the hashtable
+                // get the userinfo and put it into the additional info map
                 infoNode = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_USERINFO);
                 try {
                     // read the userinfo from the dat-file
@@ -711,19 +702,19 @@ public abstract class A_CmsImport implements I_CmsImport {
                     // deserialize the object
                     ByteArrayInputStream bin = new ByteArrayInputStream(value);
                     ObjectInputStream oin = new ObjectInputStream(bin);
-                    userInfo = (Hashtable)oin.readObject();
+                    userInfo = (Map)oin.readObject();
                 } catch (IOException ioex) {
                     m_report.println(ioex);
                 }
 
-                // get the groups of the user and put them into the vector
+                // get the groups of the user and put them into the list
                 groupNodes = currentElement.selectNodes("*/" + CmsImportExportManager.N_GROUPNAME);
-                userGroups = new Vector();
+                userGroups = new ArrayList();
                 for (int j = 0; j < groupNodes.size(); j++) {
                     currentGroup = (Element)groupNodes.get(j);
                     String userInGroup = CmsImport.getChildElementTextValue(currentGroup, CmsImportExportManager.N_NAME);
                     userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);
-                    userGroups.addElement(userInGroup);
+                    userGroups.add(userInGroup);
                 }
 
                 if (defaultGroup != null && !"".equalsIgnoreCase(defaultGroup)) {
@@ -772,20 +763,14 @@ public abstract class A_CmsImport implements I_CmsImport {
     }
 
     /**
-     * Reads all properties below a specified parent element from manifest.xml.<p>
+     * Reads all properties below a specified parent element from the <code>manifest.xml</code>.<p>
      * 
      * @param parentElement the current file node
-     * @param propertyKey key of a property to be added to all resources, or null
-     * @param propertyValue value of the property to be added to all resources, or null
      * @param ignoredPropertyKeys a list of properies to be ignored
      * 
      * @return a list with all properties
      */
-    protected List readPropertiesFromManifest(
-        Element parentElement,
-        String propertyKey,
-        String propertyValue,
-        List ignoredPropertyKeys) {
+    protected List readPropertiesFromManifest(Element parentElement, List ignoredPropertyKeys) {
 
         // all imported Cms property objects are collected in map first forfaster access
         Map properties = new HashMap();
@@ -797,10 +782,6 @@ public abstract class A_CmsImport implements I_CmsImport {
         Element propertyElement = null;
         String key = null, value = null;
         Attribute attrib = null;
-
-        if (propertyKey != null && propertyValue != null && !"".equals(propertyKey)) {
-            properties.put(propertyKey, propertyValue);
-        }
 
         // iterate over all property elements
         for (int i = 0, n = propertyElements.size(); i < n; i++) {
