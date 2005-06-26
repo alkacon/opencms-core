@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2005/06/26 15:35:13 $
+ * Version: $Revision: 1.109 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.108 $ 
+ * @version $Revision: 1.109 $ 
  * 
  * @since 6.0.0 
  * 
@@ -159,7 +159,7 @@ public class CmsImportVersion2 extends A_CmsImport {
     }
 
     /**
-     * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document, java.util.List)
+     * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
      */
     public synchronized void importResources(
         CmsObject cms,
@@ -167,8 +167,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         I_CmsReport report,
         File importResource,
         ZipFile importZip,
-        Document docXml,
-        List immutables) throws CmsImportExportException {
+        Document docXml) throws CmsImportExportException {
 
         // initialize the import
         initialize();
@@ -203,7 +202,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 importUsers();
             }
             // now import the VFS resources
-            importAllResources(immutables);
+            importAllResources();
             convertPointerToSiblings();
         } finally {
             cleanUp();
@@ -431,11 +430,9 @@ public class CmsImportVersion2 extends A_CmsImport {
     /**
      * Imports the resources and writes them to the cms.<p>
      * 
-     * @param immutables a list of immutables (filenames of files and/or folders) which should not be (over)written in the VFS (not used when null)
-     * 
      * @throws CmsImportExportException if something goes wrong
      */
-    private void importAllResources(List immutables) throws CmsImportExportException {
+    private void importAllResources() throws CmsImportExportException {
 
         List fileNodes = null, acentryNodes = null;
         Element currentElement = null, currentEntry = null;
@@ -449,11 +446,6 @@ public class CmsImportVersion2 extends A_CmsImport {
             m_cms.getRequestContext().saveSiteRoot();
             m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
         }
-
-        if (immutables == null) {
-            immutables = new ArrayList();
-        }
-
         try {
             m_webAppNames = getCompatibilityWebAppNames();
         } catch (Exception e) {
@@ -482,6 +474,9 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         // get list of immutable resources
         List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
+        if (immutableResources == null) {
+            immutableResources = Collections.EMPTY_LIST;
+        }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(
                 Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1,
@@ -561,10 +556,8 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
 
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
-
                 translatedName = m_cms.getRequestContext().removeSiteRoot(translatedName);
-
-                if (resourceNotImmutable && (!immutables.contains(translatedName))) {
+                if (resourceNotImmutable) {
 
                     // print out the information to the report
                     m_report.print(Messages.get().container(Messages.RPT_IMPORTING_0), I_CmsReport.C_FORMAT_NOTE);

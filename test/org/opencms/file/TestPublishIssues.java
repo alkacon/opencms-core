@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/26 15:35:13 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.file;
 
+import org.opencms.db.CmsPublishList;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
@@ -54,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -112,10 +113,16 @@ public class TestPublishIssues extends OpenCmsTestCase {
      * Project "project1" consists of the folder "/".
      * Project "project2" consists of the folder "/folder1/subfolder11/".
      * User "test2" edits the file "/folder1/subfolder11/index.html".
-     * After this, user "test1" locks the folder "/folder1" in "project1".
-     * User "test2" now publishes "project2".<p>
+     * After this, user "test1" locks the folder "/folder1" in "project1", and unlocks it again.
+     * User "test2" logs in and now publishes "project2".<p>
      * 
-     * TODO: What must happen with the file "/folder1/subfolder11/index.html"?.<p>
+     * Wanted result: the changed resource "/folder1/subfolder11/index.html" is published 
+     * with "project2".<p> 
+     * 
+     * The test illustrates a change in the logic from OpenCms 5 to OpenCms 6:
+     * In OpenCms 5, locking a file caused it to switch to the current users project.
+     * In OpenCms 6, this is no longer true, at last not if you just lock a parent folder.
+     * So in OpenCms 5, this test would fail, since the resource would be in "project1", not "project2".<p> 
      * 
      * @throws Throwable if something goes wrong
      */
@@ -172,19 +179,22 @@ public class TestPublishIssues extends OpenCmsTestCase {
         assertProject(cms, resource1, project2);
         assertLock(cms, resource1, CmsLock.C_TYPE_INHERITED);        
         
+        // now unlock the folder again
+        cms.unlockResource(resource2);
+        
         // back to the user "test2"
         cms.loginUser("test2", "test2");
         cms.getRequestContext().setCurrentProject(project2);            
 
-        // TODO: The wanted behaviour in this case must be defined!
+        // get the publish list
+        CmsPublishList publishList = cms.getPublishList();
+        assertEquals(1, publishList.getFileList().size());
         
-        // project should have one locked resource 
-        int resourceProjectCount = cms.countLockedResources(project2.getId());
-        // THIS IS WHERE THE TEST CURRENTLY FAILS!        
-        assertEquals(1, resourceProjectCount);
+        // project should have no locked resources 
+        int resourceProjectCount = cms.countLockedResources(project2.getId());    
+        assertEquals(0, resourceProjectCount);
         
         // unlock the project
-        cms.unlockProject(project2.getId());
         cms.publishProject();
         
         // ensure the file was published - state must be "unchanged" 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImport.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/26 15:35:13 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.report.I_CmsReport;
 
 import java.io.File;
-import java.util.List;
 import java.util.zip.ZipFile;
 
 import org.dom4j.Document;
@@ -49,7 +48,7 @@ import org.dom4j.Document;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,7 +78,6 @@ public interface I_CmsImport {
      * @param importResource the import-resource (folder) to load resources from
      * @param importZip the import-resource (zip) to load resources from
      * @param docXml the <code>manifest.xml</code> file which contains the meta information of the imported files
-     * @param immutables a list of immutables (filenames of files and/or folders) which should not be (over)written in the VFS (not used when null)
      * 
      * @throws CmsImportExportException if something goes wrong
      */
@@ -89,6 +87,5 @@ public interface I_CmsImport {
         I_CmsReport report,
         File importResource,
         ZipFile importZip,
-        Document docXml,
-        List immutables) throws CmsImportExportException;
+        Document docXml) throws CmsImportExportException;
 }

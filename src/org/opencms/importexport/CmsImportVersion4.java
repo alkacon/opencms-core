@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2005/06/26 15:35:13 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.82 $ 
+ * @version $Revision: 1.83 $ 
  * 
  * @since 6.0.0 
  * 
@@ -101,7 +101,7 @@ public class CmsImportVersion4 extends A_CmsImport {
     }
 
     /**
-     * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document, java.util.List)
+     * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
      */
     public synchronized void importResources(
         CmsObject cms,
@@ -109,8 +109,7 @@ public class CmsImportVersion4 extends A_CmsImport {
         I_CmsReport report,
         File importResource,
         ZipFile importZip,
-        Document docXml,
-        List immutables) throws CmsImportExportException {
+        Document docXml) throws CmsImportExportException {
 
         // initialize the import       
         initialize();
@@ -131,7 +130,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 importUsers();
             }
             // now import the VFS resources
-            readResourcesFromManifest(immutables);
+            readResourcesFromManifest();
             convertPointerToSiblings();
         } finally {
             cleanUp();
@@ -339,11 +338,9 @@ public class CmsImportVersion4 extends A_CmsImport {
      * Reads all file nodes plus their meta-information (properties, ACL) 
      * from the <code>manifest.xml</code> and imports them as Cms resources to the VFS.<p>
      * 
-     * @param immutables a list of immutables (filenames of files and/or folders) which should not be (over)written in the VFS (not used when null)
-     * 
      * @throws CmsImportExportException if something goes wrong
      */
-    private void readResourcesFromManifest(List immutables) throws CmsImportExportException {
+    private void readResourcesFromManifest() throws CmsImportExportException {
 
         String source = null, destination = null, uuidresource = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
         long datelastmodified = 0, datecreated = 0, datereleased = 0, dateexpired = 0;
@@ -357,15 +354,16 @@ public class CmsImportVersion4 extends A_CmsImport {
             m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
         }
 
-        // build list of immutable resources
-        List immutableResources = new ArrayList();
-        if (OpenCms.getImportExportManager().getImmutableResources() != null) {
-            immutableResources.addAll(OpenCms.getImportExportManager().getImmutableResources());
+        // get list of immutable resources
+        List immutableResources = OpenCms.getImportExportManager().getImmutableResources();
+        if (immutableResources == null) {
+            immutableResources = Collections.EMPTY_LIST;
         }
-        if (immutables != null) {
-            immutableResources.addAll(immutables);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(
+                Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1,
+                Integer.toString(immutableResources.size())));
         }
-
         // get list of ignored properties
         List ignoredProperties = OpenCms.getImportExportManager().getIgnoredProperties();
         if (ignoredProperties == null) {
@@ -468,7 +466,6 @@ public class CmsImportVersion4 extends A_CmsImport {
                 // check if this resource is immutable
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
                 translatedName = m_cms.getRequestContext().removeSiteRoot(translatedName);
-
                 // if the resource is not immutable and not on the exclude list, import it
                 if (resourceNotImmutable) {
                     // print out the information to the report

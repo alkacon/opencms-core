@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/26 15:35:13 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlErrorHandler;
 import org.opencms.xml.CmsXmlException;
 
@@ -61,7 +60,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -77,7 +75,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -508,24 +506,8 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             OpenCms.getWorkplaceManager().addExplorerTypeSettings(importedModule);
         }
 
-        Vector exclusion = new Vector();
-        // add all default directories to the exclusion list
-        // this prevents modification of these directories
-        exclusion.add(I_CmsWpConstants.C_VFS_PATH_SYSTEM);
-        exclusion.add(I_CmsWpConstants.C_VFS_PATH_MODULES);
-        exclusion.add(I_CmsWpConstants.C_VFS_PATH_WORKPLACE);
-        exclusion.add(I_CmsWpConstants.C_VFS_PATH_GALLERIES);
-        exclusion.add(I_CmsWpConstants.C_VFS_PATH_HELP);
-        exclusion.add(I_CmsWpConstants.C_VFS_PATH_LOCALES);
-        exclusion.add(I_CmsWpConstants.C_VFS_PATH_SCRIPTS);
-        exclusion.add(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS);
-        exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_PICS);
-        exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_HTML);
-        exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_DOWNLOAD);
-        exclusion.add(I_CmsWpConstants.C_VFS_GALLERY_EXTERNALLINKS);
-
         // import the module resources
         CmsImport cmsImport = new CmsImport(cms, importResource, "/", report);
-        cmsImport.importResources(exclusion);
+        cmsImport.importResources();
     }
 }

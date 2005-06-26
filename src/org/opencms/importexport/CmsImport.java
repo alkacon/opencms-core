@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/06/26 15:35:13 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -311,20 +311,6 @@ public class CmsImport implements Serializable {
      */
     public synchronized void importResources() throws CmsImportExportException, CmsXmlException {
 
-        importResources(null);
-    }
-
-    /**
-     * Imports the resources for a module.<p>
-     * 
-     * @param immutables a list of immutables (filenames of files and/or folders) 
-     *      which should not be (over)written in the VFS (not used when null)
-     * 
-     * @throws CmsImportExportException if something goes wrong
-     * @throws CmsXmlException if the manifest of the import could not be unmarshalled
-     */
-    public synchronized void importResources(List immutables) throws CmsImportExportException, CmsXmlException {
-
         // initialize the import
         boolean run = false;
         openImportFile();
@@ -344,8 +330,7 @@ public class CmsImport implements Serializable {
                         m_report,
                         m_importResource,
                         m_importZip,
-                        m_docXml,
-                        immutables);
+                        m_docXml);
                     run = true;
                     break;
                 }
