@@ -144,6 +144,13 @@ steps. After completing each step you are strongly advised to verify the success
         <b><i>Important:</i></b> Make sure you disable all popup blockers for the server URL
         you installed OpenCms on. Otherwise you will not be able to log in to the OpenCms workplace.
         </p>
+        <p>
+        <i>Note:</i> FreeBSD users need to setup new entropy sources in the O/S using rndcontrol. Otherwise the installation process will hang on
+step_8_import_workplace.jsp while the O/S waits for an entropy source. For example, on a machine with a network interface card on IRQs 9, you can execute
+        </p>
+        <p>
+        <code>rndcontrol -s 9<code>
+        </p>
         
 </BLOCKQUOTE>
         
