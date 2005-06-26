@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyContentToolHandler.java,v $
- * Date   : $Date: 2005/06/25 14:28:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/26 10:56:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.workplace.tools.content;
 
 import org.opencms.file.CmsObject;
 import org.opencms.security.CmsRole;
-import org.opencms.workplace.tools.A_CmsToolHandler;
+import org.opencms.workplace.tools.CmsOfflineToolHandler;
 
 /**
  * Property content tool handler that hides the property tools if the current user
@@ -41,19 +41,11 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsPropertyContentToolHandler extends A_CmsToolHandler {
-
-    /**
-     * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
-     */
-    public boolean isEnabled(CmsObject cms) {
-
-        return !cms.getRequestContext().currentProject().isOnlineProject();
-    }
+public class CmsPropertyContentToolHandler extends CmsOfflineToolHandler {
 
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/26 10:56:53 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools;
 
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -40,7 +41,7 @@ import org.opencms.workplace.CmsWorkplace;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,12 +120,39 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String iconPath,
         String onClick) {
 
-        return defaultButtonHtml(style, id, id, name, helpText, enabled, iconPath, onClick, false);
+        return defaultButtonHtml(null, style, id, id, name, helpText, enabled, iconPath, onClick, false);
     }
 
     /**
-     * Generates a default html code for big icon buttons.<p>
+     * Generates a default html code for icon buttons.<p>
      * 
+     * @param cms the cms context 
+     * @param style the style of the button
+     * @param id the id
+     * @param name the name
+     * @param helpText the help text
+     * @param enabled if enabled or not
+     * @param iconPath the path to the icon
+     * @param onClick the js code to execute
+     * 
+     * @return html code
+     */
+    public static String defaultButtonHtml(
+        CmsObject cms,
+        CmsHtmlIconButtonStyleEnum style,
+        String id,
+        String name,
+        String helpText,
+        boolean enabled,
+        String iconPath,
+        String onClick) {
+
+        return defaultButtonHtml(cms, style, id, id, name, helpText, enabled, iconPath, onClick, false);
+    }
+
+    /**
+     * Generates a default html code where several buttons can have the same help text.<p>
+     * @param cms the cms context, can be null
      * @param style the style of the button
      * @param id the id
      * @param helpId the id of the helptext div tag
@@ -138,6 +166,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * @return html code
      */
     public static String defaultButtonHtml(
+        CmsObject cms,
         CmsHtmlIconButtonStyleEnum style,
         String id,
         String helpId,
@@ -193,7 +222,19 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)) {
             html.append("<img src='");
             html.append(CmsWorkplace.getSkinUri());
-            html.append(iconPath);
+            if (!enabled) {
+                StringBuffer icon = new StringBuffer(128);
+                icon.append(iconPath.substring(0, iconPath.lastIndexOf('.')));
+                icon.append("_disabled");
+                icon.append(iconPath.substring(iconPath.lastIndexOf('.')));
+                if (cms != null && cms.existsResource(icon.toString())) {
+                    html.append(icon);
+                } else {
+                    html.append(iconPath);
+                }
+            } else {
+                html.append(iconPath);
+            }
             html.append("'");
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
                 html.append(" alt='");

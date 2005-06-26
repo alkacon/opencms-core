@@ -601,6 +601,18 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/projects/buttons/project_lock_disabled.png</source>
+			<destination>system/workplace/resources/tools/projects/buttons/project_lock_disabled.png</destination>
+			<type>image</type>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/tools/projects/icons</destination>
 			<type>folder</type>
 			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
