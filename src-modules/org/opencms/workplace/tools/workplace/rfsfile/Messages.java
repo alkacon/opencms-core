@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Messages.java,v $
- * Date   : $Date: 2005/06/25 15:40:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/26 13:07:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,8 +57,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_LOGVIEW_CONTROLS_NAME_0 = "GUI_WORKPLACE_LOGVIEW_CONTROLS_NAME_0";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_INSTRUCTION_1 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_INSTRUCTION_1";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FLMOD_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FLMOD_0";
 
@@ -100,6 +98,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_LOGVIEW_SETTINGS_NAME_0 = "GUI_WORKPLACE_LOGVIEW_SETTINGS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_HEADER_1 = "GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_HEADER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_LINKTXT_0 = "GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_LINKTXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_MESSAGE_0 = "GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_MESSAGE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.workplace.rfsfile.messages";

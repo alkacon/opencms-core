@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDownloadDialog.java,v $
- * Date   : $Date: 2005/06/25 16:51:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/26 13:07:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,16 +111,10 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
         result.append("  <tr>\r\n");
         result.append("    <td>");
         result.append(Messages.get().key(Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FNAME_0));
-        result.append(":</td>\n");
-        result.append("    <td ><b>");
-
-        result.append("      <a name=\"ok\" target=\"_self\" class=\"dialogerror\" href=\"");
-        result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp?filePath=")).append(
-            m_downloadFile.getAbsolutePath().replace('\\', '/')).append("\">");
+        result.append(":</td>\r\n");
+        result.append("    <td >");
         result.append(" ").append(m_downloadFile.getName());
-        result.append("      </a>\r\n");
-
-        result.append("</b></td>\r\n");
+        result.append("</td>\r\n");
         result.append("  </tr>\r\n");
 
         result.append("  <tr>\r\n");
@@ -158,6 +152,29 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
     }
 
     /**
+     * Returns the script used to open the download popup.<p>
+     * 
+     * Has to be called from the jsp to work propertly.<p> 
+     * 
+     * @return the script used to open the download popup
+     */
+    public String buildDownloadScript() {
+
+        StringBuffer result = new StringBuffer(212);
+        // the javasript for download button 
+        result.append("<script type=\"text/javascript\">\r\n");
+        result.append("function doDownload() {\r\n");
+        result.append("  window.open(\"");
+        result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/dodownload.jsp?"));
+        result.append("servletUrl=");
+        result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp"));
+        result.append("\", \"download\", \"width=300,height=130,left=100,top=100,menubar=no,status=no,toolbar=no\");\r\n");
+        result.append("}\r\n");
+        result.append("</script>\r\n");
+        return result.toString();
+    }
+
+    /**
      * Returns the HTML for a button that triggers a file download with 
      * <code>{@link CmsRfsFileDownloadServlet}</code> and a button for the chancel action.<p>
      *  
@@ -171,11 +188,9 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
         result.append("<!-- button row start -->\r\n");
         result.append("<div class=\"dialogbuttons\" unselectable=\"on\">\r\n");
         result.append("  <p>\r\n    ");
-        result.append(Messages.get().key(
-            getLocale(),
-            Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_INSTRUCTION_1,
-            new Object[] {m_downloadFile.getName()}));
-        result.append("  </p>\r\n");
+        result.append("<input type=\"button\" value=\"").append(
+            org.opencms.workplace.Messages.get().key(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_DOWNLOAD_0)).append(
+            "\" onclick=\"doDownload();\" class=\"dialogbutton\">");
 
         result.append("<input name=\"back\" type=\"button\" value=\"");
         result.append(org.opencms.workplace.Messages.get().key(
@@ -186,7 +201,7 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
         result.append(CmsDialog.DIALOG_CANCEL);
         result.append("\', null, 'main');\" class=\"dialogbutton\">\r\n");
         result.append("</div>\r\n");
-        result.append("<!-- button row end -->");
+        result.append("<!-- button row end -->\r\n");
 
         return result.toString();
     }

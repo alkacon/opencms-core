@@ -573,6 +573,28 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/workplace/logfileview/dodownload.jsp</source>
+			<destination>system/workplace/admin/workplace/logfileview/dodownload.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>e39dfee5-e61e-11d9-85f0-ad0f10d5214f</uuidresource>
+			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Download popup]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/workplace/logfileview/download.jsp</source>
 			<destination>system/workplace/admin/workplace/logfileview/download.jsp</destination>
 			<type>jsp</type>
