@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/25 12:45:06 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2005/06/26 12:54:27 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.87 $
+ * @version $Revision: 1.88 $
  * 
  * @since 6.0.0
  */
@@ -3074,7 +3074,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_FILE_2,
                 context.getSitePath(resource),
-                String.valueOf(filter)), e);
+                filter), e);
         } finally {
             dbc.clear();
         }
@@ -3109,7 +3109,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(
                 null,
-                Messages.get().container(Messages.ERR_READ_FOLDER_2, resourcename, String.valueOf(filter)),
+                Messages.get().container(Messages.ERR_READ_FOLDER_2, resourcename, filter),
                 e);
         } finally {
             dbc.clear();
