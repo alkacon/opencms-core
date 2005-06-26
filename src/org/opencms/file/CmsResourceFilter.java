@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/26 12:52:35 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.main.I_CmsConstants;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 6.0.0 
  */
@@ -599,6 +599,34 @@ public final class CmsResourceFilter {
         return m_filterVisible;
     }
 
+    /**
+     * Returns the name of the filter, if it is one of the filters used as a constant of this class and
+     * a default message otherwise.<p>
+     * 
+     * @return the name of the filter
+     */
+    public String toString() {
+        if (this.equals(CmsResourceFilter.ALL)) {
+            return "ALL";
+        } else if (this.equals(CmsResourceFilter.ALL_MODIFIED)) {
+            return "ALL_MODIFIED";
+        } else if (this.equals(CmsResourceFilter.DEFAULT)) {
+            return "DEFAULT";
+        } else if (this.equals(CmsResourceFilter.DEFAULT_FILES)) {
+            return "DEFAULT_FILES";
+        } else if (this.equals(CmsResourceFilter.DEFAULT_FOLDERS)) {
+            return "DEFAULT_FOLDERS";
+        } else if (this.equals(CmsResourceFilter.IGNORE_EXPIRATION)) {
+            return "IGNORE_EXPIRATION";
+        } else if (this.equals(CmsResourceFilter.ONLY_VISIBLE)) {
+            return "ONLY_VISIBLE";
+        } else if (this.equals(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+            return "ONLY_VISIBLE_NO_DELETED";
+        } else {
+            return "Nonstandard Resource Filter";
+        }    
+    }
+    
     /**
      * Recalculates the cache id.<p>
      */
