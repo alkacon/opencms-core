@@ -1,5 +1,5 @@
 <%@ page import="org.opencms.workplace.commons.*,
-                 org.opencms.file.CmsResource,
+                 org.opencms.file.*,
                  org.opencms.main.*,
                  org.opencms.site.CmsSiteManager"
 %><%
@@ -122,7 +122,7 @@ wp.setParamAction("secure");
 
         <td style="white-space:nowrap;"><%= wp.key("input.secure") %>&nbsp;</td>
         <td>
-          <%= wp.buildRadio(I_CmsConstants.C_PROPERTY_SECURE) %>
+          <%= wp.buildRadio(CmsPropertyDefinition.PROPERTY_SECURE) %>
         </td>
 
       <% } else { %>
@@ -165,7 +165,7 @@ wp.setParamAction("secure");
       <tr>
         <td style="white-space:nowrap;"><%= wp.key("input.export") %>&nbsp;</td>
         <td>
-          <%= wp.buildRadio(I_CmsConstants.C_PROPERTY_EXPORT) %>
+          <%= wp.buildRadio(CmsPropertyDefinition.PROPERTY_EXPORT) %>
         </td>
       </tr>
     
@@ -174,7 +174,7 @@ wp.setParamAction("secure");
         <td style="white-space:nowrap;"><%= wp.key("input.exportname") %>&nbsp;</td>
 
         <td class="maxwidth" style="padding-left: 5px;">
-          <input type="text" id="exportname" name="exportname" class="maxwidth" value="<%= wp.readProperty(I_CmsConstants.C_PROPERTY_EXPORTNAME) %>">
+          <input type="text" id="exportname" name="exportname" class="maxwidth" value="<%= wp.readProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME) %>">
         </td>
       </tr>
       <% } %>
