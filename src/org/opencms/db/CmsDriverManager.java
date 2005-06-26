@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/25 08:40:38 $
- * Version: $Revision: 1.534 $
+ * Date   : $Date: 2005/06/26 14:20:57 $
+ * Version: $Revision: 1.535 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.module.I_CmsModuleAction;
+import org.opencms.module.CmsModule;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -112,7 +112,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.534 $
+ * @version $Revision: 1.535 $
  * 
  * @since 6.0.0
  */
@@ -4338,10 +4338,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 maxVersions);
 
             // iterate the initialized module action instances
-            Iterator i = OpenCms.getModuleManager().getActionInstances();
+            Iterator i = OpenCms.getModuleManager().getModuleNames().iterator();
             while (i.hasNext()) {
-                I_CmsModuleAction moduleActionInstance = (I_CmsModuleAction)i.next();
-                moduleActionInstance.publishProject(cms, publishList, backupTagId, report);
+                CmsModule module = OpenCms.getModuleManager().getModule(i.next().toString());
+                if (module != null && module.getActionInstance() != null) {
+                    module.getActionInstance().publishProject(cms, publishList, backupTagId, report);
+                }
             }
 
             // the project was stored in the backuptables for history

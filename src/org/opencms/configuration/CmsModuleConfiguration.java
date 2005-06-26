@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsModuleConfiguration.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/26 14:20:57 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0
  */
@@ -106,7 +106,10 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
             modules = new ArrayList();
             Iterator names = OpenCms.getModuleManager().getModuleNames().iterator();
             while (names.hasNext()) {
-                modules.add(OpenCms.getModuleManager().getModule((String)names.next()));
+                CmsModule module = OpenCms.getModuleManager().getModule((String)names.next());
+                if (module != null) {
+                    modules.add(module);
+                }
             }
             Collections.sort(modules);
         } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/26 14:20:57 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,9 +77,6 @@ public class CmsModuleManager {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleManager.class);
-
-    /** The map of initialized module action instances. */
-    private Map m_moduleActionInstances;
 
     /** The list of module export points. */
     private Set m_moduleExportPoints;
@@ -110,7 +107,6 @@ public class CmsModuleManager {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_NUM_MODS_CONFIGURED_1, new Integer(m_modules.size())));
         }
-        m_moduleActionInstances = new Hashtable();
         m_moduleExportPoints = Collections.EMPTY_SET;
     }
 
@@ -147,7 +143,7 @@ public class CmsModuleManager {
         m_modules.put(module.getName(), module);
 
         try {
-            I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(module.getName());
+            I_CmsModuleAction moduleAction = module.getActionInstance();
             // handle module action instance if initialized
             if (moduleAction != null) {
                 moduleAction.moduleUpdate(module);
@@ -265,12 +261,10 @@ public class CmsModuleManager {
                 throw new CmsConfigurationException(Messages.get().container(Messages.ERR_MOD_DEPENDENCIES_0));
             }
             try {
-                I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(moduleName);
+                I_CmsModuleAction moduleAction = module.getActionInstance();
                 // handle module action instance if initialized
                 if (moduleAction != null) {
                     moduleAction.moduleUninstall(module);
-                    // remove instance from list of configured instances
-                    m_moduleActionInstances.remove(moduleName);
                 }
             } catch (Throwable t) {
                 LOG.error(Messages.get().key(Messages.LOG_MOD_UNINSTALL_ERR_1, moduleName), t);
@@ -320,28 +314,6 @@ public class CmsModuleManager {
     }
 
     /**
-     * Returns the module aciton instance of the module with the given name, or <code>null</code>
-     * if no module action instance with that name is configured.<p>
-     * 
-     * @param name the module name to get the action instance for
-     * @return the module aciton instance of the module with the given name
-     */
-    public I_CmsModuleAction getActionInstance(String name) {
-
-        return (I_CmsModuleAction)m_moduleActionInstances.get(name);
-    }
-
-    /**
-     * Returns an iterator that iterates the initialized module action instances.<p>
-     * 
-     * @return  an iterator that iterates the initialized module action instances
-     */
-    public Iterator getActionInstances() {
-
-        return new ArrayList(m_moduleActionInstances.values()).iterator();
-    }
-
-    /**
      * Returns the (immutable) list of configured module export points.<p>
      * 
      * @return the (immutable) list of configured module export points
@@ -371,7 +343,7 @@ public class CmsModuleManager {
      */
     public Set getModuleNames() {
 
-        return m_modules.keySet();
+        return Collections.unmodifiableSet(new HashSet(m_modules.keySet()));
     }
 
     /**
@@ -402,7 +374,7 @@ public class CmsModuleManager {
         }
 
         Iterator it;
-
+        int count = 0;
         it = m_modules.keySet().iterator();
         while (it.hasNext()) {
             // get the module description
@@ -410,22 +382,9 @@ public class CmsModuleManager {
 
             if (module.getActionClass() != null) {
                 // create module instance class
-                I_CmsModuleAction moduleAction = null;
-                try {
-                    moduleAction = (I_CmsModuleAction)Class.forName(module.getActionClass()).newInstance();
-                } catch (InstantiationException e) {
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
-                } catch (IllegalAccessException e) {
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
-                } catch (ClassNotFoundException e) {
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
-                } catch (ClassCastException e) {
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
-                }
-
+                I_CmsModuleAction moduleAction = module.getActionInstance();
                 if (moduleAction != null) {
-                    // store and initialize module action class    
-                    m_moduleActionInstances.put(module.getName(), moduleAction);
+                    count++;
                     if (CmsLog.INIT.isInfoEnabled()) {
                         CmsLog.INIT.info(Messages.get().key(
                             Messages.INIT_INITIALIZE_MOD_CLASS_1,
@@ -458,9 +417,7 @@ public class CmsModuleManager {
         initModuleExportPoints();
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_NUM_CLASSES_INITIALIZED_1,
-                new Integer(m_moduleActionInstances.size())));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_NUM_CLASSES_INITIALIZED_1, new Integer(count)));
         }
     }
 
@@ -469,14 +426,22 @@ public class CmsModuleManager {
      */
     public synchronized void shutDown() {
 
-        Iterator it = m_moduleActionInstances.keySet().iterator();
+        int count = 0;
+        Iterator it = getModuleNames().iterator();
         while (it.hasNext()) {
             String moduleName = (String)it.next();
             // get the module
             CmsModule module = (CmsModule)m_modules.get(moduleName);
+            if (module == null) {
+                continue;
+            }
             // get the module action instance            
-            I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(moduleName);
+            I_CmsModuleAction moduleAction = module.getActionInstance();
+            if (moduleAction == null) {
+                continue;
+            }
 
+            count++;
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().key(
                     Messages.INIT_SHUTDOWN_MOD_CLASS_1,
@@ -493,9 +458,7 @@ public class CmsModuleManager {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_SHUTDOWN_NUM_MOD_CLASSES_1,
-                new Integer(m_moduleActionInstances.size())));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_NUM_MOD_CLASSES_1, new Integer(count)));
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -543,7 +506,7 @@ public class CmsModuleManager {
         m_modules.put(module.getName(), module);
 
         try {
-            I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(module.getName());
+            I_CmsModuleAction moduleAction = module.getActionInstance();
             // handle module action instance if initialized
             if (moduleAction != null) {
                 moduleAction.moduleUpdate(module);

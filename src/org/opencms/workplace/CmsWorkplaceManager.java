@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2005/06/26 14:20:57 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.69 $ 
+ * @version $Revision: 1.70 $ 
  * 
  * @since 6.0.0 
  */
@@ -732,7 +732,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             Iterator j = moduleManager.getModuleNames().iterator();
             while (j.hasNext()) {
                 CmsModule module = moduleManager.getModule((String)j.next());
-                addExplorerTypeSettings(module);
+                if (module != null) {
+                    addExplorerTypeSettings(module);
+                }
             }
             // initialize the explorer type settings
             initExplorerTypeSettings();

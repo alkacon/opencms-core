@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/25 13:44:14 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/26 14:20:57 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  * 
@@ -73,6 +73,15 @@ public class CmsModule implements Comparable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModule.class);
+
+    /**
+     * The module property key name to specifiy additional resources which are
+     * part of a module outside of {system/modules}.
+     */
+    private static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES = "additionalresources";
+
+    /** Character to separate additional resources specified in the module properties.  */
+    private static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR = ";";
 
     /** The module action class name. */
     private String m_actionClass;
@@ -107,6 +116,9 @@ public class CmsModule implements Comparable {
     /** The group of the module. */
     private String m_group;
 
+    /** Initialized module action instance. */
+    private I_CmsModuleAction m_moduleActionInstance;
+
     /** The name of this module, must be a valid Java package name. */
     private String m_name;
 
@@ -127,17 +139,6 @@ public class CmsModule implements Comparable {
 
     /** The version of this module. */
     private CmsModuleVersion m_version;
-
-    /**
-     * The module property key name to specifiy additional resources which are
-     * part of a module outside of {system/modules}.
-     */
-    private static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES = "additionalresources";
-
-    /**
-     * Character to separate additional resources specified in the module properties.
-     */
-    private static final String MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR = ";";
 
     /**
      * Creates a new, empty CmsModule object.<p>
@@ -386,6 +387,25 @@ public class CmsModule implements Comparable {
     public String getActionClass() {
 
         return m_actionClass;
+    }
+
+    /**
+     * Returns the module action instance of this module, or <code>null</code>
+     * if no module action instance is configured.<p>
+     * 
+     * @return the module action instance of this module
+     */
+    public I_CmsModuleAction getActionInstance() {
+
+        if (getActionClass() != null && m_moduleActionInstance == null) {
+            // lazzy initialization
+            try {
+                m_moduleActionInstance = (I_CmsModuleAction)Class.forName(getActionClass()).newInstance();
+            } catch (Exception e) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, getName()), e);
+            }
+        }
+        return m_moduleActionInstance;
     }
 
     /**
