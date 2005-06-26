@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Attic/CmsRfsFileDownloadServlet.java,v $
- * Date   : $Date: 2005/06/25 16:51:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/26 13:06:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketException;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -54,7 +55,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,12 +143,19 @@ public final class CmsRfsFileDownloadServlet extends HttpServlet {
                     outStream.write(bit);
                     bit = in.read();
                 }
+            } catch (SocketException soe) {
+                // this is the case for ie if cancel in download popup window is chosen: 
+                // "Connection reset by peer: socket write error". But not for firefox -> don't care
             } catch (IOException ioe) {
-                ioe.printStackTrace(System.out);
+                // TODO: write nice exception?
+                throw ioe;
+            } finally {
+                if (outStream != null) {
+                    outStream.flush();
+                    outStream.close();
+                }
+                in.close();
             }
-            outStream.flush();
-            outStream.close();
-            in.close();
         }
     }
 
