@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/06/25 11:44:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/26 13:20:23 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -193,13 +193,22 @@ function setRootFolder(value) {
 function initHist() {
 	g_histLoc = 0;
 	g_history = new Array();
+	addHist(getDisplayResource(true));
 }
 
 
 function addHist(entry) {
 	if (g_history[g_histLoc] != entry) {
 		g_histLoc++;
-		g_history[g_histLoc] = entry;
+		if (g_histLoc == 1 && entry.indexOf("siblings:") == 0) {
+			entry = entry.substring(9);
+			entry = entry.substring(0, entry.lastIndexOf("/") + 1);
+			g_history[g_histLoc] = entry;
+			g_histLoc++;
+			g_history[g_histLoc] = entry;
+		} else {
+			g_history[g_histLoc] = entry;
+		}
 	}
 }
 
@@ -1051,8 +1060,8 @@ function setDirectory(id, dir){
 		addHist(dir);
 	}
 	vr.actDirId=id;
-	if (dir.indexOf("vfslink:") == 0) {
-		dir = dir.substring(8);
+	if (dir.indexOf("siblings:") == 0) {
+		dir = dir.substring(9);
 	}
 	var lastSlashPos = dir.lastIndexOf("/");
 	if (lastSlashPos != (dir.length - 1)) {

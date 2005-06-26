@@ -261,7 +261,7 @@ function fillValues(theValue) {
             <td class=dialogtxt>
                 <input type="text" name="neulink2" class="textfeld3" size="31" onchange="checkValues();" />
             </td>
-            <td class=formular><a href="javascript:top.openTreeWin('vfslink', true, 'NEU2', 'neulink2');"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
+            <td class=formular><a href="javascript:top.openTreeWin('sibling', true, 'NEU2', 'neulink2');"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
     </tr>
     <tr>
             <td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
@@ -326,7 +326,7 @@ function fillValues(theValue) {
             <td class=dialogtxt>
                 <input type="text" name="neulink1" class="textfeld3" size="31" />
             </td>
-            <td class=formular><a href="javascript:top.openTreeWin('vfslink', true, 'NEU1', 'neulink1');"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
+            <td class=formular><a href="javascript:top.openTreeWin('sibling', true, 'NEU1', 'neulink1');"><img src="]]><METHOD name="resourcesUri">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
     </tr>
     <tr>
             <td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/26 13:20:23 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,8 +109,8 @@ public class CmsTree extends CmsWorkplace {
     /** Type name for showing the tree in preferences dialog. */
     private static final String C_TYPE_PREFERENCES = "preferences";
 
-    /** Type name for showing the tree when creating links. */
-    private static final String C_TYPE_VFSLINK = "vfslink";
+    /** Type name for showing the tree when creating siblings. */
+    private static final String C_TYPE_SIBLING = "sibling";
 
     /** Type name for showing the tree in a widget dialog. */
     private static final String C_TYPE_VFSWIDGET = "vfswidget";
@@ -584,7 +584,7 @@ public class CmsTree extends CmsWorkplace {
         if (rootFolder.equals(resource) && !rootFolder.equals(currentResource) && (lastknown == null) && !rootloaded) {
             // direct load of a new tree with subtree (e.g. when returning from an editor)
             lastknown = getRootFolder();
-            resource = currentResource;
+            resource = CmsResource.getFolderPath(currentResource);
             setNewTree(true);
         } else if (rootFolder.equals(resource)) {
             // load new tree if not already loaded
@@ -613,7 +613,7 @@ public class CmsTree extends CmsWorkplace {
      */
     private void computeSiteSelector(HttpServletRequest request) {
 
-        boolean selectorForType = C_TYPE_VFSLINK.equals(getTreeType())
+        boolean selectorForType = C_TYPE_SIBLING.equals(getTreeType())
             || C_TYPE_COPY.equals(getTreeType())
             || C_TYPE_PAGELINK.equals(getTreeType())
             || C_TYPE_PREFERENCES.equals(getTreeType());
@@ -726,7 +726,7 @@ public class CmsTree extends CmsWorkplace {
             }
 
         } else if (C_TYPE_COPY.equals(getTreeType())
-            || C_TYPE_VFSLINK.equals(getTreeType())
+            || C_TYPE_SIBLING.equals(getTreeType())
             || C_TYPE_VFSWIDGET.equals(getTreeType())) {
             // in vfs copy|move|link or vfs widget mode, don't add the prefix for the current workplace site
             if (storedSiteRoot.equals(prefix)) {

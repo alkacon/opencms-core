@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/06/25 11:19:03 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/26 13:20:23 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,8 +84,8 @@ public class CmsExplorer extends CmsWorkplace {
     /** The "projectview" view selection. */
     public static final String C_VIEW_PROJECT = "projectview";
 
-    /** The "vfslink:" location prefix for VFS link display. */
-    private static final String C_LOCATION_VFSLINK = "vfslink:";
+    /** The "siblings:" location prefix for VFS sibling display. */
+    private static final String C_LOCATION_SIBLING = "siblings:";
 
     /** The "flaturl" parameter. */
     private static final String C_PARAMETER_FALTURL = "flaturl";
@@ -157,7 +157,7 @@ public class CmsExplorer extends CmsWorkplace {
         if (found) {
             if (showVfsLinks) {
                 // file / folder exists and is readable
-                currentFolder = C_LOCATION_VFSLINK + currentFolder;
+                currentFolder = C_LOCATION_SIBLING + currentFolder;
             }
         } else {
             // show the root folder in case of an error and reset the state
@@ -227,7 +227,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(CmsResource.getFolderPath(currentResource.getRootPath()));
         content.append("\",\"");
         if (showVfsLinks) {
-            content.append("vfslink:");
+            content.append(C_LOCATION_SIBLING);
             content.append(getSettings().getExplorerResource());
         } else {
             content.append(CmsResource.getFolderPath(getSettings().getExplorerResource()));
@@ -650,10 +650,10 @@ public class CmsExplorer extends CmsWorkplace {
             settings.setExplorerResource(currentResource);
         } else {
             // "showlinks" parameter not found 
-            if (currentResource != null && currentResource.startsWith(C_LOCATION_VFSLINK)) {
-                // given resource starts with "vfslink:", list of links is shown
+            if (currentResource != null && currentResource.startsWith(C_LOCATION_SIBLING)) {
+                // given resource starts with "siblings:", list of siblings is shown
                 showLinks = true;
-                settings.setExplorerResource(currentResource.substring(8));
+                settings.setExplorerResource(currentResource.substring(C_LOCATION_SIBLING.length()));
             } else {
                 if (CmsStringUtil.isNotEmpty(currentResource) && folderExists(getCms(), currentResource)) {
                     // resource is a folder, set resource name
