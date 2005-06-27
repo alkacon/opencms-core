@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/27 10:27:15 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -504,7 +504,15 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // add the XML element at the required position in the parent XML node 
         parent.content().add(insertIndex, element);
         // create the type and return it
-        return type.createValue(this, element, locale);
+        I_CmsXmlContentValue value = type.createValue(this, element, locale);
+        // generate the default value again - required for nested mappings because only now the full path is available  
+        String defaultValue = m_contentDefinition.getContentHandler().getDefault(cms, value, locale);
+        if (defaultValue != null) {
+            // only if there is a default value available use it to overwrite the initial default
+            value.setStringValue(cms, defaultValue);
+        }
+        // finally return the value        
+        return value;
     }
 
     /**

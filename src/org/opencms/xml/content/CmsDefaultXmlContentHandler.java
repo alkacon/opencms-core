@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/06/26 14:28:18 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/06/27 10:27:15 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,15 +190,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefault(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.util.Locale)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefault(org.opencms.file.CmsObject, I_CmsXmlContentValue, java.util.Locale)
      */
-    public String getDefault(CmsObject cms, I_CmsXmlSchemaType type, Locale locale) {
+    public String getDefault(CmsObject cms, I_CmsXmlContentValue value, Locale locale) {
 
-        String elementName = type.getName();
-        String defaultValue = (String)m_defaultValues.get(elementName);
-        if (defaultValue == null) {
+        String defaultValue;
+        if (value.getElement() == null) {
             // use the "getDefault" method of the given value, will use value from standard XML schema
-            defaultValue = type.getDefault(locale);
+            defaultValue = value.getDefault(locale);
+        } else {
+            String xpath = value.getPath();
+            // look up the default from the configured mappings
+            defaultValue = (String)m_defaultValues.get(xpath);
+            if (defaultValue == null) {
+                // no value found, try default xpath
+                xpath = CmsXmlUtils.removeXpath(xpath);
+                xpath = CmsXmlUtils.createXpath(xpath, 1);
+                // look up the default value again with default index of 1 in all path elements
+                defaultValue = (String)m_defaultValues.get(xpath);
+            }
         }
         if (defaultValue != null) {
             // return the default value with processed macros
@@ -211,10 +221,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * Returns the mapping defined for the given element name.<p>
+     * Returns the mapping defined for the given element xpath.<p>
      * 
-     * @param elementName the element name to use
-     * @return the mapping defined for the given element name
+     * @param elementName the element xpath to look up the mapping for
+     * @return the mapping defined for the given element xpath
      */
     public String getMapping(String elementName) {
 
@@ -397,8 +407,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                                 }
                                 file.setDateExpired(date);
                                 break;
-                            default: 
-                                // TODO: handle invalid / other mappings                                
+                            default:
+                        // TODO: handle invalid / other mappings                                
                         }
                     }
                 }
@@ -479,8 +489,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 org.opencms.xml.types.Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1,
                 elementName));
         }
-
-        m_defaultValues.put(elementName, defaultValue);
+        // store mappings as Xpath to allow better control about what is mapped
+        String xpath = CmsXmlUtils.createXpath(elementName, 1);
+        m_defaultValues.put(xpath, defaultValue);
     }
 
     /**
@@ -859,7 +870,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             matchResult = false;
             regex = regex.substring(1);
         }
-        
+
         String matchValue = valueStr;
         if (matchValue == null) {
             // set match value to empty String to avoid exceptions in pattern matcher

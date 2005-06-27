@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/06/25 12:03:26 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/06/27 10:27:15 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -119,8 +119,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationExtended"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationLocale"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMappings"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testMappingsWithManyLocales"));   
-        suite.addTest(new TestCmsXmlContentWithVfs("testMappingsOfNestedContent"));        
+        suite.addTest(new TestCmsXmlContentWithVfs("testMappingsWithManyLocales"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testMappingsOfNestedContent"));
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundle"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMacros"));
 
@@ -573,10 +573,17 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         value1 = xmlcontent.addValue(cms, "Cascade[1]/Option", Locale.ENGLISH, 0);
         assertEquals("Default value from the XML", value1.getStringValue(cms));
-        assertEquals("Default value from the appinfos", value1.getContentDefinition().getContentHandler().getDefault(
-            cms,
-            value1,
-            Locale.ENGLISH));
+
+        // check exact default mappings for nested content
+        value1 = xmlcontent.addValue(cms, "Cascade[1]/Option", Locale.ENGLISH, 1);
+        assertEquals("Default value from outer content definition", value1.getStringValue(cms));
+        
+        // check generic default mappings for nested content
+        value1 = xmlcontent.addValue(cms, "Cascade[1]/VfsLink", Locale.ENGLISH, 1);
+        assertEquals("/default/for/all/from/outer.txt", value1.getStringValue(cms));
+        
+        value1 = xmlcontent.addValue(cms, "Cascade[1]/VfsLink", Locale.ENGLISH, 2);
+        assertEquals("/default/for/all/from/outer.txt", value1.getStringValue(cms));
     }
 
     /**
@@ -877,8 +884,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
         assertEquals(titleStr, titleProperty.getValue());
     }
-    
-    
+
     /**
      * Tests the element mappings from the appinfo node if there is more then one locale.<p>
      * 
@@ -906,7 +912,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_ISO_8859_1, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
-        
+
         // create "en" property
         List properties = new ArrayList();
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
@@ -925,21 +931,24 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // now lock the "DE" sibling
         cms.changeLock(resourcenameDe);
         // add the "DE" locale property to the german version
-        cms.writePropertyObject(resourcenameDe, new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.GERMAN.toString(), null));
-        
+        cms.writePropertyObject(resourcenameDe, new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_LOCALE,
+            Locale.GERMAN.toString(),
+            null));
+
         CmsFile file = cms.readFile(resourcenameDe);
         xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
 
         xmlcontent.addLocale(cms, Locale.GERMAN);
-        if (! xmlcontent.hasLocale(Locale.ENGLISH)) {
-           xmlcontent.addLocale(cms, Locale.ENGLISH);
+        if (!xmlcontent.hasLocale(Locale.ENGLISH)) {
+            xmlcontent.addLocale(cms, Locale.ENGLISH);
         }
-        
+
         String titleStrEn = "This must be the Title in EN";
         I_CmsXmlContentValue value;
         value = xmlcontent.addValue(cms, "String", Locale.ENGLISH, 0);
         value.setStringValue(cms, titleStrEn);
-        
+
         String titleStrDe = "Das ist der Title in DE";
         value = xmlcontent.addValue(cms, "String", Locale.GERMAN, 0);
         value.setStringValue(cms, titleStrDe);
@@ -948,15 +957,21 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         cms.writeFile(file);
         // finally unlock the resource
         cms.unlockResource(resourcenameDe);
-        
+
         // now check if the properties have been assigned as required to the locales
-        CmsProperty titlePropertyEn = cms.readPropertyObject(resourcenameEn, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        CmsProperty titlePropertyEn = cms.readPropertyObject(
+            resourcenameEn,
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            false);
         assertEquals(titleStrEn, titlePropertyEn.getValue());
-        
-        CmsProperty titlePropertyDe = cms.readPropertyObject(resourcenameDe, CmsPropertyDefinition.PROPERTY_TITLE, false);
+
+        CmsProperty titlePropertyDe = cms.readPropertyObject(
+            resourcenameDe,
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            false);
         assertEquals(titleStrDe, titlePropertyDe.getValue());
     }
-    
+
     /**
      * Tests the element mappings from the appinfo node for nested XML content.<p>
      * 
@@ -1001,12 +1016,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         String titleStr = "This must be the Title (not nested)";
         I_CmsXmlContentValue value;
         value = xmlcontent.getValue("Test", Locale.ENGLISH);
-        assertEquals(value.getStringValue(cms), "Another Test");  
+        assertEquals(value.getStringValue(cms), "Another Test");
         value.setStringValue(cms, titleStr);
-        
+
         String descStr = "This must be the Description (which IS nested)";
         value = xmlcontent.getValue("Cascade/Toast", Locale.ENGLISH);
-        assertEquals(value.getStringValue(cms), "Toast");        
+        assertEquals(value.getStringValue(cms), "Toast");
         value.setStringValue(cms, descStr);
 
         file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
@@ -1228,7 +1243,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         value1.setStringValue(cms, "This HTML contains an error!");
 
         value1 = xmlcontent.addValue(cms, "DeepCascade[1]/Cascade[1]/Option", Locale.ENGLISH, 0);
-        assertEquals("Default value from the appinfos", value1.getStringValue(cms));
+        assertEquals("Default value from the XML", value1.getStringValue(cms));
 
         // output the current document
         System.out.println(xmlcontent.toString());

@@ -24,6 +24,10 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<handler class="org.opencms.xml.content.TestXmlContentHandler" />		
+			<defaults>
+				<default element="Cascade/Option[2]" value="Default value from outer content definition" />
+				<default element="Cascade/VfsLink" value="/default/for/all/from/outer.txt" />
+			</defaults>
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>

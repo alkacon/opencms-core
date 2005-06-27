@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 10:27:15 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,14 +88,14 @@ public interface I_CmsXmlContentHandler {
      * If a schema type does not have a default value, this method must return <code>null</code>.
      * 
      * @param cms the current users OpenCms context
-     * @param type the value to get the default for
+     * @param value the value to get the default for
      * @param locale the currently selected locale for the value
      * 
      * @return the default String value for the given XML content value object
      * 
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getDefault(Locale)
      */
-    String getDefault(CmsObject cms, I_CmsXmlSchemaType type, Locale locale);
+    String getDefault(CmsObject cms, I_CmsXmlContentValue value, Locale locale);
 
     /**
      * Returns the {@link CmsMessages} that are used to resolve localized keys 
